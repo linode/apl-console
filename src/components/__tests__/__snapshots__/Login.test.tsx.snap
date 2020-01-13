@@ -1,0 +1,317 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login snapshot matches old one 1`] = `
+<div
+  className="MuiContainer-root MuiContainer-maxWidthXs"
+>
+  <div
+    className="MuiBox-root MuiBox-root-9"
+  >
+    <div
+      className="MuiBox-root MuiBox-root-10"
+      href="/"
+      onClick={[Function]}
+      style={
+        Object {
+          "cursor": "pointer",
+        }
+      }
+      to={null}
+    >
+      <img
+        aria-hidden={true}
+        src="food.svg"
+        style={
+          Object {
+            "height": "75px",
+            "width": "75px",
+          }
+        }
+      />
+      <h2
+        className="MuiTypography-root MuiTypography-h5"
+      >
+        <div
+          className="MuiBox-root MuiBox-root-41"
+        >
+          Otomi.app
+        </div>
+      </h2>
+    </div>
+    <div
+      className="MuiBox-root MuiBox-root-42"
+    >
+      <h5
+        className="MuiTypography-root MuiTypography-h5"
+      >
+        Log in to your account
+      </h5>
+      <div
+        className="MuiBox-root MuiBox-root-43"
+      >
+        <p
+          className="MuiTypography-root MuiTypography-body1"
+        >
+          Don't have an account?
+           
+          <a
+            href="/register"
+            onClick={[Function]}
+            to={null}
+          >
+            Register
+          </a>
+        </p>
+      </div>
+    </div>
+    <hr
+      className="MuiDivider-root"
+    />
+    <div
+      className="MuiBox-root MuiBox-root-50"
+    >
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary MuiButton-fullWidth"
+        disabled={false}
+        id="loginWithGoogle"
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        style={
+          Object {
+            "marginBottom": "1rem",
+          }
+        }
+        tabIndex={0}
+        type="button"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          Sign 
+          in
+           with Google
+        </span>
+      </button>
+      <form
+        onSubmit={[Function]}
+      >
+        <div
+          className="MuiBox-root MuiBox-root-89"
+        >
+          <p
+            className="MuiTypography-root MuiTypography-body1"
+          >
+            Or sign 
+            in
+             using an email and password:
+          </p>
+        </div>
+        <div
+          className="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+          style={
+            Object {
+              "marginTop": "1rem",
+            }
+          }
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined"
+            data-shrink={false}
+          >
+            Email Address
+          </label>
+          <div
+            className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              autoComplete="email"
+              className="MuiInputBase-input MuiOutlinedInput-input"
+              disabled={false}
+              name="email"
+              onAnimationStart={[Function]}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="text"
+              value=""
+            />
+            <fieldset
+              aria-hidden={true}
+              className="PrivateNotchedOutline-root-149 MuiOutlinedInput-notchedOutline"
+              style={
+                Object {
+                  "paddingLeft": 8,
+                }
+              }
+            >
+              <legend
+                className="PrivateNotchedOutline-legend-150"
+                style={
+                  Object {
+                    "width": 0.01,
+                  }
+                }
+              >
+                <span
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "&#8203;",
+                    }
+                  }
+                />
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          className="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+          style={
+            Object {
+              "marginTop": "1rem",
+            }
+          }
+        >
+          <label
+            className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined"
+            data-shrink={false}
+          >
+            Password
+          </label>
+          <div
+            className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-fullWidth MuiInputBase-formControl"
+            onClick={[Function]}
+          >
+            <input
+              aria-invalid={false}
+              className="MuiInputBase-input MuiOutlinedInput-input"
+              disabled={false}
+              name="password"
+              onAnimationStart={[Function]}
+              onBlur={[Function]}
+              onChange={[Function]}
+              onFocus={[Function]}
+              required={false}
+              type="password"
+              value=""
+            />
+            <fieldset
+              aria-hidden={true}
+              className="PrivateNotchedOutline-root-149 MuiOutlinedInput-notchedOutline"
+              style={
+                Object {
+                  "paddingLeft": 8,
+                }
+              }
+            >
+              <legend
+                className="PrivateNotchedOutline-legend-150"
+                style={
+                  Object {
+                    "width": 0.01,
+                  }
+                }
+              >
+                <span
+                  dangerouslySetInnerHTML={
+                    Object {
+                      "__html": "&#8203;",
+                    }
+                  }
+                />
+              </legend>
+            </fieldset>
+          </div>
+        </div>
+        <div
+          style={
+            Object {
+              "display": "flex",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
+          <button
+            className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary Mui-disabled MuiButton-fullWidth Mui-disabled"
+            disabled={true}
+            onBlur={[Function]}
+            onDragLeave={[Function]}
+            onFocus={[Function]}
+            onKeyDown={[Function]}
+            onKeyUp={[Function]}
+            onMouseDown={[Function]}
+            onMouseLeave={[Function]}
+            onMouseUp={[Function]}
+            onTouchEnd={[Function]}
+            onTouchMove={[Function]}
+            onTouchStart={[Function]}
+            style={
+              Object {
+                "marginTop": "1rem",
+              }
+            }
+            tabIndex={-1}
+            type="submit"
+          >
+            <span
+              className="MuiButton-label"
+            >
+              Sign 
+              in
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div
+      aria-hidden={true}
+      className="MuiBackdrop-root"
+      style={
+        Object {
+          "opacity": 0,
+          "visibility": "hidden",
+          "zIndex": 1500,
+        }
+      }
+    >
+      <div
+        className="MuiCircularProgress-root MuiCircularProgress-colorPrimary MuiCircularProgress-indeterminate"
+        role="progressbar"
+        style={
+          Object {
+            "height": 40,
+            "width": 40,
+          }
+        }
+      >
+        <svg
+          className="MuiCircularProgress-svg"
+          viewBox="22 22 44 44"
+        >
+          <circle
+            className="MuiCircularProgress-circle MuiCircularProgress-circleIndeterminate"
+            cx={44}
+            cy={44}
+            fill="none"
+            r={20.2}
+            strokeWidth={3.6}
+            style={Object {}}
+          />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,118 @@
+{
+  "name": "otomi-web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.7.2",
+    "@material-ui/icons": "^4.5.1",
+    "@material-ui/styles": "^4.7.1",
+    "debug": "^4.1.1",
+    "firebase": "^7.5.1",
+    "formik": "^2.0.7",
+    "formik-material-ui": "^1.0.0",
+    "lodash.isnil": "^4.0.0",
+    "lodash.omitby": "^4.6.0",
+    "notistack": "^0.9.7",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-firebase-hooks": "^2.1.1",
+    "react-helmet": "^5.2.1",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.3.0",
+    "yup": "^0.27.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "@types/enzyme": "^3.10.4",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
+    "@types/jest": "^24.0.23",
+    "@types/react": "^16.9.16",
+    "@types/react-dom": "^16.9.4",
+    "@types/react-helmet": "^5.0.14",
+    "@types/react-router-dom": "^5.1.3",
+    "commitizen": "^4.0.3",
+    "cz-conventional-changelog": "^3.0.2",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
+    "firebase-tools": "^7.9.0",
+    "http-proxy-middleware": "^0.20.0",
+    "husky": "^3.1.0",
+    "lint-staged": "^9.5.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "react-test-renderer": "^16.12.0",
+    "ts-jest": "^24.2.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.3"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "tslint --project ./tsconfig.tslint.json",
+      "git add"
+    ],
+    "*.{js,json,md,ts,yml,yaml}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "cz": "git-cz",
+    "cz:retry": "git-cz --retry",
+    "build:config:dev": "./bin/build-config.sh dev",
+    "build:config:prd": "./bin/build-config.sh prd",
+    "build:config:demo": "./bin/build-config.sh demo",
+    "dev": "npm run build:config:dev && run-p --race dev:firebase dev:react",
+    "dev:firebase": "firebase serve -p 4000",
+    "dev:react": "react-scripts start",
+    "deploy:production": "npm run build:config:prd && npm run build && firebase deploy --force --only hosting --project otomi-cloud",
+    "deploy:demo": "npm run build:config:demo && npm run build && firebase deploy --force --only hosting --project otomi-cloud-demo",
+    "deploy:dev": "npm run build:config:dev && npm run build && firebase deploy --only hosting --project otomi-cloud-devel",
+    "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
+    "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
+    "husky:lint-staged": "lint-staged",
+    "husky:pre-commit": "lint-staged",
+    "lint": "tslint --project ./tsconfig.tslint.json",
+    "lint:fix": "tslint --project ./tsconfig.tslint.json --fix",
+    "shell": "npm-run-all -s build -p watch:ts shell:run",
+    "shell:run": "firebase functions:shell --project otomi-cloud-test",
+    "test": "jest --detectOpenHandles",
+    "test:ci": "jest --coverage --detectOpenHandles --reporters=\"default\" --reporters=\"jest-junit\"  --runInBand",
+    "test:coverage": "jest --coverage --detectOpenHandles",
+    "test:integration": "jest --detectOpenHandles src/functions",
+    "test:integration:coverage": "jest --coverage --detectOpenHandles src/functions",
+    "test:integration:watch": "jest --watch src/functions",
+    "test:unit": "jest --detectOpenHandles src/common",
+    "test:unit:coverage": "jest --coverage --detectOpenHandles src/common",
+    "test:unit:watch": "jest --watch src/common",
+    "test:watch": "jest --watch --verbose false",
+    "test:enzyme": "react-scripts test",
+    "types": "tsc --noEmit",
+    "watch:ts": "tsc -w",
+    "start": "npm run dev",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run husky:pre-commit",
+      "postmerge": "./bin/post-merge-hook.sh"
+    }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "workspaces": [
+    "functions/*"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
