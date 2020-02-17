@@ -49,12 +49,9 @@ const App: React.FC = (): any => {
           >
             <Router>
               <Switch>
-                {!user && <Route path='/' component={Home} exact />}
-                <Route path='/login' component={LoginContainer} />
-                <Route path='/register' component={LoginContainer} />
-                <Route path='/recover-password' component={LoginContainer} />
-                <PrivateRoute path='/account' component={Account} />
-                <PrivateRoute path='/' component={Dashboard} exact />
+                {/*!user && <Route path='/' component={Home} exact />*/}
+                <PrivateRoute path='/teams' component={Teams} exact />
+                <PrivateRoute path='/teams/{id}' component={Team} exact />
                 <PrivateRoute path='/create-app' component={OnboardingWizard} />
                 <PrivateRoute path='*'>404 page here</PrivateRoute>
               </Switch>

@@ -2,7 +2,7 @@ import * as React from 'react'
 
 interface UserContext {
   initialising?: boolean
-  user?: firebase.User
+  user?: object
 }
 
 export const userContext = React.createContext<UserContext>({

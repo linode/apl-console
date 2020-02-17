@@ -11,7 +11,6 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp'
 import PersonIcon from '@material-ui/icons/Person'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { signOut } from '../auth'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,9 +32,6 @@ const UserMenu = (): any => {
   const handleMenuClose = (): void => {
     setAnchorEl(null)
   }
-  const handleSignOut = (): void => {
-    signOut().catch(err => console.log(err.message))
-  }
   const menuId = 'account-menu'
   return (
     <React.Fragment>
@@ -50,7 +46,7 @@ const UserMenu = (): any => {
         <AccountCircle />
       </IconButton>
       <Menu anchorEl={anchorEl} id={menuId} keepMounted open={isMenuOpen} onClose={handleMenuClose}>
-        <List component='nav' aria-label='main mailbox folders'>
+        <List component='nav' aria-label='menu'>
           <ListItem button component={Link} to='/'>
             <ListItemIcon>
               <DashboardIcon />
@@ -62,12 +58,6 @@ const UserMenu = (): any => {
               <PersonIcon />
             </ListItemIcon>
             <ListItemText primary='My account' />
-          </ListItem>
-          <ListItem button onClick={handleSignOut}>
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary='Log out' />
           </ListItem>
         </List>
       </Menu>
