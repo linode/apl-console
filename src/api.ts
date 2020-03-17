@@ -1,0 +1,48 @@
+import axios from 'axios'
+import OpenAPIClientAxios from 'openapi-client-axios'
+
+let baseUrl = process.env.BASE_URL
+let axiosConfigDefaults = {
+  withCredentials: true,
+  headers: {
+    'Cache-Control': 'no-cache',
+    'Auth-Group': undefined,
+  },
+}
+if (process.env.NODE_ENV !== 'production') {
+  console.warn('running in development mode!')
+  axiosConfigDefaults = {
+    withCredentials: false,
+    headers: {
+      'Cache-Control': 'no-cache',
+      'Auth-Group': 'admin',
+    },
+  }
+  baseUrl = 'http://127.0.0.1:8080/v1'
+}
+
+function getClient(apiDefinition): any {
+  apiDefinition.servers = [
+    {
+      url: baseUrl,
+    },
+  ]
+
+  const api = new OpenAPIClientAxios({
+    definition: apiDefinition,
+    axiosConfigDefaults,
+  })
+
+  return api.initSync()
+}
+
+async function getApiDefinition(): Promise<any> {
+  const url = `${baseUrl}/apiDocs`
+
+  console.log(`getApiDefinition, url=${url}`)
+
+  return axios.get(url)
+}
+
+export { getApiDefinition }
+export default getClient

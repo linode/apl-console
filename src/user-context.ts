@@ -1,10 +1,12 @@
 import * as React from 'react'
 
-interface UserContext {
+export interface UserContext {
   initialising?: boolean
   user?: object
+  team?: string
 }
 
 export const userContext = React.createContext<UserContext>({
   user: undefined,
+  team: undefined,
 })
