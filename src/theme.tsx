@@ -1,4 +1,4 @@
-import { createMuiTheme, createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { createMuiTheme, createStyles, makeStyles } from '@material-ui/core/styles'
 import bg from './images/yellowBg.jpg'
 
 export const colors = {

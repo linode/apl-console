@@ -1,21 +1,24 @@
 import { Backdrop, CircularProgress, CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
-import { SnackbarProvider } from 'notistack'
+import { SnackbarProvider } from 'material-ui-snackbar-provider'
 import * as React from 'react'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
-import { getSession, useSession } from '../auth'
+import { sessionContext } from '../session-context'
 import { theme } from '../theme'
-import { userContext } from '../user-context'
+// import { useApi } from './hooks/api'
 import Service from './Services/Service'
 import Services from './Services/Services'
 
-const App: React.FC = (): any => {
-  const [user, initialising, error] = getSession()
+const testSession = { user: { email: 'testuser1@redkubes.com' }, team: { name: 'taxi', clusters: { id: 'dev/azure' } } }
+
+const App = (): any => {
+  // const [session, initialising, error] = useApi('getSession')
+  const [session, initialising] = [testSession, false]
 
   return (
     <ThemeProvider theme={theme}>
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider>
         <CssBaseline />
         <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
         {initialising ? (
@@ -23,10 +26,11 @@ const App: React.FC = (): any => {
             <CircularProgress />
           </Backdrop>
         ) : (
-          <userContext.Provider
+          <sessionContext.Provider
             value={{
               initialising,
-              user,
+              user: session.user,
+              team: session.team,
             }}
           >
             <Router>
@@ -35,10 +39,11 @@ const App: React.FC = (): any => {
                 <Route path='/services' component={Services} exact />
                 <Route path='/services/{id}' component={Service} exact />
                 <Route path='/services/{id}' component={Service} exact />
+                <Redirect exact from='/' to='/services' />
                 <Route path='*'>404 page here</Route>
               </Switch>
             </Router>
-          </userContext.Provider>
+          </sessionContext.Provider>
         )}
       </SnackbarProvider>
     </ThemeProvider>

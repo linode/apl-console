@@ -1,6 +1,7 @@
+import React from 'react'
 import Help from './Help'
 
-const CustomDescriptionField: React.FC = ({ id, description }: any): any => {
+const CustomDescriptionField = ({ id, description }: any): any => {
   return <Help description={description} id={id} />
 }
 

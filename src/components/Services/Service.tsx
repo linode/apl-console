@@ -7,7 +7,7 @@ const fields = {
   DescriptionField: CustomDescriptionField,
 }
 
-const Service: React.FC = ({ teamId, serviceId, schema }: any): any => {
+const Service = ({ teamId, serviceId, schema }: any): any => {
   const [service, serviceLoading, serviceError] = useApi('getService', serviceId)
   const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
 

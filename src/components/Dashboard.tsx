@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { createClasses } from './../theme'
 
-const Dashboard: React.FC = (): any => {
+const Dashboard = (): any => {
   const classes = createClasses({
     fullHeight: {
       minHeight: '100vh',

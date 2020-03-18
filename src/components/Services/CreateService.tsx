@@ -1,42 +1,48 @@
-import React from 'react'
+import { useSnackbar } from 'material-ui-snackbar-provider'
+import React, { useState } from 'react'
 import Form from 'react-jsonschema-form-bs4'
-import { useApi } from '../../hooks/api'
+import { getSchema, useApi } from '../../hooks/api'
+import { useSession } from '../../session-context'
 import CustomDescriptionField from '../CustomDescriptionField'
 
 const fields = {
   DescriptionField: CustomDescriptionField,
 }
 
-const CreateService: React.FC = ({ teamId, schema }: any): any => {
-  const onSubmit = (form): any => {
-    const data = form.formData
-    const [result, adding, error] = useApi('addServiceToTeam', teamId, data)
-    if (result) {
-      console.log('saved')
-    } else if (error) {
-      console.error(error)
-    }
+const Submit = ({ data }): any => {
+  const { team } = useSession()
+  const snackbar = useSnackbar()
+  const [result] = useApi('addServiceToTeam', team.name, data)
+  if (result) {
+    snackbar.showMessage('Service created')
   }
-  const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
-  if (teamLoading) {
-    return
-  } else if (teamError) {
-    console.error(teamError)
+
+  return null
+}
+
+const CreateService = ({ onSubmit }): any => {
+  const { team } = useSession()
+  const handleSubmit = (form): any => {
+    onSubmit()
+    setFormData(form.formData)
   }
+  const [formData, setFormData] = useState()
+  const schema = getSchema()
   const mySchema = schema.getServiceSchema(team.clusters)
   const uiSchema = schema.getServiceUiSchema(mySchema)
   return (
     <div className='Service'>
       <Form
         key='createService'
-        schema={schema}
+        schema={mySchema}
         fields={fields}
         uiSchema={uiSchema}
         onChange={console.log}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
         onError={console.error}
         // liveValidate={true}
       />
+      {formData && <Submit data={formData} />}
     </div>
   )
 }
