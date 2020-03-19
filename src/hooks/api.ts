@@ -1,9 +1,8 @@
-import { useSnackbar } from 'material-ui-snackbar-provider'
 import { useEffect } from 'react'
 import getClient, { getApiDefinition } from '../api'
 import Schema from '../schema'
 import { LoadingHook, useLoadingValue } from '../utils'
-// import { errDefaults } from '../utils/snackbar'
+import { useSnackbar } from '../utils/snackbar'
 
 export type ApiHook = LoadingHook<object, Error>
 
@@ -13,7 +12,8 @@ let schema: any
 
 export const useApi = (method: string, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<object, Error>()
-  const snackbar = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
+
   useEffect(() => {
     ;(async (): Promise<any> => {
       try {
@@ -24,14 +24,15 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
           client = getClient(apiSpec)
         }
         const value = await client[method].apply(client, args)
+        console.log(`api call '${method}' complete`)
         setValue(value.data)
       } catch (e) {
         console.error(e)
-        snackbar.showMessage(e)
+        enqueueSnackbar(e, { variant: 'error' })
         setError(e)
       }
     })()
-  }, [method, args, setError, setValue, snackbar])
+  }, [])
 
   return [value, loading, error]
 }

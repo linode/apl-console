@@ -1,33 +1,32 @@
 import React from 'react'
 import Form from 'react-jsonschema-form-bs4'
-import { useApi } from '../../hooks/api'
+import { getSchema } from '../../hooks/api'
 import CustomDescriptionField from '../CustomDescriptionField'
 
 const fields = {
   DescriptionField: CustomDescriptionField,
 }
 
-const Service = ({ teamId, serviceId, schema }: any): any => {
-  const [service, serviceLoading, serviceError] = useApi('getService', serviceId)
-  const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
-
-  if (serviceError || teamError) {
-    return
+export default ({ onSubmit, clusters, service = {} }): any => {
+  const handleSubmit = (form): any => {
+    onSubmit(form.formData)
   }
-  if (serviceLoading || teamLoading) {
-    return <p>{'Loading'}</p>
-  }
-  const mySchema = schema.getServiceSchema(team.clusters)
+  const schema = getSchema()
+  const mySchema = schema.getServiceSchema(clusters)
   const uiSchema = schema.getServiceUiSchema(mySchema)
   return (
     <div className='Service'>
-      <h2>Service: {serviceId}</h2>
-
-      <Form schema={mySchema} uiSchema={uiSchema} disabled fields={fields} formData={service}>
-        <div></div>
-      </Form>
+      <Form
+        key='createService'
+        schema={mySchema}
+        fields={fields}
+        uiSchema={uiSchema}
+        onChange={console.log}
+        onSubmit={handleSubmit}
+        onError={console.error}
+        formData={service}
+        // liveValidate={true}
+      />
     </div>
   )
 }
-
-export default Service

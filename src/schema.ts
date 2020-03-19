@@ -45,7 +45,7 @@ class Schema {
     console.log('getTeamUiSchema')
 
     const uiSchema = {
-      teamId: { 'ui:widget': 'hidden' },
+      teamName: { 'ui:widget': 'hidden' },
       password: { 'ui:widget': 'hidden' },
       oidc: {
         clientSecret: { 'ui:widget': 'password' },
@@ -62,8 +62,8 @@ class Schema {
     console.log(JSON.stringify(schema))
 
     const uiSchema = {
-      serviceId: { 'ui:widget': 'hidden' },
-      teamId: { 'ui:widget': 'hidden' },
+      serviceName: { 'ui:widget': 'hidden' },
+      teamName: { 'ui:widget': 'hidden' },
       serviceType: { 'ui:widget': 'radio' },
       ksvc: {
         env: { 'ui:options': { orderable: false } },

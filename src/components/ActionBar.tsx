@@ -1,14 +1,14 @@
-import { useSnackbar } from 'material-ui-snackbar-provider'
 import React, { useState } from 'react'
 import Button from 'react-bootstrap/Button'
 import Navbar from 'react-bootstrap/Navbar'
 import { useApi } from '../hooks/api'
+import { useSnackbar } from '../utils/snackbar'
 
 const Deploy = (): any => {
-  const snackbar = useSnackbar()
+  const { enqueueSnackbar } = useSnackbar()
   const [result] = useApi('deploy')
   if (result) {
-    snackbar.showMessage('Scheduled for deployment')
+    enqueueSnackbar('Scheduled for deployment')
   }
   return null
 }
