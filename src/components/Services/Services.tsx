@@ -16,7 +16,7 @@ const columns = [
     formatter: getServiceLink,
   },
   {
-    dataField: 'teamName',
+    dataField: 'teamId',
     text: 'Team',
   },
   {

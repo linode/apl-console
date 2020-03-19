@@ -24,10 +24,8 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
           client = getClient(apiSpec)
         }
         const value = await client[method].apply(client, args)
-        console.log(`api call '${method}' complete`)
         setValue(value.data)
       } catch (e) {
-        console.error(e)
         enqueueSnackbar(e, { variant: 'error' })
         setError(e)
       }

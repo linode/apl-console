@@ -1,10 +1,8 @@
 function addEnumField(schema, clusters): any {
-  console.log(clusters)
   schema.properties.clusters.items.enum = clusters
 }
 
 function addClusterEnumField(schema, clusters): any {
-  console.log(clusters)
   schema.properties.clusterId.enum = clusters
 }
 
@@ -25,13 +23,11 @@ class Schema {
   public getTeamSchema(clusters): any {
     const schema = { ...this.schemas.Team }
     addEnumField(schema, clusters)
-    // console.log(schema)
     return schema
   }
 
   public getIngressSchema(): any {
     const schema = { ...this.schemas.Ingress }
-    // console.log(schema)
     return schema
   }
   public getIngressUiSchema(): any {
@@ -42,8 +38,6 @@ class Schema {
   }
 
   public getTeamUiSchema(): any {
-    console.log('getTeamUiSchema')
-
     const uiSchema = {
       teamName: { 'ui:widget': 'hidden' },
       password: { 'ui:widget': 'hidden' },
@@ -59,8 +53,6 @@ class Schema {
   }
 
   public getServiceUiSchema(schema): any {
-    console.log(JSON.stringify(schema))
-
     const uiSchema = {
       serviceName: { 'ui:widget': 'hidden' },
       teamName: { 'ui:widget': 'hidden' },

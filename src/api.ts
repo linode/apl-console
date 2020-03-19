@@ -39,8 +39,6 @@ function getClient(apiDefinition): any {
 async function getApiDefinition(): Promise<any> {
   const url = `${baseUrl}/apiDocs`
 
-  console.log(`getApiDefinition, url=${url}`)
-
   return axios.get(url)
 }
 

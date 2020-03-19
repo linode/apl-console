@@ -21,7 +21,6 @@ export default ({ onSubmit, clusters, team = {} }): any => {
         schema={mySchema}
         fields={fields}
         uiSchema={uiSchema}
-        onChange={console.log}
         onSubmit={handleSubmit}
         onError={console.error}
         formData={team}

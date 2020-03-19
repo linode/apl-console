@@ -62,8 +62,9 @@ const App = (): any => {
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams-create' component={Team} exact />
                 <Route path='/teams/:teamName' component={Team} exact />
+                <Route path='/teams/:teamName/services' component={Services} exact />
                 <Route path='/teams/:teamName/services/:serviceName' component={Service} exact />
-                <Redirect exact from='/' to='/teams' />
+                <Redirect exact from='/' to='/services' />
                 <Route path='*'>404 page here</Route>
               </Switch>
             </Router>

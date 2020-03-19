@@ -21,7 +21,6 @@ export default ({ onSubmit, clusters, service = {} }): any => {
         schema={mySchema}
         fields={fields}
         uiSchema={uiSchema}
-        onChange={console.log}
         onSubmit={handleSubmit}
         onError={console.error}
         formData={service}

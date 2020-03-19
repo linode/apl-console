@@ -5,7 +5,6 @@ import Modal from 'react-bootstrap/Modal'
 
 const ModalWrapper = ({ onClose, title, body }: any): any => {
   const onClick = (): any => {
-    console.log('onClose')
     onClose()
   }
 
