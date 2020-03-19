@@ -14,6 +14,7 @@ import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
 
 const testSession = {
   user: { email: 'testuser1@redkubes.com' },
+  // team: { name: 'admin', clusters: [] },
   team: { name: 'driver', clusters: ['prd/aws'] },
   clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
 }

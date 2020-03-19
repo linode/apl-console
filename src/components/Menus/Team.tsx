@@ -15,19 +15,19 @@ export default ({ teamName }): any => {
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
       </ListItem>
-      <ListItem component={Link} to={`/team/${teamName}/clusters`}>
+      <ListItem component={Link} to={`/teams/${teamName}/clusters`}>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Team Clusters' />
       </ListItem>
-      <ListItem component={Link} to={`/team/${teamName}`}>
+      <ListItem component={Link} to={`/teams/${teamName}`}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Team Details' />
       </ListItem>
-      <ListItem component={Link} to={`/team/${teamName}/services`}>
+      <ListItem component={Link} to={`/teams/${teamName}/services`}>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
