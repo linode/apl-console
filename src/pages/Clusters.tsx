@@ -1,21 +1,21 @@
 import React from 'react'
+import Clusters from '../components/Clusters'
 import Loader from '../components/Loader'
-import Teams from '../components/Teams'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 
 export default (): any => {
-  const [teams, teamsLoading, teamsError] = useApi('getTeams')
+  const [clusters, loading, error] = useApi('getClusters')
 
-  if (teamsLoading) {
+  if (loading) {
     return <Loader />
   }
-  if (teamsError) {
-    return
+  if (error) {
+    return null
   }
   return (
     <MainLayout>
-      <Teams teams={teams} />
+      <Clusters clusters={clusters} />
     </MainLayout>
   )
 }

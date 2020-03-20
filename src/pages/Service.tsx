@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from '../components/Loader'
-import Service from '../components/Services/Service'
+import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
@@ -15,8 +15,11 @@ const useSubmit = ({ data }): any => {
   }
 }
 
-const EditService = ({ serviceName, clusters }): any => {
-  const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', serviceName)
+const EditService = ({ teamName, serviceName, clusters }): any => {
+  const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
+    teamId: teamName,
+    name: serviceName,
+  })
 
   if (serviceLoading) {
     return <Loader />
@@ -29,13 +32,26 @@ const EditService = ({ serviceName, clusters }): any => {
 
 export default ({
   match: {
-    params: { serviceName },
+    params: { teamName, serviceName },
   },
 }): any => {
-  const { team } = useSession()
+  const { isAdmin, team: sessTeam } = useSession()
+  if (!isAdmin && teamName !== sessTeam.name) {
+    return <p>Unauthorized!</p>
+  }
+  const [team, setTeam] = useState(sessTeam)
+  useEffect(() => {
+    if (!isAdmin) {
+      return
+    }
+    const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamName)
+    if (team) {
+      setTeam(team)
+    }
+  }, [])
   return (
     <MainLayout>
-      {serviceName && <EditService serviceName={serviceName} clusters={team.clusters} />}
+      {serviceName && <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} />}
       {!serviceName && <Service onSubmit={useSubmit} clusters={team.clusters} />}
     </MainLayout>
   )

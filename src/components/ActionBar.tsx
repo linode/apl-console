@@ -17,11 +17,8 @@ const ActionBar = ({ children, client }: any): any => {
   const [deployed, setDeployed] = useState(false)
   return (
     <Navbar bg='light' expand='sm'>
-      <Navbar.Brand>Toolbox</Navbar.Brand>
-
       <Navbar.Collapse id='basic-navbar-nav'>
         <div className='mr-auto'>{children}</div>
-
         <Button onClick={setDeployed.bind(this, true)} variant='dark' size='sm'>
           Commit
         </Button>

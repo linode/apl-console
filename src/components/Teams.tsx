@@ -2,7 +2,8 @@ import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom'
-import ActionBar from '../ActionBar'
+import { useSession } from '../session-context'
+import ActionBar from './ActionBar'
 
 const getTeamLink = (cell, row, rowIndex, formatExtraData): any => {
   return <Link to={`/teams/${row.name}`}>{row.name}</Link>
@@ -27,13 +28,13 @@ const TeamActionBar = (): any => {
 }
 
 export default ({ teams }): any => {
+  const { isAdmin } = useSession()
+
   return (
     <div className='Teams'>
-      <React.Fragment>
-        <h2>Teams</h2>
-        <TeamActionBar />
-        <BootstrapTable bootstrap4 keyField='name' data={teams} columns={columns} />
-      </React.Fragment>
+      <h2>Teams</h2>
+      {isAdmin && <TeamActionBar />}
+      <BootstrapTable bootstrap4 keyField='name' data={teams} columns={columns} />
     </div>
   )
 }

@@ -2,10 +2,11 @@ import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom'
-import ActionBar from '../ActionBar'
+import { useSession } from '../session-context'
+import ActionBar from './ActionBar'
 
 const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
-  const link = `/teams/${row.teamName}/services/${row.serviceName}`
+  const link = `/teams/${row.teamId}/services/${row.name}`
   return <Link to={link}>{row.name}</Link>
 }
 
@@ -37,7 +38,8 @@ const columns = [
   },
 ]
 
-const Services = ({ services, isAdmin }): any => {
+const Services = ({ services }): any => {
+  const { isAdmin } = useSession()
   return (
     <div className='Services'>
       {!isAdmin && (
@@ -47,7 +49,8 @@ const Services = ({ services, isAdmin }): any => {
           </Button>
         </ActionBar>
       )}
-      <BootstrapTable bootstrap4 keyField='name' data={services} columns={columns} />
+      <h2>Services:</h2>
+      <BootstrapTable bootstrap4 keyField='serviceId' data={services} columns={columns} />
     </div>
   )
 }

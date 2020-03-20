@@ -15,12 +15,6 @@ export default ({ teamName }): any => {
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
       </ListItem>
-      <ListItem component={Link} to={`/teams/${teamName}/clusters`}>
-        <ListItemIcon>
-          <CloudIcon />
-        </ListItemIcon>
-        <ListItemText primary='Team Clusters' />
-      </ListItem>
       <ListItem component={Link} to={`/teams/${teamName}`}>
         <ListItemIcon>
           <PeopleIcon />
@@ -32,6 +26,18 @@ export default ({ teamName }): any => {
           <SwapVerticalCircleIcon />
         </ListItemIcon>
         <ListItemText primary='Team Services' />
+      </ListItem>
+      <ListItem component={Link} to='/teams'>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary='Teams' />
+      </ListItem>
+      <ListItem component={Link} to={`/clusters`}>
+        <ListItemIcon>
+          <CloudIcon />
+        </ListItemIcon>
+        <ListItemText primary='Clusters' />
       </ListItem>
     </div>
   )

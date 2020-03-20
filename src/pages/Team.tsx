@@ -1,6 +1,6 @@
 import React from 'react'
 import Loader from '../components/Loader'
-import Team from '../components/Teams/Team'
+import Team from '../components/Team'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'

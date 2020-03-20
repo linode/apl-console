@@ -1,4 +1,4 @@
-import { Container, makeStyles } from '@material-ui/core'
+import { Container, makeStyles, Theme } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import Box from '@material-ui/core/Box'
@@ -15,14 +15,16 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import MenuIcon from '@material-ui/icons/Menu'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import clsx from 'clsx'
-import React from 'react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
-import { AdminMenu, TeamMenu } from '../components/Menus'
+import MenuAdmin from '../components/MenuAdmin'
+import MenuTeam from '../components/MenuTeam'
 import User from '../components/User'
-import { getIsAdmin, useSession } from '../session-context'
-const drawerWidth = '20vw'
+import { useSession } from '../session-context'
+const drawerWidth = '16vw'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
   },
@@ -103,19 +105,14 @@ const useStyles = makeStyles(theme => ({
 
 export default (props): any => {
   const { children } = props
-  const { team } = useSession()
+  const { isAdmin, team } = useSession()
   const classes = useStyles(props)
-  const isAdmin = getIsAdmin()
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = useState(false)
   const handleDrawerOpen = (): any => {
     setOpen(true)
   }
   const handleDrawerClose = (): any => {
     setOpen(false)
-  }
-  let menu = TeamMenu
-  if (isAdmin) {
-    menu = AdminMenu
   }
 
   return (
@@ -134,10 +131,12 @@ export default (props): any => {
           </IconButton>
 
           <Typography component='h1' variant='h6' color='inherit' noWrap className={classes.title}>
-            <IconButton color='inherit'>
-              <Logo />
-              Admin Console
-            </IconButton>
+            <Link to='/'>
+              <IconButton color='inherit'>
+                <Logo />
+                Otomi {isAdmin ? 'Admin' : 'Team'} Console
+              </IconButton>
+            </Link>
           </Typography>
           <IconButton color='inherit'>
             <User />
@@ -150,11 +149,12 @@ export default (props): any => {
         </Toolbar>
       </AppBar>
       <Drawer
-        variant='permanent'
+        // variant='permanent'
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
         open={open}
+        onClick={handleDrawerClose}
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
@@ -162,7 +162,7 @@ export default (props): any => {
           </IconButton>
         </div>
         <Divider />
-        <List>{isAdmin ? <AdminMenu /> : <TeamMenu teamName={team.name} />}</List>
+        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamName={team.name} />}</List>
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>
