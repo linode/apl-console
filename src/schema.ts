@@ -16,6 +16,9 @@ class Schema {
 
   public getServiceSchema(clusters): any {
     const schema = { ...this.schemas.Service }
+    schema.properties.ingress.dependencies = schema.properties.ingress['x-dependencies']
+    schema.properties.spec.dependencies = schema.properties.spec['x-dependencies']
+
     addClusterEnumField(schema, clusters)
     return schema
   }
@@ -42,7 +45,6 @@ class Schema {
     const uiSchema = {
       serviceName: { 'ui:widget': 'hidden' },
       teamName: { 'ui:widget': 'hidden' },
-      serviceType: { 'ui:widget': 'radio' },
       ksvc: {
         env: { 'ui:options': { orderable: false } },
       },

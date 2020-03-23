@@ -24,6 +24,7 @@ export default ({ onSubmit, clusters, service = {} }): any => {
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
         onError={console.error}
+        // onChange={console.debug}
         formData={service}
         // liveValidate={true}
       />
