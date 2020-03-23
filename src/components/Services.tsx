@@ -39,13 +39,13 @@ const columns = [
 ]
 
 const Services = ({ services }): any => {
-  const { isAdmin } = useSession()
+  const { isAdmin, team } = useSession()
   return (
     <div className='Services'>
       {!isAdmin && (
         <ActionBar>
-          <Button variant='primary' size='sm' active>
-            <Link to='/services-create'>+ new service</Link>
+          <Button variant='info' size='sm'>
+            <Link to={`/teams/${team.name}/create-service`}>+ new service</Link>
           </Button>
         </ActionBar>
       )}

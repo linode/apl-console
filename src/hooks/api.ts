@@ -22,6 +22,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
 
   useEffect(() => {
     ;(async (): Promise<any> => {
+      // tslint:disable-next-line
       try {
         if (!client[method]) {
           const err = `Api method does not exist: ${method}`

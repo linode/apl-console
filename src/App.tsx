@@ -2,34 +2,43 @@ import { Backdrop, CircularProgress, CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import Loader from './components/Loader'
 import { schemaPromise } from './hooks/api'
 // import { useApi } from './hooks/api'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
+import OtomiApps from './pages/OtomiApps'
 import Service from './pages/Service'
 import Services from './pages/Services'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import { sessionContext } from './session-context'
-import { createClasses, theme } from './theme'
+import { adminTheme, createClasses, theme } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
 
-const testSession = {
-  user: { email: 'testuser1@redkubes.com' },
-  // team: { name: 'admin', clusters: [] },
-  team: { name: 'driver', clusters: ['prd/aws'] },
-  clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
-}
+let sessionIdx = 0
+const testSessions = [
+  {
+    user: { email: 'bob.admin@redkubes.com' },
+    team: { name: 'admin', clusters: [] },
+  },
+  {
+    user: { email: 'dan.team@redkubes.com' },
+    team: { name: 'taxi', clusters: ['prd/aws'] },
+  },
+]
 
 const App = (): any => {
   // const [session, initialising, error] = useApi('getSession')
-  const [session, initialising] = [testSession, false]
+  const initialising = false
   const [loaded, setLoaded] = useState(false)
+  const [session, setSession] = useState(testSessions[sessionIdx])
+  const [selectedTheme, setSelectedTheme] = useState(adminTheme)
   const classes = createClasses(styles)
   useEffect(() => {
     ;(async (): Promise<any> => {
+      // tslint:disable-next-line
       await schemaPromise
       setLoaded(true)
     })()
@@ -54,37 +63,41 @@ const App = (): any => {
       >
         <CssBaseline />
         <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-        {initialising ? (
-          <Backdrop open={initialising} style={{ zIndex: 1500 }}>
-            <CircularProgress />
-          </Backdrop>
-        ) : (
-          <sessionContext.Provider
-            value={{
-              initialising,
-              isAdmin: session.team.name === 'admin',
-              user: session.user,
-              team: session.team,
-              clusters: session.clusters,
-            }}
-          >
-            <Router>
-              <Switch>
-                {/*!user && <Route path='/' component={Home} exact />*/}
-                <Route path='/' component={Dashboard} exact />
-                <Route path='/clusters' component={Clusters} exact />
-                <Route path='/services' component={Services} exact />
-                <Route path='/teams' component={Teams} exact />
-                <Route path='/create-team' component={Team} exact />
-                <Route path='/teams/:teamName' component={Team} exact />
-                <Route path='/teams/:teamName/services' component={Services} exact />
-                <Route path='/teams/:teamName/services/:serviceName' component={Service} exact />
-                <Route path='/teams/:teamName/create-service' component={Service} exact />
-                <Route path='*'>404 page here</Route>
-              </Switch>
-            </Router>
-          </sessionContext.Provider>
-        )}
+        <sessionContext.Provider
+          value={{
+            initialising,
+            isAdmin: session.team.name === 'admin',
+            user: session.user,
+            team: session.team,
+          }}
+        >
+          <Router>
+            <Switch>
+              {/*!user && <Route path='/' component={Home} exact />*/}
+              <Route
+                path='/change-role'
+                render={({ location: { state } }): any => {
+                  sessionIdx = sessionIdx === 0 ? 1 : 0
+                  setSession(testSessions[sessionIdx])
+                  setSelectedTheme(sessionIdx === 0 ? adminTheme : theme)
+                  return <Redirect to='/' />
+                }}
+                exact
+              />
+              <Route path='/' component={Dashboard} exact />
+              <Route path='/otomi/apps' component={OtomiApps} exact />
+              <Route path='/clusters' component={Clusters} exact />
+              <Route path='/services' component={Services} exact />
+              <Route path='/teams' component={Teams} exact />
+              <Route path='/create-team' component={Team} exact />
+              <Route path='/teams/:teamName' component={Team} exact />
+              <Route path='/teams/:teamName/services' component={Services} exact />
+              <Route path='/teams/:teamName/services/:serviceName' component={Service} exact />
+              <Route path='/teams/:teamName/create-service' component={Service} exact />
+              <Route path='*'>404 page here</Route>
+            </Switch>
+          </Router>
+        </sessionContext.Provider>
       </SnackbarProvider>
     </ThemeProvider>
   )

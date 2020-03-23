@@ -107,12 +107,13 @@ export default (props): any => {
   const { children } = props
   const { isAdmin, team } = useSession()
   const classes = useStyles(props)
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(true)
   const handleDrawerOpen = (): any => {
     setOpen(true)
   }
   const handleDrawerClose = (): any => {
-    setOpen(false)
+    // setOpen(false)
+    setOpen(true)
   }
 
   return (
@@ -149,7 +150,7 @@ export default (props): any => {
         </Toolbar>
       </AppBar>
       <Drawer
-        // variant='permanent'
+        variant='permanent'
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}

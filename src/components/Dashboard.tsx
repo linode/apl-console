@@ -9,14 +9,14 @@ const Dashboard = ({ teamName }): any => {
   const { isAdmin } = useSession()
 
   const classes = createClasses({
-    fullHeight: {
-      minHeight: '100vh',
+    root: {
+      // minHeight: '100vh',
     },
   })
 
   return (
     <Container maxWidth='xs'>
-      <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.fullHeight}>
+      <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.root}>
         <h3>
           Welcome to the <b>team {teamName}</b> dashboard!
         </h3>

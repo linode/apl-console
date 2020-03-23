@@ -1,0 +1,5 @@
+bin
+build
+node_modules
+.history
+.vscode

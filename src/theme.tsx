@@ -50,4 +50,7 @@ export const theme = createMuiTheme({
   },
 })
 
+export const adminTheme = { ...theme }
+adminTheme.palette.primary.main = '#474646'
+
 export const createClasses = (stylesObj: object): any => makeStyles(() => createStyles(stylesObj))({})

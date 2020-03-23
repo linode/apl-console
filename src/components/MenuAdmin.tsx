@@ -15,7 +15,13 @@ export default (): any => {
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary='Overview' />
+        <ListItemText primary='Dashboard' />
+      </ListItem>
+      <ListItem component={Link} to='/otomi/apps'>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary='Otomi Apps' />
       </ListItem>
       <ListItem component={Link} to='/clusters'>
         <ListItemIcon>

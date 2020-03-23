@@ -1,7 +1,8 @@
 import axios from 'axios'
 import OpenAPIClientAxios from 'openapi-client-axios'
 
-let baseUrl = process.env.BASE_URL
+// let baseUrl = 'http://127.0.0.1:8080/v1'
+let baseUrl = '/api/v1'
 let axiosConfigDefaults = {
   withCredentials: true,
   headers: {

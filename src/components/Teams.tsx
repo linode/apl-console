@@ -20,8 +20,8 @@ const columns = [
 const TeamActionBar = (): any => {
   return (
     <ActionBar>
-      <Button variant='primary' size='sm' active>
-        <Link to='/teams-create'>+ new team</Link>
+      <Button variant='info' size='sm'>
+        <Link to='/create-team'>+ new team</Link>
       </Button>
     </ActionBar>
   )

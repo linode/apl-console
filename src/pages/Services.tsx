@@ -12,15 +12,10 @@ export default ({
   const method = teamName ? 'getTeamServices' : 'getAllServices'
   const [services, loading, error] = useApi(method, teamName)
 
-  if (loading) {
-    return <Loader />
-  }
-  if (error) {
-    return null
-  }
   return (
     <MainLayout>
-      <Services services={services} />
+      {loading && <Loader />}
+      {services && <Services services={services} />}
     </MainLayout>
   )
 }

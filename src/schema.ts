@@ -26,24 +26,10 @@ class Schema {
     return schema
   }
 
-  public getIngressSchema(): any {
-    const schema = { ...this.schemas.Ingress }
-    return schema
-  }
-  public getIngressUiSchema(): any {
-    const uiSchema = {
-      ingressId: { 'ui:widget': 'hidden' },
-    }
-    return uiSchema
-  }
-
   public getTeamUiSchema(): any {
     const uiSchema = {
       teamName: { 'ui:widget': 'hidden' },
       password: { 'ui:widget': 'hidden' },
-      oidc: {
-        clientSecret: { 'ui:widget': 'password' },
-      },
       clusters: {
         'ui:widget': 'checkboxes',
       },

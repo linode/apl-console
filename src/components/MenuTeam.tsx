@@ -15,6 +15,12 @@ export default ({ teamName }): any => {
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
       </ListItem>
+      <ListItem component={Link} to='/otomi/apps'>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary='Otomi Apps' />
+      </ListItem>
       <ListItem component={Link} to={`/teams/${teamName}`}>
         <ListItemIcon>
           <PeopleIcon />

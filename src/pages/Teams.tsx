@@ -5,17 +5,12 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 
 export default (): any => {
-  const [teams, teamsLoading, teamsError] = useApi('getTeams')
+  const [teams, loading, error] = useApi('getTeams')
 
-  if (teamsLoading) {
-    return <Loader />
-  }
-  if (teamsError) {
-    return
-  }
   return (
     <MainLayout>
-      <Teams teams={teams} />
+      {loading && <Loader />}
+      {teams && <Teams teams={teams} />}
     </MainLayout>
   )
 }

@@ -39,20 +39,13 @@ export default ({
   if (!isAdmin && teamName !== sessTeam.name) {
     return <p>Unauthorized!</p>
   }
-  const [team, setTeam] = useState(sessTeam)
-  useEffect(() => {
-    if (!isAdmin) {
-      return
-    }
-    const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamName)
-    if (team) {
-      setTeam(team)
-    }
-  }, [])
+  const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamName)
+
   return (
     <MainLayout>
-      {serviceName && <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} />}
-      {!serviceName && <Service onSubmit={useSubmit} clusters={team.clusters} />}
+      {loading && <Loader />}
+      {team && serviceName && <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} />}
+      {team && !serviceName && <Service onSubmit={useSubmit} clusters={team.clusters} />}
     </MainLayout>
   )
 }

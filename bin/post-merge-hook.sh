@@ -7,7 +7,7 @@ function changed() {
 }
 
 if changed 'package.json'; then
-  echo -ne '\n\e[31mWARNING:\e[m \e[33mThe package.json changed, running npm in stall.\e[m\n\n'
+  echo -ne '\n\e[31mWARNING:\e[m \e[33mThe package.json changed, running npm install.\e[m\n\n'
   npm install
 fi
 
