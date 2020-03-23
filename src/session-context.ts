@@ -7,12 +7,14 @@ export interface SessionContext {
   isAdmin: boolean
   user?: object
   team?: object
+  clusters?: object
 }
 
 export const sessionContext = React.createContext<SessionContext>({
   isAdmin: undefined,
   user: undefined,
   team: undefined,
+  clusters: undefined,
 })
 
 export const useSession = (): any => {

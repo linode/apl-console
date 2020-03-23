@@ -22,10 +22,12 @@ const testSessions = [
   {
     user: { email: 'bob.admin@redkubes.com' },
     team: { name: 'admin', clusters: [] },
+    clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
   },
   {
     user: { email: 'dan.team@redkubes.com' },
     team: { name: 'taxi', clusters: ['prd/aws'] },
+    clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
   },
 ]
 
@@ -69,6 +71,7 @@ const App = (): any => {
             isAdmin: session.team.name === 'admin',
             user: session.user,
             team: session.team,
+            clusters: session.clusters,
           }}
         >
           <Router>
