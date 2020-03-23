@@ -6,6 +6,9 @@ function addClusterEnumField(schema, clusters): any {
   schema.properties.clusterId.enum = clusters
 }
 
+function addDomainEnumField(schema, domains): any {
+  schema.properties.ingress.dependencies.hasPublicUrl.oneOf[0].properties.domain.enum = domains
+}
 class Schema {
   public openApi
   public schemas
@@ -19,6 +22,9 @@ class Schema {
     schema.properties.ingress.dependencies = schema.properties.ingress['x-dependencies']
     schema.properties.spec.dependencies = schema.properties.spec['x-dependencies']
 
+    // TODO: provide domain zones available for the cluster
+    const domains = ['a.com', 'b.com', 'c.com']
+    addDomainEnumField(schema, domains)
     addClusterEnumField(schema, clusters)
     return schema
   }
