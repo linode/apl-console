@@ -44,7 +44,8 @@ class Schema {
   public getServiceUiSchema(schema): any {
     const uiSchema = {
       serviceName: { 'ui:widget': 'hidden' },
-      teamName: { 'ui:widget': 'hidden' },
+      teamId: { 'ui:widget': 'hidden' },
+      serviceId: { 'ui:widget': 'hidden' },
       ksvc: {
         env: { 'ui:options': { orderable: false } },
       },
