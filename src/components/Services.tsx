@@ -10,6 +10,13 @@ const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
   return <Link to={link}>{row.name}</Link>
 }
 
+const getPublicUrl = (cell, row, rowIndex, formatExtraData): any => {
+  if (!row.ingress.hasPublicUrl) {
+    return '-'
+  }
+  return `${row.ingress.domain}.${row.ingress.domain}`
+}
+
 const columns = [
   {
     dataField: 'name',
@@ -25,16 +32,13 @@ const columns = [
     text: 'Cluster',
   },
   {
-    dataField: 'isInternal',
-    text: 'isInternal',
+    dataField: 'spec.serviceType',
+    text: 'Type',
   },
   {
-    dataField: 'domain',
-    text: 'Domain',
-  },
-  {
-    dataField: 'isPublic',
-    text: 'isPublic',
+    dataField: 'customField',
+    text: 'Public URL',
+    formatter: getPublicUrl,
   },
 ]
 

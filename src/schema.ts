@@ -37,7 +37,7 @@ class Schema {
 
   public getTeamUiSchema(): any {
     const uiSchema = {
-      teamName: { 'ui:widget': 'hidden' },
+      teamId: { 'ui:widget': 'hidden' },
       password: { 'ui:widget': 'hidden' },
       clusters: {
         'ui:widget': 'checkboxes',
