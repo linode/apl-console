@@ -6,6 +6,9 @@ function addClusterEnumField(schema, clusters): any {
   schema.properties.clusterId.enum = clusters
 }
 
+function addDomainEnumField(schema, domains): any {
+  schema.properties.ingress.dependencies.hasPublicUrl.oneOf[0].properties.domain.enum = domains
+}
 class Schema {
   public openApi
   public schemas
@@ -16,6 +19,12 @@ class Schema {
 
   public getServiceSchema(clusters): any {
     const schema = { ...this.schemas.Service }
+    schema.properties.ingress.dependencies = schema.properties.ingress['x-dependencies']
+    schema.properties.spec.dependencies = schema.properties.spec['x-dependencies']
+
+    // TODO: provide domain zones available for the cluster
+    const domains = ['a.com', 'b.com', 'c.com']
+    addDomainEnumField(schema, domains)
     addClusterEnumField(schema, clusters)
     return schema
   }
@@ -41,8 +50,8 @@ class Schema {
   public getServiceUiSchema(schema): any {
     const uiSchema = {
       serviceName: { 'ui:widget': 'hidden' },
-      teamName: { 'ui:widget': 'hidden' },
-      serviceType: { 'ui:widget': 'radio' },
+      teamId: { 'ui:widget': 'hidden' },
+      serviceId: { 'ui:widget': 'hidden' },
       ksvc: {
         env: { 'ui:options': { orderable: false } },
       },
