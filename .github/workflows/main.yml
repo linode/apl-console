@@ -1,0 +1,29 @@
+name: Build and publish Docker
+on: [push]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1.0
+      # used for pulling previous image as cache:
+      - name: Setup service account
+        run: echo -n ${{ secrets.GCS }} | base64 -d > token.json
+      - name: Pull private google registry image
+        uses: actions/gcloud/cli@master
+        with:
+          entrypoint: /bin/sh
+          args:
+            '-c "gcloud auth activate-service-account --key-file token.json && gcloud auth configure-docker && docker
+            pull eu.gcr.io/otomi-cloud/otomi-stack-web"'
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: token.json
+      - name: CI test
+        uses: ./.github/actions/build.yml
+      - name: Publish to Registry
+        uses: HurricanKai/Publish-Docker-Github-Action@master
+        if: contains(github.ref, 'refs/tags/v')
+        with:
+          name: eu.gcr.io/otomi-cloud/otomi-stack-web
+          username: _json_key
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          tagging: true

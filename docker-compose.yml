@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  web:
+    build:
+      context: ./
+      target: dev
+    image: web-dev
+    command: npm run dev
+    volumes:
+      # we only mount our src folder into the container for hotreload to work
+      # if we would mount the entire ./builder into the container that will interfere with locally built node _modules
+      - ./:/app

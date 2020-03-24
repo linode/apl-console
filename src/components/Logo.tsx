@@ -9,7 +9,7 @@ export default (): any => {
   })
   return (
     <div className={classes.root}>
-      <img src='/otomi_stack_medium.png' width='40' height='40' alt='otomi logo' />
+      <img src={require('../images/otomi-stack.png')} width='40' height='40' alt='otomi logo' />
     </div>
   )
 }

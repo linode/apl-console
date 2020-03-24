@@ -1,5 +1,8 @@
-bin
-build
-node_modules
+.cache
+.git
 .history
 .vscode
+bin
+build
+dist
+node_modules
