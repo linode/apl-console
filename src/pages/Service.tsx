@@ -6,16 +6,24 @@ import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 import { useSnackbar } from '../utils'
 
-const useSubmit = ({ data }): any => {
+const Submit = ({ data }): any => {
   const { enqueueSnackbar } = useSnackbar()
-  const method = data.serviceId ? 'createService' : 'editService'
-  const [result] = useApi(method, data)
-  if (result) {
-    enqueueSnackbar(`Service ${data.serviceId ? 'updated' : 'created'}`)
+  let method
+  let filter
+  if (data.teamId) {
+    method = 'editService'
+    filter = { teamId: data.teamId }
+  } else {
+    method = 'createService'
   }
+  const [result] = useApi(method, filter, data)
+  if (result) {
+    enqueueSnackbar(`Service ${data.teamId ? 'updated' : 'created'}`)
+  }
+  return null
 }
 
-const EditService = ({ teamName, serviceName, clusters }): any => {
+const EditService = ({ teamName, serviceName, clusters, onSubmit }): any => {
   const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
     teamId: teamName,
     name: serviceName,
@@ -27,7 +35,7 @@ const EditService = ({ teamName, serviceName, clusters }): any => {
   if (serviceError) {
     return null
   }
-  return <Service service={service} clusters={clusters} onSubmit={useSubmit} />
+  return <Service service={service} clusters={clusters} onSubmit={onSubmit} />
 }
 
 export default ({
@@ -40,12 +48,16 @@ export default ({
     return <p>Unauthorized!</p>
   }
   const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamName)
+  const [formdata, setFormdata] = useState()
 
   return (
     <MainLayout>
       {loading && <Loader />}
-      {team && serviceName && <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} />}
-      {team && !serviceName && <Service onSubmit={useSubmit} clusters={team.clusters} />}
+      {team && serviceName && (
+        <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} onSubmit={setFormdata} />
+      )}
+      {team && !serviceName && <Service clusters={team.clusters} onSubmit={setFormdata} />}
+      {formdata && <Submit data={formdata} />}
     </MainLayout>
   )
 }

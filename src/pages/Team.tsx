@@ -8,8 +8,15 @@ import { useSnackbar } from '../utils'
 
 const Submit = ({ data }): any => {
   const { enqueueSnackbar } = useSnackbar()
-  const method = data.teamId ? 'editTeam' : 'createTeam'
-  const [result] = useApi(method, data)
+  let method
+  let filter
+  if (data.teamId) {
+    method = 'editTeam'
+    filter = { teamId: data.teamId }
+  } else {
+    method = 'createTeam'
+  }
+  const [result] = useApi(method, filter, data)
   if (result) {
     enqueueSnackbar(`Team ${data.teamId ? 'updated' : 'created'}`)
   }
