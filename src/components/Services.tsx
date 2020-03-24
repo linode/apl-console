@@ -11,8 +11,9 @@ const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
 }
 
 const getPublicUrl = (cell, row, rowIndex, formatExtraData): any => {
-  if (!row.ingress.hasPublicUrl)
-    return "-"
+  if (!row.ingress.hasPublicUrl) {
+    return '-'
+  }
   return `${row.ingress.domain}.${row.ingress.domain}`
 }
 
@@ -38,7 +39,6 @@ const columns = [
     dataField: 'customField',
     text: 'Public URL',
     formatter: getPublicUrl,
-
   },
 ]
 
