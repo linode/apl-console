@@ -7,9 +7,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Docker login
-        run: 'docker login -u _json_key -p ${{ secrets.DOCKER_PASSWORD }} eu.gcr.io'
+        run: 'docker login -u _json_key -p "${{ secrets.DOCKER_PASSWORD }}" eu.gcr.io'
       - name: Pull from registry as cache
-        run: 'docker pull eu.gcr.io/otomi-cloud/otomi-stack-web:latest'
+        run: 'docker pull eu.gcr.io/otomi-cloud/otomi-stack-web:latest | true'
       - name: CI tests and image build
         run: 'docker build .'
       - name: Publish latest
