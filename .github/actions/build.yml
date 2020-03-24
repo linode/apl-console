@@ -1,8 +1,0 @@
-# action.yml
-name: Build
-description: Build docker image
-runs:
-  using: 'docker'
-  image: 'Dockerfile'
-  args:
-    - 'build --target prod .'

@@ -39,9 +39,8 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
       } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
           enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
-        } else {
-          console.error(`Api Error calling '${method}':`, e)
         }
+        console.error(`Api Error calling '${method}':`, e)
         setError(e)
       }
     })()
