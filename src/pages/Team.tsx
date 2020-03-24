@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { useSnackbar } from '../utils'
 
 const Submit = ({ data }): any => {
-  const { enqueueSnackbar } = useSnackbar()
   let method
   let filter
   if (data.teamId) {
@@ -18,13 +17,13 @@ const Submit = ({ data }): any => {
   }
   const [result] = useApi(method, filter, data)
   if (result) {
-    enqueueSnackbar(`Team ${data.teamId ? 'updated' : 'created'}`)
+    return <Redirect to={`/teams`} />
   }
   return null
 }
 
-const EditTeam = ({ teamName, clusters, onSubmit }): any => {
-  const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamName)
+const EditTeam = ({ teamId, clusters, onSubmit }): any => {
+  const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
 
   if (teamLoading) {
     return <Loader />
@@ -37,15 +36,15 @@ const EditTeam = ({ teamName, clusters, onSubmit }): any => {
 
 export default ({
   match: {
-    params: { teamName },
+    params: { teamId },
   },
 }): any => {
   const { clusters } = useSession()
   const [formdata, setFormdata] = useState()
   return (
     <MainLayout>
-      {teamName && <EditTeam teamName={teamName} clusters={clusters} onSubmit={setFormdata} />}
-      {!teamName && <Team clusters={clusters} onSubmit={setFormdata} />}
+      {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} />}
+      {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit data={formdata} />}
     </MainLayout>
   )

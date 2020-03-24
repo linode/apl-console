@@ -6,11 +6,11 @@ import MainLayout from '../layouts/main'
 
 export default ({
   match: {
-    params: { teamName },
+    params: { teamId },
   },
 }): any => {
-  const method = teamName ? 'getTeamServices' : 'getAllServices'
-  const [services, loading, error] = useApi(method, teamName)
+  const method = teamId ? 'getTeamServices' : 'getAllServices'
+  const [services, loading, error] = useApi(method, teamId)
 
   return (
     <MainLayout>

@@ -163,7 +163,7 @@ export default (props): any => {
           </IconButton>
         </div>
         <Divider />
-        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamName={team.name} />}</List>
+        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamId={team.name} />}</List>
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>

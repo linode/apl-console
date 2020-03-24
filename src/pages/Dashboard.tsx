@@ -9,7 +9,7 @@ export default (): any => {
   const { isAdmin, team } = useSession()
   return (
     <MainLayout>
-      <Dashboard teamName={team.name} />
+      <Dashboard teamId={team.name} />
     </MainLayout>
   )
 }

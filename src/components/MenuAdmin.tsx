@@ -39,7 +39,7 @@ export default (): any => {
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
-        <ListItemText primary='Services' />
+        <ListItemText primary='Team Services' />
       </ListItem>
     </div>
   )

@@ -93,10 +93,10 @@ const App = (): any => {
               <Route path='/services' component={Services} exact />
               <Route path='/teams' component={Teams} exact />
               <Route path='/create-team' component={Team} exact />
-              <Route path='/teams/:teamName' component={Team} exact />
-              <Route path='/teams/:teamName/services' component={Services} exact />
-              <Route path='/teams/:teamName/services/:serviceName' component={Service} exact />
-              <Route path='/teams/:teamName/create-service' component={Service} exact />
+              <Route path='/teams/:teamId' component={Team} exact />
+              <Route path='/teams/:teamId/services' component={Services} exact />
+              <Route path='/teams/:teamId/services/:serviceName' component={Service} exact />
+              <Route path='/teams/:teamId/create-service' component={Service} exact />
               <Route path='*'>404 page here</Route>
             </Switch>
           </Router>

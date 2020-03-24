@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
@@ -7,25 +8,25 @@ import { useSession } from '../session-context'
 import { useSnackbar } from '../utils'
 
 const Submit = ({ data }): any => {
-  const { enqueueSnackbar } = useSnackbar()
+  const { teamId, name } = data
   let method
   let filter
-  if (data.teamId) {
+  if (data.serviceId) {
     method = 'editService'
-    filter = { teamId: data.teamId }
+    filter = { teamId, name }
   } else {
     method = 'createService'
   }
   const [result] = useApi(method, filter, data)
   if (result) {
-    enqueueSnackbar(`Service ${data.teamId ? 'updated' : 'created'}`)
+    return <Redirect to={`/teams/${teamId}/services`} />
   }
   return null
 }
 
-const EditService = ({ teamName, serviceName, clusters, onSubmit }): any => {
+const EditService = ({ teamId, serviceName, clusters, onSubmit }): any => {
   const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
-    teamId: teamName,
+    teamId,
     name: serviceName,
   })
 
@@ -40,23 +41,24 @@ const EditService = ({ teamName, serviceName, clusters, onSubmit }): any => {
 
 export default ({
   match: {
-    params: { teamName, serviceName },
+    params: { teamId, serviceName },
   },
 }): any => {
-  const { isAdmin, team: sessTeam } = useSession()
-  if (!isAdmin && teamName !== sessTeam.name) {
+  const { isAdmin, team: sessTeam, clusters } = useSession()
+  if (!isAdmin && teamId !== sessTeam.name) {
     return <p>Unauthorized!</p>
   }
-  const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamName)
+  const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamId)
   const [formdata, setFormdata] = useState()
 
   return (
     <MainLayout>
       {loading && <Loader />}
-      {team && serviceName && (
-        <EditService teamName={teamName} serviceName={serviceName} clusters={team.clusters} onSubmit={setFormdata} />
+      {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
+      {team && serviceName && !formdata && (
+        <EditService teamId={teamId} serviceName={serviceName} clusters={clusters} onSubmit={setFormdata} />
       )}
-      {team && !serviceName && <Service clusters={team.clusters} onSubmit={setFormdata} />}
+      {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit data={formdata} />}
     </MainLayout>
   )

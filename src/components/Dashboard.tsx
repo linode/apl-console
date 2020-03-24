@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
 import { createClasses } from './../theme'
 
-const Dashboard = ({ teamName }): any => {
+const Dashboard = ({ teamId }): any => {
   const { isAdmin } = useSession()
 
   const classes = createClasses({
@@ -18,7 +18,7 @@ const Dashboard = ({ teamName }): any => {
     <Container maxWidth='xs'>
       <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.root}>
         <h3>
-          Welcome to the <b>team {teamName}</b> dashboard!
+          Welcome to the <b>team {teamId}</b> dashboard!
         </h3>
         {!isAdmin && (
           <Button
@@ -26,7 +26,7 @@ const Dashboard = ({ teamName }): any => {
             color='primary'
             size='large'
             component={Link}
-            to={`/teams/${teamName}/create-service`}
+            to={`/teams/${teamId}/create-service`}
             startIcon={<AddIcon />}
           >
             Create a new Service!
