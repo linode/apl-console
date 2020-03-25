@@ -9,12 +9,22 @@ export type ApiHook = LoadingHook<object, Error>
 let client: any
 let apiSpec: any
 let schema: any
+let dirty = false
 
 export const schemaPromise = getApiDefinition().then(response => {
   apiSpec = response.data
   schema = new Schema(apiSpec)
   client = getClient(apiSpec)
 })
+
+const checkDirty = (method): boolean => {
+  ;['create', 'edit', 'update', 'delete'].forEach(prefix => {
+    if (method.indexOf(prefix) === 0) {
+      dirty = true
+    }
+  })
+  return dirty
+}
 
 export const useApi = (method: string, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<object, Error>()
@@ -34,6 +44,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
           }
         } else {
           const value = await client[method].apply(client, args)
+          checkDirty(method)
           setValue(value.data)
         }
       } catch (e) {
@@ -49,6 +60,6 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
   return [value, loading, error]
 }
 
-export const getSchema = (): any => {
-  return schema
-}
+export const getSchema = (): any => schema
+
+export const getDirty = (): any => dirty

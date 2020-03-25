@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
     withCredentials: false,
     headers: {
       'Cache-Control': 'no-cache',
-      'Auth-Group': 'admin',
+      'Auth-Group': 'taxi',
     },
   }
   baseUrl = 'http://127.0.0.1:8080/v1'
