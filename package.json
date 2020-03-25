@@ -1,6 +1,6 @@
 {
   "name": "otomi-stack-web",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "dependencies": {
     "serve": "^11.3.0"
