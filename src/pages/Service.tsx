@@ -1,5 +1,5 @@
 import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
@@ -25,9 +25,9 @@ const Submit = ({ data }): any => {
   return null
 }
 
-const Delete = ({teamId, name}): any => {
+const Delete = ({ teamId, name }): any => {
   const method = 'deleteService'
-  const filter = { teamId , name }
+  const filter = { teamId, name }
   const [result] = useApi(method, filter, null)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
@@ -52,11 +52,11 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
     <React.Fragment>
       <Service service={service} clusters={clusters} onSubmit={onSubmit} />
       <Divider />
-      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
+      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button
-          variant="contained"
-          color="primary"
-          className={"DeleteService"}
+          variant='contained'
+          color='primary'
+          className={'DeleteService'}
           startIcon={<DeleteIcon />}
           onClick={onDelete}
         >
@@ -78,7 +78,6 @@ export default ({
   const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamId)
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
-
 
   return (
     <MainLayout>
