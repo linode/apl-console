@@ -1,3 +1,5 @@
+import { Box, Button, Divider } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete';
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
@@ -5,8 +7,6 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete';
 
 const Submit = ({ data }): any => {
   const { teamId, name } = data
