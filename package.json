@@ -47,6 +47,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "react-test-renderer": "^16.13.1",
+    "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
@@ -88,7 +89,8 @@
     "watch:ts": "tsc -w",
     "start": "npm run dev",
     "build": "react-scripts build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "release": "standard-version"
   },
   "husky": {
     "hooks": {
