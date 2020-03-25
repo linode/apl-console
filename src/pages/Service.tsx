@@ -5,7 +5,7 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { Box, Button, Divider } from '@material-ui/core'
+import { Divider, Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const Submit = ({ data }): any => {
