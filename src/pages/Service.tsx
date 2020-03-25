@@ -5,8 +5,7 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { useSnackbar } from '../utils'
-import { Button, Box, Divider } from '@material-ui/core'
+import { Box, Button, Divider } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const Submit = ({ data }): any => {
@@ -27,10 +26,8 @@ const Submit = ({ data }): any => {
 }
 
 const Delete = ({teamId, name}): any => {
-  const { enqueueSnackbar } = useSnackbar()
   const method = 'deleteService'
   const filter = { teamId , name }
-  debugger
   const [result] = useApi(method, filter, null)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
