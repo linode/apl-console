@@ -5,7 +5,7 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { Divider, Box, Button } from '@material-ui/core'
+import { Box, Button, Divider } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete';
 
 const Submit = ({ data }): any => {
@@ -63,10 +63,7 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
           Delete
         </Button>
       </Box>
-
-
     </React.Fragment>
-
     )}
 
 export default ({
@@ -88,7 +85,7 @@ export default ({
       {loading && <Loader />}
       {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
       {team && serviceName && !formdata && (
-        <React.Fragment>
+      <React.Fragment>
         <EditService teamId={teamId} serviceName={serviceName} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteService}/>
         {deleteService && <Delete teamId={teamId} name={serviceName} />}
       </React.Fragment>
