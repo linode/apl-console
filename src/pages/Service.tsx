@@ -1,3 +1,5 @@
+import { Box, Button, Divider } from '@material-ui/core'
+import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
@@ -5,8 +7,6 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
-import { Divider, Box, Button } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete';
 
 const Submit = ({ data }): any => {
   const { teamId, name } = data
@@ -25,9 +25,9 @@ const Submit = ({ data }): any => {
   return null
 }
 
-const Delete = ({teamId, name}): any => {
+const Delete = ({ teamId, name }): any => {
   const method = 'deleteService'
-  const filter = { teamId , name }
+  const filter = { teamId, name }
   const [result] = useApi(method, filter, null)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
@@ -52,22 +52,20 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
     <React.Fragment>
       <Service service={service} clusters={clusters} onSubmit={onSubmit} />
       <Divider />
-      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
+      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button
-          variant="contained"
-          color="primary"
-          className={"DeleteService"}
+          variant='contained'
+          color='primary'
+          className={'DeleteService'}
           startIcon={<DeleteIcon />}
           onClick={onDelete}
         >
           Delete
         </Button>
       </Box>
-
-
     </React.Fragment>
-
-    )}
+  )
+}
 
 export default ({
   match: {
@@ -82,16 +80,21 @@ export default ({
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
 
-
   return (
     <MainLayout>
       {loading && <Loader />}
       {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
       {team && serviceName && !formdata && (
         <React.Fragment>
-        <EditService teamId={teamId} serviceName={serviceName} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteService}/>
-        {deleteService && <Delete teamId={teamId} name={serviceName} />}
-      </React.Fragment>
+          <EditService
+            teamId={teamId}
+            serviceName={serviceName}
+            clusters={clusters}
+            onSubmit={setFormdata}
+            onDelete={setDeleteService}
+          />
+          {deleteService && <Delete teamId={teamId} name={serviceName} />}
+        </React.Fragment>
       )}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit data={formdata} />}
