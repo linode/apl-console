@@ -1,9 +1,9 @@
+import { Box, Button } from '@material-ui/core'
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import ActionBar from './ActionBar'
 
 const getTeamLink = (cell, row, rowIndex, formatExtraData): any => {
   return <Link to={`/teams/${row.name}`}>{row.name}</Link>
@@ -19,11 +19,11 @@ const columns = [
 
 const TeamActionBar = (): any => {
   return (
-    <ActionBar>
-      <Button variant='info' size='sm'>
-        <Link to='/create-team'>+ new team</Link>
+    <Box mb={1}>
+      <Button component={Link} to='/create-team' startIcon={<AddCircleIcon />} variant="contained" color="primary" className={"createTeam"} >
+        Create team
       </Button>
-    </ActionBar>
+    </Box>
   )
 }
 

@@ -1,9 +1,10 @@
+import { Box, Button } from '@material-ui/core'
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
-import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import ActionBar from './ActionBar'
+
 
 const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
@@ -47,11 +48,11 @@ const Services = ({ services }): any => {
   return (
     <div className='Services'>
       {!isAdmin && (
-        <ActionBar>
-          <Button variant='info' size='sm'>
-            <Link to={`/teams/${team.name}/create-service`}>+ new service</Link>
-          </Button>
-        </ActionBar>
+      <Box mb={1}>
+        <Button component={Link} to={`/teams/${team.name}/create-service`} startIcon={<AddCircleIcon />} variant="contained" color="primary" className={"createService"} >
+          Create service
+        </Button>
+      </Box>
       )}
       <h2>Services:</h2>
       <BootstrapTable bootstrap4 keyField='serviceId' data={services} columns={columns} />

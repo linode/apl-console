@@ -5,6 +5,7 @@
     "donjayamanne.githistory",
     "eamodio.gitlens",
     "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-tslint-plugin",
     "redhat.vscode-yaml",
     "xyz.local-history"
   ]
