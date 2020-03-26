@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.11](https://github.com/redkubes/otomi-stack-web/compare/v0.1.10...v0.1.11) (2020-03-26)
+
+### CI
+
+- added build condition to skip release commits on master
+  ([25b3ee4](https://github.com/redkubes/otomi-stack-web/commit/25b3ee49ebed00ff978661d3fe9dfa927f453b81))
+- added build condition to skip release commits on master
+  ([6a0f999](https://github.com/redkubes/otomi-stack-web/commit/6a0f9994f6be6204d5637bd163557b7f876581f1))
+- added build condition to skip release commits on master
+  ([b0b1dfe](https://github.com/redkubes/otomi-stack-web/commit/b0b1dfe6e0740e40b7980e35683d552abe734456))
+
 ### [0.1.10](https://github.com/redkubes/otomi-stack-web/compare/v0.1.9...v0.1.10) (2020-03-26)
 
 ### Features
