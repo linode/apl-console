@@ -2,9 +2,7 @@
   "name": "otomi-stack-web",
   "version": "0.1.9",
   "private": true,
-  "dependencies": {
-    "serve": "^11.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",

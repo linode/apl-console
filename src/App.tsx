@@ -38,6 +38,11 @@ const App = (): any => {
   const [session, setSession] = useState(testSessions[sessionIdx])
   const [selectedTheme, setSelectedTheme] = useState(adminTheme)
   const classes = createClasses(styles)
+  const changeSession = (): any => {
+    sessionIdx = sessionIdx === 0 ? 1 : 0
+    setSession(testSessions[sessionIdx])
+    setSelectedTheme(sessionIdx === 0 ? adminTheme : theme)
+  }
   useEffect(() => {
     ;(async (): Promise<any> => {
       // tslint:disable-next-line
@@ -49,7 +54,7 @@ const App = (): any => {
     return <Loader />
   }
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={selectedTheme}>
       <SnackbarProvider
         {...defaultOpts}
         anchorOrigin={{
@@ -72,21 +77,12 @@ const App = (): any => {
             user: session.user,
             team: session.team,
             clusters: session.clusters,
+            changeSession,
           }}
         >
           <Router>
             <Switch>
               {/*!user && <Route path='/' component={Home} exact />*/}
-              <Route
-                path='/change-role'
-                render={({ location: { state } }): any => {
-                  sessionIdx = sessionIdx === 0 ? 1 : 0
-                  setSession(testSessions[sessionIdx])
-                  setSelectedTheme(sessionIdx === 0 ? adminTheme : theme)
-                  return <Redirect to='/' />
-                }}
-                exact
-              />
               <Route path='/' component={Dashboard} exact />
               <Route path='/otomi/apps' component={OtomiApps} exact />
               <Route path='/clusters' component={Clusters} exact />

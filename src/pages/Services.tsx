@@ -15,7 +15,7 @@ export default ({
   return (
     <MainLayout>
       {loading && <Loader />}
-      {services && <Services services={services} />}
+      {services && <Services services={services} teamId={teamId} />}
     </MainLayout>
   )
 }

@@ -10,11 +10,11 @@ export default (): any => {
       marginRight: '1vw',
     },
   })
-  const { user, team } = useSession()
+  const { user, team, changeSession } = useSession()
   return (
     <>
       <Avatar className={classes.root} />
-      <Link to='/change-role'>{`${user.email} (${team.name})`}</Link>
+      <a onClick={changeSession}>{`${user.email} (${team.name})`}</a>
     </>
   )
 }

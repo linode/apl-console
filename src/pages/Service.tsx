@@ -64,7 +64,8 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
         </Button>
       </Box>
     </React.Fragment>
-    )}
+  )
+}
 
 export default ({
   match: {
@@ -84,10 +85,16 @@ export default ({
       {loading && <Loader />}
       {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
       {team && serviceName && !formdata && (
-      <React.Fragment>
-        <EditService teamId={teamId} serviceName={serviceName} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteService}/>
-        {deleteService && <Delete teamId={teamId} name={serviceName} />}
-      </React.Fragment>
+        <React.Fragment>
+          <EditService
+            teamId={teamId}
+            serviceName={serviceName}
+            clusters={clusters}
+            onSubmit={setFormdata}
+            onDelete={setDeleteService}
+          />
+          {deleteService && <Delete teamId={teamId} name={serviceName} />}
+        </React.Fragment>
       )}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit data={formdata} />}

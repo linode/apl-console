@@ -1,5 +1,5 @@
 import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
@@ -24,7 +24,7 @@ const Submit = ({ data }): any => {
   return null
 }
 
-const Delete = ({name}): any => {
+const Delete = ({ name }): any => {
   const method = 'deleteTeam'
   const filter = { teamId: name }
   const [result] = useApi(method, filter, null)
@@ -46,19 +46,19 @@ const EditTeam = ({ teamId, clusters, onSubmit, onDelete }): any => {
 
   return (
     <React.Fragment>
-    <Team team={team} clusters={clusters} onSubmit={onSubmit} />
-    <Divider />
-    <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
-      <Button
-        variant="contained"
-        color="primary"
-        className={"DeleteService"}
-        startIcon={<DeleteIcon />}
-        onClick={onDelete}
-      >
-        Delete
-      </Button>
-    </Box>
+      <Team team={team} clusters={clusters} onSubmit={onSubmit} />
+      <Divider />
+      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
+        <Button
+          variant='contained'
+          color='primary'
+          className={'DeleteService'}
+          startIcon={<DeleteIcon />}
+          onClick={onDelete}
+        >
+          Delete
+        </Button>
+      </Box>
     </React.Fragment>
   )
 }
@@ -74,12 +74,11 @@ export default ({
 
   return (
     <MainLayout>
-      {teamId && 
-      (
+      {teamId && (
         <React.Fragment>
-        <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam}/>
-        {deleteTeam && <Delete name={teamId} />}
-      </React.Fragment>
+          <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />
+          {deleteTeam && <Delete name={teamId} />}
+        </React.Fragment>
       )}
 
       {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
