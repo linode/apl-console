@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.12](https://github.com/redkubes/otomi-stack-web/compare/v0.1.11...v0.1.12) (2020-03-26)
+
+### CI
+
+- split build+test from publish
+  ([75d5134](https://github.com/redkubes/otomi-stack-web/commit/75d513448af0773d29cc7b4cf6fb14dea6817352))
+- split build+test from publish
+  ([f66f6a1](https://github.com/redkubes/otomi-stack-web/commit/f66f6a1e8ba979882ec47596f02d23ccbed14017))
+
 ### [0.1.11](https://github.com/redkubes/otomi-stack-web/compare/v0.1.10...v0.1.11) (2020-03-26)
 
 ### CI
