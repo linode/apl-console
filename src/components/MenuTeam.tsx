@@ -1,5 +1,6 @@
 import { Divider, ListItem, ListItemIcon, ListItemText, ListSubheader } from '@material-ui/core'
 import PeopleIcon from '@material-ui/icons/People'
+import PersonIcon from '@material-ui/icons/Person';
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
@@ -13,7 +14,7 @@ const TeamMenu = ({ teamId }): any => (
     </ListSubheader>
     <ListItem component={Link} to={`/teams/${teamId}`}>
       <ListItemIcon>
-        <PeopleIcon />
+        <PersonIcon />
       </ListItemIcon>
       <ListItemText primary='Team Details' />
     </ListItem>
