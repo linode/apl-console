@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.13](https://github.com/redkubes/otomi-stack-web/compare/v0.1.12...v0.1.13) (2020-03-26)
+
+### Features
+
+- removed complex action from pipeline
+  [ci skip](<[fa0689a](https://github.com/redkubes/otomi-stack-web/commit/fa0689a05500c9ab6f6ebed1e698066a78322992)>)
+
 ### [0.1.12](https://github.com/redkubes/otomi-stack-web/compare/v0.1.11...v0.1.12) (2020-03-26)
 
 ### CI
