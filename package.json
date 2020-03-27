@@ -1,6 +1,6 @@
 {
   "name": "otomi-stack-web",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "private": true,
   "dependencies": {
     "typeface-roboto": "0.0.75"

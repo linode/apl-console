@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.16](https://github.com/redkubes/otomi-stack-web/compare/v0.1.15...v0.1.16) (2020-03-27)
+
+### Bug Fixes
+
+- workflow env var rewrite
+  ([b56e9f3](https://github.com/redkubes/otomi-stack-web/commit/b56e9f3f34e9255317589bb7384b73c02665d935))
+
 ### [0.1.15](https://github.com/redkubes/otomi-stack-web/compare/v0.1.14...v0.1.15) (2020-03-27)
 
 ### Styling
