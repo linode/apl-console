@@ -22,8 +22,8 @@ jobs:
       - name: Publish latest
         uses: docker/build-push-action@v1
         with:
-          registry: $REG
-          repository: $REPO
+          registry: ${{ env.REG }}
+          repository: ${{ env.REPO }}
           username: _json_key
           password: ${{ secrets.DOCKER_PASSWORD }}
           tag_with_ref: true
