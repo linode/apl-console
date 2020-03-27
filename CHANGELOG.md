@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.15](https://github.com/redkubes/otomi-stack-web/compare/v0.1.14...v0.1.15) (2020-03-27)
+
+### Styling
+
+- removed focus outlines, added separate themes for team and admin
+  ([cd5cfb9](https://github.com/redkubes/otomi-stack-web/commit/cd5cfb928743b206c55ce30e50085462cae5871a))
+
 ### [0.1.14](https://github.com/redkubes/otomi-stack-web/compare/v0.1.13...v0.1.14) (2020-03-26)
 
 ### [0.1.13](https://github.com/redkubes/otomi-stack-web/compare/v0.1.12...v0.1.13) (2020-03-26)
