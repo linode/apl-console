@@ -17,9 +17,9 @@ const Dashboard = ({ teamId }): any => {
   return (
     <Container maxWidth='xs'>
       <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.root}>
-        <h3>
+        <Text variant='h3'>
           Welcome to the <b>team {teamId}</b> dashboard!
-        </h3>
+        </Text>
         {!isAdmin && (
           <Button
             variant='contained'

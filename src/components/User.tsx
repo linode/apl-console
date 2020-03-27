@@ -1,6 +1,5 @@
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
 import { createClasses } from '../theme'
 
@@ -14,7 +13,7 @@ export default (): any => {
   return (
     <>
       <Avatar className={classes.root} />
-      <a onClick={changeSession}>{`${user.email} (${team.name})`}</a>
+      <span onClick={changeSession}>{`${user.email} (${team.name})`}</span>
     </>
   )
 }

@@ -10,7 +10,7 @@ export default ({
   },
 }): any => {
   const method = teamId ? 'getTeamServices' : 'getAllServices'
-  const [services, loading, error] = useApi(method, teamId)
+  const [services, loading] = useApi(method, teamId)
 
   return (
     <MainLayout>

@@ -1,5 +1,8 @@
 name: Build and publish Docker
 on: [push]
+env:
+  REG: eu.gcr.io
+  REPO: otomi-cloud/otomi-stack-web
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -11,16 +14,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Docker login
-        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' eu.gcr.io
+        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - name: Pull from registry as cache
-        run: 'docker pull eu.gcr.io/otomi-cloud/otomi-stack-web:latest || true'
+        run: 'docker pull $REG/$REPO:latest || true'
       - name: CI tests and image build
         run: 'docker build .'
       - name: Publish latest
         uses: docker/build-push-action@v1
         with:
-          registry: eu.gcr.io
-          repository: otomi-cloud/otomi-stack-web
+          registry: $REG
+          repository: $REPO
           username: _json_key
           password: ${{ secrets.DOCKER_PASSWORD }}
           tag_with_ref: true
