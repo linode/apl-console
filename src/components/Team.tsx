@@ -13,6 +13,7 @@ export default ({ onSubmit, clusters, team = {} }): any => {
   const [submitActive, setSubmitActive] = useState(false)
   const handleChange = ({ errors, data }): any => {
     if (isEmpty(errors) && !isEmpty(data)) {
+      debugger
       setSubmitActive(true)
       setFormData(data)
     }
@@ -23,7 +24,7 @@ export default ({ onSubmit, clusters, team = {} }): any => {
   const schema = getSchema()
   const mySchema = schema.getTeamSchema(clusters)
 
-  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId', 'dummyField'])
+  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId', 'dummyProperty', 'password'])
 
   return (
     <div className='Team'>
