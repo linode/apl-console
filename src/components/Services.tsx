@@ -1,5 +1,6 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'
 import { Link } from 'react-router-dom'
@@ -12,7 +13,7 @@ const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
 }
 
 const getPublicUrl = (cell, row, rowIndex, formatExtraData): any => {
-  if (!row.ingress.hasPublicUrl) {
+  if (isEmpty(row.ingress)) {
     return '-'
   }
   return `${row.ingress.domain}.${row.ingress.domain}`
