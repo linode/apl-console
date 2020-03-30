@@ -110,6 +110,9 @@
       "post-rewrite": "run-if-changed"
     }
   },
+  "run-if-changed": {
+    "package-lock.json": "npm install --prefer-offline --no-audit"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",
