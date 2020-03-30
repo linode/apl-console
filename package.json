@@ -104,7 +104,6 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "npm run husky:pre-commit",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
       "post-commit": "run-if-changed",
       "post-checkout": "run-if-changed",
       "post-merge": "run-if-changed",
