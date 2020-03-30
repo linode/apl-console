@@ -1,44 +1,29 @@
-import { RuleEffect } from '@jsonforms/core'
 import { materialCells, materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react'
-
 import { Button } from '@material-ui/core'
+import { isEmpty } from 'lodash/lang'
 import React, { useState } from 'react'
-import Form from 'react-jsonschema-form-bs4'
 import { getSchema } from '../hooks/api'
+import HiddenFieldRender from '../utils/jsonforms/HiddenFieldRender'
+import HiddenFieldTesterFactory from '../utils/jsonforms/HiddenFieldTesterFactory'
 
 export default ({ onSubmit, clusters, team = {} }): any => {
   const myTeam = team === null ? undefined : team
   const [formData, setFormData] = useState(myTeam)
   const [submitActive, setSubmitActive] = useState(false)
   const handleChange = ({ errors, data }): any => {
-    if ((!errors || !errors.length) && data) {
+    if (isEmpty(errors) && !isEmpty(data)) {
       setSubmitActive(true)
+      setFormData(data)
     }
   }
-  const handleSubmit = (form): any => {
+  const handleSubmit = (): any => {
     onSubmit(formData)
   }
   const schema = getSchema()
   const mySchema = schema.getTeamSchema(clusters)
-  console.log(mySchema)
-  const form = {
-    type: 'VerticalLayout',
-    elements: [
-      {
-        type: 'Control',
-        scope: '#/properties/name',
-      },
-      {
-        type: 'Control',
-        scope: '#/properties/clusters',
 
-        options: {
-          detail: 'DEFAULT',
-        },
-      },
-    ],
-  }
+  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId', 'dummyField'])
 
   return (
     <div className='Team'>
@@ -47,9 +32,8 @@ export default ({ onSubmit, clusters, team = {} }): any => {
       <JsonForms
         schema={mySchema}
         onChange={handleChange}
-        uischema={form}
-        data={myTeam}
-        renderers={materialRenderers}
+        data={formData}
+        renderers={[...materialRenderers, { tester: HiddenFieldsTester, renderer: HiddenFieldRender }]}
         cells={materialCells}
       />
       <Button color='primary' onClick={handleSubmit} disabled={!submitActive}>
