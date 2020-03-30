@@ -54,6 +54,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "react-test-renderer": "^16.13.1",
+    "run-if-changed": "0.0.9",
     "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
     "tslint": "^5.20.1",
@@ -104,7 +105,10 @@
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "npm run husky:pre-commit",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "postmerge": "./bin/post-merge-hook.sh"
+      "post-commit": "run-if-changed",
+      "post-checkout": "run-if-changed",
+      "post-merge": "run-if-changed",
+      "post-rewrite": "run-if-changed"
     }
   },
   "browserslist": [
