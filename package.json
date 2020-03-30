@@ -61,12 +61,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "tslint --project ./tsconfig.tslint.json",
-      "git add"
+      "tslint --project ./tsconfig.tslint.json"
     ],
     "*.{js,json,md,ts,yml,yaml}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   },
   "scripts": {
