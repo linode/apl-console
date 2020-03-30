@@ -14,8 +14,10 @@ export default ({ onSubmit, clusters, team = {} }): any => {
   const handleChange = ({ errors, data }): any => {
     if (isEmpty(errors) && !isEmpty(data)) {
       setSubmitActive(true)
-      setFormData(data)
+    } else {
+      setSubmitActive(false)
     }
+    setFormData(data)
   }
   const handleSubmit = (): any => {
     onSubmit(formData)
