@@ -15,8 +15,10 @@ export default ({ onSubmit, clusters, team = {} }): any => {
     if (isEmpty(errors) && !isEmpty(data)) {
       debugger
       setSubmitActive(true)
-      setFormData(data)
+    } else {
+      setSubmitActive(false)
     }
+    setFormData(data)
   }
   const handleSubmit = (): any => {
     onSubmit(formData)
