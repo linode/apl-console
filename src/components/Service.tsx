@@ -3,8 +3,8 @@ import {materialCells, materialRenderers} from '@jsonforms/material-renderers';
 import { JsonForms } from '@jsonforms/react';
 import React from 'react'
 import { getSchema } from '../hooks/api'
-import EmptyDictRender from '../utils/jsonforms/EmptyDictRender'
-import EmptyDictTester from '../utils/jsonforms/EmptyDictTester'
+// import EmptyDictRender from '../utils/jsonforms/EmptyDictRender'
+// import EmptyDictTester from '../utils/jsonforms/EmptyDictTester'
 import HiddenFieldRender from '../utils/jsonforms/HiddenFieldRender'
 import HiddenFieldTesterFactory from '../utils/jsonforms/HiddenFieldTesterFactory'
 
@@ -63,7 +63,7 @@ export default ({ onSubmit, clusters, service = {} }): any => {
         data={service}
         renderers={[
           ...materialRenderers,
-          { tester: EmptyDictTester, renderer: EmptyDictRender },
+          // { tester: EmptyDictTester, renderer: EmptyDictRender },
           { tester: HiddenFieldsTester, renderer: HiddenFieldRender }
         ]}
         cells={materialCells}
