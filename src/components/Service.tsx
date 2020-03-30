@@ -15,7 +15,6 @@ export default ({ onSubmit, clusters, service = {} }): any => {
   const [submitActive, setSubmitActive] = useState(false)
 
   const handleChange = (state: Pick<JsonFormsCore, 'data' | 'errors'>): any => {
-    debugger
     if (isEmpty(state.errors) && !isEmpty(state.data)) {
       setSubmitActive(true)
       setFormData(state.data)

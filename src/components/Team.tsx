@@ -13,7 +13,6 @@ export default ({ onSubmit, clusters, team = {} }): any => {
   const [submitActive, setSubmitActive] = useState(false)
   const handleChange = ({ errors, data }): any => {
     if (isEmpty(errors) && !isEmpty(data)) {
-      debugger
       setSubmitActive(true)
     } else {
       setSubmitActive(false)
