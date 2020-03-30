@@ -60,10 +60,10 @@
     "yup": "^0.27.0"
   },
   "lint-staged": {
-    "*.ts": [
+    "*.{ts,tsx}": [
       "tslint --project ./tsconfig.tslint.json"
     ],
-    "*.{js,json,md,ts,yml,yaml}": [
+    "*.{js,json,md,ts,tsx,yml,yaml}": [
       "prettier --write"
     ]
   },
