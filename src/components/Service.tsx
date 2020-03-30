@@ -1,7 +1,9 @@
 import { JsonFormsCore } from '@jsonforms/core';
 import {materialCells, materialRenderers} from '@jsonforms/material-renderers';
 import { JsonForms } from '@jsonforms/react';
-import React from 'react'
+import { Button } from '@material-ui/core';
+import { isEmpty } from 'lodash/lang'
+import React, { useState } from 'react'
 import { getSchema } from '../hooks/api'
 // import EmptyDictRender from '../utils/jsonforms/EmptyDictRender'
 // import EmptyDictTester from '../utils/jsonforms/EmptyDictTester'
@@ -9,66 +11,42 @@ import HiddenFieldRender from '../utils/jsonforms/HiddenFieldRender'
 import HiddenFieldTesterFactory from '../utils/jsonforms/HiddenFieldTesterFactory'
 
 export default ({ onSubmit, clusters, service = {} }): any => {
-  const handleSubmit = (form): any => {
-    onSubmit(form.formData)
+  const [formData, setFormData] = useState(service)
+  const [submitActive, setSubmitActive] = useState(false)
+
+  const handleChange = (state: Pick<JsonFormsCore, 'data' | 'errors'>): any => {
+    debugger
+    if (isEmpty(state.errors) && !isEmpty(state.data)) {
+      setSubmitActive(true)
+      setFormData(state.data)
+    }
   }
-  const schema = getSchema()
-  const mySchema = schema.getServiceSchema(clusters)
-  // const uiSchema = schema.getServiceUiSchema(mySchema)
-  const uiJsonFormSchema = {
-    type: 'VerticalLayout',
-    elements: [
-      
-      {
-        "type": "Control",
-        "scope": "#/properties/hasPublicUrl",
-        // "options": {format: 'radio'},
-      },
-      // {
-      //   "type": "Control",
-      //   "scope": "#/properties/ingress",
-      //   "rule": {
-      //     "effect": "HIDE",
-      //     "condition": {
-      //       "scope": "#/properties/hasPublicUrl",
-      //       "schema": {
-      //         "const": false
-      //       }
-      //     }
-      //   }
-      // },      
-      {
-        "type": "Control",
-        "scope": "#/properties/teamId",
-        "rule": {
-          "effect": "HIDE",
-          "condition": {
-            "scope": "#/properties/dummy",
-            "schema": {
-              "const": false
-            }
-          }
-        }  
-      }
-    ],
+  const handleSubmit = (): any => {
+    onSubmit(formData)
   }
 
-  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId'])
+  const schema = getSchema()
+  const mySchema = schema.getServiceSchema(clusters)
+
+
+  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId', 'dummyProperty'])
   return (
     <div className='Service'>
       <h2>Service:</h2>
       <JsonForms
         schema={mySchema}
-        // uischema={uiJsonFormSchema}
-        data={service}
+        data={formData}
         renderers={[
           ...materialRenderers,
           // { tester: EmptyDictTester, renderer: EmptyDictRender },
           { tester: HiddenFieldsTester, renderer: HiddenFieldRender }
         ]}
         cells={materialCells}
-        onChange={ (state: Pick<JsonFormsCore, 'data' | 'errors'>): void => { console.log(state)}}
+        onChange={handleChange}
       />
+      <Button color='primary' onClick={handleSubmit} disabled={!submitActive}>
+        Submit
+      </Button>
     </div>
   )
 }
