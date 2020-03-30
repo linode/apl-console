@@ -3,6 +3,13 @@
   "version": "0.1.9",
   "private": true,
   "dependencies": {
+    "@jsonforms/core": "^2.3.2",
+    "@jsonforms/material-renderers": "^2.3.2",
+    "@jsonforms/react": "^2.3.2",
+    "@material-ui/pickers": "^3.2.10",
+    "lodash": "^4.17.15",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
     "serve": "^11.3.0"
   },
   "devDependencies": {

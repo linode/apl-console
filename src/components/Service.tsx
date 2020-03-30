@@ -1,11 +1,12 @@
+import { JsonFormsCore } from '@jsonforms/core';
+import {materialCells, materialRenderers} from '@jsonforms/material-renderers';
+import { JsonForms } from '@jsonforms/react';
 import React from 'react'
-import Form from 'react-jsonschema-form-bs4'
 import { getSchema } from '../hooks/api'
-import CustomDescriptionField from './CustomDescriptionField'
-
-const fields = {
-  DescriptionField: CustomDescriptionField,
-}
+import EmptyDictRender from '../utils/jsonforms/EmptyDictRender'
+import EmptyDictTester from '../utils/jsonforms/EmptyDictTester'
+import HiddenFieldRender from '../utils/jsonforms/HiddenFieldRender'
+import HiddenFieldTesterFactory from '../utils/jsonforms/HiddenFieldTesterFactory'
 
 export default ({ onSubmit, clusters, service = {} }): any => {
   const handleSubmit = (form): any => {
@@ -13,20 +14,60 @@ export default ({ onSubmit, clusters, service = {} }): any => {
   }
   const schema = getSchema()
   const mySchema = schema.getServiceSchema(clusters)
-  const uiSchema = schema.getServiceUiSchema(mySchema)
+  // const uiSchema = schema.getServiceUiSchema(mySchema)
+  const uiJsonFormSchema = {
+    type: 'VerticalLayout',
+    elements: [
+      
+      {
+        "type": "Control",
+        "scope": "#/properties/hasPublicUrl",
+        // "options": {format: 'radio'},
+      },
+      // {
+      //   "type": "Control",
+      //   "scope": "#/properties/ingress",
+      //   "rule": {
+      //     "effect": "HIDE",
+      //     "condition": {
+      //       "scope": "#/properties/hasPublicUrl",
+      //       "schema": {
+      //         "const": false
+      //       }
+      //     }
+      //   }
+      // },      
+      {
+        "type": "Control",
+        "scope": "#/properties/teamId",
+        "rule": {
+          "effect": "HIDE",
+          "condition": {
+            "scope": "#/properties/dummy",
+            "schema": {
+              "const": false
+            }
+          }
+        }  
+      }
+    ],
+  }
+
+  const HiddenFieldsTester = HiddenFieldTesterFactory(['teamId', 'serviceId'])
   return (
     <div className='Service'>
       <h2>Service:</h2>
-      <Form
-        key='createService'
+      <JsonForms
         schema={mySchema}
-        fields={fields}
-        uiSchema={uiSchema}
-        onSubmit={handleSubmit}
-        onError={console.error}
-        // onChange={console.debug}
-        formData={service}
-        // liveValidate={true}
+        // uischema={uiJsonFormSchema}
+        data={service}
+        renderers={[
+          ...materialRenderers,
+          { tester: EmptyDictTester, renderer: EmptyDictRender },
+          { tester: HiddenFieldsTester, renderer: HiddenFieldRender }
+        ]}
+        cells={materialCells}
+        onChange={ (state: Pick<JsonFormsCore, 'data' | 'errors'>): void => { console.log(state)}}
       />
     </div>
   )
