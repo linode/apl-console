@@ -8,12 +8,12 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 
-const Submit = ({ teamId, serviceId, data }): any => {
+const Submit = ({ teamId, name, data }): any => {
   let method
   let filter
-  if (serviceId) {
+  if (name) {
     method = 'editService'
-    filter = { teamId, serviceId }
+    filter = { teamId, name }
   } else {
     method = 'createService'
     filter = { teamId }
@@ -90,7 +90,7 @@ export default ({
       </React.Fragment>
       )}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit teamId={teamId} serviceId={serviceName} data={formdata} />}
+      {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

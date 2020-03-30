@@ -8,8 +8,7 @@ import HiddenFieldRender from '../utils/jsonforms/HiddenFieldRender'
 import HiddenFieldTesterFactory from '../utils/jsonforms/HiddenFieldTesterFactory'
 
 export default ({ onSubmit, clusters, team = {} }): any => {
-  const myTeam = team === null ? undefined : team
-  const [formData, setFormData] = useState(myTeam)
+  const [formData, setFormData] = useState(team)
   const [submitActive, setSubmitActive] = useState(false)
   const handleChange = ({ errors, data }): any => {
     if (isEmpty(errors) && !isEmpty(data)) {

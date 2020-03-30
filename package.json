@@ -2,17 +2,12 @@
   "name": "otomi-stack-web",
   "version": "0.1.9",
   "private": true,
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "@jsonforms/core": "^2.3.2",
     "@jsonforms/material-renderers": "^2.3.2",
     "@jsonforms/react": "^2.3.2",
     "@material-ui/pickers": "^3.2.10",
-    "lodash": "^4.17.15",
-    "react-redux": "^7.2.0",
-    "redux": "^4.0.5",
-    "serve": "^11.3.0"
-  },
-  "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@fortawesome/fontawesome-free": "^5.12.1",
@@ -37,6 +32,7 @@
     "http-proxy-middleware": "^0.20.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
+    "lodash": "^4.17.15",
     "lodash.isnil": "^4.0.0",
     "lodash.omitby": "^4.6.0",
     "notistack": "^0.9.9",
