@@ -1,15 +1,11 @@
-
 import { Button } from '@material-ui/core'
+import Form from '@rjsf/material-ui'
 import React from 'react'
-import { withTheme } from 'react-jsonschema-form';
-import { Theme as MuiTheme } from 'rjsf-material-ui';
 import { getSchema } from '../hooks/api'
-
-const Form = withTheme(MuiTheme);
 
 export default ({ onSubmit, clusters, team = {} }): any => {
   const myTeam = team === null ? undefined : team
-  const handleSubmit = ({schema, uiSchema, formData, edit, errors}): any => {
+  const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
     onSubmit(formData)
   }
   const schema = getSchema()
@@ -30,7 +26,7 @@ export default ({ onSubmit, clusters, team = {} }): any => {
         liveValidate={false}
         showErrorList={false}
       >
-        <Button color='primary' type="submit">
+        <Button color='primary' type='submit'>
           Submit
         </Button>
       </Form>

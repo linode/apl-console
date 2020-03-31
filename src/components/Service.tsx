@@ -1,10 +1,7 @@
 import { Button } from '@material-ui/core'
+import Form from '@rjsf/material-ui'
 import React from 'react'
-import { withTheme } from 'react-jsonschema-form'
-import { Theme as MuiTheme } from 'rjsf-material-ui'
 import { getSchema } from '../hooks/api'
-
-const Form = withTheme(MuiTheme)
 
 export default ({ onSubmit, clusters, service = {} }): any => {
   const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
