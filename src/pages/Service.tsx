@@ -8,15 +8,15 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 
-const Submit = ({ data }): any => {
-  const { teamId, name } = data
+const Submit = ({ teamId, name, data }): any => {
   let method
   let filter
-  if (data.serviceId) {
+  if (name) {
     method = 'editService'
     filter = { teamId, name }
   } else {
     method = 'createService'
+    filter = { teamId }
   }
   const [result] = useApi(method, filter, data)
   if (result) {
@@ -97,7 +97,7 @@ export default ({
         </React.Fragment>
       )}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit data={formdata} />}
+      {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

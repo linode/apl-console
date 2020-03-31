@@ -1,15 +1,11 @@
+import { Button } from '@material-ui/core'
+import Form from '@rjsf/material-ui'
 import React from 'react'
-import Form from 'react-jsonschema-form-bs4'
 import { getSchema } from '../hooks/api'
-import CustomDescriptionField from './CustomDescriptionField'
-
-const fields = {
-  DescriptionField: CustomDescriptionField,
-}
 
 export default ({ onSubmit, clusters, service = {} }): any => {
-  const handleSubmit = (form): any => {
-    onSubmit(form.formData)
+  const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
+    onSubmit(formData)
   }
   const schema = getSchema()
   const mySchema = schema.getServiceSchema(clusters)
@@ -20,14 +16,16 @@ export default ({ onSubmit, clusters, service = {} }): any => {
       <Form
         key='createService'
         schema={mySchema}
-        fields={fields}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
-        onError={console.error}
-        // onChange={console.debug}
         formData={service}
-        // liveValidate={true}
-      />
+        liveValidate={false}
+        showErrorList={true}
+      >
+        <Button color='primary' type='submit'>
+          Submit
+        </Button>
+      </Form>
     </div>
   )
 }
