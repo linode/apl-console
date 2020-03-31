@@ -33,15 +33,6 @@ const columns = [
     dataField: 'clusterId',
     text: 'Cluster',
   },
-  {
-    dataField: 'spec.serviceType',
-    text: 'Type',
-  },
-  {
-    dataField: 'customField',
-    text: 'Public URL',
-    formatter: getPublicUrl,
-  },
 ]
 
 const Services = ({ services }): any => {
