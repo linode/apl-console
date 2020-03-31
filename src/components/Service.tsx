@@ -17,7 +17,7 @@ export default ({ onSubmit, clusters, service = {} }): any => {
     <div className='Service'>
       <h2>Service:</h2>
       <Form
-        key='createTeam'
+        key='createService'
         schema={mySchema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
