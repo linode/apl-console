@@ -2,6 +2,10 @@
   "name": "otomi-stack-web",
   "version": "0.1.16",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redkubes/otomi-stack-web.git"
+  },
   "dependencies": {},
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
