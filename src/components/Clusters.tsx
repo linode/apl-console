@@ -27,7 +27,7 @@ export default ({ clusters }): any => {
   return (
     <div className='Cluster'>
       <h2>Clusters:</h2>
-      <BootstrapTable bootstrap4 keyField='clusterId' data={clusters} columns={columns} />
+      <BootstrapTable bootstrap4 keyField='id' data={clusters} columns={columns} />
     </div>
   )
 }

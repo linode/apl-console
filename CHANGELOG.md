@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file. See
 [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.16](https://github.com/redkubes/otomi-stack-web/compare/v0.1.15...v0.1.16) (2020-03-27)
+
+### Bug Fixes
+
+- workflow env var rewrite
+  ([b56e9f3](https://github.com/redkubes/otomi-stack-web/commit/b56e9f3f34e9255317589bb7384b73c02665d935))
+
+### [0.1.15](https://github.com/redkubes/otomi-stack-web/compare/v0.1.14...v0.1.15) (2020-03-27)
+
+### Styling
+
+- removed focus outlines, added separate themes for team and admin
+  ([cd5cfb9](https://github.com/redkubes/otomi-stack-web/commit/cd5cfb928743b206c55ce30e50085462cae5871a))
+
+### [0.1.14](https://github.com/redkubes/otomi-stack-web/compare/v0.1.13...v0.1.14) (2020-03-26)
+
+### [0.1.13](https://github.com/redkubes/otomi-stack-web/compare/v0.1.12...v0.1.13) (2020-03-26)
+
+### Features
+
+- removed complex action from pipeline
+  [ci skip](<[fa0689a](https://github.com/redkubes/otomi-stack-web/commit/fa0689a05500c9ab6f6ebed1e698066a78322992)>)
+
+### [0.1.12](https://github.com/redkubes/otomi-stack-web/compare/v0.1.11...v0.1.12) (2020-03-26)
+
+### CI
+
+- split build+test from publish
+  ([75d5134](https://github.com/redkubes/otomi-stack-web/commit/75d513448af0773d29cc7b4cf6fb14dea6817352))
+- split build+test from publish
+  ([f66f6a1](https://github.com/redkubes/otomi-stack-web/commit/f66f6a1e8ba979882ec47596f02d23ccbed14017))
+
+### [0.1.11](https://github.com/redkubes/otomi-stack-web/compare/v0.1.10...v0.1.11) (2020-03-26)
+
+### CI
+
+- added build condition to skip release commits on master
+  ([25b3ee4](https://github.com/redkubes/otomi-stack-web/commit/25b3ee49ebed00ff978661d3fe9dfa927f453b81))
+- added build condition to skip release commits on master
+  ([6a0f999](https://github.com/redkubes/otomi-stack-web/commit/6a0f9994f6be6204d5637bd163557b7f876581f1))
+- added build condition to skip release commits on master
+  ([b0b1dfe](https://github.com/redkubes/otomi-stack-web/commit/b0b1dfe6e0740e40b7980e35683d552abe734456))
+
+### [0.1.10](https://github.com/redkubes/otomi-stack-web/compare/v0.1.9...v0.1.10) (2020-03-26)
+
+### Features
+
+- delete team ([f641eb4](https://github.com/redkubes/otomi-stack-web/commit/f641eb48980b3831f8ab2cabbd009f9f69c5ac1f))
+- remove commit button and use material-ui buttons
+  ([57ca39b](https://github.com/redkubes/otomi-stack-web/commit/57ca39b31c27b2792642eb201707bf0bc68f0cef))
+
+### Bug Fixes
+
+- removed prepare-commit-msg from husky as it conflicted
+  [ci skip](<[ca46659](https://github.com/redkubes/otomi-stack-web/commit/ca466590e6e79b34ec991fcab38a70167484bc80)>)
+- session switch fix, api hook fix
+  ([5314413](https://github.com/redkubes/otomi-stack-web/commit/531441392692c50fd3e9a3aa11a9433868144bfe))
+- use person icon for team details
+  ([d103372](https://github.com/redkubes/otomi-stack-web/commit/d103372541f68565ef089179fa8a4a84f62b6a5f))
+
+### Others
+
+- use tslint plugin
+  ([6af9835](https://github.com/redkubes/otomi-stack-web/commit/6af9835ddb4c453087f72ec4b6ffa5fb16e9874b))
+
+### Code Refactoring
+
+- fetch incomming changes
+  ([0293118](https://github.com/redkubes/otomi-stack-web/commit/0293118fe1bbf977c2c076c97379b277918b7409))
+
 ### 0.1.9 (2020-03-25)
 
 ### Features

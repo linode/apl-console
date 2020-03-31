@@ -10,12 +10,12 @@ export default ({
   },
 }): any => {
   const method = teamId ? 'getTeamServices' : 'getAllServices'
-  const [services, loading, error] = useApi(method, teamId)
+  const [services, loading] = useApi(method, teamId)
 
   return (
     <MainLayout>
       {loading && <Loader />}
-      {services && <Services services={services} />}
+      {services && <Services services={services} teamId={teamId} />}
     </MainLayout>
   )
 }

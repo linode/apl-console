@@ -16,7 +16,6 @@ import MenuIcon from '@material-ui/icons/Menu'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import clsx from 'clsx'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import Logo from '../components/Logo'
 import MenuAdmin from '../components/MenuAdmin'
 import MenuTeam from '../components/MenuTeam'
@@ -132,12 +131,10 @@ export default (props): any => {
           </IconButton>
 
           <Typography component='h1' variant='h6' color='inherit' noWrap className={classes.title}>
-            <Link to='/'>
-              <IconButton color='inherit'>
-                <Logo />
-                Otomi {isAdmin ? 'Admin' : 'Team'} Console
-              </IconButton>
-            </Link>
+            <IconButton color='inherit'>
+              <Logo />
+              Otomi {isAdmin ? 'Admin' : 'Team'} Console
+            </IconButton>
           </Typography>
           <IconButton color='inherit'>
             <User />

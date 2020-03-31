@@ -29,7 +29,6 @@ const checkDirty = (method): boolean => {
 export const useApi = (method: string, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<object, Error>()
   const { enqueueSnackbar } = useSnackbar()
-
   useEffect(() => {
     ;(async (): Promise<any> => {
       // tslint:disable-next-line
@@ -55,7 +54,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
         setError(e)
       }
     })()
-  }, [])
+  }, [method])
 
   return [value, loading, error]
 }

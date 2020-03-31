@@ -6,7 +6,6 @@ import BootstrapTable from 'react-bootstrap-table-next'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
 
-
 const getServiceLink = (cell, row, rowIndex, formatExtraData): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
   return <Link to={link}>{row.name}</Link>
@@ -26,28 +25,39 @@ const columns = [
     formatter: getServiceLink,
   },
   {
-    dataField: 'teamId',
-    text: 'Team',
-  },
-  {
     dataField: 'clusterId',
     text: 'Cluster',
   },
 ]
 
-const Services = ({ services }): any => {
+const Services = ({ services, teamId }): any => {
   const { isAdmin, team } = useSession()
+  let myColumns = columns
+  if (!teamId) {
+    myColumns = [...columns]
+    myColumns.splice(1, 0, {
+      dataField: 'teamId',
+      text: 'Team',
+    })
+  }
   return (
     <div className='Services'>
-      {!isAdmin && (
-      <Box mb={1}>
-        <Button component={Link} to={`/teams/${team.name}/create-service`} startIcon={<AddCircleIcon />} variant="contained" color="primary" className={"createService"} >
-          Create service
-        </Button>
-      </Box>
+      {!isAdmin && teamId && (
+        <Box mb={1}>
+          <Button
+            component={Link}
+            to={`/teams/${team.name}/create-service`}
+            startIcon={<AddCircleIcon />}
+            variant='contained'
+            color='primary'
+            className={'createService'}
+          >
+            Create service
+          </Button>
+        </Box>
       )}
       <h2>Services:</h2>
-      <BootstrapTable bootstrap4 keyField='serviceId' data={services} columns={columns} />
+      <BootstrapTable bootstrap4 keyField='serviceId' data={services} columns={myColumns} />
     </div>
   )
 }

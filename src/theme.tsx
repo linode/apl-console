@@ -1,16 +1,18 @@
-import { createMuiTheme, createStyles, makeStyles } from '@material-ui/core/styles'
+import { createMuiTheme, createStyles, makeStyles, ThemeOptions } from '@material-ui/core/styles'
 import bg from './images/yellowBg.jpg'
 
 export const colors = {
   accent: '#f7be16', // yellow
 }
 
-export const theme = createMuiTheme({
+const mainOverrides: ThemeOptions = {
   overrides: {
     MuiCssBaseline: {
       '@global': {
         body: {
-          background: `linear-gradient(to bottom,rgba(255, 191, 0, 0.5) 50%,rgba(255, 191, 0, 0) 65%) no-repeat bottom center fixed, url(${bg}) no-repeat bottom right fixed`,
+          // background: `linear-gradient(to bottom,rgba(255, 191, 0, 0.5) 50%,rgba(255, 191, 0, 0) 65%) no-repeat bottom center fixed, url(${bg}) no-repeat bottom right fixed`,
+          // background: `linear-gradient(to bottom,rgba(255, 191, 0, 0.5) 50%,rgba(255, 191, 0, 0) 65%) no-repeat bottom center fixed`,
+          backgroundColor: 'rgba(255, 191, 0, 1)',
           backgroundSize: 'cover',
         },
       },
@@ -33,12 +35,6 @@ export const theme = createMuiTheme({
     },
   },
   palette: {
-    primary: {
-      main: '#00818a',
-    },
-    secondary: {
-      main: '#000000',
-    },
     background: {
       default: colors.accent,
     },
@@ -48,9 +44,32 @@ export const theme = createMuiTheme({
       textTransform: 'none',
     },
   },
-})
+}
+const teamOverrides: ThemeOptions = {
+  ...mainOverrides,
+  palette: {
+    primary: {
+      main: '#0053ff',
+    },
+    secondary: {
+      main: '#000000',
+    },
+  },
+}
+const adminOverrides: ThemeOptions = {
+  ...mainOverrides,
+  palette: {
+    primary: {
+      main: '#ff7e00',
+    },
+    secondary: {
+      main: '#000000',
+    },
+  },
+}
 
-export const adminTheme = { ...theme }
-adminTheme.palette.primary.main = '#474646'
+export const theme = createMuiTheme(teamOverrides)
+
+export const adminTheme = createMuiTheme(adminOverrides)
 
 export const createClasses = (stylesObj: object): any => makeStyles(() => createStyles(stylesObj))({})
