@@ -11,7 +11,7 @@ function addDomainEnumField(schema, domains): any {
   schema.properties.ingress.anyOf[1].properties.domain.enum = domains
 }
 
-function applyAclToUiSchema(uiSchema, schema: any, role: string): void {
+export function applyAclToUiSchema(uiSchema, schema: any, role: string): void {
   entries(schema.properties).forEach(([k, v]) => {
     if (!('x-acl' in v)) {
       // If there is no x-acl then field is rendered in read-write mode
