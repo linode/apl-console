@@ -4,12 +4,14 @@ import React from 'react'
 import { getSchema } from '../hooks/api'
 
 export default ({ onSubmit, clusters, service = {} }): any => {
+  // TODO obtain role from react hooks
+  const role = 'team'
   const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
     onSubmit(formData)
   }
   const schema = getSchema()
   const mySchema = schema.getServiceSchema(clusters)
-  const uiSchema = schema.getServiceUiSchema(mySchema)
+  const uiSchema = schema.getServiceUiSchema(mySchema, role)
   return (
     <div className='Service'>
       <h2>Service:</h2>

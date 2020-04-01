@@ -1,5 +1,5 @@
 import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next'

@@ -59,6 +59,6 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
   return [value, loading, error]
 }
 
-export const getSchema = (): any => schema
+export const getSchema = (): Schema => schema
 
 export const getDirty = (): any => dirty
