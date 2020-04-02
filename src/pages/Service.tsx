@@ -72,7 +72,7 @@ export default ({
     params: { teamId, serviceName },
   },
 }): any => {
-  const { isAdmin, team: sessTeam, clusters } = useSession()
+  const { isAdmin, team: sessTeam } = useSession()
   if (!isAdmin && teamId !== sessTeam.name) {
     return <p>Unauthorized!</p>
   }
@@ -83,20 +83,22 @@ export default ({
   return (
     <MainLayout>
       {loading && <Loader />}
-      {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
+      {team && serviceName && formdata && (
+        <Service clusters={team.clusters} onSubmit={setFormdata} service={formdata} />
+      )}
       {team && serviceName && !formdata && (
         <React.Fragment>
           <EditService
             teamId={teamId}
             serviceName={serviceName}
-            clusters={clusters}
+            clusters={team.clusters}
             onSubmit={setFormdata}
             onDelete={setDeleteService}
           />
           {deleteService && <Delete teamId={teamId} name={serviceName} />}
         </React.Fragment>
       )}
-      {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
+      {team && !serviceName && !formdata && <Service clusters={team.clusters} onSubmit={setFormdata} />}
       {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>
   )
