@@ -105,10 +105,10 @@ it('should not overwrite existing uiSchema properties', () => {
   }
 
   const expectedUiSchema = {
-    f1: { exisitng: 1, 'ui:readonly': true },
+    f1: { existing: 1, 'ui:readonly': true },
   }
 
-  const uiSchema = { f1: { exisitng: 1 } }
+  const uiSchema = { f1: { existing: 1 } }
   applyAclToUiSchema(uiSchema, schema, 'admin')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
