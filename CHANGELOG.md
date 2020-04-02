@@ -4,73 +4,102 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.1.18](https://github.com/redkubes/otomi-stack-web/compare/v0.1.16...v0.1.18) (2020-04-02)
 
-
 ### Features
 
-* add jsonfrom renderer to hide field ([0e6bd6f](https://github.com/redkubes/otomi-stack-web/commit/0e6bd6f6a2f95e60e499f8a980380715890bc5a9))
-* add role authorization ([eb8e23a](https://github.com/redkubes/otomi-stack-web/commit/eb8e23aec0a274878230bdd38b1e0c40e63a7743))
-* set role for acl ([9c79677](https://github.com/redkubes/otomi-stack-web/commit/9c796770c61e33a80eb84238a17204ae508fbe94))
-* use Hidden field renderer ([6e19d02](https://github.com/redkubes/otomi-stack-web/commit/6e19d0290638b7f09146de9f14cf62e196d9a3a6))
-* use react-json-forms with material-ui theme ([d8e23e4](https://github.com/redkubes/otomi-stack-web/commit/d8e23e4503780f74432f3aaf808a637d4e87ae57))
-* use react-json-forms with material-ui theme for service form ([3240292](https://github.com/redkubes/otomi-stack-web/commit/3240292dac8d5f3bbb892adfb927cf7e4fed7af3))
-
+- add jsonfrom renderer to hide field
+  ([0e6bd6f](https://github.com/redkubes/otomi-stack-web/commit/0e6bd6f6a2f95e60e499f8a980380715890bc5a9))
+- add role authorization
+  ([eb8e23a](https://github.com/redkubes/otomi-stack-web/commit/eb8e23aec0a274878230bdd38b1e0c40e63a7743))
+- set role for acl
+  ([9c79677](https://github.com/redkubes/otomi-stack-web/commit/9c796770c61e33a80eb84238a17204ae508fbe94))
+- use Hidden field renderer
+  ([6e19d02](https://github.com/redkubes/otomi-stack-web/commit/6e19d0290638b7f09146de9f14cf62e196d9a3a6))
+- use react-json-forms with material-ui theme
+  ([d8e23e4](https://github.com/redkubes/otomi-stack-web/commit/d8e23e4503780f74432f3aaf808a637d4e87ae57))
+- use react-json-forms with material-ui theme for service form
+  ([3240292](https://github.com/redkubes/otomi-stack-web/commit/3240292dac8d5f3bbb892adfb927cf7e4fed7af3))
 
 ### Bug Fixes
 
-* adapt schema to new API spec model ([b0e6f6c](https://github.com/redkubes/otomi-stack-web/commit/b0e6f6cf8fda8a05502866737bc57752ab4824b6))
-* added config for run-if-changed ([51c30a2](https://github.com/redkubes/otomi-stack-web/commit/51c30a23a8e9ba42ddc91a5712e1645af35f2924))
-* added submit button, but it's not disabling yet on validation error ([729e2ea](https://github.com/redkubes/otomi-stack-web/commit/729e2ea4a37f2d0f1d50e603c06b09bdca43e939))
-* build settings fix for releasing ([4a903ff](https://github.com/redkubes/otomi-stack-web/commit/4a903ffefdd013097943e952cff41febebe1cbf5))
-* change service form name ([4c4060d](https://github.com/redkubes/otomi-stack-web/commit/4c4060df23218c693429d588f20105c95287c998))
-* corrected run-if-changed package [ci skip] ([c5a9cf8](https://github.com/redkubes/otomi-stack-web/commit/c5a9cf83e6b7d03b9c956ffacc2afd6db5dff200))
-* do not use emptyDictRenderer ([7647caf](https://github.com/redkubes/otomi-stack-web/commit/7647caf0c71d582f67db0b36778fd8b3dd1a6e75))
-* fix linter issues ([235b1a7](https://github.com/redkubes/otomi-stack-web/commit/235b1a726cb87af1db18b04f1992540028fb46d7))
-* form submittal ([f713ca0](https://github.com/redkubes/otomi-stack-web/commit/f713ca077d51a7b1c61346aa80701cbb83ab995f))
-* get cluster list from team while creating/editng a service ([2b2dc10](https://github.com/redkubes/otomi-stack-web/commit/2b2dc1014819552950d747ae54484351e8a8ba53))
-* hide password field ([30e0741](https://github.com/redkubes/otomi-stack-web/commit/30e0741e50450b09016e4a55a67c209ffdbea257))
-* lint-staged now without git add [ci skip] ([854c02d](https://github.com/redkubes/otomi-stack-web/commit/854c02d5489d69ccf0c270a4568a1322a6c28a81))
-* missing react-redux after refactor ([f207006](https://github.com/redkubes/otomi-stack-web/commit/f207006db4d4df1edfcc3b5c25b65cf48c20922e))
-* provide IDs to Submit component in explicit way ([08decab](https://github.com/redkubes/otomi-stack-web/commit/08decabd09b0837af5ba2448ce0d785f01d6e113))
-* provide IDs to Submit component in explicit way ([3e5fb46](https://github.com/redkubes/otomi-stack-web/commit/3e5fb46900c98efe9bf9954cff1ef851ab27dbb7))
-* provide IDs to Submit component in explicit way ([b89fb5f](https://github.com/redkubes/otomi-stack-web/commit/b89fb5fa44cb07d73cf4580f50505204d607c3cd))
-* provide IDs to Submit component in explicit way ([d98a62d](https://github.com/redkubes/otomi-stack-web/commit/d98a62d393325ee682e3158a74e3e8ede03d6963))
-* remove debugger statements ([9319599](https://github.com/redkubes/otomi-stack-web/commit/9319599090452df622ceee5142db2d5092ef4b3e))
-* remove jsonform related code ([31b646e](https://github.com/redkubes/otomi-stack-web/commit/31b646e8676eb89559ba19aacddf556774504c72))
-* remove unused columns from service table ([7bfef0d](https://github.com/redkubes/otomi-stack-web/commit/7bfef0d6195c0b0b44ad52f3c9ad94657e19225d))
-* removed git hook that conflicts ([733bcf9](https://github.com/redkubes/otomi-stack-web/commit/733bcf9b5c0d2e6b99400bee97d98338f940e753))
-* reworked session state, button disbled if form not dirty ([07de1f7](https://github.com/redkubes/otomi-stack-web/commit/07de1f70a9c0e3fea850f46f2a7c9486ac48a2dc))
-* use formData state to populate data in team form ([e13aaf3](https://github.com/redkubes/otomi-stack-web/commit/e13aaf37508f311fe3579fdfdd84bca604867443))
-* use formdata state to pupulate data in service form ([a031185](https://github.com/redkubes/otomi-stack-web/commit/a031185ec16fae6ffcc7e71b49abffcb70ac43de))
-* use official rjsf/material-ui library ([29c6fc9](https://github.com/redkubes/otomi-stack-web/commit/29c6fc96acceb34f2357b18932674506884b7455))
-
+- adapt schema to new API spec model
+  ([b0e6f6c](https://github.com/redkubes/otomi-stack-web/commit/b0e6f6cf8fda8a05502866737bc57752ab4824b6))
+- added config for run-if-changed
+  ([51c30a2](https://github.com/redkubes/otomi-stack-web/commit/51c30a23a8e9ba42ddc91a5712e1645af35f2924))
+- added submit button, but it's not disabling yet on validation error
+  ([729e2ea](https://github.com/redkubes/otomi-stack-web/commit/729e2ea4a37f2d0f1d50e603c06b09bdca43e939))
+- build settings fix for releasing
+  ([4a903ff](https://github.com/redkubes/otomi-stack-web/commit/4a903ffefdd013097943e952cff41febebe1cbf5))
+- change service form name
+  ([4c4060d](https://github.com/redkubes/otomi-stack-web/commit/4c4060df23218c693429d588f20105c95287c998))
+- corrected run-if-changed package
+  [ci skip](<[c5a9cf8](https://github.com/redkubes/otomi-stack-web/commit/c5a9cf83e6b7d03b9c956ffacc2afd6db5dff200)>)
+- do not use emptyDictRenderer
+  ([7647caf](https://github.com/redkubes/otomi-stack-web/commit/7647caf0c71d582f67db0b36778fd8b3dd1a6e75))
+- fix linter issues
+  ([235b1a7](https://github.com/redkubes/otomi-stack-web/commit/235b1a726cb87af1db18b04f1992540028fb46d7))
+- form submittal
+  ([f713ca0](https://github.com/redkubes/otomi-stack-web/commit/f713ca077d51a7b1c61346aa80701cbb83ab995f))
+- get cluster list from team while creating/editng a service
+  ([2b2dc10](https://github.com/redkubes/otomi-stack-web/commit/2b2dc1014819552950d747ae54484351e8a8ba53))
+- hide password field
+  ([30e0741](https://github.com/redkubes/otomi-stack-web/commit/30e0741e50450b09016e4a55a67c209ffdbea257))
+- lint-staged now without git add
+  [ci skip](<[854c02d](https://github.com/redkubes/otomi-stack-web/commit/854c02d5489d69ccf0c270a4568a1322a6c28a81)>)
+- missing react-redux after refactor
+  ([f207006](https://github.com/redkubes/otomi-stack-web/commit/f207006db4d4df1edfcc3b5c25b65cf48c20922e))
+- provide IDs to Submit component in explicit way
+  ([08decab](https://github.com/redkubes/otomi-stack-web/commit/08decabd09b0837af5ba2448ce0d785f01d6e113))
+- provide IDs to Submit component in explicit way
+  ([3e5fb46](https://github.com/redkubes/otomi-stack-web/commit/3e5fb46900c98efe9bf9954cff1ef851ab27dbb7))
+- provide IDs to Submit component in explicit way
+  ([b89fb5f](https://github.com/redkubes/otomi-stack-web/commit/b89fb5fa44cb07d73cf4580f50505204d607c3cd))
+- provide IDs to Submit component in explicit way
+  ([d98a62d](https://github.com/redkubes/otomi-stack-web/commit/d98a62d393325ee682e3158a74e3e8ede03d6963))
+- remove debugger statements
+  ([9319599](https://github.com/redkubes/otomi-stack-web/commit/9319599090452df622ceee5142db2d5092ef4b3e))
+- remove jsonform related code
+  ([31b646e](https://github.com/redkubes/otomi-stack-web/commit/31b646e8676eb89559ba19aacddf556774504c72))
+- remove unused columns from service table
+  ([7bfef0d](https://github.com/redkubes/otomi-stack-web/commit/7bfef0d6195c0b0b44ad52f3c9ad94657e19225d))
+- removed git hook that conflicts
+  ([733bcf9](https://github.com/redkubes/otomi-stack-web/commit/733bcf9b5c0d2e6b99400bee97d98338f940e753))
+- reworked session state, button disbled if form not dirty
+  ([07de1f7](https://github.com/redkubes/otomi-stack-web/commit/07de1f70a9c0e3fea850f46f2a7c9486ac48a2dc))
+- use formData state to populate data in team form
+  ([e13aaf3](https://github.com/redkubes/otomi-stack-web/commit/e13aaf37508f311fe3579fdfdd84bca604867443))
+- use formdata state to pupulate data in service form
+  ([a031185](https://github.com/redkubes/otomi-stack-web/commit/a031185ec16fae6ffcc7e71b49abffcb70ac43de))
+- use official rjsf/material-ui library
+  ([29c6fc9](https://github.com/redkubes/otomi-stack-web/commit/29c6fc96acceb34f2357b18932674506884b7455))
 
 ### Build System
 
-* style change, added prettier settings ([b687b1b](https://github.com/redkubes/otomi-stack-web/commit/b687b1b10970a75434ccce5f33453b1771493fd6))
-
+- style change, added prettier settings
+  ([b687b1b](https://github.com/redkubes/otomi-stack-web/commit/b687b1b10970a75434ccce5f33453b1771493fd6))
 
 ### Styling
 
-* change style ([970f5c1](https://github.com/redkubes/otomi-stack-web/commit/970f5c1a66a2a0251478a130b4457c44cd451662))
-
+- change style ([970f5c1](https://github.com/redkubes/otomi-stack-web/commit/970f5c1a66a2a0251478a130b4457c44cd451662))
 
 ### Tests
 
-* add acl tests ([a178019](https://github.com/redkubes/otomi-stack-web/commit/a17801943d84af20c0bd62035dc34c1024bebd4e))
-* add acl tests ([3b79588](https://github.com/redkubes/otomi-stack-web/commit/3b79588d6918aff38c8eb05bb33ac1de6da07b72))
-
+- add acl tests ([a178019](https://github.com/redkubes/otomi-stack-web/commit/a17801943d84af20c0bd62035dc34c1024bebd4e))
+- add acl tests ([3b79588](https://github.com/redkubes/otomi-stack-web/commit/3b79588d6918aff38c8eb05bb33ac1de6da07b72))
 
 ### Code Refactoring
 
-* added repo to package [ci skip] ([d01c2ac](https://github.com/redkubes/otomi-stack-web/commit/d01c2ac589e09151f02a899c4f235bd4b991b2a6))
-* fix typo ([e69429b](https://github.com/redkubes/otomi-stack-web/commit/e69429b553343ec1f041f5a54572f0b8f0a77344))
-* ignore .history ([3e63426](https://github.com/redkubes/otomi-stack-web/commit/3e634268c20b3a20df2f7cf78e98c5462e78d244))
-
+- added repo to package
+  [ci skip](<[d01c2ac](https://github.com/redkubes/otomi-stack-web/commit/d01c2ac589e09151f02a899c4f235bd4b991b2a6)>)
+- fix typo ([e69429b](https://github.com/redkubes/otomi-stack-web/commit/e69429b553343ec1f041f5a54572f0b8f0a77344))
+- ignore .history
+  ([3e63426](https://github.com/redkubes/otomi-stack-web/commit/3e634268c20b3a20df2f7cf78e98c5462e78d244))
 
 ### Others
 
-* **release:** 0.1.17 ([c9b62ac](https://github.com/redkubes/otomi-stack-web/commit/c9b62ac9b32b722a9a5e9bc4ac086e2e54e76810))
-* add configuration for debugger ([3df96e7](https://github.com/redkubes/otomi-stack-web/commit/3df96e7482931e1d9b41d20579e01a8c9a160ee9))
+- **release:** 0.1.17
+  ([c9b62ac](https://github.com/redkubes/otomi-stack-web/commit/c9b62ac9b32b722a9a5e9bc4ac086e2e54e76810))
+- add configuration for debugger
+  ([3df96e7](https://github.com/redkubes/otomi-stack-web/commit/3df96e7482931e1d9b41d20579e01a8c9a160ee9))
 
 ### [0.1.17](https://github.com/redkubes/otomi-stack-web/compare/v0.1.16...v0.1.17) (2020-04-02)
 
