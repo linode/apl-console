@@ -1,6 +1,6 @@
 import '@fortawesome/fontawesome-free/css/all.css'
 // tslint:disable-next-line:no-implicit-dependencies
-import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import 'typeface-roboto'

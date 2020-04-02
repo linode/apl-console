@@ -24,17 +24,15 @@ const Submit = ({ data }): any => {
   return null
 }
 
-const Delete = ({ name }): any => {
-  const method = 'deleteTeam'
-  const filter = { teamId: name }
-  const [result] = useApi(method, filter, null)
+const Delete = (filter): any => {
+  const [result] = useApi('deleteTeam', filter, null)
   if (result) {
     return <Redirect to={`/teams`} />
   }
   return null
 }
 
-const EditTeam = ({ teamId, clusters, onSubmit, onDelete }): any => {
+const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }): any => {
   const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
 
   if (teamLoading) {
@@ -44,23 +42,7 @@ const EditTeam = ({ teamId, clusters, onSubmit, onDelete }): any => {
     return null
   }
 
-  return (
-    <React.Fragment>
-      <Team team={team} clusters={clusters} onSubmit={onSubmit} />
-      <Divider />
-      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button
-          variant='contained'
-          color='primary'
-          className={'DeleteService'}
-          startIcon={<DeleteIcon />}
-          onClick={onDelete}
-        >
-          Delete
-        </Button>
-      </Box>
-    </React.Fragment>
-  )
+  return <Team team={team} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
 export default ({
@@ -74,13 +56,8 @@ export default ({
 
   return (
     <MainLayout>
-      {teamId && (
-        <React.Fragment>
-          <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />
-          {deleteTeam && <Delete name={teamId} />}
-        </React.Fragment>
-      )}
-
+      {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
+      {teamId && deleteTeam && <Delete teamId={teamId} />}
       {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit data={formdata} />}
     </MainLayout>

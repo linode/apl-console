@@ -4,10 +4,10 @@ import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 
 export default (): any => {
-  const { team } = useSession()
+  const { teamId } = useSession()
   return (
     <MainLayout>
-      <Dashboard teamId={team.name} />
+      <Dashboard teamId={teamId} />
     </MainLayout>
   )
 }

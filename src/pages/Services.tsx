@@ -3,6 +3,7 @@ import Loader from '../components/Loader'
 import Services from '../components/Services'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
+import { useSession } from '../session-context'
 
 export default ({
   match: {
@@ -11,11 +12,12 @@ export default ({
 }): any => {
   const method = teamId ? 'getTeamServices' : 'getAllServices'
   const [services, loading] = useApi(method, teamId)
+  const { teamId: sessTeamId } = useSession()
 
   return (
     <MainLayout>
       {loading && <Loader />}
-      {services && <Services services={services} teamId={teamId} />}
+      {services && <Services services={services} teamId={teamId || sessTeamId} />}
     </MainLayout>
   )
 }

@@ -21,12 +21,13 @@ let sessionIdx = 0
 const testSessions = [
   {
     user: { email: 'bob.admin@redkubes.com' },
-    team: { name: 'admin', clusters: [] },
+    isAdmin: true,
     clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
   },
   {
     user: { email: 'dan.team@redkubes.com' },
-    team: { name: 'taxi', clusters: ['prd/aws'] },
+    teamId: 'taxi',
+    isAdmin: false,
     clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
   },
 ]
@@ -36,9 +37,16 @@ const App = (): any => {
   const initialising = false
   const [loaded, setLoaded] = useState(false)
   const [session, setSession] = useState(testSessions[sessionIdx])
+  const [teamId, setTeamId] = useState()
   const [selectedTheme, setSelectedTheme] = useState(adminTheme)
   const classes = createClasses(styles)
-  const changeSession = (): any => {
+  const changeSession = (isAdmin, teamId = null): any => {
+    if (isAdmin) {
+      testSessions[0].teamId = teamId
+      setSession(testSessions[0])
+      setTeamId(teamId)
+      return
+    }
     sessionIdx = sessionIdx === 0 ? 1 : 0
     setSession(testSessions[sessionIdx])
     setSelectedTheme(sessionIdx === 0 ? adminTheme : theme)
@@ -72,11 +80,8 @@ const App = (): any => {
         <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
         <sessionContext.Provider
           value={{
+            ...session,
             initialising,
-            isAdmin: session.team.name === 'admin',
-            user: session.user,
-            team: session.team,
-            clusters: session.clusters,
             changeSession,
           }}
         >
@@ -86,7 +91,7 @@ const App = (): any => {
               <Route path='/' component={Dashboard} exact />
               <Route path='/otomi/apps' component={OtomiApps} exact />
               <Route path='/clusters' component={Clusters} exact />
-              <Route path='/services' component={Services} exact />
+              <Route path='/services' component={Services} teamId={teamId} exact />
               <Route path='/teams' component={Teams} exact />
               <Route path='/create-team' component={Team} exact />
               <Route path='/teams/:teamId' component={Team} exact />

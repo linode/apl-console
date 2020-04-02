@@ -6,7 +6,7 @@ export interface SessionContext {
   initialising?: boolean
   isAdmin: boolean
   user?: object
-  team?: object
+  teamId?: string
   clusters?: object
   changeSession?: object
 }
@@ -15,7 +15,7 @@ export const sessionContext = React.createContext<SessionContext>({
   initialising: true,
   isAdmin: undefined,
   user: undefined,
-  team: undefined,
+  teamId: undefined,
   clusters: undefined,
   changeSession: undefined,
 })

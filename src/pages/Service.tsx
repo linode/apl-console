@@ -48,23 +48,7 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
   if (serviceError) {
     return null
   }
-  return (
-    <React.Fragment>
-      <Service service={service} clusters={clusters} onSubmit={onSubmit} />
-      <Divider />
-      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button
-          variant='contained'
-          color='primary'
-          className={'DeleteService'}
-          startIcon={<DeleteIcon />}
-          onClick={onDelete}
-        >
-          Delete
-        </Button>
-      </Box>
-    </React.Fragment>
-  )
+  return <Service service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
 export default ({
@@ -85,17 +69,15 @@ export default ({
       {loading && <Loader />}
       {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
       {team && serviceName && !formdata && (
-        <React.Fragment>
-          <EditService
-            teamId={teamId}
-            serviceName={serviceName}
-            clusters={clusters}
-            onSubmit={setFormdata}
-            onDelete={setDeleteService}
-          />
-          {deleteService && <Delete teamId={teamId} name={serviceName} />}
-        </React.Fragment>
+        <EditService
+          teamId={teamId}
+          serviceName={serviceName}
+          clusters={clusters}
+          onSubmit={setFormdata}
+          onDelete={setDeleteService}
+        />
       )}
+      {team && serviceName && !formdata && deleteService && <Delete teamId={teamId} name={serviceName} />}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
       {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>

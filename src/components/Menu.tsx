@@ -1,4 +1,5 @@
-import { Button, Divider, ListSubheader, makeStyles } from '@material-ui/core'
+import { Button, Divider, ListSubheader, makeStyles, Typography } from '@material-ui/core'
+import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -35,10 +36,13 @@ export default ({ children = null }): any => {
     root: {
       textTransform: 'capitalize',
     },
+    menu: {
+      color: 'black',
+    },
   })
 
   return (
-    <div className={classes.root}>
+    <List className={classes.root}>
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Otomi Stack' />
       </ListSubheader>
@@ -88,6 +92,6 @@ export default ({ children = null }): any => {
           {deploy && <Deploy />}
         </>
       )}
-    </div>
+    </List>
   )
 }

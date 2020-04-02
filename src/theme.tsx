@@ -2,7 +2,12 @@ import { createMuiTheme, createStyles, makeStyles, ThemeOptions } from '@materia
 import bg from './images/yellowBg.jpg'
 
 export const colors = {
-  accent: '#f7be16', // yellow
+  dark: {
+    accent: '#f7be16', // yellow
+  },
+  light: {
+    accent: '#f7be16', // yellow
+  },
 }
 
 const mainOverrides: ThemeOptions = {
@@ -35,8 +40,12 @@ const mainOverrides: ThemeOptions = {
     },
   },
   palette: {
+    text: {
+      primary: '#555',
+      secondary: '#aaa',
+    },
     background: {
-      default: colors.accent,
+      default: colors.light.accent,
     },
   },
   typography: {
@@ -45,25 +54,28 @@ const mainOverrides: ThemeOptions = {
     },
   },
 }
+// tslint:disable-next-line: one-variable-per-declaration
 const teamOverrides: ThemeOptions = {
   ...mainOverrides,
   palette: {
+    ...mainOverrides.palette,
     primary: {
       main: '#0053ff',
     },
     secondary: {
-      main: '#000000',
+      main: '#555',
     },
   },
 }
 const adminOverrides: ThemeOptions = {
   ...mainOverrides,
   palette: {
+    ...mainOverrides.palette,
     primary: {
       main: '#ff7e00',
     },
     secondary: {
-      main: '#000000',
+      main: '#555',
     },
   },
 }

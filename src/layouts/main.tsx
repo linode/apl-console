@@ -20,6 +20,7 @@ import Logo from '../components/Logo'
 import MenuAdmin from '../components/MenuAdmin'
 import MenuTeam from '../components/MenuTeam'
 import User from '../components/User'
+import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
 const drawerWidth = '16vw'
 
@@ -60,6 +61,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  drawer: {
+    backgroundColor: theme.palette.secondary.main,
   },
   drawerPaper: {
     position: 'relative',
@@ -104,9 +108,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default (props): any => {
   const { children } = props
-  const { isAdmin, team } = useSession()
+  const { isAdmin, teamId } = useSession()
   const classes = useStyles(props)
   const [open, setOpen] = useState(true)
+  const [teams, teamsLoading, teamsError] = useApi('getTeams')
   const handleDrawerOpen = (): any => {
     setOpen(true)
   }
@@ -137,7 +142,7 @@ export default (props): any => {
             </IconButton>
           </Typography>
           <IconButton color='inherit'>
-            <User />
+            <User teams={teams} />
           </IconButton>
           <IconButton color='inherit'>
             <Badge badgeContent={4} color='secondary'>
@@ -148,6 +153,7 @@ export default (props): any => {
       </AppBar>
       <Drawer
         variant='permanent'
+        className={classes.drawer}
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
         }}
@@ -160,7 +166,7 @@ export default (props): any => {
           </IconButton>
         </div>
         <Divider />
-        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamId={team.name} />}</List>
+        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}</List>
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>
