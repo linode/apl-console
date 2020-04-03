@@ -1,7 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See
-[standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.21](https://github.com/redkubes/otomi-stack-web/compare/v0.1.20...v0.1.21) (2020-04-03)
+
+
+### Bug Fixes
+
+* dashboard team name ([6fa136e](https://github.com/redkubes/otomi-stack-web/commit/6fa136ebfcb2410ef45c975d06c7054b7bce6f6b))
 
 ### [0.1.20](https://github.com/redkubes/otomi-stack-web/compare/v0.1.19...v0.1.20) (2020-04-03)
 
