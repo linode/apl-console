@@ -18,7 +18,7 @@ const Dashboard = ({ teamId }): any => {
     <Container maxWidth='xs'>
       <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.root}>
         <Text variant='h3'>
-          Welcome to the <b>team {teamId}</b> dashboard!
+          Welcome to the team <b>{isAdmin ? 'Admin' : teamId.charAt(0).toUpperCase() + teamId.substr(1)}</b> dashboard!
         </Text>
         {!isAdmin && (
           <Button
