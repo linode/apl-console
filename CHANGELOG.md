@@ -1,7 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See
-[standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.20](https://github.com/redkubes/otomi-stack-web/compare/v0.1.19...v0.1.20) (2020-04-03)
+
+
+### Code Refactoring
+
+* style changes, bug fixes ([ba08642](https://github.com/redkubes/otomi-stack-web/commit/ba08642bbf655d48f98753190f87d90274d936c5))
 
 ### [0.1.19](https://github.com/redkubes/otomi-stack-web/compare/v0.1.18...v0.1.19) (2020-04-03)
 
