@@ -1,33 +1,33 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import React from 'react'
+import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
 
 export default ({ clusters }): any => {
   return (
     <div className='Cluster'>
       <h2>Clusters</h2>
-      <TableContainer component={Paper}>
-        {/* <Table className={classes.table} aria-label='simple table'> */}
-        <Table aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Cluster</TableCell>
-              <TableCell align='right'>Cloud</TableCell>
-              <TableCell align='right'>Domain</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <OTableContainer>
+        {/* <OTable className={classes.table} aria-label='simple table'> */}
+        <OTable aria-label='simple table'>
+          <OTableHead>
+            <OTableRow>
+              <OTableCell>Cluster</OTableCell>
+              <OTableCell align='right'>Cloud</OTableCell>
+              <OTableCell align='right'>Domain</OTableCell>
+            </OTableRow>
+          </OTableHead>
+          <OTableBody>
             {clusters.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component='th' scope='row'>
+              <OTableRow key={row.name}>
+                <OTableCell component='th' scope='row'>
                   {row.cluster}
-                </TableCell>
-                <TableCell align='right'>{row.cloud}</TableCell>
-                <TableCell align='right'>{row.domain}</TableCell>
-              </TableRow>
+                </OTableCell>
+                <OTableCell align='right'>{row.cloud}</OTableCell>
+                <OTableCell align='right'>{row.domain}</OTableCell>
+              </OTableRow>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </OTableBody>
+        </OTable>
+      </OTableContainer>
     </div>
   )
 }

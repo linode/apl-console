@@ -1,11 +1,11 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
-import BootstrapTable from 'react-bootstrap-table-next'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
+import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
 
-const getTeamLink = (row, rowIndex): any => {
+const getTeamLink = (row): any => {
   return <Link to={`/teams/${row.name}`}>{row.name}</Link>
 }
 
@@ -33,27 +33,27 @@ export default ({ teams }): any => {
     <div className='Teams'>
       <h2>Teams</h2>
       {isAdmin && <TeamActionBar />}
-      <TableContainer component={Paper}>
-        {/* <Table className={classes.table} aria-label='simple table'> */}
-        <Table aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Team Name</TableCell>
-              <TableCell align='right'>Clusters</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {teams.map((row, id) => (
-              <TableRow key={row.name}>
-                <TableCell component='th' scope='row' id={row.teamId}>
-                  {getTeamLink(row, id)}
-                </TableCell>
-                <TableCell align='right'>{row.clusters.join(', ')}</TableCell>
-              </TableRow>
+      <OTableContainer>
+        {/* <OTable className={classes.table} aria-label='simple table'> */}
+        <OTable aria-label='simple table'>
+          <OTableHead>
+            <OTableRow>
+              <OTableCell>Team Name</OTableCell>
+              <OTableCell align='right'>Clusters</OTableCell>
+            </OTableRow>
+          </OTableHead>
+          <OTableBody>
+            {teams.map(row => (
+              <OTableRow key={row.name}>
+                <OTableCell component='th' scope='row' id={row.teamId}>
+                  {getTeamLink(row)}
+                </OTableCell>
+                <OTableCell align='right'>{row.clusters.join(', ')}</OTableCell>
+              </OTableRow>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </OTableBody>
+        </OTable>
+      </OTableContainer>
     </div>
   )
 }

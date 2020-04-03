@@ -1,16 +1,8 @@
 import { Box, Button } from '@material-ui/core'
-import Paper from '@material-ui/core/Paper'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
-import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSession } from '../session-context'
+import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
 
 const getServiceLink = (row): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
@@ -27,6 +19,7 @@ const getServiceLink = (row): any => {
 export default ({ services, teamId }): any => {
   return (
     <div className='Services'>
+      <h2>Services</h2>
       <Box mb={1}>
         <Button
           component={Link}
@@ -39,30 +32,28 @@ export default ({ services, teamId }): any => {
           Create service
         </Button>
       </Box>
-      <h2>Services</h2>
-      <TableContainer component={Paper}>
-        {/* <Table className={classes.table} aria-label='simple table'> */}
-        <Table aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Service Name</TableCell>
-              <TableCell align='right'>Cluster</TableCell>
-              {!teamId && <TableCell align='right'>Team</TableCell>}
-            </TableRow>
-          </TableHead>
-          <TableBody>
+      <OTableContainer>
+        <OTable aria-label='simple table'>
+          <OTableHead>
+            <OTableRow>
+              <OTableCell>Service Name</OTableCell>
+              <OTableCell align='right'>Cluster</OTableCell>
+              {!teamId && <OTableCell align='right'>Team</OTableCell>}
+            </OTableRow>
+          </OTableHead>
+          <OTableBody>
             {services.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component='th' scope='row'>
+              <OTableRow key={row.name}>
+                <OTableCell component='th' scope='row'>
                   {getServiceLink(row)}
-                </TableCell>
-                <TableCell align='right'>{row.clusterId}</TableCell>
-                {!teamId && <TableCell align='right'>{row.teamId}</TableCell>}
-              </TableRow>
+                </OTableCell>
+                <OTableCell align='right'>{row.clusterId}</OTableCell>
+                {!teamId && <OTableCell align='right'>{row.teamId}</OTableCell>}
+              </OTableRow>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </OTableBody>
+        </OTable>
+      </OTableContainer>
     </div>
   )
 }

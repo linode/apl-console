@@ -7,6 +7,8 @@ export const colors = {
   },
   light: {
     accent: '#f7be16', // yellow
+    container: '#bbb'
+    paper: '#ffedb9',
   },
 }
 
@@ -46,6 +48,7 @@ const mainOverrides: ThemeOptions = {
     },
     background: {
       default: colors.light.accent,
+      paper: colors.light.paper,
     },
   },
   typography: {

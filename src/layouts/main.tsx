@@ -1,4 +1,4 @@
-import { Container, makeStyles, Theme } from '@material-ui/core'
+import { Container, makeStyles } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import Box from '@material-ui/core/Box'
@@ -24,7 +24,7 @@ import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
 const drawerWidth = '16vw'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
   },
@@ -175,7 +175,7 @@ export default (props): any => {
         <Container maxWidth='lg' className={classes.container}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <Paper className={classes.paper}>{children}</Paper>
+              {children}
             </Grid>
           </Grid>
           {/* <Box pt={4}>
