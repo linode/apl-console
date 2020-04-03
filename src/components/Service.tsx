@@ -40,7 +40,7 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
   const uiSchema = schema.getServiceUiSchema(mySchema, role)
   return (
     <div className='Service'>
-      <h2>Service:</h2>
+      <h1>Service:</h1>
       <Form
         key='createService'
         schema={mySchema}

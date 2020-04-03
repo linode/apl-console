@@ -56,8 +56,8 @@ export default ({
     params: { teamId, serviceName },
   },
 }): any => {
-  const { isAdmin, team: sessTeam, clusters } = useSession()
-  if (!isAdmin && teamId !== sessTeam.name) {
+  const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+  if (!isAdmin && teamId !== sessTeamId) {
     return <p>Unauthorized!</p>
   }
   const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamId)

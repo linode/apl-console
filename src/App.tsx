@@ -1,4 +1,5 @@
 import { CssBaseline } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'

@@ -1,19 +1,15 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
+import { OLink } from './Link'
 import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
-
-const getTeamLink = (row): any => {
-  return <Link to={`/teams/${row.name}`}>{row.name}</Link>
-}
 
 const TeamActionBar = (): any => {
   return (
     <Box mb={1}>
       <Button
-        component={Link}
+        component={OLink}
         to='/create-team'
         startIcon={<AddCircleIcon />}
         variant='contained'
@@ -31,7 +27,7 @@ export default ({ teams }): any => {
 
   return (
     <div className='Teams'>
-      <h2>Teams</h2>
+      <h1>Teams</h1>
       {isAdmin && <TeamActionBar />}
       <OTableContainer>
         {/* <OTable className={classes.table} aria-label='simple table'> */}
@@ -46,7 +42,7 @@ export default ({ teams }): any => {
             {teams.map(row => (
               <OTableRow key={row.name}>
                 <OTableCell component='th' scope='row' id={row.teamId}>
-                  {getTeamLink(row)}
+                  <OLink to={`/teams/${row.name}`}>{row.name}</OLink>
                 </OTableCell>
                 <OTableCell align='right'>{row.clusters.join(', ')}</OTableCell>
               </OTableRow>

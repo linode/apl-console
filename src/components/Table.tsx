@@ -1,14 +1,15 @@
 import { makeStyles, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@material-ui/core'
 import React from 'react'
+import { mainStyles } from '../theme'
 
 const useStyles = makeStyles(theme => ({
   table: {
     background: theme.palette.background.paper,
   },
   head: {
-    background: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.default,
     textTransform: 'capitalize',
-    textColor: 'black',
+    textColor: theme.palette.common.black,
   },
   row: {},
   cell: {},
@@ -17,9 +18,11 @@ const useStyles = makeStyles(theme => ({
 const MoComp = (props): any => {
   const oType = props.oType
   const Comp = props.comp
+  const classNames = props.classNames || []
   const classes = useStyles()
+  const mainClasses = mainStyles()
   return (
-    <Comp className={classes[oType]} {...props}>
+    <Comp className={`${classes[oType]} ${classNames.map(cls => mainClasses[cls]).join(' ')}`} {...props}>
       {props.children}
     </Comp>
   )
@@ -35,4 +38,4 @@ export const OTableContainer = (props): any => <MoComp {...props} comp={TableCon
 
 export const OTableHead = (props): any => <MoComp {...props} comp={TableHead} oType='head' component={Paper} />
 
-export const OTableRow = (props): any => <MoComp {...props} comp={TableRow} oType='row' />
+export const OTableRow = (props): any => <MoComp {...props} comp={TableRow} oType='row' classNames={['selectable']} />

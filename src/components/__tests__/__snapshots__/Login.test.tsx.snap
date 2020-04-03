@@ -28,7 +28,7 @@ exports[`Login snapshot matches old one 1`] = `
           }
         }
       />
-      <h2
+      <h1
         className="MuiTypography-root MuiTypography-h5"
       >
         <div
@@ -36,7 +36,7 @@ exports[`Login snapshot matches old one 1`] = `
         >
           Otomi.app
         </div>
-      </h2>
+      </h1>
     </div>
     <div
       className="MuiBox-root MuiBox-root-42"

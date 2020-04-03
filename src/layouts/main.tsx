@@ -27,6 +27,7 @@ const drawerWidth = '16vw'
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    a: theme.palette.primary.dark,
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -40,6 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: theme.palette.primary.light,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -135,7 +137,7 @@ export default (props): any => {
             <MenuIcon />
           </IconButton>
 
-          <Typography component='h1' variant='h6' color='inherit' noWrap className={classes.title}>
+          <Typography component='h1' variant='h6' noWrap className={classes.title}>
             <IconButton color='inherit'>
               <Logo />
               Otomi {isAdmin ? 'Admin' : 'Team'} Console
@@ -174,7 +176,7 @@ export default (props): any => {
         <div className={classes.appBarSpacer} />
         <Container maxWidth='lg' className={classes.container}>
           <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={12} component={Paper}>
               {children}
             </Grid>
           </Grid>

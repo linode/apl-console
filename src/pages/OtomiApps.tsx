@@ -7,7 +7,7 @@ import MainLayout from '../layouts/main'
 export default (): any => {
   return (
     <MainLayout>
-      <h2>Coming Soon!</h2>
+      <h1>Coming Soon!</h1>
     </MainLayout>
   )
 }

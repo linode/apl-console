@@ -7,7 +7,7 @@ export const colors = {
   },
   light: {
     accent: '#f7be16', // yellow
-    container: '#bbb'
+    container: '#bbb',
     paper: '#ffedb9',
   },
 }
@@ -88,3 +88,25 @@ export const theme = createMuiTheme(teamOverrides)
 export const adminTheme = createMuiTheme(adminOverrides)
 
 export const createClasses = (stylesObj: object): any => makeStyles(() => createStyles(stylesObj))({})
+
+export const mainStyles = makeStyles(theme => ({
+  selectable: {
+    color: theme.palette.primary.main,
+    '&': {
+      textDecoration: 'none',
+      color: theme.palette.primary.main,
+    },
+    '&:hover': {
+      color: theme.palette.primary.dark,
+    },
+    '@global': {
+      a: {
+        textDecoration: 'none',
+        color: theme.palette.primary.main,
+      },
+      'a:hover': {
+        color: theme.palette.primary.dark,
+      },
+    },
+  },
+}))

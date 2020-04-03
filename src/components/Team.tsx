@@ -36,7 +36,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
 
   return (
     <div className='Team'>
-      <h2>Team details</h2>
+      <h1>Team details</h1>
 
       <Form
         key='createTeam'
@@ -49,7 +49,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
         showErrorList={false}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          {team.teamId && (
+          {team && team.teamId && (
             <Button variant='contained' color='primary' startIcon={<DeleteIcon />} onClick={onDelete}>
               Delete
             </Button>

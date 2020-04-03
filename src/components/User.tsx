@@ -11,17 +11,17 @@ export default ({ teams = null }): any => {
     },
   })
   const { user, teamId, isAdmin, changeSession } = useSession()
-  const handleChange = event => {
+  const handleChange = (event): any => {
     changeSession(true, event.target.value)
     event.preventDefault()
   }
   return (
     <>
       <Avatar className={classes.root} />
-      <span onClick={() => changeSession(false)}>{user.email}</span> &nbsp;({isAdmin && `admin, obo:`}
+      <span onClick={(): any => changeSession(false)}>{user.email}</span> &nbsp;({isAdmin && `admin, obo:`}
       {isAdmin && (
         <Select onChange={handleChange}>
-          <MenuItem value={undefined}>-</MenuItem>
+          <MenuItem value={teamId}>-</MenuItem>
           {teams !== null &&
             teams.map(({ name: tid }): any => (
               <MenuItem key={tid} value={tid}>

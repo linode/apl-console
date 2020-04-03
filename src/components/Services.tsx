@@ -1,12 +1,12 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { OLink } from './Link'
 import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
 
 const getServiceLink = (row): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
-  return <Link to={link}>{row.name}</Link>
+  return <OLink to={link}>{row.name}</OLink>
 }
 
 // const getPublicUrl = (row): any => {
@@ -19,10 +19,10 @@ const getServiceLink = (row): any => {
 export default ({ services, teamId }): any => {
   return (
     <div className='Services'>
-      <h2>Services</h2>
+      <h1>Services</h1>
       <Box mb={1}>
         <Button
-          component={Link}
+          component={OLink}
           to={`/teams/${teamId}/create-service`}
           startIcon={<AddCircleIcon />}
           variant='contained'
