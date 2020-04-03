@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.19](https://github.com/redkubes/otomi-stack-web/compare/v0.1.18...v0.1.19) (2020-04-03)
+
+
+### Others
+
+* **release:** 0.1.18 ([145e8ad](https://github.com/redkubes/otomi-stack-web/commit/145e8ad799f745d91e909e6901b6122763151990))
+
+
+### Code Refactoring
+
+* created table component ([3f91798](https://github.com/redkubes/otomi-stack-web/commit/3f9179866bfddde5bf855bbe2fa06fb9653733a1))
+
 ### [0.1.18](https://github.com/redkubes/otomi-stack-web/compare/v0.1.16...v0.1.18) (2020-04-02)
 
 ### Features
