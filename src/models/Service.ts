@@ -1,5 +1,6 @@
-export default interface Team {
+export default interface Service {
   serviceId?: string
+  clusterId: string
   name: string
-  domain?: string
+  ingress: any
 }
