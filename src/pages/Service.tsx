@@ -1,14 +1,18 @@
-import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 
-const Submit = ({ teamId, name, data }): any => {
+interface SubmitProps {
+  teamId: string
+  name?: string
+  data: object
+}
+
+const Submit = ({ teamId, name, data }: SubmitProps): any => {
   let method
   let filter
   if (name) {
@@ -25,7 +29,12 @@ const Submit = ({ teamId, name, data }): any => {
   return null
 }
 
-const Delete = ({ teamId, name }): any => {
+interface DeleteProps {
+  teamId: string
+  name: string
+}
+
+const Delete = ({ teamId, name }: DeleteProps): any => {
   const method = 'deleteService'
   const filter = { teamId, name }
   const [result] = useApi(method, filter, null)
@@ -36,7 +45,15 @@ const Delete = ({ teamId, name }): any => {
   return null
 }
 
-const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any => {
+interface EditProps {
+  teamId: string
+  serviceName: string
+  clusters: [string]
+  onSubmit: CallableFunction
+  onDelete: CallableFunction
+}
+
+const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: EditProps): any => {
   const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
     teamId,
     name: serviceName,
@@ -51,16 +68,22 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
   return <Service service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
+interface Params {
+  teamId?: string
+  serviceName?: string
+}
+
 export default ({
   match: {
     params: { teamId, serviceName },
   },
-}): any => {
+}: RouteComponentProps<Params>): any => {
   const { isAdmin, teamId: sessTeamId, clusters } = useSession()
   if (!isAdmin && teamId !== sessTeamId) {
     return <p>Unauthorized!</p>
   }
-  const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamId)
+  const tid = teamId || sessTeamId
+  const [team, loading]: [any, boolean, Error] = useApi('getTeam', tid)
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
 
@@ -77,9 +100,9 @@ export default ({
           onDelete={setDeleteService}
         />
       )}
-      {team && serviceName && !formdata && deleteService && <Delete teamId={teamId} name={serviceName} />}
+      {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
+      {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

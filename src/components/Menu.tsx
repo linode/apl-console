@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDirty, useApi } from '../hooks/api'
 import { useSnackbar } from '../utils'
-import { OListItem } from './List'
+import { ListItem } from './List'
 
 const Deploy = (): any => {
   const { enqueueSnackbar } = useSnackbar()
@@ -31,58 +31,64 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default ({ children = null }): any => {
-  const [deploy, setDeploy] = useState()
-  const classes = useStyles()
+interface Props {
+  children?: any
+}
 
+export default ({ children = null }: Props): any => {
+  const [deploy, setDeploy] = useState(false)
+  const classes = useStyles()
+  const handleClick = (): void => {
+    setDeploy(true)
+  }
   return (
     <List className={classes.root}>
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Otomi Stack' />
       </ListSubheader>
-      <OListItem component={Link} to='/'>
+      <ListItem component={Link} to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
-      </OListItem>
-      <OListItem component={Link} to='/otomi/apps'>
+      </ListItem>
+      <ListItem component={Link} to='/otomi/apps'>
         <ListItemIcon>
           <AppsIcon />
         </ListItemIcon>
         <ListItemText primary='Otomi Apps' />
-      </OListItem>
+      </ListItem>
       <Divider />
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Org Wide' />
       </ListSubheader>
-      <OListItem component={Link} to='/clusters'>
+      <ListItem component={Link} to='/clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
-      </OListItem>
-      <OListItem component={Link} to='/teams'>
+      </ListItem>
+      <ListItem component={Link} to='/teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
-      </OListItem>
-      <OListItem component={Link} to='/services'>
+      </ListItem>
+      <ListItem component={Link} to='/services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
         <ListItemText primary='Services' />
-      </OListItem>
+      </ListItem>
       {children}
       {getDirty() && (
         <>
           <Divider />
-          <OListItem component='div' onClick={setDeploy.bind(this, true)}>
+          <ListItem component='div' onClick={handleClick}>
             <Button startIcon={<CloudUploadIcon />} variant='contained' className={classes.button} color='primary'>
               Deploy changes
             </Button>
-          </OListItem>
+          </ListItem>
           {deploy && <Deploy />}
         </>
       )}

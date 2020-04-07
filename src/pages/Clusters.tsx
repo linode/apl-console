@@ -5,7 +5,7 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 
 export default (): any => {
-  const [clusters, loading, error] = useApi('getClusters')
+  const [clusters, loading]: any = useApi('getClusters')
 
   return (
     <MainLayout>

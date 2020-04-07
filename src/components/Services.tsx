@@ -1,12 +1,13 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
-import { OLink } from './Link'
-import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
+import { Link } from 'react-router-dom'
+import { RLink } from './Link'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 const getServiceLink = (row): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
-  return <OLink to={link}>{row.name}</OLink>
+  return <RLink to={link}>{row.name}</RLink>
 }
 
 // const getPublicUrl = (row): any => {
@@ -16,44 +17,51 @@ const getServiceLink = (row): any => {
 //   return `${row.ingress.domain}`
 // }
 
-export default ({ services, teamId }): any => {
+interface Props {
+  services: any[]
+  teamId?: string
+  sessTeamId?: string
+  isAdmin: boolean
+}
+
+export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
   return (
     <div className='Services'>
       <h1>Services</h1>
       <Box mb={1}>
         <Button
-          component={OLink}
-          to={`/teams/${teamId}/create-service`}
+          component={Link}
+          to='/create-service'
           startIcon={<AddCircleIcon />}
           variant='contained'
           color='primary'
-          disabled={!teamId}
+          disabled={!sessTeamId}
         >
           Create service
         </Button>
       </Box>
-      <OTableContainer>
-        <OTable aria-label='simple table'>
-          <OTableHead>
-            <OTableRow>
-              <OTableCell>Service Name</OTableCell>
-              <OTableCell align='right'>Cluster</OTableCell>
-              {!teamId && <OTableCell align='right'>Team</OTableCell>}
-            </OTableRow>
-          </OTableHead>
-          <OTableBody>
-            {services.map(row => (
-              <OTableRow key={row.name}>
-                <OTableCell component='th' scope='row'>
+      <TableContainer>
+        <Table aria-label='simple table'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Service Name</TableCell>
+              <TableCell align='right'>Cluster</TableCell>
+              {(isAdmin || !teamId) && <TableCell align='right'>Team</TableCell>}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {services.map((row): any => (
+              <TableRow key={row.name}>
+                <TableCell component='th' scope='row'>
                   {getServiceLink(row)}
-                </OTableCell>
-                <OTableCell align='right'>{row.clusterId}</OTableCell>
-                {!teamId && <OTableCell align='right'>{row.teamId}</OTableCell>}
-              </OTableRow>
+                </TableCell>
+                <TableCell align='right'>{row.clusterId}</TableCell>
+                {(isAdmin || !teamId) && <TableCell align='right'>{row.teamId}</TableCell>}
+              </TableRow>
             ))}
-          </OTableBody>
-        </OTable>
-      </OTableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

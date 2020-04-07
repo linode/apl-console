@@ -16,7 +16,7 @@ FROM dev as ci
 
 ENV NODE_ENV=test
 
-COPY ts*.json ./
+COPY ts*.json .es* ./
 COPY src src
 COPY public public
 

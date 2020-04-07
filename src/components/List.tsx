@@ -2,15 +2,7 @@ import { ListItem } from '@material-ui/core'
 import React from 'react'
 import { mainStyles } from '../theme'
 
-const MoComp = (props): any => {
-  const oType = props.oType
-  const Comp = props.comp
-  const classes = mainStyles()
-  return (
-    <Comp className={classes[oType]} {...props}>
-      {props.children}
-    </Comp>
-  )
-}
+const OListItem = (props): any => <ListItem {...props} className={mainStyles().selectable} />
 
-export const OListItem = (props): any => <MoComp {...props} comp={ListItem} oType='selectable' />
+// eslint-disable-next-line import/prefer-default-export
+export { OListItem as ListItem }

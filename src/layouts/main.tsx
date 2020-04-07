@@ -1,7 +1,6 @@
 import { Container, makeStyles } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
-import Box from '@material-ui/core/Box'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
@@ -22,6 +21,7 @@ import MenuTeam from '../components/MenuTeam'
 import User from '../components/User'
 import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
+
 const drawerWidth = '16vw'
 
 const useStyles = makeStyles(theme => ({
@@ -108,12 +108,16 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default (props): any => {
+interface Props {
+  children?: any
+}
+
+export default (props: Props): any => {
   const { children } = props
   const { isAdmin, teamId } = useSession()
   const classes = useStyles(props)
   const [open, setOpen] = useState(true)
-  const [teams, teamsLoading, teamsError] = useApi('getTeams')
+  const [teams]: any = useApi('getTeams')
   const handleDrawerOpen = (): any => {
     setOpen(true)
   }
@@ -168,7 +172,7 @@ export default (props): any => {
           </IconButton>
         </div>
         <Divider />
-        <List>{isAdmin ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}</List>
+        <List>{isAdmin && !teamId ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}</List>
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>

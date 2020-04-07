@@ -1,5 +1,4 @@
 import { createMuiTheme, createStyles, makeStyles, ThemeOptions } from '@material-ui/core/styles'
-import bg from './images/yellowBg.jpg'
 
 export const colors = {
   dark: {
@@ -87,7 +86,7 @@ export const theme = createMuiTheme(teamOverrides)
 
 export const adminTheme = createMuiTheme(adminOverrides)
 
-export const createClasses = (stylesObj: object): any => makeStyles(() => createStyles(stylesObj))({})
+export const createClasses = (stylesObj): any => makeStyles(() => createStyles(stylesObj))({})
 
 export const mainStyles = makeStyles(theme => ({
   selectable: {
