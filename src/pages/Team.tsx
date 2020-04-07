@@ -49,16 +49,25 @@ export default ({
     params: { teamId },
   },
 }: any): any => {
-  const { clusters } = useSession()
+  const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+  let err
+  if (!isAdmin && teamId !== sessTeamId) {
+    err = <Error code={401} />
+  }
+
   const [formdata, setFormdata] = useState()
   const [deleteTeam, setDeleteTeam] = useState()
 
   return (
     <MainLayout>
-      {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
-      {teamId && deleteTeam && <Delete teamId={teamId} />}
-      {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit data={formdata} />}
+      {err || (
+        <>
+          {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
+          {teamId && deleteTeam && <Delete teamId={teamId} />}
+          {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
+          {formdata && <Submit data={formdata} />}
+        </>
+      )}
     </MainLayout>
   )
 }
