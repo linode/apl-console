@@ -13,7 +13,7 @@ import Service from './pages/Service'
 import Services from './pages/Services'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
-import { sessionContext } from './session-context'
+import { SessionContext } from './session-context'
 import { adminTheme, createClasses, theme } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
 
@@ -79,7 +79,7 @@ const App = (): any => {
         <>
           <CssBaseline />
           <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-          <sessionContext.Provider
+          <SessionContext.Provider
             value={{
               ...session,
               initialising,
@@ -95,14 +95,14 @@ const App = (): any => {
                 <Route path='/services' component={Services} teamId={teamId} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/create-team' component={Team} exact />
+                <Route path='/create-service' component={Service} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceName' component={Service} exact />
-                <Route path='/teams/:teamId/create-service' component={Service} exact />
                 <Route path='*'>404 page here</Route>
               </Switch>
             </Router>
-          </sessionContext.Provider>
+          </SessionContext.Provider>
         </>
       </SnackbarProvider>
     </ThemeProvider>

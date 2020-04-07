@@ -91,7 +91,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix"
+      "eslint --fix --ext js,ts,tsx"
     ]
   },
   "name": "otomi-stack-web",
@@ -103,7 +103,7 @@
     "build": "react-scripts build",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
-    "dev": "run-p start watch:ts watch:es",
+    "dev": "run-p start watch:ts",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",

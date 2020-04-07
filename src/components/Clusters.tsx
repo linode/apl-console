@@ -1,13 +1,12 @@
 import React from 'react'
-import { mainStyles } from '../theme'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
+import { Link } from './Link'
 
 interface Props {
   clusters: any[]
 }
 
 export default ({ clusters }: Props): any => {
-  const mainClasses = mainStyles()
   return (
     <div className='Cluster'>
       <h1>Clusters</h1>
@@ -25,12 +24,14 @@ export default ({ clusters }: Props): any => {
           <TableBody>
             {clusters.map(row => (
               <TableRow key={row.name}>
-                <TableCell component='th' scope='row' className={mainClasses.selectable}>
-                  <a href={`https://tomi.${row.domain}`}>{row.cluster}</a>
+                <TableCell component='th' scope='row'>
+                  {row.cluster}
                 </TableCell>
                 <TableCell align='right'>{row.cloud}</TableCell>
                 <TableCell align='right'>{row.region}</TableCell>
-                <TableCell align='right'>{row.domain}</TableCell>
+                <TableCell align='right'>
+                  <Link href={`https://otomi.${row.domain}`}>{row.domain}</Link>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

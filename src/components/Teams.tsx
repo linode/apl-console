@@ -1,8 +1,9 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import Link from './Link'
+import { RLink } from './Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 const TeamActionBar = (): any => {
@@ -14,7 +15,7 @@ const TeamActionBar = (): any => {
         startIcon={<AddCircleIcon />}
         variant='contained'
         color='primary'
-        className="createTeam"
+        className='createTeam'
       >
         Create team
       </Button>
@@ -46,7 +47,7 @@ export default ({ teams }: Props): any => {
             {teams.map(row => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row' id={row.teamId}>
-                  <Link to={`/teams/${row.name}`}>{row.name}</Link>
+                  <RLink to={`/teams/${row.name}`}>{row.name}</RLink>
                 </TableCell>
                 <TableCell align='right'>{row.clusters.join(', ')}</TableCell>
               </TableRow>

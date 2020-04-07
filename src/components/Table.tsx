@@ -28,7 +28,7 @@ const OTableContainer = (props): any => <TableContainer {...props} className={us
 
 const OTableHead = (props): any => <TableHead {...props} className={useStyles().head} component={Paper} />
 
-const OTableRow = (props): any => <TableRow {...props} classes={[useStyles().root, mainStyles().selectable]} />
+const OTableRow = (props): any => <TableRow {...props} classes={`${useStyles().root}, ${mainStyles().selectable}`} />
 
 export {
   OTable as Table,

@@ -17,12 +17,12 @@ export default ({
 }: RouteComponentProps<Params>): any => {
   const method = teamId ? 'getTeamServices' : 'getAllServices'
   const [services, loading]: any = useApi(method, teamId)
-  const { teamId: sessTeamId } = useSession()
+  const { isAdmin, teamId: sessTeamId } = useSession()
 
   return (
     <MainLayout>
       {loading && <Loader />}
-      {services && <Services services={services} teamId={teamId || sessTeamId} />}
+      {services && <Services services={services} sessTeamId={sessTeamId} teamId={teamId} isAdmin={isAdmin} />}
     </MainLayout>
   )
 }

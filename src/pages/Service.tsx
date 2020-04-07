@@ -70,7 +70,7 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: Edit
 
 interface Params {
   teamId?: string
-  serviceName: string
+  serviceName?: string
 }
 
 export default ({
@@ -82,7 +82,8 @@ export default ({
   if (!isAdmin && teamId !== sessTeamId) {
     return <p>Unauthorized!</p>
   }
-  const [team, loading]: [any, boolean, Error] = useApi('getTeam', teamId)
+  const tid = teamId || sessTeamId
+  const [team, loading]: [any, boolean, Error] = useApi('getTeam', tid)
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
 
@@ -99,9 +100,9 @@ export default ({
           onDelete={setDeleteService}
         />
       )}
-      {team && serviceName && !formdata && deleteService && <Delete teamId={teamId} name={serviceName} />}
+      {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
       {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
+      {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

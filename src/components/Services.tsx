@@ -2,12 +2,12 @@ import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import OLink from './Link'
+import { RLink } from './Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 const getServiceLink = (row): any => {
   const link = `/teams/${row.teamId}/services/${row.name}`
-  return <OLink to={link}>{row.name}</OLink>
+  return <RLink to={link}>{row.name}</RLink>
 }
 
 // const getPublicUrl = (row): any => {
@@ -19,21 +19,23 @@ const getServiceLink = (row): any => {
 
 interface Props {
   services: any[]
-  teamId: string
+  teamId?: string
+  sessTeamId?: string
+  isAdmin: boolean
 }
 
-export default ({ services, teamId }: Props): any => {
+export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
   return (
     <div className='Services'>
       <h1>Services</h1>
       <Box mb={1}>
         <Button
           component={Link}
-          to={`/teams/${teamId}/create-service`}
+          to='/create-service'
           startIcon={<AddCircleIcon />}
           variant='contained'
           color='primary'
-          disabled={!teamId}
+          disabled={!sessTeamId}
         >
           Create service
         </Button>
@@ -44,7 +46,7 @@ export default ({ services, teamId }: Props): any => {
             <TableRow>
               <TableCell>Service Name</TableCell>
               <TableCell align='right'>Cluster</TableCell>
-              {!teamId && <TableCell align='right'>Team</TableCell>}
+              {(isAdmin || !teamId) && <TableCell align='right'>Team</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -54,7 +56,7 @@ export default ({ services, teamId }: Props): any => {
                   {getServiceLink(row)}
                 </TableCell>
                 <TableCell align='right'>{row.clusterId}</TableCell>
-                {!teamId && <TableCell align='right'>{row.teamId}</TableCell>}
+                {(isAdmin || !teamId) && <TableCell align='right'>{row.teamId}</TableCell>}
               </TableRow>
             ))}
           </TableBody>
