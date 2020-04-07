@@ -23,6 +23,7 @@ plugins:
   - jest
   - prettier
   - '@typescript-eslint'
+  - unused-imports
 
 settings:
   import/resolver:
@@ -46,3 +47,7 @@ rules:
   prefer-destructuring: 0
   react/jsx-filename-extension: off
   react/jsx-props-no-spreading: off
+  unused-imports/no-unused-imports: error
+  unused-imports/no-unused-imports-ts: error
+  unused-imports/no-unused-vars: error
+  unused-imports/no-unused-vars-ts: error

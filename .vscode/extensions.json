@@ -5,8 +5,8 @@
     "dbaeumer.vscode-eslint",
     "donjayamanne.githistory",
     "eamodio.gitlens",
-    "esbenp.prettier-vscode",
     "redhat.vscode-yaml",
+    "william-voyek.vscode-nginx",
     "xyz.local-history"
   ]
 }
