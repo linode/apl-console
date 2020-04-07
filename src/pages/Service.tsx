@@ -5,6 +5,7 @@ import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
+import Error from '../components/Error'
 
 interface SubmitProps {
   teamId: string
@@ -54,7 +55,7 @@ interface EditProps {
 }
 
 const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: EditProps): any => {
-  const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
+  const [service, serviceLoading, error]: any = useApi('getService', {
     teamId,
     name: serviceName,
   })
@@ -62,8 +63,8 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: Edit
   if (serviceLoading) {
     return <Loader />
   }
-  if (serviceError) {
-    return null
+  if (error) {
+    return <Error code={error.response.status} msg={error.response.statusText} />
   }
   return <Service service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
@@ -79,8 +80,9 @@ export default ({
   },
 }: RouteComponentProps<Params>): any => {
   const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+  let err
   if (!isAdmin && teamId !== sessTeamId) {
-    return <p>Unauthorized!</p>
+    err = <Error code={401} />
   }
   const tid = teamId || sessTeamId
   const [team, loading]: [any, boolean, Error] = useApi('getTeam', tid)
@@ -90,19 +92,23 @@ export default ({
   return (
     <MainLayout>
       {loading && <Loader />}
-      {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
-      {team && serviceName && !formdata && (
-        <EditService
-          teamId={teamId}
-          serviceName={serviceName}
-          clusters={clusters}
-          onSubmit={setFormdata}
-          onDelete={setDeleteService}
-        />
+      {err || (
+        <>
+          {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
+          {team && serviceName && !formdata && (
+            <EditService
+              teamId={teamId}
+              serviceName={serviceName}
+              clusters={clusters}
+              onSubmit={setFormdata}
+              onDelete={setDeleteService}
+            />
+          )}
+          {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
+          {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
+          {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
+        </>
       )}
-      {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
-      {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

@@ -5,6 +5,7 @@ import Team from '../components/Team'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
+import Error from '../components/Error'
 
 const Submit = ({ data }: any): any => {
   let method
@@ -17,7 +18,7 @@ const Submit = ({ data }: any): any => {
   }
   const [result] = useApi(method, filter, data)
   if (result) {
-    return <Redirect to="/teams" />
+    return <Redirect to='/teams' />
   }
   return null
 }
@@ -25,19 +26,19 @@ const Submit = ({ data }: any): any => {
 const Delete = (filter): any => {
   const [result] = useApi('deleteTeam', filter, null)
   if (result) {
-    return <Redirect to="/teams" />
+    return <Redirect to='/teams' />
   }
   return null
 }
 
 const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => {
-  const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
+  const [team, teamLoading, error]: any = useApi('getTeam', teamId)
 
   if (teamLoading) {
     return <Loader />
   }
-  if (teamError) {
-    return null
+  if (error) {
+    return <Error code={error.response.status} msg={error.response.statusText} />
   }
 
   return <Team team={team} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />

@@ -13,6 +13,7 @@ import Service from './pages/Service'
 import Services from './pages/Services'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
+import Error from './pages/Error'
 import { SessionContext } from './session-context'
 import { adminTheme, createClasses, theme } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
@@ -99,7 +100,9 @@ const App = (): any => {
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceName' component={Service} exact />
-                <Route path='*'>404 page here</Route>
+                <Route path='*'>
+                  <Error code={404} />
+                </Route>
               </Switch>
             </Router>
           </SessionContext.Provider>
