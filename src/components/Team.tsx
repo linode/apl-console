@@ -3,9 +3,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
-import { getSchema } from '../hooks/api'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
+import { getTeamSchema, getTeamUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -27,12 +27,11 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
       setDirty(!equal)
     }
   }
-  const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
+  const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
-  const schema = getSchema()
-  const mySchema = schema.getTeamSchema(clusters)
-  const uiSchema = schema.getTeamUiSchema(mySchema, role)
+  const schema = getTeamSchema(clusters)
+  const uiSchema = getTeamUiSchema(schema, role)
 
   return (
     <div className='Team'>
@@ -40,7 +39,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
 
       <Form
         key='createTeam'
-        schema={mySchema}
+        schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
         onChange={handleChange}

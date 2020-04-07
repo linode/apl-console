@@ -1,38 +1,41 @@
 import React from 'react'
 import { mainStyles } from '../theme'
-import { OLink } from './Link'
-import { OTable, OTableBody, OTableCell, OTableContainer, OTableHead, OTableRow } from './Table'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
-export default ({ clusters }): any => {
+interface Props {
+  clusters: any[]
+}
+
+export default ({ clusters }: Props): any => {
   const mainClasses = mainStyles()
   return (
     <div className='Cluster'>
       <h1>Clusters</h1>
-      <OTableContainer>
-        {/* <OTable className={classes.table} aria-label='simple table'> */}
-        <OTable aria-label='simple table'>
-          <OTableHead>
-            <OTableRow>
-              <OTableCell>Cluster</OTableCell>
-              <OTableCell align='right'>Cloud</OTableCell>
-              <OTableCell align='right'>Region</OTableCell>
-              <OTableCell align='right'>Domain</OTableCell>
-            </OTableRow>
-          </OTableHead>
-          <OTableBody>
+      <TableContainer>
+        {/* <Table className={classes.table} aria-label='simple table'> */}
+        <Table aria-label='simple table'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Cluster</TableCell>
+              <TableCell align='right'>Cloud</TableCell>
+              <TableCell align='right'>Region</TableCell>
+              <TableCell align='right'>Domain</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {clusters.map(row => (
-              <OTableRow key={row.name}>
-                <OTableCell component='th' scope='row' className={mainClasses.selectable}>
-                  <a href={`https://otomi.${row.domain}`}>{row.cluster}</a>
-                </OTableCell>
-                <OTableCell align='right'>{row.cloud}</OTableCell>
-                <OTableCell align='right'>{row.region}</OTableCell>
-                <OTableCell align='right'>{row.domain}</OTableCell>
-              </OTableRow>
+              <TableRow key={row.name}>
+                <TableCell component='th' scope='row' className={mainClasses.selectable}>
+                  <a href={`https://tomi.${row.domain}`}>{row.cluster}</a>
+                </TableCell>
+                <TableCell align='right'>{row.cloud}</TableCell>
+                <TableCell align='right'>{row.region}</TableCell>
+                <TableCell align='right'>{row.domain}</TableCell>
+              </TableRow>
             ))}
-          </OTableBody>
-        </OTable>
-      </OTableContainer>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

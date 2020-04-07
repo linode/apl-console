@@ -1,5 +1,4 @@
 import { CssBaseline } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
@@ -77,32 +76,34 @@ const App = (): any => {
           variantInfo: classes.info,
         }}
       >
-        <CssBaseline />
-        <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-        <sessionContext.Provider
-          value={{
-            ...session,
-            initialising,
-            changeSession,
-          }}
-        >
-          <Router>
-            <Switch>
-              {/*!user && <Route path='/' component={Home} exact />*/}
-              <Route path='/' component={Dashboard} exact />
-              <Route path='/otomi/apps' component={OtomiApps} exact />
-              <Route path='/clusters' component={Clusters} exact />
-              <Route path='/services' component={Services} teamId={teamId} exact />
-              <Route path='/teams' component={Teams} exact />
-              <Route path='/create-team' component={Team} exact />
-              <Route path='/teams/:teamId' component={Team} exact />
-              <Route path='/teams/:teamId/services' component={Services} exact />
-              <Route path='/teams/:teamId/services/:serviceName' component={Service} exact />
-              <Route path='/teams/:teamId/create-service' component={Service} exact />
-              <Route path='*'>404 page here</Route>
-            </Switch>
-          </Router>
-        </sessionContext.Provider>
+        <>
+          <CssBaseline />
+          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
+          <sessionContext.Provider
+            value={{
+              ...session,
+              initialising,
+              changeSession,
+            }}
+          >
+            <Router>
+              <Switch>
+                {/*! user && <Route path='/' component={Home} exact /> */}
+                <Route path='/' component={Dashboard} exact />
+                <Route path='/otomi/apps' component={OtomiApps} exact />
+                <Route path='/clusters' component={Clusters} exact />
+                <Route path='/services' component={Services} teamId={teamId} exact />
+                <Route path='/teams' component={Teams} exact />
+                <Route path='/create-team' component={Team} exact />
+                <Route path='/teams/:teamId' component={Team} exact />
+                <Route path='/teams/:teamId/services' component={Services} exact />
+                <Route path='/teams/:teamId/services/:serviceName' component={Service} exact />
+                <Route path='/teams/:teamId/create-service' component={Service} exact />
+                <Route path='*'>404 page here</Route>
+              </Switch>
+            </Router>
+          </sessionContext.Provider>
+        </>
       </SnackbarProvider>
     </ThemeProvider>
   )

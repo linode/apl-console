@@ -1,5 +1,3 @@
-import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
 import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
@@ -8,7 +6,7 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
 
-const Submit = ({ data }): any => {
+const Submit = ({ data }: any): any => {
   let method
   let filter
   if (data.teamId) {
@@ -19,7 +17,7 @@ const Submit = ({ data }): any => {
   }
   const [result] = useApi(method, filter, data)
   if (result) {
-    return <Redirect to={`/teams`} />
+    return <Redirect to="/teams" />
   }
   return null
 }
@@ -27,12 +25,12 @@ const Submit = ({ data }): any => {
 const Delete = (filter): any => {
   const [result] = useApi('deleteTeam', filter, null)
   if (result) {
-    return <Redirect to={`/teams`} />
+    return <Redirect to="/teams" />
   }
   return null
 }
 
-const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }): any => {
+const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => {
   const [team, teamLoading, teamError]: [any, boolean, Error] = useApi('getTeam', teamId)
 
   if (teamLoading) {
@@ -49,7 +47,7 @@ export default ({
   match: {
     params: { teamId },
   },
-}): any => {
+}: any): any => {
   const { clusters } = useSession()
   const [formdata, setFormdata] = useState()
   const [deleteTeam, setDeleteTeam] = useState()

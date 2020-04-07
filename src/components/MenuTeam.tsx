@@ -3,31 +3,35 @@ import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { OListItem } from './List'
+import { ListItem } from './List'
 import Menu from './Menu'
 
-const TeamMenu = ({ teamId }): any => (
+interface Props {
+  teamId: string
+}
+
+const TeamMenu = ({ teamId }: Props): any => (
   <List>
     <Divider />
     <ListSubheader component='div' id='main-subheader'>
       <ListItemText primary={`Team ${teamId}`} />
     </ListSubheader>
-    <OListItem component={Link} to={`/teams/${teamId}`}>
+    <ListItem component={Link} to={`/teams/${teamId}`}>
       <ListItemIcon>
         <PersonIcon />
       </ListItemIcon>
       <ListItemText primary='Team Details' />
-    </OListItem>
-    <OListItem component={Link} to={`/teams/${teamId}/services`}>
+    </ListItem>
+    <ListItem component={Link} to={`/teams/${teamId}/services`}>
       <ListItemIcon>
         <SwapVerticalCircleIcon />
       </ListItemIcon>
       <ListItemText primary='Team Services' />
-    </OListItem>
+    </ListItem>
   </List>
 )
 
-export default ({ teamId }): any => {
+export default ({ teamId }: Props): any => {
   return (
     <Menu>
       <TeamMenu teamId={teamId} />

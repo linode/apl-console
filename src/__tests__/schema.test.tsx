@@ -1,4 +1,4 @@
-import { applyAclToUiSchema } from '../schema'
+import { applyAclToUiSchema } from '../api-spec'
 
 it('should make a field readonly since there is x-acl field', () => {
   const schema = {

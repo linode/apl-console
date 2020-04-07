@@ -3,9 +3,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
-import { getSchema } from '../hooks/api'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
+import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -32,24 +32,23 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
       }
     }
   }
-  const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
+  const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
-  const schema = getSchema()
-  const mySchema = schema.getServiceSchema(clusters)
-  const uiSchema = schema.getServiceUiSchema(mySchema, role)
+  const schema = getServiceSchema(clusters)
+  const uiSchema = getServiceUiSchema(schema, role)
   return (
     <div className='Service'>
       <h1>Service:</h1>
       <Form
         key='createService'
-        schema={mySchema}
+        schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
         onChange={handleChange}
         formData={data}
         liveValidate={false}
-        showErrorList={true}
+        showErrorList
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (

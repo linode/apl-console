@@ -3,9 +3,13 @@ import AddIcon from '@material-ui/icons/Add'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import { createClasses } from './../theme'
+import { createClasses } from '../theme'
 
-const Dashboard = ({ teamId }): any => {
+interface Props {
+  teamId: string
+}
+
+const Dashboard = ({ teamId }: Props): any => {
   const { isAdmin } = useSession()
 
   const classes = createClasses({

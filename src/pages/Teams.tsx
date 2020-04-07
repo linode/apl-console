@@ -5,7 +5,7 @@ import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 
 export default (): any => {
-  const [teams, loading, error] = useApi('getTeams')
+  const [teams, loading]: any = useApi('getTeams')
 
   return (
     <MainLayout>
