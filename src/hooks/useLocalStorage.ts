@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import { Dispatch, useState } from 'react'
+
 export const useLocalStorage = (key: string, initialValue: any): [any, Dispatch<any>] => {
   const [storedValue, setStoredValue] = useState(() => {
     try {
@@ -21,7 +23,7 @@ export const useLocalStorage = (key: string, initialValue: any): [any, Dispatch<
     }
   }
 
-  return [storedValue, setStoredValue]
+  return [storedValue, setValue]
 }
 
 export const clearLocalStorage = (key: string): void => {

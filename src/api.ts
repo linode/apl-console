@@ -11,7 +11,8 @@ let axiosConfigDefaults = {
   },
 }
 if (process.env.NODE_ENV !== 'production') {
-  console.warn('running in development mode!')
+  // eslint-disable-next-line no-console
+  console.info('running in development mode')
   axiosConfigDefaults = {
     withCredentials: false,
     headers: {
@@ -23,6 +24,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 function getClient(apiDefinition): any {
+  // eslint-disable-next-line no-param-reassign
   apiDefinition.servers = [
     {
       url: baseUrl,

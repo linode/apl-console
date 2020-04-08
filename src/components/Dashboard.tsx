@@ -1,25 +1,22 @@
-import { Box, Button, Container, Typography as Text } from '@material-ui/core'
+import { Box, Button, Container, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import { createClasses } from './../theme'
 
-const Dashboard = ({ teamId }): any => {
+interface Props {
+  teamId: string
+}
+
+const Dashboard = ({ teamId }: Props): any => {
   const { isAdmin } = useSession()
-
-  const classes = createClasses({
-    root: {
-      // minHeight: '100vh',
-    },
-  })
 
   return (
     <Container maxWidth='xs'>
-      <Box justifyContent='center' display='flex' alignItems='center' textAlign='center' className={classes.root}>
-        <Text variant='h3'>
+      <Box justifyContent='center' display='flex' alignItems='center' textAlign='center'>
+        <Typography variant='h3'>
           Welcome to the team <b>{isAdmin ? 'Admin' : teamId.charAt(0).toUpperCase() + teamId.substr(1)}</b> dashboard!
-        </Text>
+        </Typography>
         {!isAdmin && (
           <Button
             variant='contained'

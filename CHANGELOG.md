@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.23](https://github.com/redkubes/otomi-stack-web/compare/v0.1.22...v0.1.23) (2020-04-07)
+
+
+### Bug Fixes
+
+* auth for teams [ci skip] ([1d4a830](https://github.com/redkubes/otomi-stack-web/commit/1d4a830c100e621582e65162abc9a109f00a05f4))
+
+### [0.1.22](https://github.com/redkubes/otomi-stack-web/compare/v0.1.21...v0.1.22) (2020-04-07)
+
+
+### Bug Fixes
+
+* added errors for 401 and 404 ([be009bc](https://github.com/redkubes/otomi-stack-web/commit/be009bcc77a20bb8193782e000b69fe5bd2d0d34))
+* missing eslint config in Dockerfile ([2cd9a8f](https://github.com/redkubes/otomi-stack-web/commit/2cd9a8f906d62d841704da85f40eb128f59047f7))
+
+
+### Code Refactoring
+
+* migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([1e590ab](https://github.com/redkubes/otomi-stack-web/commit/1e590ab07020c7253d8cab4cbc0b946ef41626b1))
+* migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([6d89a21](https://github.com/redkubes/otomi-stack-web/commit/6d89a21959e16963ed594d427838599d4af51f55))
+
+
+### Build System
+
+* added no-unused-imports-ts [ci skip] ([33dc7df](https://github.com/redkubes/otomi-stack-web/commit/33dc7df2e3640936e3088deb341d75dd440b6f47))
+
 ### [0.1.21](https://github.com/redkubes/otomi-stack-web/compare/v0.1.20...v0.1.21) (2020-04-03)
 
 

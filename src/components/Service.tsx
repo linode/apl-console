@@ -3,9 +3,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
-import { getSchema } from '../hooks/api'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
+import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -28,12 +28,11 @@ interface Props {
 export default ({ onSubmit, onDelete = null, clusters, service = null }: Props): any => {
   const { isAdmin } = useSession()
   const role = isAdmin ? 'admin' : 'team'
-  const s = getSchema()
-  const formSchema = s.getServiceSchema(clusters)
-  const formUiSchema = s.getServiceUiSchema(formSchema, role)
+  const formSchema = getServiceSchema(clusters)
+  const formUiSchema = getServiceUiSchema(formSchema, role)
 
-  const [uiSchema, setUiSchema] = useState(formUiSchema)
-  const [schema, setSchema] = useState(formSchema)
+  const [uiSchema] = useState(formUiSchema)
+  const [schema] = useState(formSchema)
 
   const [data, setData] = useState(service)
   // The round state is used to force form rendering
@@ -76,10 +75,9 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
       setDirty(!equal)
     }
   }
-  const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
+  const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
-
   return (
     <div className='Service'>
       <h1>Service:</h1>

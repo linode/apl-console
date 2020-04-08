@@ -1,14 +1,19 @@
-import { Box, Button, Divider } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
 import MainLayout from '../layouts/main'
 import { useSession } from '../session-context'
+import Error from '../components/Error'
 
-const Submit = ({ teamId, name, data }): any => {
+interface SubmitProps {
+  teamId: string
+  name?: string
+  data: object
+}
+
+const Submit = ({ teamId, name, data }: SubmitProps): any => {
   let method
   let filter
   if (name) {
@@ -25,7 +30,12 @@ const Submit = ({ teamId, name, data }): any => {
   return null
 }
 
-const Delete = ({ teamId, name }): any => {
+interface DeleteProps {
+  teamId: string
+  name: string
+}
+
+const Delete = ({ teamId, name }: DeleteProps): any => {
   const method = 'deleteService'
   const filter = { teamId, name }
   const [result] = useApi(method, filter, null)
@@ -36,8 +46,16 @@ const Delete = ({ teamId, name }): any => {
   return null
 }
 
-const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any => {
-  const [service, serviceLoading, serviceError]: [any, boolean, Error] = useApi('getService', {
+interface EditProps {
+  teamId: string
+  serviceName: string
+  clusters: [string]
+  onSubmit: CallableFunction
+  onDelete: CallableFunction
+}
+
+const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: EditProps): any => {
+  const [service, serviceLoading, error]: any = useApi('getService', {
     teamId,
     name: serviceName,
   })
@@ -45,27 +63,35 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }): any
   if (serviceLoading) {
     return <Loader />
   }
-  if (serviceError) {
-    return null
+  if (error) {
+    return <Error code={error.response.status} msg={error.response.statusText} />
   }
   return <Service service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
+}
+
+interface Params {
+  teamId?: string
+  serviceName?: string
 }
 
 export default ({
   match: {
     params: { teamId, serviceName },
   },
-}): any => {
-  const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+}: RouteComponentProps<Params>): any => {
+  const { isAdmin, teamId: sessTeamId } = useSession()
+  let err
   if (!isAdmin && teamId !== sessTeamId) {
-    return <p>Unauthorized!</p>
+    err = <Error code={401} />
   }
-  const [team, loading, error]: [any, boolean, Error] = useApi('getTeam', teamId)
+  const tid = teamId || sessTeamId
+  const [team, loading]: [any, boolean, Error] = useApi('getTeam', tid)
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
 
   return (
     <MainLayout>
+      {err}
       {loading && <Loader />}
       {team && serviceName && formdata && (
         <Service clusters={team.clusters} onSubmit={setFormdata} service={formdata} />

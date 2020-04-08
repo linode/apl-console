@@ -11,7 +11,7 @@ export interface SessionContext {
   changeSession?: object
 }
 
-export const sessionContext = React.createContext<SessionContext>({
+export const SessionContext = React.createContext<SessionContext>({
   initialising: true,
   isAdmin: undefined,
   user: undefined,
@@ -21,6 +21,6 @@ export const sessionContext = React.createContext<SessionContext>({
 })
 
 export const useSession = (): any => {
-  session = useContext(sessionContext)
+  session = useContext(SessionContext)
   return session
 }

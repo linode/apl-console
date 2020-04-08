@@ -1,9 +1,16 @@
 {
-  "name": "otomi-stack-web",
-  "version": "0.1.21",
-  "private": true,
-  "dependencies": {},
-  "devDependencies": {
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "dependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@fortawesome/fontawesome-free": "^5.12.1",
@@ -12,15 +19,19 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.6",
+    "@rjsf/core": "^2.0.0-alpha.4",
+    "@rjsf/material-ui": "^2.0.0-alpha.4",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^24.9.1",
+    "@types/material-ui": "^0.21.7",
     "@types/react": "^16.9.25",
     "@types/react-dom": "^16.9.5",
     "@types/react-helmet": "^5.0.15",
     "@types/react-router-dom": "^5.1.3",
-    "@rjsf/core": "^2.0.0-alpha.4",
-    "@rjsf/material-ui": "^2.0.0-alpha.4",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "clsx": "^1.1.0",
@@ -29,6 +40,13 @@
     "debug": "^4.1.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.19.0",
     "http-proxy-middleware": "^0.20.0",
     "husky": "^3.1.0",
     "lint-staged": "^9.5.0",
@@ -47,39 +65,59 @@
     "react-helmet": "^5.2.1",
     "react-icons": "^3.9.0",
     "react-jsonschema-form": "^1.8.1",
+    "react-redux-typescript-scripts": "^1.6.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.2.0",
     "react-test-renderer": "^16.13.1",
     "serve": "^11.3.0",
     "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.8.3",
     "yup": "^0.27.0"
   },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "eslint-plugin-unused-imports": "^0.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "post-checkout": "run-if-changed",
+      "post-commit": "run-if-changed",
+      "post-merge": "run-if-changed",
+      "post-rewrite": "run-if-changed",
+      "pre-commit": "npm run husky:pre-commit"
+    }
+  },
   "lint-staged": {
-    "*.ts": [
-      "tslint --project ./tsconfig.tslint.json"
-    ],
-    "*.{js,json,md,ts,yml,yaml}": [
-      "prettier --write"
+    "*.{js,ts,tsx}": [
+      "eslint --fix --ext js,ts,tsx"
     ]
   },
+  "name": "otomi-stack-web",
+  "private": true,
+  "run-if-changed": {
+    "package-lock.json": "npm install --prefer-offline --no-audit"
+  },
   "scripts": {
+    "build": "react-scripts build",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
-    "dev": "react-scripts start",
+    "dev": "run-p start watch:ts",
+    "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "husky:lint-staged": "lint-staged",
-    "husky:pre-commit": "lint-staged",
-    "lint": "tslint --project ./tsconfig.tslint.json",
-    "lint:fix": "tslint --project ./tsconfig.tslint.json --fix",
+    "husky:pre-commit": "tsc --noEmit && lint-staged",
+    "lint": "tsc --noEmit && eslint --ext js,ts,tsx .",
+    "lint:fix": "eslint --ext js,ts,tsx --fix .",
+    "release": "standard-version",
+    "start": "react-scripts start",
     "test": "jest --detectOpenHandles",
     "test:ci": "jest --coverage --detectOpenHandles --reporters=\"default\" --reporters=\"jest-junit\"  --runInBand",
     "test:coverage": "jest --coverage --detectOpenHandles",
+    "test:enzyme": "react-scripts test",
     "test:integration": "jest --detectOpenHandles src/functions",
     "test:integration:coverage": "jest --coverage --detectOpenHandles src/functions",
     "test:integration:watch": "jest --watch src/functions",
@@ -87,36 +125,8 @@
     "test:unit:coverage": "jest --coverage --detectOpenHandles src/common",
     "test:unit:watch": "jest --watch src/common",
     "test:watch": "jest --watch --verbose false",
-    "test:enzyme": "react-scripts test",
     "types": "tsc --noEmit",
-    "watch:ts": "tsc -w",
-    "start": "npm run dev",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "release": "standard-version"
+    "watch:ts": "tsc -w"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-commit": "npm run husky:pre-commit",
-      "post-commit": "run-if-changed",
-      "post-checkout": "run-if-changed",
-      "post-merge": "run-if-changed",
-      "post-rewrite": "run-if-changed"
-    }
-  },
-  "run-if-changed": {
-    "package-lock.json": "npm install --prefer-offline --no-audit"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  }
+  "version": "0.1.23"
 }

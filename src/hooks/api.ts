@@ -1,19 +1,20 @@
+/* eslint-disable no-console */
 import { useEffect } from 'react'
 import getClient, { getApiDefinition } from '../api'
-import Schema from '../schema'
+import { setSpec } from '../api-spec'
 import { LoadingHook, useLoadingValue } from '../utils'
 import { useSnackbar } from '../utils/snackbar'
+import { useSession } from '../session-context'
 
 export type ApiHook = LoadingHook<object, Error>
 
 let client: any
 let apiSpec: any
-let schema: any
 let dirty = false
 
 export const schemaPromise = getApiDefinition().then(response => {
   apiSpec = response.data
-  schema = new Schema(apiSpec)
+  setSpec(apiSpec)
   client = getClient(apiSpec)
 })
 
@@ -27,11 +28,12 @@ const checkDirty = (method): boolean => {
 }
 
 export const useApi = (method: string, ...args: any[]): ApiHook => {
-  const { error, loading, setError, setValue, value } = useLoadingValue<object, Error>()
+  const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
   const { enqueueSnackbar } = useSnackbar()
+  const { isAdmin } = useSession()
   useEffect(() => {
+    // tslint:disable-next-line: no-floating-promises
     ;(async (): Promise<any> => {
-      // tslint:disable-next-line
       try {
         if (!client[method]) {
           const err = `Api method does not exist: ${method}`
@@ -42,7 +44,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
             console.error(err)
           }
         } else {
-          const value = await client[method].apply(client, args)
+          const value = await client[method].call(client, ...args)
           checkDirty(method)
           setValue(value.data)
         }
@@ -54,11 +56,10 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
         setError(e)
       }
     })()
-  }, [method])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [method, isAdmin])
 
   return [value, loading, error]
 }
-
-export const getSchema = (): Schema => schema
 
 export const getDirty = (): any => dirty
