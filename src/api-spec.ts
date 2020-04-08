@@ -2,6 +2,7 @@
 import { entries, get, set } from 'lodash/object'
 import { find, map } from 'lodash/collection'
 import { isEmpty } from 'lodash/lang'
+
 let spec: any
 
 export function applyAclToUiSchema(uiSchema, schema: any, role: string): void {
@@ -59,13 +60,13 @@ export function getServiceUiSchema(schema, role: string): any {
 export function setSpec(inSpec): void {
   spec = inSpec
 }
-function addDomainEnumField(schema, clusters, formData): any {
+function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
   schema.properties.ingress.anyOf[1].properties.domain.enum = [cluster.domain]
 }
 
-function addClustersEnum(schema, team) {
+function addClustersEnum(schema, team): void {
   schema.properties.clusterId.enum = team.clusters
 }
 
