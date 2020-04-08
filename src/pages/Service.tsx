@@ -74,13 +74,13 @@ export default ({
         <EditService
           teamId={teamId}
           serviceName={serviceName}
-          clusters={clusters}
+          clusters={team.clusters}
           onSubmit={setFormdata}
           onDelete={setDeleteService}
         />
       )}
       {team && serviceName && !formdata && deleteService && <Delete teamId={teamId} name={serviceName} />}
-      {team && !serviceName && !formdata && <Service clusters={clusters} onSubmit={setFormdata} />}
+      {team && !serviceName && !formdata && <Service clusters={team.clusters} onSubmit={setFormdata} />}
       {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>
   )
