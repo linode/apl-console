@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { entries, get, set } from 'lodash/object'
-
+import { find, map } from 'lodash/collection'
+import { isEmpty } from 'lodash/lang'
 let spec: any
 
 export function applyAclToUiSchema(uiSchema, schema: any, role: string): void {
@@ -58,21 +59,27 @@ export function getServiceUiSchema(schema, role: string): any {
 export function setSpec(inSpec): void {
   spec = inSpec
 }
+function addDomainEnumField(schema, clusters, formData): any {
+  if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
+  const cluster = find(clusters, { id: formData.clusterId })
+  schema.properties.ingress.anyOf[1].properties.domain.enum = [cluster.domain]
+}
 
-export function getServiceSchema(clusters: [string]): any {
+function addClustersEnum(schema, team) {
+  schema.properties.clusterId.enum = team.clusters
+}
+
+export function getServiceSchema(team: any, clusters: [any], formData: any): any {
   const schema = { ...spec.components.schemas.Service }
 
-  // TODO: provide domain zones available for the cluster
-  const domains = ['a.com', 'b.com', 'c.com']
-  schema.properties.ingress.anyOf[1].properties.domain.enum = domains
-  schema.properties.clusterId.enum = clusters
-  // applyAclToSchema(schema, role)
+  addDomainEnumField(schema, clusters, formData)
+  addClustersEnum(schema, team)
   return schema
 }
 
-export function getTeamSchema(clusters: [string]): any {
+export function getTeamSchema(clusters: [any]): any {
   const schema = { ...spec.components.schemas.Team }
-  schema.properties.clusters.items.enum = clusters
+  schema.properties.clusters.items.enum = map(clusters, 'id')
   return schema
 }
 

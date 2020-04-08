@@ -12,32 +12,21 @@ interface Props {
   onDelete?: any
   team: any
   service?: Service
+  clusters: [any]
 }
 
-// function getSchema(allClusters, formData, role) {
-//   const schema = s.getServiceSchema(team, allClusters, formData)
-
-//   return { formData, schema, uiSchema }
-// }
-
-// function getUiSchema() {
-//   const s = getSchema()
-//   const uiSchema = s.getServiceUiSchema(schema, role)
-// }
-
-export default ({ onSubmit, onDelete = null, team, service = null }: Props): any => {
+export default ({ onSubmit, onDelete = null, team, service = null, clusters }: Props): any => {
   const { isAdmin } = useSession()
   const role = isAdmin ? 'admin' : 'team'
-  const formSchema = getServiceSchema(team.clusters)
-  const formUiSchema = getServiceUiSchema(formSchema, role)
 
+  const formSchema = getServiceSchema(team, clusters, service)
+  const formUiSchema = getServiceUiSchema(formSchema, role)
   const [uiSchema] = useState(formUiSchema)
-  const [schema] = useState(formSchema)
+  const [schema, setSchema] = useState(formSchema)
 
   const [data, setData] = useState(service)
   // The round state is used to force form rendering
   const [round, setRound] = useState(false)
-
   const [dirty, setDirty] = useState(false)
   const [done, setDone] = useState(false)
   const handleChange = (form, error): any => {
@@ -67,6 +56,8 @@ export default ({ onSubmit, onDelete = null, team, service = null }: Props): any
         // formData.ingress.subdomain = `${formData.name}/team-${formData.teamId}`
       }
     }
+
+    setSchema(getServiceSchema(team, clusters, formData))
 
     setRound(!round)
     setData(formData)
