@@ -28,7 +28,16 @@ interface Props {
 export default ({ onSubmit, onDelete = null, clusters, service = null }: Props): any => {
   const { isAdmin } = useSession()
   const role = isAdmin ? 'admin' : 'team'
+  const s = getSchema()
+  const formSchema = s.getServiceSchema(clusters)
+  const formUiSchema = s.getServiceUiSchema(formSchema, role)
+
+  const [uiSchema, setUiSchema] = useState(formUiSchema)
+  const [schema, setSchema] = useState(formSchema)
+
   const [data, setData] = useState(service)
+  // The round state is used to force form rendering
+  const [round, setRound] = useState(false)
 
   const [dirty, setDirty] = useState(false)
   const [done, setDone] = useState(false)
@@ -43,18 +52,22 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
     if (equal) {
       return
     }
+
     if (!isEmpty(formData.ingress)) {
       if (formData.clusterId !== data.clusterId) {
-        formData.ingress.domain = undefined
-        formData.ingress.subdomain = undefined
+        formData.name = formData.clusterId
+        formData.ingress.domain = ''
+        formData.ingress.subdomain = ''
       } else if (formData.ingress.domain !== data.ingress.domain) {
         formData.ingress.subdomain = `${formData.name}/team-${formData.teamId}`
+      } else if (formData.name !== data.name) {
+        formData.ingress.domain = ''
+        formData.ingress.subdomain = ''
+        // formData.ingress.subdomain = `${formData.name}/team-${formData.teamId}`
       }
     }
 
-    const schema = getSchema()
-    const mySchema = schema.getServiceSchema(clusters)
-    const uiSchema = schema.getServiceUiSchema(mySchema, role)
+    setRound(!round)
     setData(formData)
 
     if (!done) {
@@ -66,22 +79,20 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
   const handleSubmit = ({ schema, uiSchema, formData, edit, errors }): any => {
     onSubmit(formData)
   }
-  const schema = getSchema()
-  const mySchema = schema.getServiceSchema(clusters)
-  const uiSchema = schema.getServiceUiSchema(mySchema, role)
 
   return (
     <div className='Service'>
       <h1>Service:</h1>
       <Form
         key='createService'
-        schema={mySchema}
+        schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
         onChange={handleChange}
         formData={data}
         liveValidate={false}
         showErrorList={true}
+        formContext={round}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (
