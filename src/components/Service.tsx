@@ -10,7 +10,7 @@ import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
-  clusters: [string]
+  team: any
   service?: Service
 }
 
@@ -25,10 +25,10 @@ interface Props {
 //   const uiSchema = s.getServiceUiSchema(schema, role)
 // }
 
-export default ({ onSubmit, onDelete = null, clusters, service = null }: Props): any => {
+export default ({ onSubmit, onDelete = null, team, service = null }: Props): any => {
   const { isAdmin } = useSession()
   const role = isAdmin ? 'admin' : 'team'
-  const formSchema = getServiceSchema(clusters)
+  const formSchema = getServiceSchema(team.clusters)
   const formUiSchema = getServiceUiSchema(formSchema, role)
 
   const [uiSchema] = useState(formUiSchema)
@@ -54,11 +54,10 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
 
     if (!isEmpty(formData.ingress)) {
       if (formData.clusterId !== data.clusterId) {
-        formData.name = formData.clusterId
         formData.ingress.domain = ''
         formData.ingress.subdomain = ''
       } else if (formData.ingress.domain !== data.ingress.domain) {
-        formData.ingress.subdomain = `${formData.name}/team-${formData.teamId}`
+        formData.ingress.subdomain = `${formData.name}/team-${team.name}`
       } else if (formData.name !== data.name) {
         formData.ingress.domain = ''
         formData.ingress.subdomain = ''
@@ -90,7 +89,7 @@ export default ({ onSubmit, onDelete = null, clusters, service = null }: Props):
         formData={data}
         liveValidate={false}
         showErrorList={true}
-        formContext={round}
+        formContext={{ workaround: round }}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (

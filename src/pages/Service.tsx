@@ -49,12 +49,12 @@ const Delete = ({ teamId, name }: DeleteProps): any => {
 interface EditProps {
   teamId: string
   serviceName: string
-  clusters: [string]
+  team: any
   onSubmit: CallableFunction
   onDelete: CallableFunction
 }
 
-const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: EditProps): any => {
+const EditService = ({ teamId, serviceName, team, onSubmit, onDelete }: EditProps): any => {
   const [service, serviceLoading, error]: any = useApi('getService', {
     teamId,
     name: serviceName,
@@ -66,7 +66,7 @@ const EditService = ({ teamId, serviceName, clusters, onSubmit, onDelete }: Edit
   if (error) {
     return <Error code={error.response.status} msg={error.response.statusText} />
   }
-  return <Service service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
+  return <Service service={service} team={team} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
 interface Params {
@@ -93,20 +93,18 @@ export default ({
     <MainLayout>
       {err}
       {loading && <Loader />}
-      {team && serviceName && formdata && (
-        <Service clusters={team.clusters} onSubmit={setFormdata} service={formdata} />
-      )}
+      {team && serviceName && formdata && <Service team={team} onSubmit={setFormdata} service={formdata} />}
       {team && serviceName && !formdata && (
         <EditService
           teamId={teamId}
           serviceName={serviceName}
-          clusters={team.clusters}
+          team={team}
           onSubmit={setFormdata}
           onDelete={setDeleteService}
         />
       )}
       {team && serviceName && !formdata && deleteService && <Delete teamId={teamId} name={serviceName} />}
-      {team && !serviceName && !formdata && <Service clusters={team.clusters} onSubmit={setFormdata} />}
+      {team && !serviceName && !formdata && <Service team={team.clusters} onSubmit={setFormdata} />}
       {formdata && <Submit teamId={teamId} name={serviceName} data={formdata} />}
     </MainLayout>
   )
