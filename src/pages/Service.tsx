@@ -67,7 +67,9 @@ export default ({
   return (
     <MainLayout>
       {loading && <Loader />}
-      {team && serviceName && formdata && <Service clusters={clusters} onSubmit={setFormdata} service={formdata} />}
+      {team && serviceName && formdata && (
+        <Service clusters={team.clusters} onSubmit={setFormdata} service={formdata} />
+      )}
       {team && serviceName && !formdata && (
         <EditService
           teamId={teamId}
