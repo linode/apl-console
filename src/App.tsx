@@ -19,17 +19,68 @@ import { adminTheme, createClasses, theme } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
 
 let sessionIdx = 0
+const allClusters = [
+  {
+    cloud: 'azure',
+    cluster: 'dev',
+    domain: 'dev.aks.otomi.cloud',
+    k8sVersion: '1.15',
+    region: 'westeurope',
+    id: 'dev/azure',
+  },
+  {
+    cloud: 'azure',
+    cluster: 'prd',
+    domain: 'prd.aks.otomi.cloud',
+    k8sVersion: '1.15',
+    region: 'westeurope',
+    id: 'prd/azure',
+  },
+  {
+    cloud: 'aws',
+    cluster: 'dev',
+    domain: 'dev.eks.otomi.cloud',
+    k8sVersion: '1.14',
+    region: 'eu-central-1',
+    id: 'dev/aws',
+  },
+  {
+    cloud: 'aws',
+    cluster: 'prd',
+    domain: 'prd.eks.otomi.cloud',
+    k8sVersion: '1.14',
+    region: 'eu-central-1',
+    id: 'prd/aws',
+  },
+  {
+    cloud: 'google',
+    cluster: 'dev',
+    domain: 'dev.gke.otomi.cloud',
+    k8sVersion: '1.15',
+    region: 'europe-west4',
+    id: 'dev/google',
+  },
+  {
+    cloud: 'google',
+    cluster: 'prd',
+    domain: 'prd.gke.otomi.cloud',
+    k8sVersion: '1.15',
+    region: 'europe-west4',
+    id: 'prd/google',
+  },
+]
 const testSessions = [
   {
     user: { email: 'bob.admin@redkubes.com' },
+    teamId: 'admin',
     isAdmin: true,
-    clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
+    clusters: allClusters,
   },
   {
     user: { email: 'dan.team@redkubes.com' },
     teamId: 'taxi',
     isAdmin: false,
-    clusters: ['dev/azure', 'dev/google', 'dev/aws', 'prd/azure', 'prd/google', 'prd/aws'],
+    clusters: allClusters,
   },
 ]
 

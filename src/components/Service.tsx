@@ -54,11 +54,14 @@ export default ({ onSubmit, onDelete = null, team, service = null }: Props): any
 
     if (!isEmpty(formData.ingress)) {
       if (formData.clusterId !== data.clusterId) {
+        // Enforce user to make a conscious choice for public URL whenever cluster changes
         formData.ingress.domain = ''
         formData.ingress.subdomain = ''
       } else if (formData.ingress.domain !== data.ingress.domain) {
-        formData.ingress.subdomain = `${formData.name}/team-${team.name}`
+        // Set default subdomain of domain change
+        formData.ingress.subdomain = `${formData.name}.team-${team.name}`
       } else if (formData.name !== data.name) {
+        // Enforce user to make a conscious choice for public URL whenever service name changes
         formData.ingress.domain = ''
         formData.ingress.subdomain = ''
         // formData.ingress.subdomain = `${formData.name}/team-${formData.teamId}`
@@ -88,7 +91,7 @@ export default ({ onSubmit, onDelete = null, team, service = null }: Props): any
         onChange={handleChange}
         formData={data}
         liveValidate={false}
-        showErrorList={true}
+        showErrorList
         formContext={{ workaround: round }}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
