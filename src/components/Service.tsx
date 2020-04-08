@@ -25,8 +25,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const [schema, setSchema] = useState(formSchema)
 
   const [data, setData] = useState(service)
-  // The round state is used to force form rendering
-  const [round, setRound] = useState(false)
   const [dirty, setDirty] = useState(false)
   const [done, setDone] = useState(false)
   const handleChange = (form, error): any => {
@@ -34,7 +32,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
       return
     }
 
-    const { formData } = form
+    const formData = { ...form.formData }
     const equal = isEqual(formData, data)
 
     if (equal) {
@@ -58,8 +56,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     }
 
     setSchema(getServiceSchema(team, clusters, formData))
-
-    setRound(!round)
     setData(formData)
 
     if (!done) {
@@ -83,7 +79,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData={data}
         liveValidate={false}
         showErrorList
-        formContext={{ workaround: round }}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (
