@@ -1,7 +1,7 @@
 import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
-import { isEqual } from 'lodash/lang'
+import { isEmpty, cloneDeep } from 'lodash/lang'
 import React, { useState } from 'react'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
@@ -10,33 +10,63 @@ import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
-  clusters: [string]
+  team: any
   service?: Service
+  clusters: [any]
 }
 
-export default ({ onSubmit, onDelete = null, clusters, service = null }: Props): any => {
+export default ({ onSubmit, onDelete = null, team, service = null, clusters }: Props): any => {
   const { isAdmin } = useSession()
   const role = isAdmin ? 'admin' : 'team'
-  const [data, setData] = useState(service)
+
+  const formSchema = getServiceSchema(team, clusters, service)
+  const formUiSchema = getServiceUiSchema(formSchema, role)
+  const [uiSchema] = useState(formUiSchema)
+  const [schema, setSchema] = useState(formSchema)
+
+  const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const [done, setDone] = useState(false)
   const handleChange = (form, error): any => {
-    if (!error) {
-      const { formData } = form
-      const equal = isEqual(formData, service)
-      setData(formData)
-      if (!done) {
-        setDone(true)
-      } else {
-        setDirty(!equal)
+    if (error) {
+      return
+    }
+
+    const formData = { ...form.formData }
+
+    let schemaChanged = false
+    if (formData.clusterId !== data.clusterId) {
+      schemaChanged = true
+    }
+    if (!isEmpty(formData.ingress)) {
+      if (
+        formData.clusterId !== data.clusterId &&
+        formData.ingress.domain !== '' &&
+        formData.ingress.subdomain !== ''
+      ) {
+        // Enforce user to make a conscious choice for public URL whenever cluster changes
+        formData.ingress = { ...formData.ingress }
+        formData.ingress.domain = ''
+        formData.ingress.subdomain = ''
+      } else if (formData.ingress.domain !== data.ingress.domain) {
+        // Set default subdomain of domain change
+        formData.ingress = { ...formData.ingress }
+        formData.ingress.subdomain = `${formData.name}.team-${team.name}`
       }
+    }
+
+    if (schemaChanged) setSchema(cloneDeep(getServiceSchema(team, clusters, formData)))
+    setData(formData)
+
+    if (!done) {
+      setDone(true)
+    } else {
+      setDirty(true)
     }
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
-  const schema = getServiceSchema(clusters)
-  const uiSchema = getServiceUiSchema(schema, role)
   return (
     <div className='Service'>
       <h1>Service:</h1>
