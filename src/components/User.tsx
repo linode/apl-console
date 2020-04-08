@@ -27,7 +27,7 @@ export default ({ teams = [] }: Props): any => {
       <Avatar className={classes.root} />
       <span onClick={(): any => changeSession(false)}>{user.email}</span> &nbsp;({isAdmin && `admin, obo:`}
       {isAdmin && (
-        <Select value={teamId} onChange={handleChange}>
+        <Select value={isAdmin ? undefined : teamId} onChange={handleChange}>
           <MenuItem value={undefined}>-</MenuItem>
           {teams.map(({ teamId: tid }): any => (
             <MenuItem key={tid} value={tid}>

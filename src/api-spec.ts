@@ -60,6 +60,7 @@ export function getServiceUiSchema(schema, role: string): any {
 export function setSpec(inSpec): void {
   spec = inSpec
 }
+
 function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
