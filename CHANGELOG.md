@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.24](https://github.com/redkubes/otomi-stack-web/compare/v0.1.23...v0.1.24) (2020-04-09)
+
+
+### Features
+
+* add domin enum to service form ([563c902](https://github.com/redkubes/otomi-stack-web/commit/563c90247af6fa566422ba8049e69ac1a1bf2743))
+* change clusters in session object ([89b852b](https://github.com/redkubes/otomi-stack-web/commit/89b852be5c9fbb02b5147ba8d25466cd3883886e))
+* clear domain and subdomain on service name or cluster change ([4d8a035](https://github.com/redkubes/otomi-stack-web/commit/4d8a035ba0169357a59664735848cf855ff6c81f))
+* clear domain on cluster change ([8a8cbdc](https://github.com/redkubes/otomi-stack-web/commit/8a8cbdc2f6ea3e6fc652aa6fdc52b40dc6cf5806))
+
+
+### Bug Fixes
+
+* do not mutate immutable objects ([447523b](https://github.com/redkubes/otomi-stack-web/commit/447523bc16b8e45f7ad32b0972f093bb9086d596))
+* needed cloneDeep after all to trigger schema change render ([0faf655](https://github.com/redkubes/otomi-stack-web/commit/0faf655929627fee3a75b761a205766f6b7650fc))
+* populate form defaults to component state ([#17](https://github.com/redkubes/otomi-stack-web/issues/17)) ([09bf749](https://github.com/redkubes/otomi-stack-web/commit/09bf749aa1090fd081ebfec81f9c1a37552a3245))
+* privde team data to service component ([71c3a2d](https://github.com/redkubes/otomi-stack-web/commit/71c3a2ddf231d7f7af119c2df3e01a20061849c2))
+* provide team clusters instead of all clusters to the service form ([657fb3c](https://github.com/redkubes/otomi-stack-web/commit/657fb3c088082c3a4fe440d455f8a42659b5f009))
+* provide team clusters instead of all clusters to the service form ([362c10f](https://github.com/redkubes/otomi-stack-web/commit/362c10fa50702afb2b33e455314a93f54d5293a9))
+
+
+### Styling
+
+* fix style ([b679191](https://github.com/redkubes/otomi-stack-web/commit/b679191ba50fd1c28d6ee8896526a54b1d22602a))
+
+
+### Build System
+
+* fix for missing autosave and linting ([72d9f8c](https://github.com/redkubes/otomi-stack-web/commit/72d9f8c821c9795cf1c3c0d2c8a6b65fb62d084d))
+
 ### [0.1.23](https://github.com/redkubes/otomi-stack-web/compare/v0.1.22...v0.1.23) (2020-04-07)
 
 
