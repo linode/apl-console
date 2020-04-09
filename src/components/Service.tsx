@@ -32,6 +32,12 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
       return
     }
 
+    if (!data) {
+      // On rendering form for a new service when defaults are populated for the first time
+      setData(form.formData)
+      return
+    }
+
     const formData = { ...form.formData }
 
     let schemaChanged = false
