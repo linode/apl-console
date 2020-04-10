@@ -29,16 +29,18 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
     <div className='Services'>
       <h1>Services</h1>
       <Box mb={1}>
-        <Button
-          component={Link}
-          to='/create-service'
-          startIcon={<AddCircleIcon />}
-          variant='contained'
-          color='primary'
-          disabled={!sessTeamId}
-        >
-          Create service
-        </Button>
+        {!isAdmin && teamId && (
+          <Button
+            component={Link}
+            to={isAdmin ? '/create-service' : `/teams/${teamId}/create-service`}
+            startIcon={<AddCircleIcon />}
+            variant='contained'
+            color='primary'
+            disabled={isAdmin && !sessTeamId}
+          >
+            Create service
+          </Button>
+        )}
       </Box>
       <TableContainer>
         <Table aria-label='simple table'>
@@ -53,7 +55,7 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
             {services.map((row): any => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row'>
-                  {getServiceLink(row)}
+                  {isAdmin || teamId ? getServiceLink(row) : row.name}
                 </TableCell>
                 <TableCell align='right'>{row.clusterId}</TableCell>
                 {(isAdmin || !teamId) && <TableCell align='right'>{row.teamId}</TableCell>}
