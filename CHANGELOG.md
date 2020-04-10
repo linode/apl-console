@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.25](https://github.com/redkubes/otomi-stack-web/compare/v0.1.24...v0.1.25) (2020-04-10)
+
+
+### Features
+
+* dark theme [ci skip] ([c2c6fa2](https://github.com/redkubes/otomi-stack-web/commit/c2c6fa26ca993955c0bc48a4d2bc0c0ea3e42b90))
+
+
+### Bug Fixes
+
+* better form and view logic [ci skip] ([3175205](https://github.com/redkubes/otomi-stack-web/commit/31752050110d666fdf5f3ff887c30cc7593c2913))
+* form logic ([90ae6d1](https://github.com/redkubes/otomi-stack-web/commit/90ae6d11617e83c3082411aa43679740b6699589))
+
+
+### Build System
+
+* removed serve [ci skip] ([48774c2](https://github.com/redkubes/otomi-stack-web/commit/48774c20e80f2f74702e5bbcd933ad6c45211a94))
+
 ### [0.1.24](https://github.com/redkubes/otomi-stack-web/compare/v0.1.23...v0.1.24) (2020-04-09)
 
 
