@@ -35,7 +35,6 @@ export default ({ teams }: Props): any => {
       <h1>Teams</h1>
       {isAdmin && <TeamActionBar />}
       <TableContainer>
-        {/* <Table className={classes.table} aria-label='simple table'> */}
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
@@ -47,7 +46,7 @@ export default ({ teams }: Props): any => {
             {teams.map(row => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row' id={row.teamId}>
-                  <RLink to={`/teams/${row.name}`}>{row.name}</RLink>
+                  {isAdmin ? <RLink to={`/teams/${row.name}`}>{row.name}</RLink> : row.name}
                 </TableCell>
                 <TableCell align='right'>{row.clusters.join(', ')}</TableCell>
               </TableRow>

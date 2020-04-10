@@ -57,7 +57,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
       } else if (formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
-        formData.ingress.subdomain = `${formData.name}.team-${team.name}`
+        if (formData.name) formData.ingress.subdomain = `${formData.name}.team-${team.name}`
       }
     }
 

@@ -92,24 +92,27 @@ export default ({
 
   return (
     <MainLayout>
-      {err}
-      {loading && <Loader />}
-      {team && serviceName && formdata && (
-        <Service team={team} clusters={clusters} onSubmit={setFormdata} service={formdata} />
+      {err || (
+        <>
+          {loading && <Loader />}
+          {team && serviceName && formdata && (
+            <Service team={team} clusters={clusters} onSubmit={setFormdata} service={formdata} />
+          )}
+          {team && serviceName && !formdata && (
+            <EditService
+              teamId={tid}
+              serviceName={serviceName}
+              team={team}
+              clusters={clusters}
+              onSubmit={setFormdata}
+              onDelete={setDeleteService}
+            />
+          )}
+          {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
+          {team && !serviceName && !formdata && <Service team={team} clusters={clusters} onSubmit={setFormdata} />}
+          {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
+        </>
       )}
-      {team && serviceName && !formdata && (
-        <EditService
-          teamId={tid}
-          serviceName={serviceName}
-          team={team}
-          clusters={clusters}
-          onSubmit={setFormdata}
-          onDelete={setDeleteService}
-        />
-      )}
-      {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
-      {team && !serviceName && !formdata && <Service team={team} clusters={clusters} onSubmit={setFormdata} />}
-      {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
     </MainLayout>
   )
 }

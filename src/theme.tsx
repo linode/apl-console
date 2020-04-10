@@ -1,90 +1,173 @@
-import { createMuiTheme, createStyles, makeStyles, ThemeOptions } from '@material-ui/core/styles'
+import { createMuiTheme, createStyles, makeStyles, ThemeOptions, Theme } from '@material-ui/core/styles'
 
-export const colors = {
-  dark: {
-    accent: '#f7be16', // yellow
+export const c = {
+  light: '#ccc',
+  dark: '#666',
+  blueSoft: '#A4D2FF',
+  blueLight: '#67B3FF',
+  blueMain: '#0064C8',
+  blueDark: '#2F45AB',
+  redSoft: '#ffbbae',
+  redLight: '#ff7359',
+  redMain: '#ca2000',
+  redDark: '#a11900',
+  yellowSoft: '#ffe6a7',
+  yellowLight: '#ffd700',
+  yellowMain: '#f1c400',
+  yellowDark: '#dab100',
+  brownSoft: '#e6c19c',
+  brownLight: '#cb9a6a',
+  brownMain: '#cd853f',
+  brownDark: '#96612d',
+}
+
+export const commonDark = {
+  black: c.dark,
+  white: c.light,
+}
+
+export const teamColors = {
+  background: c.blueDark,
+  paper: c.yellowSoft,
+  primary: {
+    light: c.blueLight,
+    main: c.blueMain,
+    dark: c.blueDark,
   },
-  light: {
-    accent: '#f7be16', // yellow
-    container: '#bbb',
-    paper: '#ffedb9',
+  secondary: {
+    // light: c.blueLight,
+    main: c.blueMain,
+    // dark: c.blueDark,
   },
 }
 
-const mainOverrides: ThemeOptions = {
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        body: {
-          // background: `linear-gradient(to bottom,rgba(255, 191, 0, 0.5) 50%,rgba(255, 191, 0, 0) 65%) no-repeat bottom center fixed, url(${bg}) no-repeat bottom right fixed`,
-          // background: `linear-gradient(to bottom,rgba(255, 191, 0, 0.5) 50%,rgba(255, 191, 0, 0) 65%) no-repeat bottom center fixed`,
-          backgroundColor: 'rgba(255, 191, 0, 1)',
-          backgroundSize: 'cover',
+export const adminColors = {
+  background: c.redDark,
+  paper: c.brownSoft,
+  primary: {
+    light: c.redLight,
+    main: c.redMain,
+    dark: c.redDark,
+  },
+  secondary: {
+    // light: c.redSoft,
+    main: c.redMain,
+    // dark: c.redMain,
+  },
+}
+
+const getOverrides = (c: any): ThemeOptions => {
+  return {
+    overrides: {
+      MuiCssBaseline: {
+        // '@global': {
+        //   body: {
+        //     backgroundSize: 'cover',
+        //   },
+        // },
+      },
+      MuiButton: {
+        root: {
+          borderRadius: '2em',
+        },
+      },
+      MuiInputBase: {
+        root: {
+          borderRadius: '6px',
+          // color: 'secondary',
+        },
+      },
+      MuiListItemIcon: {
+        root: {
+          minWidth: '38px',
         },
       },
     },
-    MuiButton: {
-      root: {
-        borderRadius: '2em',
+    palette: {
+      background: {
+        default: c.background,
+        paper: c.paper,
+      },
+      primary: c.primary,
+      secondary: c.secondary,
+    },
+    typography: {
+      button: {
+        textTransform: 'none',
       },
     },
-    MuiInputBase: {
-      root: {
-        borderRadius: '6px',
-        color: 'secondary',
-      },
-    },
-    MuiListItemIcon: {
-      root: {
-        minWidth: '38px',
-      },
-    },
-  },
+  }
+}
+
+let name: string
+let type: string
+
+export function setThemeName(inName: string): void {
+  name = inName
+}
+
+export function setThemeType(inType: string): void {
+  type = inType
+}
+
+export const toggleThemeType = (): string => {
+  type = type === 'light' ? 'dark' : 'light'
+  return type
+}
+
+const teamOverrides = getOverrides(teamColors)
+const teamLight = createMuiTheme(teamOverrides)
+const teamDark = createMuiTheme({
+  ...teamOverrides,
   palette: {
+    type: 'dark',
+    common: commonDark,
     text: {
-      primary: '#555',
-      secondary: '#aaa',
+      primary: c.light,
     },
-    background: {
-      default: colors.light.accent,
-      paper: colors.light.paper,
-    },
-  },
-  typography: {
-    button: {
-      textTransform: 'none',
-    },
-  },
-}
-// tslint:disable-next-line: one-variable-per-declaration
-const teamOverrides: ThemeOptions = {
-  ...mainOverrides,
-  palette: {
-    ...mainOverrides.palette,
     primary: {
-      main: '#0053ff',
+      // contrastText: c.blueSoft,
+      main: c.blueDark,
     },
     secondary: {
-      main: '#555',
+      main: c.blueMain,
     },
   },
-}
-const adminOverrides: ThemeOptions = {
-  ...mainOverrides,
+})
+const adminOverrides = getOverrides(adminColors)
+const adminLight = createMuiTheme(adminOverrides)
+const adminDark = createMuiTheme({
+  ...adminOverrides,
   palette: {
-    ...mainOverrides.palette,
+    type: 'dark',
+    common: commonDark,
+    text: {
+      primary: c.light,
+    },
     primary: {
-      main: '#ff7e00',
+      // contrastText: c.redSoft,
+      main: c.redDark,
     },
     secondary: {
-      main: '#555',
+      main: c.redMain,
     },
+  },
+})
+
+export const themes = {
+  team: {
+    light: teamLight,
+    dark: teamDark,
+  },
+  admin: {
+    light: adminLight,
+    dark: adminDark,
   },
 }
 
-export const theme = createMuiTheme(teamOverrides)
-
-export const adminTheme = createMuiTheme(adminOverrides)
+export function getTheme(): Theme {
+  return themes[name][type]
+}
 
 export const createClasses = (stylesObj): any => makeStyles(() => createStyles(stylesObj))({})
 
@@ -93,18 +176,20 @@ export const mainStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     '&': {
       textDecoration: 'none',
-      color: theme.palette.primary.main,
+      color: theme.palette.primary[type === 'dark' ? 'contrastText' : 'dark'],
     },
     '&:hover': {
-      color: theme.palette.primary.dark,
+      textDecoration: 'none',
+      color: theme.palette.primary[type === 'dark' ? 'light' : 'light'],
     },
     '@global': {
       a: {
         textDecoration: 'none',
-        color: theme.palette.primary.main,
+        color: theme.palette.primary[type === 'dark' ? 'contrastText' : 'dark'],
       },
       'a:hover': {
-        color: theme.palette.primary.dark,
+        textDecoration: 'none',
+        color: theme.palette.primary[type === 'dark' ? 'light' : 'light'],
       },
     },
   },

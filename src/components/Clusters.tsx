@@ -11,7 +11,6 @@ export default ({ clusters }: Props): any => {
     <div className='Cluster'>
       <h1>Clusters</h1>
       <TableContainer>
-        {/* <Table className={classes.table} aria-label='simple table'> */}
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
@@ -23,7 +22,7 @@ export default ({ clusters }: Props): any => {
           </TableHead>
           <TableBody>
             {clusters.map(row => (
-              <TableRow key={row.name}>
+              <TableRow key={row.domain}>
                 <TableCell component='th' scope='row'>
                   {row.cluster}
                 </TableCell>

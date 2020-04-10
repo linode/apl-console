@@ -4,11 +4,13 @@ let session
 
 export interface SessionContext {
   initialising?: boolean
-  isAdmin: boolean
+  isAdmin?: boolean
   user?: object
   teamId?: string
   clusters?: object
   changeSession?: object
+  setThemeName?: CallableFunction
+  setThemeType?: CallableFunction
 }
 
 export const SessionContext = React.createContext<SessionContext>({
@@ -18,6 +20,8 @@ export const SessionContext = React.createContext<SessionContext>({
   teamId: undefined,
   clusters: undefined,
   changeSession: undefined,
+  setThemeName: undefined,
+  setThemeType: undefined,
 })
 
 export const useSession = (): any => {

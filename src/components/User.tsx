@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import { MenuItem, Select } from '@material-ui/core'
+import { MenuItem, Select, IconButton, Typography, styled } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { useSession } from '../session-context'
@@ -11,10 +11,23 @@ interface Props {
   teams: Team[]
 }
 
+const StyledSelect = styled(Select)({
+  color: 'inherit',
+})
+
+// const StyledInputLabel = styled(InputLabel)({
+//   color: 'inherit',
+//   '&.Mui-focused': {
+//     color: 'inherit',
+//   },
+// })
 export default ({ teams = [] }: Props): any => {
   const classes = createClasses({
-    root: {
+    avatar: {
       marginRight: '1vw',
+    },
+    select: {
+      fontSize: '1.5rem',
     },
   })
   const { user, teamId, isAdmin, changeSession } = useSession()
@@ -24,19 +37,22 @@ export default ({ teams = [] }: Props): any => {
   }
   return (
     <>
-      <Avatar className={classes.root} />
-      <span onClick={(): any => changeSession(false)}>{user.email}</span> &nbsp;({isAdmin && `admin, obo:`}
+      <IconButton color='inherit' onClick={(): any => changeSession(false)}>
+        <Avatar className={classes.avatar} />
+        <Typography variant='h5'>
+          {user.email}&nbsp;({isAdmin ? `admin) obo team:` : `${teamId})`}
+        </Typography>
+      </IconButton>
       {isAdmin && (
-        <Select value={isAdmin ? undefined : teamId} onChange={handleChange}>
+        <StyledSelect value={teams.length ? teamId : ''} onChange={handleChange} className={classes.select}>
           <MenuItem value={undefined}>-</MenuItem>
           {teams.map(({ teamId: tid }): any => (
             <MenuItem key={tid} value={tid}>
               {tid.charAt(0).toUpperCase() + tid.substr(1)}
             </MenuItem>
           ))}
-        </Select>
+        </StyledSelect>
       )}
-      {!isAdmin && teamId})
     </>
   )
 }

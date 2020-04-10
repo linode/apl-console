@@ -15,10 +15,10 @@ import Team from './pages/Team'
 import Teams from './pages/Teams'
 import Error from './pages/Error'
 import { SessionContext } from './session-context'
-import { adminTheme, createClasses, theme } from './theme'
+import { createClasses, setThemeName, getTheme, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
+import { useLocalStorage } from './hooks/useLocalStorage'
 
-let sessionIdx = 0
 const allClusters = [
   {
     cloud: 'azure',
@@ -72,7 +72,6 @@ const allClusters = [
 const testSessions = [
   {
     user: { email: 'bob.admin@redkubes.com' },
-    teamId: 'admin',
     isAdmin: true,
     clusters: allClusters,
   },
@@ -88,20 +87,24 @@ const App = (): any => {
   // const [session, initialising, error] = useApi('getSession')
   const initialising = false
   const [loaded, setLoaded] = useState(false)
-  const [session, setSession] = useState(testSessions[sessionIdx])
-  const [teamId, setTeamId] = useState()
-  const [selectedTheme, setSelectedTheme] = useState(adminTheme)
+  const [sessionIdx, setSessionIdx] = useLocalStorage('sessionIdx', 0)
+  const [themeName, setTheme] = useLocalStorage('themeName', 'admin')
+  const [themeType, setType] = useLocalStorage('themeType', 'light')
+  const [teamId, setTeamId] = useLocalStorage('teamId', undefined)
+  const session = testSessions[sessionIdx]
+  testSessions[0].teamId = teamId
+  setThemeName(themeName)
+  setThemeType(themeType)
   const classes = createClasses(styles)
   const changeSession = (isAdmin, teamId = null): any => {
     if (isAdmin) {
-      testSessions[0].teamId = teamId
-      setSession(testSessions[0])
       setTeamId(teamId)
+      setSessionIdx(0)
       return
     }
-    sessionIdx = sessionIdx === 0 ? 1 : 0
-    setSession(testSessions[sessionIdx])
-    setSelectedTheme(sessionIdx === 0 ? adminTheme : theme)
+    const newSessionIdx = sessionIdx === 0 ? 1 : 0
+    setTheme(newSessionIdx === 0 ? 'admin' : 'team')
+    setSessionIdx(newSessionIdx)
   }
   useEffect(() => {
     ;(async (): Promise<any> => {
@@ -114,7 +117,7 @@ const App = (): any => {
     return <Loader />
   }
   return (
-    <ThemeProvider theme={selectedTheme}>
+    <ThemeProvider theme={getTheme()}>
       <SnackbarProvider
         {...defaultOpts}
         anchorOrigin={{
@@ -136,6 +139,8 @@ const App = (): any => {
               ...session,
               initialising,
               changeSession,
+              setThemeName: setTheme,
+              setThemeType: setType,
             }}
           >
             <Router>

@@ -1,4 +1,5 @@
-import { Container, makeStyles } from '@material-ui/core'
+/* eslint-disable global-require */
+import { Container, makeStyles, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -9,25 +10,29 @@ import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import MenuIcon from '@material-ui/icons/Menu'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import clsx from 'clsx'
 import React, { useState } from 'react'
-import Logo from '../components/Logo'
 import MenuAdmin from '../components/MenuAdmin'
 import MenuTeam from '../components/MenuTeam'
 import User from '../components/User'
 import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
+import { toggleThemeType } from '../theme'
 
 const drawerWidth = '16vw'
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
-    a: theme.palette.primary.dark,
+    // a: theme.palette.primary.dark,
+  },
+  logo: {
+    flexGrow: 1,
+    marginRight: '1vw',
+    justifyContent: 'left',
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
@@ -41,7 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: theme.palette.primary.light,
+    backgroundColor: theme.palette.primary.main,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -60,9 +65,6 @@ const useStyles = makeStyles(theme => ({
   },
   menuButtonHidden: {
     display: 'none',
-  },
-  title: {
-    flexGrow: 1,
   },
   drawer: {
     backgroundColor: theme.palette.secondary.main,
@@ -114,7 +116,7 @@ interface Props {
 
 export default (props: Props): any => {
   const { children } = props
-  const { isAdmin, teamId } = useSession()
+  const { isAdmin, teamId, setThemeType } = useSession()
   const classes = useStyles(props)
   const [open, setOpen] = useState(true)
   const [teams]: any = useApi('getTeams')
@@ -124,6 +126,10 @@ export default (props: Props): any => {
   const handleDrawerClose = (): any => {
     // setOpen(false)
     setOpen(true)
+  }
+
+  const toggleTheme = (): void => {
+    setThemeType(toggleThemeType())
   }
 
   return (
@@ -141,15 +147,17 @@ export default (props: Props): any => {
             <MenuIcon />
           </IconButton>
 
-          <Typography component='h1' variant='h6' noWrap className={classes.title}>
-            <IconButton color='inherit'>
-              <Logo />
-              Otomi {isAdmin ? 'Admin' : 'Team'} Console
-            </IconButton>
-          </Typography>
-          <IconButton color='inherit'>
-            <User teams={teams} />
+          <IconButton color='inherit' onClick={toggleTheme} className={classes.logo}>
+            <img
+              style={{ marginRight: '1vw' }}
+              src={require('../images/otomi-stack.png')}
+              width='40'
+              height='40'
+              alt='otomi logo'
+            />
+            <Typography variant='h5'>Otomi {isAdmin ? 'Admin' : 'Team'} Console</Typography>
           </IconButton>
+          <User teams={teams} />
           <IconButton color='inherit'>
             <Badge badgeContent={4} color='secondary'>
               <NotificationsIcon />

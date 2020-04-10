@@ -1,15 +1,12 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll": true
   },
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
   "editor.formatOnPaste": false,
   "editor.formatOnSave": true,
+  "eslint.alwaysShowStatus": true,
   "eslint.enable": true,
-  "eslint.validate": [
-    "javascript",
-    "javascriptreact",
-    { "language": "typescript", "autoFix": true },
-    "typescriptreact"
-  ],
+  "eslint.validate": ["javascript", "javascriptreact"],
   "tslint.enable": false
 }
