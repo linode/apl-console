@@ -29,7 +29,7 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
     <div className='Services'>
       <h1>Services</h1>
       <Box mb={1}>
-        {!isAdmin && teamId && (
+        {(isAdmin || teamId) && (
           <Button
             component={Link}
             to={isAdmin ? '/create-service' : `/teams/${teamId}/create-service`}
