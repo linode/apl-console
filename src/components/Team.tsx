@@ -53,6 +53,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
               Delete
             </Button>
           )}
+          &nbsp;
           <Button variant='contained' color='primary' type='submit' disabled={!dirty}>
             Submit
           </Button>

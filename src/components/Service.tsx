@@ -54,10 +54,10 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData.ingress = { ...formData.ingress }
         formData.ingress.domain = ''
         formData.ingress.subdomain = ''
-      } else if (formData.ingress.domain !== data.ingress.domain) {
+      } else if (formData.name !== data.name || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
-        if (formData.name) formData.ingress.subdomain = `${formData.name}.team-${team.name}`
+        formData.ingress.subdomain = formData.name ? `${formData.name}.team-${team.name}` : ''
       }
     }
 
@@ -92,6 +92,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
               Delete
             </Button>
           )}
+          &nbsp;
           <Button variant='contained' color='primary' type='submit' disabled={!dirty}>
             Submit
           </Button>
