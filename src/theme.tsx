@@ -74,7 +74,7 @@ const getOverrides = (c: any): ThemeOptions => {
       MuiInputBase: {
         root: {
           borderRadius: '6px',
-          // color: 'secondary',
+          color: 'secondary',
         },
       },
       MuiListItemIcon: {
