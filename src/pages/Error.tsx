@@ -9,5 +9,5 @@ interface Props {
 
 export default ({ code }: Props): any => {
   const err = <Error code={code} />
-  return <>{code === 401 ? <MainLayout>{err}</MainLayout> : { err }}</>
+  return <>{code === 401 ? <MainLayout>{err}</MainLayout> : err}</>
 }

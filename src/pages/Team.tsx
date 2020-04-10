@@ -51,7 +51,7 @@ export default ({
 }: any): any => {
   const { isAdmin, teamId: sessTeamId, clusters } = useSession()
   let err
-  if (!isAdmin && teamId !== sessTeamId) {
+  if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
   }
 

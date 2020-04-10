@@ -20,12 +20,11 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
   const [data, setData] = useState(team)
   const [dirty, setDirty] = useState(false)
   const handleChange = (form, error): any => {
-    if (!error) {
-      const { formData } = form
-      const equal = isEqual(formData, team)
-      setData(formData)
-      setDirty(!equal)
-    }
+    if (error) return
+    const { formData } = form
+    const equal = isEqual(formData, team)
+    setData(formData)
+    setDirty(!equal)
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)

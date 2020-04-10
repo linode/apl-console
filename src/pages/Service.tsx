@@ -82,7 +82,7 @@ export default ({
 }: RouteComponentProps<Params>): any => {
   const { isAdmin, teamId: sessTeamId, clusters } = useSession()
   let err
-  if (!isAdmin && teamId !== sessTeamId) {
+  if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
   }
   const tid = teamId || sessTeamId
