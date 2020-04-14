@@ -14,10 +14,9 @@ export default ({ clusters }: Props): any => {
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
-              <TableCell>Cluster</TableCell>
+              <TableCell>Domain</TableCell>
               <TableCell align='right'>Cloud</TableCell>
               <TableCell align='right'>Region</TableCell>
-              <TableCell align='right'>Domain</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -26,11 +25,10 @@ export default ({ clusters }: Props): any => {
                 <TableCell component='th' scope='row'>
                   {row.cluster}
                 </TableCell>
-                <TableCell align='right'>{row.cloud}</TableCell>
-                <TableCell align='right'>{row.region}</TableCell>
                 <TableCell align='right'>
                   <Link href={`https://otomi.${row.domain}`}>{row.domain}</Link>
                 </TableCell>
+                <TableCell align='right'>{row.region}</TableCell>
               </TableRow>
             ))}
           </TableBody>

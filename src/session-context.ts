@@ -8,7 +8,6 @@ export interface SessionContext {
   teamId?: string
   clusters?: object
   setTeamId?: object
-  setThemeName?: CallableFunction
   setThemeType?: CallableFunction
 }
 
@@ -18,7 +17,6 @@ export const SessionContext = React.createContext<SessionContext>({
   teamId: undefined,
   clusters: undefined,
   setTeamId: undefined,
-  setThemeName: undefined,
   setThemeType: undefined,
 })
 

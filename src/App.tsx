@@ -22,15 +22,13 @@ import { useLocalStorage } from './hooks/useLocalStorage'
 const LoadedApp = (): any => {
   const classes = createClasses(styles)
   const [session, sessionLoading]: any = useApi('getSession')
-  const [themeName, setTheme] = useLocalStorage('themeName', 'admin')
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [teamId, setTeamId] = useLocalStorage('teamId', undefined)
-  setThemeName(themeName)
   setThemeType(themeType)
   if (sessionLoading) {
     return <Loader />
   }
-  setTheme(session.isAdmin ? 'admin' : 'team')
+  setThemeName(session.isAdmin ? 'admin' : 'team')
   return (
     <ThemeProvider theme={getTheme()}>
       <SnackbarProvider
@@ -54,7 +52,6 @@ const LoadedApp = (): any => {
               ...session,
               teamId: session.isAdmin ? teamId : session.teamId,
               setTeamId,
-              setThemeName: setTheme,
               setThemeType: setType,
             }}
           >
