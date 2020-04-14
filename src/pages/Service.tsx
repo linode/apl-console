@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, useLocation } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
@@ -32,12 +32,13 @@ const Submit = ({ teamId, name, data }: SubmitProps): any => {
 
 interface DeleteProps {
   teamId: string
+  clusterId: string
   name: string
 }
 
-const Delete = ({ teamId, name }: DeleteProps): any => {
+const Delete = ({ teamId, clusterId, name }: DeleteProps): any => {
   const method = 'deleteService'
-  const filter = { teamId, name }
+  const filter = { teamId, clusterId, name }
   const [result] = useApi(method, filter, null)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
@@ -48,17 +49,19 @@ const Delete = ({ teamId, name }: DeleteProps): any => {
 
 interface EditProps {
   teamId: string
-  serviceName: string
+  clusterId: string
+  name: string
   team: any
   clusters: any
   onSubmit: CallableFunction
   onDelete: CallableFunction
 }
 
-const EditService = ({ teamId, serviceName, team, clusters, onSubmit, onDelete }: EditProps): any => {
+const EditService = ({ teamId, clusterId, name, team, clusters, onSubmit, onDelete }: EditProps): any => {
   const [service, serviceLoading, error]: any = useApi('getService', {
     teamId,
-    name: serviceName,
+    clusterId,
+    name,
   })
 
   if (serviceLoading) {
@@ -67,19 +70,35 @@ const EditService = ({ teamId, serviceName, team, clusters, onSubmit, onDelete }
   if (error) {
     return <Error code={error.response.status} msg={error.response.statusText} />
   }
-  return <Service service={service} team={team} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
+  return (
+    <Service
+      service={service}
+      team={team}
+      clusterId={clusterId}
+      clusters={clusters}
+      onSubmit={onSubmit}
+      onDelete={onDelete}
+    />
+  )
+}
+
+function useQuery(): any {
+  return new URLSearchParams(useLocation().search)
 }
 
 interface Params {
   teamId?: string
-  serviceName?: string
+  clusterId?: string
+  name?: string
 }
 
 export default ({
   match: {
-    params: { teamId, serviceName },
+    params: { teamId, name },
   },
 }: RouteComponentProps<Params>): any => {
+  const query = useQuery()
+  const clusterId = query.get('clusterId')
   const { isAdmin, teamId: sessTeamId, clusters } = useSession()
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
@@ -95,22 +114,25 @@ export default ({
       {err || (
         <>
           {loading && <Loader />}
-          {team && serviceName && formdata && (
-            <Service team={team} clusters={clusters} onSubmit={setFormdata} service={formdata} />
+          {team && name && formdata && (
+            <Service team={team} clusterId={clusterId} clusters={clusters} onSubmit={setFormdata} service={formdata} />
           )}
-          {team && serviceName && !formdata && (
+          {team && name && !formdata && (
             <EditService
               teamId={tid}
-              serviceName={serviceName}
+              clusterId={clusterId}
+              name={name}
               team={team}
               clusters={clusters}
               onSubmit={setFormdata}
               onDelete={setDeleteService}
             />
           )}
-          {team && serviceName && !formdata && deleteService && <Delete teamId={tid} name={serviceName} />}
-          {team && !serviceName && !formdata && <Service team={team} clusters={clusters} onSubmit={setFormdata} />}
-          {formdata && <Submit teamId={tid} name={serviceName} data={formdata} />}
+          {team && name && !formdata && deleteService && <Delete teamId={tid} clusterId={clusterId} name={name} />}
+          {team && !name && !formdata && (
+            <Service team={team} clusterId={clusterId} clusters={clusters} onSubmit={setFormdata} />
+          )}
+          {formdata && <Submit teamId={tid} name={name} data={formdata} />}
         </>
       )}
     </MainLayout>

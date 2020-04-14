@@ -8,6 +8,7 @@ let axiosConfigDefaults = {
   headers: {
     'Cache-Control': 'no-cache',
     'Auth-Group': undefined,
+    'Auth-User': undefined,
   },
 }
 if (process.env.NODE_ENV !== 'production') {
@@ -17,7 +18,8 @@ if (process.env.NODE_ENV !== 'production') {
     withCredentials: false,
     headers: {
       'Cache-Control': 'no-cache',
-      'Auth-Group': 'taxi',
+      'Auth-Group': 'admin',
+      'Auth-User': 'bob.admin@otomi.cloud',
     },
   }
   baseUrl = 'http://127.0.0.1:8080/v1'

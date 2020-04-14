@@ -7,7 +7,6 @@ import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
 import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
-import List from '@material-ui/core/List'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -180,7 +179,7 @@ export default (props: Props): any => {
           </IconButton>
         </div>
         <Divider />
-        <List>{isAdmin && !teamId ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}</List>
+        {isAdmin && !teamId ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>

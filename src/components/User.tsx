@@ -30,14 +30,14 @@ export default ({ teams = [] }: Props): any => {
       fontSize: '1.5rem',
     },
   })
-  const { user, teamId, isAdmin, changeSession } = useSession()
+  const { user, teamId, isAdmin, setTeamId } = useSession()
   const handleChange = (event): any => {
-    changeSession(true, event.target.value)
+    setTeamId(event.target.value)
     event.preventDefault()
   }
   return (
     <>
-      <IconButton color='inherit' onClick={(): any => changeSession(false)}>
+      <IconButton color='inherit'>
         <Avatar className={classes.avatar} />
         <Typography variant='h5'>
           {user.email}&nbsp;({isAdmin ? `admin) obo team:` : `${teamId})`}

@@ -11,6 +11,7 @@ interface Props {
   onSubmit: CallableFunction
   onDelete?: any
   team: any
+  clusterId: string
   service?: Service
   clusters: [any]
 }

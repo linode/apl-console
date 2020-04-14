@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import getClient, { getApiDefinition } from '../api'
 import { setSpec } from '../api-spec'
 import { LoadingHook, useLoadingValue } from '../utils'
-import { useSnackbar } from '../utils/snackbar'
+// import { useSnackbar } from '../utils/snackbar'
 import { useSession } from '../session-context'
 
 export type ApiHook = LoadingHook<object, Error>
@@ -24,12 +24,15 @@ const checkDirty = (method): boolean => {
       dirty = true
     }
   })
+  if (method.indexOf('deployments') > -1) {
+    dirty = false
+  }
   return dirty
 }
 
 export const useApi = (method: string, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
-  const { enqueueSnackbar } = useSnackbar()
+  // const { enqueueSnackbar } = useSnackbar()
   const { isAdmin } = useSession()
   useEffect(() => {
     // tslint:disable-next-line: no-floating-promises
@@ -39,7 +42,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
           const err = `Api method does not exist: ${method}`
           setError(new Error(err))
           if (process.env.NODE_ENV !== 'production') {
-            enqueueSnackbar(err, { variant: 'error' })
+            // enqueueSnackbar(err, { variant: 'error' })
           } else {
             console.error(err)
           }
@@ -50,7 +53,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
         }
       } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
-          enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
+          // enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
         }
         console.error(`Api Error calling '${method}':`, e)
         setError(e)
