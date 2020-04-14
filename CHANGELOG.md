@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/redkubes/otomi-stack-web/compare/v0.1.28...v0.2.0) (2020-04-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* services now require clusterId
+
+### Code Refactoring
+
+* now using clusterId for requests to accomodate new serviceId ([5591147](https://github.com/redkubes/otomi-stack-web/commit/5591147dfa46f4eef2d95f71535c4f85fde0ca1b))
+
 ### [0.1.28](https://github.com/redkubes/otomi-stack-web/compare/v0.1.27...v0.1.28) (2020-04-10)
 
 
