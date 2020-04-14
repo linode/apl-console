@@ -14,12 +14,14 @@ let axiosConfigDefaults = {
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line no-console
   console.info('running in development mode')
+  // eslint-disable-next-line no-restricted-globals
+  const team = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
   axiosConfigDefaults = {
     withCredentials: false,
     headers: {
       'Cache-Control': 'no-cache',
-      'Auth-Group': 'admin',
-      'Auth-User': 'bob.admin@otomi.cloud',
+      'Auth-Group': team,
+      'Auth-User': team === 'admin' ? 'bob.admin@otomi.cloud' : `joe.team@otomi.cloud`,
     },
   }
   baseUrl = 'http://127.0.0.1:8080/v1'
