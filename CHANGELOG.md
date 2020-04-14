@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/redkubes/otomi-stack-web/compare/v0.2.3...v0.2.4) (2020-04-14)
+
+
+### Bug Fixes
+
+* session theme name now not in localStorage anymore [ci skip] ([b498f37](https://github.com/redkubes/otomi-stack-web/commit/b498f3785f444fe73b0ce33e87103c25547d368c))
+
+
+### Styling
+
+* implementing suggestions [ci skip] ([b17e2cb](https://github.com/redkubes/otomi-stack-web/commit/b17e2cb916f9519001cb79865f435e7421f3be35))
+
 ### [0.2.3](https://github.com/redkubes/otomi-stack-web/compare/v0.2.2...v0.2.3) (2020-04-14)
 
 
