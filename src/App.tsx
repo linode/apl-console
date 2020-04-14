@@ -51,7 +51,7 @@ const LoadedApp = (): any => {
           <SessionContext.Provider
             value={{
               ...session,
-              teamId: session.isAdmin && !teamId ? undefined : teamId,
+              teamId: session.isAdmin ? teamId : session.teamId,
               setTeamId,
               setThemeName: setTheme,
               setThemeType: setType,
