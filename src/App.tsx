@@ -30,6 +30,7 @@ const LoadedApp = (): any => {
   if (sessionLoading) {
     return <Loader />
   }
+  setTheme(session.isAdmin ? 'admin' : 'team')
   return (
     <ThemeProvider theme={getTheme()}>
       <SnackbarProvider
