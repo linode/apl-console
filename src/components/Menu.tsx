@@ -60,7 +60,7 @@ export default ({ children = null }: Props): any => {
       </ListItem>
       <Divider />
       <ListSubheader component='div' id='main-subheader'>
-        <ListItemText primary='Org Wide' />
+        <ListItemText primary='Enterprise' />
       </ListSubheader>
       <ListItem component={Link} to='/clusters'>
         <ListItemIcon>

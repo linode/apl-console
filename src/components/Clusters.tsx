@@ -23,11 +23,9 @@ export default ({ clusters }: Props): any => {
             {clusters.map(row => (
               <TableRow key={row.domain}>
                 <TableCell component='th' scope='row'>
-                  {row.cluster}
-                </TableCell>
-                <TableCell align='right'>
                   <Link href={`https://otomi.${row.domain}`}>{row.domain}</Link>
                 </TableCell>
+                <TableCell align='right'>{row.cloud}</TableCell>
                 <TableCell align='right'>{row.region}</TableCell>
               </TableRow>
             ))}

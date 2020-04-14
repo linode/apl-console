@@ -39,6 +39,7 @@ export default ({ teams }: Props): any => {
           <TableHead>
             <TableRow>
               <TableCell>Team Name</TableCell>
+              <TableCell align='right'>Clouds</TableCell>
               <TableCell align='right'>Clusters</TableCell>
             </TableRow>
           </TableHead>
@@ -48,6 +49,7 @@ export default ({ teams }: Props): any => {
                 <TableCell component='th' scope='row' id={row.teamId}>
                   {isAdmin ? <RLink to={`/teams/${row.teamId}`}>{row.name}</RLink> : row.name}
                 </TableCell>
+                <TableCell align='right'>{row.clusters.map(c => c.substr(0, c.indexOf('/'))).join(', ')}</TableCell>
                 <TableCell align='right'>{row.clusters.join(', ')}</TableCell>
               </TableRow>
             ))}

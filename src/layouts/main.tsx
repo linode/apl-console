@@ -154,7 +154,7 @@ export default (props: Props): any => {
               height='40'
               alt='otomi logo'
             />
-            <Typography variant='h5'>Otomi {isAdmin ? 'Admin' : 'Team'} Console</Typography>
+            <Typography variant='h5'>Otomi Console</Typography>
           </IconButton>
           <User teams={teams} />
           <IconButton color='inherit'>
