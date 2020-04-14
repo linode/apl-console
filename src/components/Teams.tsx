@@ -46,7 +46,7 @@ export default ({ teams }: Props): any => {
             {teams.map(row => (
               <TableRow key={row.name}>
                 <TableCell component='th' scope='row' id={row.teamId}>
-                  {isAdmin ? <RLink to={`/teams/${row.name}`}>{row.name}</RLink> : row.name}
+                  {isAdmin ? <RLink to={`/teams/${row.teamId}`}>{row.name}</RLink> : row.name}
                 </TableCell>
                 <TableCell align='right'>{row.clusters.join(', ')}</TableCell>
               </TableRow>
