@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-import { entries, get, set } from 'lodash/object'
+import { entries, get, set, unset } from 'lodash/object'
 import { find, map } from 'lodash/collection'
-import { isEmpty } from 'lodash/lang'
+import { isEmpty, cloneDeep } from 'lodash/lang'
 
 let spec: any
 
@@ -71,11 +71,15 @@ function addClustersEnum(schema, team): void {
   schema.properties.clusterId.enum = team.clusters
 }
 
+function removeCertArnField(schema) {
+  unset(schema, 'properties.ingress.anyOf[1].properties.certArn')
+}
 export function getServiceSchema(team: any, clusters: [any], formData: any): any {
-  const schema = { ...spec.components.schemas.Service }
+  const schema = cloneDeep(spec.components.schemas.Service)
 
   addDomainEnumField(schema, clusters, formData)
   addClustersEnum(schema, team)
+  if (!get(formData, 'clusterId', '').startsWith('aws')) removeCertArnField(schema)
   return schema
 }
 

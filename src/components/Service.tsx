@@ -1,7 +1,7 @@
 import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
-import { isEmpty, cloneDeep } from 'lodash/lang'
+import { isEmpty } from 'lodash/lang'
 import React, { useState } from 'react'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
@@ -62,7 +62,8 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
       }
     }
 
-    if (schemaChanged) setSchema(cloneDeep(getServiceSchema(team, clusters, formData)))
+    if (schemaChanged) setSchema(getServiceSchema(team, clusters, formData))
+
     setData(formData)
 
     if (!done) {
