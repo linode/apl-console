@@ -11,12 +11,13 @@ const getServiceLink = (row): any => {
   return <RLink to={link}>{name}</RLink>
 }
 
-// const getPublicUrl = (row): any => {
-//   if (isEmpty(row.ingress)) {
-//     return '-'
-//   }
-//   return `${row.ingress.domain}`
-// }
+const renderPublicUrl = (row): any => {
+  if ('internal' in row.ingress) {
+    return '-'
+  }
+  const url = row.ingress.subdomain ? `${row.ingress.subdomain}.${row.ingress.domain}` : row.ingress.domain
+  return <MuiLink href={`https://${url}`}>{url}</MuiLink>
+}
 
 interface Props {
   services: any[]
@@ -27,6 +28,7 @@ interface Props {
 
 export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
   const showTeam = !teamId
+
   return (
     <div className='Services'>
       <h1>Services{teamId ? `: Team ${teamId.charAt(0).toUpperCase() + teamId.substr(1)}` : ''}</h1>
@@ -49,7 +51,7 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
           <TableHead>
             <TableRow>
               <TableCell>Service Name</TableCell>
-              <TableCell align='right'>Domain</TableCell>
+              <TableCell align='right'>Public URL</TableCell>
               <TableCell align='right'>Cluster</TableCell>
               {showTeam && <TableCell align='right'>Team</TableCell>}
             </TableRow>
@@ -60,9 +62,7 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
                 <TableCell component='th' scope='row'>
                   {isAdmin || teamId ? getServiceLink(row) : row.name}
                 </TableCell>
-                <TableCell align='right'>
-                  <MuiLink href={`https://${row.domain}`}>{row.domain}</MuiLink>
-                </TableCell>
+                <TableCell align='right'>{renderPublicUrl(row)}</TableCell>
                 <TableCell align='right'>{row.clusterId}</TableCell>
                 {showTeam && <TableCell align='right'>{row.teamId}</TableCell>}
               </TableRow>
