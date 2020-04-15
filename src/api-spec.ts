@@ -64,7 +64,7 @@ export function setSpec(inSpec): void {
 function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
-  schema.properties.ingress.anyOf[1].properties.domain.enum = [cluster.domain]
+  schema.properties.ingress.anyOf[1].properties.domain.enum = cluster.dnsZones
 }
 
 function addClustersEnum(schema, team): void {
