@@ -45,7 +45,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     if (formData.clusterId !== data.clusterId) {
       schemaChanged = true
     }
-    if (!isEmpty(formData.ingress)) {
+    if (!('internal' in formData.ingress)) {
       if (
         formData.clusterId !== data.clusterId &&
         formData.ingress.domain !== '' &&
@@ -54,11 +54,11 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         // Enforce user to make a conscious choice for public URL whenever cluster changes
         formData.ingress = { ...formData.ingress }
         formData.ingress.domain = ''
-        formData.ingress.subdomain = ''
+        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? `${formData.name}.team-${team.name}` : ''
       } else if (formData.name !== data.name || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
-        formData.ingress.subdomain = formData.name ? `${formData.name}.team-${team.name}` : ''
+        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? `${formData.name}.team-${team.name}` : ''
       }
     }
 
