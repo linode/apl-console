@@ -105,7 +105,10 @@ export default ({
     err = <Error code={401} />
   }
   const tid = teamId || sessTeamId
-  const [team, loading]: [any, boolean, Error] = useApi('getTeam', tid)
+  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', tid)
+  if (error) {
+    return <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
+  }
   const [formdata, setFormdata] = useState()
   const [deleteService, setDeleteService] = useState()
 

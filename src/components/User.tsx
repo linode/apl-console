@@ -44,7 +44,7 @@ export default ({ teams = [] }: Props): any => {
         </Typography>
       </IconButton>
       {isAdmin && (
-        <StyledSelect value={teams.length ? teamId : ''} onChange={handleChange} className={classes.select}>
+        <StyledSelect value={teamId || ''} onChange={handleChange} className={classes.select}>
           <MenuItem value={undefined}>-</MenuItem>
           {teams.map(({ teamId: tid }): any => (
             <MenuItem key={tid} value={tid}>

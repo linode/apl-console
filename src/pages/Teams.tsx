@@ -11,7 +11,7 @@ export default (): any => {
   return (
     <MainLayout>
       {loading && <Loader />}
-      {teams && <Teams teams={teams} />}
+      {!loading && teams && <Teams teams={teams} />}
       {error && <Error code={404} />}
     </MainLayout>
   )
