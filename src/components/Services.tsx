@@ -15,8 +15,13 @@ const renderPublicUrl = (row): any => {
   if ('internal' in row.ingress) {
     return '-'
   }
+
   const url = row.ingress.subdomain ? `${row.ingress.subdomain}.${row.ingress.domain}` : row.ingress.domain
-  return <MuiLink href={`https://${url}`}>{url}</MuiLink>
+  return (
+    <MuiLink href={`https://${url}`} target={'_blank'} rel={'noopener'}>
+      {url}
+    </MuiLink>
+  )
 }
 
 interface Props {
