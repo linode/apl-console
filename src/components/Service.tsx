@@ -1,51 +1,49 @@
 import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
-import { isEmpty } from 'lodash/lang'
+import { isEmpty, isEqual } from 'lodash/lang'
+import { pick } from 'lodash'
 import React, { useState } from 'react'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
+import { processForm } from '../utils/form'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
   team: any
-  clusterId: string
   service?: Service
   clusters: [any]
 }
 
 export default ({ onSubmit, onDelete = null, team, service = null, clusters }: Props): any => {
-  const { isAdmin } = useSession()
-  const role = isAdmin ? 'admin' : 'team'
+  const {
+    user: { role },
+  } = useSession()
 
-  const formSchema = getServiceSchema(team, clusters, service)
-  const formUiSchema = getServiceUiSchema(formSchema, role)
-  const [uiSchema] = useState(formUiSchema)
-  const [schema, setSchema] = useState(formSchema)
+  let defaultSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
+  // eslint-disable-next-line no-param-reassign
+  if (service && service.ingress) service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
+
+  const originalSchema = getServiceSchema(team, clusters, service)
+  const originalUiSchema = getServiceUiSchema(originalSchema, role, service)
+  const [schema, setSchema] = useState(originalSchema)
+  const [uiSchema, setUiSchema] = useState(originalUiSchema)
 
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
-  const [done, setDone] = useState(false)
-  const handleChange = (form, error): any => {
-    if (error) {
-      return
+  const [invalid, setInvalid] = useState(false)
+  const handleChange = ({ formData: inData, errors }): any => {
+    if (errors && errors.length) {
+      setInvalid(true)
+    } else {
+      setInvalid(false)
     }
-
-    if (!data) {
-      // On rendering form for a new service when defaults are populated for the first time
-      setData(form.formData)
-      return
-    }
-
-    const formData = { ...form.formData }
-
-    let schemaChanged = false
-    if (formData.clusterId !== data.clusterId) {
-      schemaChanged = true
-    }
-    if (!('internal' in formData.ingress)) {
+    const formData = { ...inData }
+    // setData(formData)
+    // if (!data) return
+    if (!isEmpty(formData.ingress)) {
       if (
         formData.clusterId !== data.clusterId &&
         formData.ingress.domain !== '' &&
@@ -54,30 +52,41 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         // Enforce user to make a conscious choice for public URL whenever cluster changes
         formData.ingress = { ...formData.ingress }
         formData.ingress.domain = ''
-        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? `${formData.name}.team-${team.name}` : ''
-      } else if (formData.name !== data.name || formData.ingress.domain !== data.ingress.domain) {
+        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
+      } else if (
+        formData.ingress.useDefaultSubdomain ||
+        formData.name !== data.name ||
+        formData.ingress.domain !== data.ingress.domain
+      ) {
+        if (formData.name) defaultSubdomain = `${formData.name}.team-${team.teamId}`
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
-        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? `${formData.name}.team-${team.name}` : ''
+        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
+      // formData.ingress.useDefaultSubdomain = formData.ingress.subdomain === defaultSubdomain
+      setSchema(getServiceSchema(team, clusters, formData))
+      setUiSchema(getServiceUiSchema(schema, role, formData))
     }
-
-    if (schemaChanged) setSchema(getServiceSchema(team, clusters, formData))
-
     setData(formData)
 
-    if (!done) {
-      setDone(true)
-    } else {
-      setDirty(true)
-    }
+    // const { schema: s, uiSchema: u, formData: f } = processForm(
+    //   originalSchema,
+    //   originalUiSchema,
+    //   schema,
+    //   uiSchema,
+    //   formData,
+    // )
+    // setSchema(s)
+    // setUiSchema(u)
+    // setData(f)
+    setDirty(!isEqual(formData, service))
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
   return (
     <div className='Service'>
-      <h1>Service:</h1>
+      <h1>{data && data.serviceId ? `Service: ${data.name}` : 'New Service'}</h1>
       <Form
         key='createService'
         schema={schema}
@@ -85,8 +94,8 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         onSubmit={handleSubmit}
         onChange={handleChange}
         formData={data}
-        liveValidate={false}
-        showErrorList
+        liveValidate
+        showErrorList={false}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (
@@ -95,7 +104,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
             </Button>
           )}
           &nbsp;
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty}>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
         </Box>

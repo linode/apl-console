@@ -30,23 +30,44 @@ export function getTeamUiSchema(schema, role: string): any {
     clusters: {
       'ui:widget': 'checkboxes',
     },
+    receiver: {
+      'ui:widget': 'radio',
+      'ui:options': {
+        inline: true,
+      },
+    },
   }
 
   applyAclToUiSchema(uiSchema, schema, role)
   return uiSchema
 }
 
-export function getServiceUiSchema(schema, role: string): any {
+export function getServiceUiSchema(schema, role: string, formData): any {
+  const notAws = !get(formData, 'clusterId', '').startsWith('aws')
+  const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
-    serviceName: { 'ui:widget': 'hidden' },
+    serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     serviceId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': 'radio',
+      'ui:options': {
+        inline: true,
+      },
       internal: { 'ui:widget': 'hidden' },
+      certArn: {
+        'ui:widget': noCertArn ? 'hidden' : 'text',
+        'ui:description': noCertArn ? ' ' : undefined,
+      },
+      spec: {
+        autoCD: { 'ui:title': '' },
+      },
     },
     spec: {
       'ui:widget': 'radio',
+      'ui:options': {
+        inline: true,
+      },
       predeployed: { 'ui:widget': 'hidden' },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
     },
@@ -64,21 +85,23 @@ export function setSpec(inSpec): void {
 function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
-  schema.properties.ingress.anyOf[1].properties.domain.enum = cluster.dnsZones
+  schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.dnsZones
+  if (cluster.dnsZones.length === 1) formData.ingress.domain = cluster.dnsZones[0]
 }
 
-function addClustersEnum(schema, team): void {
+function addClustersEnum(schema, team, formData): void {
   schema.properties.clusterId.enum = team.clusters
+  // if (team.clusters.length === 1) formData.clusterId = team.clusters[0]
 }
 
 function removeCertArnField(schema) {
-  unset(schema, 'properties.ingress.anyOf[1].properties.certArn')
+  unset(schema, 'properties.ingress.oneOf[1].properties.certArn')
 }
 export function getServiceSchema(team: any, clusters: [any], formData: any): any {
   const schema = cloneDeep(spec.components.schemas.Service)
 
   addDomainEnumField(schema, clusters, formData)
-  addClustersEnum(schema, team)
+  addClustersEnum(schema, team, formData)
   if (!get(formData, 'clusterId', '').startsWith('aws')) removeCertArnField(schema)
   return schema
 }

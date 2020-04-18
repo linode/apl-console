@@ -5,7 +5,7 @@ import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { useSession } from '../session-context'
 import { createClasses } from '../theme'
-import Team from '../models/Team'
+import { Team, User } from '../models'
 
 interface Props {
   teams: Team[]
@@ -30,9 +30,14 @@ export default ({ teams = [] }: Props): any => {
       fontSize: '1.5rem',
     },
   })
-  const { user, teamId, isAdmin, setTeamId } = useSession()
+  const {
+    user: { email, teamId, isAdmin },
+    oboTeamId,
+    setOboTeamId,
+  } = useSession()
+
   const handleChange = (event): any => {
-    setTeamId(event.target.value)
+    setOboTeamId(event.target.value)
     event.preventDefault()
   }
   return (
@@ -40,11 +45,15 @@ export default ({ teams = [] }: Props): any => {
       <IconButton color='inherit'>
         <Avatar className={classes.avatar} />
         <Typography variant='h5'>
-          {user.email}&nbsp;({isAdmin ? `admin) obo team:` : `${teamId})`}
+          {email}&nbsp;({isAdmin ? `admin) obo team:` : `${teamId})`}
         </Typography>
       </IconButton>
       {isAdmin && (
-        <StyledSelect value={teamId || ''} onChange={handleChange} className={classes.select}>
+        <StyledSelect
+          value={teams.length && oboTeamId ? oboTeamId : ''}
+          onChange={handleChange}
+          className={classes.select}
+        >
           <MenuItem value={undefined}>-</MenuItem>
           {teams.map(({ teamId: tid }): any => (
             <MenuItem key={tid} value={tid}>

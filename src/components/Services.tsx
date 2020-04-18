@@ -1,23 +1,24 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
+import { isEmpty, isEqual } from 'lodash/lang'
 import { Link } from 'react-router-dom'
 import { RLink, Link as MuiLink } from './Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 const getServiceLink = (row): any => {
-  const { teamId, clusterId, name } = row
-  const link = `/teams/${teamId}/services/${name}?clusterId=${clusterId}`
+  const { serviceId, teamId, name } = row
+  const link = `/teams/${teamId}/services/${encodeURIComponent(serviceId)}`
   return <RLink to={link}>{name}</RLink>
 }
 
 const renderPublicUrl = (row): any => {
-  if ('internal' in row.ingress) {
+  if (isEmpty(row.ingress)) {
     return '-'
   }
-  const url = `${row.ingress.subdomain ? row.ingress.subdomain + '.' : ''}${row.ingress.domain}`
+  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}`
   return (
-    <MuiLink href={`https://${url}`} target={'_blank'} rel={'noopener'}>
+    <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
     </MuiLink>
   )

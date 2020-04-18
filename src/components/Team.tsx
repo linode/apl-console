@@ -1,7 +1,8 @@
 import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
-import { isEqual } from 'lodash/lang'
+import { isEmpty, isEqual } from 'lodash/lang'
+import { pick } from 'lodash'
 import React, { useState } from 'react'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
@@ -15,26 +16,31 @@ interface Props {
 }
 
 export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): any => {
-  const { isAdmin } = useSession()
-  const role = isAdmin ? 'admin' : 'team'
-  const [data, setData] = useState(team)
+  const {
+    user: { role },
+  } = useSession()
+  // / we need to set an empty dummy if no team was given, so that we can do a dirty check
+  const newTeam = { name: undefined, azure: { monitor: {} }, clusters: [] }
+  const [data, setData]: any = useState(team || newTeam)
   const [dirty, setDirty] = useState(false)
   const handleChange = (form, error): any => {
     if (error) return
     const { formData } = form
-    const equal = isEqual(formData, team)
+    if (!data) {
+      setData(formData)
+      return
+    }
     setData(formData)
-    setDirty(!equal)
+    setDirty(!isEqual(formData, team || newTeam))
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
   const schema = getTeamSchema(clusters)
   const uiSchema = getTeamUiSchema(schema, role)
-
   return (
     <div className='Team'>
-      <h1>Team details</h1>
+      <h1>{data && data.name ? `Team: ${data.name}` : 'New Team'}</h1>
 
       <Form
         key='createTeam'

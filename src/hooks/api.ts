@@ -24,7 +24,7 @@ const checkDirty = (method): boolean => {
       dirty = true
     }
   })
-  if (method.indexOf('deployments') > -1) {
+  if (method.indexOf('deploy') === 0) {
     dirty = false
   }
   return dirty
@@ -33,7 +33,11 @@ const checkDirty = (method): boolean => {
 export const useApi = (method: string, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
   // const { enqueueSnackbar } = useSnackbar()
-  const { isAdmin } = useSession()
+  const {
+    user: { isAdmin },
+    isDirty,
+  } = useSession()
+  dirty = dirty || isDirty
   useEffect(() => {
     // tslint:disable-next-line: no-floating-promises
     ;(async (): Promise<any> => {

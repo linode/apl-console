@@ -4,7 +4,7 @@ import Loader from '../components/Loader'
 import Services from '../components/Services'
 import Error from '../components/Error'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/main'
+import MainLayout from '../layouts/Main'
 import { useSession } from '../session-context'
 
 interface Params {
@@ -18,8 +18,11 @@ export default ({
 }: RouteComponentProps<Params>): any => {
   const method = teamId ? 'getTeamServices' : 'getAllServices'
   const [services, loading, error]: any = useApi(method, teamId)
-  const { isAdmin, teamId: sessTeamId } = useSession()
-
+  const {
+    oboTeamId,
+    user: { isAdmin, teamId: userTeamId },
+  } = useSession()
+  const sessTeamId = isAdmin ? oboTeamId : userTeamId
   return (
     <MainLayout>
       {loading && <Loader />}

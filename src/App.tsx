@@ -23,12 +23,12 @@ const LoadedApp = (): any => {
   const classes = createClasses(styles)
   const [session, sessionLoading]: any = useApi('getSession')
   const [themeType, setType] = useLocalStorage('themeType', 'light')
-  const [teamId, setTeamId] = useLocalStorage('teamId', undefined)
+  const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   setThemeType(themeType)
   if (sessionLoading) {
     return <Loader />
   }
-  setThemeName(session.isAdmin ? 'admin' : 'team')
+  if (session.user) setThemeName(session.user.isAdmin ? 'admin' : 'team')
   return (
     <ThemeProvider theme={getTheme()}>
       <SnackbarProvider
@@ -50,8 +50,8 @@ const LoadedApp = (): any => {
           <SessionContext.Provider
             value={{
               ...session,
-              teamId: session.isAdmin ? teamId : session.teamId,
-              setTeamId,
+              oboTeamId,
+              setOboTeamId,
               setThemeType: setType,
             }}
           >
@@ -61,14 +61,14 @@ const LoadedApp = (): any => {
                 <Route path='/' component={Dashboard} exact />
                 <Route path='/otomi/apps' component={OtomiApps} exact />
                 <Route path='/clusters' component={Clusters} exact />
-                <Route path='/services' component={Services} teamId={teamId} exact />
+                <Route path='/services' component={Services} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/create-team' component={Team} exact />
                 <Route path='/create-service' component={Service} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />
-                <Route path='/teams/:teamId/services/:name' component={Service} exact />
+                <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                 <Route path='*'>
                   <Error code={404} />
                 </Route>

@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/main'
+import MainLayout from '../layouts/Main'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
@@ -49,7 +49,10 @@ export default ({
     params: { teamId },
   },
 }: any): any => {
-  const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+  const {
+    user: { teamId: sessTeamId, isAdmin },
+    clusters,
+  } = useSession()
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />

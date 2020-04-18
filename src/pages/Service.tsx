@@ -3,22 +3,22 @@ import { Redirect, RouteComponentProps, useLocation } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/main'
+import MainLayout from '../layouts/Main'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
 interface SubmitProps {
   teamId: string
-  name?: string
+  serviceId?: string
   data: object
 }
 
-const Submit = ({ teamId, name, data }: SubmitProps): any => {
+const Submit = ({ serviceId, teamId, data }: SubmitProps): any => {
   let method
   let filter
-  if (name) {
+  if (serviceId) {
     method = 'editService'
-    filter = { teamId, name }
+    filter = { serviceId }
   } else {
     method = 'createService'
     filter = { teamId }
@@ -32,13 +32,12 @@ const Submit = ({ teamId, name, data }: SubmitProps): any => {
 
 interface DeleteProps {
   teamId: string
-  clusterId: string
-  name: string
+  serviceId: string
 }
 
-const Delete = ({ teamId, clusterId, name }: DeleteProps): any => {
+const Delete = ({ teamId, serviceId }: DeleteProps): any => {
   const method = 'deleteService'
-  const filter = { teamId, clusterId, name }
+  const filter = { teamId, serviceId }
   const [result] = useApi(method, filter, null)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
@@ -49,19 +48,17 @@ const Delete = ({ teamId, clusterId, name }: DeleteProps): any => {
 
 interface EditProps {
   teamId: string
-  clusterId: string
-  name: string
+  serviceId: string
   team: any
   clusters: any
   onSubmit: CallableFunction
   onDelete: CallableFunction
 }
 
-const EditService = ({ teamId, clusterId, name, team, clusters, onSubmit, onDelete }: EditProps): any => {
+const EditService = ({ teamId, serviceId, team, clusters, onSubmit, onDelete }: EditProps): any => {
   const [service, serviceLoading, error]: any = useApi('getService', {
     teamId,
-    clusterId,
-    name,
+    serviceId,
   })
 
   if (serviceLoading) {
@@ -70,16 +67,7 @@ const EditService = ({ teamId, clusterId, name, team, clusters, onSubmit, onDele
   if (error) {
     return <Error code={error.response.status} msg={error.response.statusText} />
   }
-  return (
-    <Service
-      service={service}
-      team={team}
-      clusterId={clusterId}
-      clusters={clusters}
-      onSubmit={onSubmit}
-      onDelete={onDelete}
-    />
-  )
+  return <Service team={team} service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
 function useQuery(): any {
@@ -88,18 +76,22 @@ function useQuery(): any {
 
 interface Params {
   teamId?: string
-  clusterId?: string
+  serviceId?: string
   name?: string
 }
 
 export default ({
   match: {
-    params: { teamId, name },
+    params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): any => {
   const query = useQuery()
-  const clusterId = query.get('clusterId')
-  const { isAdmin, teamId: sessTeamId, clusters } = useSession()
+  const {
+    clusters,
+    user: { isAdmin, teamId: userTeamId },
+    oboTeamId,
+  } = useSession()
+  const sessTeamId = isAdmin ? oboTeamId : userTeamId
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
@@ -117,25 +109,22 @@ export default ({
       {err || (
         <>
           {loading && <Loader />}
-          {team && name && formdata && (
-            <Service team={team} clusterId={clusterId} clusters={clusters} onSubmit={setFormdata} service={formdata} />
-          )}
-          {team && name && !formdata && (
+          {team && formdata && <Service team={team} clusters={clusters} onSubmit={setFormdata} service={formdata} />}
+          {team && serviceId && !formdata && (
             <EditService
               teamId={tid}
-              clusterId={clusterId}
-              name={name}
+              serviceId={serviceId}
               team={team}
               clusters={clusters}
               onSubmit={setFormdata}
               onDelete={setDeleteService}
             />
           )}
-          {team && name && !formdata && deleteService && <Delete teamId={tid} clusterId={clusterId} name={name} />}
-          {team && !name && !formdata && (
-            <Service team={team} clusterId={clusterId} clusters={clusters} onSubmit={setFormdata} />
+          {team && serviceId && !formdata && deleteService && <Delete teamId={tid} serviceId={serviceId} />}
+          {team && !serviceId && !formdata && (
+            <Service team={team} service={formdata} clusters={clusters} onSubmit={setFormdata} />
           )}
-          {formdata && <Submit teamId={tid} name={name} data={formdata} />}
+          {formdata && <Submit teamId={tid} serviceId={serviceId} data={formdata} />}
         </>
       )}
     </MainLayout>

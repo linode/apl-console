@@ -1,7 +1,7 @@
 import React from 'react'
 import Error from '../components/Error'
 
-import MainLayout from '../layouts/main'
+import MainLayout from '../layouts/Main'
 
 interface Props {
   code: number

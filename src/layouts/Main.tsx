@@ -115,7 +115,12 @@ interface Props {
 
 export default (props: Props): any => {
   const { children } = props
-  const { isAdmin, teamId, setThemeType } = useSession()
+  const {
+    user: { isAdmin, teamId },
+    oboTeamId,
+    setThemeType,
+  } = useSession()
+
   const classes = useStyles(props)
   const [open, setOpen] = useState(true)
   const [teams]: any = useApi('getTeams')
@@ -179,7 +184,7 @@ export default (props: Props): any => {
           </IconButton>
         </div>
         <Divider />
-        {isAdmin && !teamId ? <MenuAdmin /> : <MenuTeam teamId={teamId} />}
+        {isAdmin && !teamId ? <MenuAdmin /> : <MenuTeam teamId={isAdmin ? oboTeamId : teamId} />}
         <Divider />
         {/* <List>{secondaryListItems}</List> */}
       </Drawer>

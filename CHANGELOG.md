@@ -4,149 +4,128 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.4](https://github.com/redkubes/otomi-stack-web/compare/v0.2.3...v0.2.4) (2020-04-14)
 
-
 ### Bug Fixes
 
-* session theme name now not in localStorage anymore [ci skip] ([b498f37](https://github.com/redkubes/otomi-stack-web/commit/b498f3785f444fe73b0ce33e87103c25547d368c))
-
+- session theme name now not in localStorage anymore [ci skip](<[b498f37](https://github.com/redkubes/otomi-stack-web/commit/b498f3785f444fe73b0ce33e87103c25547d368c)>)
 
 ### Styling
 
-* implementing suggestions [ci skip] ([b17e2cb](https://github.com/redkubes/otomi-stack-web/commit/b17e2cb916f9519001cb79865f435e7421f3be35))
+- implementing suggestions [ci skip](<[b17e2cb](https://github.com/redkubes/otomi-stack-web/commit/b17e2cb916f9519001cb79865f435e7421f3be35)>)
 
 ### [0.2.3](https://github.com/redkubes/otomi-stack-web/compare/v0.2.2...v0.2.3) (2020-04-14)
 
-
 ### Bug Fixes
 
-* session theme now also correctly set [ci skip] ([53c6f88](https://github.com/redkubes/otomi-stack-web/commit/53c6f88f0f1aa7b320ded7ddcea56d547aa9c069))
+- session theme now also correctly set [ci skip](<[53c6f88](https://github.com/redkubes/otomi-stack-web/commit/53c6f88f0f1aa7b320ded7ddcea56d547aa9c069)>)
 
 ### [0.2.2](https://github.com/redkubes/otomi-stack-web/compare/v0.2.1...v0.2.2) (2020-04-14)
 
-
 ### Bug Fixes
 
-* session teamId now correctly set [ci skip] ([e773c4e](https://github.com/redkubes/otomi-stack-web/commit/e773c4edb253694baddfd577c90b468bb7c8be84))
+- session teamId now correctly set [ci skip](<[e773c4e](https://github.com/redkubes/otomi-stack-web/commit/e773c4edb253694baddfd577c90b468bb7c8be84)>)
 
 ### [0.2.1](https://github.com/redkubes/otomi-stack-web/compare/v0.2.0...v0.2.1) (2020-04-14)
 
-
 ### Bug Fixes
 
-* team links use teamId [ci skip] ([ee86c84](https://github.com/redkubes/otomi-stack-web/commit/ee86c84808cf0b9d2a4d371d570817981577fcf1))
+- team links use teamId [ci skip](<[ee86c84](https://github.com/redkubes/otomi-stack-web/commit/ee86c84808cf0b9d2a4d371d570817981577fcf1)>)
 
 ## [0.2.0](https://github.com/redkubes/otomi-stack-web/compare/v0.1.28...v0.2.0) (2020-04-14)
 
-
 ### ⚠ BREAKING CHANGES
 
-* services now require clusterId
+- services now require clusterId
 
 ### Code Refactoring
 
-* now using clusterId for requests to accomodate new serviceId ([5591147](https://github.com/redkubes/otomi-stack-web/commit/5591147dfa46f4eef2d95f71535c4f85fde0ca1b))
+- now using clusterId for requests to accomodate new serviceId ([5591147](https://github.com/redkubes/otomi-stack-web/commit/5591147dfa46f4eef2d95f71535c4f85fde0ca1b))
 
 ### [0.1.28](https://github.com/redkubes/otomi-stack-web/compare/v0.1.27...v0.1.28) (2020-04-10)
 
-
 ### Bug Fixes
 
-* color fix [ci skip] ([d0cdd35](https://github.com/redkubes/otomi-stack-web/commit/d0cdd35233c20384c04e7d9274495d3c34256d69))
+- color fix [ci skip](<[d0cdd35](https://github.com/redkubes/otomi-stack-web/commit/d0cdd35233c20384c04e7d9274495d3c34256d69)>)
 
 ### [0.1.27](https://github.com/redkubes/otomi-stack-web/compare/v0.1.26...v0.1.27) (2020-04-10)
 
-
 ### Bug Fixes
 
-* error bug fix  ci skip] ([ff52a22](https://github.com/redkubes/otomi-stack-web/commit/ff52a22966299417ae132c253981dfc61b566a29))
+- error bug fix ci skip] ([ff52a22](https://github.com/redkubes/otomi-stack-web/commit/ff52a22966299417ae132c253981dfc61b566a29))
 
 ### [0.1.26](https://github.com/redkubes/otomi-stack-web/compare/v0.1.25...v0.1.26) (2020-04-10)
 
-
 ### Bug Fixes
 
-* for missing button [ci skip] ([4399ef9](https://github.com/redkubes/otomi-stack-web/commit/4399ef98f959b789db265608d52a0ca9514a123e))
+- for missing button [ci skip](<[4399ef9](https://github.com/redkubes/otomi-stack-web/commit/4399ef98f959b789db265608d52a0ca9514a123e)>)
 
 ### [0.1.25](https://github.com/redkubes/otomi-stack-web/compare/v0.1.24...v0.1.25) (2020-04-10)
 
-
 ### Features
 
-* dark theme [ci skip] ([c2c6fa2](https://github.com/redkubes/otomi-stack-web/commit/c2c6fa26ca993955c0bc48a4d2bc0c0ea3e42b90))
-
+- dark theme [ci skip](<[c2c6fa2](https://github.com/redkubes/otomi-stack-web/commit/c2c6fa26ca993955c0bc48a4d2bc0c0ea3e42b90)>)
 
 ### Bug Fixes
 
-* better form and view logic [ci skip] ([3175205](https://github.com/redkubes/otomi-stack-web/commit/31752050110d666fdf5f3ff887c30cc7593c2913))
-* form logic ([90ae6d1](https://github.com/redkubes/otomi-stack-web/commit/90ae6d11617e83c3082411aa43679740b6699589))
-
+- better form and view logic [ci skip](<[3175205](https://github.com/redkubes/otomi-stack-web/commit/31752050110d666fdf5f3ff887c30cc7593c2913)>)
+- form logic ([90ae6d1](https://github.com/redkubes/otomi-stack-web/commit/90ae6d11617e83c3082411aa43679740b6699589))
 
 ### Build System
 
-* removed serve [ci skip] ([48774c2](https://github.com/redkubes/otomi-stack-web/commit/48774c20e80f2f74702e5bbcd933ad6c45211a94))
+- removed serve [ci skip](<[48774c2](https://github.com/redkubes/otomi-stack-web/commit/48774c20e80f2f74702e5bbcd933ad6c45211a94)>)
 
 ### [0.1.24](https://github.com/redkubes/otomi-stack-web/compare/v0.1.23...v0.1.24) (2020-04-09)
 
-
 ### Features
 
-* add domin enum to service form ([563c902](https://github.com/redkubes/otomi-stack-web/commit/563c90247af6fa566422ba8049e69ac1a1bf2743))
-* change clusters in session object ([89b852b](https://github.com/redkubes/otomi-stack-web/commit/89b852be5c9fbb02b5147ba8d25466cd3883886e))
-* clear domain and subdomain on service name or cluster change ([4d8a035](https://github.com/redkubes/otomi-stack-web/commit/4d8a035ba0169357a59664735848cf855ff6c81f))
-* clear domain on cluster change ([8a8cbdc](https://github.com/redkubes/otomi-stack-web/commit/8a8cbdc2f6ea3e6fc652aa6fdc52b40dc6cf5806))
-
+- add domin enum to service form ([563c902](https://github.com/redkubes/otomi-stack-web/commit/563c90247af6fa566422ba8049e69ac1a1bf2743))
+- change clusters in session object ([89b852b](https://github.com/redkubes/otomi-stack-web/commit/89b852be5c9fbb02b5147ba8d25466cd3883886e))
+- clear domain and subdomain on service name or cluster change ([4d8a035](https://github.com/redkubes/otomi-stack-web/commit/4d8a035ba0169357a59664735848cf855ff6c81f))
+- clear domain on cluster change ([8a8cbdc](https://github.com/redkubes/otomi-stack-web/commit/8a8cbdc2f6ea3e6fc652aa6fdc52b40dc6cf5806))
 
 ### Bug Fixes
 
-* do not mutate immutable objects ([447523b](https://github.com/redkubes/otomi-stack-web/commit/447523bc16b8e45f7ad32b0972f093bb9086d596))
-* needed cloneDeep after all to trigger schema change render ([0faf655](https://github.com/redkubes/otomi-stack-web/commit/0faf655929627fee3a75b761a205766f6b7650fc))
-* populate form defaults to component state ([#17](https://github.com/redkubes/otomi-stack-web/issues/17)) ([09bf749](https://github.com/redkubes/otomi-stack-web/commit/09bf749aa1090fd081ebfec81f9c1a37552a3245))
-* privde team data to service component ([71c3a2d](https://github.com/redkubes/otomi-stack-web/commit/71c3a2ddf231d7f7af119c2df3e01a20061849c2))
-* provide team clusters instead of all clusters to the service form ([657fb3c](https://github.com/redkubes/otomi-stack-web/commit/657fb3c088082c3a4fe440d455f8a42659b5f009))
-* provide team clusters instead of all clusters to the service form ([362c10f](https://github.com/redkubes/otomi-stack-web/commit/362c10fa50702afb2b33e455314a93f54d5293a9))
-
+- do not mutate immutable objects ([447523b](https://github.com/redkubes/otomi-stack-web/commit/447523bc16b8e45f7ad32b0972f093bb9086d596))
+- needed cloneDeep after all to trigger schema change render ([0faf655](https://github.com/redkubes/otomi-stack-web/commit/0faf655929627fee3a75b761a205766f6b7650fc))
+- populate form defaults to component state ([#17](https://github.com/redkubes/otomi-stack-web/issues/17)) ([09bf749](https://github.com/redkubes/otomi-stack-web/commit/09bf749aa1090fd081ebfec81f9c1a37552a3245))
+- privde team data to service component ([71c3a2d](https://github.com/redkubes/otomi-stack-web/commit/71c3a2ddf231d7f7af119c2df3e01a20061849c2))
+- provide team clusters instead of all clusters to the service form ([657fb3c](https://github.com/redkubes/otomi-stack-web/commit/657fb3c088082c3a4fe440d455f8a42659b5f009))
+- provide team clusters instead of all clusters to the service form ([362c10f](https://github.com/redkubes/otomi-stack-web/commit/362c10fa50702afb2b33e455314a93f54d5293a9))
 
 ### Styling
 
-* fix style ([b679191](https://github.com/redkubes/otomi-stack-web/commit/b679191ba50fd1c28d6ee8896526a54b1d22602a))
-
+- fix style ([b679191](https://github.com/redkubes/otomi-stack-web/commit/b679191ba50fd1c28d6ee8896526a54b1d22602a))
 
 ### Build System
 
-* fix for missing autosave and linting ([72d9f8c](https://github.com/redkubes/otomi-stack-web/commit/72d9f8c821c9795cf1c3c0d2c8a6b65fb62d084d))
+- fix for missing autosave and linting ([72d9f8c](https://github.com/redkubes/otomi-stack-web/commit/72d9f8c821c9795cf1c3c0d2c8a6b65fb62d084d))
 
 ### [0.1.23](https://github.com/redkubes/otomi-stack-web/compare/v0.1.22...v0.1.23) (2020-04-07)
 
-
 ### Bug Fixes
 
-* auth for teams [ci skip] ([1d4a830](https://github.com/redkubes/otomi-stack-web/commit/1d4a830c100e621582e65162abc9a109f00a05f4))
+- auth for teams [ci skip](<[1d4a830](https://github.com/redkubes/otomi-stack-web/commit/1d4a830c100e621582e65162abc9a109f00a05f4)>)
 
 ### [0.1.22](https://github.com/redkubes/otomi-stack-web/compare/v0.1.21...v0.1.22) (2020-04-07)
 
-
 ### Bug Fixes
 
-* added errors for 401 and 404 ([be009bc](https://github.com/redkubes/otomi-stack-web/commit/be009bcc77a20bb8193782e000b69fe5bd2d0d34))
-* missing eslint config in Dockerfile ([2cd9a8f](https://github.com/redkubes/otomi-stack-web/commit/2cd9a8f906d62d841704da85f40eb128f59047f7))
-
+- added errors for 401 and 404 ([be009bc](https://github.com/redkubes/otomi-stack-web/commit/be009bcc77a20bb8193782e000b69fe5bd2d0d34))
+- missing eslint config in Dockerfile ([2cd9a8f](https://github.com/redkubes/otomi-stack-web/commit/2cd9a8f906d62d841704da85f40eb128f59047f7))
 
 ### Code Refactoring
 
-* migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([1e590ab](https://github.com/redkubes/otomi-stack-web/commit/1e590ab07020c7253d8cab4cbc0b946ef41626b1))
-* migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([6d89a21](https://github.com/redkubes/otomi-stack-web/commit/6d89a21959e16963ed594d427838599d4af51f55))
-
+- migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([1e590ab](https://github.com/redkubes/otomi-stack-web/commit/1e590ab07020c7253d8cab4cbc0b946ef41626b1))
+- migrated to eslint, fixed team selector session bug [#18](https://github.com/redkubes/otomi-stack-web/issues/18) ([6d89a21](https://github.com/redkubes/otomi-stack-web/commit/6d89a21959e16963ed594d427838599d4af51f55))
 
 ### Build System
 
-* added no-unused-imports-ts [ci skip] ([33dc7df](https://github.com/redkubes/otomi-stack-web/commit/33dc7df2e3640936e3088deb341d75dd440b6f47))
+- added no-unused-imports-ts [ci skip](<[33dc7df](https://github.com/redkubes/otomi-stack-web/commit/33dc7df2e3640936e3088deb341d75dd440b6f47)>)
 
 ### [0.1.21](https://github.com/redkubes/otomi-stack-web/compare/v0.1.20...v0.1.21) (2020-04-03)
 
-
 ### Bug Fixes
 
-* dashboard team name ([6fa136e](https://github.com/redkubes/otomi-stack-web/commit/6fa136ebfcb2410ef45c975d06c7054b7bce6f6b))
+- dashboard team name ([6fa136e](https://github.com/redkubes/otomi-stack-web/commit/6fa136ebfcb2410ef45c975d06c7054b7bce6f6b))
 
 ### [0.1.20](https://github.com/redkubes/otomi-stack-web/compare/v0.1.19...v0.1.20) (2020-04-03)
 

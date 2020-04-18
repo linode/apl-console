@@ -1,22 +1,23 @@
 import React, { useContext } from 'react'
+import { User } from './models'
 
 let session
 
 export interface SessionContext {
   isAdmin?: boolean
-  user?: object
-  teamId?: string
+  user?: User
+  oboTeamId?: string
   clusters?: object
-  setTeamId?: object
+  setOboTeamId?: object
   setThemeType?: CallableFunction
 }
 
 export const SessionContext = React.createContext<SessionContext>({
   isAdmin: undefined,
-  user: undefined,
-  teamId: undefined,
+  user: { teamId: undefined, email: undefined, name: undefined, isAdmin: undefined, role: undefined },
+  oboTeamId: undefined,
   clusters: undefined,
-  setTeamId: undefined,
+  setOboTeamId: undefined,
   setThemeType: undefined,
 })
 

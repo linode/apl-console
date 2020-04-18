@@ -9,7 +9,9 @@ interface Props {
 }
 
 const Dashboard = ({ teamId }: Props): any => {
-  const { isAdmin } = useSession()
+  const {
+    user: { isAdmin },
+  } = useSession()
 
   return (
     <Container maxWidth='xs'>

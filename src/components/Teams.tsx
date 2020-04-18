@@ -28,7 +28,9 @@ interface Props {
 }
 
 export default ({ teams }: Props): any => {
-  const { isAdmin } = useSession()
+  const {
+    user: { isAdmin },
+  } = useSession()
 
   return (
     <div className='Teams'>

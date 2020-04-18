@@ -1,4 +1,4 @@
-import { Button, Divider, ListItemText, ListSubheader, makeStyles } from '@material-ui/core'
+import { Button, ListItemText, makeStyles } from '@material-ui/core'
 import List from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AppsIcon from '@material-ui/icons/Apps'
@@ -11,13 +11,14 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDirty, useApi } from '../hooks/api'
 import { useSnackbar } from '../utils'
-import { ListItem } from './List'
+import { ListItem, ListSubheader } from './List'
 
-const Deploy = (): any => {
+const Deploy = ({ setDirty }): any => {
   const { enqueueSnackbar } = useSnackbar()
   const [result] = useApi('deploy')
   if (result) {
     enqueueSnackbar('Scheduled for deployment')
+    setDirty(false)
   }
   return null
 }
@@ -37,6 +38,7 @@ interface Props {
 
 export default ({ children = null }: Props): any => {
   const [deploy, setDeploy] = useState(false)
+  const [dirty, setDirty] = useState(getDirty())
   const classes = useStyles()
   const handleClick = (): void => {
     setDeploy(true)
@@ -58,7 +60,6 @@ export default ({ children = null }: Props): any => {
         </ListItemIcon>
         <ListItemText primary='Otomi Apps' />
       </ListItem>
-      <Divider />
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Enterprise' />
       </ListSubheader>
@@ -81,17 +82,14 @@ export default ({ children = null }: Props): any => {
         <ListItemText primary='Services' />
       </ListItem>
       {children}
-      {getDirty() && (
-        <>
-          <Divider />
-          <ListItem component='div' onClick={handleClick}>
-            <Button startIcon={<CloudUploadIcon />} variant='contained' className={classes.button} color='primary'>
-              Deploy changes
-            </Button>
-          </ListItem>
-          {deploy && <Deploy />}
-        </>
+      {dirty && (
+        <ListItem component='div' onClick={handleClick}>
+          <Button startIcon={<CloudUploadIcon />} variant='contained' className={classes.button} color='primary'>
+            Deploy changes
+          </Button>
+        </ListItem>
       )}
+      {deploy && <Deploy setDirty={setDirty} />}
     </List>
   )
 }
