@@ -92,7 +92,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         onSubmit={handleSubmit}
         onChange={handleChange}
         formData={data}
-        liveValidate
+        liveValidate={false}
         showErrorList={false}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
