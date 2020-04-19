@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.11](https://github.com/redkubes/otomi-stack-web/compare/v0.2.10...v0.2.11) (2020-04-19)
+
+
+### Bug Fixes
+
+* reverting table for now, needs color fix [ci skip] ([b4d6406](https://github.com/redkubes/otomi-stack-web/commit/b4d6406b9205c231c91511c27eddaafbc5747a88))
+
+
+### Others
+
+* **release:** 0.2.10 ([eea1ae6](https://github.com/redkubes/otomi-stack-web/commit/eea1ae6b523e7e127fbfab0b0854ab20df64b03a))
+
 ### [0.2.10](https://github.com/redkubes/otomi-stack-web/compare/v0.2.9...v0.2.10) (2020-04-19)
 
 
