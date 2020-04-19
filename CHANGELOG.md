@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/redkubes/otomi-stack-web/compare/v0.2.6...v0.2.7) (2020-04-19)
+
+
+### Feature Improvements
+
+* got email from oauth2 userinfo [ci skip] ([e459ca9](https://github.com/redkubes/otomi-stack-web/commit/e459ca9295d8a434a7dc2e6c9f5b0ba14f640885))
+
 ### [0.2.6](https://github.com/redkubes/otomi-stack-web/compare/v0.2.5...v0.2.6) (2020-04-19)
 
 
