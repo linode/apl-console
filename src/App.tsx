@@ -55,7 +55,7 @@ const LoadedApp = ({ user }: Props): any => {
           <SessionContext.Provider
             value={{
               ...session,
-              user: { email: user.email, ...session.user },
+              user: { ...session.user, email: user.email },
               oboTeamId,
               setOboTeamId,
               themeType,
