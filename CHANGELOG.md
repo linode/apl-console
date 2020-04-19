@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/redkubes/otomi-stack-web/compare/v0.2.4...v0.2.5) (2020-04-19)
+
+
+### Features
+
+* implemented browser param 'team=' for dev mode override [ci skip] ([8ae85a9](https://github.com/redkubes/otomi-stack-web/commit/8ae85a994f9826b0574ea465412fede5068be7cd))
+* open service public URL in a new tab ([bec8448](https://github.com/redkubes/otomi-stack-web/commit/bec84482961d2a04f572ef518d9d1c7dc6860218))
+* set default subdomian according to useDefaultSubdomain flag ([51b0b13](https://github.com/redkubes/otomi-stack-web/commit/51b0b13ddde9ce492d264656d0cda9482dfdd7c3))
+* show certArn field on for clusters from AWS cloud ([7c606ff](https://github.com/redkubes/otomi-stack-web/commit/7c606ff3d5b834e4339b9bdf4c725d45e8aefc42))
+* use dnsZones data ([f8dcfd6](https://github.com/redkubes/otomi-stack-web/commit/f8dcfd69b94f2674a6eb024735a4caf68be6c8d7))
+
+
+### Bug Fixes
+
+* code rework after review ([09c5af1](https://github.com/redkubes/otomi-stack-web/commit/09c5af1b132760d87a30d975101f347287af2789))
+* fixes [#25](https://github.com/redkubes/otomi-stack-web/issues/25), adds some error handling ([24c7888](https://github.com/redkubes/otomi-stack-web/commit/24c7888ccae313d336d470d28c0894e7aa04a4ea))
+* many ([fb8ac93](https://github.com/redkubes/otomi-stack-web/commit/fb8ac93822393b3379c1f05d1c0e0750db9d2d88))
+* many fixes before demo ([4ed4dca](https://github.com/redkubes/otomi-stack-web/commit/4ed4dca0e14a37a7769f7fb4e7abd46038907d2b))
+* render service public url ([db18b37](https://github.com/redkubes/otomi-stack-web/commit/db18b3732660a38980f626b2922ecebf8a5c63a4))
+
 ### [0.2.4](https://github.com/redkubes/otomi-stack-web/compare/v0.2.3...v0.2.4) (2020-04-14)
 
 ### Bug Fixes
