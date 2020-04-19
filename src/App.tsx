@@ -101,7 +101,7 @@ const App = (): any => {
       setUser(user)
       setLoaded(true)
     })
-  })
+  }, [])
   if (!loaded) {
     return <Loader />
   }
