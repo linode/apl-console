@@ -2,12 +2,10 @@ import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
-import { pick } from 'lodash'
 import React, { useState } from 'react'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
-import { processForm } from '../utils/form'
 
 interface Props {
   onSubmit: CallableFunction

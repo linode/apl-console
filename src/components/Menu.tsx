@@ -1,5 +1,5 @@
 import { Button, ListItemText, makeStyles } from '@material-ui/core'
-import List from '@material-ui/core/List'
+import MenuList from '@material-ui/core/List'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AppsIcon from '@material-ui/icons/Apps'
 import CloudIcon from '@material-ui/icons/Cloud'
@@ -11,7 +11,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDirty, useApi } from '../hooks/api'
 import { useSnackbar } from '../utils'
-import { ListItem, ListSubheader } from './List'
+import { ListItem, MenuItem, ListSubheader } from './List'
 
 const Deploy = ({ setDirty }): any => {
   const { enqueueSnackbar } = useSnackbar()
@@ -44,52 +44,52 @@ export default ({ children = null }: Props): any => {
     setDeploy(true)
   }
   return (
-    <List className={classes.root}>
+    <MenuList className={classes.root}>
+      {deploy && <Deploy setDirty={setDirty} />}
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Otomi Stack' />
       </ListSubheader>
-      <ListItem component={Link} to='/'>
+      <MenuItem component={Link} to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
-      </ListItem>
-      <ListItem component={Link} to='/otomi/apps'>
+      </MenuItem>
+      <MenuItem component={Link} to='/otomi/apps'>
         <ListItemIcon>
           <AppsIcon />
         </ListItemIcon>
         <ListItemText primary='Otomi Apps' />
-      </ListItem>
+      </MenuItem>
       <ListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Enterprise' />
       </ListSubheader>
-      <ListItem component={Link} to='/clusters'>
+      <MenuItem component={Link} to='/clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
-      </ListItem>
-      <ListItem component={Link} to='/teams'>
+      </MenuItem>
+      <MenuItem component={Link} to='/teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
-      </ListItem>
-      <ListItem component={Link} to='/services'>
+      </MenuItem>
+      <MenuItem component={Link} to='/services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
         <ListItemText primary='Services' />
-      </ListItem>
+      </MenuItem>
       {children}
       {dirty && (
-        <ListItem component='div' onClick={handleClick}>
+        <MenuItem component='div' onClick={handleClick}>
           <Button startIcon={<CloudUploadIcon />} variant='contained' className={classes.button} color='primary'>
             Deploy changes
           </Button>
-        </ListItem>
+        </MenuItem>
       )}
-      {deploy && <Deploy setDirty={setDirty} />}
-    </List>
+    </MenuList>
   )
 }

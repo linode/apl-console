@@ -1,12 +1,14 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
-import { isEmpty, isEqual } from 'lodash/lang'
+import { isEmpty } from 'lodash/lang'
 import { Link } from 'react-router-dom'
 import { RLink, Link as MuiLink } from './Link'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
+import EnhancedTable from './EnhancedTable'
+import { Team } from '../models'
 
-const getServiceLink = (row): any => {
+const getServiceLink = isAdmin => (row): any => {
+  if (!isAdmin) return row.name
   const { serviceId, teamId, name } = row
   const link = `/teams/${teamId}/services/${encodeURIComponent(serviceId)}`
   return <RLink to={link}>{name}</RLink>
@@ -14,7 +16,7 @@ const getServiceLink = (row): any => {
 
 const renderPublicUrl = (row): any => {
   if (isEmpty(row.ingress)) {
-    return '-'
+    return ''
   }
   const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}`
   return (
@@ -24,24 +26,45 @@ const renderPublicUrl = (row): any => {
   )
 }
 
+interface HeadCell {
+  disablePadding: boolean
+  id: string
+  label: string
+  numeric: boolean
+  renderer?: CallableFunction
+}
+
 interface Props {
   services: any[]
-  teamId?: string
+  team?: Team
   sessTeamId?: string
   isAdmin: boolean
 }
 
-export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
-  const showTeam = !teamId
+export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
+  const showTeam = !team
+  const headCells: HeadCell[] = [
+    { id: 'name', numeric: false, disablePadding: false, label: 'Service Name', renderer: getServiceLink(isAdmin) },
+    { id: 'url', numeric: false, disablePadding: false, label: 'Public URL', renderer: renderPublicUrl },
+    { id: 'clusterId', numeric: false, disablePadding: false, label: 'Cluster' },
+  ]
+  if (showTeam)
+    headCells.push({
+      id: 'teamId',
+      numeric: false,
+      disablePadding: false,
+      label: 'Team',
+      renderer: row => row.teamId.charAt(0).toUpperCase() + row.teamId.substr(1),
+    })
 
   return (
     <div className='Services'>
-      <h1>Services{teamId ? `: Team ${teamId.charAt(0).toUpperCase() + teamId.substr(1)}` : ''}</h1>
+      <h1>Services{team ? `: Team ${team.name}` : ''}</h1>
       <Box mb={1}>
-        {(isAdmin || teamId) && (
+        {(isAdmin || team) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-service' : `/teams/${teamId}/create-service`}
+            to={isAdmin ? '/create-service' : `/teams/${team.teamId}/create-service`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
@@ -51,30 +74,7 @@ export default ({ services, teamId, sessTeamId, isAdmin }: Props): any => {
           </Button>
         )}
       </Box>
-      <TableContainer>
-        <Table aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Service Name</TableCell>
-              <TableCell align='right'>Public URL</TableCell>
-              <TableCell align='right'>Cluster</TableCell>
-              {showTeam && <TableCell align='right'>Team</TableCell>}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {services.map((row): any => (
-              <TableRow key={row.serviceId}>
-                <TableCell component='th' scope='row'>
-                  {isAdmin || teamId ? getServiceLink(row) : row.name}
-                </TableCell>
-                <TableCell align='right'>{renderPublicUrl(row)}</TableCell>
-                <TableCell align='right'>{row.clusterId}</TableCell>
-                {showTeam && <TableCell align='right'>{row.teamId}</TableCell>}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <EnhancedTable headCells={headCells} orderByStart='name' rows={services} />
     </div>
   )
 }

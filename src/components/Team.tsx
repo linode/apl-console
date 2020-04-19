@@ -1,8 +1,7 @@
 import { Box, Button } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
-import { isEmpty, isEqual } from 'lodash/lang'
-import { pick } from 'lodash'
+import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
@@ -20,18 +19,18 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     user: { role },
   } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
-  const newTeam = { name: undefined, azure: { monitor: {} }, clusters: [] }
-  const [data, setData]: any = useState(team || newTeam)
+  const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
-  const handleChange = (form, error): any => {
-    if (error) return
-    const { formData } = form
-    if (!data) {
-      setData(formData)
-      return
+  const [invalid, setInvalid] = useState(false)
+  const handleChange = ({ formData: inData, errors }): any => {
+    if (errors && errors.length) {
+      setInvalid(true)
+    } else {
+      setInvalid(false)
     }
+    const formData = { ...inData }
     setData(formData)
-    setDirty(!isEqual(formData, team || newTeam))
+    setDirty(!isEqual(formData, team))
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
@@ -59,7 +58,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
             </Button>
           )}
           &nbsp;
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty}>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
         </Box>

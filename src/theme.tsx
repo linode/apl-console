@@ -11,11 +11,11 @@ export const c = {
   redLight: '#ff7359',
   redMain: '#ca2000',
   redDark: '#a11900',
-  yellowSoft: '#ffe6a7',
+  yellowSoft: '#ece7e2',
   yellowLight: '#ffd700',
   yellowMain: '#f1c400',
   yellowDark: '#dab100',
-  brownSoft: '#e6c19c',
+  brownSoft: '#ece7e2',
   brownLight: '#cb9a6a',
   brownMain: '#cd853f',
   brownDark: '#96612d',
@@ -180,7 +180,7 @@ export const mainStyles = makeStyles(theme => ({
     },
     '&:hover': {
       textDecoration: 'none',
-      color: theme.palette.primary[type === 'dark' ? 'light' : 'light'],
+      color: theme.palette.primary[type === 'dark' ? 'light' : 'main'],
     },
     '@global': {
       a: {
@@ -189,7 +189,7 @@ export const mainStyles = makeStyles(theme => ({
       },
       'a:hover': {
         textDecoration: 'none',
-        color: theme.palette.primary[type === 'dark' ? 'light' : 'light'],
+        color: theme.palette.primary[type === 'dark' ? 'light' : 'main'],
       },
     },
   },

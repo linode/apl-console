@@ -32,9 +32,14 @@ export function getTeamUiSchema(schema, role: string): any {
     },
     receiver: {
       'ui:widget': 'radio',
+      // 'ui:title': ' ',
       'ui:options': {
         inline: true,
       },
+      type: { 'ui:widget': 'hidden' },
+    },
+    azure: {
+      monitor: { 'ui:widget': 'radio', useAdmin: { 'ui:widget': 'hidden' } },
     },
   }
 
@@ -50,6 +55,7 @@ export function getServiceUiSchema(schema, role: string, formData): any {
     teamId: { 'ui:widget': 'hidden' },
     serviceId: { 'ui:widget': 'hidden' },
     ingress: {
+      'ui:title': ' ',
       'ui:widget': 'radio',
       'ui:options': {
         inline: true,
@@ -59,14 +65,15 @@ export function getServiceUiSchema(schema, role: string, formData): any {
         'ui:widget': noCertArn ? 'hidden' : 'text',
         'ui:description': noCertArn ? ' ' : undefined,
       },
-      spec: {
-        autoCD: { 'ui:title': '' },
-      },
     },
-    spec: {
+    ksvc: {
+      'ui:title': ' ',
       'ui:widget': 'radio',
       'ui:options': {
         inline: true,
+      },
+      autoCD: {
+        tagMatcher: { 'ui:widget': 'hidden' },
       },
       predeployed: { 'ui:widget': 'hidden' },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },

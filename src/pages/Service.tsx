@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect, RouteComponentProps, useLocation } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
@@ -18,7 +18,7 @@ const Submit = ({ serviceId, teamId, data }: SubmitProps): any => {
   let filter
   if (serviceId) {
     method = 'editService'
-    filter = { serviceId }
+    filter = { teamId, serviceId }
   } else {
     method = 'createService'
     filter = { teamId }
@@ -70,10 +70,6 @@ const EditService = ({ teamId, serviceId, team, clusters, onSubmit, onDelete }: 
   return <Service team={team} service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
-function useQuery(): any {
-  return new URLSearchParams(useLocation().search)
-}
-
 interface Params {
   teamId?: string
   serviceId?: string
@@ -85,7 +81,6 @@ export default ({
     params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): any => {
-  const query = useQuery()
   const {
     clusters,
     user: { isAdmin, teamId: userTeamId },

@@ -5,19 +5,20 @@ import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
 import { schemaPromise, useApi } from './hooks/api'
+import { useLocalStorage } from './hooks/useLocalStorage'
 // import { useApi } from './hooks/api'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
+import Error from './pages/Error'
 import OtomiApps from './pages/OtomiApps'
 import Service from './pages/Service'
 import Services from './pages/Services'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
-import Error from './pages/Error'
+import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
-import { createClasses, setThemeName, getTheme, setThemeType } from './theme'
+import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
-import { useLocalStorage } from './hooks/useLocalStorage'
 
 const LoadedApp = (): any => {
   const classes = createClasses(styles)
@@ -67,7 +68,7 @@ const LoadedApp = (): any => {
                 <Route path='/create-service' component={Service} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
-                <Route path='/teams/:teamId/services' component={Services} exact />
+                <Route path='/teams/:teamId/services' component={TeamServices} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                 <Route path='*'>
                   <Error code={404} />

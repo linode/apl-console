@@ -5,7 +5,7 @@ import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { useSession } from '../session-context'
 import { createClasses } from '../theme'
-import { Team, User } from '../models'
+import { Team } from '../models'
 
 interface Props {
   teams: Team[]
