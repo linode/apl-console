@@ -1,4 +1,4 @@
-import { createMuiTheme, createStyles, makeStyles, ThemeOptions, Theme } from '@material-ui/core/styles'
+import { createMuiTheme, createStyles, makeStyles, Theme, ThemeOptions } from '@material-ui/core/styles'
 
 export const c = {
   light: '#ccc',
@@ -58,6 +58,11 @@ export const adminColors = {
 
 const getOverrides = (c: any): ThemeOptions => {
   return {
+    props: {
+      MuiLink: {
+        underline: 'none',
+      },
+    },
     overrides: {
       MuiCssBaseline: {
         // '@global': {
@@ -80,6 +85,23 @@ const getOverrides = (c: any): ThemeOptions => {
       MuiListItemIcon: {
         root: {
           minWidth: '38px',
+        },
+      },
+      MuiListItem: {
+        root: {},
+      },
+      MuiListItemText: {
+        root: {
+          marginTop: 0,
+          marginBottom: 0,
+          paddingTop: 4,
+          paddingBottom: 4,
+        },
+      },
+      MuiTableHead: {
+        root: {
+          color: c.secondary.main,
+          backgroundColor: c.primary.light,
         },
       },
     },

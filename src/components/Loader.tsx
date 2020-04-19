@@ -6,6 +6,7 @@ export default (): any => {
   const classes = createClasses({
     root: {
       display: 'flex',
+      height: '100%',
       justifyContent: 'center',
     },
   })

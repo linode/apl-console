@@ -1,17 +1,20 @@
-import { Button, ListItemText, makeStyles } from '@material-ui/core'
+import { ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
+import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AppsIcon from '@material-ui/icons/Apps'
 import CloudIcon from '@material-ui/icons/Cloud'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import PeopleIcon from '@material-ui/icons/People'
+import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getDirty, useApi } from '../hooks/api'
+import { mainStyles } from '../theme'
 import { useSnackbar } from '../utils'
-import { ListItem, MenuItem, ListSubheader } from './List'
+import Cluster from './Cluster'
 
 const Deploy = ({ setDirty }): any => {
   const { enqueueSnackbar } = useSnackbar()
@@ -24,72 +27,112 @@ const Deploy = ({ setDirty }): any => {
 }
 
 const useStyles = makeStyles(theme => ({
-  button: {
-    marginTop: theme.spacing(1),
-  },
   root: {
+    paddingTop: 0,
     textTransform: 'capitalize',
+  },
+  listSubheader: {
+    backgroundColor: theme.palette.divider,
+  },
+  deploy: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.primary.main,
   },
 }))
 
 interface Props {
-  children?: any
+  teamId?: any
 }
 
-export default ({ children = null }: Props): any => {
+export default ({ teamId }: Props): any => {
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
   const classes = useStyles()
+  const mainClasses = mainStyles()
+  const StyledMenuItem = props => {
+    return <MenuItem className={mainClasses.selectable} {...props} />
+  }
+  const StyledListSubheader = props => {
+    return <ListSubheader className={classes.listSubheader} {...props} />
+  }
+
   const handleClick = (): void => {
     setDeploy(true)
   }
   return (
     <MenuList className={classes.root}>
       {deploy && <Deploy setDirty={setDirty} />}
-      <ListSubheader component='div' id='main-subheader'>
+      <StyledListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Otomi Stack' />
-      </ListSubheader>
-      <MenuItem component={Link} to='/'>
+      </StyledListSubheader>
+      <StyledMenuItem component={Link} to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
-      </MenuItem>
-      <MenuItem component={Link} to='/otomi/apps'>
+      </StyledMenuItem>
+      <StyledMenuItem component={Link} to='/otomi/apps'>
         <ListItemIcon>
           <AppsIcon />
         </ListItemIcon>
         <ListItemText primary='Otomi Apps' />
-      </MenuItem>
-      <ListSubheader component='div' id='main-subheader'>
+      </StyledMenuItem>
+      <StyledMenuItem component={Link} to='/settings'>
+        <ListItemIcon>
+          <SettingsIcon />
+        </ListItemIcon>
+        <ListItemText primary='Settings' />
+      </StyledMenuItem>
+      <StyledMenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick}>
+        <ListItemIcon>
+          <CloudUploadIcon />
+        </ListItemIcon>
+        <ListItemText primary='Deploy Changes' />
+      </StyledMenuItem>
+      <StyledListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Enterprise' />
-      </ListSubheader>
-      <MenuItem component={Link} to='/clusters'>
+      </StyledListSubheader>
+      <StyledMenuItem component={Link} to='/clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
-      </MenuItem>
-      <MenuItem component={Link} to='/teams'>
+      </StyledMenuItem>
+      <StyledMenuItem component={Link} to='/teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
-      </MenuItem>
-      <MenuItem component={Link} to='/services'>
+      </StyledMenuItem>
+      <StyledMenuItem component={Link} to='/services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
         <ListItemText primary='Services' />
-      </MenuItem>
-      {children}
-      {dirty && (
-        <MenuItem component='div' onClick={handleClick}>
-          <Button startIcon={<CloudUploadIcon />} variant='contained' className={classes.button} color='primary'>
-            Deploy changes
-          </Button>
-        </MenuItem>
+      </StyledMenuItem>
+      {teamId && (
+        <>
+          <StyledListSubheader component='div' id='team-subheader'>
+            <ListItemText primary={`Team ${teamId}`} />
+          </StyledListSubheader>
+          <StyledMenuItem component={Link} to={`/teams/${teamId}`}>
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary='Overview' />
+          </StyledMenuItem>
+          <StyledMenuItem component={Link} to={`/teams/${teamId}/services`}>
+            <ListItemIcon>
+              <SwapVerticalCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary='Services' />
+          </StyledMenuItem>
+        </>
       )}
+      <StyledListSubheader component='div' id='action-subheader'>
+        <ListItemText primary='Cluster' />
+      </StyledListSubheader>
+      <Cluster />
     </MenuList>
   )
 }

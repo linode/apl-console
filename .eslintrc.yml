@@ -16,6 +16,9 @@ extends:
   - prettier
   - prettier/react
   - prettier/@typescript-eslint
+  - plugin:import/errors
+  - plugin:import/warnings
+  - plugin:import/typescript
 
 plugins:
   - react
@@ -23,7 +26,7 @@ plugins:
   - jest
   - prettier
   - '@typescript-eslint'
-  - unused-imports
+  # - unused-imports
 
 settings:
   import/resolver:
@@ -41,6 +44,7 @@ env:
 rules:
   '@typescript-eslint/member-delimiter-style': off
   '@typescript-eslint/no-explicit-any': off
+  '@typescript-eslint/explicit-function-return-type': off
   '@typescript-eslint/no-unused-vars': warn
   import/extensions: off
   no-shadow: 0

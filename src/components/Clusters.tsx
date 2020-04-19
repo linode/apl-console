@@ -1,6 +1,6 @@
+import { Link } from '@material-ui/core'
 import React from 'react'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
-import { Link } from './Link'
 
 interface Props {
   clusters: any[]

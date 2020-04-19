@@ -19,6 +19,7 @@ import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
 import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
+import Settings from './pages/Settings'
 
 const LoadedApp = (): any => {
   const classes = createClasses(styles)
@@ -53,6 +54,7 @@ const LoadedApp = (): any => {
               ...session,
               oboTeamId,
               setOboTeamId,
+              themeType,
               setThemeType: setType,
             }}
           >
@@ -66,6 +68,7 @@ const LoadedApp = (): any => {
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/create-team' component={Team} exact />
                 <Route path='/create-service' component={Service} exact />
+                <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                 <Route path='/teams/:teamId/services' component={TeamServices} exact />

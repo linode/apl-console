@@ -3,7 +3,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { useSession } from '../session-context'
-import { RLink } from './Link'
+import RLink from './Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 const TeamActionBar = (): any => {

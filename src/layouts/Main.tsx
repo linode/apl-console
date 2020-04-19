@@ -1,5 +1,4 @@
-/* eslint-disable global-require */
-import { Container, makeStyles, Typography, Hidden } from '@material-ui/core'
+import { Container, Hidden, makeStyles, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -10,16 +9,13 @@ import IconButton from '@material-ui/core/IconButton'
 import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import MenuIcon from '@material-ui/icons/Menu'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import clsx from 'clsx'
 import React, { useState } from 'react'
-import MenuAdmin from '../components/MenuAdmin'
-import MenuTeam from '../components/MenuTeam'
+import Menu from '../components/Menu'
 import User from '../components/User'
 import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
-import { toggleThemeType } from '../theme'
 
 const drawerWidth = '240px'
 
@@ -42,23 +38,23 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
-    // ...theme.mixins.toolbar,
+    ...theme.mixins.toolbar,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     backgroundColor: theme.palette.primary.main,
-    // transition: theme.transitions.create(['width', 'margin'], {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.leavingScreen,
-    // }),
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    // transition: theme.transitions.create(['width', 'margin'], {
-    //   easing: theme.transitions.easing.sharp,
-    //   duration: theme.transitions.duration.enteringScreen,
-    // }),
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -77,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   drawerContainer: {
-    overflow: 'auto',
+    // overflow: 'auto',
   },
   drawerPaper: {
     position: 'relative',
@@ -126,7 +122,6 @@ export default (props: Props): any => {
   const {
     user: { isAdmin, teamId },
     oboTeamId,
-    setThemeType,
   } = useSession()
 
   const classes = useStyles(props)
@@ -141,13 +136,12 @@ export default (props: Props): any => {
     setOpen(false)
   }
 
-  const toggleTheme = (): void => {
-    setThemeType(toggleThemeType())
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const img = (
     <img
       style={{ marginRight: '1vw' }}
+      // eslint-disable-next-line global-require
       src={require('../images/otomi-stack.png')}
       width='40'
       height='40'
@@ -157,7 +151,7 @@ export default (props: Props): any => {
 
   const drawer = (
     <div className={classes.drawerContainer}>
-      {isAdmin && !oboTeamId ? <MenuAdmin /> : <MenuTeam teamId={isAdmin ? oboTeamId : teamId} />}
+      <Menu teamId={isAdmin ? oboTeamId : teamId} />
     </div>
   )
   const toolbar = (
@@ -172,18 +166,17 @@ export default (props: Props): any => {
     <MenuIcon />
   </IconButton> */}
 
-      <Hidden xsDown implementation='css'>
-        <IconButton color='inherit' className={classes.logo}>
-          {img}
-          <Typography variant='h5'>Otomi Console</Typography>
-        </IconButton>
-      </Hidden>
-      <Hidden smUp implementation='css'>
-        <IconButton color='inherit' onClick={handleDrawerOpen} className={classes.logo}>
-          {img}
-          <Typography variant='h5'>Otomi Console</Typography>
-        </IconButton>
-      </Hidden>
+      <div className={classes.logo}>
+        <Hidden xsDown implementation='css'>
+          <IconButton color='inherit'>
+            {img}
+            <Typography variant='h5'>Otomi Console</Typography>
+          </IconButton>
+        </Hidden>
+        <Hidden smUp implementation='css'>
+          <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
+        </Hidden>
+      </div>
       <User teams={teams} />
       <IconButton color='inherit'>
         <Badge badgeContent={4} color='secondary'>

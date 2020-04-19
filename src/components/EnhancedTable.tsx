@@ -1,31 +1,30 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 import {
+  Checkbox,
+  createStyles,
+  FormControlLabel,
+  IconButton,
+  lighten,
+  makeStyles,
+  Paper,
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   TableSortLabel,
-  makeStyles,
-  createStyles,
   Theme,
-  lighten,
   Toolbar,
-  Typography,
   Tooltip,
-  IconButton,
-  Paper,
-  Checkbox,
-  TablePagination,
-  FormControlLabel,
-  Switch,
+  Typography,
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
-import FilterListIcon from '@material-ui/icons/FilterList'
-import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import clsx from 'clsx'
+import React, { ChangeEvent, MouseEvent, useState } from 'react'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -94,17 +93,28 @@ interface EnhancedTableProps {
   classes?: ReturnType<typeof useEnhancedStyles>
   numSelected: number
   onRequestSort: (event: MouseEvent<unknown>, property: string) => void
-  // onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
+  onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
   order: Order
   orderBy: string
   rowCount: number
   rows?: any[]
   headCells: HeadCell[]
   orderByStart?: string
+  disableSelect?: boolean
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
-  const { classes, order, orderBy, numSelected, rowCount, onRequestSort, headCells } = props
+  const {
+    disableSelect,
+    classes,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onSelectAllClick,
+    onRequestSort,
+    headCells,
+  } = props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -112,14 +122,16 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <TableHead>
       <TableRow>
-        {/* <TableCell padding='checkbox'>
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{ 'aria-label': 'select all desserts' }}
-          />
-        </TableCell> */}
+        {!disableSelect && (
+          <TableCell padding='checkbox'>
+            <Checkbox
+              indeterminate={numSelected > 0 && numSelected < rowCount}
+              checked={rowCount > 0 && numSelected === rowCount}
+              onChange={onSelectAllClick}
+              inputProps={{ 'aria-label': 'select all desserts' }}
+            />
+          </TableCell>
+        )}
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
@@ -199,13 +211,15 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 }
 
 interface Props {
+  disableSelect?: boolean
   orderByStart: string
   headCells: any[]
   rows: any[]
+  idKey: string
 }
 
 // eslint-disable-next-line react/prop-types
-export default function EnhancedTable({ orderByStart, headCells, rows }: Props) {
+export default function EnhancedTable({ disableSelect, orderByStart, headCells, rows, idKey }: Props) {
   const classes = useEnhancedStyles()
   const [order, setOrder] = useState<Order>('asc')
   const [orderBy, setOrderBy] = useState(orderByStart)
@@ -220,16 +234,17 @@ export default function EnhancedTable({ orderByStart, headCells, rows }: Props) 
     setOrderBy(property)
   }
 
-  // const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.checked) {
-  //     const newSelecteds = rows.map(n => n.name)
-  //     setSelected(newSelecteds)
-  //     return
-  //   }
-  //   setSelected([])
-  // }
+  const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelecteds = rows.map(n => n.name)
+      setSelected(newSelecteds)
+      return
+    }
+    setSelected([])
+  }
 
   const handleClick = (event: MouseEvent<unknown>, name: string) => {
+    if (disableSelect) return
     const selectedIndex = selected.indexOf(name)
     let newSelected: string[] = []
 
@@ -276,11 +291,12 @@ export default function EnhancedTable({ orderByStart, headCells, rows }: Props) 
             aria-label='enhanced table'
           >
             <EnhancedTableHead
+              disableSelect={disableSelect}
               classes={classes}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
-              // onSelectAllClick={handleSelectAllClick}
+              onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
               headCells={headCells}
@@ -300,26 +316,24 @@ export default function EnhancedTable({ orderByStart, headCells, rows }: Props) 
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={`row-${row[idKey]}`}
                       selected={isItemSelected}
                     >
-                      {/* <TableCell padding='checkbox'>
-                        <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
-                      </TableCell> */}
-                      {headCells.map((c, idx): any => {
-                        const padding = c.disablePadding ? 'none' : ''
-                        return (
-                          <TableCell
-                            // component={component}
-                            key={c.id}
-                            align={c.numeric ? 'right' : 'left'}
-                            padding={c.disablePadding ? 'none' : 'default'}
-                            sortDirection={orderBy === c.id ? order : false}
-                          >
-                            {c.renderer ? c.renderer(row) : row[c.id]}
-                          </TableCell>
-                        )
-                      })}
+                      {!disableSelect && (
+                        <TableCell padding='checkbox' key='header-checkbox'>
+                          <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
+                        </TableCell>
+                      )}
+                      {headCells.map((c): any => (
+                        <TableCell
+                          key={`cell-${c.id}`}
+                          align={c.numeric ? 'right' : 'left'}
+                          padding={c.disablePadding ? 'none' : 'default'}
+                          sortDirection={orderBy === c.id ? order : false}
+                        >
+                          {c.renderer ? c.renderer(row) : row[c.id]}
+                        </TableCell>
+                      ))}
                     </TableRow>
                   )
                 })}

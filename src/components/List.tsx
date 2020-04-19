@@ -1,4 +1,4 @@
-import { ListItem, ListSubheader, MenuItem, makeStyles } from '@material-ui/core'
+import { ListItem, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
 import React from 'react'
 import { mainStyles } from '../theme'
 
@@ -10,7 +10,10 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const OListItem = (props): any => <ListItem {...props} className={mainStyles().selectable} />
-const OMenuItem = (props): any => <MenuItem {...props} className={mainStyles().selectable} />
+// eslint-disable-next-line react/prop-types
+const OMenuItem = ({ classes, ...props }): any => (
+  <MenuItem {...props} classes={{ ...classes, selectable: mainStyles().selectable }} />
+)
 const OListSubheader = (props): any => <ListSubheader {...props} className={useStyles().listSubHeader} />
 
 // eslint-disable-next-line import/prefer-default-export

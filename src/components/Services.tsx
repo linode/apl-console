@@ -1,14 +1,14 @@
-import { Box, Button } from '@material-ui/core'
+import { Box, Button, Link as MuiLink } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
-import React from 'react'
 import { isEmpty } from 'lodash/lang'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { RLink, Link as MuiLink } from './Link'
-import EnhancedTable from './EnhancedTable'
 import { Team } from '../models'
+import EnhancedTable from './EnhancedTable'
+import RLink from './Link'
 
-const getServiceLink = isAdmin => (row): any => {
-  if (!isAdmin) return row.name
+const getServiceLink = (isAdmin, ownerId) => (row): any => {
+  if (!(isAdmin || row.teamId === ownerId)) return row.name
   const { serviceId, teamId, name } = row
   const link = `/teams/${teamId}/services/${encodeURIComponent(serviceId)}`
   return <RLink to={link}>{name}</RLink>
@@ -32,6 +32,7 @@ interface HeadCell {
   label: string
   numeric: boolean
   renderer?: CallableFunction
+  component?: any
 }
 
 interface Props {
@@ -44,8 +45,21 @@ interface Props {
 export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
   const showTeam = !team
   const headCells: HeadCell[] = [
-    { id: 'name', numeric: false, disablePadding: false, label: 'Service Name', renderer: getServiceLink(isAdmin) },
-    { id: 'url', numeric: false, disablePadding: false, label: 'Public URL', renderer: renderPublicUrl },
+    {
+      id: 'name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Service Name',
+      renderer: getServiceLink(isAdmin, sessTeamId),
+    },
+    {
+      id: 'url',
+      numeric: false,
+      disablePadding: false,
+      label: 'Public URL',
+      renderer: renderPublicUrl,
+      component: MuiLink,
+    },
     { id: 'clusterId', numeric: false, disablePadding: false, label: 'Cluster' },
   ]
   if (showTeam)
@@ -74,7 +88,7 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
           </Button>
         )}
       </Box>
-      <EnhancedTable headCells={headCells} orderByStart='name' rows={services} />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='serviceId' />
     </div>
   )
 }

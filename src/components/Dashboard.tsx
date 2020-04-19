@@ -2,25 +2,20 @@ import { Box, Button, Container, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { useSession } from '../session-context'
 import { Team } from '../models'
 
 interface Props {
-  team: Team
+  team?: Team
 }
 
 const Dashboard = ({ team }: Props): any => {
-  const {
-    user: { isAdmin },
-  } = useSession()
-
   return (
     <Container maxWidth='xs'>
       <Box justifyContent='center' display='flex' alignItems='center' textAlign='center'>
         <Typography variant='h3'>
-          Welcome to the team <b>{isAdmin ? 'Admin' : team.name}</b> dashboard!
+          Welcome to the team <b>{team ? team.name : 'Admin'}</b> dashboard!
         </Typography>
-        {!isAdmin && (
+        {team && (
           <Button
             variant='contained'
             color='primary'
