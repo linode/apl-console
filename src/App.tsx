@@ -91,16 +91,16 @@ const LoadedApp = ({ user }: Props): any => {
 
 const App = (): any => {
   const [loaded, setLoaded] = useState(false)
-  let user = {}
+  const [user, setUser]: any = useState()
   useEffect(() => {
-    ;(async (): Promise<any> => {
-      await schemaPromise
-      if (process.env.NODE_ENV !== 'development') {
-        const response = await fetch('/oauth2/userinfo')
-        user = await response.json()
-      }
+    const userPromise =
+      process.env.NODE_ENV !== 'development'
+        ? fetch('/oauth2/userinfo').then(r => r.json())
+        : Promise.resolve('bob.admin@otomi.cloud')
+    Promise.all([schemaPromise, userPromise]).then(([_, user]) => {
+      setUser(user)
       setLoaded(true)
-    })()
+    })
   })
   if (!loaded) {
     return <Loader />
