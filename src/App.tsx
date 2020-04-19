@@ -21,7 +21,10 @@ import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
 import Settings from './pages/Settings'
 
-const LoadedApp = (): any => {
+interface Props {
+  user: any
+}
+const LoadedApp = ({ user }: Props): any => {
   const classes = createClasses(styles)
   const [session, sessionLoading]: any = useApi('getSession')
   const [themeType, setType] = useLocalStorage('themeType', 'light')
@@ -52,6 +55,7 @@ const LoadedApp = (): any => {
           <SessionContext.Provider
             value={{
               ...session,
+              user: { email: user.email, ...session.user },
               oboTeamId,
               setOboTeamId,
               themeType,
@@ -87,16 +91,21 @@ const LoadedApp = (): any => {
 
 const App = (): any => {
   const [loaded, setLoaded] = useState(false)
+  let user = {}
   useEffect(() => {
     ;(async (): Promise<any> => {
       await schemaPromise
+      if (process.env.NODE_ENV !== 'development') {
+        const response = await fetch('/oauth2/userinfo')
+        user = await response.json()
+      }
       setLoaded(true)
     })()
   })
   if (!loaded) {
     return <Loader />
   }
-  return <LoadedApp />
+  return <LoadedApp user={user} />
 }
 
 export default App
