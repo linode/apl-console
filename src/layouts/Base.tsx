@@ -98,19 +98,6 @@ const useStyles = makeStyles(theme => ({
     height: '100vh',
     overflow: 'auto',
   },
-  container: {
-    // paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 240,
-  },
 }))
 
 interface Props {
@@ -142,7 +129,7 @@ export default (props: Props): any => {
     <img
       style={{ marginRight: '1vw' }}
       // eslint-disable-next-line global-require
-      src={require('../images/otomi-stack.png')}
+      src={`${process.env.PUBLIC_URL}/logos/otomi-stack.svg`}
       width='40'
       height='40'
       alt='otomi logo'
@@ -230,16 +217,7 @@ export default (props: Props): any => {
       </Hidden>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <Container maxWidth='lg' className={classes.container}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} component={Paper}>
-              {children}
-            </Grid>
-          </Grid>
-          {/* <Box pt={4}>
-            <Copyright />
-          </Box> */}
-        </Container>
+        {children}
       </main>
     </div>
   )

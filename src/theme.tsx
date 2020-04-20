@@ -3,10 +3,11 @@ import { createMuiTheme, createStyles, makeStyles, Theme, ThemeOptions } from '@
 export const c = {
   light: '#ccc',
   dark: '#666',
+  grey: '#CFD8DC',
   blueSoft: '#A4D2FF',
   blueLight: '#67B3FF',
-  blueMain: '#0064C8',
-  blueDark: '#2F45AB',
+  blueMain: '#1976D2',
+  blueDark: '#0D47A1',
   redSoft: '#ffbbae',
   redLight: '#ff7359',
   redMain: '#ca2000',
@@ -35,9 +36,9 @@ export const teamColors = {
     dark: c.blueDark,
   },
   secondary: {
-    // light: c.blueLight,
-    main: c.blueMain,
-    // dark: c.blueDark,
+    light: c.yellowLight,
+    main: c.yellowMain,
+    dark: c.yellowDark,
   },
 }
 
@@ -50,9 +51,9 @@ export const adminColors = {
     dark: c.redDark,
   },
   secondary: {
-    // light: c.redSoft,
-    main: c.redMain,
-    // dark: c.redMain,
+    light: c.yellowLight,
+    main: c.yellowMain,
+    dark: c.yellowDark,
   },
 }
 
@@ -100,8 +101,8 @@ const getOverrides = (c: any): ThemeOptions => {
       },
       MuiTableHead: {
         root: {
-          color: c.secondary.main,
-          backgroundColor: c.primary.light,
+          // color: c.secondary.main,
+          // backgroundColor: c.primary.main,
         },
       },
     },

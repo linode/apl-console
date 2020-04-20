@@ -130,7 +130,7 @@ export default ({ teamId }: Props): any => {
         </>
       )}
       <StyledListSubheader component='div' id='action-subheader'>
-        <ListItemText primary='Cluster' />
+        <ListItemText primary='Current Context' />
       </StyledListSubheader>
       <Cluster />
     </MenuList>

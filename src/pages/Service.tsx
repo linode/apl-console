@@ -3,7 +3,7 @@ import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/Main'
+import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
@@ -100,7 +100,7 @@ export default ({
   const [deleteService, setDeleteService] = useState()
 
   return (
-    <MainLayout>
+    <PaperLayout>
       {err || (
         <>
           {loading && <Loader />}
@@ -122,6 +122,6 @@ export default ({
           {formdata && <Submit teamId={tid} serviceId={serviceId} data={formdata} />}
         </>
       )}
-    </MainLayout>
+    </PaperLayout>
   )
 }
