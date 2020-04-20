@@ -3,7 +3,7 @@ import { Loader } from '../components'
 import Dashboard from '../components/Dashboard'
 import Error from '../components/Error'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/Main'
+import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 
 interface Props {
@@ -26,5 +26,5 @@ export default (): any => {
     user: { isAdmin, teamId },
   } = useSession()
 
-  return <MainLayout>{isAdmin ? <Dashboard /> : <TeamDashboard teamId={teamId} />}</MainLayout>
+  return <PaperLayout>{isAdmin ? <Dashboard /> : <TeamDashboard teamId={teamId} />}</PaperLayout>
 }

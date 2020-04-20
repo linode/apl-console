@@ -3,7 +3,7 @@ import Loader from '../components/Loader'
 import Services from '../components/Services'
 import Error from '../components/Error'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/Main'
+import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 
 export default (): any => {
@@ -15,10 +15,10 @@ export default (): any => {
   const [services, loading, error]: any = useApi('getAllServices')
 
   return (
-    <MainLayout>
+    <PaperLayout>
       {loading && <Loader />}
       {services && <Services services={services} sessTeamId={sessTeamId} isAdmin={isAdmin} />}
       {error && <Error code={404} />}
-    </MainLayout>
+    </PaperLayout>
   )
 }
