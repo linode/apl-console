@@ -51,7 +51,8 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData.ingress = { ...formData.ingress }
         formData.ingress.domain = ''
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
-      } else if (
+      }
+      if (
         formData.ingress.useDefaultSubdomain ||
         formData.name !== data.name ||
         formData.ingress.domain !== data.ingress.domain
@@ -61,7 +62,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData.ingress = { ...formData.ingress }
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
-      // formData.ingress.useDefaultSubdomain = formData.ingress.subdomain === defaultSubdomain
       setSchema(getServiceSchema(team, clusters, formData))
       setUiSchema(getServiceUiSchema(schema, role, formData))
     }
