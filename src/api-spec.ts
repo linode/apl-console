@@ -72,10 +72,10 @@ export function getServiceUiSchema(schema, role: string, formData): any {
       'ui:options': {
         inline: true,
       },
+      serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
         tagMatcher: { 'ui:widget': 'hidden' },
       },
-      predeployed: { 'ui:widget': 'hidden' },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
     },
   }
