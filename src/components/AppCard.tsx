@@ -24,7 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
       flex: '1 0 auto',
     },
     cover: {
-      width: 151,
+      width: 90,
+      margin: 'auto',
     },
     controls: {
       display: 'flex',
@@ -65,7 +66,9 @@ export default function AppCard({ cluster, teamId, img, title }: any) {
           </IconButton>
         </div>
       </div>
-      <CardMedia className={classes.cover} image={img} title={title} />
+      <CardMedia className={classes.cover} title={title}>
+        <img src={img} alt={`Logo for ${title} app`} className={classes.cover} />
+      </CardMedia>
     </Card>
   )
 }
