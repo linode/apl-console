@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
 import { useApi } from '../hooks/api'
-import MainLayout from '../layouts/Main'
+import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
@@ -62,7 +62,7 @@ export default ({
   const [deleteTeam, setDeleteTeam] = useState()
 
   return (
-    <MainLayout>
+    <PaperLayout>
       {err || (
         <>
           {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
@@ -71,6 +71,6 @@ export default ({
           {formdata && <Submit data={formdata} />}
         </>
       )}
-    </MainLayout>
+    </PaperLayout>
   )
 }

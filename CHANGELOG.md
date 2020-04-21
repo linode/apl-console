@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.12](https://github.com/redkubes/otomi-stack-web/compare/v0.2.11...v0.2.12) (2020-04-20)
+
+
+### Features
+
+* apps grid, new table ([50d7e1d](https://github.com/redkubes/otomi-stack-web/commit/50d7e1dca1c336909f591cbac93341ff4b84cd1f))
+
+
+### Bug Fixes
+
+* useDefaultSubdomain for service ([e7f6658](https://github.com/redkubes/otomi-stack-web/commit/e7f665846f0a642cf1dd9fd805fd994a53e92892))
+
 ### [0.2.11](https://github.com/redkubes/otomi-stack-web/compare/v0.2.10...v0.2.11) (2020-04-19)
 
 

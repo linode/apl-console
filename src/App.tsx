@@ -13,13 +13,13 @@ import Error from './pages/Error'
 import OtomiApps from './pages/OtomiApps'
 import Service from './pages/Service'
 import Services from './pages/Services'
+import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
 import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
-import Settings from './pages/Settings'
 
 interface Props {
   user: any
@@ -97,6 +97,7 @@ const App = (): any => {
       process.env.NODE_ENV !== 'development'
         ? fetch('/oauth2/userinfo').then(r => r.json())
         : Promise.resolve('bob.admin@otomi.cloud')
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Promise.all([schemaPromise, userPromise]).then(([_, user]) => {
       setUser(user)
       setLoaded(true)

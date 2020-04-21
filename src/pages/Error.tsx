@@ -1,7 +1,7 @@
 import React from 'react'
 import Error from '../components/Error'
 
-import MainLayout from '../layouts/Main'
+import PaperLayout from '../layouts/Paper'
 
 interface Props {
   code: number
@@ -9,5 +9,5 @@ interface Props {
 
 export default ({ code }: Props): any => {
   const err = <Error code={code} />
-  return <>{code === 401 ? <MainLayout>{err}</MainLayout> : err}</>
+  return <>{code === 401 ? <PaperLayout>{err}</PaperLayout> : err}</>
 }

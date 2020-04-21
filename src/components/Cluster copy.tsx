@@ -1,6 +1,6 @@
-import React from 'react'
-import { ListItem, List, ListItemText, makeStyles } from '@material-ui/core'
+import { List, ListItem, ListItemText, makeStyles } from '@material-ui/core'
 import { find } from 'lodash/collection'
+import React from 'react'
 import { useSession } from '../session-context'
 
 const useStyles = makeStyles(theme => ({
@@ -9,7 +9,12 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.divider,
   },
   listItem: {
-    height: theme.spacing(3),
+    height: theme.spacing(2),
+  },
+  listItemTextRight: {
+    // flex: '0.4',
+    // display: 'flex',
+    // justifyContent: 'flex-end',
   },
 }))
 
@@ -26,16 +31,20 @@ export default (): any => {
   return (
     <List className={classes.root} dense>
       <StyledListItem>
-        <ListItemText primary={`Name: ${clusterName}`} />
+        <ListItemText className={classes.listItemTextRight} primary='Cluster: ' />
+        <ListItemText primary={clusterName} />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`Cloud: ${cloud}`} />
+        <ListItemText className={classes.listItemTextRight} primary='Cloud: ' />
+        <ListItemText primary={cloud} />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`Region: ${region}`} />
+        <ListItemText className={classes.listItemTextRight} primary='Region: ' />
+        <ListItemText primary={region} />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`K8S Version: ${k8sVersion}`} />
+        <ListItemText className={classes.listItemTextRight} primary='K8S Version: ' />
+        <ListItemText primary={k8sVersion} />
       </StyledListItem>
     </List>
   )
