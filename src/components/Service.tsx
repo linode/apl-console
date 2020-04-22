@@ -1,9 +1,10 @@
 import { Box, Button } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import Divider from '@material-ui/core/Divider'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
+import DeleteButton from './Button'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
 // import ArrayFieldTemplate from './rjsf/ArrayFieldTemplate'
@@ -107,18 +108,14 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         // ArrayFieldTemplate={ArrayFieldTemplate}
         // FieldTemplate={FieldTemplate}
       >
-        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          {service && service.serviceId && (
-            <Button variant='contained' color='primary' startIcon={<DeleteIcon />} onClick={onDelete}>
-              Delete
-            </Button>
-          )}
-          &nbsp;
+        <Box display='flex' flexDirection='row-reverse' m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
         </Box>
       </Form>
+      <Divider />
+      {service && service.serviceId && <DeleteButton onDelete={onDelete} confirmationText={data.name} />}
     </div>
   )
 }
