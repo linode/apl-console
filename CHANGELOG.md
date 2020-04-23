@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.15](https://github.com/redkubes/otomi-stack-web/compare/v0.2.14...v0.2.15) (2020-04-23)
+
+
+### Bug Fixes
+
+* card link fix ([b251102](https://github.com/redkubes/otomi-stack-web/commit/b251102d2efacc93d8c85e392e56395a7a751739))
+
 ### [0.2.14](https://github.com/redkubes/otomi-stack-web/compare/v0.2.13...v0.2.14) (2020-04-21)
 
 
