@@ -56,11 +56,14 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   })
   return stabilizedThis.map(el => el[0])
 }
-interface HeadCell {
-  disablePadding: boolean
+
+export interface HeadCell {
+  disablePadding?: boolean
   id: string
   label: string
-  numeric: boolean
+  numeric?: boolean
+  renderer?: CallableFunction
+  component?: any
 }
 
 const useEnhancedStyles = makeStyles((theme: Theme) =>

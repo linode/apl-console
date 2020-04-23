@@ -195,6 +195,13 @@ export function getTheme(): Theme {
 export const createClasses = (stylesObj): any => makeStyles(() => createStyles(stylesObj))({})
 
 export const mainStyles = makeStyles(theme => ({
+  forms: {
+    '@global': {
+      '.MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
+        color: theme.palette.primary.main,
+      },
+    },
+  },
   selectable: {
     color: theme.palette.primary.main,
     '&': {
@@ -207,7 +214,7 @@ export const mainStyles = makeStyles(theme => ({
     },
     '@global': {
       a: {
-        textDecoration: 'none',
+        textDeycoration: 'none',
         color: theme.palette.primary[type === 'dark' ? 'contrastText' : 'dark'],
       },
       'a:hover': {

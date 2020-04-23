@@ -16,6 +16,7 @@ import Menu from '../components/Menu'
 import User from '../components/User'
 import { useApi } from '../hooks/api'
 import { useSession } from '../session-context'
+import { mainStyles } from '../theme'
 
 const drawerWidth = '240px'
 
@@ -112,6 +113,7 @@ export default (props: Props): any => {
   } = useSession()
 
   const classes = useStyles(props)
+  const mainClasses = mainStyles()
   const [open, setOpen] = useState(false)
   const [teams]: any = useApi('getTeams')
   const handleDrawerOpen = (e): any => {
@@ -174,7 +176,7 @@ export default (props: Props): any => {
   )
 
   return (
-    <div className={classes.root}>
+    <div className={`${classes.root} ${mainClasses.forms}`}>
       <CssBaseline />
       <AppBar position='fixed' className={clsx(classes.appBar, open && classes.appBarShift)}>
         {toolbar}

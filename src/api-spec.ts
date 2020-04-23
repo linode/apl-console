@@ -55,7 +55,6 @@ export function getServiceUiSchema(schema, role: string, formData): any {
     teamId: { 'ui:widget': 'hidden' },
     serviceId: { 'ui:widget': 'hidden' },
     ingress: {
-      'ui:title': ' ',
       'ui:widget': 'radio',
       'ui:options': {
         inline: true,
@@ -63,17 +62,16 @@ export function getServiceUiSchema(schema, role: string, formData): any {
       internal: { 'ui:widget': 'hidden' },
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : 'text',
-        'ui:description': noCertArn ? ' ' : undefined,
       },
     },
     ksvc: {
-      'ui:title': ' ',
       'ui:widget': 'radio',
       'ui:options': {
         inline: true,
       },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
+        'ui:widget': 'radio',
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },

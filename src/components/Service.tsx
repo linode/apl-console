@@ -3,10 +3,12 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
-import ObjectFieldTemplate from './FormTemplate'
+import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
-import { getServiceSchema, getServiceUiSchema } from '../api-spec'
+// import ArrayFieldTemplate from './rjsf/ArrayFieldTemplate'
+import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
+import { mainStyles } from '../theme'
 
 interface Props {
   onSubmit: CallableFunction
@@ -20,7 +22,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const {
     user: { role },
   } = useSession()
-
+  const mainClasses = mainStyles()
   let defaultSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
   // eslint-disable-next-line no-param-reassign
   if (service && service.ingress) service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
@@ -83,8 +85,9 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
+
   return (
-    <div className='Service'>
+    <div>
       <h1>{data && data.serviceId ? `Service: ${data.name}` : 'New Service'}</h1>
       <Form
         key='createService'
@@ -96,6 +99,8 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
+        // ArrayFieldTemplate={ArrayFieldTemplate}
+        // FieldTemplate={FieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (

@@ -29,7 +29,9 @@ export default (): any => {
         if (hide) return
         const teamPrefix = 'team-' // @todo: get from values later
         const logoName = logo ? logo.name : name
-        const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${path || ''}`
+        const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${(
+          path || ''
+        ).replace('#NS#', `team=${teamId}`)}`
         // eslint-disable-next-line consistent-return
         return (
           <Grid item xs={6} sm={3} key={logoName}>

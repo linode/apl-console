@@ -1,45 +1,38 @@
-import { Link } from '@material-ui/core'
 import React from 'react'
 import RLink from './Link'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
+import MuiLink from './MuiLink'
+import EnhancedTable, { HeadCell } from './EnhancedTable'
 
 interface Props {
   clusters: any[]
 }
 
 export default ({ clusters }: Props): any => {
+  const teamPrefix = 'team-' // @todo: get from values later
+  const headCells: HeadCell[] = [
+    {
+      id: 'name',
+      label: 'Name',
+      renderer: row => <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>,
+    },
+    {
+      id: 'domain',
+      label: 'Domain',
+      renderer: row => <MuiLink href={`https://otomi.${teamPrefix}admin.${row.domain}`}>{row.domain}</MuiLink>,
+    },
+    {
+      id: 'cloud',
+      label: 'Cloud',
+    },
+    {
+      id: 'clusterId',
+      label: 'Cluster',
+    },
+  ]
   return (
-    <div className='Cluster'>
+    <>
       <h1>Clusters</h1>
-      <TableContainer>
-        <Table aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align='right'>Domain</TableCell>
-              <TableCell align='right'>Cloud</TableCell>
-              <TableCell align='right'>Region</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {clusters.map(row => {
-              const teamPrefix = 'team-' // @todo: get from values later
-              return (
-                <TableRow key={row.domain}>
-                  <TableCell component='th' scope='row'>
-                    <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>
-                  </TableCell>
-                  <TableCell align='right'>
-                    <Link href={`https://otomi.${teamPrefix}admin.${row.domain}`}>{row.domain}</Link>
-                  </TableCell>
-                  <TableCell align='right'>{row.cloud}</TableCell>
-                  <TableCell align='right'>{row.region}</TableCell>
-                </TableRow>
-              )
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </div>
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='clusterId' />
+    </>
   )
 }

@@ -1,11 +1,12 @@
-import { Box, Button, Link as MuiLink } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Team } from '../models'
-import EnhancedTable from './EnhancedTable'
+import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import MuiLink from './MuiLink'
 
 const getServiceLink = (isAdmin, ownerId) => (row): any => {
   if (!(isAdmin || row.teamId === ownerId)) return row.name
@@ -26,15 +27,6 @@ const renderPublicUrl = (row): any => {
   )
 }
 
-interface HeadCell {
-  disablePadding: boolean
-  id: string
-  label: string
-  numeric: boolean
-  renderer?: CallableFunction
-  component?: any
-}
-
 interface Props {
   services: any[]
   team?: Team
@@ -47,15 +39,11 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      numeric: false,
-      disablePadding: false,
       label: 'Service Name',
       renderer: getServiceLink(isAdmin, sessTeamId),
     },
     {
       id: 'url',
-      numeric: false,
-      disablePadding: false,
       label: 'Public URL',
       renderer: renderPublicUrl,
       component: MuiLink,
@@ -65,14 +53,12 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
   if (showTeam)
     headCells.push({
       id: 'teamId',
-      numeric: false,
-      disablePadding: false,
       label: 'Team',
       renderer: row => row.teamId.charAt(0).toUpperCase() + row.teamId.substr(1),
     })
 
   return (
-    <div className='Services'>
+    <>
       <h1>Services{team ? `: Team ${team.name}` : ''}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
@@ -89,6 +75,6 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
         )}
       </Box>
       <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='serviceId' />
-    </div>
+    </>
   )
 }
