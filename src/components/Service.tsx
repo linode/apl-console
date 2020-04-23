@@ -96,8 +96,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        // FieldTemplate={CustomFieldTemplate}
-        // ArrayFieldTemplate={CustomArrayFieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (
