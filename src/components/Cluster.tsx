@@ -9,22 +9,28 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.divider,
   },
   listItem: {
+    height: theme.spacing(5),
+  },
+  listItemSmall: {
     height: theme.spacing(3),
   },
 }))
 
-export default (): any => {
+interface Props {
+  clusterId?: string
+}
+
+export default ({ clusterId }: Props): any => {
   const { currentClusterId, clusters } = useSession()
-  const [cloud, clusterName] = currentClusterId.split('/')
+  const [cloud, clusterName] = (clusterId || currentClusterId).split('/')
   const cluster = find(clusters, { cloud, cluster: clusterName })
   const { k8sVersion, region } = cluster
   const classes = useStyles()
   const StyledListItem = props => {
-    return <ListItem className={classes.listItem} {...props} />
+    return <ListItem className={clusterId ? classes.listItem : classes.listItemSmall} {...props} />
   }
-
   return (
-    <List className={classes.root} dense>
+    <List className={classes.root} dense={!clusterId}>
       <StyledListItem>
         <ListItemText primary={`Name: ${clusterName}`} />
       </StyledListItem>

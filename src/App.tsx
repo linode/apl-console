@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
 import { schemaPromise, useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import Cluster from './pages/Cluster'
 // import { useApi } from './hooks/api'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
@@ -68,6 +69,7 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/' component={Dashboard} exact />
                 <Route path='/otomi/apps' component={OtomiApps} exact />
                 <Route path='/clusters' component={Clusters} exact />
+                <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/create-team' component={Team} exact />

@@ -1,5 +1,6 @@
-import React from 'react'
 import { Link } from '@material-ui/core'
+import React from 'react'
+import RLink from './Link'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from './Table'
 
 interface Props {
@@ -14,21 +15,28 @@ export default ({ clusters }: Props): any => {
         <Table aria-label='simple table'>
           <TableHead>
             <TableRow>
-              <TableCell>Domain</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell align='right'>Domain</TableCell>
               <TableCell align='right'>Cloud</TableCell>
               <TableCell align='right'>Region</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {clusters.map(row => (
-              <TableRow key={row.domain}>
-                <TableCell component='th' scope='row'>
-                  <Link href={`https://otomi.${row.domain}`}>{row.domain}</Link>
-                </TableCell>
-                <TableCell align='right'>{row.cloud}</TableCell>
-                <TableCell align='right'>{row.region}</TableCell>
-              </TableRow>
-            ))}
+            {clusters.map(row => {
+              const teamPrefix = 'team-' // @todo: get from values later
+              return (
+                <TableRow key={row.domain}>
+                  <TableCell component='th' scope='row'>
+                    <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>
+                  </TableCell>
+                  <TableCell align='right'>
+                    <Link href={`https://otomi.${teamPrefix}admin.${row.domain}`}>{row.domain}</Link>
+                  </TableCell>
+                  <TableCell align='right'>{row.cloud}</TableCell>
+                  <TableCell align='right'>{row.region}</TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainer>
