@@ -3,6 +3,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import ObjectFieldTemplate from './FormTemplate'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
@@ -94,6 +95,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData={data}
         liveValidate={false}
         showErrorList={false}
+        ObjectFieldTemplate={ObjectFieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           {service && service.serviceId && (
