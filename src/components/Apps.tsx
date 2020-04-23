@@ -25,26 +25,27 @@ export default (): any => {
   const apps = isAdmin ? adminApps : teamApps
   return (
     <Grid container direction='row' justify='center' alignItems='center' spacing={2}>
-      {apps.map(({ hide, name, logo, domain, host, path }) => {
-        if (hide) return
-        const teamPrefix = 'team-' // @todo: get from values later
-        const logoName = logo ? logo.name : name
-        const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${(
-          path || ''
-        ).replace('#NS#', `team=${teamId}`)}`
-        // eslint-disable-next-line consistent-return
-        return (
-          <Grid item xs={6} sm={3} key={logoName}>
-            <AppCard
-              cluster={cluster}
-              teamId={teamId}
-              title={name}
-              link={link}
-              img={`${publicUrl}/logos/${logoName}_logo.svg`}
-            />
-          </Grid>
-        )
-      })}
+      {apps
+        .filter(app => !app.hide)
+        .map(({ hide, name, logo, domain, host, path }) => {
+          const teamPrefix = 'team-' // @todo: get from values later
+          const logoName = logo ? logo.name : name
+          const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${(
+            path || ''
+          ).replace('#NS#', `team=${teamId}`)}`
+          // eslint-disable-next-line consistent-return
+          return (
+            <Grid item xs={6} sm={3} key={logoName}>
+              <AppCard
+                cluster={cluster}
+                teamId={teamId}
+                title={name}
+                link={link}
+                img={`${publicUrl}/logos/${logoName}_logo.svg`}
+              />
+            </Grid>
+          )
+        })}
     </Grid>
   )
 }
