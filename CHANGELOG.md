@@ -15,6 +15,36 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * target="_blank" for apps ([9f03b77](https://github.com/redkubes/otomi-stack-web/commit/9f03b77c9a4fd379592c1ef9da7f8fa62cd580b6))
+* version [ci skip] ([10799c9](https://github.com/redkubes/otomi-stack-web/commit/10799c9ee61d2208c264edc9216831edc5c5b2d4))
+
+
+### Code Refactoring
+
+* remove unused code ([e1c7927](https://github.com/redkubes/otomi-stack-web/commit/e1c7927f9510d59e86c8dc9b9d191c71a31eacc9))
+
+
+### Others
+
+* **release:** 0.2.16 ([e995107](https://github.com/redkubes/otomi-stack-web/commit/e9951072ac99d61a8bb8eb97d1c7569dfa879763))
+
+
+### Feature Improvements
+
+* added cluster detail view [ci skip] ([32d074a](https://github.com/redkubes/otomi-stack-web/commit/32d074a4c365a58f81bf3927a532f27dfc9a1268))
+
+### [0.2.16](https://github.com/redkubes/otomi-stack-web/compare/v0.2.15...v0.2.16) (2020-04-23)
+
+
+### Features
+
+* add custom object template ([7dfae11](https://github.com/redkubes/otomi-stack-web/commit/7dfae11bb1d25bf196dd83ba75a2935d5ba00b55))
+* display boolean properites in one row ([9024cad](https://github.com/redkubes/otomi-stack-web/commit/9024cada3d01ae597bdc53735f0cdd22eebabd1b))
+* wrap title and description on HTML elements ([c3100cc](https://github.com/redkubes/otomi-stack-web/commit/c3100cc55c1cd76b6c4c34f620670c68c030a23f))
+
+
+### Bug Fixes
+
+* target="_blank" for apps ([9f03b77](https://github.com/redkubes/otomi-stack-web/commit/9f03b77c9a4fd379592c1ef9da7f8fa62cd580b6))
 
 
 ### Code Refactoring
