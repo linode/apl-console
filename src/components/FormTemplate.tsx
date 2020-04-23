@@ -11,14 +11,13 @@ export default function ObjectFieldTemplate(props: any) {
     else if (o.content.props.schema.type === 'boolean') booleanElements.push(o)
     else simpleElements.push(o)
   })
-
   return (
     <>
       <Divider />
       <Box my={2}>
         <Box>
-          {title}
-          {description}
+          <h2>{title}</h2>
+          <p>{description}</p>
         </Box>
 
         <Grid container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
