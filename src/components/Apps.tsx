@@ -4,25 +4,32 @@ import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import AppCard from './AppCard'
 
+const publicUrl = process.env.PUBLIC_URL
+
 const useStyles = makeStyles(theme => ({
   root: {},
 }))
 
 export default (): any => {
   const {
-    core: { services },
+    core: {
+      services: adminApps,
+      teamConfig: { services: teamApps },
+    },
     currentClusterId,
     clusters,
-    user: { teamId },
+    user: { teamId, isAdmin },
   } = useSession()
   const [cloud, clusterName] = currentClusterId.split('/')
   const cluster = find(clusters, { cloud, cluster: clusterName })
-
+  const apps = isAdmin ? adminApps : teamApps
   return (
     <Grid container direction='row' justify='center' alignItems='center' spacing={2}>
-      {services.map(({ hide, name, logo }) => {
+      {apps.map(({ hide, name, logo, domain, host, path }) => {
         if (hide) return
+        const teamPrefix = 'team-' // @todo: get from values later
         const logoName = logo ? logo.name : name
+        const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${path || ''}`
         // eslint-disable-next-line consistent-return
         return (
           <Grid item xs={6} sm={3} key={logoName}>
@@ -30,7 +37,8 @@ export default (): any => {
               cluster={cluster}
               teamId={teamId}
               title={name}
-              img={`${process.env.PUBLIC_URL}/logos/${logoName}_logo.svg`}
+              link={link}
+              img={`${publicUrl}/logos/${logoName}_logo.svg`}
             />
           </Grid>
         )
