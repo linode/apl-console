@@ -1,9 +1,5 @@
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
-import IconButton from '@material-ui/core/IconButton'
+import { Card, CardContent, CardMedia, IconButton, Typography } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Typography from '@material-ui/core/Typography'
 import HelpIcon from '@material-ui/icons/Help'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import SettingsIcon from '@material-ui/icons/Settings'
@@ -39,11 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export default function AppCard({ cluster, teamId, img, title }: any) {
+export default function AppCard({ cluster, teamId, img, title, link }: any) {
   const classes = useStyles()
-  const handleClick = () => {
-    window.open(`https://${title}.team-${teamId}.${cluster.domain}`, '_blank')
-  }
 
   return (
     <Card className={classes.root}>
@@ -57,8 +50,8 @@ export default function AppCard({ cluster, teamId, img, title }: any) {
           <IconButton aria-label='settings'>
             <SettingsIcon />
           </IconButton>
-          <IconButton aria-label='start'>
-            <PlayArrowIcon onClick={handleClick} className={classes.playIcon} />
+          <IconButton aria-label='start' href={link}>
+            <PlayArrowIcon className={classes.playIcon} />
           </IconButton>
           <IconButton aria-label='help'>
             <HelpIcon />

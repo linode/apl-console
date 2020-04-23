@@ -1,7 +1,7 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
-import Services from '../components/Services-bak'
+import Services from '../components/Services'
 import Error from '../components/Error'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
