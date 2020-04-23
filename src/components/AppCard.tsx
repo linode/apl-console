@@ -51,7 +51,7 @@ export default function AppCard({ cluster, teamId, img, title, link }: any) {
           <IconButton aria-label='settings'>
             <SettingsIcon />
           </IconButton>
-          <IconButton aria-label='start' href={link}>
+          <IconButton aria-label='start' href={link} target='_blank' rel='noopener'>
             <PlayArrowIcon className={classes.playIcon} />
           </IconButton>
           <IconButton aria-label='help'>
