@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.23](https://github.com/redkubes/otomi-stack-web/compare/v0.2.22...v0.2.23) (2020-04-24)
+
+
+### Bug Fixes
+
+* form domain selector fix [ci skip] ([aeda947](https://github.com/redkubes/otomi-stack-web/commit/aeda947fb52301dfe895da08eaf2d26ce0f98ae3))
+
 ### [0.2.22](https://github.com/redkubes/otomi-stack-web/compare/v0.2.21...v0.2.22) (2020-04-24)
 
 

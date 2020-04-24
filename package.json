@@ -127,5 +127,5 @@
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w"
   },
-  "version": "0.2.22"
+  "version": "0.2.23"
 }
