@@ -9,7 +9,7 @@ export const c = {
   blueMain: '#1976D2',
   blueDark: '#0D47A1',
   redSoft: '#ffbbae',
-  redLight: '#ff7359',
+  redLight: '#ff0',
   redMain: '#ca2000',
   redDark: '#a11900',
   yellowSoft: '#ece7e2',
@@ -207,20 +207,20 @@ export const mainStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     '&': {
       textDecoration: 'none',
-      color: theme.palette.primary[type === 'dark' ? 'contrastText' : 'dark'],
+      color: type === 'dark' ? theme.palette.common.white : theme.palette.primary.main,
     },
     '&:hover': {
       textDecoration: 'none',
-      color: theme.palette.primary[type === 'dark' ? 'light' : 'main'],
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.common.white,
     },
     '@global': {
       a: {
         textDeycoration: 'none',
-        color: theme.palette.primary[type === 'dark' ? 'contrastText' : 'dark'],
+        color: type === 'dark' ? theme.palette.common.white : theme.palette.primary.main,
       },
       'a:hover': {
         textDecoration: 'none',
-        color: theme.palette.primary[type === 'dark' ? 'light' : 'main'],
+        color: type === 'dark' ? theme.palette.primary.light : theme.palette.common.white,
       },
     },
   },

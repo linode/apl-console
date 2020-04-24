@@ -62,6 +62,7 @@ export function getServiceUiSchema(schema, role: string, formData): any {
       internal: { 'ui:widget': 'hidden' },
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : 'text',
+        'ui:description': noCertArn ? ' ' : undefined,
       },
     },
     ksvc: {
