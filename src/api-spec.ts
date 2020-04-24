@@ -92,12 +92,13 @@ function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
   schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.dnsZones
-  formData.ingress.domain = cluster.dnsZones[0]
+  if (cluster.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain)
+    formData.ingress.domain = cluster.dnsZones[0]
 }
 
 function addClustersEnum(schema, team, formData): void {
   schema.properties.clusterId.enum = team.clusters
-  // if (team.clusters.length === 1) formData.clusterId = team.clusters[0]
+  if (team.clusters.length === 1) formData.clusterId = team.clusters[0]
 }
 
 function removeCertArnField(schema) {
