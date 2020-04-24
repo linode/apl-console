@@ -10,7 +10,11 @@ const useStyles = makeStyles(theme => ({
   root: {},
 }))
 
-export default (): any => {
+interface Props {
+  teamId: string
+}
+
+export default ({ teamId }: Props): any => {
   const {
     core: {
       services: adminApps,
@@ -18,11 +22,10 @@ export default (): any => {
     },
     currentClusterId,
     clusters,
-    user: { teamId, isAdmin },
   } = useSession()
   const [cloud, clusterName] = currentClusterId.split('/')
   const cluster = find(clusters, { cloud, cluster: clusterName })
-  const apps = isAdmin ? adminApps : teamApps
+  const apps = teamId === 'admin' ? adminApps : teamApps
   return (
     <Grid container direction='row' justify='center' alignItems='center' spacing={2}>
       {apps

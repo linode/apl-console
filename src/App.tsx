@@ -67,7 +67,7 @@ const LoadedApp = ({ user }: Props): any => {
               <Switch>
                 {/*! user && <Route path='/' component={Home} exact /> */}
                 <Route path='/' component={Dashboard} exact />
-                <Route path='/otomi/apps' component={OtomiApps} exact />
+                <Route path='/otomi/apps/:teamId' component={OtomiApps} exact />
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/services' component={Services} exact />

@@ -15,6 +15,7 @@ import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import { useSnackbar } from '../utils'
 import Cluster from './Cluster'
+import { useSession } from '../session-context'
 
 const Deploy = ({ setDirty }): any => {
   const { enqueueSnackbar } = useSnackbar()
@@ -45,6 +46,9 @@ interface Props {
 }
 
 export default ({ teamId }: Props): any => {
+  const {
+    user: { isAdmin },
+  } = useSession()
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
   const classes = useStyles()
@@ -71,12 +75,14 @@ export default ({ teamId }: Props): any => {
         </ListItemIcon>
         <ListItemText primary='Dashboard' />
       </StyledMenuItem>
-      <StyledMenuItem component={Link} to='/otomi/apps'>
-        <ListItemIcon>
-          <AppsIcon />
-        </ListItemIcon>
-        <ListItemText primary='Otomi Apps' />
-      </StyledMenuItem>
+      {isAdmin && (
+        <StyledMenuItem component={Link} to='/otomi/apps/admin'>
+          <ListItemIcon>
+            <AppsIcon />
+          </ListItemIcon>
+          <ListItemText primary='Otomi Apps' />
+        </StyledMenuItem>
+      )}
       <StyledMenuItem component={Link} to='/settings'>
         <ListItemIcon>
           <SettingsIcon />
@@ -126,6 +132,12 @@ export default ({ teamId }: Props): any => {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary='Services' />
+          </StyledMenuItem>
+          <StyledMenuItem component={Link} to={`/otomi/apps/${teamId}`}>
+            <ListItemIcon>
+              <AppsIcon />
+            </ListItemIcon>
+            <ListItemText primary='Otomi Apps' />
           </StyledMenuItem>
         </>
       )}
