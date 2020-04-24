@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.24](https://github.com/redkubes/otomi-stack-web/compare/v0.2.23...v0.2.24) (2020-04-24)
+
+
+### Feature Improvements
+
+* apps per role in menu [ci skip] ([b473125](https://github.com/redkubes/otomi-stack-web/commit/b4731250987e67fa73096d208667b95d5e037bfb))
+
 ### [0.2.23](https://github.com/redkubes/otomi-stack-web/compare/v0.2.22...v0.2.23) (2020-04-24)
 
 
