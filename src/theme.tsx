@@ -217,7 +217,7 @@ export const mainStyles = makeStyles(theme => ({
     '@global': {
       a: {
         textDeycoration: 'none',
-        color: type === 'dark' ? theme.palette.common.white : theme.palette.primary.main,
+        color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
       },
       'a:hover': {
         textDecoration: 'none',
