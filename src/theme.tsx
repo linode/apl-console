@@ -75,12 +75,13 @@ const getOverrides = (c: any): ThemeOptions => {
       MuiButton: {
         root: {
           borderRadius: '2em',
+          // color: 'secondary',
         },
       },
       MuiInputBase: {
         root: {
           borderRadius: '6px',
-          color: 'secondary',
+          // color: 'secondary',
         },
       },
       MuiListItemIcon: {
@@ -197,7 +198,7 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles(theme => ({
   forms: {
     '@global': {
-      '.MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
+      '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
         color: theme.palette.primary.main,
       },
     },

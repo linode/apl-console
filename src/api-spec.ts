@@ -91,7 +91,7 @@ function addDomainEnumField(schema, clusters, formData): void {
   if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
   const cluster = find(clusters, { id: formData.clusterId })
   schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.dnsZones
-  if (cluster.dnsZones.length === 1) formData.ingress.domain = cluster.dnsZones[0]
+  formData.ingress.domain = cluster.dnsZones[0]
 }
 
 function addClustersEnum(schema, team, formData): void {

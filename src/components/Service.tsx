@@ -23,9 +23,13 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     user: { role },
   } = useSession()
   const mainClasses = mainStyles()
-  let defaultSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
-  // eslint-disable-next-line no-param-reassign
-  if (service && service.ingress) service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
+  let teamSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
+  let defaultSubdomain
+  if (service && service.ingress) {
+    defaultSubdomain = `${teamSubdomain}.${service.clusterId}`
+    // eslint-disable-next-line no-param-reassign
+    service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
+  }
 
   const originalSchema = getServiceSchema(team, clusters, service)
   const originalUiSchema = getServiceUiSchema(originalSchema, role, service)
@@ -41,6 +45,9 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     } else {
       setInvalid(false)
     }
+    teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.teamId}` : ''
+    const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
+    defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
     const formData = { ...inData }
     // setData(formData)
     // if (!data) return
@@ -60,7 +67,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData.name !== data.name ||
         formData.ingress.domain !== data.ingress.domain
       ) {
-        if (formData.name) defaultSubdomain = `${formData.name}.team-${team.teamId}`
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
