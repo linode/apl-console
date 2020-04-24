@@ -22,11 +22,10 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const {
     user: { role },
   } = useSession()
-  const mainClasses = mainStyles()
   let teamSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
   let defaultSubdomain
-  if (service && service.ingress) {
-    defaultSubdomain = `${teamSubdomain}.${service.clusterId}`
+  if (service && service.ingress && service.clusterId) {
+    defaultSubdomain = `${teamSubdomain}.${service.clusterId.split('/')[1]}`
     // eslint-disable-next-line no-param-reassign
     service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
   }

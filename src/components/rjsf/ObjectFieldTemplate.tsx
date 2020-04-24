@@ -49,10 +49,10 @@ export default function ObjectFieldTemplate(props: any) {
             )
           }
           if (o.content.props.schema.type === 'boolean') {
-            return <Box>{o.content}</Box>
+            return <Box key={`row-${idx}`}>{o.content}</Box>
           }
           if (o.content.props.schema.type === 'array') {
-            return <Box>{o.content}</Box>
+            return <Box key={`row-${idx}`}>{o.content}</Box>
           }
           return (
             <Paper key={`item-${idx}`}>
