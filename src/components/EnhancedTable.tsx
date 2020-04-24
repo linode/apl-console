@@ -25,6 +25,7 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete'
 import clsx from 'clsx'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -228,7 +229,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
   const [orderBy, setOrderBy] = useState(orderByStart)
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
-  const [dense, setDense] = useState(false)
+  const [dense, setDense] = useLocalStorage('EnhancedTable:dense', false)
   const [rowsPerPage, setRowsPerPage] = useState(10)
 
   const handleRequestSort = (event: MouseEvent<unknown>, property: string) => {

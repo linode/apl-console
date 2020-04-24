@@ -9,7 +9,7 @@ export const c = {
   blueMain: '#1976D2',
   blueDark: '#0D47A1',
   redSoft: '#ffbbae',
-  redLight: '#ff0',
+  redLight: '#ff7359',
   redMain: '#ca2000',
   redDark: '#a11900',
   yellowSoft: '#ece7e2',
@@ -200,6 +200,13 @@ export const mainStyles = makeStyles(theme => ({
     '@global': {
       '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
         color: theme.palette.primary.main,
+      },
+      '.MuiSwitch-colorSecondary.Mui-checked, .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
+        color: theme.palette.primary.main,
+      },
+      '.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
+        color: theme.palette.primary.main,
+        backgroundColor: theme.palette.primary.light,
       },
     },
   },
