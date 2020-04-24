@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.25](https://github.com/redkubes/otomi-stack-web/compare/v0.2.24...v0.2.25) (2020-04-24)
+
+
+### Feature Improvements
+
+* dense toggle color fix and now stateful [ci skip] ([e596813](https://github.com/redkubes/otomi-stack-web/commit/e59681366dbfec6bf8c8bd15f1837a82952a02ad))
+
 ### [0.2.24](https://github.com/redkubes/otomi-stack-web/compare/v0.2.23...v0.2.24) (2020-04-24)
 
 
