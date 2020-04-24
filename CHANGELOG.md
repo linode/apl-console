@@ -9,6 +9,20 @@ All notable changes to this project will be documented in this file. See [standa
 
 * colors [ci skip] ([ba6c293](https://github.com/redkubes/otomi-stack-web/commit/ba6c2934fd4c3f55e51924159241af5cebff33de))
 * colors [ci skip] ([85e5704](https://github.com/redkubes/otomi-stack-web/commit/85e57043603e9b0757b9c2dd83e5c01f25a5bbf8))
+* version, github under attack [ci skip] ([9d3c2ac](https://github.com/redkubes/otomi-stack-web/commit/9d3c2ac700612093e60c5ff9186df3a382295e64))
+
+
+### Others
+
+* **release:** 0.2.22 ([1594147](https://github.com/redkubes/otomi-stack-web/commit/159414706acd057047911c5ac4de32c8b2600a51))
+
+### [0.2.22](https://github.com/redkubes/otomi-stack-web/compare/v0.2.21...v0.2.22) (2020-04-24)
+
+
+### Bug Fixes
+
+* colors [ci skip] ([ba6c293](https://github.com/redkubes/otomi-stack-web/commit/ba6c2934fd4c3f55e51924159241af5cebff33de))
+* colors [ci skip] ([85e5704](https://github.com/redkubes/otomi-stack-web/commit/85e57043603e9b0757b9c2dd83e5c01f25a5bbf8))
 
 ### [0.2.21](https://github.com/redkubes/otomi-stack-web/compare/v0.2.20...v0.2.21) (2020-04-24)
 
