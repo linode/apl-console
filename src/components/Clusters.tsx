@@ -11,8 +11,8 @@ export default ({ clusters }: Props): any => {
   const teamPrefix = 'team-' // @todo: get from values later
   const headCells: HeadCell[] = [
     {
-      id: 'name',
-      label: 'Name',
+      id: 'id',
+      label: 'ID',
       renderer: row => <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>,
     },
     {
@@ -23,10 +23,6 @@ export default ({ clusters }: Props): any => {
     {
       id: 'cloud',
       label: 'Cloud',
-    },
-    {
-      id: 'clusterId',
-      label: 'Cluster',
     },
   ]
   return (

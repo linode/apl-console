@@ -204,14 +204,15 @@ export const mainStyles = makeStyles(theme => ({
     },
   },
   selectable: {
-    color: theme.palette.primary.main,
+    // color: theme.palette.primary.main,
+    color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     '&': {
       textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.common.white : theme.palette.primary.main,
+      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     },
     '&:hover': {
       textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.common.white,
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
     '@global': {
       a: {
@@ -220,7 +221,7 @@ export const mainStyles = makeStyles(theme => ({
       },
       'a:hover': {
         textDecoration: 'none',
-        color: type === 'dark' ? theme.palette.primary.light : theme.palette.common.white,
+        color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
       },
     },
   },
