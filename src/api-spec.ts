@@ -98,12 +98,13 @@ function addDomainEnumField(schema, clusters, formData): void {
 
 function addClustersEnum(schema, team, formData): void {
   schema.properties.clusterId.enum = team.clusters
-  if (team.clusters.length === 1) formData.clusterId = team.clusters[0]
+  if (formData && team.clusters.length === 1) formData.clusterId = team.clusters[0]
 }
 
 function removeCertArnField(schema) {
   unset(schema, 'properties.ingress.oneOf[1].properties.certArn')
 }
+
 export function getServiceSchema(team: any, clusters: [any], formData: any): any {
   const schema = cloneDeep(spec.components.schemas.Service)
 
