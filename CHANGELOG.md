@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.26](https://github.com/redkubes/otomi-stack-web/compare/v0.2.25...v0.2.26) (2020-04-25)
+
+
+### Bug Fixes
+
+* extra chek to see if formData is set [ci skip] ([9e39365](https://github.com/redkubes/otomi-stack-web/commit/9e39365da5c457bb89eb2a375917a9ba63dc02d0))
+
 ### [0.2.25](https://github.com/redkubes/otomi-stack-web/compare/v0.2.24...v0.2.25) (2020-04-24)
 
 
