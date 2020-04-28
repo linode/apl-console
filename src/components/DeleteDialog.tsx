@@ -31,7 +31,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
           Delete {resourceName} {resourceType}{' '}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>{`Type '${resourceName}' in order to unlock delete button`}</DialogContentText>
+          <DialogContentText>{`Type the name of the ${resourceType} ("${resourceName}") to confirm.`}</DialogContentText>
           <TextField
             autoComplete='off'
             id='confirmationText'

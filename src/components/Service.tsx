@@ -107,10 +107,11 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         // ArrayFieldTemplate={ArrayFieldTemplate}
         // FieldTemplate={FieldTemplate}
       >
-        <Box display='flex' flexDirection='row-reverse' m={1}>
+        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
+          &nbsp;
           {service && service.serviceId && (
             <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='service' />
           )}
