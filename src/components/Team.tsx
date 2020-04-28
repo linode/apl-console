@@ -55,10 +55,9 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
+          {team && team.teamId && <DeleteButton onDelete={onDelete} resourceName={team.name} resourceType='team' />}
         </Box>
       </Form>
-      <Divider />
-      {team && team.teamId && <DeleteButton onDelete={onDelete} confirmationText={team.name} />}
     </div>
   )
 }

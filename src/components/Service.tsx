@@ -35,7 +35,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const originalUiSchema = getServiceUiSchema(originalSchema, role, service)
   const [schema, setSchema] = useState(originalSchema)
   const [uiSchema, setUiSchema] = useState(originalUiSchema)
-
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
@@ -112,10 +111,11 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
+          {service && service.serviceId && (
+            <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='service' />
+          )}
         </Box>
       </Form>
-      <Divider />
-      {service && service.serviceId && <DeleteButton onDelete={onDelete} confirmationText={data.name} />}
     </div>
   )
 }
