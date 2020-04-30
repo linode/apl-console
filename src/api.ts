@@ -1,8 +1,10 @@
 import axios from 'axios'
 import OpenAPIClientAxios from 'openapi-client-axios'
 
+const env = process.env
+
 // let baseUrl = 'http://127.0.0.1:8080/v1'
-let baseUrl = '/api/v1'
+let baseUrl = `${env.PUBLIC_URL || ''}/api/v1`
 let axiosConfigDefaults = {
   withCredentials: true,
   headers: {

@@ -76,7 +76,7 @@ export default ({ teamId }: Props): any => {
         <ListItemText primary='Dashboard' />
       </StyledMenuItem>
       {isAdmin && (
-        <StyledMenuItem component={Link} to='/otomi/apps/admin'>
+        <StyledMenuItem component={Link} to='/apps/admin'>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
@@ -133,7 +133,7 @@ export default ({ teamId }: Props): any => {
             </ListItemIcon>
             <ListItemText primary='Services' />
           </StyledMenuItem>
-          <StyledMenuItem component={Link} to={`/otomi/apps/${teamId}`}>
+          <StyledMenuItem component={Link} to={`/apps/${teamId}`}>
             <ListItemIcon>
               <AppsIcon />
             </ListItemIcon>
