@@ -131,7 +131,7 @@ export default (props: Props): any => {
     <img
       style={{ marginRight: '1vw' }}
       // eslint-disable-next-line global-require
-      src={`${process.env.PUBLIC_URL}/logos/otomi.svg`}
+      src={`${process.env.PUBLIC_URL}/logos/otomi_logo.svg`}
       width='40'
       height='40'
       alt='otomi logo'

@@ -30,12 +30,13 @@ export default ({ teamId }: Props): any => {
     <Grid container direction='row' justify='center' alignItems='center' spacing={2}>
       {apps
         .filter(app => !app.hide)
-        .map(({ hide, name, logo, domain, host, path }) => {
+        .map(({ hide, name, logo, domain, host, path, ownHost }) => {
           const teamPrefix = 'team-' // @todo: get from values later
           const logoName = logo ? logo.name : name
-          const link = `https://${domain || `${host || name}.${teamPrefix}${teamId}.${cluster.domain}`}${(
-            path || ''
-          ).replace('#NS#', `team-${teamId}`)}`
+          const link = `https://${domain ||
+            `${ownHost ? host || name : 'apps'}.${teamPrefix}${teamId}.${cluster.domain}/${
+              ownHost ? '' : `${host || name}/`
+            }`}${(path || '').replace('#NS#', `team-${teamId}`)}`
           // eslint-disable-next-line consistent-return
           return (
             <Grid item xs={6} sm={3} key={name}>
