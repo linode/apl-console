@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.28](https://github.com/redkubes/otomi-stack-web/compare/v0.2.27...v0.2.28) (2020-04-30)
+
+
+### Bug Fixes
+
+* added back env var because build needs it [ci skip] ([d57ac5c](https://github.com/redkubes/otomi-stack-web/commit/d57ac5cd0d9c00e2987584d506dfb0fa1717e288))
+
 ### [0.2.27](https://github.com/redkubes/otomi-stack-web/compare/v0.2.26...v0.2.27) (2020-04-30)
 
 
