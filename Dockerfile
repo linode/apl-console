@@ -27,6 +27,7 @@ RUN npm run lint
 # --------------- build stage
 FROM ci as build
 
+ENV PUBLIC_URL='/otomi/'
 RUN npm run build
 
 # --------------- production stage
