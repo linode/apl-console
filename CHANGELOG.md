@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.27](https://github.com/redkubes/otomi-stack-web/compare/v0.2.26...v0.2.27) (2020-04-30)
+
+
+### Features
+
+* change dialog message for deleting resource ([fe72932](https://github.com/redkubes/otomi-stack-web/commit/fe72932af429b66743a3d737eed500854ec71865))
+* disable service delete button until user confirmation ([69c2e16](https://github.com/redkubes/otomi-stack-web/commit/69c2e16fd47df51c9e5fd60e3eb89e21a83f3ab0))
+* disable team delete button until user confirmation ([c828547](https://github.com/redkubes/otomi-stack-web/commit/c82854789bc862e6f1f81670649055c087402551))
+* open dialog on delete button click ([6c49791](https://github.com/redkubes/otomi-stack-web/commit/6c49791988e2174c057acd5ee28d7cdba01b4443))
+
+
+### Bug Fixes
+
+* removed env var from Dockerfile [ci skip] ([06dcf22](https://github.com/redkubes/otomi-stack-web/commit/06dcf22b1b38432e98eb00828b9fe3df76ddbd90))
+
+
+### Code Refactoring
+
+* split DeleteButton and DeleteDialog to separate files ([5062b65](https://github.com/redkubes/otomi-stack-web/commit/5062b653f13b99daf8015afe688ace8553fbb70e))
+
 ### [0.2.26](https://github.com/redkubes/otomi-stack-web/compare/v0.2.25...v0.2.26) (2020-04-25)
 
 
