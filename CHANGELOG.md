@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.32](https://github.com/redkubes/otomi-stack-web/compare/v0.2.31...v0.2.32) (2020-04-30)
+
+
+### Bug Fixes
+
+* sed replacement fixed [ci skip] ([1106c92](https://github.com/redkubes/otomi-stack-web/commit/1106c9246c94118c22b911ba4f7972e66c201b46))
+* sed replacement fixed [ci skip] [#2](https://github.com/redkubes/otomi-stack-web/issues/2) ([9dd9960](https://github.com/redkubes/otomi-stack-web/commit/9dd996053b6d0d5cd1b7c2e6d6bc8693e3fba171))
+
 ### [0.2.31](https://github.com/redkubes/otomi-stack-web/compare/v0.2.30...v0.2.31) (2020-04-30)
 
 
