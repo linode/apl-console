@@ -7,8 +7,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     # skip also when release chore gets pushed to master, as we expect it to be built upon the tag release
-    if: "!contains(github.event.head_commit.message, 'ci skip') && !(github.ref == 'master' &&
-      contains(github.event.head_commit.message, 'chore(release)'))"
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -19,6 +18,7 @@ jobs:
       - name: CI tests and image build
         run: 'docker build .'
       - name: Publish latest
+        if: "github.ref != 'master' || !contains(github.event.head_commit.message, 'chore(release)')"
         uses: docker/build-push-action@v1
         with:
           registry: ${{ env.REG }}
