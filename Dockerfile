@@ -27,7 +27,7 @@ RUN npm run lint
 # --------------- build stage
 FROM ci as build
 
-ENV PUBLIC_URL='/otomi/'
+ENV PUBLIC_URL=./
 RUN npm run build
 
 # --------------- production stage
@@ -37,5 +37,11 @@ FROM nginx:1.16.1-alpine as prod
 RUN mkdir /app
 WORKDIR /app
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY nginx.tmpl run.sh ./
+RUN chmod +x /app/run.sh
+
 COPY --from=build /app/build build
+
+RUN chmod +r /app/build
+
+CMD ["sh", "-c", "/app/run.sh"]
