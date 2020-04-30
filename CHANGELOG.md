@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.31](https://github.com/redkubes/otomi-stack-web/compare/v0.2.30...v0.2.31) (2020-04-30)
+
+
+### Bug Fixes
+
+* docker build [ci skip] ([679e243](https://github.com/redkubes/otomi-stack-web/commit/679e243e8ba81f0ff47ff0c1827ce0e00634a44b))
+* workflow conditions ([ba900a7](https://github.com/redkubes/otomi-stack-web/commit/ba900a7a02357dd7718602cb4631e91244223113))
+
 ### [0.2.30](https://github.com/redkubes/otomi-stack-web/compare/v0.2.29...v0.2.30) (2020-04-30)
 
 
