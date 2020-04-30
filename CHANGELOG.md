@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.29](https://github.com/redkubes/otomi-stack-web/compare/v0.2.28...v0.2.29) (2020-04-30)
+
+
+### Feature Improvements
+
+* dynamic context path for ngin x [ci skip] ([1cbb3fc](https://github.com/redkubes/otomi-stack-web/commit/1cbb3fcb1bc31a572c0c33c1112884deefc6c1c9))
+
 ### [0.2.28](https://github.com/redkubes/otomi-stack-web/compare/v0.2.27...v0.2.28) (2020-04-30)
 
 
