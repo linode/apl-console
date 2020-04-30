@@ -1,8 +1,8 @@
-import { Box, Button } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { Box, Button, Divider } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import DeleteButton from './DeleteButton'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
 import { getTeamSchema, getTeamUiSchema } from '../api-spec'
@@ -51,16 +51,12 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
         liveValidate={false}
         showErrorList={false}
       >
-        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          {team && team.teamId && (
-            <Button variant='contained' color='primary' startIcon={<DeleteIcon />} onClick={onDelete}>
-              Delete
-            </Button>
-          )}
-          &nbsp;
+        <Box display='flex' flexDirection='row-reverse' m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
+          &nbsp;
+          {team && team.teamId && <DeleteButton onDelete={onDelete} resourceName={team.name} resourceType='team' />}
         </Box>
       </Form>
     </div>

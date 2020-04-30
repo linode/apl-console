@@ -1,9 +1,10 @@
 import { Box, Button } from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import Divider from '@material-ui/core/Divider'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
+import DeleteButton from './DeleteButton'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
 // import ArrayFieldTemplate from './rjsf/ArrayFieldTemplate'
@@ -34,7 +35,6 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
   const originalUiSchema = getServiceUiSchema(originalSchema, role, service)
   const [schema, setSchema] = useState(originalSchema)
   const [uiSchema, setUiSchema] = useState(originalUiSchema)
-
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
@@ -108,15 +108,13 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         // FieldTemplate={FieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          {service && service.serviceId && (
-            <Button variant='contained' color='primary' startIcon={<DeleteIcon />} onClick={onDelete}>
-              Delete
-            </Button>
-          )}
-          &nbsp;
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
+          &nbsp;
+          {service && service.serviceId && (
+            <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='service' />
+          )}
         </Box>
       </Form>
     </div>
