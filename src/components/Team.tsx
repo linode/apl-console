@@ -1,4 +1,4 @@
-import { Box, Button, Divider } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
