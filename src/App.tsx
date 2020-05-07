@@ -20,7 +20,6 @@ import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
 import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
-import TeamDashboard from './pages/TeamDashboard'
 
 const env = process.env
 
@@ -78,7 +77,7 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/create-service' component={Service} exact />
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
-                <Route path='/teams/:teamId/dashboard' component={TeamDashboard} exact />
+                <Route path='/teams/:teamId/dashboard' component={Dashboard} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                 <Route path='/teams/:teamId/services' component={TeamServices} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
