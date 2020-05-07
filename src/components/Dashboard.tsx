@@ -23,6 +23,10 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.contrastText,
     boxShadow: 'none',
   },
+  cardSubHeader: {
+    fontSize: 22,
+    fontWeight: 700,
+  },
   cardAction: {
     marginTop: 8,
   },
@@ -60,6 +64,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props):
         <Grid item xs={12} sm={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
+              classes={{ subheader: classes.cardSubHeader }}
               avatar={
                 <Avatar aria-label='recipe'>
                   <CloudIcon />
@@ -74,6 +79,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props):
         <Grid item xs={12} sm={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
+              classes={{ subheader: classes.cardSubHeader }}
               avatar={
                 <Avatar aria-label='recipe'>
                   <PeopleIcon />
@@ -94,6 +100,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props):
         <Grid item xs={12} sm={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
+              classes={{ subheader: classes.cardSubHeader }}
               avatar={
                 <Avatar aria-label='recipe'>
                   <SwapVerticalCircleIcon />
