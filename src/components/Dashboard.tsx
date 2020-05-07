@@ -4,11 +4,13 @@ import AddCircleIcon from '@material-ui/icons/Add'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import PeopleIcon from '@material-ui/icons/People'
 import CloudIcon from '@material-ui/icons/Cloud'
+import { Link } from 'react-router-dom'
 import { Team } from '../models'
 
 interface Props {
   team?: Team
-  summary: {
+  admin?: boolean
+  data: {
     services: any
     clusters: any
     teams: any
@@ -20,6 +22,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
     boxShadow: 'none',
+  },
+  cardAction: {
+    marginTop: 8,
   },
   title: {
     paddingTop: 30,
@@ -39,12 +44,9 @@ const useStyles = makeStyles(theme => ({
   expandOpen: {
     transform: 'rotate(180deg)',
   },
-  avatar: {
-    // backgroundColor: red[500],
-  },
 }))
 
-const Dashboard = ({ team, summary: { services, clusters, teams } }: Props): any => {
+const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props): any => {
   const classes = useStyles()
   return (
     <>
@@ -59,7 +61,7 @@ const Dashboard = ({ team, summary: { services, clusters, teams } }: Props): any
           <Card classes={{ root: classes.card }}>
             <CardHeader
               avatar={
-                <Avatar aria-label='recipe' className={classes.avatar}>
+                <Avatar aria-label='recipe'>
                   <CloudIcon />
                 </Avatar>
               }
@@ -73,16 +75,18 @@ const Dashboard = ({ team, summary: { services, clusters, teams } }: Props): any
           <Card classes={{ root: classes.card }}>
             <CardHeader
               avatar={
-                <Avatar aria-label='recipe' className={classes.avatar}>
+                <Avatar aria-label='recipe'>
                   <PeopleIcon />
                 </Avatar>
               }
               title='Teams'
               subheader={teams && teams.length}
               action={
-                <IconButton aria-label='settings'>
-                  <AddCircleIcon />
-                </IconButton>
+                admin && (
+                  <IconButton aria-label='settings' component={Link} to='/create-team'>
+                    <AddCircleIcon />
+                  </IconButton>
+                )
               }
             />
           </Card>
@@ -91,12 +95,16 @@ const Dashboard = ({ team, summary: { services, clusters, teams } }: Props): any
           <Card classes={{ root: classes.card }}>
             <CardHeader
               avatar={
-                <Avatar aria-label='recipe' className={classes.avatar}>
+                <Avatar aria-label='recipe'>
                   <SwapVerticalCircleIcon />
                 </Avatar>
               }
               action={
-                <IconButton aria-label='settings'>
+                <IconButton
+                  aria-label='settings'
+                  component={Link}
+                  to={admin ? '/create-service' : `/teams/${(team || {}).teamId}/create-service`}
+                >
                   <AddCircleIcon />
                 </IconButton>
               }

@@ -69,12 +69,22 @@ export default ({ teamId }: Props): any => {
       <StyledListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Otomi Stack' />
       </StyledListSubheader>
-      <StyledMenuItem component={Link} to='/'>
-        <ListItemIcon>
-          <DashboardIcon />
-        </ListItemIcon>
-        <ListItemText primary='Dashboard' />
-      </StyledMenuItem>
+      {isAdmin && (
+        <StyledMenuItem component={Link} to='/'>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary='Dashboard' />
+        </StyledMenuItem>
+      )}
+      {teamId && !isAdmin && (
+        <StyledMenuItem component={Link} to={`/teams/${teamId}/dashboard`}>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary='Dashboard' />
+        </StyledMenuItem>
+      )}
       {isAdmin && (
         <StyledMenuItem component={Link} to='/apps/admin'>
           <ListItemIcon>
