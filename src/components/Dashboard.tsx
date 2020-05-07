@@ -8,6 +8,11 @@ import { Team } from '../models'
 
 interface Props {
   team?: Team
+  summary: {
+    services: any
+    clusters: any
+    teams: any
+  }
 }
 
 const useStyles = makeStyles(theme => ({
@@ -39,9 +44,8 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Dashboard = ({ team }: Props): any => {
+const Dashboard = ({ team, summary: { services, clusters, teams } }: Props): any => {
   const classes = useStyles()
-
   return (
     <>
       <Grid container spacing={3}>
@@ -60,7 +64,7 @@ const Dashboard = ({ team }: Props): any => {
                 </Avatar>
               }
               title='Clusters'
-              subheader='6' // TODO
+              subheader={clusters && clusters.length}
             />
           </Card>
         </Grid>
@@ -74,7 +78,7 @@ const Dashboard = ({ team }: Props): any => {
                 </Avatar>
               }
               title='Teams'
-              subheader='30' // TODO
+              subheader={teams && teams.length}
               action={
                 <IconButton aria-label='settings'>
                   <AddCircleIcon />
@@ -97,7 +101,7 @@ const Dashboard = ({ team }: Props): any => {
                 </IconButton>
               }
               title='Services'
-              subheader='30' // TODO
+              subheader={services && services.length}
             />
           </Card>
         </Grid>
