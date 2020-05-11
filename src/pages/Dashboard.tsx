@@ -31,7 +31,7 @@ export default (): any => {
   return (
     <PaperLayout>
       {loading && <Loader />}
-      {data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
+      {(isAdmin ? data : data && team) && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
       {error && <Error code={404} />}
     </PaperLayout>
   )

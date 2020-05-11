@@ -115,7 +115,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
                 <IconButton
                   aria-label='settings'
                   component={Link}
-                  to={isAdmin ? '/create-service' : `/teams/${(team || {}).teamId}/create-service`}
+                  to={isAdmin ? '/create-service' : `/teams/${team.teamId}/create-service`}
                 >
                   <AddCircleIcon />
                 </IconButton>
