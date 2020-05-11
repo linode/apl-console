@@ -19,7 +19,7 @@ const TeamDashboard = ({ data, loading, error, teamId }: Props) => {
     <>
       {(loading || teamLoading) && <Loader />}
       {data && <Dashboard data={data} team={team} />}
-      {error && teamError && <Error code={404} />}
+      {(error || teamError) && <Error code={404} />}
     </>
   )
 }
@@ -47,7 +47,7 @@ export default (): any => {
       {isAdmin ? (
         <>
           {loading && <Loader />}
-          {data && <Dashboard data={data} admin />}
+          {data && <Dashboard data={data} isAdmin />}
           {error && <Error code={404} />}
         </>
       ) : (

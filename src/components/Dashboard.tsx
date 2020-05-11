@@ -9,7 +9,7 @@ import { Team } from '../models'
 
 interface Props {
   team?: Team
-  admin?: boolean
+  isAdmin?: boolean
   data: {
     services: any
     clusters: any
@@ -50,7 +50,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props): any => {
+const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
   const classes = useStyles()
   return (
     <>
@@ -88,7 +88,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props):
               title='Teams'
               subheader={teams && teams.length}
               action={
-                admin && (
+                isAdmin && (
                   <IconButton aria-label='settings' component={Link} to='/create-team'>
                     <AddCircleIcon />
                   </IconButton>
@@ -110,7 +110,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, admin }: Props):
                 <IconButton
                   aria-label='settings'
                   component={Link}
-                  to={admin ? '/create-service' : `/teams/${(team || {}).teamId}/create-service`}
+                  to={isAdmin ? '/create-service' : `/teams/${(team || {}).teamId}/create-service`}
                 >
                   <AddCircleIcon />
                 </IconButton>
