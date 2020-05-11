@@ -1,11 +1,12 @@
-import { Box, Button, Divider } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
+import pick from 'lodash/pick'
 import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema } from '../api-spec'
+import { getTeamSchema, getTeamUiSchema, getEditableSchemaAttributes } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -22,6 +23,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
+
   const handleChange = ({ formData: inData, errors }): any => {
     if (errors && errors.length) {
       setInvalid(true)
@@ -33,7 +35,9 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     setDirty(!isEqual(formData, team))
   }
   const handleSubmit = ({ formData }): any => {
-    onSubmit(formData)
+    const schema = getTeamSchema(clusters)
+    const attributes = getEditableSchemaAttributes(schema, role)
+    onSubmit(pick(formData, attributes))
   }
   const schema = getTeamSchema(clusters)
   const uiSchema = getTeamUiSchema(schema, role)

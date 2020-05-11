@@ -1,7 +1,8 @@
-import { applyAclToUiSchema } from '../api-spec'
+import { applyAclToUiSchema, Schema } from '../api-spec'
 
 it('should make a field readonly since there is x-acl field', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
@@ -23,7 +24,8 @@ it('should make a field readonly since there is x-acl field', () => {
 })
 
 it('should not add any readonly property since there is no x-acl', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
@@ -38,11 +40,12 @@ it('should not add any readonly property since there is no x-acl', () => {
 })
 
 it('should make a field readonly due to single read permission', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['read'] },
+        'x-acl': { admin: ['get'] },
       },
     },
   }
@@ -57,11 +60,12 @@ it('should make a field readonly due to single read permission', () => {
 })
 
 it('should not make a field readonly due to write permission', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['write'] },
+        'x-acl': { admin: ['put'] },
       },
     },
   }
@@ -76,11 +80,12 @@ it('should not make a field readonly due to write permission', () => {
 })
 
 it('should not make a field readonly due to read and write permissions', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['read', 'write'] },
+        'x-acl': { admin: ['get', 'put'] },
       },
     },
   }
@@ -95,11 +100,12 @@ it('should not make a field readonly due to read and write permissions', () => {
 })
 
 it('should not overwrite existing uiSchema properties', () => {
-  const schema = {
+  const schema: Schema = {
+    type: 'object',
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['read'] },
+        'x-acl': { admin: ['get'] },
       },
     },
   }
