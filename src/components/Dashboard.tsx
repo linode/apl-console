@@ -34,6 +34,11 @@ const useStyles = makeStyles(theme => ({
     paddingTop: 30,
     paddingBottom: 20,
   },
+  teamName: {
+    '& > :first-letter': {
+      textTransform: 'capitalize',
+    },
+  },
   media: {
     height: 0,
     paddingTop: '56.25%', // 16:9
@@ -57,7 +62,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant='h5' gutterBottom className={classes.title}>
-            Welcome to the team <b>{team ? team.name : 'Admin'}</b> dashboard!
+            Welcome to the team <b className={classes.teamName}>{team ? team.name : 'Admin'}</b> dashboard!
           </Typography>
           <Divider />
         </Grid>
