@@ -26,12 +26,13 @@ export default (): any => {
     teams,
     clusters,
   }
-  const team: Team = find(data.teams, { teamId })
+
+  const team: Team = isAdmin ? undefined : find(data.teams, { teamId })
 
   return (
     <PaperLayout>
       {loading && <Loader />}
-      {(isAdmin ? data : data && team) && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
+      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
       {error && <Error code={404} />}
     </PaperLayout>
   )
