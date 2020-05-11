@@ -7,7 +7,6 @@ import Loader from './components/Loader'
 import { schemaPromise, useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import Cluster from './pages/Cluster'
-// import { useApi } from './hooks/api'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
 import Error from './pages/Error'
@@ -17,7 +16,6 @@ import Services from './pages/Services'
 import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
-import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
 import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
@@ -79,7 +77,7 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
-                <Route path='/teams/:teamId/services' component={TeamServices} exact />
+                <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                 <Route path='*'>
                   <Error code={404} />
