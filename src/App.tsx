@@ -76,7 +76,6 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/create-service' component={Service} exact />
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
-                <Route path='/teams/:teamId/dashboard' component={Dashboard} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
