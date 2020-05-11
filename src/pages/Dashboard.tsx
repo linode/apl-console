@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import * as _ from 'lodash'
+import find from 'lodash/find'
 import React from 'react'
 import { Loader } from '../components'
 import Dashboard from '../components/Dashboard'
@@ -17,7 +17,6 @@ export default (): any => {
 
   const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
   const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
-
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
 
   const error = servicesError || teamsError
@@ -27,15 +26,13 @@ export default (): any => {
     teams,
     clusters,
   }
-  const team: Team = _.find(data.teams, { teamId })
+  const team: Team = find(data.teams, { teamId })
 
   return (
     <PaperLayout>
-      <>
-        {loading && <Loader />}
-        {data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
-        {error && <Error code={404} />}
-      </>
+      {loading && <Loader />}
+      {data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
+      {error && <Error code={404} />}
     </PaperLayout>
   )
 }
