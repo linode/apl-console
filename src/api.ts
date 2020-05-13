@@ -3,14 +3,11 @@ import OpenAPIClientAxios from 'openapi-client-axios'
 
 const env = process.env
 
-// let baseUrl = 'http://127.0.0.1:8080/v1'
 const baseUrl = `${env.PUBLIC_URL || ''}/api/v1`
-let axiosConfigDefaults = {
+let axiosConfigDefaults: any = {
   withCredentials: true,
   headers: {
     'Cache-Control': 'no-cache',
-    'Auth-Group': undefined,
-    'Auth-User': undefined,
   },
 }
 if (process.env.NODE_ENV === 'development') {

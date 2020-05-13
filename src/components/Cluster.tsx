@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
 import React, { useState } from 'react'
-import { ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem, MenuList } from '@material-ui/core'
+import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem, MenuList } from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
@@ -37,7 +36,7 @@ export default ({ clusterId }: Props): any => {
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
-    return <ListItem className={[clusterId ? classes.listItem : classes.listItemSmall, className]} {...props} />
+    return <ListItem className={`${clusterId ? classes.listItem : classes.listItemSmall}, ${className}`} {...props} />
   }
   const StyledMenuItem = props => {
     return <MenuItem className={mainClasses.selectable} {...props} />
@@ -61,7 +60,8 @@ export default ({ clusterId }: Props): any => {
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}
-            to={`/api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
+            aria-label='download'
+            href={`/api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
