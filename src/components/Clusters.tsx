@@ -28,7 +28,7 @@ export default ({ clusters }: Props): any => {
   return (
     <>
       <h1>Clusters</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='clusterId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='id' />
     </>
   )
 }

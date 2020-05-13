@@ -15,12 +15,6 @@ const StyledSelect = styled(Select)({
   color: 'inherit',
 })
 
-// const StyledInputLabel = styled(InputLabel)({
-//   color: 'inherit',
-//   '&.Mui-focused': {
-//     color: 'inherit',
-//   },
-// })
 export default ({ teams = [] }: Props): any => {
   const classes = createClasses({
     avatar: {

@@ -95,10 +95,17 @@ const App = (): any => {
   const [loaded, setLoaded] = useState(false)
   const [user, setUser]: any = useState()
   useEffect(() => {
-    const userPromise =
-      process.env.NODE_ENV !== 'development'
-        ? fetch('/oauth2/userinfo').then(r => r.json())
-        : Promise.resolve('bob.admin@otomi.cloud')
+    let userPromise
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-restricted-globals
+      const teamId = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
+      const role = teamId === 'admin' ? 'admin' : 'team'
+      const isAdmin = teamId === 'admin'
+      const name = teamId === 'admin' ? 'bob.admin' : `joe.team`
+      userPromise = Promise.resolve({ email: `${name}@otomi.cloud`, role, isAdmin })
+    } else {
+      userPromise = fetch('/oauth2/userinfo').then(r => r.json())
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Promise.all([schemaPromise, userPromise]).then(([_, user]) => {
       setUser(user)

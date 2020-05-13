@@ -210,6 +210,10 @@ export const mainStyles = makeStyles(theme => ({
       },
     },
   },
+  button: {
+    color: theme.palette.common.white,
+    backgroundColor: theme.palette.primary.main,
+  },
   selectable: {
     // color: theme.palette.primary.main,
     color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
@@ -221,15 +225,15 @@ export const mainStyles = makeStyles(theme => ({
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
-    '@global': {
-      a: {
-        textDeycoration: 'none',
-        color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-      },
-      'a:hover': {
-        textDecoration: 'none',
-        color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
-      },
-    },
+    // '@global': {
+    //   a: {
+    //     textDeycoration: 'none',
+    //     color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+    //   },
+    //   'a:hover': {
+    //     textDecoration: 'none',
+    //     color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+    //   },
+    // },
   },
 }))
