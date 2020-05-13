@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.34](https://github.com/redkubes/otomi-stack-web/compare/v0.2.33...v0.2.34) (2020-05-13)
+
+
+### Bug Fixes
+
+* download link not using router [ci skip] ([6409cf8](https://github.com/redkubes/otomi-stack-web/commit/6409cf8be844e1f16e5df26fa7f0c6b0a631a59e))
+
 ### [0.2.33](https://github.com/redkubes/otomi-stack-web/compare/v0.2.32...v0.2.33) (2020-05-13)
 
 
