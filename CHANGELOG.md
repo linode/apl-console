@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.35](https://github.com/redkubes/otomi-stack-web/compare/v0.2.34...v0.2.35) (2020-05-13)
+
+
+### Bug Fixes
+
+* relative api link [ci skip] ([e42b53e](https://github.com/redkubes/otomi-stack-web/commit/e42b53e1776d0f3e527329ffecceecc3c13208bb))
+
 ### [0.2.34](https://github.com/redkubes/otomi-stack-web/compare/v0.2.33...v0.2.34) (2020-05-13)
 
 
