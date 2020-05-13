@@ -61,7 +61,7 @@ export default ({ clusterId }: Props): any => {
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`/api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
+            href={`api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
