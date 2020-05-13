@@ -36,14 +36,14 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export default function AppCard({ cluster, teamId, img, title, link }: any) {
+export default function AppCard({ img, title, link }: any) {
   const classes = useStyles()
 
   return (
     <Card className={classes.root}>
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Typography component='h5' variant='h5'>
+          <Typography component='h6' variant='h6'>
             {title}
           </Typography>
         </CardContent>

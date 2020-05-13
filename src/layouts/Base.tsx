@@ -154,13 +154,13 @@ export default (props: Props): any => {
   </IconButton> */}
 
       <div className={classes.logo}>
-        <Hidden xsDown implementation='css'>
+        <Hidden smDown implementation='css'>
           <IconButton color='inherit'>
             {img}
             <Typography variant='h5'>Otomi Console</Typography>
           </IconButton>
         </Hidden>
-        <Hidden smUp implementation='css'>
+        <Hidden mdUp implementation='css'>
           <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
         </Hidden>
       </div>
@@ -179,7 +179,7 @@ export default (props: Props): any => {
       <AppBar position='fixed' className={clsx(classes.appBar, open && classes.appBarShift)}>
         {toolbar}
       </AppBar>
-      <Hidden smUp implementation='css'>
+      <Hidden mdUp implementation='css'>
         <Drawer
           variant='temporary'
           className={classes.drawer}
@@ -203,7 +203,7 @@ export default (props: Props): any => {
           {/* <List>{secondaryListItems}</List> */}
         </Drawer>
       </Hidden>
-      <Hidden xsDown implementation='css'>
+      <Hidden smDown implementation='css'>
         <Drawer
           className={classes.drawer}
           variant='permanent'
