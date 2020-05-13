@@ -66,7 +66,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
           </Typography>
           <Divider />
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
               classes={{ subheader: classes.cardSubHeader }}
@@ -81,7 +81,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
           </Card>
         </Grid>
 
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
               classes={{ subheader: classes.cardSubHeader }}
@@ -102,7 +102,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
             />
           </Card>
         </Grid>
-        <Grid item xs={12} sm={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <Card classes={{ root: classes.card }}>
             <CardHeader
               classes={{ subheader: classes.cardSubHeader }}
