@@ -20,3 +20,7 @@ yarn-error.log*
 
 .history
 .cache
+
+#cypress
+/cypress/videos
+/cypress/screenshots
