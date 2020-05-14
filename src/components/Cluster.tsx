@@ -7,6 +7,8 @@ import { useSnackbar } from '../utils'
 import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 
+const baseUrl = process.env.PUBLIC_URL || ''
+
 const useStyles = makeStyles(theme => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
@@ -61,7 +63,7 @@ export default ({ clusterId }: Props): any => {
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
+            href={`${baseUrl}/api/v1/kubecfg/${(isAdmin && oboTeamId) || teamId}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
