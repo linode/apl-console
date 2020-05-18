@@ -1,6 +1,6 @@
 import { Typography, Grid, Card, CardHeader, Avatar, IconButton, makeStyles, Divider, Tooltip } from '@material-ui/core'
 import * as React from 'react'
-import AddCircleIcon from '@material-ui/icons/Add'
+import AddCircleIcon from '@material-ui/icons/AddCircle'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import PeopleIcon from '@material-ui/icons/People'
 import CloudIcon from '@material-ui/icons/Cloud'
@@ -31,11 +31,11 @@ const useStyles = makeStyles(theme => ({
     boxShadow: 'none',
   },
   cardSubHeader: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 700,
   },
-  cardAction: {
-    marginTop: 8,
+  cardActionBtn: {
+    marginTop: 0,
   },
   title: {
     paddingTop: 30,
@@ -73,7 +73,7 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
     <Grid item xs={12} sm={3}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
-          classes={{ subheader: classes.cardSubHeader }}
+          classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn }}
           avatar={
             <Avatar aria-label='recipe'>
               {item.icon}
@@ -88,9 +88,9 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
             </Link>
           )}
           action={ item.canCreate &&
-            <Tooltip title={`Create ${item.name}`} aria-label={`create ${item.name}`}>
+            <Tooltip title={`Create ${item.name}`} aria-label={`create ${item.name}`} >
               <IconButton aria-label='settings' component={RouterLink} to={`${prefix}/create-${item.name}`}>
-                <AddCircleIcon />
+                <AddCircleIcon fontSize='large'/>
               </IconButton>
             </Tooltip>            
           }
