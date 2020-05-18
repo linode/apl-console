@@ -37,6 +37,15 @@ const useStyles = makeStyles(theme => ({
   cardActionBtn: {
     marginTop: 0,
   },
+  cardHeaderTitle: {
+    textTransform: 'capitalize',
+  },
+  iconBtn: {
+    color: theme.palette.primary.dark,
+    '&:hover': {
+      background: theme.palette.secondary.dark
+    }
+  },
   title: {
     paddingTop: 30,
     paddingBottom: 20,
@@ -73,7 +82,7 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
     <Grid item xs={12} sm={3}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
-          classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn }}
+          classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
           avatar={
             <Avatar aria-label='recipe'>
               {item.icon}
@@ -89,8 +98,8 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
           )}
           action={ item.canCreate &&
             <Tooltip title={`Create ${item.name}`} aria-label={`create ${item.name}`} >
-              <IconButton aria-label='settings' component={RouterLink} to={`${prefix}/create-${item.name}`}>
-                <AddCircleIcon fontSize='large'/>
+              <IconButton aria-label='settings' component={RouterLink} to={`${prefix}/create-${item.name}`} className={classes.iconBtn}>
+                <AddCircleIcon />
               </IconButton>
             </Tooltip>            
           }
