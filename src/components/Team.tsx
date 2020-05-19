@@ -1,7 +1,6 @@
 import { Box, Button } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
-import pick from 'lodash/pick'
 import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
 import Team from '../models/Team'
@@ -35,9 +34,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     setDirty(!isEqual(formData, team))
   }
   const handleSubmit = ({ formData }): any => {
-    const schema = getTeamSchema(clusters)
-    const attributes = getEditableSchemaAttributes(schema, role)
-    onSubmit(pick(formData, attributes))
+    onSubmit(formData)
   }
   const schema = getTeamSchema(clusters)
   const uiSchema = getTeamUiSchema(schema, role)

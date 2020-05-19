@@ -1,16 +1,12 @@
 import { Box, Button } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
-import pick from 'lodash/pick'
 import React, { useState } from 'react'
-import Divider from '@material-ui/core/Divider'
 import { getEditableSchemaAttributes, getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
-// import ArrayFieldTemplate from './rjsf/ArrayFieldTemplate'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
-import { mainStyles } from '../theme'
 
 interface Props {
   onSubmit: CallableFunction
@@ -89,8 +85,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     setDirty(!isEqual(formData, service))
   }
   const handleSubmit = ({ formData }): any => {
-    const attributes = getEditableSchemaAttributes(schema, role)
-    onSubmit(pick(formData, attributes))
+    onSubmit(formData)
   }
 
   return (
