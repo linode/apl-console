@@ -1,36 +1,52 @@
 name: Build and publish Docker
 on: [push]
 env:
-  REF: ${{ github.ref }}
+  COMMIT_MSG: ${{ github.event.head_commit.message }}
   REG: eu.gcr.io
   REPO: otomi-cloud/otomi-stack-web
 jobs:
   build-test-push:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    if: "!contains(github.event.head_commit.message, 'ci skip') && !startsWith(github.ref, 'refs/tags/')"
     runs-on: ubuntu-latest
     steps:
       - name: Set Env
         run: |
           tag=$(echo $(basename $GITHUB_REF))
           cacheTag=$tag
-          [[ $GITHUB_REF == *"refs/tags/"* ]] && cacheTag=master
+          if [[ $COMMIT_MSG == *"chore(release)"* ]]; then
+            releaseTag=${COMMIT_MSG#* }
+          fi
           echo "Creating tag: $tag"
           echo "Using cache tag: $cacheTag"
           echo ::set-env name=TAG::$tag
-          echo ::set-env name=CACHE_TAG::$cacheTag
+          echo ::set-env name=RELEASE_TAG::$releaseTag
       - name: Checkout
         uses: actions/checkout@v2
+      - name: CI tests, image build and push latest
+        uses: whoan/docker-build-with-cache-action@v5
+        with:
+          username: _json_key
+          password: '${{ secrets.DOCKER_PASSWORD }}'
+          registry: ${{ env.REG }}
+          image_name: ${{ env.REPO }}
+          image_tag: ${{ env.TAG }}
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
-      - name: Pull from registry as cache
-        run: 'docker pull $REG/$REPO:$CACHE_TAG || true'
-      - name: Docker build
-        run: docker build -t=$REG/$REPO:$TAG .
-      - if: "!startsWith(github.ref, 'refs/tags/')"
-        name: 'Push tag for dev/caching'
-        run: docker push $REG/$REPO:$CACHE_TAG
-      - if: "startsWith(github.ref, 'refs/tags/')"
-        name: Tag and release
+      # - name: Pull from registry as cache
+      #   run: 'docker pull $REG/$REPO:$TAG || true'
+      # - name: Docker build
+      #   run: docker build -t=$REG/$REPO:$TAG .
+      # - name: 'Push tag for master, branch and latest'
+      #   run: |
+      #     docker tag $REG/$REPO:$TAG $REG/$REPO:latest
+      #     docker push $REG/$REPO:$TAG $REG/$REPO:latest
+      - name: 'Push tag for latest'
         run: |
           docker tag $REG/$REPO:$TAG $REG/$REPO:latest
-          docker push $REG/$REPO:$TAG $REG/$REPO:latest
+          docker push $REG/$REPO:latest
+      - if: "contains(github.event.head_commit.message, 'chore(release)')"
+        name: Tag and release
+        run: |
+          RELEASE_TAG=v${COMMIT_MSG#* }
+          docker tag $REG/$REPO:$TAG $REG/$REPO:$RELEASE_TAG
+          docker push $REG/$REPO:$RELEASE_TAG
