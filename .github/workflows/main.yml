@@ -25,7 +25,7 @@ jobs:
       - name: Pull from registry as cache
         run: 'docker pull $REG/$REPO:$CACHE_TAG || true'
       - name: Docker build
-        run: docker build $REG/$REPO:$TAG .
+        run: docker build -t=$REG/$REPO:$TAG .
       - if: "!startsWith(github.ref, 'refs/tags/')"
         name: 'Push tag for dev/caching'
         run: docker push $REG/$REPO:$CACHE_TAG
