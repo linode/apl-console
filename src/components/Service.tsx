@@ -6,7 +6,6 @@ import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import Service from '../models/Service'
 import { useSession } from '../session-context'
-// import ArrayFieldTemplate from './rjsf/ArrayFieldTemplate'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
@@ -29,8 +28,9 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
   }
 
+  const crudOperation = service && service.serviceId ? 'put' : 'post'
   const originalSchema = getServiceSchema(team, clusters, service)
-  const originalUiSchema = getServiceUiSchema(originalSchema, role, service)
+  const originalUiSchema = getServiceUiSchema(originalSchema, role, service, crudOperation)
   const [schema, setSchema] = useState(originalSchema)
   const [uiSchema, setUiSchema] = useState(originalUiSchema)
   const [data, setData]: any = useState(service)
@@ -69,7 +69,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
       setSchema(getServiceSchema(team, clusters, formData))
-      setUiSchema(getServiceUiSchema(schema, role, formData))
+      setUiSchema(getServiceUiSchema(schema, role, formData, crudOperation))
     }
     setData(formData)
 

@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema } from '../api-spec'
+import { getTeamSchema, getTeamUiSchema, getEditableSchemaAttributes } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -19,9 +19,11 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     user: { role },
   } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
+  const crudMethod = team && team.teamId ? 'put' : 'post'
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
+
   const handleChange = ({ formData: inData, errors }): any => {
     if (errors && errors.length) {
       setInvalid(true)
@@ -36,7 +38,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     onSubmit(formData)
   }
   const schema = getTeamSchema(clusters)
-  const uiSchema = getTeamUiSchema(schema, role)
+  const uiSchema = getTeamUiSchema(schema, role, crudMethod)
   return (
     <div className='Team'>
       <h1>{data && data.name ? `Team: ${data.name}` : 'New Team'}</h1>
