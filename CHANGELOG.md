@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.37](https://github.com/redkubes/otomi-stack-web/compare/v0.2.36...v0.2.37) (2020-05-20)
+
+
+### Features
+
+* **dashboard:** redirect user to the list page when clicking the info ([5290140](https://github.com/redkubes/otomi-stack-web/commit/5290140773d11bf9f2f9e96a018a2b50bbd59945))
+* add more responsiveness to the dashboard items ([6e0fccf](https://github.com/redkubes/otomi-stack-web/commit/6e0fccff120a9189d97451b7c71e9ad96122e724))
+* add more responsiveness to user section in the app bar ([6362e4b](https://github.com/redkubes/otomi-stack-web/commit/6362e4be8da14d5a64ea06dfec6dc798259334cd))
+* enable Apps to be viewed in multiple resolutions ([e2ad2b9](https://github.com/redkubes/otomi-stack-web/commit/e2ad2b9864e43eded487e8ae21b0b618cb820140))
+
+
+### Bug Fixes
+
+* service path [ci skip] ([2c8aee2](https://github.com/redkubes/otomi-stack-web/commit/2c8aee27bacf02c9d1fc1f882cbf307131b10336))
+
+
+### Feature Improvements
+
+* dashboard links [ci skip] ([8be3f04](https://github.com/redkubes/otomi-stack-web/commit/8be3f042745767fa98e96edd728556b10b5a8b9e))
+
+
+### Styling
+
+* change breakpoint to fit desktops in dashboard ([0373896](https://github.com/redkubes/otomi-stack-web/commit/0373896a56d306454f023e0f3614be5b0cbadd60))
+* realign create buttons in the dashboard ([977cc2c](https://github.com/redkubes/otomi-stack-web/commit/977cc2cf0abd9d9de49101e6e653aeb48382d658))
+* restyle create button in the dashboard ([7d36099](https://github.com/redkubes/otomi-stack-web/commit/7d36099e89793870a34ffc79a3837ac8913e719f))
+
+
+### Build System
+
+* workflow simplification and caching ([3284be2](https://github.com/redkubes/otomi-stack-web/commit/3284be294c909fe66e95d857fe6628d5a7ef5997))
+* workflow simplification and caching [#2](https://github.com/redkubes/otomi-stack-web/issues/2) ([d1b709c](https://github.com/redkubes/otomi-stack-web/commit/d1b709cf382c1c6d97385076214246e0de543fb3))
+* workflow simplification and caching [#3](https://github.com/redkubes/otomi-stack-web/issues/3) ([1de3f84](https://github.com/redkubes/otomi-stack-web/commit/1de3f84c941fd4031f7813b2a04083e21301cda5))
+* workflow simplification and caching [#4](https://github.com/redkubes/otomi-stack-web/issues/4) ([3868b13](https://github.com/redkubes/otomi-stack-web/commit/3868b13f6092ff8243fa5b624a3a9a1816253486))
+* workflow simplification and caching [#5](https://github.com/redkubes/otomi-stack-web/issues/5) ([68eeb80](https://github.com/redkubes/otomi-stack-web/commit/68eeb80c4a6e05391c4aadc41f5d8b03b2a60006))
+
 ### [0.2.36](https://github.com/redkubes/otomi-stack-web/compare/v0.2.35...v0.2.36) (2020-05-14)
 
 
