@@ -30,6 +30,11 @@ All notable changes to this project will be documented in this file. See [standa
 * restyle create button in the dashboard ([7d36099](https://github.com/redkubes/otomi-stack-web/commit/7d36099e89793870a34ffc79a3837ac8913e719f))
 
 
+### Others
+
+* **release:** 0.2.37 ([6d4161e](https://github.com/redkubes/otomi-stack-web/commit/6d4161e2f61bf82471904b49e89f7b7d9a15b8ac))
+
+
 ### Build System
 
 * workflow simplification and caching ([3284be2](https://github.com/redkubes/otomi-stack-web/commit/3284be294c909fe66e95d857fe6628d5a7ef5997))
@@ -37,9 +42,10 @@ All notable changes to this project will be documented in this file. See [standa
 * workflow simplification and caching [#3](https://github.com/redkubes/otomi-stack-web/issues/3) ([1de3f84](https://github.com/redkubes/otomi-stack-web/commit/1de3f84c941fd4031f7813b2a04083e21301cda5))
 * workflow simplification and caching [#4](https://github.com/redkubes/otomi-stack-web/issues/4) ([3868b13](https://github.com/redkubes/otomi-stack-web/commit/3868b13f6092ff8243fa5b624a3a9a1816253486))
 * workflow simplification and caching [#5](https://github.com/redkubes/otomi-stack-web/issues/5) ([68eeb80](https://github.com/redkubes/otomi-stack-web/commit/68eeb80c4a6e05391c4aadc41f5d8b03b2a60006))
+* workflow simplification and caching [#6](https://github.com/redkubes/otomi-stack-web/issues/6) ([9738baa](https://github.com/redkubes/otomi-stack-web/commit/9738baa39a8721ca61fe069b04739e3e2aadd1c7))
+* workflow simplification and caching [#7](https://github.com/redkubes/otomi-stack-web/issues/7) ([0870839](https://github.com/redkubes/otomi-stack-web/commit/08708398f294f0e74b146609cc803dc7c238d97f))
 
 ### [0.2.36](https://github.com/redkubes/otomi-stack-web/compare/v0.2.35...v0.2.36) (2020-05-14)
-
 
 ### Bug Fixes
 
@@ -47,20 +53,17 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.35](https://github.com/redkubes/otomi-stack-web/compare/v0.2.34...v0.2.35) (2020-05-13)
 
-
 ### Bug Fixes
 
 * relative api link [ci skip] ([e42b53e](https://github.com/redkubes/otomi-stack-web/commit/e42b53e1776d0f3e527329ffecceecc3c13208bb))
 
 ### [0.2.34](https://github.com/redkubes/otomi-stack-web/compare/v0.2.33...v0.2.34) (2020-05-13)
 
-
 ### Bug Fixes
 
 * download link not using router [ci skip] ([6409cf8](https://github.com/redkubes/otomi-stack-web/commit/6409cf8be844e1f16e5df26fa7f0c6b0a631a59e))
 
 ### [0.2.33](https://github.com/redkubes/otomi-stack-web/compare/v0.2.32...v0.2.33) (2020-05-13)
-
 
 ### Features
 
@@ -69,22 +72,18 @@ All notable changes to this project will be documented in this file. See [standa
 * refactor dashboard based on user type ([8102c7e](https://github.com/redkubes/otomi-stack-web/commit/8102c7e83dd565f4817e80d64831463de97bee78)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
 * **dashboard.tsx:** initialize dashboard cards ([20a8571](https://github.com/redkubes/otomi-stack-web/commit/20a85716e01a50630e41e4901bc4c841835c3ccb)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
 
-
 ### Bug Fixes
 
 * path fix for nginx [ci skip] ([77f784c](https://github.com/redkubes/otomi-stack-web/commit/77f784c4f73b138cec11813738959c1784a6a251))
 * proxy path [ci skip] ([fa5c811](https://github.com/redkubes/otomi-stack-web/commit/fa5c8117943657c737e77baf784cedc5b3d48865))
 
-
 ### Others
 
 * code clean up ([9d5516c](https://github.com/redkubes/otomi-stack-web/commit/9d5516c1c77d65d6f5a7d0587afc633e211fe476))
 
-
 ### Styling
 
 * **dashboard:** add camel case transformation to the team name ([da35436](https://github.com/redkubes/otomi-stack-web/commit/da35436f4b7d3eac01f28d7bb9a847c9259f40a0))
-
 
 ### Code Refactoring
 
@@ -98,13 +97,11 @@ All notable changes to this project will be documented in this file. See [standa
 * revert back dashboard route to previous way ([3c413c3](https://github.com/redkubes/otomi-stack-web/commit/3c413c3321ce30168f1b4aa656fd1f31bd3db5c9))
 * to use isAdmin instead of admin ([cb850e3](https://github.com/redkubes/otomi-stack-web/commit/cb850e34b2619a046835dd42627a894842a64e45))
 
-
 ### Feature Improvements
 
 * added button to download config ([c803f93](https://github.com/redkubes/otomi-stack-web/commit/c803f93c95e37178e28b61cbd330480137fecd59))
 
 ### [0.2.32](https://github.com/redkubes/otomi-stack-web/compare/v0.2.31...v0.2.32) (2020-04-30)
-
 
 ### Bug Fixes
 
@@ -113,7 +110,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.31](https://github.com/redkubes/otomi-stack-web/compare/v0.2.30...v0.2.31) (2020-04-30)
 
-
 ### Bug Fixes
 
 * docker build [ci skip] ([679e243](https://github.com/redkubes/otomi-stack-web/commit/679e243e8ba81f0ff47ff0c1827ce0e00634a44b))
@@ -121,13 +117,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.30](https://github.com/redkubes/otomi-stack-web/compare/v0.2.29...v0.2.30) (2020-04-30)
 
-
 ### Bug Fixes
 
 * missing files [ci skip] ([4c10c69](https://github.com/redkubes/otomi-stack-web/commit/4c10c690a911947c4726d1964f2080bf6c240600))
 
 ### [0.2.29](https://github.com/redkubes/otomi-stack-web/compare/v0.2.28...v0.2.29) (2020-04-30)
-
 
 ### Feature Improvements
 
@@ -135,13 +129,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.28](https://github.com/redkubes/otomi-stack-web/compare/v0.2.27...v0.2.28) (2020-04-30)
 
-
 ### Bug Fixes
 
 * added back env var because build needs it [ci skip] ([d57ac5c](https://github.com/redkubes/otomi-stack-web/commit/d57ac5cd0d9c00e2987584d506dfb0fa1717e288))
 
 ### [0.2.27](https://github.com/redkubes/otomi-stack-web/compare/v0.2.26...v0.2.27) (2020-04-30)
-
 
 ### Features
 
@@ -150,11 +142,9 @@ All notable changes to this project will be documented in this file. See [standa
 * disable team delete button until user confirmation ([c828547](https://github.com/redkubes/otomi-stack-web/commit/c82854789bc862e6f1f81670649055c087402551))
 * open dialog on delete button click ([6c49791](https://github.com/redkubes/otomi-stack-web/commit/6c49791988e2174c057acd5ee28d7cdba01b4443))
 
-
 ### Bug Fixes
 
 * removed env var from Dockerfile [ci skip] ([06dcf22](https://github.com/redkubes/otomi-stack-web/commit/06dcf22b1b38432e98eb00828b9fe3df76ddbd90))
-
 
 ### Code Refactoring
 
@@ -162,13 +152,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.26](https://github.com/redkubes/otomi-stack-web/compare/v0.2.25...v0.2.26) (2020-04-25)
 
-
 ### Bug Fixes
 
 * extra chek to see if formData is set [ci skip] ([9e39365](https://github.com/redkubes/otomi-stack-web/commit/9e39365da5c457bb89eb2a375917a9ba63dc02d0))
 
 ### [0.2.25](https://github.com/redkubes/otomi-stack-web/compare/v0.2.24...v0.2.25) (2020-04-24)
-
 
 ### Feature Improvements
 
@@ -176,13 +164,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.24](https://github.com/redkubes/otomi-stack-web/compare/v0.2.23...v0.2.24) (2020-04-24)
 
-
 ### Feature Improvements
 
 * apps per role in menu [ci skip] ([b473125](https://github.com/redkubes/otomi-stack-web/commit/b4731250987e67fa73096d208667b95d5e037bfb))
 
 ### [0.2.23](https://github.com/redkubes/otomi-stack-web/compare/v0.2.22...v0.2.23) (2020-04-24)
-
 
 ### Bug Fixes
 
@@ -190,20 +176,17 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.22](https://github.com/redkubes/otomi-stack-web/compare/v0.2.21...v0.2.22) (2020-04-24)
 
-
 ### Bug Fixes
 
 * colors [ci skip] ([ba6c293](https://github.com/redkubes/otomi-stack-web/commit/ba6c2934fd4c3f55e51924159241af5cebff33de))
 * colors [ci skip] ([85e5704](https://github.com/redkubes/otomi-stack-web/commit/85e57043603e9b0757b9c2dd83e5c01f25a5bbf8))
 * version, github under attack [ci skip] ([9d3c2ac](https://github.com/redkubes/otomi-stack-web/commit/9d3c2ac700612093e60c5ff9186df3a382295e64))
 
-
 ### Others
 
 * **release:** 0.2.22 ([1594147](https://github.com/redkubes/otomi-stack-web/commit/159414706acd057047911c5ac4de32c8b2600a51))
 
 ### [0.2.22](https://github.com/redkubes/otomi-stack-web/compare/v0.2.21...v0.2.22) (2020-04-24)
-
 
 ### Bug Fixes
 
@@ -212,13 +195,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.21](https://github.com/redkubes/otomi-stack-web/compare/v0.2.20...v0.2.21) (2020-04-24)
 
-
 ### Bug Fixes
 
 * colors [ci skip] ([2c28b01](https://github.com/redkubes/otomi-stack-web/commit/2c28b01e71d64811bc4a32701e0273aa3cb3e977))
 
 ### [0.2.20](https://github.com/redkubes/otomi-stack-web/compare/v0.2.19...v0.2.20) (2020-04-24)
-
 
 ### Bug Fixes
 
@@ -226,13 +207,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.19](https://github.com/redkubes/otomi-stack-web/compare/v0.2.18...v0.2.19) (2020-04-24)
 
-
 ### Bug Fixes
 
 * colors [ci skip] ([e31ae07](https://github.com/redkubes/otomi-stack-web/commit/e31ae07beed16ff192af4214ee917647a605370a))
 
 ### [0.2.18](https://github.com/redkubes/otomi-stack-web/compare/v0.2.17...v0.2.18) (2020-04-23)
-
 
 ### Bug Fixes
 
@@ -240,13 +219,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.17](https://github.com/redkubes/otomi-stack-web/compare/v0.2.16...v0.2.17) (2020-04-23)
 
-
 ### Bug Fixes
 
 * forms now rendering nicely [ci skip] ([d050de8](https://github.com/redkubes/otomi-stack-web/commit/d050de84fee4327265a53b3657fb6d1f8bfc51e5))
 
 ### [0.2.16](https://github.com/redkubes/otomi-stack-web/compare/v0.2.15...v0.2.16) (2020-04-23)
-
 
 ### Features
 
@@ -254,22 +231,18 @@ All notable changes to this project will be documented in this file. See [standa
 * display boolean properites in one row ([9024cad](https://github.com/redkubes/otomi-stack-web/commit/9024cada3d01ae597bdc53735f0cdd22eebabd1b))
 * wrap title and description on HTML elements ([c3100cc](https://github.com/redkubes/otomi-stack-web/commit/c3100cc55c1cd76b6c4c34f620670c68c030a23f))
 
-
 ### Bug Fixes
 
 * target="_blank" for apps ([9f03b77](https://github.com/redkubes/otomi-stack-web/commit/9f03b77c9a4fd379592c1ef9da7f8fa62cd580b6))
 * version [ci skip] ([10799c9](https://github.com/redkubes/otomi-stack-web/commit/10799c9ee61d2208c264edc9216831edc5c5b2d4))
 
-
 ### Code Refactoring
 
 * remove unused code ([e1c7927](https://github.com/redkubes/otomi-stack-web/commit/e1c7927f9510d59e86c8dc9b9d191c71a31eacc9))
 
-
 ### Others
 
 * **release:** 0.2.16 ([e995107](https://github.com/redkubes/otomi-stack-web/commit/e9951072ac99d61a8bb8eb97d1c7569dfa879763))
-
 
 ### Feature Improvements
 
@@ -277,18 +250,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.16](https://github.com/redkubes/otomi-stack-web/compare/v0.2.15...v0.2.16) (2020-04-23)
 
-
 ### Features
 
 * add custom object template ([7dfae11](https://github.com/redkubes/otomi-stack-web/commit/7dfae11bb1d25bf196dd83ba75a2935d5ba00b55))
 * display boolean properites in one row ([9024cad](https://github.com/redkubes/otomi-stack-web/commit/9024cada3d01ae597bdc53735f0cdd22eebabd1b))
 * wrap title and description on HTML elements ([c3100cc](https://github.com/redkubes/otomi-stack-web/commit/c3100cc55c1cd76b6c4c34f620670c68c030a23f))
 
-
 ### Bug Fixes
 
 * target="_blank" for apps ([9f03b77](https://github.com/redkubes/otomi-stack-web/commit/9f03b77c9a4fd379592c1ef9da7f8fa62cd580b6))
-
 
 ### Code Refactoring
 
@@ -296,13 +266,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.15](https://github.com/redkubes/otomi-stack-web/compare/v0.2.14...v0.2.15) (2020-04-23)
 
-
 ### Bug Fixes
 
 * card link fix ([b251102](https://github.com/redkubes/otomi-stack-web/commit/b251102d2efacc93d8c85e392e56395a7a751739))
 
 ### [0.2.14](https://github.com/redkubes/otomi-stack-web/compare/v0.2.13...v0.2.14) (2020-04-21)
-
 
 ### Bug Fixes
 
@@ -310,18 +278,15 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.13](https://github.com/redkubes/otomi-stack-web/compare/v0.2.12...v0.2.13) (2020-04-21)
 
-
 ### Features
 
 * hide serviceType field ([b821f40](https://github.com/redkubes/otomi-stack-web/commit/b821f4005de1ac73f72497d53673f1427a716dea))
 
 ### [0.2.12](https://github.com/redkubes/otomi-stack-web/compare/v0.2.11...v0.2.12) (2020-04-20)
 
-
 ### Features
 
 * apps grid, new table ([50d7e1d](https://github.com/redkubes/otomi-stack-web/commit/50d7e1dca1c336909f591cbac93341ff4b84cd1f))
-
 
 ### Bug Fixes
 
@@ -329,11 +294,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.11](https://github.com/redkubes/otomi-stack-web/compare/v0.2.10...v0.2.11) (2020-04-19)
 
-
 ### Bug Fixes
 
 * reverting table for now, needs color fix [ci skip] ([b4d6406](https://github.com/redkubes/otomi-stack-web/commit/b4d6406b9205c231c91511c27eddaafbc5747a88))
-
 
 ### Others
 
@@ -341,13 +304,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.10](https://github.com/redkubes/otomi-stack-web/compare/v0.2.9...v0.2.10) (2020-04-19)
 
-
 ### Bug Fixes
 
 * session email [ci skip] ([c47ef22](https://github.com/redkubes/otomi-stack-web/commit/c47ef2229bdbd0a4baf7ad2c950847799196ac46))
 
 ### [0.2.9](https://github.com/redkubes/otomi-stack-web/compare/v0.2.8...v0.2.9) (2020-04-19)
-
 
 ### Bug Fixes
 
@@ -355,13 +316,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.8](https://github.com/redkubes/otomi-stack-web/compare/v0.2.7...v0.2.8) (2020-04-19)
 
-
 ### Bug Fixes
 
 * session email [ci skip] ([e8b1e02](https://github.com/redkubes/otomi-stack-web/commit/e8b1e0247bb62aafd073454430bdbe03a9004b62))
 
 ### [0.2.7](https://github.com/redkubes/otomi-stack-web/compare/v0.2.6...v0.2.7) (2020-04-19)
-
 
 ### Feature Improvements
 
@@ -369,13 +328,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.2.6](https://github.com/redkubes/otomi-stack-web/compare/v0.2.5...v0.2.6) (2020-04-19)
 
-
 ### Bug Fixes
 
 * dark mode, table sort [ci skip] ([297d6d3](https://github.com/redkubes/otomi-stack-web/commit/297d6d3405b6feaa7a1ba203497235641f4b0d0a))
 
 ### [0.2.5](https://github.com/redkubes/otomi-stack-web/compare/v0.2.4...v0.2.5) (2020-04-19)
-
 
 ### Features
 
@@ -384,7 +341,6 @@ All notable changes to this project will be documented in this file. See [standa
 * set default subdomian according to useDefaultSubdomain flag ([51b0b13](https://github.com/redkubes/otomi-stack-web/commit/51b0b13ddde9ce492d264656d0cda9482dfdd7c3))
 * show certArn field on for clusters from AWS cloud ([7c606ff](https://github.com/redkubes/otomi-stack-web/commit/7c606ff3d5b834e4339b9bdf4c725d45e8aefc42))
 * use dnsZones data ([f8dcfd6](https://github.com/redkubes/otomi-stack-web/commit/f8dcfd69b94f2674a6eb024735a4caf68be6c8d7))
-
 
 ### Bug Fixes
 
