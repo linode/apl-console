@@ -50,22 +50,21 @@ let spec: OpenApi
 
 const aclChangeActions = ['patch', 'patch-all', 'post', 'post-all', 'put', 'put-all']
 
-export function applyAclToUiSchema(uiSchema, schema: Schema, role: string): void {
+export function applyAclToUiSchema(uiSchema, schema: Schema, role: string, crudOperation: string): void {
+  const path = `x-acl.${role}`
   entries(schema.properties).forEach(([k, v]) => {
     if (!('x-acl' in v)) {
       // If there is no x-acl then field is rendered in read-write mode
       return
     }
 
-    const path = `x-acl.${role}`
     const acl: string[] = get(v, path, [])
     const uiPath = `${k}.ui:readonly`
 
     set(uiSchema, uiPath, true)
 
-    if (acl.some(r => aclChangeActions.includes(r))) {
-      set(uiSchema, uiPath, false)
-    }
+    if (acl.includes(crudOperation)) set(uiSchema, uiPath, false)
+    else set(uiSchema, uiPath, true)
   })
 }
 
@@ -80,7 +79,7 @@ export function getEditableSchemaAttributes(schema: Schema, role: string): strin
   return attributes
 }
 
-export function getTeamUiSchema(schema: Schema, role: string): any {
+export function getTeamUiSchema(schema: Schema, role: string, crudMethod: string): any {
   const uiSchema = {
     teamId: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
@@ -100,11 +99,11 @@ export function getTeamUiSchema(schema: Schema, role: string): any {
     },
   }
 
-  applyAclToUiSchema(uiSchema, schema, role)
+  applyAclToUiSchema(uiSchema, schema, role, crudMethod)
   return uiSchema
 }
 
-export function getServiceUiSchema(schema: Schema, role: string, formData): any {
+export function getServiceUiSchema(schema: Schema, role: string, formData, crudMethod: string): any {
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
@@ -136,7 +135,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData): any 
     },
   }
 
-  applyAclToUiSchema(uiSchema, schema, role)
+  applyAclToUiSchema(uiSchema, schema, role, crudMethod)
 
   return uiSchema
 }
