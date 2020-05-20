@@ -12,14 +12,8 @@ jobs:
       - name: Set Env
         run: |
           tag=$(echo $(basename $GITHUB_REF))
-          cacheTag=$tag
-          if [[ $COMMIT_MSG == *"chore(release)"* ]]; then
-            releaseTag=${COMMIT_MSG#* }
-          fi
           echo "Creating tag: $tag"
-          echo "Using cache tag: $cacheTag"
           echo ::set-env name=TAG::$tag
-          echo ::set-env name=RELEASE_TAG::$releaseTag
       - name: Checkout
         uses: actions/checkout@v2
       - name: CI tests, image build and push latest
@@ -30,17 +24,9 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
-      - name: Docker login
-        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
-      # - name: Pull from registry as cache
-      #   run: 'docker pull $REG/$REPO:$TAG || true'
-      # - name: Docker build
-      #   run: docker build -t=$REG/$REPO:$TAG .
-      # - name: 'Push tag for master, branch and latest'
-      #   run: |
-      #     docker tag $REG/$REPO:$TAG $REG/$REPO:latest
-      #     docker push $REG/$REPO:$TAG $REG/$REPO:latest
-      - name: 'Push tag for latest'
+      # - name: Docker login
+      #   run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
+      - name: 'Push tag for master or branch and latest'
         run: |
           docker tag $REG/$REPO:$TAG $REG/$REPO:latest
           docker push $REG/$REPO:latest
@@ -48,5 +34,6 @@ jobs:
         name: Tag and release
         run: |
           RELEASE_TAG=v${COMMIT_MSG#* }
+          echo "Releasing $REG/$REPO:$RELEASE_TAG"
           docker tag $REG/$REPO:$TAG $REG/$REPO:$RELEASE_TAG
           docker push $REG/$REPO:$RELEASE_TAG
