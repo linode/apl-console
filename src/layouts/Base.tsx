@@ -1,12 +1,10 @@
-import { Container, Hidden, makeStyles, Typography } from '@material-ui/core'
+import { Hidden, makeStyles, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Divider from '@material-ui/core/Divider'
 import Drawer from '@material-ui/core/Drawer'
-import Grid from '@material-ui/core/Grid'
 import IconButton from '@material-ui/core/IconButton'
-import Paper from '@material-ui/core/Paper'
 import Toolbar from '@material-ui/core/Toolbar'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
@@ -156,13 +154,13 @@ export default (props: Props): any => {
   </IconButton> */}
 
       <div className={classes.logo}>
-        <Hidden xsDown implementation='css'>
+        <Hidden smDown implementation='css'>
           <IconButton color='inherit'>
             {img}
             <Typography variant='h5'>Otomi Console</Typography>
           </IconButton>
         </Hidden>
-        <Hidden smUp implementation='css'>
+        <Hidden mdUp implementation='css'>
           <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
         </Hidden>
       </div>
@@ -181,7 +179,7 @@ export default (props: Props): any => {
       <AppBar position='fixed' className={clsx(classes.appBar, open && classes.appBarShift)}>
         {toolbar}
       </AppBar>
-      <Hidden smUp implementation='css'>
+      <Hidden mdUp implementation='css'>
         <Drawer
           variant='temporary'
           className={classes.drawer}
@@ -205,7 +203,7 @@ export default (props: Props): any => {
           {/* <List>{secondaryListItems}</List> */}
         </Drawer>
       </Hidden>
-      <Hidden xsDown implementation='css'>
+      <Hidden smDown implementation='css'>
         <Drawer
           className={classes.drawer}
           variant='permanent'

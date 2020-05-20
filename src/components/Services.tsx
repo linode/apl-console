@@ -19,7 +19,8 @@ const renderPublicUrl = (row): any => {
   if (isEmpty(row.ingress)) {
     return ''
   }
-  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}`
+  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}${row.ingress.path ||
+    ''}`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}

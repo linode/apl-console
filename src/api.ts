@@ -3,30 +3,26 @@ import OpenAPIClientAxios from 'openapi-client-axios'
 
 const env = process.env
 
-// let baseUrl = 'http://127.0.0.1:8080/v1'
-let baseUrl = `${env.PUBLIC_URL || ''}/api/v1`
-let axiosConfigDefaults = {
+const baseUrl = `${env.PUBLIC_URL || ''}/api/v1`
+let axiosConfigDefaults: any = {
   withCredentials: true,
   headers: {
     'Cache-Control': 'no-cache',
-    'Auth-Group': undefined,
-    'Auth-User': undefined,
   },
 }
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV === 'development') {
   // eslint-disable-next-line no-console
   console.info('running in development mode')
   // eslint-disable-next-line no-restricted-globals
   const team = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
   axiosConfigDefaults = {
-    withCredentials: false,
+    withCredentials: true,
     headers: {
       'Cache-Control': 'no-cache',
       'Auth-Group': team,
       'Auth-User': team === 'admin' ? 'bob.admin@otomi.cloud' : `joe.team@otomi.cloud`,
     },
   }
-  baseUrl = 'http://127.0.0.1:8080/v1'
 }
 
 function getClient(apiDefinition): any {

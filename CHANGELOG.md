@@ -2,6 +2,71 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.36](https://github.com/redkubes/otomi-stack-web/compare/v0.2.35...v0.2.36) (2020-05-14)
+
+
+### Bug Fixes
+
+* using baseUrl for link creation [ci skip] ([4062a66](https://github.com/redkubes/otomi-stack-web/commit/4062a6650a882afa4b622997c7a68e2c4a5e2bb3))
+
+### [0.2.35](https://github.com/redkubes/otomi-stack-web/compare/v0.2.34...v0.2.35) (2020-05-13)
+
+
+### Bug Fixes
+
+* relative api link [ci skip] ([e42b53e](https://github.com/redkubes/otomi-stack-web/commit/e42b53e1776d0f3e527329ffecceecc3c13208bb))
+
+### [0.2.34](https://github.com/redkubes/otomi-stack-web/compare/v0.2.33...v0.2.34) (2020-05-13)
+
+
+### Bug Fixes
+
+* download link not using router [ci skip] ([6409cf8](https://github.com/redkubes/otomi-stack-web/commit/6409cf8be844e1f16e5df26fa7f0c6b0a631a59e))
+
+### [0.2.33](https://github.com/redkubes/otomi-stack-web/compare/v0.2.32...v0.2.33) (2020-05-13)
+
+
+### Features
+
+* add styling to the card sub header ([b4ba917](https://github.com/redkubes/otomi-stack-web/commit/b4ba917f00774701c4308a2777d7c9d3718fd167)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
+* get number of services, teams and clusters for the Dashboard ([760ae01](https://github.com/redkubes/otomi-stack-web/commit/760ae013c617119cc1560bdb033a78f597dbd72e)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
+* refactor dashboard based on user type ([8102c7e](https://github.com/redkubes/otomi-stack-web/commit/8102c7e83dd565f4817e80d64831463de97bee78)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
+* **dashboard.tsx:** initialize dashboard cards ([20a8571](https://github.com/redkubes/otomi-stack-web/commit/20a85716e01a50630e41e4901bc4c841835c3ccb)), closes [#31](https://github.com/redkubes/otomi-stack-web/issues/31)
+
+
+### Bug Fixes
+
+* path fix for nginx [ci skip] ([77f784c](https://github.com/redkubes/otomi-stack-web/commit/77f784c4f73b138cec11813738959c1784a6a251))
+* proxy path [ci skip] ([fa5c811](https://github.com/redkubes/otomi-stack-web/commit/fa5c8117943657c737e77baf784cedc5b3d48865))
+
+
+### Others
+
+* code clean up ([9d5516c](https://github.com/redkubes/otomi-stack-web/commit/9d5516c1c77d65d6f5a7d0587afc633e211fe476))
+
+
+### Styling
+
+* **dashboard:** add camel case transformation to the team name ([da35436](https://github.com/redkubes/otomi-stack-web/commit/da35436f4b7d3eac01f28d7bb9a847c9259f40a0))
+
+
+### Code Refactoring
+
+* refactor render Dashboard when loading has stopped ([d936b3a](https://github.com/redkubes/otomi-stack-web/commit/d936b3ada6ec3996fef23605b2a75f89e2b6f3e5))
+* refactor team id checking ([7945ba9](https://github.com/redkubes/otomi-stack-web/commit/7945ba9293a23b4da3c7830cffaad973da268fbe))
+* **dashboard.tsx:** refactor import of lodash find ([4ca2841](https://github.com/redkubes/otomi-stack-web/commit/4ca28413df8831afa64802ae55e093512fa6374d))
+* **pages/dashboard.tsx:** refactor to get team from team list ([84f5461](https://github.com/redkubes/otomi-stack-web/commit/84f546189340f33eede10e38b0ab1eca5622242b))
+* refactor dashboard pages to have single file ([3acc198](https://github.com/redkubes/otomi-stack-web/commit/3acc1983e109a7c61f2d472d556b7bb22a98ed9c))
+* refactor services page to only have one reusable page ([076873a](https://github.com/redkubes/otomi-stack-web/commit/076873af477909467f750b31f2f5c20e23a9efcf))
+* remove unused route path ([7d849e4](https://github.com/redkubes/otomi-stack-web/commit/7d849e4e4a5191650438a3cddd8ea47a9bb4906f))
+* revert back dashboard route to previous way ([3c413c3](https://github.com/redkubes/otomi-stack-web/commit/3c413c3321ce30168f1b4aa656fd1f31bd3db5c9))
+* to use isAdmin instead of admin ([cb850e3](https://github.com/redkubes/otomi-stack-web/commit/cb850e34b2619a046835dd42627a894842a64e45))
+
+
+### Feature Improvements
+
+* added button to download config ([c803f93](https://github.com/redkubes/otomi-stack-web/commit/c803f93c95e37178e28b61cbd330480137fecd59))
+
 ### [0.2.32](https://github.com/redkubes/otomi-stack-web/compare/v0.2.31...v0.2.32) (2020-04-30)
 
 

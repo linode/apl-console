@@ -18,7 +18,11 @@ export default ({ clusters }: Props): any => {
     {
       id: 'domain',
       label: 'Domain',
-      renderer: row => <MuiLink href={`https://otomi.${teamPrefix}admin.${row.domain}`}>{row.domain}</MuiLink>,
+      renderer: row => (
+        <MuiLink href={`https://apps.${teamPrefix}admin.${row.domain}/otomi/`} target='_blank' rel='noopener'>
+          {row.domain}
+        </MuiLink>
+      ),
     },
     {
       id: 'cloud',
@@ -28,7 +32,7 @@ export default ({ clusters }: Props): any => {
   return (
     <>
       <h1>Clusters</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='clusterId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='id' />
     </>
   )
 }

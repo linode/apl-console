@@ -1,3 +1,5 @@
+/* eslint-disable no-prototype-builtins */
+import find from 'lodash/find'
 import React from 'react'
 import { Loader } from '../components'
 import Dashboard from '../components/Dashboard'
@@ -5,26 +7,33 @@ import Error from '../components/Error'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
-
-interface Props {
-  teamId: string
-}
-
-const TeamDashboard = ({ teamId }: Props): any => {
-  const [team, loading, error]: any = useApi('getTeam', teamId)
-  return (
-    <>
-      {loading && <Loader />}
-      {team && <Dashboard team={team} />}
-      {error && <Error code={404} />}
-    </>
-  )
-}
+import { Team } from '../models'
 
 export default (): any => {
   const {
     user: { isAdmin, teamId },
+    clusters,
   } = useSession()
 
-  return <PaperLayout>{isAdmin ? <Dashboard /> : <TeamDashboard teamId={teamId} />}</PaperLayout>
+  const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
+  const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
+  const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
+
+  const error = servicesError || teamsError
+  const loading = servicesLoading || teamsLoading
+  const data = {
+    services,
+    teams,
+    clusters,
+  }
+
+  const team: Team = isAdmin ? undefined : find(data.teams, { teamId })
+
+  return (
+    <PaperLayout>
+      {loading && <Loader />}
+      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
+      {error && <Error code={404} />}
+    </PaperLayout>
+  )
 }

@@ -7,7 +7,6 @@ import Loader from './components/Loader'
 import { schemaPromise, useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import Cluster from './pages/Cluster'
-// import { useApi } from './hooks/api'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
 import Error from './pages/Error'
@@ -17,7 +16,6 @@ import Services from './pages/Services'
 import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
-import TeamServices from './pages/TeamServices'
 import { SessionContext } from './session-context'
 import { createClasses, getTheme, setThemeName, setThemeType } from './theme'
 import { defaultOpts, SnackbarProvider, styles } from './utils/snackbar'
@@ -79,7 +77,7 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
-                <Route path='/teams/:teamId/services' component={TeamServices} exact />
+                <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                 <Route path='*'>
                   <Error code={404} />
@@ -97,10 +95,17 @@ const App = (): any => {
   const [loaded, setLoaded] = useState(false)
   const [user, setUser]: any = useState()
   useEffect(() => {
-    const userPromise =
-      process.env.NODE_ENV !== 'development'
-        ? fetch('/oauth2/userinfo').then(r => r.json())
-        : Promise.resolve('bob.admin@otomi.cloud')
+    let userPromise
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-restricted-globals
+      const teamId = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
+      const role = teamId === 'admin' ? 'admin' : 'team'
+      const isAdmin = teamId === 'admin'
+      const name = teamId === 'admin' ? 'bob.admin' : `joe.team`
+      userPromise = Promise.resolve({ email: `${name}@otomi.cloud`, role, isAdmin })
+    } else {
+      userPromise = fetch('/oauth2/userinfo').then(r => r.json())
+    }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     Promise.all([schemaPromise, userPromise]).then(([_, user]) => {
       setUser(user)
