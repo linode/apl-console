@@ -5,7 +5,7 @@ import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import PeopleIcon from '@material-ui/icons/People'
 import CloudIcon from '@material-ui/icons/Cloud'
 import Link from '@material-ui/core/Link';
-import { Link as RouterLink} from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { Team } from '../models'
 
 type Panel = {
@@ -13,10 +13,13 @@ type Panel = {
   data: any;
   icon: any;
   canCreate: boolean;
+  disabled: boolean;
+  tooltip: string;
 }
 interface Props {
   team?: Team
   isAdmin?: boolean
+  sessTeamId?: string
   data: {
     services: any
     clusters: any
@@ -76,7 +79,7 @@ interface DashboardCardProps {
   classes: any
 }
 
-const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
+const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
   const prefix = teamId ? `/teams/${teamId}` : ''
   return (
     <Grid item xs={12} sm={6} md={4}>
@@ -88,20 +91,28 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
               {item.icon}
             </Avatar>
           }
-          title={item.name}
+          title={`${item.name}s`}
           subheader={(
-            <Link 
-              component={RouterLink} 
+            <Link
+              component={RouterLink}
               to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}>
-                {item.data && item.data.length}
+              {item.data && item.data.length}
             </Link>
           )}
-          action={ item.canCreate &&
-            <Tooltip title={`Create ${item.name}`} aria-label={`create ${item.name}`} >
-              <IconButton aria-label='settings' component={RouterLink} to={`${prefix}/create-${item.name}`} className={classes.iconBtn}>
-                <AddCircleIcon />
-              </IconButton>
-            </Tooltip>            
+          action={item.canCreate &&
+            <Tooltip title={item.tooltip} aria-label={item.tooltip}>
+              <span>
+                <IconButton
+                  aria-label={`Create ${item.name}`}
+                  component={RouterLink}
+                  to={`${prefix}/create-${item.name}`}
+                  className={classes.iconBtn}
+                  disabled={item.disabled}
+                >
+                  <AddCircleIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           }
         />
       </Card>
@@ -109,27 +120,35 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
   )
 }
 
-const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
+const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin, sessTeamId }: Props): any => {
   const classes = useStyles()
+  const isServiceDisabled = isAdmin && !sessTeamId
   const panels = [
-    {name: 'cluster', data: clusters, icon:  <CloudIcon />, canCreate: false}, 
-    {name: 'team', data: teams, icon:  <PeopleIcon />, canCreate: isAdmin }, 
-    {name: 'service', data: services, icon:  <SwapVerticalCircleIcon />, canCreate: true}, 
+    { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
+    { name: 'team', data: teams, icon: <PeopleIcon />, canCreate: isAdmin, disabled: false, tooltip: 'Create teams' },
+    {
+      name: 'service',
+      data: services,
+      icon: <SwapVerticalCircleIcon />,
+      canCreate: true,
+      disabled: isServiceDisabled,
+      tooltip: isServiceDisabled ? 'Please select team' : 'Create service'
+    },
   ]
   return (
     <>
-      <Grid container spacing={3}>        
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant='h5' gutterBottom className={classes.title}>
             Welcome to the team <b className={classes.teamName}>{team ? team.name : 'Admin'}</b> dashboard!
           </Typography>
           <Divider />
         </Grid>
-        {panels.map(panel => <DashboardCard 
-          classes={classes} 
-          teamId={team && team.teamId} 
+        {panels.map(panel => <DashboardCard
+          classes={classes}
+          teamId={team && team.teamId}
           item={panel}
-          key={panel.name}/>
+          key={panel.name} />
         )}
       </Grid>
     </>

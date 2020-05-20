@@ -11,10 +11,11 @@ import { Team } from '../models'
 
 export default (): any => {
   const {
+    oboTeamId,
     user: { isAdmin, teamId },
     clusters,
   } = useSession()
-
+  const sessTeamId = isAdmin ? oboTeamId : teamId.userTeamId
   const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
   const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
@@ -32,7 +33,7 @@ export default (): any => {
   return (
     <PaperLayout>
       {loading && <Loader />}
-      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
+      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} sessTeamId={sessTeamId}/>}
       {error && <Error code={404} />}
     </PaperLayout>
   )
