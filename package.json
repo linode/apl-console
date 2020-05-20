@@ -127,5 +127,10 @@
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w"
   },
+  "standard-version": {
+    "skip": {
+      "tag": true
+    }
+  },
   "version": "0.2.37"
 }

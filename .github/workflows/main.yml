@@ -1,5 +1,8 @@
 name: Build and publish Docker
-on: [push]
+on:
+  push:
+    tags-ignore:
+      - '*'
 env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
   REG: eu.gcr.io
@@ -37,3 +40,4 @@ jobs:
           echo "Releasing $REG/$REPO:$RELEASE_TAG"
           docker tag $REG/$REPO:$TAG $REG/$REPO:$RELEASE_TAG
           docker push $REG/$REPO:$RELEASE_TAG
+          git tag -am "$COMMIT_MSG" $RELEASE_TAG && git push --follow-tags origin master
