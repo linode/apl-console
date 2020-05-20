@@ -11,6 +11,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Set Env
+        run: |
+          ref=$(echo $(basename $GITHUB_REF))
+          [ "$ref" = "master" ] && ref=latest
+          echo ::set-env name=TAG::$(echo $ref)
       - name: CI tests and image build
         if: "!startsWith(github.ref, 'refs/tags/')"
         uses: whoan/docker-build-with-cache-action@v5
@@ -19,14 +24,5 @@ jobs:
           password: '${{ secrets.DOCKER_PASSWORD }}'
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
-          image_tag: ${{ github.ref }}
-      - name: CI tests and image build
-        if: "startsWith(github.ref, 'refs/tags/')"
-        uses: whoan/docker-build-with-cache-action@v5
-        with:
-          username: _json_key
-          password: '${{ secrets.DOCKER_PASSWORD }}'
-          registry: ${{ env.REG }}
-          image_name: ${{ env.REPO }}
-          image_tag: latest
+          image_tag: $TAG
           push_git_tag: true

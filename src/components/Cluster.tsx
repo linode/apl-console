@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem, MenuList } from '@material-ui/core'
+import React from 'react'
+import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
-import { useSnackbar } from '../utils'
-import { useApi } from '../hooks/api'
+// import { useSnackbar } from '../utils'
 import { mainStyles } from '../theme'
 
 const baseUrl = process.env.PUBLIC_URL || ''
