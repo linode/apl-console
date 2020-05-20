@@ -2,9 +2,12 @@ import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import RLink from './Link'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import MuiLink from './MuiLink'
+import Cluster from '../models/Cluster'
 
 interface Props {
   teams: any[]
@@ -13,12 +16,30 @@ interface Props {
 export default ({ teams }: Props): any => {
   const {
     user: { isAdmin },
+    currentClusterId,
+    clusters,
   } = useSession()
+  const [cloud, clusterName] = currentClusterId.split('/')
+  const cluster: Cluster = find(clusters, { cloud, cluster: clusterName })
+  const teamPrefix = 'team-' // @todo: get from values later
   const headCells: HeadCell[] = [
     {
       id: 'name',
       label: 'Team Name',
       renderer: row => (isAdmin ? <RLink to={`/teams/${row.teamId}`}>{row.name}</RLink> : row.name),
+    },
+    {
+      id: 'dashboard',
+      label: 'Dashboard',
+      renderer: row => (
+        <MuiLink
+          href={`https://apps.${teamPrefix}${row.teamId}.${cluster.domain}/otomi/`}
+          target='_blank'
+          rel='noopener'
+        >
+          {`apps.${teamPrefix}${row.teamId}.${cluster.domain}`}
+        </MuiLink>
+      ),
     },
     {
       id: 'clouds',
