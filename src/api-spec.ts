@@ -5,15 +5,13 @@ import { isEmpty, cloneDeep } from 'lodash/lang'
 
 export type AclAction =
   | 'create'
-  | 'create-all'
+  | 'create-any'
   | 'delete'
-  | 'delete-all'
-  | 'get'
-  | 'get-all'
-  | 'patch'
-  | 'patch-all'
-  | 'put'
-  | 'put-all'
+  | 'delete-any'
+  | 'read'
+  | 'read-any'
+  | 'update'
+  | 'update-any'
 
 export type SchemaType = 'object' | 'array'
 
@@ -48,7 +46,7 @@ export interface Property {
 
 let spec: OpenApi
 
-const aclChangeActions = ['patch', 'patch-all', 'post', 'post-all', 'put', 'put-all']
+const aclChangeActions = ['patch', 'patch-any', 'create', 'create-any', 'update', 'update-any']
 
 export function applyAclToUiSchema(uiSchema, schema: Schema, role: string, crudOperation: string): void {
   const path = `x-acl.${role}`
