@@ -1,29 +1,28 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-import { MenuItem, Select, IconButton, Typography, styled } from '@material-ui/core'
+import { MenuItem, Select, Typography, Hidden } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
+import { makeStyles } from '@material-ui/core/styles';
 import { useSession } from '../session-context'
-import { createClasses } from '../theme'
 import { Team } from '../models'
 
 interface Props {
   teams: Team[]
 }
 
-const StyledSelect = styled(Select)({
-  color: 'inherit',
-})
+const useStyles = makeStyles((theme) => ({
+  avatar: {
+    marginRight: 10,
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+  },
+  select: {
+    marginLeft: 10,
+    fontSize: '1rem',
+  },
+}))
 
 export default ({ teams = [] }: Props): any => {
-  const classes = createClasses({
-    avatar: {
-      marginRight: '1vw',
-    },
-    select: {
-      fontSize: '1.5rem',
-    },
-  })
+  const classes = useStyles()
   const {
     user: { email, teamId, isAdmin },
     oboTeamId,
@@ -36,14 +35,14 @@ export default ({ teams = [] }: Props): any => {
   }
   return (
     <>
-      <IconButton color='inherit'>
         <Avatar className={classes.avatar} />
-        <Typography variant='h5'>
-          {email}&nbsp;({isAdmin ? `admin) obo team:` : `${teamId})`}
-        </Typography>
-      </IconButton>
+        <Hidden xsDown>
+          <Typography variant='body1' >
+            {email} <strong>({isAdmin ? `admin) obo team:` : `${teamId})`}</strong>
+          </Typography>
+        </Hidden>
       {isAdmin && (
-        <StyledSelect
+        <Select
           value={teams.length && oboTeamId ? oboTeamId : ''}
           onChange={handleChange}
           className={classes.select}
@@ -54,7 +53,7 @@ export default ({ teams = [] }: Props): any => {
               {tid.charAt(0).toUpperCase() + tid.substr(1)}
             </MenuItem>
           ))}
-        </StyledSelect>
+        </Select>
       )}
     </>
   )

@@ -23,10 +23,10 @@ export default ({ teamId }: Props): any => {
   const cluster = find(clusters, { cloud, cluster: clusterName })
   const apps = teamId === 'admin' ? adminApps : teamApps
   return (
-    <Grid container direction='row' justify='center' alignItems='center' spacing={2}>
+    <Grid container direction='row' alignItems='center' spacing={2}>
       {apps
         .filter(app => !app.hide)
-        .map(({ hide, name, logo, domain, host, path, ownHost }) => {
+        .map(({ name, logo, domain, host, path, ownHost }) => {
           const teamPrefix = 'team-' // @todo: get from values later
           const logoName = logo ? logo.name : name
           const link = `https://${domain ||
@@ -35,7 +35,7 @@ export default ({ teamId }: Props): any => {
             }`}${(path || '').replace('#NS#', `team-${teamId}`)}`
           // eslint-disable-next-line consistent-return
           return (
-            <Grid item xs={6} sm={3} key={name}>
+            <Grid item xs={12} sm={6} lg={3} md={4} key={name}>
               <AppCard
                 cluster={cluster}
                 teamId={teamId}
