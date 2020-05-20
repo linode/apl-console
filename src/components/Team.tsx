@@ -19,7 +19,7 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
     user: { role },
   } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
-  const crudMethod = team && team.teamId ? 'put' : 'post'
+  const crudMethod = team && team.teamId ? 'update' : 'create'
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)

@@ -45,7 +45,7 @@ it('should make a field readonly due to single read permission', () => {
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['get'] },
+        'x-acl': { admin: ['read'] },
       },
     },
   }
@@ -65,7 +65,7 @@ it('should not make a field readonly due to write permission', () => {
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['put'] },
+        'x-acl': { admin: ['update'] },
       },
     },
   }
@@ -75,7 +75,7 @@ it('should not make a field readonly due to write permission', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, 'admin', 'put')
+  applyAclToUiSchema(uiSchema, schema, 'admin', 'update')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -85,7 +85,7 @@ it('should not make a field readonly due to read and write permissions', () => {
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['get', 'put'] },
+        'x-acl': { admin: ['read', 'update'] },
       },
     },
   }
@@ -95,7 +95,7 @@ it('should not make a field readonly due to read and write permissions', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, 'admin', 'put')
+  applyAclToUiSchema(uiSchema, schema, 'admin', 'update')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -105,7 +105,7 @@ it('should not overwrite existing uiSchema properties', () => {
     properties: {
       f1: {
         type: 'string',
-        'x-acl': { admin: ['get'] },
+        'x-acl': { admin: ['read'] },
       },
     },
   }

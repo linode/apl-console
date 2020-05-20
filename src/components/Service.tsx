@@ -28,7 +28,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
   }
 
-  const crudOperation = service && service.serviceId ? 'put' : 'post'
+  const crudOperation = service && service.serviceId ? 'update' : 'create'
   const originalSchema = getServiceSchema(team, clusters, service)
   const originalUiSchema = getServiceUiSchema(originalSchema, role, service, crudOperation)
   const [schema, setSchema] = useState(originalSchema)
