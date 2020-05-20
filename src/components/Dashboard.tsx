@@ -79,7 +79,7 @@ interface DashboardCardProps {
 const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
   const prefix = teamId ? `/teams/${teamId}` : ''
   return (
-    <Grid item xs={12} sm={3}>
+    <Grid item xs={12} sm={6} md={4}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
           classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
