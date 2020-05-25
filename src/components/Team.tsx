@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
 import Team from '../models/Team'
 import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema, getEditableSchemaAttributes } from '../api-spec'
+import { getTeamSchema, getTeamUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
