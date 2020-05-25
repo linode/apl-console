@@ -19,7 +19,6 @@ type Panel = {
 interface Props {
   team?: Team
   isAdmin?: boolean
-  sessTeamId?: string
   data: {
     services: any
     clusters: any
@@ -120,9 +119,9 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
   )
 }
 
-const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin, sessTeamId }: Props): any => {
+const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
   const classes = useStyles()
-  const isServiceDisabled = isAdmin && !sessTeamId
+  const isServiceDisabled = isAdmin && !team
   const panels = [
     { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
     { name: 'team', data: teams, icon: <PeopleIcon />, canCreate: isAdmin, disabled: false, tooltip: 'Create teams' },
@@ -132,7 +131,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin, sessTea
       icon: <SwapVerticalCircleIcon />,
       canCreate: true,
       disabled: isServiceDisabled,
-      tooltip: isServiceDisabled ? 'Please select team' : 'Create service'
+      tooltip: isServiceDisabled ? 'Please select team' : `Create service for team ${team.name}`
     },
   ]
   return (

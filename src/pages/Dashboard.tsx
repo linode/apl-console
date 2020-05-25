@@ -15,7 +15,6 @@ export default (): any => {
     user: { isAdmin, teamId },
     clusters,
   } = useSession()
-  const sessTeamId = isAdmin ? oboTeamId : teamId.userTeamId
   const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
   const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
@@ -26,14 +25,12 @@ export default (): any => {
     services,
     teams,
     clusters,
-  }
-
-  const team: Team = isAdmin ? undefined : find(data.teams, { teamId })
-
+  }      
+  const team: Team = find(data.teams, { teamId: isAdmin ? oboTeamId : teamId})
   return (
     <PaperLayout>
       {loading && <Loader />}
-      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} sessTeamId={sessTeamId}/>}
+      {!loading && data && <Dashboard data={data} isAdmin={isAdmin} team={team} />}
       {error && <Error code={404} />}
     </PaperLayout>
   )
