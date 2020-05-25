@@ -6,6 +6,7 @@ import PeopleIcon from '@material-ui/icons/People'
 import CloudIcon from '@material-ui/icons/Cloud'
 import Link from '@material-ui/core/Link';
 import { Link as RouterLink } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next';
 import { Team } from '../models'
 
 type Panel = {
@@ -122,6 +123,7 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
 const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
+  const { t } = useTranslation();
   const panels = [
     { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
     { name: 'team', data: teams, icon: <PeopleIcon />, canCreate: isAdmin, disabled: false, tooltip: 'Create teams' },
@@ -131,15 +133,18 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       icon: <SwapVerticalCircleIcon />,
       canCreate: true,
       disabled: isServiceDisabled,
-      tooltip: isServiceDisabled ? 'Please select team' : `Create service for team ${team.name}`
+      tooltip: isServiceDisabled ? t('Please select team') : t('Create service for team', {teamName: team.name})
     },
   ]
+  const teamName = isAdmin ? 'Admin' : team.name
   return (
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant='h5' gutterBottom className={classes.title}>
-            Welcome to the team <b className={classes.teamName}>{team ? team.name : 'Admin'}</b> dashboard!
+            <Trans i18nKey="welcomeDashboard">
+              Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
+            </Trans>
           </Typography>
           <Divider />
         </Grid>
