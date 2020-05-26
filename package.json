@@ -10,6 +10,9 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "cypress-cucumber-preprocessor": {
+    "nonGlobalStepDefinitions": true
+  },
   "dependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
@@ -79,6 +82,7 @@
   "devDependencies": {
     "@percy/cypress": "^2.3.1",
     "cypress": "^4.5.0",
+    "cypress-cucumber-preprocessor": "^2.3.1",
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-unused-imports": "^0.1.2",
     "http-proxy-middleware": "^0.20.0"
@@ -116,7 +120,7 @@
     "husky:lint-staged": "lint-staged",
     "husky:pre-commit": "tsc --noEmit && lint-staged",
     "lint": "tsc --noEmit && eslint --ext js,ts,tsx .",
-    "lint:fix": "eslint --ext js,ts,tsx --fix .",    
+    "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "release": "standard-version",
     "start": "react-scripts start --no-cache",
     "test": "jest --detectOpenHandles",
