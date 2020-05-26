@@ -8,7 +8,7 @@ import Link from '@material-ui/core/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
 import { Team } from '../models'
-import { Keys } from '../translations/keys'
+import { Keys as k } from '../translations/keys'
 
 type Panel = {
   name: string
@@ -129,7 +129,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       icon: <PeopleIcon />,
       canCreate: isAdmin,
       disabled: false,
-      tooltip: t(Keys.CREATE_MODEL, { model: 'team' }),
+      tooltip: t(k.CREATE_MODEL, { model: 'team' }),
     },
     {
       name: 'service',
@@ -138,8 +138,8 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       canCreate: true,
       disabled: isServiceDisabled,
       tooltip: isServiceDisabled
-        ? t(Keys.SELECT_TEAM, {model: 'service'})
-        : t(Keys.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
+        ? t(k.SELECT_TEAM, {model: 'service'})
+        : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
     },
   ]
   const teamName = isAdmin ? 'Admin' : team.name
@@ -148,7 +148,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant='h5' gutterBottom className={classes.title}>
-            <Trans i18nKey={Keys.WELCOME_DASHBOARD}>
+            <Trans i18nKey={k.WELCOME_DASHBOARD}>
               Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
             </Trans>
           </Typography>
