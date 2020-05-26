@@ -80,7 +80,7 @@ interface DashboardCardProps {
 }
 
 const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
-  const prefix = teamId ? `/teams/${teamId}` : ''
+  const prefix = (item.name === 'service') && teamId ? `/teams/${teamId}` : ''  
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card classes={{ root: classes.card }}>
@@ -126,7 +126,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
   const { t } = useTranslation();
   const panels = [
     { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
-    { name: 'team', data: teams, icon: <PeopleIcon />, canCreate: isAdmin, disabled: false, tooltip: 'Create teams' },
+    { name: 'team', data: teams, icon: <PeopleIcon />, canCreate: isAdmin, disabled: false, tooltip: t('Create a team')  },
     {
       name: 'service',
       data: services,

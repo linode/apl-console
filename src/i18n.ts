@@ -6,6 +6,7 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
     en: {
         translation: {
+            'Create a team': 'Create a team',
             'welcomeDashboard': 'Welcome to the team <1>{{teamName}}</1> dashboard!', 
             'Please select team': 'Please select team',            
             'Create service for team': 'Create service for team {{teamName}}',            
