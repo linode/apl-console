@@ -1,7 +1,12 @@
-import { Given } from "cypress-cucumber-preprocessor/steps";
+import { Given } from 'cypress-cucumber-preprocessor/steps'
 
-const url = "https://facebook.com";
+const url = 'http://localhost:3000'
 
-Given(`I open Facebook page`, () => {
-  cy.visit(url);
-});
+Given(`Admin opens Dashboard`, () => {
+  cy.visit(url)
+})
+
+Then(`Admin sees welcoming message`, () => {
+  cy.get('.MuiGrid-container > :nth-child(1) > .MuiTypography-root').contains('Welcome to the team Admin dashboard')
+  cy.percySnapshot()
+})
