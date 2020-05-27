@@ -85,7 +85,8 @@
     "cypress-cucumber-preprocessor": "^2.3.1",
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-unused-imports": "^0.1.2",
-    "http-proxy-middleware": "^0.20.0"
+    "http-proxy-middleware": "^0.20.0",
+    "start-server-and-test": "^1.11.0"
   },
   "husky": {
     "hooks": {
@@ -112,7 +113,9 @@
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
     "dev": "run-p 'start --no-cache' watch:ts",
-    "e2e": "npx percy exec -- cypress run",
+    "cy:open": "cypress open",
+    "cy:run": "percy exec -- cypress run",
+    "e2e": "start-server-and-test start http://localhost:3000 cy:run",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
