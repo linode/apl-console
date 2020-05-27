@@ -4,15 +4,19 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import PeopleIcon from '@material-ui/icons/People'
 import CloudIcon from '@material-ui/icons/Cloud'
-import Link from '@material-ui/core/Link';
-import { Link as RouterLink} from 'react-router-dom'
+import Link from '@material-ui/core/Link'
+import { Link as RouterLink } from 'react-router-dom'
+import { useTranslation, Trans } from 'react-i18next'
 import { Team } from '../models'
+import { Keys as k } from '../translations/keys'
 
 type Panel = {
-  name: string;
-  data: any;
-  icon: any;
-  canCreate: boolean;
+  name: string
+  data: any
+  icon: any
+  canCreate: boolean
+  disabled: boolean
+  tooltip: string
 }
 interface Props {
   team?: Team
@@ -43,8 +47,8 @@ const useStyles = makeStyles(theme => ({
   iconBtn: {
     color: theme.palette.primary.dark,
     '&:hover': {
-      background: theme.palette.secondary.dark
-    }
+      background: theme.palette.secondary.dark,
+    },
   },
   title: {
     paddingTop: 30,
@@ -76,32 +80,36 @@ interface DashboardCardProps {
   classes: any
 }
 
-const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
-  const prefix = teamId ? `/teams/${teamId}` : ''
+const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
+  const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
           classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
-          avatar={
-            <Avatar aria-label='recipe'>
-              {item.icon}
-            </Avatar>
-          }
-          title={item.name}
-          subheader={(
-            <Link 
-              component={RouterLink} 
-              to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}>
-                {item.data && item.data.length}
+          avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
+          title={`${item.name}s`}
+          subheader={
+            <Link component={RouterLink} to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}>
+              {item.data && item.data.length}
             </Link>
-          )}
-          action={ item.canCreate &&
-            <Tooltip title={`Create ${item.name}`} aria-label={`create ${item.name}`} >
-              <IconButton aria-label='settings' component={RouterLink} to={`${prefix}/create-${item.name}`} className={classes.iconBtn}>
-                <AddCircleIcon />
-              </IconButton>
-            </Tooltip>            
+          }
+          action={
+            item.canCreate && (
+              <Tooltip title={item.tooltip} aria-label={item.tooltip}>
+                <span>
+                  <IconButton
+                    aria-label={`Create ${item.name}`}
+                    component={RouterLink}
+                    to={`${prefix}/create-${item.name}`}
+                    className={classes.iconBtn}
+                    disabled={item.disabled}
+                  >
+                    <AddCircleIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+            )
           }
         />
       </Card>
@@ -111,26 +119,44 @@ const DashboardCard = ({classes, teamId, item }: DashboardCardProps) => {
 
 const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
   const classes = useStyles()
+  const isServiceDisabled = isAdmin && !team
+  const { t } = useTranslation()
   const panels = [
-    {name: 'cluster', data: clusters, icon:  <CloudIcon />, canCreate: false}, 
-    {name: 'team', data: teams, icon:  <PeopleIcon />, canCreate: isAdmin }, 
-    {name: 'service', data: services, icon:  <SwapVerticalCircleIcon />, canCreate: true}, 
+    { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
+    {
+      name: 'team',
+      data: teams,
+      icon: <PeopleIcon />,
+      canCreate: isAdmin,
+      disabled: false,
+      tooltip: t(k.CREATE_MODEL, { model: 'team' }),
+    },
+    {
+      name: 'service',
+      data: services,
+      icon: <SwapVerticalCircleIcon />,
+      canCreate: true,
+      disabled: isServiceDisabled,
+      tooltip: isServiceDisabled
+        ? t(k.SELECT_TEAM, {model: 'service'})
+        : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
+    },
   ]
+  const teamName = isAdmin ? 'Admin' : team.name
   return (
     <>
-      <Grid container spacing={3}>        
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant='h5' gutterBottom className={classes.title}>
-            Welcome to the team <b className={classes.teamName}>{team ? team.name : 'Admin'}</b> dashboard!
+            <Trans i18nKey={k.WELCOME_DASHBOARD}>
+              Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
+            </Trans>
           </Typography>
           <Divider />
         </Grid>
-        {panels.map(panel => <DashboardCard 
-          classes={classes} 
-          teamId={team && team.teamId} 
-          item={panel}
-          key={panel.name}/>
-        )}
+        {panels.map(panel => (
+          <DashboardCard classes={classes} teamId={team && team.teamId} item={panel} key={panel.name} />
+        ))}
       </Grid>
     </>
   )
