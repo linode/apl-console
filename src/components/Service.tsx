@@ -28,7 +28,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
   }
 
-  const crudOperation = service && service.serviceId ? 'update' : 'create'
+  const crudOperation = service && service.id ? 'update' : 'create'
   const originalSchema = getServiceSchema(team, clusters, service)
   const originalUiSchema = getServiceUiSchema(originalSchema, role, service, crudOperation)
   const [schema, setSchema] = useState(originalSchema)
@@ -110,7 +110,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
             Submit
           </Button>
           &nbsp;
-          {service && service.serviceId && (
+          {service && service.id && (
             <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='service' />
           )}
         </Box>

@@ -1,18 +1,23 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
+import TeamModel from '../models/Team'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
-const Submit = ({ data }: any): any => {
+interface SubmitProps {
+  data: TeamModel
+}
+
+const Submit = ({ data }: SubmitProps): any => {
   let method
   let filter
-  if (data.teamId) {
+  if (data.id) {
     method = 'editTeam'
-    filter = { teamId: data.teamId }
+    filter = { teamId: data.id }
   } else {
     method = 'createTeam'
   }
@@ -23,7 +28,11 @@ const Submit = ({ data }: any): any => {
   return null
 }
 
-const Delete = (filter): any => {
+interface DeleteProps {
+  teamId: string
+}
+
+const Delete = (filter: DeleteProps): any => {
   const [result] = useApi('deleteTeam', filter, null)
   if (result) {
     return <Redirect to='/teams' />
@@ -31,7 +40,14 @@ const Delete = (filter): any => {
   return null
 }
 
-const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => {
+interface EditTeamProps {
+  teamId: string
+  clusters: [string]
+  onSubmit: CallableFunction
+  onDelete: CallableFunction
+}
+
+const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: EditTeamProps): any => {
   const [team, teamLoading, error]: any = useApi('getTeam', teamId)
 
   if (teamLoading) {
@@ -44,11 +60,15 @@ const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => 
   return <Team team={team} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
+interface Params {
+  teamId?: string
+}
+
 export default ({
   match: {
     params: { teamId },
   },
-}: any): any => {
+}: RouteComponentProps<Params>): any => {
   const {
     user: { teamId: sessTeamId, isAdmin },
     clusters,

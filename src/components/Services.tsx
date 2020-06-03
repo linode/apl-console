@@ -7,11 +7,12 @@ import { Team } from '../models'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
+import { useSession } from '../session-context'
 
 const getServiceLink = (isAdmin, ownerId) => (row): any => {
   if (!(isAdmin || row.teamId === ownerId)) return row.name
-  const { serviceId, teamId, name } = row
-  const link = `/teams/${teamId}/services/${encodeURIComponent(serviceId)}`
+  const { id, teamId, name } = row
+  const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return <RLink to={link}>{name}</RLink>
 }
 
@@ -32,10 +33,12 @@ interface Props {
   services: any[]
   team?: Team
   sessTeamId?: string
-  isAdmin: boolean
 }
 
-export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
+export default ({ services, team }: Props): any => {
+  const {
+    user: { teamId: sessTeamId, isAdmin },
+  } = useSession()
   const showTeam = !team
   const headCells: HeadCell[] = [
     {
@@ -65,7 +68,7 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
         {(isAdmin || team) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-service' : `/teams/${team.teamId}/create-service`}
+            to={isAdmin ? '/create-service' : `/teams/${team.id}/create-service`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'

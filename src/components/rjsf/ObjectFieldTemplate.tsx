@@ -12,55 +12,42 @@ export default function ObjectFieldTemplate(props: any) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined
-      // complexElements.push(o)
     } else {
       grouped.push(o)
     }
   })
   if (grouped) fields.push(grouped)
   return (
-    <>
-      {/* <Divider /> */}
-      <Box my={1}>
-        {/* {props.idSchema.$id === 'root' && ( */}
-        <Box>
-          <h2>{title}</h2>
-          <p>{description}</p>
-        </Box>
-        {/* )} */}
-
-        {fields.map((o, idx) => {
-          if (o.length) {
-            return (
-              <Grid
-                key={`row-${idx}`}
-                container
-                spacing={3}
-                direction='row'
-                justify='flex-start'
-                alignItems='flex-start'
-              >
-                {o.map((element, idz) => (
-                  <Grid key={`${element.title}-${idz}`} item>
-                    {element.content}
-                  </Grid>
-                ))}
-              </Grid>
-            )
-          }
-          if (o.content.props.schema.type === 'boolean') {
-            return <Box key={`row-${idx}`}>{o.content}</Box>
-          }
-          if (o.content.props.schema.type === 'array') {
-            return <Box key={`row-${idx}`}>{o.content}</Box>
-          }
-          return (
-            <Paper key={`item-${idx}`}>
-              <Box margin='1em'>{o.content}</Box>
-            </Paper>
-          )
-        })}
+    <Box my={1}>
+      <Box>
+        <h2>{title}</h2>
+        <p>{description}</p>
       </Box>
-    </>
+
+      {fields.map((o, idx) => {
+        if (o.length) {
+          return (
+            <Grid key={`row-${idx}`} container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
+              {o.map((element, idz) => (
+                <Grid key={`${element.title}-${idz}`} item>
+                  {element.content}
+                </Grid>
+              ))}
+            </Grid>
+          )
+        }
+        if (o.content.props.schema.type === 'boolean') {
+          return <Box key={`row-${idx}`}>{o.content}</Box>
+        }
+        if (o.content.props.schema.type === 'array') {
+          return <Box key={`row-${idx}`}>{o.content}</Box>
+        }
+        return (
+          <Paper key={`item-${idx}`}>
+            <Box margin='1em'>{o.content}</Box>
+          </Paper>
+        )
+      })}
+    </Box>
   )
 }

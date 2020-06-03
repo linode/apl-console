@@ -105,7 +105,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
-    serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
+    // serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     serviceId: { 'ui:widget': 'hidden' },
     ingress: {
@@ -131,6 +131,22 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
       },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
     },
+  }
+
+  applyAclToUiSchema(uiSchema, schema, role, crudMethod)
+
+  return uiSchema
+}
+
+export function getSecretUiSchema(schema: Schema, role: string, crudMethod: string): any {
+  const uiSchema = {
+    name: { 'ui:autofocus': true },
+    teamId: { 'ui:widget': 'hidden' },
+    secretId: { 'ui:widget': 'hidden' },
+    type: { 'ui:widget': 'hidden', description: undefined },
+    cert: { 'ui:widget': 'textarea' },
+    key: { 'ui:widget': 'textarea' },
+    entries: { 'ui:options': { orderable: false } },
   }
 
   applyAclToUiSchema(uiSchema, schema, role, crudMethod)
@@ -165,6 +181,11 @@ export function getServiceSchema(team: any, clusters: [any], formData: any): any
   addDomainEnumField(schema, clusters, formData)
   addClustersEnum(schema, team, formData)
   if (!get(formData, 'clusterId', '').startsWith('aws')) removeCertArnField(schema)
+  return schema
+}
+
+export function getSecretSchema(): any {
+  const schema = cloneDeep(spec.components.schemas.Secret)
   return schema
 }
 

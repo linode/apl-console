@@ -6,6 +6,7 @@ import AppsIcon from '@material-ui/icons/Apps'
 import CloudIcon from '@material-ui/icons/Cloud'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DashboardIcon from '@material-ui/icons/Dashboard'
+import LockIcon from '@material-ui/icons/Lock'
 import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
@@ -126,6 +127,12 @@ export default ({ teamId }: Props): any => {
               <PersonIcon />
             </ListItemIcon>
             <ListItemText primary='Overview' />
+          </StyledMenuItem>
+          <StyledMenuItem component={Link} to={`/teams/${teamId}/secrets`}>
+            <ListItemIcon>
+              <LockIcon />
+            </ListItemIcon>
+            <ListItemText primary='Secrets' />
           </StyledMenuItem>
           <StyledMenuItem component={Link} to={`/teams/${teamId}/services`}>
             <ListItemIcon>

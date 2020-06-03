@@ -26,20 +26,19 @@ export default ({ teams }: Props): any => {
     {
       id: 'name',
       label: 'Team Name',
-      renderer: row => (isAdmin ? <RLink to={`/teams/${row.teamId}`}>{row.name}</RLink> : row.name),
+      renderer: row => (isAdmin ? <RLink to={`/teams/${row.id}`}>{row.name}</RLink> : row.name),
     },
     {
       id: 'dashboard',
       label: 'Dashboard',
-      renderer: row => (
-        <MuiLink
-          href={`https://apps.${teamPrefix}${row.teamId}.${cluster.domain}/otomi/`}
-          target='_blank'
-          rel='noopener'
-        >
-          {`apps.${teamPrefix}${row.teamId}.${cluster.domain}`}
-        </MuiLink>
-      ),
+      renderer: row => {
+        const { teamId } = row
+        return (
+          <MuiLink href={`https://apps.${teamPrefix}${teamId}.${cluster.domain}/otomi/`} target='_blank' rel='noopener'>
+            {`apps.${teamPrefix}${teamId}.${cluster.domain}`}
+          </MuiLink>
+        )
+      },
     },
     {
       id: 'clouds',
@@ -47,7 +46,7 @@ export default ({ teams }: Props): any => {
       renderer: row => row.clusters.map(c => c.substr(0, c.indexOf('/'))).join(', '),
     },
     {
-      id: 'clusterId',
+      id: 'id',
       label: 'Cluster',
       renderer: row => row.clusters.join(', '),
     },

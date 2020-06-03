@@ -1,5 +1,5 @@
 export default interface Service {
-  serviceId?: string
+  id?: string
   clusterId: string
   name: string
   ingress: any

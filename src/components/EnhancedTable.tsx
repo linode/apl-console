@@ -127,7 +127,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     <TableHead>
       <TableRow>
         {!disableSelect && (
-          <TableCell padding='checkbox'>
+          <TableCell padding='checkbox' key='checkbox'>
             <Checkbox
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}

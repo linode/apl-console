@@ -27,7 +27,7 @@ export default (): any => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
-  const schema = getSettingsSchema()
+  // const schema = getSettingsSchema()
 
   return (
     <PaperLayout>
@@ -47,13 +47,13 @@ export default (): any => {
         </MenuItem>
       </MenuList>
 
-      <Form
+      {/* <Form
         key='settings'
         schema={schema}
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
-      />
+      /> */}
     </PaperLayout>
   )
 }

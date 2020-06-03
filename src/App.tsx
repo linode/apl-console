@@ -11,6 +11,8 @@ import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
 import Error from './pages/Error'
 import OtomiApps from './pages/OtomiApps'
+import Secret from './pages/Secret'
+import Secrets from './pages/Secrets'
 import Service from './pages/Service'
 import Services from './pages/Services'
 import Settings from './pages/Settings'
@@ -72,11 +74,15 @@ const LoadedApp = ({ user }: Props): any => {
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/teams' component={Teams} exact />
-                <Route path='/create-team' component={Team} exact />
+                <Route path='/create-secret' component={Secret} exact />
                 <Route path='/create-service' component={Service} exact />
+                <Route path='/create-team' component={Team} exact />
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
+                <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
+                <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />
                 <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                 <Route path='*'>
