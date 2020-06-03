@@ -174,4 +174,8 @@ export function getTeamSchema(clusters: [any]): any {
   return schema
 }
 
+export function getSettingsSchema(): any {
+  return spec.components.schemas.Settings
+}
+
 export const getSpec = (): object => spec
