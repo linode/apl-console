@@ -37,9 +37,11 @@ interface Props {
 
 export default ({ services, team }: Props): any => {
   const {
-    user: { teamId: sessTeamId, isAdmin },
+    user: { teamId, isAdmin },
+    oboTeamId,
   } = useSession()
   const showTeam = !team
+  const sessTeamId = isAdmin ? oboTeamId : teamId
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -63,7 +65,7 @@ export default ({ services, team }: Props): any => {
 
   return (
     <>
-      <h1>Services{team ? `: Team ${team.name}` : ''}</h1>
+      <h1>{!team ? 'All Services' : `Team Services${isAdmin && oboTeamId ? ` (team ${oboTeamId})` : ''}`}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
           <Button

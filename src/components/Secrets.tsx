@@ -29,8 +29,10 @@ interface Props {
 
 export default ({ secrets, team }: Props): any => {
   const {
-    user: { teamId: sessTeamId, isAdmin },
+    user: { teamId, isAdmin },
+    oboTeamId,
   } = useSession()
+  const sessTeamId = isAdmin ? oboTeamId : teamId
   const [del, setDel] = useState()
   const headCells: HeadCell[] = [
     {
@@ -58,7 +60,7 @@ export default ({ secrets, team }: Props): any => {
   return (
     <>
       {del && <Delete name={del} setDel={setDel} />}
-      <h1>Secrets{team ? `: Team ${team.name}` : ''}</h1>
+      <h1>Secrets{isAdmin && sessTeamId ? ` (team ${sessTeamId})` : ''}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
           <Button

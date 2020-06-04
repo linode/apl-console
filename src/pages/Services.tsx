@@ -11,17 +11,15 @@ interface TeamServiceProps {
   services: any
   loading: boolean
   error: any
+  teamId: string
 }
 
-const TeamServices = ({ services, loading, error }: TeamServiceProps) => {
-  const {
-    user: { teamId: sessTeamId },
-  } = useSession()
-  const [team, teamLoading, teamError]: any = useApi('getTeam', sessTeamId)
+const TeamServices = ({ services, loading, error, teamId }: TeamServiceProps) => {
+  const [team, teamLoading, teamError]: any = useApi('getTeam', teamId)
   return (
     <>
       {(loading || teamLoading) && <Loader />}
-      {services && <Services services={services} sessTeamId={sessTeamId} team={team} />}
+      {services && team && <Services services={services} team={team} />}
       {(error || teamError) && <Error code={404} />}
     </>
   )
@@ -36,23 +34,18 @@ export default ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): any => {
-  const {
-    oboTeamId,
-    user: { isAdmin, teamId: userTeamId },
-  } = useSession()
-  const sessTeamId = isAdmin ? oboTeamId : userTeamId
   const servicesApi = teamId ? 'getTeamServices' : 'getAllServices'
   const [services, loading, error]: any = useApi(servicesApi, teamId)
   return (
     <PaperLayout>
-      {isAdmin ? (
+      {!teamId ? (
         <>
           {loading && <Loader />}
-          {services && <Services services={services} sessTeamId={sessTeamId} />}
+          {services && <Services services={services} />}
           {error && <Error code={404} />}
         </>
       ) : (
-        <TeamServices services={services} loading={loading} error={error} />
+        <TeamServices services={services} loading={loading} error={error} teamId={teamId} />
       )}
     </PaperLayout>
   )

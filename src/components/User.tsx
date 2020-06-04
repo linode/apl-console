@@ -35,22 +35,24 @@ export default ({ teams = [] }: Props): any => {
   }
   return (
     <>
-      <Avatar className={classes.avatar} />
-      <Hidden xsDown>
-        <Typography variant='body1'>
-          {email} <strong>({isAdmin ? `admin) obo team:` : `${teamId})`}</strong>
-        </Typography>
-      </Hidden>
       {isAdmin && (
-        <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select}>
-          <MenuItem value={undefined}>-</MenuItem>
-          {teams.map(({ id: tid, name }): any => (
-            <MenuItem key={tid} value={tid}>
-              {name}
-            </MenuItem>
-          ))}
-        </Select>
+        <>
+          <Typography variant='body1'>Admin acting for:</Typography>
+          <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select}>
+            <MenuItem value={undefined}>-</MenuItem>
+            {teams.map(({ id }): any => (
+              <MenuItem key={id} value={id}>
+                {id}
+              </MenuItem>
+            ))}
+          </Select>
+          &nbsp;
+        </>
       )}
+      <Avatar className={classes.avatar} />
+      <Typography variant='body1'>
+        {email} <strong>({isAdmin ? `admin` : teamId})</strong>
+      </Typography>
     </>
   )
 }

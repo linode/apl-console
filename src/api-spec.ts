@@ -79,7 +79,6 @@ export function getEditableSchemaAttributes(schema: Schema, role: string): strin
 
 export function getTeamUiSchema(schema: Schema, role: string, crudMethod: string): any {
   const uiSchema = {
-    teamId: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
     clusters: {
       'ui:widget': 'checkboxes',
@@ -105,9 +104,8 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
-    // serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
+    id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
-    serviceId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': 'radio',
       'ui:options': {
@@ -140,6 +138,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
 
 export function getSecretUiSchema(schema: Schema, role: string, crudMethod: string): any {
   const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     secretId: { 'ui:widget': 'hidden' },

@@ -18,9 +18,9 @@ interface Props {
 
 export default ({ onSubmit, onDelete = null, team, service = null, clusters }: Props): any => {
   const {
-    user: { role },
+    user: { role, isAdmin },
   } = useSession()
-  let teamSubdomain = service ? `${service.name}.team-${team.teamId}` : ''
+  let teamSubdomain = service ? `${service.name}.team-${team.id}` : ''
   let defaultSubdomain
   if (service && service.ingress && service.clusterId) {
     defaultSubdomain = `${teamSubdomain}.${service.clusterId.split('/')[1]}`
@@ -42,7 +42,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     } else {
       setInvalid(false)
     }
-    teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.teamId}` : ''
+    teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
     const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
     defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
     const formData = { ...inData }
@@ -91,7 +91,10 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
 
   return (
     <div>
-      <h1>{data && data.serviceId ? `Service: ${data.name}` : 'New Service'}</h1>
+      <h1>
+        {data && data.id ? `Service: ${data.name}` : 'New Service'}
+        {isAdmin && team ? ` (team ${team.id})` : ''}
+      </h1>
       <Form
         key='createService'
         schema={schema}

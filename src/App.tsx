@@ -2,7 +2,7 @@ import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, useHistory, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
 import { schemaPromise, useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
@@ -32,6 +32,11 @@ const LoadedApp = ({ user }: Props): any => {
   const [session, sessionLoading]: any = useApi('getSession')
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
+  // const history = useHistory()
+  // const setOboTeamId = val => {
+  //   setLocalOboTeamId(val)
+  //   history.push(`/teams/${val}/services`)
+  // }
   setThemeType(themeType)
   if (sessionLoading) {
     return <Loader />
