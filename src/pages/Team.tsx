@@ -10,14 +10,15 @@ import Error from '../components/Error'
 
 interface SubmitProps {
   data: TeamModel
+  teamId: string
 }
 
-const Submit = ({ data }: SubmitProps): any => {
+const Submit = ({ data, teamId }: SubmitProps): any => {
   let method
   let filter
-  if (data.id) {
+  if (teamId) {
     method = 'editTeam'
-    filter = { teamId: data.id }
+    filter = { teamId }
   } else {
     method = 'createTeam'
   }
@@ -88,7 +89,7 @@ export default ({
           {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
           {teamId && deleteTeam && <Delete teamId={teamId} />}
           {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
-          {formdata && <Submit data={formdata} />}
+          {formdata && <Submit data={formdata} teamId={teamId} />}
         </>
       )}
     </PaperLayout>
