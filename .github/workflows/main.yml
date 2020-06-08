@@ -47,6 +47,9 @@ jobs:
           docker pull $E2E_IMG
           container_id=$(docker create $E2E_IMG)  # returns container ID
           docker cp $container_id:docker-compose.yml docker-compose.yml
+          docker cp $container_id:core.yaml core.yaml
+          docker cp $container_id:.env.api .env.api
+          docker cp $container_id:.env.web .env.web
           docker rm $container_id
           WEB_TAG=master docker-compose up --abort-on-container-exit
           cd -
