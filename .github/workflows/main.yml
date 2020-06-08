@@ -32,12 +32,21 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
+      - name: Creating e2e folder
+        if: "github.ref == 'refs/heads/master'"
+        run: mkdir ../e2e && cd ../e2e
+      - name: Checkout e2e
+        if: "github.ref == 'refs/heads/master'"
+        uses: actions/checkout@v2
+        with:
+          repository: redkubes/otomi-stack-e2e
+      - name: Run e2e
+        if: "github.ref == 'refs/heads/master'"
+        run: |
+          WEB_TAG=master docker-compose up --abort-on-container-exit
+          cd -
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
-      - name: Push tag 'latest'
-        run: |
-          docker tag $REG/$REPO:$TAG $REG/$REPO:latest
-          docker push $REG/$REPO:latest
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
         name: Tag and release
         run: |
@@ -49,3 +58,6 @@ jobs:
           git config --global user.name $GIT_USER
           echo "machine github.com login $GIT_USER password $GIT_PASSWORD" > ~/.netrc
           git tag -am "$COMMIT_MSG" $RELEASE_TAG && git push --follow-tags origin master
+          echo "Also tagging and pushing $REG/$REPO:latest"
+          docker tag $REG/$REPO:$TAG $REG/$REPO:latest
+          docker push $REG/$REPO:latest
