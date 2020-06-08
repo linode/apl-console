@@ -50,6 +50,7 @@ jobs:
           docker cp $container_id:core.yaml core.yaml
           docker cp $container_id:.env.api .env.api
           docker cp $container_id:.env.web .env.web
+          docker cp $container_id:nginx.conf nginx.conf
           docker rm $container_id
           WEB_TAG=master docker-compose up --abort-on-container-exit
           cd -
