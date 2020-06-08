@@ -39,6 +39,8 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
+      - name: Docker login
+        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
         run: |
@@ -48,8 +50,6 @@ jobs:
           docker rm $container_id
           WEB_TAG=master docker-compose up --abort-on-container-exit
           cd -
-      - name: Docker login
-        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
         name: Tag and release
         run: |
