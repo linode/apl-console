@@ -52,7 +52,7 @@ jobs:
           docker cp $container_id:.env.web .env.web
           docker cp $container_id:nginx.conf nginx.conf
           docker rm $container_id
-          WEB_TAG=master docker-compose up --abort-on-container-exit
+          WEB_TAG=master docker-compose up --exit-code-from e2e
           cd -
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
         name: Tag and release
