@@ -11,10 +11,10 @@ import { Team } from '../models'
 
 export default (): any => {
   const {
+    oboTeamId,
     user: { isAdmin, teamId },
     clusters,
   } = useSession()
-
   const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
   const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
@@ -25,10 +25,8 @@ export default (): any => {
     services,
     teams,
     clusters,
-  }
-
-  const team: Team = isAdmin ? undefined : find(data.teams, { teamId })
-
+  }      
+  const team: Team = find(data.teams, { teamId: isAdmin ? oboTeamId : teamId})
   return (
     <PaperLayout>
       {loading && <Loader />}

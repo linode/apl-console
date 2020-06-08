@@ -38,6 +38,19 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
+      - name: Creating e2e folder
+        if: "github.ref == 'refs/heads/master'"
+        run: mkdir ../e2e && cd ../e2e
+      - name: Checkout e2e
+        if: "github.ref == 'refs/heads/master'"
+        uses: actions/checkout@v2
+        with:
+          repository: redkubes/otomi-stack-e2e
+      - name: Run e2e
+        if: "github.ref == 'refs/heads/master'"
+        run: |
+          WEB_TAG=master docker-compose up --abort-on-container-exit
+          cd -
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
