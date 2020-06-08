@@ -9,9 +9,10 @@ env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
   REG: eu.gcr.io
   REPO: otomi-cloud/otomi-stack-web
+  E2E_IMG: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
   GIT_USER: redkubesbot
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  PW: '${{ secrets.DOCKER_PASSWORD }}'  
+  PW: '${{ secrets.DOCKER_PASSWORD }}'
 
 jobs:
   build-test-push-release:
@@ -22,7 +23,7 @@ jobs:
         run: |
           env
           P=$(env | grep PW)
-          echo $P 
+          echo $P
       - name: Set env
         run: |
           tag=$(echo $(basename $GITHUB_REF))
@@ -38,17 +39,13 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
-      - name: Creating e2e folder
-        if: "github.ref == 'refs/heads/master'"
-        run: mkdir ../e2e && cd ../e2e
-      - name: Checkout e2e
-        if: "github.ref == 'refs/heads/master'"
-        uses: actions/checkout@v2
-        with:
-          repository: redkubes/otomi-stack-e2e
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
         run: |
+          docker pull $E2E_IMG
+          container_id=$(docker create $E2E_IMG)  # returns container ID
+          docker cp $container_id:docker-compose.yml docker-compose.yml
+          docker rm $container_id
           WEB_TAG=master docker-compose up --abort-on-container-exit
           cd -
       - name: Docker login

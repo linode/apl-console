@@ -11,7 +11,7 @@ import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import { useSnackbar } from '../utils'
@@ -47,6 +47,7 @@ interface Props {
 }
 
 export default ({ teamId }: Props): any => {
+  const { pathname } = useLocation()
   const {
     user: { isAdmin },
   } = useSession()
@@ -77,14 +78,14 @@ export default ({ teamId }: Props): any => {
         <ListItemText primary='Dashboard' />
       </StyledMenuItem>
       {isAdmin && (
-        <StyledMenuItem component={Link} to='/apps/admin'>
+        <StyledMenuItem component={Link} to='/apps/admin' selected={pathname === '/apps/admin'}>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
           <ListItemText primary='Otomi Apps' />
         </StyledMenuItem>
       )}
-      <StyledMenuItem component={Link} to='/settings'>
+      <StyledMenuItem component={Link} to='/settings' selected={pathname === '/settings'}>
         <ListItemIcon>
           <SettingsIcon />
         </ListItemIcon>
@@ -99,19 +100,19 @@ export default ({ teamId }: Props): any => {
       <StyledListSubheader component='div' id='main-subheader'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      <StyledMenuItem component={Link} to='/clusters'>
+      <StyledMenuItem component={Link} to='/clusters' selected={pathname === '/clusters'}>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
       </StyledMenuItem>
-      <StyledMenuItem component={Link} to='/teams'>
+      <StyledMenuItem component={Link} to='/teams' selected={pathname === '/teams'}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
       </StyledMenuItem>
-      <StyledMenuItem component={Link} to='/services'>
+      <StyledMenuItem component={Link} to='/services' selected={pathname === '/services'}>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
@@ -122,25 +123,33 @@ export default ({ teamId }: Props): any => {
           <StyledListSubheader component='div' id='team-subheader'>
             <ListItemText primary={`Team ${teamId}`} />
           </StyledListSubheader>
-          <StyledMenuItem component={Link} to={`/teams/${teamId}`}>
+          <StyledMenuItem component={Link} to={`/teams/${teamId}`} selected={pathname === `/teams/${teamId}`}>
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
             <ListItemText primary='Overview' />
           </StyledMenuItem>
-          <StyledMenuItem component={Link} to={`/teams/${teamId}/secrets`}>
+          <StyledMenuItem
+            component={Link}
+            to={`/teams/${teamId}/secrets`}
+            selected={pathname === `/teams/${teamId}/secrets`}
+          >
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary='Secrets' />
           </StyledMenuItem>
-          <StyledMenuItem component={Link} to={`/teams/${teamId}/services`}>
+          <StyledMenuItem
+            component={Link}
+            to={`/teams/${teamId}/services`}
+            selected={pathname === `/teams/${teamId}/services`}
+          >
             <ListItemIcon>
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary='Services' />
           </StyledMenuItem>
-          <StyledMenuItem component={Link} to={`/apps/${teamId}`}>
+          <StyledMenuItem component={Link} to={`/apps/${teamId}`} selected={pathname === `/apps/${teamId}`}>
             <ListItemIcon>
               <AppsIcon />
             </ListItemIcon>

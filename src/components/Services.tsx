@@ -65,7 +65,7 @@ export default ({ services, team }: Props): any => {
 
   return (
     <>
-      <h1>{!team ? 'All Services' : `Team Services${isAdmin && oboTeamId ? ` (team ${oboTeamId})` : ''}`}</h1>
+      <h1>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
           <Button

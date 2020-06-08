@@ -6,7 +6,7 @@ export const useLocalStorage = (key: string, initialValue: any): [any, Dispatch<
     try {
       const item = window.localStorage.getItem(key)
 
-      return item ? JSON.parse(item) : initialValue
+      return item && item !== '' ? JSON.parse(item) : initialValue
     } catch (error) {
       console.error(error)
 
@@ -17,7 +17,7 @@ export const useLocalStorage = (key: string, initialValue: any): [any, Dispatch<
     try {
       const valueToStore = value instanceof Function ? value(storedValue) : value
       setStoredValue(valueToStore)
-      window.localStorage.setItem(key, JSON.stringify(valueToStore === undefined ? '' : valueToStore))
+      window.localStorage.setItem(key, valueToStore === undefined ? '' : JSON.stringify(valueToStore))
     } catch (error) {
       console.error(error)
     }

@@ -84,6 +84,7 @@ export default ({
     oboTeamId,
   } = useSession()
   const sessTeamId = isAdmin ? oboTeamId : userTeamId
+  if (!sessTeamId) return <Error code={500} />
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />

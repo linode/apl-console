@@ -225,6 +225,10 @@ export const mainStyles = makeStyles(theme => ({
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
+    '&.Mui-selected': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
+    },
     // '@global': {
     //   a: {
     //     textDeycoration: 'none',
