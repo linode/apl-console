@@ -12,7 +12,7 @@ env:
   E2E_IMG: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
   GIT_USER: redkubesbot
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  PW: '${{ secrets.DOCKER_PASSWORD }}'
+  PERCY_TOKEN: '${{ secrets.PERCY_TOKEN }}'
 
 jobs:
   build-test-push-release:
@@ -20,10 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show env
-        run: |
-          env
-          P=$(env | grep PW)
-          echo $P
+        run: env
       - name: Set env
         run: |
           tag=$(echo $(basename $GITHUB_REF))
