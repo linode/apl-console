@@ -1,6 +1,6 @@
 export default interface Team {
   name: string
-  teamId?: string
+  id?: string
   clusters: any[]
   domain?: string
 }

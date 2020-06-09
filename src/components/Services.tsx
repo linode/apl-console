@@ -65,7 +65,7 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
         {(isAdmin || team) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-service' : `/teams/${team.teamId}/create-service`}
+            to={isAdmin ? '/create-service' : `/teams/${team.id}/create-service`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'

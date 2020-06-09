@@ -1,7 +1,7 @@
 import { MenuItem, Select, Typography, Hidden } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles'
 import { useSession } from '../session-context'
 import { Team } from '../models'
 
@@ -9,7 +9,7 @@ interface Props {
   teams: Team[]
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   avatar: {
     marginRight: 10,
     width: theme.spacing(4),
@@ -35,22 +35,18 @@ export default ({ teams = [] }: Props): any => {
   }
   return (
     <>
-        <Avatar className={classes.avatar} />
-        <Hidden xsDown>
-          <Typography variant='body1' >
-            {email} <strong>({isAdmin ? `admin) obo team:` : `${teamId})`}</strong>
-          </Typography>
-        </Hidden>
+      <Avatar className={classes.avatar} />
+      <Hidden xsDown>
+        <Typography variant='body1'>
+          {email} <strong>({isAdmin ? `admin) obo team:` : `${teamId})`}</strong>
+        </Typography>
+      </Hidden>
       {isAdmin && (
-        <Select
-          value={teams.length && oboTeamId ? oboTeamId : ''}
-          onChange={handleChange}
-          className={classes.select}
-        >
+        <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select}>
           <MenuItem value={undefined}>-</MenuItem>
-          {teams.map(({ teamId: tid }): any => (
-            <MenuItem key={tid} value={tid}>
-              {tid.charAt(0).toUpperCase() + tid.substr(1)}
+          {teams.map(({ id }): any => (
+            <MenuItem key={id} value={id}>
+              {id.charAt(0).toUpperCase() + id.substr(1)}
             </MenuItem>
           ))}
         </Select>
