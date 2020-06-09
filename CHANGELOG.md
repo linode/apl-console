@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.38](https://github.com/redkubes/otomi-stack-web/compare/v0.2.37...v0.2.38) (2020-06-09)
+
+
+### Features
+
+* add i18n support ([3f95c7f](https://github.com/redkubes/otomi-stack-web/commit/3f95c7f74233b56f554b671ce88589e03db15efb))
+
+
+### Bug Fixes
+
+* e2e now using docker-compose from image ([3d5ed9f](https://github.com/redkubes/otomi-stack-web/commit/3d5ed9f914540715720deb711f3f3a08b0a5765e))
+* e2e now using docker-compose from image: [#2](https://github.com/redkubes/otomi-stack-web/issues/2) ([9bfc749](https://github.com/redkubes/otomi-stack-web/commit/9bfc74984495c9177cff7a192a82eb79976d6e08))
+* e2e now using docker-compose from image: [#3](https://github.com/redkubes/otomi-stack-web/issues/3) ([3cd9aef](https://github.com/redkubes/otomi-stack-web/commit/3cd9aef22972c5f185bd4b399e51f1d3c8aac079))
+* e2e now using docker-compose from image: [#4](https://github.com/redkubes/otomi-stack-web/issues/4) ([c51f155](https://github.com/redkubes/otomi-stack-web/commit/c51f155502eb987bf4980ababa7d449581cb82fe))
+* e2e now using docker-compose from image: [#4](https://github.com/redkubes/otomi-stack-web/issues/4) ([6def98e](https://github.com/redkubes/otomi-stack-web/commit/6def98e1fc04776ed1aa5ce1addf77ab79c71c29))
+* merge regression ([cad6385](https://github.com/redkubes/otomi-stack-web/commit/cad6385943fae7eaadeac9eef16ad71a2709b473))
+* removed build artifact ([a34d0d9](https://github.com/redkubes/otomi-stack-web/commit/a34d0d938088e927d31fe7b9b55d30fb855d01ff))
+* **dashboard:** fix bug on create service button ([da4a1a8](https://github.com/redkubes/otomi-stack-web/commit/da4a1a8d10e76ceff05af44c5bcf990e6a007d3e))
+* **dashboard:** fix path when creating service for admin ([9555f4d](https://github.com/redkubes/otomi-stack-web/commit/9555f4d4afb90d499fd93e011184827265d51ee1))
+
+
+### Styling
+
+* add new line at eof ([c60f067](https://github.com/redkubes/otomi-stack-web/commit/c60f06770b21a9845548f13d89aff077f5865397))
+
+
+### Others
+
+* add eslint config to enforce eof at newline at formatting ([9bc083e](https://github.com/redkubes/otomi-stack-web/commit/9bc083e30c1f949ea1d3df0f6464f919a53f5381))
+* **team.tsx:** remove unused code ([e007a60](https://github.com/redkubes/otomi-stack-web/commit/e007a60885718a0361171b912c85f39134719149))
+
+
+### Code Refactoring
+
+* add aliases to translation key import ([39b24a6](https://github.com/redkubes/otomi-stack-web/commit/39b24a6c89e66bb6ccb915f4ccd9d46d58d37462))
+* refactor i18n to use enums as translation keys ([55d598c](https://github.com/redkubes/otomi-stack-web/commit/55d598c2d048b2278499194352a616a5737e00dd))
+* refactor to remove sessTeamId in Dashboard ([e5f57db](https://github.com/redkubes/otomi-stack-web/commit/e5f57dbaaac01f9c817f67d93eb8692483b5bb31))
+
+
+### Build System
+
+* added e2e ([81eb559](https://github.com/redkubes/otomi-stack-web/commit/81eb559861df722d09f8524c324b86000240a2a9))
+
 ### [0.2.37](https://github.com/redkubes/otomi-stack-web/compare/v0.2.36...v0.2.37) (2020-05-20)
 
 
