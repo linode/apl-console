@@ -43,6 +43,7 @@ jobs:
         run: |
           docker pull $E2E_IMG
           container_id=$(docker create $E2E_IMG)  # returns container ID
+          mkdir /tmp/co && cd /tmp/co
           docker cp $container_id:docker-compose.yml docker-compose.yml
           docker cp $container_id:core.yaml core.yaml
           docker cp $container_id:.env.api .env.api
