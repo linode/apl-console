@@ -34,7 +34,7 @@ FROM nginx:1.16.1-alpine as prod
 
 # # Install app
 RUN mkdir /app
-WORKDIR /appmId
+WORKDIR /app
 
 
 COPY nginx.tmpl run.sh ./
