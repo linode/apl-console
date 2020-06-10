@@ -1,3 +1,4 @@
-#!/usr/bin/env bash
-
-docker run -v $PWD/src:/app/src -v $PWD/public
+#!/usr/bin/env sh
+cd docker
+docker-compose -f docker-compose.yml -f docker-compose-with-api.yml up -d
+:

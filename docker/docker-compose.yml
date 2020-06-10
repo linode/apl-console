@@ -2,8 +2,6 @@ version: '3.4'
 
 services:
   web:
-    depends_on:
-      - api
     build:
       context: ../
       target: dev
@@ -15,6 +13,8 @@ services:
       - ../:/app
       - '/app/node_modules'
     environment:
-      PUBLIC_URL: 'kubernetes.docker.internal:8080'
+      PUBLIC_URL: 'api:8080'
+    ports:
+      - 3000:3000
     expose:
       - 3000

@@ -106,6 +106,7 @@
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
     "dev": "run-p start watch:ts",
+    "e2e": "cd docker && sh ./e2e.sh && cd -",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
