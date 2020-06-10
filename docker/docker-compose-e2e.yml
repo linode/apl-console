@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  web:
+    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-latest}
+    expose:
+      - '80'
+    depends_on:
+      - api
+  proxy:
+    image: nginx:latest
+    expose:
+      - 3001:80
+    depends_on:
+      - web
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  e2e:
+    image: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
+    environment:
+      - CYPRESS_baseUrl=http://proxy:80
+    depends_on:
+      - proxy

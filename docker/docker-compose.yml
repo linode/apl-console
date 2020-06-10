@@ -2,12 +2,19 @@ version: '3.4'
 
 services:
   web:
+    depends_on:
+      - api
     build:
-      context: ./
+      context: ../
       target: dev
-    image: web-dev
+    # image: web-dev
     command: npm run dev
     volumes:
       # we only mount our src folder into the container for hotreload to work
       # if we would mount the entire ./builder into the container that will interfere with locally built node _modules
-      - ./:/app
+      - ../:/app
+      - '/app/node_modules'
+    environment:
+      PUBLIC_URL: 'kubernetes.docker.internal:8080'
+    expose:
+      - 3000

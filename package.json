@@ -105,7 +105,7 @@
     "build": "react-scripts build",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
-    "dev": "run-p 'start --no-cache' watch:ts",
+    "dev": "run-p start watch:ts",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
