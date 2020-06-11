@@ -26,7 +26,7 @@ export default (): any => {
     teams,
     clusters,
   }      
-  const team: Team = find(data.teams, { teamId: isAdmin ? oboTeamId : teamId})
+  const team: Team = find(data.teams, { id: isAdmin ? oboTeamId : teamId})
   return (
     <PaperLayout>
       {loading && <Loader />}
