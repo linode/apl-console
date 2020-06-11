@@ -10,7 +10,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
+  "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@fortawesome/fontawesome-free": "^5.12.1",
@@ -21,6 +21,7 @@
     "@material-ui/styles": "^4.9.6",
     "@rjsf/core": "^2.0.0-alpha.6",
     "@rjsf/material-ui": "^2.0.0-alpha.4",
+    "@types/cucumber": "^6.0.1",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^24.9.1",
@@ -47,6 +48,9 @@
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "eslint-plugin-unused-imports": "^0.1.2",
+    "http-proxy-middleware": "^0.20.0",
     "husky": "^3.1.0",
     "i18next": "^19.4.4",
     "lint-staged": "^9.5.0",
@@ -75,11 +79,6 @@
     "typeface-roboto": "0.0.75",
     "typescript": "^3.8.3",
     "yup": "^0.27.0"
-  },
-  "devDependencies": {
-    "eslint-plugin-react-hooks": "^3.0.0",
-    "eslint-plugin-unused-imports": "^0.1.2",
-    "http-proxy-middleware": "^0.20.0"
   },
   "husky": {
     "hooks": {
