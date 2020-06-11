@@ -9,9 +9,10 @@ import RLink from './Link'
 import MuiLink from './MuiLink'
 
 const getServiceLink = (isAdmin, ownerId) => (row): any => {
-  if (!(isAdmin || row.teamId === ownerId)) return row.name
-  const { serviceId, teamId, name } = row
-  const link = `/teams/${teamId}/services/${encodeURIComponent(serviceId)}`
+  const { teamId, id, name } = row
+  if (!(isAdmin || teamId === ownerId)) return name
+
+  const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return <RLink to={link}>{name}</RLink>
 }
 

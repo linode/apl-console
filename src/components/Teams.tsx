@@ -26,18 +26,14 @@ export default ({ teams }: Props): any => {
     {
       id: 'name',
       label: 'Team Name',
-      renderer: row => (isAdmin ? <RLink to={`/teams/${row.teamId}`}>{row.name}</RLink> : row.name),
+      renderer: row => (isAdmin ? <RLink to={`/teams/${row.id}`}>{row.id}</RLink> : row.id),
     },
     {
       id: 'dashboard',
       label: 'Dashboard',
       renderer: row => (
-        <MuiLink
-          href={`https://apps.${teamPrefix}${row.teamId}.${cluster.domain}/otomi/`}
-          target='_blank'
-          rel='noopener'
-        >
-          {`apps.${teamPrefix}${row.teamId}.${cluster.domain}`}
+        <MuiLink href={`https://apps.${teamPrefix}${row.id}.${cluster.domain}/otomi/`} target='_blank' rel='noopener'>
+          {`apps.${teamPrefix}${row.id}.${cluster.domain}`}
         </MuiLink>
       ),
     },

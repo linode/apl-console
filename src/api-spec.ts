@@ -79,7 +79,7 @@ export function getEditableSchemaAttributes(schema: Schema, role: string): strin
 
 export function getTeamUiSchema(schema: Schema, role: string, crudMethod: string): any {
   const uiSchema = {
-    teamId: { 'ui:widget': 'hidden' },
+    id: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
     clusters: {
       'ui:widget': 'checkboxes',
@@ -107,7 +107,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
   const uiSchema = {
     serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
-    serviceId: { 'ui:widget': 'hidden' },
+    id: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': 'radio',
       'ui:options': {
