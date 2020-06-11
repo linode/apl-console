@@ -1,8 +1,9 @@
 .cache
 .git
 .history
+.npm
 .vscode
 bin
 build
-dist
+public
 node_modules
