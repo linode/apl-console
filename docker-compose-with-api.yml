@@ -3,8 +3,8 @@ version: '3.4'
 services:
   api:
     image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-latest}
-    env_file: './.env.api'
+    env_file: 'docker-compose/.env.api'
     expose:
       - 8080
     volumes:
-      - ./core.yaml:/etc/otomi/core.yaml
+      - $PWD/docker-compose/core.yaml:/etc/otomi/core.yaml
