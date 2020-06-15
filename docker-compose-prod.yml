@@ -1,0 +1,7 @@
+version: '3.4'
+
+services:
+  web:
+    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-latest}
+    expose:
+      - 80

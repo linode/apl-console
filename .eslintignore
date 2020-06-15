@@ -4,3 +4,4 @@ node_modules
 src/setupProxy.js
 commitlint.config.js
 jest.config.js
+cypress/**/*.js

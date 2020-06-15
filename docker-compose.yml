@@ -2,12 +2,18 @@ version: '3.4'
 
 services:
   web:
+    # network_mode: 'host'
     build:
-      context: ./
+      context: .
       target: dev
-    image: web-dev
-    command: npm run dev
+    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-latest}
+    container_name: web
+    command: npm run dev:docker
     volumes:
-      # we only mount our src folder into the container for hotreload to work
-      # if we would mount the entire ./builder into the container that will interfere with locally built node _modules
       - ./:/app
+      - .npm:/root/.npm
+    ports:
+      - 3000:3000
+    environment:
+      PORT: 3000
+      PUBLIC_URL: 'kubernetes.docker.internal:8080'

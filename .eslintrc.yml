@@ -3,7 +3,8 @@ root: true
 
 parser: '@typescript-eslint/parser'
 parserOptions:
-  project: ['./tsconfig.json']
+  project: ['./tsconfig.json', './cypress/tsconfig.json']
+
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/eslint-recommended
@@ -19,6 +20,11 @@ extends:
   - plugin:import/errors
   - plugin:import/warnings
   - plugin:import/typescript
+  - plugin:cypress/recommended
+  - plugin:chai-friendly/recommended
+
+globals:
+  cy: true
 
 plugins:
   - react
@@ -46,6 +52,7 @@ rules:
   '@typescript-eslint/no-explicit-any': off
   '@typescript-eslint/explicit-function-return-type': off
   '@typescript-eslint/no-unused-vars': warn
+  import/no-extraneous-dependencies: off
   eol-last: ['error', 'always']
   import/extensions: off
   no-shadow: 0
@@ -53,3 +60,4 @@ rules:
   prefer-destructuring: 0
   react/jsx-filename-extension: off
   react/jsx-props-no-spreading: off
+  spaced-comment: [2, 'always', { 'exceptions': ['-'], 'markers': ['/'] }]

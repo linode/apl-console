@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  proxy:
+    image: nginx:latest
+    container_name: proxy
+    ports:
+      - 3001:80
+    expose:
+      - 80
+    depends_on:
+      - api
+      - web
+    volumes:
+      - $PWD/docker-compose/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  e2e:
+    image: otomi/cypress:latest
+    container_name: cypress
+    # entrypoint: /bin/bash
+    volumes:
+      - ./cypress:/cypress
+      - ./cypress.json:/cypress.json
+    environment:
+      - PERCY_TOKEN=${PERCY_TOKEN}
+      - CYPRESS_baseUrl=http://proxy:80
+    depends_on:
+      - proxy

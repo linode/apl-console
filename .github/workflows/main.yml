@@ -12,7 +12,15 @@ env:
   E2E_IMG: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
   GIT_USER: redkubesbot
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-  PW: '${{ secrets.DOCKER_PASSWORD }}'
+  PERCY_TOKEN: '${{ secrets.PERCY_TOKEN }}'
+
+# RedKubes default Workflow
+#
+# Given facts:
+# * We don't allow manual tagging, but let the workflow create them after tests have passed.
+# * We don't let workflows be triggered by events coming from tags
+# * We use `npm run release` (without automated tagging) which only bumps version and creates changelog and commit message with title 'chore(release): v${semverVersion}'
+# * Pipeline detects the release title and after tests pass, creates artifacts (images) and makes full tag copies to allow release patching.
 
 jobs:
   build-test-push-release:
@@ -20,10 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show env
-        run: |
-          env
-          P=$(env | grep PW)
-          echo $P
+        run: env
       - name: Set env
         run: |
           tag=$(echo $(basename $GITHUB_REF))
@@ -41,13 +46,7 @@ jobs:
           image_tag: ${{ env.TAG }}
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
-        run: |
-          docker pull $E2E_IMG
-          container_id=$(docker create $E2E_IMG)  # returns container ID
-          docker cp $container_id:docker-compose.yml docker-compose.yml
-          docker rm $container_id
-          WEB_TAG=master docker-compose up --abort-on-container-exit
-          cd -
+        run: bin/dc.sh e2e
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
