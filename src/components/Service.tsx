@@ -78,7 +78,7 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
 
   return (
     <div>
-      <h1>
+      <h1 data-cy='h1-service-page'>
         {data && data.id ? `Service: ${data.name}` : 'New Service'}
         {isAdmin && team ? ` (team ${team.id})` : ''}
       </h1>
