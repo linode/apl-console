@@ -14,3 +14,5 @@ yarn-error.log*
 nginx.conf
 /cypress/videos
 /cypress/screenshots
+/cypress/**/*.js
+!/cypress/**/index.js
