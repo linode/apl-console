@@ -2,16 +2,10 @@ import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
-import TeamModel from '../models/Team'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
-
-interface SubmitProps {
-  data: TeamModel
-  teamId: string
-}
 
 interface EditTeamProps {
   teamId: string

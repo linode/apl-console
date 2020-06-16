@@ -1,5 +1,8 @@
 version: '3.4'
 
+volumes:
+  npm-cache:
+    external: false
 services:
   web:
     # network_mode: 'host'

@@ -36,6 +36,7 @@ FROM nginx:1.16.1-alpine as prod
 RUN mkdir /app
 WORKDIR /app
 
+
 COPY nginx.tmpl run.sh ./
 RUN chmod +x /app/run.sh
 

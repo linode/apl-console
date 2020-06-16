@@ -79,6 +79,7 @@ export function getEditableSchemaAttributes(schema: Schema, role: string): strin
 
 export function getTeamUiSchema(schema: Schema, role: string, crudMethod: string): any {
   const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
     clusters: {
       'ui:widget': 'checkboxes',

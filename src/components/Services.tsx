@@ -10,8 +10,9 @@ import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
 const getServiceLink = (isAdmin, ownerId) => (row): any => {
-  if (!(isAdmin || row.teamId === ownerId)) return row.name
-  const { id, teamId, name } = row
+  const { teamId, id, name } = row
+  if (!(isAdmin || teamId === ownerId)) return name
+
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return <RLink to={link}>{name}</RLink>
 }
