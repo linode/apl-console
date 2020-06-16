@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps, Redirect } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Secrets from '../components/Secrets'
 import Error from '../components/Error'
@@ -29,7 +29,7 @@ export default ({
     { secretId: deleteId, teamId: sessTeamId },
     null,
   )
-  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
+  if (!deleteLoading && (deleteRes || deleteErr)) return <Redirect to={`/teams/${sessTeamId}/secrets`} />
 
   return (
     <PaperLayout>

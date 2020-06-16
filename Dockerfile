@@ -18,6 +18,7 @@ ENV NODE_ENV=test
 
 COPY ts*.json .es* ./
 COPY src src
+COPY cypress cypress
 COPY public public
 
 # ARG CI=true
