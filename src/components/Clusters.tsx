@@ -31,7 +31,7 @@ export default ({ clusters }: Props): any => {
   ]
   return (
     <>
-      <h1>Clusters</h1>
+      <h1 data-cy='h1-clusters-page'>Clusters</h1>
       <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='id' />
     </>
   )

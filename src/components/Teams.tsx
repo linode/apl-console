@@ -51,7 +51,7 @@ export default ({ teams }: Props): any => {
 
   return (
     <>
-      <h1>Teams</h1>
+      <h1 data-cy='h1-teams-page'>Teams</h1>
       {isAdmin && (
         <Box mb={1}>
           <Button

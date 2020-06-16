@@ -93,7 +93,7 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
             <Link 
               component={RouterLink} 
               to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
-              data-cy={`link-dashboard-${item.name}`}
+              data-cy={`link-${item.name}-count`}
               >
               {item.data && item.data.length}
             </Link>
