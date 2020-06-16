@@ -10,9 +10,9 @@ import Error from '../components/Error'
 const Submit = ({ data }: any): any => {
   let method
   let filter
-  if (data.teamId) {
+  if (data.id) {
     method = 'editTeam'
-    filter = { teamId: data.teamId }
+    filter = { teamId: data.id }
   } else {
     method = 'createTeam'
   }
