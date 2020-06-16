@@ -16,7 +16,7 @@ services:
   e2e:
     image: otomi/cypress:latest
     container_name: cypress
-    # entrypoint: /bin/bash
+    entrypoint: cypress run
     volumes:
       - ./cypress:/cypress
       - ./cypress.json:/cypress.json

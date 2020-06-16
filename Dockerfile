@@ -20,6 +20,7 @@ COPY ts*.json .es* ./
 COPY src src
 COPY cypress cypress
 COPY public public
+COPY bin bin
 
 # ARG CI=true
 RUN npm run lint

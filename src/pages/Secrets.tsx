@@ -29,7 +29,7 @@ export default ({
     { secretId: deleteId, teamId: sessTeamId },
     null,
   )
-  if (!deleteLoading && (deleteRes || deleteErr)) return <Redirect to={`/teams/${sessTeamId}/secrets`} />
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
 
   return (
     <PaperLayout>

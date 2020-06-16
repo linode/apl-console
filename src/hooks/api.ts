@@ -31,6 +31,8 @@ const checkDirty = (method): boolean => {
 }
 
 export const useApi = (method: string, active = true, ...args: any[]): ApiHook => {
+  const signature = `args.length:${args.length}/${args.join(',').length}`
+  let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
   console.log('active: ', active)
   // const { enqueueSnackbar } = useSnackbar()
@@ -57,6 +59,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
             console.error(err)
           }
         } else {
+          if (canceled) return
           const value = await client[method].call(client, ...args)
           checkDirty(method)
           setValue(value.data)
@@ -69,8 +72,11 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
         setError(e)
       }
     })()
+    return () => {
+      canceled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [method, active, isAdmin])
+  }, [method, signature, active, isAdmin])
 
   return [value, loading, error]
 }
