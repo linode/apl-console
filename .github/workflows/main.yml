@@ -46,7 +46,7 @@ jobs:
           image_tag: ${{ env.TAG }}
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
-        run: bin/dc.sh e2e
+        run: bin/dc.sh e2e-ci
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - if: "contains(github.event.head_commit.message, 'chore(release)')"
