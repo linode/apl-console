@@ -5,7 +5,6 @@ import PaperLayout from '../layouts/Paper'
 
 export default (): any => {
   const [teams, loading, error]: any = useApi('getTeams')
-
   return (
     <PaperLayout>
       {loading && <Loader />}

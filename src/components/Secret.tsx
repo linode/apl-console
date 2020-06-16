@@ -11,7 +11,6 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
-  team: any
   secret?: Secret
   clusters: [any]
 }
@@ -59,8 +58,6 @@ export default ({ onSubmit, onDelete = null, secret = null }: Props): any => {
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
-          &nbsp;
-          {secret && secret.id && <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='secret' />}
         </Box>
       </Form>
     </div>

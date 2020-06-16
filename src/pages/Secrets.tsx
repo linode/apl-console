@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Secrets from '../components/Secrets'
@@ -21,13 +21,21 @@ export default ({
     user: { isAdmin, teamId: userTeamId },
   } = useSession()
   const sessTeamId = isAdmin ? oboTeamId : userTeamId
-  const [secrets, loading, error]: any = useApi('getSecrets', { teamId })
-  const [team, teamLoading, teamError]: any = useApi('getTeam', sessTeamId)
+  const [secrets, loading, error]: any = useApi('getSecrets', true, { teamId })
+  const [deleteId, setDeleteId]: any = useState()
+  const [deleteRes, deleteLoading, deleteErr] = useApi(
+    'deleteSecret',
+    !!deleteId,
+    { secretId: deleteId, teamId: sessTeamId },
+    null,
+  )
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
+
   return (
     <PaperLayout>
-      {(loading || teamLoading) && <Loader />}
-      {secrets && team && <Secrets secrets={secrets} team={team} />}
-      {(error || teamError) && <Error code={404} />}
+      {loading && <Loader />}
+      {secrets && <Secrets secrets={secrets} setDeleteId={setDeleteId} />}
+      {(error || deleteErr) && <Error code={404} />}
     </PaperLayout>
   )
 }

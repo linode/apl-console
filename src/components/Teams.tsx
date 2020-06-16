@@ -69,7 +69,7 @@ export default ({ teams }: Props): any => {
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='teamId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='id' />
     </>
   )
 }

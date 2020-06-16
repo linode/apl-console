@@ -27,7 +27,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
   return (
     <>
       <Dialog open>
-        <DialogTitle id='deleteResource'>
+        <DialogTitle id='delResource'>
           Delete {resourceName} {resourceType}{' '}
         </DialogTitle>
         <DialogContent>

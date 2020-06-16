@@ -30,8 +30,9 @@ const checkDirty = (method): boolean => {
   return dirty
 }
 
-export const useApi = (method: string, ...args: any[]): ApiHook => {
+export const useApi = (method: string, active = true, ...args: any[]): ApiHook => {
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
+  console.log('active: ', active)
   // const { enqueueSnackbar } = useSnackbar()
   const {
     user: { isAdmin },
@@ -41,6 +42,11 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
   useEffect(() => {
     // tslint:disable-next-line: no-floating-promises
     ;(async (): Promise<any> => {
+      if (!active) {
+        // setError(undefined)
+        setValue(undefined)
+        return
+      }
       try {
         if (!client[method]) {
           const err = `Api method does not exist: ${method}`
@@ -64,7 +70,7 @@ export const useApi = (method: string, ...args: any[]): ApiHook => {
       }
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [method, isAdmin])
+  }, [method, active, isAdmin])
 
   return [value, loading, error]
 }

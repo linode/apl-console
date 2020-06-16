@@ -24,20 +24,7 @@ const Submit = ({ teamId, data }: SubmitProps): any => {
     method = 'createService'
     filter = { teamId }
   }
-  const [result] = useApi(method, filter, data)
-  if (result) {
-    return <Redirect to={`/teams/${teamId}/services`} />
-  }
-  return null
-}
-
-interface DeleteProps {
-  teamId: string
-  serviceId: string
-}
-
-const Delete = ({ teamId, serviceId }: DeleteProps): any => {
-  const [result] = useApi('deleteService', { teamId, serviceId }, null)
+  const [result] = useApi(method, true, filter, data)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
   }
@@ -54,7 +41,7 @@ interface EditProps {
 }
 
 const EditService = ({ teamId, serviceId, team, clusters, onSubmit, onDelete }: EditProps): any => {
-  const [service, serviceLoading, error]: any = useApi('getService', {
+  const [service, serviceLoading, error]: any = useApi('getService', true, {
     teamId,
     serviceId,
   })
@@ -90,12 +77,17 @@ export default ({
     err = <Error code={401} />
   }
   const tid = teamId || sessTeamId
-  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', tid)
+  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', true, tid)
   if (error) {
     return <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
   }
   const [formdata, setFormdata] = useState()
-  const [deleteService, setDeleteService] = useState()
+  const [deleteId, setDeleteId]: any = useState()
+  const [deleteRes, deleteLoading, deleteErr] = useApi('deleteService', !!deleteId, { teamId, serviceId }, null)
+  if (deleteRes) {
+    return <Redirect to={`/teams/${teamId}/services`} />
+  }
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
 
   return (
     <PaperLayout>
@@ -110,10 +102,9 @@ export default ({
               team={team}
               clusters={clusters}
               onSubmit={setFormdata}
-              onDelete={setDeleteService}
+              onDelete={setDeleteId}
             />
           )}
-          {team && serviceId && !formdata && deleteService && <Delete teamId={tid} serviceId={serviceId} />}
           {team && !serviceId && !formdata && (
             <Service team={team} service={formdata} clusters={clusters} onSubmit={setFormdata} />
           )}

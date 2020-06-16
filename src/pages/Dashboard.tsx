@@ -16,7 +16,7 @@ export default (): any => {
     clusters,
   } = useSession()
   const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
-  const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
+  const [services, servicesLoading, servicesError]: any = useApi(servicesApi, true, isAdmin ? undefined : teamId)
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
 
   const error = servicesError || teamsError

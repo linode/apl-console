@@ -8,32 +8,17 @@ import { Team } from '../models'
 import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 
-interface DelProps {
-  name: string
-  namespace?: string
-  setDel: CallableFunction
-}
-
-const Delete = ({ name, setDel, namespace }: DelProps) => {
-  const [result] = useApi('deleteSecret', { name, namespace }, null)
-  if (result) {
-    setDel()
-  }
-  return null
-}
-
 interface Props {
   secrets: any[]
-  team: Team
+  setDeleteId: CallableFunction
 }
 
-export default ({ secrets, team }: Props): any => {
+export default ({ secrets, setDeleteId }: Props): any => {
   const {
     user: { teamId, isAdmin },
     oboTeamId,
   } = useSession()
   const sessTeamId = isAdmin ? oboTeamId : teamId
-  const [del, setDel] = useState()
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -44,28 +29,23 @@ export default ({ secrets, team }: Props): any => {
       label: 'Type',
     },
     {
-      id: 'name',
+      id: 'delete',
       label: 'Delete',
       renderer: row => (
-        <Button color='primary' onClick={() => setDel(row.name)} startIcon={<DeleteIcon />} variant='contained'>
+        <Button color='primary' onClick={() => setDeleteId(row.id)} startIcon={<DeleteIcon />} variant='contained'>
           Delete
         </Button>
       ),
     },
-    {
-      id: 'cloud',
-      label: 'Cloud',
-    },
   ]
   return (
     <>
-      {del && <Delete name={del} setDel={setDel} />}
       <h1>Secrets{isAdmin && sessTeamId ? ` (team ${sessTeamId})` : ''}</h1>
       <Box mb={1}>
-        {(isAdmin || team) && (
+        {(isAdmin || teamId) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-secret' : `/teams/${team.id}/create-secret`}
+            to={isAdmin ? '/create-secret' : `/teams/${teamId}/create-secret`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
@@ -75,7 +55,7 @@ export default ({ secrets, team }: Props): any => {
           </Button>
         )}
       </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={secrets} idKey='name' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={secrets} idKey='id' />
     </>
   )
 }

@@ -13,34 +13,6 @@ interface SubmitProps {
   teamId: string
 }
 
-const Submit = ({ data, teamId }: SubmitProps): any => {
-  let method
-  let filter
-  if (teamId) {
-    method = 'editTeam'
-    filter = { teamId }
-  } else {
-    method = 'createTeam'
-  }
-  const [result] = useApi(method, filter, data)
-  if (result) {
-    return <Redirect to='/teams' />
-  }
-  return null
-}
-
-interface DeleteProps {
-  teamId: string
-}
-
-const Delete = (filter: DeleteProps): any => {
-  const [result] = useApi('deleteTeam', filter, null)
-  if (result) {
-    return <Redirect to='/teams' />
-  }
-  return null
-}
-
 interface EditTeamProps {
   teamId: string
   clusters: [string]
@@ -49,7 +21,7 @@ interface EditTeamProps {
 }
 
 const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: EditTeamProps): any => {
-  const [team, teamLoading, error]: any = useApi('getTeam', teamId)
+  const [team, teamLoading, error]: any = useApi('getTeam', true, teamId)
 
   if (teamLoading) {
     return <Loader />
@@ -78,18 +50,25 @@ export default ({
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
   }
-
   const [formdata, setFormdata] = useState()
-  const [deleteTeam, setDeleteTeam] = useState()
+  const [createRes] = useApi(teamId ? 'editTeam' : 'createTeam', !!formdata, { teamId }, formdata)
+  if (createRes) {
+    return <Redirect to='/teams' />
+  }
+
+  const [deleteId, setDeleteId]: any = useState()
+  const [deleteRes, deleteLoading, deleteErr] = useApi('deleteTeam', !!deleteId, { teamId: deleteId }, null)
+  if (deleteRes) {
+    return <Redirect to='/teams' />
+  }
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
 
   return (
     <PaperLayout>
       {err || (
         <>
-          {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
-          {teamId && deleteTeam && <Delete teamId={teamId} />}
+          {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteId} />}
           {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
-          {formdata && <Submit data={formdata} teamId={teamId} />}
         </>
       )}
     </PaperLayout>

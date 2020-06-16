@@ -14,17 +14,6 @@ interface TeamServiceProps {
   teamId: string
 }
 
-const TeamServices = ({ services, loading, error, teamId }: TeamServiceProps) => {
-  const [team, teamLoading, teamError]: any = useApi('getTeam', teamId)
-  return (
-    <>
-      {(loading || teamLoading) && <Loader />}
-      {services && team && <Services services={services} team={team} />}
-      {(error || teamError) && <Error code={404} />}
-    </>
-  )
-}
-
 interface Params {
   teamId?: string
 }
@@ -35,18 +24,15 @@ export default ({
   },
 }: RouteComponentProps<Params>): any => {
   const servicesApi = teamId ? 'getTeamServices' : 'getAllServices'
-  const [services, loading, error]: any = useApi(servicesApi, teamId)
+  const [services, loading, error]: any = useApi(servicesApi, true, teamId)
+  const [team, teamLoading]: any = useApi('getTeam', !!teamId, teamId)
   return (
     <PaperLayout>
-      {!teamId ? (
-        <>
-          {loading && <Loader />}
-          {services && <Services services={services} />}
-          {error && <Error code={404} />}
-        </>
-      ) : (
-        <TeamServices services={services} loading={loading} error={error} teamId={teamId} />
-      )}
+      <>
+        {(loading || teamLoading) && <Loader />}
+        {services && <Services services={services} team={team} />}
+        {error && <Error code={404} />}
+      </>
     </PaperLayout>
   )
 }

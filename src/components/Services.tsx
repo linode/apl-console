@@ -80,7 +80,7 @@ export default ({ services, team }: Props): any => {
           </Button>
         )}
       </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='serviceId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
     </>
   )
 }
