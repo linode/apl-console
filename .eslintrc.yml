@@ -1,23 +1,33 @@
 ---
 root: true
 
+parser: '@typescript-eslint/parser'
 parserOptions:
-  ecmaVersion: 9
+  project: ['./tsconfig.json']
 
 extends:
   - eslint:recommended
+  - plugin:@typescript-eslint/eslint-recommended
+  - plugin:@typescript-eslint/recommended
+  - plugin:@typescript-eslint/recommended-requiring-type-checking
   - plugin:react/recommended
   - plugin:react-hooks/recommended
+  - plugin:jest/recommended
   - airbnb
   - prettier
   - prettier/react
+  - prettier/@typescript-eslint
   - plugin:import/errors
   - plugin:import/warnings
+  - plugin:import/typescript
+  - plugin:chai-friendly/recommended
 
 plugins:
   - react
   - import
+  - jest
   - prettier
+  - '@typescript-eslint'
 
 settings:
   import/resolver:
@@ -28,8 +38,14 @@ env:
   es6: true
   browser: true
   node: true
+  jest: true
+  jest/globals: true
 
 rules:
+  '@typescript-eslint/member-delimiter-style': off
+  '@typescript-eslint/no-explicit-any': off
+  '@typescript-eslint/explicit-function-return-type': off
+  '@typescript-eslint/no-unused-vars': warn
   import/no-extraneous-dependencies: off
   eol-last: ['error', 'always']
   import/extensions: off
@@ -38,39 +54,3 @@ rules:
   prefer-destructuring: 0
   react/jsx-filename-extension: off
   react/jsx-props-no-spreading: off
-
-overrides:
-  # typescript
-  - files: ['**/*.ts']
-    parser: '@typescript-eslint/parser'
-    parserOptions:
-      project: ['./tsconfig.json']
-    extends:
-      # - plugin:@typescript-eslint/eslint-recommended
-      - plugin:@typescript-eslint/recommended
-      - plugin:@typescript-eslint/recommended-requiring-type-checking
-      - prettier/@typescript-eslint
-      - plugin:import/typescript
-    plugins:
-      - '@typescript-eslint'
-    rules:
-      '@typescript-eslint/member-delimiter-style': off
-      '@typescript-eslint/no-explicit-any': off
-      '@typescript-eslint/explicit-function-return-type': off
-      '@typescript-eslint/no-unused-vars': warn
-  # jest overrides
-  - files: ['**/*.spec.ts']
-    extends:
-      - plugin:jest/recommended
-      - plugin:chai-friendly/recommended
-    plugins:
-      - jest
-    env:
-      jest: true
-      jest/globals: true
-    rules:
-      jest/no-disabled-tests: warn
-      jest/no-focused-tests: error
-      jest/no-identical-title: error
-      jest/prefer-to-have-length: warn
-      jest/valid-expect: error

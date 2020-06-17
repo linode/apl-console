@@ -114,7 +114,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
           </Button>
           &nbsp;
           {service && service.id && (
-            <DeleteButton onDelete={onDelete} resourceName={data.name} resourceType='service' />
+            <DeleteButton onDelete={() => onDelete(service.id)} resourceName={data.name} resourceType='service' />
           )}
         </Box>
       </Form>

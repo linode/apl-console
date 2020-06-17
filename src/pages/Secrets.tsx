@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { RouteComponentProps, Redirect } from 'react-router-dom'
+import { RouteComponentProps, Redirect, useHistory } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Secrets from '../components/Secrets'
 import Error from '../components/Error'
@@ -20,6 +20,7 @@ export default ({
     oboTeamId,
     user: { isAdmin, teamId: userTeamId },
   } = useSession()
+  const history = useHistory()
   const sessTeamId = isAdmin ? oboTeamId : userTeamId
   const [secrets, loading, error]: any = useApi('getSecrets', true, { teamId })
   const [deleteId, setDeleteId]: any = useState()
@@ -29,7 +30,10 @@ export default ({
     { secretId: deleteId, teamId: sessTeamId },
     null,
   )
-  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
+  if (!deleteLoading && (deleteRes || deleteErr)) {
+    // @rtodo: fix this ugly hack, but how?
+    window.location.reload()
+  }
 
   return (
     <PaperLayout>

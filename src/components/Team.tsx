@@ -58,7 +58,9 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
             Submit
           </Button>
           &nbsp;
-          {team && team.id && <DeleteButton onDelete={onDelete} resourceName={team.name} resourceType='team' />}
+          {team && team.id && (
+            <DeleteButton onDelete={() => onDelete(team.id)} resourceName={team.name} resourceType='team' />
+          )}
         </Box>
       </Form>
     </div>

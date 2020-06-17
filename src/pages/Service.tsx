@@ -84,10 +84,10 @@ export default ({
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [deleteRes, deleteLoading, deleteErr] = useApi('deleteService', !!deleteId, { teamId, serviceId }, null)
-  if (deleteRes) {
+  if (!deleteLoading && (deleteRes || deleteErr)) {
     return <Redirect to={`/teams/${teamId}/services`} />
   }
-  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
+  // if (!deleteLoading && deleteErr) setDeleteId(false)
 
   return (
     <PaperLayout>

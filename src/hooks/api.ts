@@ -34,7 +34,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
   const signature = `args.length:${args.length}/${args.join(',').length}`
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
-  console.log('active: ', active)
+  console.log(`method: ${method}, active: ${active}`)
   // const { enqueueSnackbar } = useSnackbar()
   const {
     user: { isAdmin },

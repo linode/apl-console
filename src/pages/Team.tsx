@@ -52,10 +52,10 @@ export default ({
 
   const [deleteId, setDeleteId]: any = useState()
   const [deleteRes, deleteLoading, deleteErr] = useApi('deleteTeam', !!deleteId, { teamId: deleteId }, null)
-  if (deleteRes) {
+  if (!deleteLoading && (deleteRes || deleteErr)) {
     return <Redirect to='/teams' />
   }
-  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
+  // if (!deleteLoading && deleteErr) setDeleteId(false)
 
   return (
     <PaperLayout>
