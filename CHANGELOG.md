@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.39](https://github.com/redkubes/otomi-stack-web/compare/v0.2.38...v0.2.39) (2020-06-17)
+
+
+### Features
+
+* render settings form ([d9a0009](https://github.com/redkubes/otomi-stack-web/commit/d9a000990a286c7b93214458b9521349ad25ec5a))
+
+
+### Bug Fixes
+
+* cypress cruft + workflow e2e ([b245700](https://github.com/redkubes/otomi-stack-web/commit/b2457006bfe3a2d07a5cdd20c16a363ad9fe4e93))
+* cypress working, api hook conditional ([46dc748](https://github.com/redkubes/otomi-stack-web/commit/46dc748f049e23a086a590ee4a67c71b0d882880))
+* dockerignore ([9b7c8e0](https://github.com/redkubes/otomi-stack-web/commit/9b7c8e02dfaaaa1a8c8acda31d2686670cf18009))
+* e2e ([27d9d61](https://github.com/redkubes/otomi-stack-web/commit/27d9d61ba880ebb81fa5b027baeb94d1462e9be1))
+* e2e now using docker-compose from image ([50830a4](https://github.com/redkubes/otomi-stack-web/commit/50830a4a7f1fbb2a46271103dcd8c5aff964a05a))
+* e2e workflow ([c3b5080](https://github.com/redkubes/otomi-stack-web/commit/c3b50807efc9086efca2fb93e04133262df85f66))
+* e2e workflow ([c888d56](https://github.com/redkubes/otomi-stack-web/commit/c888d56a67a1b2d14a4c1fdc95b2a8e86007422e))
+* feature conflict ([f107b53](https://github.com/redkubes/otomi-stack-web/commit/f107b537584c978a20c342ec139c6c1af11b6f06))
+* js ignore ([5185053](https://github.com/redkubes/otomi-stack-web/commit/5185053940e98b356f0a1c25fefba4791d676648))
+* mangled Dockerfile ([a77a133](https://github.com/redkubes/otomi-stack-web/commit/a77a1336d27642c0d91e1c0764ee40aec0e50f97))
+* missing cypress in ci build stage ([2c77357](https://github.com/redkubes/otomi-stack-web/commit/2c77357049011b5c9fa42acef1b8baaa103d9611))
+* missing files ([e8051ed](https://github.com/redkubes/otomi-stack-web/commit/e8051ed86f1b8b63deaabb63d3aec62dcf8a072e))
+* removed cypress ([c4ee423](https://github.com/redkubes/otomi-stack-web/commit/c4ee423aebc251e04c5b1a61b49192fc0bff0cfa))
+* use id attribute ([0ec78f1](https://github.com/redkubes/otomi-stack-web/commit/0ec78f136c5ab498321bebb034f96bf32f0516d9))
+* **dashboard:** fix enable create button due to Team model change ([937ae44](https://github.com/redkubes/otomi-stack-web/commit/937ae447a548f0850811cc32e1796935d85452dd))
+* teamId to id ([26f209f](https://github.com/redkubes/otomi-stack-web/commit/26f209f0d4e5ca8d42d42f7e0c4ff620d9d87d1a))
+* tmp ([cf50a20](https://github.com/redkubes/otomi-stack-web/commit/cf50a20c7101229f66896db9658a879f0d46284d))
+
+
+### CI
+
+* **docker-compose:** extensive docker-compose setup including e2e ([f5f926a](https://github.com/redkubes/otomi-stack-web/commit/f5f926a1b4235fdea71069c02645f9fb591a939d))
+
+
+### Build System
+
+* adding ts config ([9f94134](https://github.com/redkubes/otomi-stack-web/commit/9f94134a44e529321df0457258d8e1e0752d8de8))
+
+
+### Code Refactoring
+
+* cleanup ([c063c2c](https://github.com/redkubes/otomi-stack-web/commit/c063c2c0b3b77786321058d5de9d1427060dccaf))
+* put e2e tests back, added scripts for workflow ([754791a](https://github.com/redkubes/otomi-stack-web/commit/754791a7f118d57d1b6aa076f38d64c6ac39dbab))
+* use team ids ([e42570a](https://github.com/redkubes/otomi-stack-web/commit/e42570a008df0f5bca050954886f1ae9dbbf0690))
+
+
+### Feature Improvements
+
+* refactored ids ([0db0fdc](https://github.com/redkubes/otomi-stack-web/commit/0db0fdc05291694c97f5d911e6950996575e7c87))
+* tsified cypress setup ([c4416ba](https://github.com/redkubes/otomi-stack-web/commit/c4416ba1e9e85e55afd617518438acd0f5ce9dd4))
+
 ### [0.2.38](https://github.com/redkubes/otomi-stack-web/compare/v0.2.37...v0.2.38) (2020-06-09)
 
 
