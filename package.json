@@ -10,25 +10,18 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true
-  },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@cypress/browserify-preprocessor": "^3.0.0",
     "@fortawesome/fontawesome-free": "^5.12.1",
     "@hkdobrev/run-if-changed": "^0.3.1",
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.6",
-    "@percy/cypress": "^2.3.1",
     "@rjsf/core": "^2.0.0-alpha.6",
     "@rjsf/material-ui": "^2.0.0-alpha.4",
     "@types/chai": "^4.2.11",
-    "@types/cucumber": "^6.0.1",
-    "@types/cypress-cucumber-preprocessor": "^1.14.1",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^24.9.1",
@@ -42,11 +35,8 @@
     "@typescript-eslint/parser": "^2.26.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
-    "browserify": "^16.5.1",
     "clsx": "^1.1.0",
     "commitizen": "^4.0.3",
-    "cypress": "^4.8.0",
-    "cypress-cucumber-preprocessor": "^2.4.0",
     "cz-conventional-changelog": "^3.1.0",
     "debug": "^4.1.1",
     "enzyme": "^3.11.0",
@@ -55,10 +45,9 @@
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-chai-friendly": "^0.6.0",
-    "eslint-plugin-cypress": "^2.11.1",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.8.2",
-    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-jest": "^23.13.2",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "eslint-plugin-unused-imports": "^0.1.2",
@@ -89,7 +78,6 @@
     "react-test-renderer": "^16.13.1",
     "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
-    "tsify": "^4.0.2",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.8.3",
     "yup": "^0.27.0"
@@ -106,7 +94,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix --ext js,ts,tsx"
+      "eslint --fix"
     ]
   },
   "name": "otomi-stack-web",
@@ -116,28 +104,23 @@
   },
   "scripts": {
     "build": "react-scripts build",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
     "dev": "run-p start watch:ts",
     "dev:docker": "npm install && npm run dev",
-    "e2e": "percy exec -- cypress run",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "husky:lint-staged": "lint-staged",
     "husky:pre-commit": "npm run lint && lint-staged",
-    "lint": "run-p types types:cypress lint:es",
+    "lint": "run-p types lint:es",
     "lint:es": "eslint .",
     "lint:fix": "eslint --fix .",
     "release": "standard-version",
     "start": "react-scripts start --no-cache",
     "test:enzyme": "react-scripts test",
     "types": "tsc --noEmit",
-    "types:cypress": "tsc -p cypress/tsconfig.json --noEmit",
-    "watch:ts": "tsc -w --noEmit",
-    "watch:ts:cypress": "tsc -w -p cypress/tsconfig.json --noEmit"
+    "watch:ts": "tsc -w --noEmit"
   },
   "standard-version": {
     "skip": {
