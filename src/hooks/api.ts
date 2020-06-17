@@ -73,9 +73,9 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
       }
     })()
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       canceled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [method, signature, active, isAdmin])
 
   return [value, loading, error]
