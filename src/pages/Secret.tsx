@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Loader from '../components/Loader'
 import Secret from '../components/Secret'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
