@@ -9,12 +9,11 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
-  onDelete?: any
   secret?: Secret
   clusters: [any]
 }
 
-export default ({ onSubmit, onDelete = null, secret = null }: Props): any => {
+export default ({ onSubmit, secret }: Props): any => {
   const {
     user: { role },
   } = useSession()

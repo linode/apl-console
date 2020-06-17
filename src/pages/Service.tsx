@@ -47,15 +47,15 @@ export default ({
     oboTeamId,
   } = useSession()
   const sessTeamId = isAdmin ? oboTeamId : userTeamId
-  if (!sessTeamId) return <Error code={500} />
+  if (!(teamId || sessTeamId)) return <Error code={500} />
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
-    err = <Error code={401} />
+    return <Error code={401} />
   }
   const tid = teamId || sessTeamId
   const [team, loading, error]: [any, boolean, any] = useApi('getTeam', true, tid)
   if (error) {
-    return <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
+    err = <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
   }
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()

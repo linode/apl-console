@@ -1,5 +1,4 @@
 import React from 'react'
-// import { useApi } from '../hooks/api'
 import { makeStyles, MenuList, ListItemText, MenuItem, ListItemIcon, ListSubheader } from '@material-ui/core'
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import Brightness3Icon from '@material-ui/icons/Brightness3'

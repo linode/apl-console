@@ -79,7 +79,7 @@
     "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
     "typeface-roboto": "0.0.75",
-    "typescript": "^3.8.3",
+    "typescript": "^3.9.5",
     "yup": "^0.27.0"
   },
   "husky": {
@@ -94,7 +94,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix"
+      "eslint --ext js,ts,tsx --fix"
     ]
   },
   "name": "otomi-stack-web",
@@ -114,8 +114,8 @@
     "husky:lint-staged": "lint-staged",
     "husky:pre-commit": "npm run lint && lint-staged",
     "lint": "run-p types lint:es",
-    "lint:es": "eslint .",
-    "lint:fix": "eslint --fix .",
+    "lint:es": "eslint --ext js,ts,tsx .",
+    "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "release": "standard-version",
     "start": "react-scripts start --no-cache",
     "test:enzyme": "react-scripts test",
@@ -127,5 +127,5 @@
       "tag": true
     }
   },
-  "version": "0.3.2"
+  "version": "0.3.3"
 }
