@@ -54,10 +54,6 @@ export default ({ teams = [] }: Props): any => {
           &nbsp;
         </>
       )}
-      <Avatar className={classes.avatar} />
-      <Typography variant='body1'>
-        {email} <strong>({isAdmin ? `admin` : teamId})</strong>
-      </Typography>
     </>
   )
 }
