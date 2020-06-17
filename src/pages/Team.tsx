@@ -45,17 +45,17 @@ export default ({
     err = <Error code={401} />
   }
   const [formdata, setFormdata] = useState()
-  const [createRes] = useApi(teamId ? 'editTeam' : 'createTeam', !!formdata, { teamId }, formdata)
-  if (createRes) {
-    return <Redirect to='/teams' />
-  }
-
   const [deleteId, setDeleteId]: any = useState()
+  const [createRes, createLoading, createErr] = useApi(
+    teamId ? 'editTeam' : 'createTeam',
+    !!formdata,
+    { teamId },
+    formdata,
+  )
   const [deleteRes, deleteLoading, deleteErr] = useApi('deleteTeam', !!deleteId, { teamId: deleteId }, null)
-  if (!deleteLoading && (deleteRes || deleteErr)) {
+  if ((!createLoading && (createRes || createErr)) || (!deleteLoading && (deleteRes || deleteErr))) {
     return <Redirect to='/teams' />
   }
-  // if (!deleteLoading && deleteErr) setDeleteId(false)
 
   return (
     <PaperLayout>
