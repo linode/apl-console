@@ -138,7 +138,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
       canCreate: true,
       disabled: isServiceDisabled,
       tooltip: isServiceDisabled
-        ? t(k.SELECT_TEAM, {model: 'service'})
+        ? t(k.SELECT_TEAM, { model: 'service' })
         : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
     },
   ]

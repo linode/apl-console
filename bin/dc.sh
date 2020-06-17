@@ -13,7 +13,8 @@ sub_help () {
     echo "   up-api             Start docker-compose version of web with api as dep (add '-d' to daemonize)"
     echo "   down               Stop and clean docker-compose containers"
     echo "   logs               Show logs of daemonized containers (add '-f' to follow)"
-    echo "   e2e                Run e2e tests in docker-compose"
+    echo "   e2e                Run e2e tests in docker-compose against running dev server"
+    echo "   e2e-ci             Run e2e tests in docker-compose in CI"
 }
 
 sub_up () {
@@ -32,7 +33,11 @@ sub_logs () {
 }
 
 sub_e2e () {
-    docker-compose -f docker-compose-with-api.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+    docker-compose -f docker-compose.yml -f docker-compose-with-api.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+}
+
+sub_e2e-ci () {
+    docker-compose -f docker-compose-prod.yml -f docker-compose-with-api.yml -f docker-compose-e2e.yml up --exit-code-from e2e
 }
 
 case $COMMAND_NAME in

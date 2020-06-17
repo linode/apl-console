@@ -46,7 +46,17 @@ jobs:
           image_tag: ${{ env.TAG }}
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
-        run: CI=true bin/e2e.sh
+        env:
+          WEB_TAG: ${{ env.TAG }}
+        run: |
+          docker pull $E2E_IMG
+          container_id=$(docker create $E2E_IMG)
+          mkdir /tmp/co && cd /tmp/co
+          docker cp $container_id:docker-compose.yml docker-compose.yml
+          docker cp $container_id:docker-compose-e2e.yml docker-compose-e2e.yml
+          docker cp $container_id:docker-compose
+          docker rm $container_id
+          docker-compose -f docker-compose.yml -f docker-compose-e2e.yml up --exit-code-from e2e
       - name: Docker login
         run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - if: "contains(github.event.head_commit.message, 'chore(release)')"

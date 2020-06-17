@@ -2,6 +2,7 @@ import { MenuItem, Select, Typography, Hidden } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { useHistory } from 'react-router-dom'
 import { useSession } from '../session-context'
 import { Team } from '../models'
 
@@ -23,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 export default ({ teams = [] }: Props): any => {
   const classes = useStyles()
+  const history = useHistory()
   const {
     user: { email, teamId, isAdmin },
     oboTeamId,
@@ -30,7 +32,10 @@ export default ({ teams = [] }: Props): any => {
   } = useSession()
 
   const handleChange = (event): any => {
+    const val = event.target.value
+    const url = val ? `/teams/${val}/services` : '/teams'
     setOboTeamId(event.target.value)
+    history.push(url)
     event.preventDefault()
   }
   return (
@@ -51,6 +56,10 @@ export default ({ teams = [] }: Props): any => {
           ))}
         </Select>
       )}
+      <Avatar className={classes.avatar} />
+      <Typography variant='body1'>
+        {email} <strong>({isAdmin ? `admin` : teamId})</strong>
+      </Typography>
     </>
   )
 }

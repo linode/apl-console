@@ -1,10 +1,11 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { shallow } from 'enzyme'
 import App from '../../App'
 
-// eslint-disable-next-line jest/expect-expect
 it('renders without crashing. Awesome.', () => {
-  const div = document.createElement('div')
-  ReactDOM.render(<App />, div)
-  ReactDOM.unmountComponentAtNode(div)
+  const wrapper = shallow(<App />)
+  const welcome = <h2>Welcome to React</h2>
+  it('renders without exploding', () => {
+    expect(wrapper.contains(welcome)).toEqual(true)
+  })
 })

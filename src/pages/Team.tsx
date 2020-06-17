@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Team from '../components/Team'
 import { useApi } from '../hooks/api'
@@ -7,32 +7,15 @@ import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import Error from '../components/Error'
 
-const Submit = ({ data }: any): any => {
-  let method
-  let filter
-  if (data.id) {
-    method = 'editTeam'
-    filter = { teamId: data.id }
-  } else {
-    method = 'createTeam'
-  }
-  const [result] = useApi(method, filter, data)
-  if (result) {
-    return <Redirect to='/teams' />
-  }
-  return null
+interface EditTeamProps {
+  teamId: string
+  clusters: [string]
+  onSubmit: CallableFunction
+  onDelete: CallableFunction
 }
 
-const Delete = (filter): any => {
-  const [result] = useApi('deleteTeam', filter, null)
-  if (result) {
-    return <Redirect to='/teams' />
-  }
-  return null
-}
-
-const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => {
-  const [team, teamLoading, error]: any = useApi('getTeam', teamId)
+const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: EditTeamProps): any => {
+  const [team, teamLoading, error]: any = useApi('getTeam', true, teamId)
 
   if (teamLoading) {
     return <Loader />
@@ -44,11 +27,15 @@ const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: any): any => 
   return <Team team={team} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
 }
 
+interface Params {
+  teamId?: string
+}
+
 export default ({
   match: {
     params: { teamId },
   },
-}: any): any => {
+}: RouteComponentProps<Params>): any => {
   const {
     user: { teamId: sessTeamId, isAdmin },
     clusters,
@@ -57,18 +44,25 @@ export default ({
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
   }
-
   const [formdata, setFormdata] = useState()
-  const [deleteTeam, setDeleteTeam] = useState()
+  const [createRes] = useApi(teamId ? 'editTeam' : 'createTeam', !!formdata, { teamId }, formdata)
+  if (createRes) {
+    return <Redirect to='/teams' />
+  }
+
+  const [deleteId, setDeleteId]: any = useState()
+  const [deleteRes, deleteLoading, deleteErr] = useApi('deleteTeam', !!deleteId, { teamId: deleteId }, null)
+  if (deleteRes) {
+    return <Redirect to='/teams' />
+  }
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
 
   return (
     <PaperLayout>
       {err || (
         <>
-          {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteTeam} />}
-          {teamId && deleteTeam && <Delete teamId={teamId} />}
+          {teamId && <EditTeam teamId={teamId} clusters={clusters} onSubmit={setFormdata} onDelete={setDeleteId} />}
           {!teamId && <Team clusters={clusters} onSubmit={setFormdata} />}
-          {formdata && <Submit data={formdata} />}
         </>
       )}
     </PaperLayout>

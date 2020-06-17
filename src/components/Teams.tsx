@@ -26,14 +26,14 @@ export default ({ teams }: Props): any => {
     {
       id: 'name',
       label: 'Team Name',
-      renderer: row => (isAdmin ? <RLink to={`/teams/${row.id}`}>{row.id}</RLink> : row.id),
+      renderer: ({ id }: any) => (isAdmin ? <RLink to={`/teams/${id}`}>{id}</RLink> : id),
     },
     {
       id: 'dashboard',
       label: 'Dashboard',
-      renderer: row => (
-        <MuiLink href={`https://apps.${teamPrefix}${row.id}.${cluster.domain}/otomi/`} target='_blank' rel='noopener'>
-          {`apps.${teamPrefix}${row.id}.${cluster.domain}`}
+      renderer: ({ id }: any) => (
+        <MuiLink href={`https://apps.${teamPrefix}${id}.${cluster.domain}/otomi/`} target='_blank' rel='noopener'>
+          {`apps.${teamPrefix}${id}.${cluster.domain}`}
         </MuiLink>
       ),
     },
@@ -43,7 +43,7 @@ export default ({ teams }: Props): any => {
       renderer: row => row.clusters.map(c => c.substr(0, c.indexOf('/'))).join(', '),
     },
     {
-      id: 'clusterId',
+      id: 'id',
       label: 'Cluster',
       renderer: row => row.clusters.join(', '),
     },
@@ -66,7 +66,7 @@ export default ({ teams }: Props): any => {
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='teamId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='id' />
     </>
   )
 }

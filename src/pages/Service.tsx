@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Service from '../components/Service'
+import ServiceModel from '../models/Service'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
@@ -10,39 +11,23 @@ import Error from '../components/Error'
 interface SubmitProps {
   teamId: string
   serviceId?: string
-  data: object
+  data: ServiceModel
 }
 
-const Submit = ({ serviceId, teamId, data }: SubmitProps): any => {
+const Submit = ({ teamId, data }: SubmitProps): any => {
   let method
   let filter
-  if (serviceId) {
+  if (data.id) {
     method = 'editService'
-    filter = { teamId, serviceId }
+    filter = { teamId, serviceId: data.id }
   } else {
     method = 'createService'
     filter = { teamId }
   }
-  const [result] = useApi(method, filter, data)
+  const [result] = useApi(method, true, filter, data)
   if (result) {
     return <Redirect to={`/teams/${teamId}/services`} />
   }
-  return null
-}
-
-interface DeleteProps {
-  teamId: string
-  serviceId: string
-}
-
-const Delete = ({ teamId, serviceId }: DeleteProps): any => {
-  const method = 'deleteService'
-  const filter = { teamId, serviceId }
-  const [result] = useApi(method, filter, null)
-  if (result) {
-    return <Redirect to={`/teams/${teamId}/services`} />
-  }
-
   return null
 }
 
@@ -56,7 +41,7 @@ interface EditProps {
 }
 
 const EditService = ({ teamId, serviceId, team, clusters, onSubmit, onDelete }: EditProps): any => {
-  const [service, serviceLoading, error]: any = useApi('getService', {
+  const [service, serviceLoading, error]: any = useApi('getService', true, {
     teamId,
     serviceId,
   })
@@ -73,7 +58,6 @@ const EditService = ({ teamId, serviceId, team, clusters, onSubmit, onDelete }: 
 interface Params {
   teamId?: string
   serviceId?: string
-  name?: string
 }
 
 export default ({
@@ -87,17 +71,23 @@ export default ({
     oboTeamId,
   } = useSession()
   const sessTeamId = isAdmin ? oboTeamId : userTeamId
+  if (!sessTeamId) return <Error code={500} />
   let err
   if (!isAdmin && teamId && teamId !== sessTeamId) {
     err = <Error code={401} />
   }
   const tid = teamId || sessTeamId
-  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', tid)
+  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', true, tid)
   if (error) {
     return <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
   }
   const [formdata, setFormdata] = useState()
-  const [deleteService, setDeleteService] = useState()
+  const [deleteId, setDeleteId]: any = useState()
+  const [deleteRes, deleteLoading, deleteErr] = useApi('deleteService', !!deleteId, { teamId, serviceId }, null)
+  if (deleteRes) {
+    return <Redirect to={`/teams/${teamId}/services`} />
+  }
+  if (!deleteLoading && (deleteRes || deleteErr)) setDeleteId(false)
 
   return (
     <PaperLayout>
@@ -112,10 +102,9 @@ export default ({
               team={team}
               clusters={clusters}
               onSubmit={setFormdata}
-              onDelete={setDeleteService}
+              onDelete={setDeleteId}
             />
           )}
-          {team && serviceId && !formdata && deleteService && <Delete teamId={tid} serviceId={serviceId} />}
           {team && !serviceId && !formdata && (
             <Service team={team} service={formdata} clusters={clusters} onSubmit={setFormdata} />
           )}

@@ -3,7 +3,5 @@
 .history
 .npm
 .vscode
-bin
 build
-public
 node_modules

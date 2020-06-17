@@ -7,6 +7,7 @@ import { Team } from '../models'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
+import { useSession } from '../session-context'
 
 const getServiceLink = (isAdmin, ownerId) => (row): any => {
   const { teamId, id, name } = row
@@ -33,11 +34,15 @@ interface Props {
   services: any[]
   team?: Team
   sessTeamId?: string
-  isAdmin: boolean
 }
 
-export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
+export default ({ services, team }: Props): any => {
+  const {
+    user: { teamId, isAdmin },
+    oboTeamId,
+  } = useSession()
   const showTeam = !team
+  const sessTeamId = isAdmin ? oboTeamId : teamId
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -61,7 +66,7 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
 
   return (
     <>
-      <h1>Services{team ? `: Team ${team.name}` : ''}</h1>
+      <h1>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
           <Button
@@ -76,7 +81,7 @@ export default ({ services, team, sessTeamId, isAdmin }: Props): any => {
           </Button>
         )}
       </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='serviceId' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
     </>
   )
 }

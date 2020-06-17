@@ -15,8 +15,11 @@ export default (): any => {
     user: { isAdmin, teamId },
     clusters,
   } = useSession()
-  const servicesApi = isAdmin ? 'getAllServices' : 'getTeamServices'
-  const [services, servicesLoading, servicesError]: any = useApi(servicesApi, isAdmin ? undefined : teamId)
+  const [services, servicesLoading, servicesError]: any = useApi(
+    isAdmin ? 'getAllServices' : 'getTeamServices',
+    true,
+    isAdmin ? undefined : teamId,
+  )
   const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
 
   const error = servicesError || teamsError
@@ -25,8 +28,8 @@ export default (): any => {
     services,
     teams,
     clusters,
-  }      
-  const team: Team = find(data.teams, { id: isAdmin ? oboTeamId : teamId})
+  }
+  const team: Team = find(data.teams, { id: isAdmin ? oboTeamId : teamId })
   return (
     <PaperLayout>
       {loading && <Loader />}

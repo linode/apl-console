@@ -10,7 +10,7 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "dependencies": {
+  "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@fortawesome/fontawesome-free": "^5.12.1",
@@ -19,9 +19,9 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.6",
-    "@percy/cypress": "^2.3.1",
     "@rjsf/core": "^2.0.0-alpha.6",
     "@rjsf/material-ui": "^2.0.0-alpha.4",
+    "@types/chai": "^4.2.11",
     "@types/enzyme": "^3.10.5",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/jest": "^24.9.1",
@@ -37,7 +37,6 @@
     "bootstrap": "^4.4.1",
     "clsx": "^1.1.0",
     "commitizen": "^4.0.3",
-    "cypress-cucumber-preprocessor": "^2.4.0",
     "cz-conventional-changelog": "^3.1.0",
     "debug": "^4.1.1",
     "enzyme": "^3.11.0",
@@ -45,12 +44,17 @@
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-plugin-chai-friendly": "^0.6.0",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jest": "^23.8.2",
-    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-jest": "^23.13.2",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^3.0.0",
+    "eslint-plugin-unused-imports": "^0.1.2",
+    "http-proxy-middleware": "^0.20.0",
     "husky": "^3.1.0",
     "i18next": "^19.4.4",
+    "jest-enzyme": "^7.1.2",
     "lint-staged": "^9.5.0",
     "lodash": "^4.17.15",
     "lodash.isnil": "^4.0.0",
@@ -78,14 +82,6 @@
     "typescript": "^3.8.3",
     "yup": "^0.27.0"
   },
-  "devDependencies": {
-    "@bahmutov/add-typescript-to-cypress": "^2.1.2",
-    "eslint-plugin-cypress": "^2.11.1",
-    "eslint-plugin-react-hooks": "^3.0.0",
-    "eslint-plugin-unused-imports": "^0.1.2",
-    "http-proxy-middleware": "^0.20.0",
-    "tsify": "^4.0.2"
-  },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -98,7 +94,7 @@
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-      "eslint --fix --ext js,ts,tsx"
+      "eslint --fix"
     ]
   },
   "name": "otomi-stack-web",
@@ -112,29 +108,19 @@
     "cz:retry": "git-cz --retry",
     "dev": "run-p start watch:ts",
     "dev:docker": "npm install && npm run dev",
-    "e2e": "bin/dc.sh e2e",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "husky:lint-staged": "lint-staged",
-    "husky:pre-commit": "tsc --noEmit && lint-staged",
-    "lint": "tsc --noEmit && eslint --ext js,ts,tsx .",
-    "lint:fix": "eslint --ext js,ts,tsx --fix .",
+    "husky:pre-commit": "npm run lint && lint-staged",
+    "lint": "run-p types lint:es",
+    "lint:es": "eslint .",
+    "lint:fix": "eslint --fix .",
     "release": "standard-version",
     "start": "react-scripts start --no-cache",
-    "test": "jest --detectOpenHandles",
-    "test:ci": "jest --coverage --detectOpenHandles --reporters=\"default\" --reporters=\"jest-junit\"  --runInBand",
-    "test:coverage": "jest --coverage --detectOpenHandles",
     "test:enzyme": "react-scripts test",
-    "test:integration": "jest --detectOpenHandles src/functions",
-    "test:integration:coverage": "jest --coverage --detectOpenHandles src/functions",
-    "test:integration:watch": "jest --watch src/functions",
-    "test:unit": "jest --detectOpenHandles src/common",
-    "test:unit:coverage": "jest --coverage --detectOpenHandles src/common",
-    "test:unit:watch": "jest --watch src/common",
-    "test:watch": "jest --watch --verbose false",
     "types": "tsc --noEmit",
-    "watch:ts": "tsc -w"
+    "watch:ts": "tsc -w --noEmit"
   },
   "standard-version": {
     "skip": {

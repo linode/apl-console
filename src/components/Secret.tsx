@@ -2,49 +2,49 @@ import { Box, Button } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import { getSecretSchema, getSecretUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
-import Team from '../models/Team'
+import Secret from '../models/Secret'
 import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema } from '../api-spec'
+import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
-  clusters: [string]
-  team?: Team
+  secret?: Secret
+  clusters: [any]
 }
 
-export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): any => {
+export default ({ onSubmit, onDelete = null, secret = null }: Props): any => {
   const {
     user: { role },
   } = useSession()
-  // / we need to set an empty dummy if no team was given, so that we can do a dirty check
-  const crudMethod = team && team.id ? 'update' : 'create'
-  const [data, setData]: any = useState(team)
+
+  const crudOperation = secret && secret.id ? 'update' : 'create'
+  const schema = getSecretSchema()
+  const uiSchema = getSecretUiSchema(schema, role, crudOperation)
+  const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
-
-  const handleChange = ({ formData: inData, errors }): any => {
+  const handleChange = ({ formData, errors }): any => {
     if (errors && errors.length) {
       setInvalid(true)
     } else {
       setInvalid(false)
     }
-    const formData = { ...inData }
     setData(formData)
-    setDirty(!isEqual(formData, team))
+
+    setDirty(!isEqual(formData, secret))
   }
   const handleSubmit = ({ formData }): any => {
     onSubmit(formData)
   }
-  const schema = getTeamSchema(clusters)
-  const uiSchema = getTeamUiSchema(schema, role, crudMethod)
-  return (
-    <div className='Team'>
-      <h1>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>
 
+  return (
+    <div>
+      <h1>{data && data.secretId ? `Secret: ${data.name}` : 'New Secret'}</h1>
       <Form
-        key='createTeam'
+        key='createSecret'
         schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
@@ -52,13 +52,12 @@ export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): an
         formData={data}
         liveValidate={false}
         showErrorList={false}
+        ObjectFieldTemplate={ObjectFieldTemplate}
       >
-        <Box display='flex' flexDirection='row-reverse' m={1}>
+        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
             Submit
           </Button>
-          &nbsp;
-          {team && team.id && <DeleteButton onDelete={onDelete} resourceName={team.name} resourceType='team' />}
         </Box>
       </Form>
     </div>

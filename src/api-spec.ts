@@ -105,9 +105,8 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
-    serviceName: { 'ui:widget': 'hidden', 'ui:autofocus': true },
-    teamId: { 'ui:widget': 'hidden' },
     id: { 'ui:widget': 'hidden' },
+    teamId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': 'radio',
       'ui:options': {
@@ -131,6 +130,23 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
       },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
     },
+  }
+
+  applyAclToUiSchema(uiSchema, schema, role, crudMethod)
+
+  return uiSchema
+}
+
+export function getSecretUiSchema(schema: Schema, role: string, crudMethod: string): any {
+  const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
+    teamId: { 'ui:widget': 'hidden' },
+    secretId: { 'ui:widget': 'hidden' },
+    type: { 'ui:widget': 'hidden', description: undefined },
+    cert: { 'ui:widget': 'textarea' },
+    key: { 'ui:widget': 'textarea' },
+    entries: { 'ui:options': { orderable: false } },
   }
 
   applyAclToUiSchema(uiSchema, schema, role, crudMethod)
@@ -168,10 +184,19 @@ export function getServiceSchema(team: any, clusters: [any], formData: any): any
   return schema
 }
 
+export function getSecretSchema(): any {
+  const schema = cloneDeep(spec.components.schemas.Secret)
+  return schema
+}
+
 export function getTeamSchema(clusters: [any]): any {
   const schema = { ...spec.components.schemas.Team }
   schema.properties.clusters.items.enum = map(clusters, 'id')
   return schema
+}
+
+export function getSettingsSchema(): any {
+  return spec.components.schemas.Settings
 }
 
 export const getSpec = (): object => spec
