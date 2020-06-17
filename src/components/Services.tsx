@@ -75,7 +75,7 @@ export default ({ services, team }: Props): any => {
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
-            disabled={isAdmin && !sessTeamId}
+            disabled={isAdmin && !oboTeamId}
           >
             Create service
           </Button>

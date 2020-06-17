@@ -14,7 +14,7 @@ interface EditTeamProps {
   onDelete: CallableFunction
 }
 
-const EditTeam = ({ teamId, clusters, onSubmit, onDelete = null }: EditTeamProps): any => {
+const EditTeam = ({ teamId, clusters, onSubmit, onDelete }: EditTeamProps): any => {
   const [team, teamLoading, error]: any = useApi('getTeam', true, teamId)
 
   if (teamLoading) {

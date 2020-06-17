@@ -14,7 +14,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ onSubmit, onDelete = null, clusters, team = null }: Props): any => {
+export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
   const {
     user: { role },
   } = useSession()

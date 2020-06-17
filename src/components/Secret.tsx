@@ -3,19 +3,17 @@ import Form from '@rjsf/material-ui'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
 import { getSecretSchema, getSecretUiSchema } from '../api-spec'
-import DeleteButton from './DeleteButton'
 import Secret from '../models/Secret'
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
-  onDelete?: any
   secret?: Secret
   clusters: [any]
 }
 
-export default ({ onSubmit, onDelete = null, secret = null }: Props): any => {
+export default ({ onSubmit, secret }: Props): any => {
   const {
     user: { role },
   } = useSession()

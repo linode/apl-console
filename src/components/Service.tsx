@@ -16,24 +16,25 @@ interface Props {
   clusters: [any]
 }
 
-export default ({ onSubmit, onDelete = null, team, service = null, clusters }: Props): any => {
+export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Props): any => {
   const {
     user: { role, isAdmin },
   } = useSession()
   let teamSubdomain = service ? `${service.name}.team-${team.id}` : ''
   let defaultSubdomain
-  if (service && service.ingress && service.clusterId) {
-    defaultSubdomain = `${teamSubdomain}.${service.clusterId.split('/')[1]}`
+  const serviceData: any = service || {}
+  if (serviceData.ingress && service.clusterId) {
+    defaultSubdomain = `${teamSubdomain}.${serviceData.clusterId.split('/')[1]}`
     // eslint-disable-next-line no-param-reassign
-    service.ingress.useDefaultSubdomain = service.ingress.subdomain === defaultSubdomain
+    serviceData.ingress.useDefaultSubdomain = serviceData.ingress.subdomain === defaultSubdomain
   }
 
-  const crudOperation = service && service.id ? 'update' : 'create'
-  const originalSchema = getServiceSchema(team, clusters, service)
-  const originalUiSchema = getServiceUiSchema(originalSchema, role, service, crudOperation)
+  const crudOperation = serviceData.id ? 'update' : 'create'
+  const originalSchema = getServiceSchema(team, clusters, serviceData || {})
+  const originalUiSchema = getServiceUiSchema(originalSchema, role, serviceData, crudOperation)
   const [schema, setSchema] = useState(originalSchema)
   const [uiSchema, setUiSchema] = useState(originalUiSchema)
-  const [data, setData]: any = useState(service)
+  const [data, setData]: any = useState(serviceData)
   const [dirty, setDirty] = useState(false)
   const [invalid, setInvalid] = useState(false)
   const handleChange = ({ formData: inData, errors }): any => {
@@ -49,21 +50,7 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
     // setData(formData)
     // if (!data) return
     if (!isEmpty(formData.ingress)) {
-      if (
-        formData.clusterId !== data.clusterId &&
-        formData.ingress.domain !== '' &&
-        formData.ingress.subdomain !== ''
-      ) {
-        // Enforce user to make a conscious choice for public URL whenever cluster changes
-        formData.ingress = { ...formData.ingress }
-        formData.ingress.domain = ''
-        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
-      }
-      if (
-        formData.ingress.useDefaultSubdomain ||
-        formData.name !== data.name ||
-        formData.ingress.domain !== data.ingress.domain
-      ) {
+      if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
         formData.ingress = { ...formData.ingress }
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
@@ -113,8 +100,8 @@ export default ({ onSubmit, onDelete = null, team, service = null, clusters }: P
             Submit
           </Button>
           &nbsp;
-          {service && service.id && (
-            <DeleteButton onDelete={() => onDelete(service.id)} resourceName={data.name} resourceType='service' />
+          {serviceData.id && (
+            <DeleteButton onDelete={() => onDelete(serviceData.id)} resourceName={data.name} resourceType='service' />
           )}
         </Box>
       </Form>

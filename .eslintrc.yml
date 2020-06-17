@@ -32,7 +32,7 @@ plugins:
 settings:
   import/resolver:
     node:
-      extensions: ['.js', '.jsx', '.ts', '.tsx']
+      extensions: ['.js', '.ts', '.tsx']
 
 env:
   es6: true
@@ -49,6 +49,7 @@ rules:
   import/no-extraneous-dependencies: off
   eol-last: ['error', 'always']
   import/extensions: off
+  import/default: off
   no-shadow: 0
   no-unused-vars: 0
   prefer-destructuring: 0

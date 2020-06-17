@@ -5,7 +5,6 @@ import Services from '../components/Services'
 import Error from '../components/Error'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
-import { useSession } from '../session-context'
 
 interface TeamServiceProps {
   services: any
