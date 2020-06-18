@@ -81,11 +81,12 @@ interface DashboardCardProps {
 }
 
 const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
-  const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''    
+  const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
     <Grid item xs={12} sm={6} md={4}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
+          data-cy={`card-${item.name}`}
           classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
           avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
           title={`${item.name}s`}
