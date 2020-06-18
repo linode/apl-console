@@ -91,7 +91,7 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
           avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
           title={`${item.name}s`}
           subheader={
-            <Link 
+            <Link
               component={RouterLink} 
               to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
               data-cy={`link-${item.name}-count`}

@@ -47,7 +47,7 @@ export default ({ teams = [] }: Props): any => {
           <MenuItem value={undefined} data-cy="select-oboteam-undefined">-</MenuItem>
           {teams.map(({ id }): any => (
             <MenuItem key={id} value={id} data-cy={`select-oboteam-${id}`}>
-              {id.charAt(0).toUpperCase() + id.substr(1)}
+              {id}
             </MenuItem>
           ))}
         </Select>
