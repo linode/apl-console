@@ -40,21 +40,6 @@ export default ({ teams = [] }: Props): any => {
   }
   return (
     <>
-<<<<<<< HEAD
-      {isAdmin && (
-        <>
-          <Typography variant='body1'>Admin acting for:</Typography>
-          <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select}>
-            <MenuItem value={undefined}>-</MenuItem>
-            {teams.map(({ id }): any => (
-              <MenuItem key={id} value={id}>
-                {id}
-              </MenuItem>
-            ))}
-          </Select>
-          &nbsp;
-        </>
-=======
       <Avatar className={classes.avatar} />
       <Hidden xsDown>
         <Typography variant='body1' data-cy='text-user-team'>
@@ -70,7 +55,6 @@ export default ({ teams = [] }: Props): any => {
             </MenuItem>
           ))}
         </Select>
->>>>>>> test: add identifiers to support e2e Dashboard scenario
       )}
     </>
   )
