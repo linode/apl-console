@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.4](https://github.com/redkubes/otomi-stack-web/compare/v0.3.3...v0.3.4) (2020-06-20)
+
+
+### Code Refactoring
+
+* **harbor:** now has own host on cluster domain [ci skip] ([3abd5f0](https://github.com/redkubes/otomi-stack-web/commit/3abd5f04eaca7fb91d5aff8ec3f1d4994db77344))
+
 ### [0.3.3](https://github.com/redkubes/otomi-stack-web/compare/v0.3.2...v0.3.3) (2020-06-17)
 
 
