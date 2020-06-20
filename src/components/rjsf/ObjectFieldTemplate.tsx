@@ -8,7 +8,8 @@ export default function ObjectFieldTemplate(props: any) {
   const fields = []
   properties.forEach(o => {
     if (grouped === undefined) grouped = []
-    if (o.content.props.schema.type !== 'string') {
+    const type = o.content.props.schema.type
+    if (type !== 'string') {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined

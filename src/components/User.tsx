@@ -1,4 +1,4 @@
-import { MenuItem, Select, Typography, Hidden } from '@material-ui/core'
+import { MenuItem, Select, Typography } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'

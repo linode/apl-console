@@ -2,12 +2,9 @@ import React from 'react'
 import { makeStyles, MenuList, ListItemText, MenuItem, ListItemIcon, ListSubheader } from '@material-ui/core'
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import Brightness3Icon from '@material-ui/icons/Brightness3'
-import Form from '@rjsf/material-ui'
 import PaperLayout from '../layouts/Paper'
 import { useSession } from '../session-context'
 import { toggleThemeType } from '../theme'
-import { getSettingsSchema } from '../api-spec'
-import ObjectFieldTemplate from '../components/rjsf/ObjectFieldTemplate'
 
 const useStyles = makeStyles(theme => ({
   root: {},
