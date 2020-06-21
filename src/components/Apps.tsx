@@ -25,7 +25,7 @@ export default ({ teamId }: Props): any => {
   return (
     <Grid container direction='row' alignItems='center' spacing={2}>
       {apps
-        .filter(app => !app.hide)
+        .filter(app => !app.hide && app.name !== 'otomi')
         .map(({ name, namespace, logo, domain, host, path, ownHost }) => {
           const teamPrefix = 'team-' // @todo: get from values later
           const logoName = logo ? logo.name : name

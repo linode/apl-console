@@ -4,6 +4,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import SettingsIcon from '@material-ui/icons/Settings'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -48,7 +49,12 @@ export default function AppCard({ img, title, link }: any) {
           </Typography>
         </CardContent>
         <div className={classes.controls}>
-          <IconButton aria-label='settings'>
+          <IconButton
+            aria-label='settings'
+            component={Link}
+            to={`/settings/charts/${title}`}
+            onClick={event => event.preventDefault()}
+          >
             <SettingsIcon />
           </IconButton>
           <IconButton aria-label='start' href={link} target='_blank' rel='noopener'>
