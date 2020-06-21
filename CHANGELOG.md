@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/redkubes/otomi-stack-web/compare/v0.3.4...v0.3.5) (2020-06-21)
+
+
+### Bug Fixes
+
+* harbor logo [ci skip] ([c3b7b3c](https://github.com/redkubes/otomi-stack-web/commit/c3b7b3c685ff355b3eddb556439521f01c4792d6))
+
 ### [0.3.4](https://github.com/redkubes/otomi-stack-web/compare/v0.3.3...v0.3.4) (2020-06-20)
 
 
