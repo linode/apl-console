@@ -1,4 +1,4 @@
-import { MenuItem, Select, Typography } from '@material-ui/core'
+import { MenuItem, Select, Typography, Hidden } from '@material-ui/core'
 import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
@@ -42,22 +42,24 @@ export default ({ teams = [] }: Props): any => {
     <>
       {isAdmin && (
         <>
-          <Typography variant='body1'>Admin acting for:</Typography>
-          <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select}>
-            <MenuItem value={undefined}>-</MenuItem>
-            {teams.map(({ id }): any => (
-              <MenuItem key={id} value={id}>
-                {id}
-              </MenuItem>
-            ))}
-          </Select>
-          &nbsp;
+        <Typography variant='body1'>Admin acting for:</Typography>
+        <Select value={teams.length && oboTeamId ? oboTeamId : ''} onChange={handleChange} className={classes.select} data-cy='select-oboteam'>
+          <MenuItem value={undefined} data-cy="select-oboteam-undefined">-</MenuItem>
+          {teams.map(({ id }): any => (
+            <MenuItem key={id} value={id} data-cy={`select-oboteam-${id}`}>
+              {id}
+            </MenuItem>
+          ))}
+        </Select>
+        &nbsp;
         </>
       )}
       <Avatar className={classes.avatar} />
-      <Typography variant='body1'>
-        {email} <strong>({isAdmin ? `admin` : teamId})</strong>
-      </Typography>
+      <Hidden xsDown>
+        <Typography variant='body1' data-cy='text-user-team'>
+          {email} <strong>({isAdmin ? `admin` : teamId})</strong>
+        </Typography>
+      </Hidden>
     </>
   )
 }

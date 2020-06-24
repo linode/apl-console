@@ -86,11 +86,16 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
     <Grid item xs={12} sm={6} md={4}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
+          data-cy={`card-${item.name}`}
           classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
           avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
           title={`${item.name}s`}
           subheader={
-            <Link component={RouterLink} to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}>
+            <Link
+              component={RouterLink} 
+              to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
+              data-cy={`link-${item.name}-count`}
+              >
               {item.data && item.data.length}
             </Link>
           }
@@ -104,6 +109,7 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
                     to={`${prefix}/create-${item.name}`}
                     className={classes.iconBtn}
                     disabled={item.disabled}
+                    data-cy={`button-create-${item.name}`}
                   >
                     <AddCircleIcon />
                   </IconButton>
@@ -147,7 +153,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography variant='h5' gutterBottom className={classes.title}>
+          <Typography variant='h5' gutterBottom className={classes.title} data-cy="text-welcome">
             <Trans i18nKey={k.WELCOME_DASHBOARD}>
               Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
             </Trans>

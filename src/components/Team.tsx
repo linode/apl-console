@@ -41,7 +41,7 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
   const uiSchema = getTeamUiSchema(schema, role, crudMethod)
   return (
     <div className='Team'>
-      <h1>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>
+      <h1 data-cy='h1-newteam-page'>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>
 
       <Form
         key='createTeam'

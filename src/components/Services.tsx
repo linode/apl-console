@@ -66,7 +66,7 @@ export default ({ services, team }: Props): any => {
 
   return (
     <>
-      <h1>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
+      <h1 data-cy='h1-services-page'>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
       <Box mb={1}>
         {(isAdmin || team) && (
           <Button
