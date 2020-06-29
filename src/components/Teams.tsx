@@ -61,12 +61,19 @@ export default ({ teams }: Props): any => {
             variant='contained'
             color='primary'
             className='createTeam'
+            data-cy='button-create-team'
           >
             Create team
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='id' />
+      <EnhancedTable
+        disableSelect
+        headCells={headCells}
+        orderByStart='name'
+        rows={teams}
+        idKey='id'
+      />
     </>
   )
 }

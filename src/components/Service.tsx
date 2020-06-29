@@ -47,7 +47,6 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
     const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
     defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
     const formData = { ...inData }
-    // setData(formData)
     // if (!data) return
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
@@ -59,17 +58,6 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
       setUiSchema(getServiceUiSchema(schema, role, formData, crudOperation))
     }
     setData(formData)
-
-    // const { schema: s, uiSchema: u, formData: f } = processForm(
-    //   originalSchema,
-    //   originalUiSchema,
-    //   schema,
-    //   uiSchema,
-    //   formData,
-    // )
-    // setSchema(s)
-    // setUiSchema(u)
-    // setData(f)
     setDirty(!isEqual(formData, service))
   }
   const handleSubmit = ({ formData }): any => {
@@ -92,8 +80,6 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
-        // ArrayFieldTemplate={ArrayFieldTemplate}
-        // FieldTemplate={FieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
