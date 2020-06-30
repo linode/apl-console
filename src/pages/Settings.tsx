@@ -29,7 +29,7 @@ export default (): any => {
     <PaperLayout>
       <MenuList className={classes.root}>
         <StyledListSubheader>
-          <ListItemText primary='Interface' />
+          <ListItemText primary='Interface' data-cy='list-item-text'/>
         </StyledListSubheader>
         <MenuItem onClick={toggleTheme}>
           <ListItemIcon>{themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}</ListItemIcon>
