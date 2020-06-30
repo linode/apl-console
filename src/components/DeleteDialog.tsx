@@ -43,7 +43,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
           />
         </DialogContent>
         <DialogActions>
-          <Button color='primary' onClick={onCancel} variant='contained'>
+          <Button color='primary' onClick={onCancel} variant='contained' data-cy='button-cancel-delete'>
             Cancel
           </Button>
           <Button
@@ -52,6 +52,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
             onClick={onDelete}
             startIcon={<DeleteIcon />}
             variant='contained'
+            data-cy='button-confirm-delete'
           >
             Delete
           </Button>

@@ -63,7 +63,7 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
               onDelete={() => onDelete(team.id)}
               resourceName={team.name}
               resourceType='team'
-              data-cy='button-delete-team'
+              dataCy='button-delete-team'
             />
           )}
         </Box>
