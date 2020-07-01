@@ -23,13 +23,11 @@ export default (): any => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
-  // const schema = getSettingsSchema()
-
   return (
     <PaperLayout>
       <MenuList className={classes.root}>
         <StyledListSubheader>
-          <ListItemText primary='Interface' data-cy='list-item-text'/>
+          <ListItemText primary='Interface' data-cy='list-item-interface-text'/>
         </StyledListSubheader>
         <MenuItem onClick={toggleTheme}>
           <ListItemIcon>{themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}</ListItemIcon>

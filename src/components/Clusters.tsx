@@ -13,12 +13,12 @@ export default ({ clusters }: Props): any => {
     {
       id: 'id',
       label: 'ID',
-      renderer: row => <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>,
-    },
+      renderer: (row: any) => <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>,
+    },  
     {
       id: 'domain',
       label: 'Domain',
-      renderer: row => (
+      renderer: (row: any) => (
         <MuiLink href={`https://apps.${teamPrefix}admin.${row.domain}/otomi/`} target='_blank' rel='noopener'>
           {row.domain}
         </MuiLink>
