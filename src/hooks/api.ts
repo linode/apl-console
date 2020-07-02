@@ -50,6 +50,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
           if (process.env.NODE_ENV !== 'production') {
             // enqueueSnackbar(err, { variant: 'error' })
           } else {
+            // eslint-disable-next-line no-console
             console.error(err)
           }
         } else {
@@ -62,6 +63,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
         if (process.env.NODE_ENV !== 'production') {
           // enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
         }
+        // eslint-disable-next-line no-console
         console.error(`Api Error calling '${method}':`, e)
         setError(e)
       }

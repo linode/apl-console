@@ -51,7 +51,6 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
         formData={data}
         liveValidate={false}
         showErrorList={false}
-        idPrefix='form_el'
       >
         <Box display='flex' flexDirection='row-reverse' m={1}>
           <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid} data-cy='button-submit-team'>

@@ -68,21 +68,21 @@ export default ({ teamId }: Props): any => {
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
       {deploy && <Deploy setDirty={setDirty} />}
-      <StyledListSubheader component='div' id='main-subheader' data-cy='list-subheader-otomi-stack'>
+      <StyledListSubheader component='div' data-cy='list-subheader-otomi-stack'>
         <ListItemText primary='Otomi Stack' />
       </StyledListSubheader>
       <StyledMenuItem component={Link} to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary='Dashboard' data-cy='menu-item-dashboard'/>
+        <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
       </StyledMenuItem>
       {isAdmin && (
         <StyledMenuItem component={Link} to='/apps/admin' selected={pathname === '/apps/admin'}>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
-          <ListItemText primary='Otomi Apps' data-cy='menu-item-apps'/>
+          <ListItemText primary='Otomi Apps' data-cy='menu-item-apps' />
         </StyledMenuItem>
       )}
       <StyledMenuItem component={Link} to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
@@ -91,13 +91,18 @@ export default ({ teamId }: Props): any => {
         </ListItemIcon>
         <ListItemText primary='Settings' />
       </StyledMenuItem>
-      <StyledMenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <StyledMenuItem
+        className={classes.deploy}
+        disabled={!dirty}
+        onClick={handleClick}
+        data-cy='menu-item-deploy-changes'
+      >
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
         <ListItemText primary='Deploy Changes' />
       </StyledMenuItem>
-      <StyledListSubheader component='div' id='main-subheader' data-cy='list-subheader-enterprise'>
+      <StyledListSubheader component='div' data-cy='list-subheader-enterprise'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
       <StyledMenuItem component={Link} to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
@@ -132,12 +137,12 @@ export default ({ teamId }: Props): any => {
           <StyledMenuItem
             component={Link}
             to={`/teams/${teamId}/secrets`}
-            selected={pathname === `/teams/${teamId}/secrets`}            
+            selected={pathname === `/teams/${teamId}/secrets`}
           >
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
-            <ListItemText primary='Secrets' data-cy='menu-item-team-secrets'/>
+            <ListItemText primary='Secrets' data-cy='menu-item-team-secrets' />
           </StyledMenuItem>
           <StyledMenuItem
             component={Link}
@@ -147,10 +152,14 @@ export default ({ teamId }: Props): any => {
             <ListItemIcon>
               <SwapVerticalCircleIcon />
             </ListItemIcon>
-            <ListItemText primary='Services' data-cy='menu-item-team-services'/>
+            <ListItemText primary='Services' data-cy='menu-item-team-services' />
           </StyledMenuItem>
-          <StyledMenuItem component={Link} to={`/apps/${teamId}`} selected={pathname === `/apps/${teamId}`} 
-            data-cy='menu-item-team-apps'>
+          <StyledMenuItem
+            component={Link}
+            to={`/apps/${teamId}`}
+            selected={pathname === `/apps/${teamId}`}
+            data-cy='menu-item-team-apps'
+          >
             <ListItemIcon>
               <AppsIcon />
             </ListItemIcon>
@@ -158,7 +167,7 @@ export default ({ teamId }: Props): any => {
           </StyledMenuItem>
         </>
       )}
-      <StyledListSubheader component='div' id='action-subheader' data-cy='list-subheader-current-context'>
+      <StyledListSubheader component='div' data-cy='list-subheader-current-context'>
         <ListItemText primary='Current Context' />
       </StyledListSubheader>
       <Cluster />
