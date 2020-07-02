@@ -27,14 +27,13 @@ export default function DeleteDialog(props: DeleteDialogProps) {
   return (
     <>
       <Dialog open>
-        <DialogTitle id='delResource'>
+        <DialogTitle>
           Delete {resourceName} {resourceType}{' '}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>{`Type the name of the ${resourceType} ("${resourceName}") to confirm.`}</DialogContentText>
           <TextField
-            autoComplete='off'
-            id='confirmationText'
+            autoComplete='off'            
             margin='dense'
             onChange={onTextFieldChange}
             variant='outlined'
