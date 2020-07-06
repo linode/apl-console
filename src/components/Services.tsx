@@ -76,6 +76,7 @@ export default ({ services, team }: Props): any => {
             variant='contained'
             color='primary'
             disabled={isAdmin && !oboTeamId}
+            data-cy='button-create-service'
           >
             Create service
           </Button>

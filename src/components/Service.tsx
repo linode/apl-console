@@ -82,7 +82,7 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
         ObjectFieldTemplate={ObjectFieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid} data-cy='button-submit-service'>
             Submit
           </Button>
           &nbsp;
