@@ -39,6 +39,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
             variant='outlined'
             label={`${resourceType} name`}
             fullWidth
+            data-cy='confirmation-text'
           />
         </DialogContent>
         <DialogActions>
