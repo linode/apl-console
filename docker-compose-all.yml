@@ -1,0 +1,6 @@
+version: '3.4'
+
+services:
+  web:
+    environment:
+      PUBLIC_URL: 'api:8080'

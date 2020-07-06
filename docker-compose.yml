@@ -1,33 +1,18 @@
 version: '3.4'
 
 services:
-  api:
-    image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-latest}
-    env_file: './.env.api'
-    expose:
-      - '8080'
-    volumes:
-      - ./core.yaml:/etc/otomi/core.yaml
-
   web:
-    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-latest}
-    env_file: './.env.web'
-    expose:
-      - '80'
-
-  proxy:
-    image: nginx:latest
-    ports:
-      - 3001:80
-    depends_on:
-      - web
-      - api
+    build:
+      context: .
+      target: dev
+    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-dev}
+    container_name: web
+    command: npm run dev:docker
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-
-  e2e:
-    image: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
+      - ./:/app
+      - .npm:/root/.npm
+    ports:
+      - 3000:3000
     environment:
-      - CYPRESS_baseUrl=http://proxy:80
-    depends_on:
-      - proxy
+      PORT: 3000
+      PUBLIC_URL: 'kubernetes.docker.internal:8080'

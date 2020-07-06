@@ -4,15 +4,16 @@ BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
 SUB_COMMAND_NAME=$2
 
+info="(add '-d' to daemonize, or 'logs' for logs on pre-daemonized stack)"
 sub_help () {
     echo "Usage: $BIN_NAME <command>"
     echo
     echo "Commands:"
     echo "   help               This help message"
-    echo "   up                 Start standalone docker-compose version of web (add '-d' to daemonize)"
-    echo "   up-api             Start docker-compose version of web with api as dep (add '-d' to daemonize)"
+    echo "   up                 Start standalone docker-compose version of web without dependent services $info"
+    echo "   up-all             Start docker-compose version of web with dependent services $info"
+    echo "   up-deps            Start docker-compose version of only dependent services $info"
     echo "   down               Stop and clean docker-compose containers"
-    echo "   logs               Show logs of daemonized containers (add '-f' to follow)"
     echo "   e2e                Run e2e tests in docker-compose against running dev server"
     echo "   e2e-ci             Run e2e tests in docker-compose in CI"
 }
@@ -20,24 +21,25 @@ sub_help () {
 sub_up () {
     docker-compose -f docker-compose.yml up $1
 }
-sub_up-api () {
-    docker-compose -f docker-compose.yml -f docker-compose-with-api.yml up $1
+
+sub_up-all () {
+    docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml up $1
+}
+
+sub_up-deps () {
+    docker-compose -f docker-compose-deps.yml up $1
 }
 
 sub_down () {
-    docker-compose -f docker-compose.yml -f docker-compose-with-api.yml down --remove-orphans
-}
-
-sub_logs () {
-    docker-compose -f docker-compose.yml -f docker-compose-with-api.yml logs $1
+    docker-compose -f docker-compose.yml -f docker-compose-deps.yml down --remove-orphans
 }
 
 sub_e2e () {
-    docker-compose -f docker-compose.yml -f docker-compose-with-api.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+    docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml up --exit-code-from e2e
 }
 
 sub_e2e-ci () {
-    docker-compose -f docker-compose-prod.yml -f docker-compose-with-api.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+    docker-compose -f docker-compose-prod.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml up --exit-code-from e2e
 }
 
 case $COMMAND_NAME in

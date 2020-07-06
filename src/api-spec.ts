@@ -111,6 +111,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': 'radio',
@@ -146,9 +147,7 @@ export function getSecretUiSchema(schema: Schema, role: string, crudMethod: stri
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
-    // namespace: { 'ui:widget': role === 'admin' ? undefined : 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
-    secretId: { 'ui:widget': 'hidden' },
     type: { 'ui:widget': 'hidden', description: undefined },
     cert: { 'ui:widget': 'textarea' },
     key: { 'ui:widget': 'textarea' },

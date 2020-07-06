@@ -1,2 +1,0 @@
-alias dca="docker-compose -f docker-compose.yml -f docker-compose-with-api.yml"
-alias dce="dca  -f docker-compose-e2e.yml"
