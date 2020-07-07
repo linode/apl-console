@@ -87,7 +87,7 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
           </Button>
           &nbsp;
           {serviceData.id && (
-            <DeleteButton onDelete={() => onDelete(serviceData.id)} resourceName={data.name} resourceType='service' />
+            <DeleteButton onDelete={() => onDelete(serviceData.id)} resourceName={data.name} resourceType='service' dataCy='button-delete-service'/>
           )}
         </Box>
       </Form>
