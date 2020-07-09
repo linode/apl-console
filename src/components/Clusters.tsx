@@ -13,7 +13,7 @@ export default ({ clusters }: Props): any => {
     {
       id: 'id',
       label: 'ID',
-      renderer: (row: any) => <RLink to={`/cluster/${encodeURIComponent(row.id)}`}>{row.id}</RLink>,
+      renderer: (row: any) => <RLink to={`/cluster/${encodeURIComponent(row.id)}`} label={row.id}>{row.id}</RLink>,
     },  
     {
       id: 'domain',

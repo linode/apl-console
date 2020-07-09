@@ -132,12 +132,13 @@ export default ({ teamId }: Props): any => {
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
-            <ListItemText primary='Overview' data-cy='menu-item-team-overview' />
+            <ListItemText primary='Overview' />
           </StyledMenuItem>
           <StyledMenuItem
             component={Link}
             to={`/teams/${teamId}/secrets`}
             selected={pathname === `/teams/${teamId}/secrets`}
+            data-cy='menu-item-team-secrets'
           >
             <ListItemIcon>
               <LockIcon />
@@ -148,11 +149,12 @@ export default ({ teamId }: Props): any => {
             component={Link}
             to={`/teams/${teamId}/services`}
             selected={pathname === `/teams/${teamId}/services`}
+            data-cy='menu-item-team-services'
           >
             <ListItemIcon>
               <SwapVerticalCircleIcon />
             </ListItemIcon>
-            <ListItemText primary='Services' data-cy='menu-item-team-services' />
+            <ListItemText primary='Services' />
           </StyledMenuItem>
           <StyledMenuItem
             component={Link}

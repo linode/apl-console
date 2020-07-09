@@ -26,7 +26,7 @@ export default ({ teams }: Props): any => {
     {
       id: 'name',
       label: 'Team Name',
-      renderer: ({ id }: any) => (isAdmin ? <RLink to={`/teams/${id}`}>{id}</RLink> : id),
+      renderer: ({ id }: any) => (isAdmin ? <RLink to={`/teams/${id}`} label={id}>{id}</RLink> : id),
     },
     {
       id: 'dashboard',

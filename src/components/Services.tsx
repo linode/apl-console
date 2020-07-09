@@ -14,7 +14,7 @@ const getServiceLink = (isAdmin, ownerId) => (row): any => {
   if (!(isAdmin || teamId === ownerId)) return name
 
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
-  return <RLink to={link}>{name}</RLink>
+  return <RLink to={link} label={name}>{name}</RLink>
 }
 
 const renderPublicUrl = (row): any => {
