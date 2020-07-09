@@ -1,5 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, LinkProps } from 'react-router-dom'
 import { mainStyles } from '../theme'
 
-export default (props): any => <Link {...props} className={mainStyles().selectable} />
+interface LinkExtendedProps extends LinkProps {
+  label: string
+}
+
+export default (props: LinkExtendedProps) => {
+  const { label } = props
+  return (
+    <Link {...props} className={mainStyles().selectable} data-cy={`link-${label}`} />
+  )
+}

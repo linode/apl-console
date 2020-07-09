@@ -1,9 +1,7 @@
-/* eslint-disable no-console */
 import { useEffect } from 'react'
 import getClient, { getApiDefinition } from '../api'
 import { setSpec } from '../api-spec'
 import { LoadingHook, useLoadingValue } from '../utils'
-// import { useSnackbar } from '../utils/snackbar'
 import { useSession } from '../session-context'
 
 export type ApiHook = LoadingHook<object, Error>
@@ -18,7 +16,7 @@ export const schemaPromise = getApiDefinition().then(response => {
   client = getClient(apiSpec)
 })
 
-const checkDirty = (method): boolean => {
+const checkDirty = (method: any): boolean => {
   ;['create', 'edit', 'update', 'delete'].forEach(prefix => {
     if (method.indexOf(prefix) === 0) {
       dirty = true
@@ -34,18 +32,14 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
   const signature = `args.length:${args.length}/${args.join(',').length}`
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
-  console.log(`method: ${method}, active: ${active}`)
-  // const { enqueueSnackbar } = useSnackbar()
   const {
     user: { isAdmin },
     isDirty,
   } = useSession()
   dirty = dirty || isDirty
   useEffect(() => {
-    // tslint:disable-next-line: no-floating-promises
     ;(async (): Promise<any> => {
       if (!active) {
-        // setError(undefined)
         setValue(undefined)
         return
       }
@@ -56,6 +50,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
           if (process.env.NODE_ENV !== 'production') {
             // enqueueSnackbar(err, { variant: 'error' })
           } else {
+            // eslint-disable-next-line no-console
             console.error(err)
           }
         } else {
@@ -68,6 +63,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
         if (process.env.NODE_ENV !== 'production') {
           // enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
         }
+        // eslint-disable-next-line no-console
         console.error(`Api Error calling '${method}':`, e)
         setError(e)
       }

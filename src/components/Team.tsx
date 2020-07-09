@@ -42,7 +42,6 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
   return (
     <div className='Team'>
       <h1 data-cy='h1-newteam-page'>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>
-
       <Form
         key='createTeam'
         schema={schema}
@@ -54,12 +53,17 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
         showErrorList={false}
       >
         <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid}>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid} data-cy='button-submit-team'>
             Submit
           </Button>
           &nbsp;
           {team && team.id && (
-            <DeleteButton onDelete={() => onDelete(team.id)} resourceName={team.name} resourceType='team' />
+            <DeleteButton
+              onDelete={() => onDelete(team.id)}
+              resourceName={team.name}
+              resourceType='team'
+              dataCy='button-delete-team'
+            />
           )}
         </Box>
       </Form>

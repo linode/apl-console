@@ -3,7 +3,6 @@ import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem 
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
-// import { useSnackbar } from '../utils'
 import { mainStyles } from '../theme'
 
 const baseUrl = process.env.PUBLIC_URL || ''
@@ -39,23 +38,23 @@ export default ({ clusterId }: Props): any => {
   const StyledListItem = ({ className, ...props }: any) => {
     return <ListItem className={`${clusterId ? classes.listItem : classes.listItemSmall}, ${className}`} {...props} />
   }
-  const StyledMenuItem = props => {
+  const StyledMenuItem = (props: any) => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
   return (
     <>
       <List dense={!clusterId}>
         <StyledListItem>
-          <ListItemText primary={`Name: ${clusterName}`} />
+          <ListItemText primary={`Name: ${clusterName}`} data-cy='list-item-text-clustername'/>
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Cloud: ${cloud}`} />
+          <ListItemText primary={`Cloud: ${cloud}`} data-cy='list-item-text-cloud'/>
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Region: ${region}`} />
+          <ListItemText primary={`Region: ${region}`} data-cy='list-item-text-region'/>
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`K8S Version: ${k8sVersion}`} />
+          <ListItemText primary={`K8S Version: ${k8sVersion}`} data-cy='list-item-text-k8v'/>
         </StyledListItem>
         {!clusterId && (
           <StyledMenuItem
