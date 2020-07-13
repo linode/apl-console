@@ -30,7 +30,7 @@ export default ({ secrets, setDeleteId }: Props): any => {
       id: 'delete',
       label: 'Delete',
       renderer: row => (
-        <Button color='primary' onClick={() => setDeleteId(row.id)} startIcon={<DeleteIcon />} variant='contained'>
+        <Button color='primary' onClick={() => setDeleteId(row.id)} startIcon={<DeleteIcon />} variant='contained' data-cy={`button-delete-${row.name}`}>
           Delete
         </Button>
       ),
@@ -38,7 +38,7 @@ export default ({ secrets, setDeleteId }: Props): any => {
   ]
   return (
     <>
-      <h1>Secrets{isAdmin && sessTeamId ? ` (team ${sessTeamId})` : ''}</h1>
+      <h1 data-cy='h1-secrets-page'>Secrets{isAdmin && sessTeamId ? ` (team ${sessTeamId})` : ''}</h1>
       <Box mb={1}>
         {(isAdmin || teamId) && (
           <Button
@@ -48,6 +48,7 @@ export default ({ secrets, setDeleteId }: Props): any => {
             variant='contained'
             color='primary'
             disabled={isAdmin && !sessTeamId}
+            data-cy='button-create-secret'
           >
             Create secret
           </Button>

@@ -55,8 +55,9 @@ export default ({ teamId }: Props): any => {
   const [dirty, setDirty] = useState(getDirty())
   const classes = useStyles()
   const mainClasses = mainStyles()
-  const StyledMenuItem = props => {
-    return <MenuItem className={mainClasses.selectable} {...props} />
+  
+  const StyledMenuItem = (props: any) => {
+    return <MenuItem component={Link} className={mainClasses.selectable} {...props} />
   }
   const StyledListSubheader = props => {
     return <ListSubheader className={classes.listSubheader} {...props} />
@@ -71,27 +72,27 @@ export default ({ teamId }: Props): any => {
       <StyledListSubheader component='div' data-cy='list-subheader-otomi-stack'>
         <ListItemText primary='Otomi Stack' />
       </StyledListSubheader>
-      <StyledMenuItem component={Link} to='/'>
+      <StyledMenuItem to='/'>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
       </StyledMenuItem>
       {isAdmin && (
-        <StyledMenuItem component={Link} to='/apps/admin' selected={pathname === '/apps/admin'}>
+        <StyledMenuItem to='/apps/admin' selected={pathname === '/apps/admin'} data-cy='menu-item-otomiapps'>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
-          <ListItemText primary='Otomi Apps' data-cy='menu-item-apps' />
+          <ListItemText primary='Otomi Apps'/>
         </StyledMenuItem>
       )}
-      <StyledMenuItem component={Link} to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
+      <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
         <ListItemIcon>
           <SettingsIcon />
         </ListItemIcon>
         <ListItemText primary='Settings' />
       </StyledMenuItem>
-      <StyledMenuItem
+      <MenuItem
         className={classes.deploy}
         disabled={!dirty}
         onClick={handleClick}
@@ -101,23 +102,23 @@ export default ({ teamId }: Props): any => {
           <CloudUploadIcon />
         </ListItemIcon>
         <ListItemText primary='Deploy Changes' />
-      </StyledMenuItem>
+      </MenuItem>
       <StyledListSubheader component='div' data-cy='list-subheader-enterprise'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      <StyledMenuItem component={Link} to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
+      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
       </StyledMenuItem>
-      <StyledMenuItem component={Link} to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
+      <StyledMenuItem to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
       </StyledMenuItem>
-      <StyledMenuItem component={Link} to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
@@ -128,14 +129,18 @@ export default ({ teamId }: Props): any => {
           <StyledListSubheader component='div'>
             <ListItemText primary={`Team ${teamId}`} data-cy='list-subheader-team' />
           </StyledListSubheader>
-          <StyledMenuItem component={Link} to={`/teams/${teamId}`} selected={pathname === `/teams/${teamId}`}>
+
+          <StyledMenuItem to={`/teams/${teamId}`} selected={pathname === `/teams/${teamId}`}
+            data-cy='menu-item-team-overview'
+          >
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
             <ListItemText primary='Overview' />
           </StyledMenuItem>
+          
           <StyledMenuItem
-            component={Link}
+           
             to={`/teams/${teamId}/secrets`}
             selected={pathname === `/teams/${teamId}/secrets`}
             data-cy='menu-item-team-secrets'
@@ -143,10 +148,11 @@ export default ({ teamId }: Props): any => {
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
-            <ListItemText primary='Secrets' data-cy='menu-item-team-secrets' />
+            <ListItemText primary='Secrets' />
           </StyledMenuItem>
+          
           <StyledMenuItem
-            component={Link}
+           
             to={`/teams/${teamId}/services`}
             selected={pathname === `/teams/${teamId}/services`}
             data-cy='menu-item-team-services'
@@ -156,11 +162,12 @@ export default ({ teamId }: Props): any => {
             </ListItemIcon>
             <ListItemText primary='Services' />
           </StyledMenuItem>
+
           <StyledMenuItem
-            component={Link}
+           
             to={`/apps/${teamId}`}
             selected={pathname === `/apps/${teamId}`}
-            data-cy='menu-item-team-apps'
+            data-cy='menu-item-team-otomiapps'
           >
             <ListItemIcon>
               <AppsIcon />

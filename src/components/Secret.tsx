@@ -48,7 +48,7 @@ export default ({ onSubmit, secret }: Props): any => {
         ObjectFieldTemplate={ObjectFieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty}>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-secret'>
             Submit
           </Button>
         </Box>
