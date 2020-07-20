@@ -293,6 +293,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
             aria-labelledby='tableTitle'
             size={dense ? 'small' : 'medium'}
             aria-label='enhanced table'
+            data-cy='table-enhanced'
           >
             <EnhancedTableHead
               disableSelect={disableSelect}

@@ -48,26 +48,19 @@ let spec: OpenApi
 
 const aclChangeActions = ['patch', 'patch-any', 'create', 'create-any', 'update', 'update-any']
 
-export function applyAclToUiSchema(uiSchema, schema: Schema, role: string, crudOperation: string): void {
+export function applyAclToUiSchema(uiSchema: any, schema: Schema, role: string, crudOperation: string): void {
   const path = `x-acl.${role}`
   entries(schema.properties).forEach(([k, v]) => {
     if (!('x-acl' in v)) {
       // If there is no x-acl then field is rendered in read-write mode
       return
     }
-
     const acl: string[] = get(v, path, [])
     if (acl.length === 0) {
       set(uiSchema, `${k}.ui:widget`, 'hidden')
-      return
+    } else {
+      set(uiSchema, `${k}.ui:readonly`, !acl.includes(crudOperation))
     }
-
-    const uiPath = `${k}.ui:readonly`
-
-    set(uiSchema, uiPath, true)
-
-    if (acl.includes(crudOperation)) set(uiSchema, uiPath, false)
-    else set(uiSchema, uiPath, true)
   })
 }
 

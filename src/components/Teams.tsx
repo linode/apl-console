@@ -26,7 +26,7 @@ export default ({ teams }: Props): any => {
     {
       id: 'name',
       label: 'Team Name',
-      renderer: ({ id }: any) => (isAdmin ? <RLink to={`/teams/${id}`}>{id}</RLink> : id),
+      renderer: ({ id }: any) => (isAdmin ? <RLink to={`/teams/${id}`} label={id}>{id}</RLink> : id),
     },
     {
       id: 'dashboard',
@@ -61,12 +61,19 @@ export default ({ teams }: Props): any => {
             variant='contained'
             color='primary'
             className='createTeam'
+            data-cy='button-create-team'
           >
             Create team
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={teams} idKey='id' />
+      <EnhancedTable
+        disableSelect
+        headCells={headCells}
+        orderByStart='name'
+        rows={teams}
+        idKey='id'
+      />
     </>
   )
 }
