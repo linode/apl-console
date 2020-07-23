@@ -13,6 +13,7 @@ env:
   GIT_USER: redkubesbot
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
   PERCY_TOKEN: '${{ secrets.PERCY_TOKEN }}'
+  GCLOUD_SERVICE_KEY: '${{ secrets.GCLOUD_SERVICE_KEY }}'
 
 # RedKubes default Workflow
 #
