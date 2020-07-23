@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.8](https://github.com/redkubes/otomi-stack-web/compare/v0.3.7...v0.3.8) (2020-07-23)
+
+
+### Bug Fixes
+
+* docker compose setup [ci skip] ([d25f849](https://github.com/redkubes/otomi-stack-web/commit/d25f849f36ef3a3a30f951ae59672f8c64188188))
+* fix missing import ([7eff4ca](https://github.com/redkubes/otomi-stack-web/commit/7eff4ca0a702eff8f730092b2a82ddd57cb8f878))
+* form validation ([f396020](https://github.com/redkubes/otomi-stack-web/commit/f396020cc8a303e8003bcf6160b5601bad707529))
+* remove duplicated code ([8d90edc](https://github.com/redkubes/otomi-stack-web/commit/8d90edcf7a6521499c58e2467897bfa421a4d691))
+* remove function naming ([efc0317](https://github.com/redkubes/otomi-stack-web/commit/efc03177251eae21e55ed507ac5643b6d5103e45))
+
+
+### Others
+
+* add cypress identifier for delete dialog textbox ([f135308](https://github.com/redkubes/otomi-stack-web/commit/f13530865dff003babb755b3b67e8f87407fbd9b))
+* fix based or PR review ([f1fca90](https://github.com/redkubes/otomi-stack-web/commit/f1fca90383a93dd3f7a335407a8c81420d6c1464))
+* fix merge conflict ([d0e11f5](https://github.com/redkubes/otomi-stack-web/commit/d0e11f513991b6ec644158db2f199c0f59af02cb))
+* format code ([9de18b8](https://github.com/redkubes/otomi-stack-web/commit/9de18b884ffa7da5ed172481463d88010790fe85))
+* remove html ids ([ae9407f](https://github.com/redkubes/otomi-stack-web/commit/ae9407f4f873af4fcb3e00b92092577d2f5e15b5))
+* upgrade rjsf libs ([0298073](https://github.com/redkubes/otomi-stack-web/commit/02980732cbc13eee72c4d14f82e4709ae4f3ad49))
+
+
+### Tests
+
+* add cypress identifier for service component ([c9a97f9](https://github.com/redkubes/otomi-stack-web/commit/c9a97f94cea9ea0e20dee6790671f06ad8c4f1f5))
+* add cypress identifier for team feature e2e test ([816c26f](https://github.com/redkubes/otomi-stack-web/commit/816c26f7ddbe638787273037f091e423e54ba46d))
+* add cypress identifier in Menu component ([8ef7ed7](https://github.com/redkubes/otomi-stack-web/commit/8ef7ed7ba3697eb17fa9d8618d841624d2c66a34))
+* add cypress identifier in the settings page ([7256066](https://github.com/redkubes/otomi-stack-web/commit/72560663935f5a27a1f2139c02385933ba53b717))
+* add cypress identifiers for team management e2e scenarios ([c2ffe39](https://github.com/redkubes/otomi-stack-web/commit/c2ffe39bfe127f5f5fd722624b32f7658a961d57))
+* add e2e identifiers for setting use case ([36b4648](https://github.com/redkubes/otomi-stack-web/commit/36b4648d6b7ac6c43eb4397f3f48b06d79722eb2))
+* add identifier in the  new changes on User component ([44bf298](https://github.com/redkubes/otomi-stack-web/commit/44bf2988131af5d6abc294f44d35b4954bf4569c))
+* add identifiers for cluster and setting components ([8714a41](https://github.com/redkubes/otomi-stack-web/commit/8714a41938c1f656ab7dab6eddf102b5dd2b3e5c))
+* add identifiers to support e2e Dashboard scenario ([5492744](https://github.com/redkubes/otomi-stack-web/commit/54927440fa88504f0b5fd712b1211d4d2d5e718f))
+* add indentifier for card ([0defc58](https://github.com/redkubes/otomi-stack-web/commit/0defc58e21ddbb1cd4e08b416082fa9e47422060))
+* revert unnecessary changes ([2b7ac37](https://github.com/redkubes/otomi-stack-web/commit/2b7ac37f44a2a013e6d9a92ed9cba613f44bab15))
+
+
+### Code Refactoring
+
+* clean up codes ([aa0957d](https://github.com/redkubes/otomi-stack-web/commit/aa0957dabc81febba7cf595c4435c857b485f02c))
+* refactor identifiers to support e2e Dashboard scenario ([69f191d](https://github.com/redkubes/otomi-stack-web/commit/69f191d7f79772cdc59151f5774b8af2e3aee417))
+* refactor Link component and add e2e identifiers ([a313b30](https://github.com/redkubes/otomi-stack-web/commit/a313b30b45881fc69981a3bd57d55cec52b5c039))
+
+
+### Feature Improvements
+
+* added keycloak logo [ci skip] ([1718e06](https://github.com/redkubes/otomi-stack-web/commit/1718e06c337842bb6c62bdf6b5a38fd4bc1b4819))
+
 ### [0.3.7](https://github.com/redkubes/otomi-stack-web/compare/v0.3.6...v0.3.7) (2020-06-22)
 
 
