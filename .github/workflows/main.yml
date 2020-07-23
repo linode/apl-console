@@ -51,6 +51,7 @@ jobs:
           WEB_TAG: ${{ env.TAG }}
         run: |
           docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
+          exit
           docker pull $E2E_IMG
           container_id=$(docker create $E2E_IMG)
           # docker rm $container_id
