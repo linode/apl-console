@@ -19,15 +19,18 @@ sub_help () {
 }
 
 sub_up () {
-    docker-compose -f docker-compose.yml up $1
+    c="docker-compose -f docker-compose.yml"
+    $c pull && $c up $1
 }
 
 sub_up-all () {
-    docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml up $1
+    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml"
+    $c pull && $c up $1
 }
 
 sub_up-deps () {
-    docker-compose -f docker-compose-deps.yml up $1
+    c="docker-compose -f docker-compose-deps.yml"
+    $c pull && $c up $1
 }
 
 sub_down () {
@@ -35,11 +38,13 @@ sub_down () {
 }
 
 sub_e2e () {
-    docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml"
+    $c pull && $c up --exit-code-from e2e
 }
 
 sub_e2e-ci () {
-    docker-compose -f docker-compose-prod.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml up --exit-code-from e2e
+    c="docker-compose -f docker-compose-prod.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml"
+    $c pull && $c up --exit-code-from e2e
 }
 
 case $COMMAND_NAME in

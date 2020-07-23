@@ -22,15 +22,8 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
   const crudMethod = team && team.id ? 'update' : 'create'
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
-  const [invalid, setInvalid] = useState(false)
 
-  const handleChange = ({ formData: inData, errors }): any => {
-    if (errors && errors.length) {
-      setInvalid(true)
-    } else {
-      setInvalid(false)
-    }
-    const formData = { ...inData }
+  const handleChange = ({ formData }): any => {
     setData(formData)
     setDirty(!isEqual(formData, team))
   }
@@ -53,7 +46,7 @@ export default ({ onSubmit, onDelete, clusters, team }: Props): any => {
         showErrorList={false}
       >
         <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid} data-cy='button-submit-team'>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-team'>
             Submit
           </Button>
           &nbsp;

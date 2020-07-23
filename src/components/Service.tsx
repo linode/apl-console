@@ -36,18 +36,11 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
   const [uiSchema, setUiSchema] = useState(originalUiSchema)
   const [data, setData]: any = useState(serviceData)
   const [dirty, setDirty] = useState(false)
-  const [invalid, setInvalid] = useState(false)
-  const handleChange = ({ formData: inData, errors }): any => {
-    if (errors && errors.length) {
-      setInvalid(true)
-    } else {
-      setInvalid(false)
-    }
+  const handleChange = ({ formData: inData }): any => {
     teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
     const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
     defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
     const formData = { ...inData }
-    // if (!data) return
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
@@ -82,12 +75,17 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
         ObjectFieldTemplate={ObjectFieldTemplate}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty || invalid} data-cy='button-submit-service'>
+          <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
             Submit
           </Button>
           &nbsp;
           {serviceData.id && (
-            <DeleteButton onDelete={() => onDelete(serviceData.id)} resourceName={data.name} resourceType='service' dataCy='button-delete-service'/>
+            <DeleteButton
+              onDelete={() => onDelete(serviceData.id)}
+              resourceName={data.name}
+              resourceType='service'
+              dataCy='button-delete-service'
+            />
           )}
         </Box>
       </Form>

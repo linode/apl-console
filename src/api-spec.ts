@@ -140,9 +140,11 @@ export function getSecretUiSchema(schema: Schema, role: string, crudMethod: stri
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
+    namespace: { 'ui:placeholder': 'Choose an option' },
     teamId: { 'ui:widget': 'hidden' },
     type: { 'ui:widget': 'hidden', description: undefined },
-    cert: { 'ui:widget': 'textarea' },
+    ca: { 'ui:widget': 'textarea' },
+    crt: { 'ui:widget': 'textarea' },
     key: { 'ui:widget': 'textarea' },
     entries: { 'ui:options': { orderable: false } },
   }
@@ -167,6 +169,10 @@ function addDomainEnumField(schema: Schema, clusters, formData): void {
 function addClustersEnum(schema: Schema, team, formData): void {
   schema.properties.clusterId.enum = team.clusters
   if (formData && team.clusters.length === 1) formData.clusterId = team.clusters[0]
+}
+
+export function addNamespaceEnum(schema: Schema, namespaces): void {
+  schema.properties.namespace.enum = namespaces
 }
 
 function removeCertArnField(schema: Schema) {

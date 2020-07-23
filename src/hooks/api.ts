@@ -64,7 +64,7 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
           // enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
         }
         // eslint-disable-next-line no-console
-        console.error(`Api Error calling '${method}':`, e)
+        console.warn(`Api Error calling '${method}':`, e)
         setError(e)
       }
     })()
