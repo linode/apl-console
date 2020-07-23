@@ -44,13 +44,12 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
-      - name: Docker login
-        run: docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
         env:
           WEB_TAG: ${{ env.TAG }}
         run: |
+          docker login -u _json_key -p '${{ secrets.DOCKER_PASSWORD }}' $REG
           docker pull $E2E_IMG
           container_id=$(docker create $E2E_IMG)
           # docker rm $container_id
@@ -65,12 +64,11 @@ jobs:
         run: |
           RELEASE_TAG=v${COMMIT_MSG#* }
           echo "Releasing $REG/$REPO:$RELEASE_TAG"
+          docker tag $REG/$REPO:$TAG $REG/$REPO:latest
           docker tag $REG/$REPO:$TAG $REG/$REPO:$RELEASE_TAG
+          docker push $REG/$REPO:latest
           docker push $REG/$REPO:$RELEASE_TAG
           git config --global user.email "$GIT_USER@users.noreply.github.com"
           git config --global user.name $GIT_USER
           echo "machine github.com login $GIT_USER password $GIT_PASSWORD" > ~/.netrc
           git tag -am "$COMMIT_MSG" $RELEASE_TAG && git push --follow-tags origin master
-          echo "Also tagging and pushing $REG/$REPO:latest"
-          docker tag $REG/$REPO:$TAG $REG/$REPO:latest
-          docker push $REG/$REPO:latest
