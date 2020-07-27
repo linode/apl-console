@@ -1,7 +1,9 @@
+import React from 'react'
 /* eslint-disable no-param-reassign */
 import { entries, get, set, unset } from 'lodash/object'
 import { find, map } from 'lodash/collection'
 import { isEmpty, cloneDeep } from 'lodash/lang'
+import { FormControl, RadioGroup, FormControlLabel, Radio } from '@material-ui/core'
 
 export type AclAction =
   | 'create'
@@ -99,6 +101,32 @@ export function getTeamUiSchema(schema: Schema, role: string, crudMethod: string
   return uiSchema
 }
 
+export function customRadioGroup(props: any) {
+  const {
+    id,
+    onChange,
+    value,
+    options: { enumOptions },
+    readonly,
+  } = props
+  return (
+    <FormControl component='fieldset' id={id}>
+      <RadioGroup aria-label='gender' name='gender1' value={value} onChange={event => onChange(event.target.value)}>
+        {enumOptions.map((opt: any) => (
+          <FormControlLabel
+            disabled={readonly}
+            value={opt.value}
+            control={<Radio />}
+            label={opt.label}
+            key={`radio-${id}-${opt.value}`}
+            data-cy={`radio-${id}-${opt.value}`}
+          />
+        ))}
+      </RadioGroup>
+    </FormControl>
+  )
+}
+
 export function getServiceUiSchema(schema: Schema, role: string, formData, crudMethod: string): any {
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCertArn = notAws || !formData || !formData.ingress || !formData.ingress.hasCert
@@ -107,7 +135,7 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
-      'ui:widget': 'radio',
+      'ui:widget': customRadioGroup,
       'ui:options': {
         inline: true,
       },
@@ -118,13 +146,13 @@ export function getServiceUiSchema(schema: Schema, role: string, formData, crudM
       },
     },
     ksvc: {
-      'ui:widget': 'radio',
+      'ui:widget': customRadioGroup,
       'ui:options': {
         inline: true,
       },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
-        'ui:widget': 'radio',
+        'ui:widget': customRadioGroup,
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
