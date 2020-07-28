@@ -214,9 +214,9 @@ export const mainStyles = makeStyles(theme => ({
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
-  header: {
+  headerlink: {
     // color: theme.palette.primary.main,
-    color: theme.palette.common.black,
+    color: theme.palette.common.white,
     '&': {
       textDecoration: 'none',
       color: theme.palette.common.white,
@@ -232,7 +232,7 @@ export const mainStyles = makeStyles(theme => ({
   },
   selectable: {
     // color: theme.palette.primary.main,
-    color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+    color: theme.palette.common.white,
     '&': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
@@ -244,6 +244,34 @@ export const mainStyles = makeStyles(theme => ({
     '&.Mui-selected': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
+    },
+  },
+  '@global .headerLink': {
+    '.headerLink.a': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+    },
+    '.headerLink.a:hover': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+    },
+    '.headerLink.a:selected': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
+    },
+  },
+  '@global': {
+    '.selectable.a': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+    },
+    '.selectable.a:hover': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+    },
+    '.selectable.a:selected': {
+      textDecoration: 'none',
+      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
     },
   },
 }))
