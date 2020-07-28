@@ -23,7 +23,7 @@ export default ({ teamId }: Props): any => {
   const cluster = find(clusters, { cloud, cluster: clusterName })
   const apps = teamId === 'admin' ? adminApps : teamApps
   return (
-    <Grid container direction='row' alignItems='center' spacing={2}>
+    <Grid container direction='row' alignItems='center' spacing={2} data-cy='grid-apps'>
       {apps
         .filter(app => !app.hide && app.name !== 'otomi')
         .map(({ name, isShared, logo, domain, host, path, ownHost }) => {

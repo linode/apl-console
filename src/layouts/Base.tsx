@@ -143,16 +143,6 @@ export default (props: Props): any => {
   )
   const toolbar = (
     <Toolbar className={classes.toolbar}>
-      {/* <IconButton
-    edge='start'
-    color='inherit'
-    aria-label='open drawer'
-    onClick={handleDrawerToggle}
-    className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-  >
-    <MenuIcon />
-  </IconButton> */}
-
       <div className={classes.logo}>
         <Hidden smDown implementation='css'>
           <IconButton color='inherit'>
@@ -191,6 +181,7 @@ export default (props: Props): any => {
           }}
           open={open}
           onClick={handleDrawerOpen}
+          data-cy='drawer-small-screen'
         >
           <div className={classes.toolbarIcon}>
             <IconButton onClick={handleDrawerClose}>
@@ -210,6 +201,7 @@ export default (props: Props): any => {
           classes={{
             paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
           }}
+          data-cy='drawer-big-screen'
         >
           <div className={classes.toolbar} />
           {drawer}
