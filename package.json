@@ -121,6 +121,7 @@
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w --noEmit"
   },
+  "sideEffects": false,
   "standard-version": {
     "skip": {
       "tag": true

@@ -34,17 +34,7 @@ sub_up-deps () {
 }
 
 sub_down () {
-    docker-compose -f docker-compose.yml -f docker-compose-deps.yml down --remove-orphans
-}
-
-sub_e2e () {
-    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml"
-    $c pull && $c up --exit-code-from e2e
-}
-
-sub_e2e-ci () {
-    c="docker-compose -f docker-compose-prod.yml -f docker-compose-deps.yml -f docker-compose-e2e.yml"
-    $c pull && $c up --exit-code-from e2e
+    docker-compose -f docker-compose.yml -f docker-compose-prod.yml -f docker-compose-deps.yml down --remove-orphans
 }
 
 case $COMMAND_NAME in

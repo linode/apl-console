@@ -246,32 +246,4 @@ export const mainStyles = makeStyles(theme => ({
       color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
     },
   },
-  '@global .headerLink': {
-    '.headerLink.a': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    },
-    '.headerLink.a:hover': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
-    },
-    '.headerLink.a:selected': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
-    },
-  },
-  '@global': {
-    '.selectable.a': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    },
-    '.selectable.a:hover': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
-    },
-    '.selectable.a:selected': {
-      textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.dark,
-    },
-  },
 }))
