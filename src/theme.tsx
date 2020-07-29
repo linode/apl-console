@@ -217,15 +217,15 @@ export const mainStyles = makeStyles(theme => ({
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,
-    '&': {
+    '&&': {
       textDecoration: 'none',
       color: theme.palette.secondary.main,
     },
-    '&:hover': {
+    '&&:hover': {
       textDecoration: 'none',
       color: theme.palette.secondary.dark,
     },
-    '&.Mui-selected': {
+    '&&.Mui-selected': {
       textDecoration: 'none',
       color: theme.palette.secondary.light,
     },
@@ -233,15 +233,15 @@ export const mainStyles = makeStyles(theme => ({
   selectable: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,
-    '&': {
+    '&&': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     },
-    '&:hover': {
+    '&&:hover': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
-    '&.Mui-selected': {
+    '&&.Mui-selected': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
     },
