@@ -3,9 +3,9 @@ import Avatar from '@material-ui/core/Avatar'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
+import { mainStyles } from '../theme'
 import { useSession } from '../session-context'
 import { Team } from '../models'
-import { mainStyles } from '../theme'
 
 interface Props {
   teams: Team[]
@@ -20,10 +20,16 @@ const useStyles = makeStyles(theme => ({
   select: {
     marginLeft: 10,
     fontSize: '1rem',
+    color: theme.palette.secondary.main,
+    fontWeight: 'bold',
+  },
+  icon: {
+    fill: theme.palette.secondary.main,
   },
 }))
 
 export default ({ teams = [] }: Props): any => {
+  const mainClasses = mainStyles()
   const classes = useStyles()
   const history = useHistory()
   const {
@@ -43,12 +49,18 @@ export default ({ teams = [] }: Props): any => {
     <>
       {isAdmin && (
         <>
-          <Typography variant='body1'>Admin acting for:</Typography>
+          <Typography variant='body1'>acting for:</Typography>
           <Select
+            disableUnderline
             value={teams.length && oboTeamId ? oboTeamId : ''}
             onChange={handleChange}
             className={classes.select}
             data-cy='select-oboteam'
+            inputProps={{
+              classes: {
+                icon: classes.icon,
+              },
+            }}
           >
             <MenuItem value={undefined} data-cy='select-oboteam-undefined'>
               -
@@ -66,10 +78,10 @@ export default ({ teams = [] }: Props): any => {
       <Hidden xsDown>
         <Typography variant='body1' data-cy='text-user-team'>
           <Tooltip title='logout' aria-label='logout'>
-            <Link className={mainStyles().headerlink} title='logout' href='/otomi/logout'>
+            <Link className={mainClasses.headerlink} title='logout' href='/otomi/logout'>
               {email}
             </Link>
-          </Tooltip>
+          </Tooltip>{' '}
           <strong>({isAdmin ? `admin` : teamId})</strong>
         </Typography>
       </Hidden>

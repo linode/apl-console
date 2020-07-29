@@ -219,15 +219,15 @@ export const mainStyles = makeStyles(theme => ({
     color: theme.palette.common.white,
     '&': {
       textDecoration: 'none',
-      color: theme.palette.common.white,
+      color: theme.palette.secondary.main,
     },
     '&:hover': {
       textDecoration: 'none',
-      color: theme.palette.primary.light,
+      color: theme.palette.secondary.dark,
     },
     '&.Mui-selected': {
       textDecoration: 'none',
-      color: theme.palette.primary.dark,
+      color: theme.palette.secondary.light,
     },
   },
   selectable: {
