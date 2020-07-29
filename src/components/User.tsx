@@ -49,7 +49,7 @@ export default ({ teams = [] }: Props): any => {
     <>
       {isAdmin && (
         <>
-          <Typography variant='body1'>acting for:</Typography>
+          <Typography variant='body1'>acting for team:</Typography>
           <Select
             disableUnderline
             value={teams.length && oboTeamId ? oboTeamId : ''}
