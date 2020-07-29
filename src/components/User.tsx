@@ -78,7 +78,7 @@ export default ({ teams = [] }: Props): any => {
       <Hidden xsDown>
         <Typography variant='body1' data-cy='text-user-team'>
           <Tooltip title='logout' aria-label='logout'>
-            <Link className={mainClasses.headerlink} title='logout' href='/otomi/logout'>
+            <Link className={mainClasses.headerlink} title='logout' href='/otomi/logout-otomi'>
               {email}
             </Link>
           </Tooltip>{' '}
