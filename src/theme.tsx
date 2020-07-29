@@ -214,34 +214,34 @@ export const mainStyles = makeStyles(theme => ({
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
-  header: {
+  headerlink: {
     // color: theme.palette.primary.main,
-    color: theme.palette.common.black,
-    '&': {
+    color: theme.palette.common.white,
+    '&&': {
       textDecoration: 'none',
-      color: theme.palette.common.white,
+      color: theme.palette.secondary.main,
     },
-    '&:hover': {
+    '&&:hover': {
       textDecoration: 'none',
-      color: theme.palette.primary.light,
+      color: theme.palette.secondary.dark,
     },
-    '&.Mui-selected': {
+    '&&.Mui-selected': {
       textDecoration: 'none',
-      color: theme.palette.primary.dark,
+      color: theme.palette.secondary.light,
     },
   },
   selectable: {
     // color: theme.palette.primary.main,
-    color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    '&': {
+    color: theme.palette.common.white,
+    '&&': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     },
-    '&:hover': {
+    '&&:hover': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
-    '&.Mui-selected': {
+    '&&.Mui-selected': {
       textDecoration: 'none',
       color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
     },
