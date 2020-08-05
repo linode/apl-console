@@ -1,6 +1,8 @@
 # --------------- dev stage for developers to override sources
 FROM node:13.10.1-alpine as dev
+ARG NPM_USER
 ARG NPM_TOKEN
+RUN test -n "$NPM_USER"
 RUN test -n "$NPM_TOKEN"
 
 RUN apk --no-cache add make gcc g++ python
@@ -11,6 +13,8 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY .npmrc ./
+RUN npm login 
+RUN echo "email=${NPM_USER}" >> .npmrc
 RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
 RUN npm ci
