@@ -3,12 +3,11 @@ import React from 'react'
 import Err from '../components/Error'
 
 export class ApiError extends Error {
-  message: string
-
   code?: number
 
   constructor(message: any, code?: number | undefined) {
     super(message)
+    this.code = code
     // restore prototype chain
     Object.setPrototypeOf(this, new.target.prototype)
   }
