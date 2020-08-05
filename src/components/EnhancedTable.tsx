@@ -225,12 +225,12 @@ interface Props {
 // eslint-disable-next-line react/prop-types
 export default function EnhancedTable({ disableSelect, orderByStart, headCells, rows, idKey }: Props) {
   const classes = useEnhancedStyles()
-  const [order, setOrder] = useState<Order>('asc')
-  const [orderBy, setOrderBy] = useState(orderByStart)
+  const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
+  const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useLocalStorage('EnhancedTable:dense', false)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [rowsPerPage, setRowsPerPage] = useLocalStorage('EnhancedTable:rowsPerPage', 10)
 
   const handleRequestSort = (event: MouseEvent<unknown>, property: string) => {
     const isAsc = orderBy === property && order === 'asc'
@@ -309,7 +309,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index): any => {
+                .map((row, index) => {
                   const isItemSelected = isSelected(row.name)
                   const labelId = `enhanced-table-checkbox-${index}`
 
@@ -329,7 +329,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
                           <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
                         </TableCell>
                       )}
-                      {headCells.map((c): any => (
+                      {headCells.map(c => (
                         <TableCell
                           key={`cell-${c.id}`}
                           align={c.numeric ? 'right' : 'left'}

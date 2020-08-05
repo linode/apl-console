@@ -2,19 +2,21 @@ import React from 'react'
 import RLink from './Link'
 import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { useSession } from '../session-context'
 
-interface Props {
-  clusters: any[]
-}
-
-export default ({ clusters }: Props): any => {
+export default () => {
+  const { clusters } = useSession()
   const teamPrefix = 'team-' // @todo: get from values later
   const headCells: HeadCell[] = [
     {
       id: 'id',
       label: 'ID',
-      renderer: (row: any) => <RLink to={`/cluster/${encodeURIComponent(row.id)}`} label={row.id}>{row.id}</RLink>,
-    },  
+      renderer: (row: any) => (
+        <RLink to={`/cluster/${encodeURIComponent(row.id)}`} label={row.id}>
+          {row.id}
+        </RLink>
+      ),
+    },
     {
       id: 'domain',
       label: 'Domain',
@@ -32,7 +34,7 @@ export default ({ clusters }: Props): any => {
   return (
     <>
       <h1 data-cy='h1-clusters-page'>Clusters</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters} idKey='id' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters as any} idKey='id' />
     </>
   )
 }

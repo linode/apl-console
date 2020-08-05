@@ -10,7 +10,7 @@ interface Props {
   teamId: string
 }
 
-export default ({ teamId }: Props): any => {
+export default ({ teamId }: Props) => {
   const {
     core: {
       services: adminApps,
@@ -18,9 +18,9 @@ export default ({ teamId }: Props): any => {
     },
     currentClusterId,
     clusters,
-  } = useSession()
-  const [cloud, clusterName] = currentClusterId.split('/')
-  const cluster = find(clusters, { cloud, cluster: clusterName })
+  }: any = useSession()
+  const [cloud, name] = currentClusterId.split('/')
+  const cluster = find(clusters, { cloud, name })
   const apps = teamId === 'admin' ? adminApps : teamApps
   return (
     <Grid container direction='row' alignItems='center' spacing={2} data-cy='grid-apps'>

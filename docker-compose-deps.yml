@@ -4,9 +4,11 @@ services:
   api:
     container_name: api
     image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-latest}
-    user: ${UID}:${GID}
+    user: ${USER_ID}:${GROUP_ID}
     expose:
       - 8080
+    ports:
+      - 8080:8080
     volumes:
       - $PWD/docker-compose/core.yaml:/etc/otomi/core.yaml
       - tmp:/tmp
@@ -27,7 +29,7 @@ services:
       - api
     container_name: tools
     image: eu.gcr.io/otomi-cloud/otomi-stack:${TOOLS_TAG:-latest}
-    user: ${UID}:${GID}
+    user: ${USER_ID}:${GROUP_ID}
     command: bin/server.sh
     expose:
       - 17771

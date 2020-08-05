@@ -3,21 +3,25 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Team } from '../models'
+import { Team, Service } from '@redkubes/otomi-api-client-axios'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId) => (row): any => {
+const getServiceLink = (isAdmin, ownerId) => row => {
   const { teamId, id, name } = row
   if (!(isAdmin || teamId === ownerId)) return name
 
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
-  return <RLink to={link} label={name}>{name}</RLink>
+  return (
+    <RLink to={link} label={name}>
+      {name}
+    </RLink>
+  )
 }
 
-const renderPublicUrl = (row): any => {
+const renderPublicUrl = row => {
   if (isEmpty(row.ingress)) {
     return ''
   }
@@ -31,23 +35,22 @@ const renderPublicUrl = (row): any => {
 }
 
 interface Props {
-  services: any[]
+  services: Service[]
   team?: Team
-  sessTeamId?: string
+  oboTeamId?: string
 }
 
-export default ({ services, team }: Props): any => {
+export default ({ services, team }: Props) => {
   const {
-    user: { teamId, isAdmin },
+    user: { isAdmin },
     oboTeamId,
   } = useSession()
   const showTeam = !team
-  const sessTeamId = isAdmin ? oboTeamId : teamId
   const headCells: HeadCell[] = [
     {
       id: 'name',
       label: 'Service Name',
-      renderer: getServiceLink(isAdmin, sessTeamId),
+      renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
       id: 'url',
@@ -61,7 +64,6 @@ export default ({ services, team }: Props): any => {
     headCells.push({
       id: 'teamId',
       label: 'Team',
-      renderer: row => row.teamId.charAt(0).toUpperCase() + row.teamId.substr(1),
     })
 
   return (

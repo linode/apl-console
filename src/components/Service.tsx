@@ -1,10 +1,10 @@
 import { Box, Button } from '@material-ui/core'
-import Form from '@rjsf/material-ui'
 import { isEmpty, isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
+import { Service, Secret } from '@redkubes/otomi-api-client-axios'
+import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
-import Service from '../models/Service'
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
@@ -13,33 +13,23 @@ interface Props {
   onDelete?: any
   team: any
   service?: Service
-  clusters: [any]
+  secrets: Secret[]
 }
 
-export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Props): any => {
+export default ({ onSubmit, onDelete, team, service = undefined, secrets }: Props) => {
   const {
-    user: { role, isAdmin },
+    clusters,
+    user: { roles, isAdmin },
   } = useSession()
-  let teamSubdomain = service ? `${service.name}.team-${team.id}` : ''
-  let defaultSubdomain
-  const serviceData: any = service || {}
-  if (serviceData.ingress && service.clusterId) {
-    defaultSubdomain = `${teamSubdomain}.${serviceData.clusterId.split('/')[1]}`
-    // eslint-disable-next-line no-param-reassign
-    serviceData.ingress.useDefaultSubdomain = serviceData.ingress.subdomain === defaultSubdomain
-  }
-
-  const crudOperation = serviceData.id ? 'update' : 'create'
-  const originalSchema = getServiceSchema(team, clusters, serviceData || {})
-  const originalUiSchema = getServiceUiSchema(originalSchema, role, serviceData, crudOperation)
-  const [schema, setSchema] = useState(originalSchema)
-  const [uiSchema, setUiSchema] = useState(originalUiSchema)
-  const [data, setData]: any = useState(serviceData)
+  const secretNames = secrets.map(s => s.name)
+  const [schema, setSchema] = useState()
+  const [uiSchema, setUiSchema] = useState()
+  const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
-  const handleChange = ({ formData: inData }): any => {
-    teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
+  const handleChange = ({ formData: inData }) => {
+    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
     const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
-    defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
+    const defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
     const formData = { ...inData }
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
@@ -47,48 +37,52 @@ export default ({ onSubmit, onDelete, team, service = undefined, clusters }: Pro
         formData.ingress = { ...formData.ingress }
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
-      setSchema(getServiceSchema(team, clusters, formData))
-      setUiSchema(getServiceUiSchema(schema, role, formData, crudOperation))
     }
+    const newSchema = getServiceSchema(team, clusters, formData, secretNames)
+    setSchema(newSchema)
+    setUiSchema(getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create'))
     setData(formData)
     setDirty(!isEqual(formData, service))
   }
-  const handleSubmit = ({ formData }): any => {
+  if (!(schema || uiSchema)) {
+    handleChange({ formData: service || {} })
+    return null
+  }
+  const handleSubmit = ({ formData }) => {
     onSubmit(formData)
   }
-
   return (
-    <div>
-      <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
-        {data && data.id ? `Service: ${data.name}` : 'New Service'}
-        {isAdmin && team ? ` (team ${team.id})` : ''}
-      </h1>
-      <Form
-        key='createService'
-        schema={schema}
-        uiSchema={uiSchema}
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        formData={data}
-        liveValidate={false}
-        showErrorList={false}
-        ObjectFieldTemplate={ObjectFieldTemplate}
-      >
-        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
-            Submit
-          </Button>
-          &nbsp;
-          {serviceData.id && (
-            <DeleteButton
-              onDelete={() => onDelete(serviceData.id)}
-              resourceName={data.name}
-              resourceType='service'
-              dataCy='button-delete-service'
-            />
-          )}
-        </Box>
-      </Form>
-    </div>
+    <Form
+      title={
+        <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
+          {data && data.id ? `Service: ${data.name}` : 'New Service'}
+          {isAdmin && team ? ` (team ${team.id})` : ''}
+        </h1>
+      }
+      key='createService'
+      schema={schema}
+      uiSchema={uiSchema}
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      formData={data}
+      liveValidate={false}
+      showErrorList={false}
+      ObjectFieldTemplate={ObjectFieldTemplate}
+    >
+      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
+        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
+          Submit
+        </Button>
+        &nbsp;
+        {data.id && (
+          <DeleteButton
+            onDelete={() => onDelete(data.id)}
+            resourceName={data.name}
+            resourceType='service'
+            dataCy='button-delete-service'
+          />
+        )}
+      </Box>
+    </Form>
   )
 }

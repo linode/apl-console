@@ -20,6 +20,10 @@ export const c = {
   brownLight: '#cb9a6a',
   brownMain: '#cd853f',
   brownDark: '#96612d',
+  greenSoft: '#bae169',
+  greenLight: '#9acd32',
+  greenMain: '#00b400',
+  greenDark: '#228b22',
 }
 
 export const commonDark = {
@@ -130,6 +134,9 @@ export function setThemeName(inName: string): void {
   name = inName
 }
 
+export function getThemeType(): string {
+  return type
+}
 export function setThemeType(inType: string): void {
   type = inType
 }
@@ -198,15 +205,18 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles(theme => ({
   forms: {
     '@global': {
-      '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
-        color: theme.palette.primary.main,
-      },
-      '.MuiSwitch-colorSecondary.Mui-checked, .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-        color: theme.palette.primary.main,
+      '.MuiButtonBase-root.Mui-checked span': {
+        color: type === 'dark' ? 'inherit' : theme.palette.primary.main,
       },
       '.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-        color: theme.palette.primary.main,
-        backgroundColor: theme.palette.primary.light,
+        // color: theme.palette.primary.main,
+        color: type === 'dark' ? 'inherit' : theme.palette.primary.main,
+        backgroundColor: type === 'dark' ? 'inherit' : theme.palette.primary.light,
+      },
+      '.MuiInput-root:not([data-cy="select-oboteam"])': {
+        minWidth: '10rem',
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
       },
     },
   },
@@ -217,17 +227,16 @@ export const mainStyles = makeStyles(theme => ({
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,
+    fontWeight: 'bold',
     '&&': {
       textDecoration: 'none',
-      color: theme.palette.secondary.main,
+      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
     },
     '&&:hover': {
-      textDecoration: 'none',
-      color: theme.palette.secondary.dark,
+      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
     },
     '&&.Mui-selected': {
-      textDecoration: 'none',
-      color: theme.palette.secondary.light,
+      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.light,
     },
   },
   selectable: {
@@ -238,11 +247,9 @@ export const mainStyles = makeStyles(theme => ({
       color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     },
     '&&:hover': {
-      textDecoration: 'none',
       color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
     '&&.Mui-selected': {
-      textDecoration: 'none',
       color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
     },
   },

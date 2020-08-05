@@ -13,6 +13,7 @@ import React, { useState } from 'react'
 import Menu from '../components/Menu'
 import User from '../components/User'
 import { useApi } from '../hooks/api'
+import ErrorBoundary from '../utils/error'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
 
@@ -103,22 +104,19 @@ interface Props {
   children?: any
 }
 
-export default (props: Props): any => {
+export default (props: Props) => {
   const { children } = props
-  const {
-    user: { isAdmin, teamId },
-    oboTeamId,
-  } = useSession()
+  const { oboTeamId } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
   const [open, setOpen] = useState(false)
   const [teams]: any = useApi('getTeams')
-  const handleDrawerOpen = (e): any => {
+  const handleDrawerOpen = e => {
     e.preventDefault()
     if (!open) setOpen(true)
   }
-  const handleDrawerClose = (e): any => {
+  const handleDrawerClose = e => {
     e.preventDefault()
     setOpen(false)
   }
@@ -138,7 +136,7 @@ export default (props: Props): any => {
 
   const drawer = (
     <div className={classes.drawerContainer}>
-      <Menu teamId={isAdmin ? oboTeamId : teamId} />
+      <Menu teamId={oboTeamId} />
     </div>
   )
   const toolbar = (
@@ -154,7 +152,7 @@ export default (props: Props): any => {
           <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
         </Hidden>
       </div>
-      <User teams={teams} />
+      <User allTeams={teams} />
       <IconButton color='inherit'>
         <Badge badgeContent={4} color='secondary'>
           <NotificationsIcon />
@@ -209,7 +207,7 @@ export default (props: Props): any => {
       </Hidden>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        {children}
+        <ErrorBoundary>{children}</ErrorBoundary>
       </main>
     </div>
   )

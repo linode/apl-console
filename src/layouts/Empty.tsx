@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default ({ children }: any): any => {
+export default ({ children }: any) => {
   const classes = useStyles()
   return (
     <MainLayout>

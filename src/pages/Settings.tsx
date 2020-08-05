@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default (): any => {
+export default () => {
   const { themeType, setThemeType } = useSession()
   const classes = useStyles()
   const toggleTheme = (): void => {
@@ -23,11 +23,11 @@ export default (): any => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
-  return (
-    <PaperLayout>
+  const comp = (
+    <>
       <MenuList className={classes.root}>
         <StyledListSubheader>
-          <ListItemText primary='Interface' data-cy='list-item-interface-text'/>
+          <ListItemText primary='Interface' data-cy='list-item-interface-text' />
         </StyledListSubheader>
         <MenuItem onClick={toggleTheme}>
           <ListItemIcon>{themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}</ListItemIcon>
@@ -48,6 +48,7 @@ export default (): any => {
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
       /> */}
-    </PaperLayout>
+    </>
   )
+  return <PaperLayout comp={comp} />
 }

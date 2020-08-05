@@ -1,20 +1,28 @@
 import { useEffect } from 'react'
-import getClient, { getApiDefinition } from '../api'
-import { setSpec } from '../api-spec'
+import { DefaultApi } from '@redkubes/otomi-api-client-axios'
 import { LoadingHook, useLoadingValue } from '../utils'
-import { useSession } from '../session-context'
+import snack from '../utils/snack'
+import { useSession, SessionContext } from '../session-context'
+import { ApiError, ApiErrorUnauthorized } from '../utils/error'
 
-export type ApiHook = LoadingHook<object, Error>
+const env = process.env
+const baseUrl = `${env.PUBLIC_URL || 'http://localhost:3000'}/api/v1`
+let options
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line no-console
+  console.info('running in development mode')
+  // eslint-disable-next-line no-restricted-globals
+  const team = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
+  if (team !== 'admin') window.localStorage.setItem('oboTeamId', `"${team}"`)
+  options = {
+    headers: { 'Auth-Group': team },
+  }
+}
 
-let client: any
-let apiSpec: any
+export type ApiHook = LoadingHook<object, ApiError>
+
+const client = new DefaultApi(baseUrl)
 let dirty = false
-
-export const schemaPromise = getApiDefinition().then(response => {
-  apiSpec = response.data
-  setSpec(apiSpec)
-  client = getClient(apiSpec)
-})
 
 const checkDirty = (method: any): boolean => {
   ;['create', 'edit', 'update', 'delete'].forEach(prefix => {
@@ -28,10 +36,10 @@ const checkDirty = (method: any): boolean => {
   return dirty
 }
 
-export const useApi = (method: string, active = true, ...args: any[]): ApiHook => {
+export const useApi = (method: string, active = true, args: any[] = []): ApiHook => {
   const signature = `args.length:${args.length}/${args.join(',').length}`
   let canceled = false
-  const { error, loading, setError, setValue, value } = useLoadingValue<any, Error>()
+  const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
     user: { isAdmin },
     isDirty,
@@ -46,26 +54,26 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
       try {
         if (!client[method]) {
           const err = `Api method does not exist: ${method}`
-          setError(new Error(err))
+          setError(new ApiError(err))
           if (process.env.NODE_ENV !== 'production') {
-            // enqueueSnackbar(err, { variant: 'error' })
+            snack.error(err)
           } else {
             // eslint-disable-next-line no-console
             console.error(err)
           }
         } else {
           if (canceled) return
-          const value = await client[method].call(client, ...args)
+          const value = await client[method].call(client, ...args, options)
           checkDirty(method)
-          setValue(value.data)
+          setValue(value.response.body)
         }
       } catch (e) {
         if (process.env.NODE_ENV !== 'production') {
-          // enqueueSnackbar(`Api Error calling '${method}': ${e.toString()}`, { variant: 'error' })
+          snack.error(`Api Error calling '${method}': ${e.toString()}`)
         }
         // eslint-disable-next-line no-console
         console.warn(`Api Error calling '${method}':`, e)
-        setError(e)
+        setError(new ApiError(e))
       }
     })()
     return () => {
@@ -78,3 +86,15 @@ export const useApi = (method: string, active = true, ...args: any[]): ApiHook =
 }
 
 export const getDirty = (): any => dirty
+
+export function useAuthz(teamId?): { sess: SessionContext; tid: string } {
+  const session: SessionContext = useSession()
+  const {
+    user: { isAdmin },
+    oboTeamId,
+  } = session
+  if (!isAdmin && teamId && teamId !== oboTeamId) {
+    throw new ApiErrorUnauthorized()
+  }
+  return { sess: session, tid: teamId || oboTeamId }
+}

@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
 
 const OListItem = (props): any => <ListItem {...props} className={mainStyles().selectable} />
 // eslint-disable-next-line react/prop-types
-const OMenuItem = ({ classes, ...props }): any => (
+const OMenuItem = ({ classes, ...props }) => (
   <MenuItem {...props} classes={{ ...classes, selectable: mainStyles().selectable }} />
 )
 const OListSubheader = (props): any => <ListSubheader {...props} className={useStyles().listSubHeader} />

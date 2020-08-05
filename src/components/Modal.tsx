@@ -3,8 +3,8 @@ import Button from 'react-bootstrap/Button'
 
 import Modal from 'react-bootstrap/Modal'
 
-const ModalWrapper = ({ onClose, title, body }: any): any => {
-  const onClick = (): any => {
+const ModalWrapper = ({ onClose, title, body }: any) => {
+  const onClick = () => {
     onClose()
   }
 

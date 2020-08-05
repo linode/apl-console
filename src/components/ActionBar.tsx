@@ -5,7 +5,7 @@ interface Props {
   children: ComponentType
 }
 
-export default ({ children }: Props): any => {
+export default ({ children }: Props) => {
   return (
     <Navbar bg='light' expand='sm'>
       {children}

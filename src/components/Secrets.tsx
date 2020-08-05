@@ -3,20 +3,21 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { Link } from 'react-router-dom'
 import React from 'react'
+import { Team } from '@redkubes/otomi-api-client-axios'
 import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 
 interface Props {
   secrets: any[]
+  team?: Team
   setDeleteId: CallableFunction
 }
 
-export default ({ secrets, setDeleteId }: Props): any => {
+export default ({ secrets, team, setDeleteId }: Props) => {
   const {
-    user: { teamId, isAdmin },
+    user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const sessTeamId = isAdmin ? oboTeamId : teamId
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -30,7 +31,13 @@ export default ({ secrets, setDeleteId }: Props): any => {
       id: 'delete',
       label: 'Delete',
       renderer: row => (
-        <Button color='primary' onClick={() => setDeleteId(row.id)} startIcon={<DeleteIcon />} variant='contained' data-cy={`button-delete-${row.name}`}>
+        <Button
+          color='primary'
+          onClick={() => setDeleteId(row.id)}
+          startIcon={<DeleteIcon />}
+          variant='contained'
+          data-cy={`button-delete-${row.name}`}
+        >
           Delete
         </Button>
       ),
@@ -38,16 +45,16 @@ export default ({ secrets, setDeleteId }: Props): any => {
   ]
   return (
     <>
-      <h1 data-cy='h1-secrets-page'>Secrets{isAdmin && sessTeamId ? ` (team ${sessTeamId})` : ''}</h1>
+      <h1 data-cy='h1-secrets-page'>{!team ? 'Secrets' : `Secrets (team ${team.id})`}</h1>
       <Box mb={1}>
-        {(isAdmin || teamId) && (
+        {oboTeamId && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-secret' : `/teams/${teamId}/create-secret`}
+            to={isAdmin ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
-            disabled={isAdmin && !sessTeamId}
+            disabled={isAdmin && !oboTeamId}
             data-cy='button-create-secret'
           >
             Create secret

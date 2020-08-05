@@ -11,10 +11,9 @@ export default ({
   match: {
     params: { clusterId },
   },
-}: RouteComponentProps<Params>): any => {
-  return (
-    <PaperLayout>
-      <Cluster clusterId={decodeURIComponent(clusterId)} />
-    </PaperLayout>
-  )
+}: RouteComponentProps<Params>) => {
+  const err = undefined
+  const loading = undefined
+  const comp = !(err || loading) && <Cluster clusterId={decodeURIComponent(clusterId)} />
+  return <PaperLayout err={err} loading={loading} comp={comp} />
 }

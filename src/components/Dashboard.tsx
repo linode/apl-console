@@ -7,8 +7,9 @@ import CloudIcon from '@material-ui/icons/Cloud'
 import Link from '@material-ui/core/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
-import { Team } from '../models'
+import { Team, Service, Cluster } from '@redkubes/otomi-api-client-axios'
 import { Keys as k } from '../translations/keys'
+import { useSession } from '../session-context'
 
 type Panel = {
   name: string
@@ -21,11 +22,9 @@ type Panel = {
 interface Props {
   team?: Team
   isAdmin?: boolean
-  data: {
-    services: any
-    clusters: any
-    teams: any
-  }
+  services: Array<Service>
+  clusters: Array<Cluster>
+  teams: Array<Team>
 }
 
 const useStyles = makeStyles(theme => ({
@@ -92,10 +91,10 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
           title={`${item.name}s`}
           subheader={
             <Link
-              component={RouterLink} 
+              component={RouterLink}
               to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
               data-cy={`link-${item.name}-count`}
-              >
+            >
               {item.data && item.data.length}
             </Link>
           }
@@ -123,7 +122,10 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
   )
 }
 
-const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props): any => {
+const Dashboard = ({ team, services, clusters, teams }: Props) => {
+  const {
+    user: { isAdmin },
+  } = useSession()
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
@@ -153,7 +155,7 @@ const Dashboard = ({ team, data: { services, clusters, teams }, isAdmin }: Props
     <>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography variant='h5' gutterBottom className={classes.title} data-cy="text-welcome">
+          <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
             <Trans i18nKey={k.WELCOME_DASHBOARD}>
               Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
             </Trans>

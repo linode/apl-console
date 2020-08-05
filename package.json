@@ -19,6 +19,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/pickers": "^3.2.10",
     "@material-ui/styles": "^4.9.6",
+    "@redkubes/otomi-api-client-axios": "^0.4.8",
     "@rjsf/core": "^2.1.0",
     "@rjsf/material-ui": "^2.1.0",
     "@types/chai": "^4.2.11",
@@ -126,5 +127,6 @@
       "tag": true
     }
   },
-  "version": "0.3.12"
+  "version": "0.3.12",
+  "dependencies": {}
 }

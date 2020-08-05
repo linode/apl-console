@@ -1,35 +1,8 @@
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Loader from '../components/Loader'
 import Service from '../components/Service'
-import { useApi } from '../hooks/api'
+import { useApi, useAuthz } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
-import { useSession } from '../session-context'
-import Error from '../components/Error'
-import { Team } from '../models'
-
-interface EditProps {
-  serviceId: string
-  team: Team
-  clusters: any
-  onSubmit: CallableFunction
-  onDelete: CallableFunction
-}
-
-const EditService = ({ serviceId, team, clusters, onSubmit, onDelete }: EditProps): any => {
-  const [service, serviceLoading, error]: any = useApi('getService', true, {
-    teamId: team.id,
-    serviceId,
-  })
-
-  if (serviceLoading) {
-    return <Loader />
-  }
-  if (error) {
-    return <Error code={error.response.status} msg={error.response.statusText} />
-  }
-  return <Service team={team} service={service} clusters={clusters} onSubmit={onSubmit} onDelete={onDelete} />
-}
 
 interface Params {
   teamId?: string
@@ -40,53 +13,32 @@ export default ({
   match: {
     params: { teamId, serviceId },
   },
-}: RouteComponentProps<Params>): any => {
-  const {
-    clusters,
-    user: { isAdmin, teamId: userTeamId },
-    oboTeamId,
-  } = useSession()
-  const sessTeamId = isAdmin ? oboTeamId : userTeamId
-  if (!(teamId || sessTeamId)) return <Error code={500} />
-  let err
-  if (!isAdmin && teamId && teamId !== sessTeamId) {
-    return <Error code={401} />
-  }
-  const tid = teamId || sessTeamId
-  const [team, loading, error]: [any, boolean, any] = useApi('getTeam', true, tid)
-  if (error) {
-    err = <Error code={error.response.status} msg={`Team Loading Error: ${error.response.statusText}`} />
-  }
+}: RouteComponentProps<Params>) => {
+  const { tid } = useAuthz(teamId)
+  const [team, teamLoading, teamError]: [any, boolean, any] = useApi('getTeam', true, [tid])
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [createRes, createLoading, createErr] = useApi(
+  const [service, serviceLoading, serviceError]: any = useApi('getService', !!serviceId, [tid, serviceId])
+  const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
+  const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
     !!formdata,
-    serviceId ? { teamId: tid, serviceId } : { teamId: tid },
-    formdata,
+    serviceId ? [tid, serviceId] : [tid, formdata],
   )
-  const [deleteRes, deleteLoading, deleteErr] = useApi('deleteService', !!deleteId, { teamId, serviceId }, null)
-  if ((!deleteLoading && (deleteRes || deleteErr)) || (!createLoading && (createRes || createErr))) {
+  const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
+  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
     return <Redirect to={`/teams/${tid}/services`} />
   }
-
-  return (
-    <PaperLayout>
-      {err || (
-        <>
-          {loading && <Loader />}
-          {team && serviceId && (
-            <EditService
-              serviceId={serviceId}
-              team={team}
-              clusters={clusters}
-              onSubmit={setFormdata}
-              onDelete={setDeleteId}
-            />
-          )}
-          {team && !serviceId && <Service team={team} service={formdata} clusters={clusters} onSubmit={setFormdata} />}
-        </>
-      )}
-    </PaperLayout>
+  const loading = teamLoading || serviceLoading || secretsLoading || createLoading || deleteLoading
+  const err = teamError || serviceError || secretsError || createError
+  const comp = !(err || loading) && (
+    <Service
+      team={team}
+      service={formdata || service}
+      secrets={secrets}
+      onSubmit={setFormdata}
+      onDelete={setDeleteId}
+    />
   )
+  return <PaperLayout err={err} loading={loading} comp={comp} />
 }

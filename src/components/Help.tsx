@@ -9,7 +9,7 @@ interface HelpProps {
   description: string
 }
 
-const Help = ({ id, description }: HelpProps): any => (
+const Help = ({ id, description }: HelpProps) => (
   <OverlayTrigger placement='right' delay={{ show: 250, hide: 400 }} overlay={<Tooltip id={id}>{description}</Tooltip>}>
     <IoIosHelpCircle />
   </OverlayTrigger>

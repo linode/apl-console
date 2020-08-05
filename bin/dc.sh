@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+. ./.env.dev
+. ./.secrets
 
 BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
@@ -34,7 +36,7 @@ sub_up-deps () {
 }
 
 sub_down () {
-    docker-compose -f docker-compose.yml -f docker-compose-prod.yml -f docker-compose-deps.yml down --remove-orphans
+    docker-compose -f docker-compose.yml -f docker-compose-deps.yml down --remove-orphans
 }
 
 case $COMMAND_NAME in

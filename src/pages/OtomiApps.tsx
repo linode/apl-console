@@ -1,9 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import Apps from '../components/Apps'
-import Error from '../components/Error'
 import MainLayout from '../layouts/Empty'
-import { useSession } from '../session-context'
+import { useAuthz } from '../hooks/api'
 
 interface Params {
   teamId: string
@@ -13,14 +12,11 @@ export default ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): any => {
-  const {
-    user: { isAdmin },
-  } = useSession()
-  if (teamId === 'admin' && !isAdmin) return <Error code={401} />
+}: RouteComponentProps<Params>) => {
+  const { tid } = useAuthz(teamId)
   return (
     <MainLayout>
-      <Apps teamId={teamId} />
+      <Apps teamId={tid} />
     </MainLayout>
   )
 }

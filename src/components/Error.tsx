@@ -7,7 +7,7 @@ export interface ErrorProps {
   msg?: string
 }
 
-export default ({ code, msg: inMsg }: ErrorProps): any => {
+export default ({ code = 500, msg: inMsg }: ErrorProps) => {
   let msg = inMsg
   if (!inMsg)
     switch (code) {
