@@ -45,7 +45,7 @@ jobs:
           registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
-          build_extra_args: '--build-arg=NPM_TOKEN=${{ secrets.NPM_TOKEN }}'
+          build_extra_args: '--build-arg=NPM_USER=${{ secrets.NPM_USER }} --build-arg=NPM_TOKEN=${{ secrets.NPM_TOKEN }}'
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
         env:
