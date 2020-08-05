@@ -43,6 +43,14 @@ export default ({ secrets, team, setDeleteId }: Props) => {
       ),
     },
   ]
+  if (isAdmin && !team)
+    headCells.splice(2, 0, {
+      id: 'namespace',
+      label: 'namespace',
+      renderer: row => {
+        return row.namespace || `team-${row.teamId}`
+      },
+    })
   return (
     <>
       <h1 data-cy='h1-secrets-page'>{!team ? 'Secrets' : `Secrets (team ${team.id})`}</h1>
