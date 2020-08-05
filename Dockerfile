@@ -13,7 +13,6 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY .npmrc ./
-RUN npm login 
 RUN echo "email=${NPM_USER}" >> .npmrc
 RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
