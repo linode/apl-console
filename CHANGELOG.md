@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/redkubes/otomi-stack-web/compare/v0.3.11...v0.4.0) (2020-08-06)
+
+
+### Bug Fixes
+
+* apierror constructor ([49ad0d2](https://github.com/redkubes/otomi-stack-web/commit/49ad0d2fd6cf0a3ca062543673a86a94d6eabb66))
+* lint errors [ci skip] ([421e4d4](https://github.com/redkubes/otomi-stack-web/commit/421e4d47f9a3571ab28de903d28084473e17ac54))
+* npmrc ([bb71536](https://github.com/redkubes/otomi-stack-web/commit/bb715369480fd5ce216e04703fcd4697117683f5))
+* npmrc ([7ce82df](https://github.com/redkubes/otomi-stack-web/commit/7ce82df580721127cb78f5a0c1e112294ff0eb03))
+* npmrc ([6b85784](https://github.com/redkubes/otomi-stack-web/commit/6b857845561a74fe00b123ef25eaf0b0962742a4))
+* npmrc ([aac24c5](https://github.com/redkubes/otomi-stack-web/commit/aac24c541d6942336b530a58290b26b32e8aaa93))
+* npmrc ([41be76c](https://github.com/redkubes/otomi-stack-web/commit/41be76cc5e593b48e200e9d8af441ac5af78b4ed))
+* npmrc ([a9bfedd](https://github.com/redkubes/otomi-stack-web/commit/a9bfeddd8ef630d75e8aa14bcf9bf6345d28ad0a))
+* re-enabled e2e [ci skip] ([9a476bd](https://github.com/redkubes/otomi-stack-web/commit/9a476bda19e256dfd0bbdeb53bac3d75425ea19c))
+* ui stuff ([6f777d2](https://github.com/redkubes/otomi-stack-web/commit/6f777d25f6e3c89bfe4dfbc5f8a4c135863bc2bc))
+
+
+### Others
+
+* **release:** 0.3.12 ([2aafd9b](https://github.com/redkubes/otomi-stack-web/commit/2aafd9bc6ec122e9678ad907cc88aa2475f9f25a))
+
+
+### Code Refactoring
+
+* now expecting jwt groups for authz ([01dec6e](https://github.com/redkubes/otomi-stack-web/commit/01dec6eba59abf159664e3d74a90cc6696b08b82))
+
+
+### Feature Improvements
+
+* authz, help, snack ([7300107](https://github.com/redkubes/otomi-stack-web/commit/7300107de2c006566a674c114c68b15fa85fee24))
+
 ### [0.3.12](https://github.com/redkubes/otomi-stack-web/compare/v0.3.11...v0.3.12) (2020-07-29)
 
 
