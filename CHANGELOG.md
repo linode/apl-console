@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/redkubes/otomi-stack-web/compare/v0.4.0...v0.4.1) (2020-08-06)
+
+
+### Bug Fixes
+
+* api url hard now [ci skip] ([437d536](https://github.com/redkubes/otomi-stack-web/commit/437d5360b2fb02381a5b1fe055aea23e9bee94b7))
+
 ## [0.4.0](https://github.com/redkubes/otomi-stack-web/compare/v0.3.11...v0.4.0) (2020-08-06)
 
 
