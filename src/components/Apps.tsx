@@ -4,7 +4,7 @@ import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import AppCard from './AppCard'
 
-const publicUrl = process.env.PUBLIC_URL
+const publicUrl = process.env.CONTEXT_PATH
 
 interface Props {
   teamId: string

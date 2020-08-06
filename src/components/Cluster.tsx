@@ -5,7 +5,7 @@ import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
 
-const baseUrl = process.env.PUBLIC_URL || ''
+const baseUrl = process.env.CONTEXT_PATH || ''
 
 const useStyles = makeStyles(theme => ({
   listSubheader: {

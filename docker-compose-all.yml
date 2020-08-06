@@ -3,4 +3,4 @@ version: '3.4'
 services:
   web:
     environment:
-      PUBLIC_URL: 'api:8080'
+      API_BASE_URL: 'api:8080'

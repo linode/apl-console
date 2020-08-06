@@ -31,7 +31,7 @@ RUN npm run lint
 # --------------- build stage
 FROM ci as build
 
-RUN PUBLIC_URL='##PUBLIC_URL##' npm run build
+RUN npm run build
 
 # --------------- production stage
 FROM nginx:1.16.1-alpine as prod

@@ -103,7 +103,7 @@
     "package-lock.json": "npm install --prefer-offline --no-audit"
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "PUBLIC_URL='##CONTEXT_PATH##' react-scripts build",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
     "dev": ". ./.env.dev && . ./.secrets && run-p start watch:ts",

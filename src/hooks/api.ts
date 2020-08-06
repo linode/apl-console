@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { useEffect } from 'react'
 import { DefaultApi } from '@redkubes/otomi-api-client-axios'
 import { LoadingHook, useLoadingValue } from '../utils'
@@ -6,12 +7,12 @@ import { useSession, SessionContext } from '../session-context'
 import { ApiError, ApiErrorUnauthorized } from '../utils/error'
 
 const env = process.env
-const baseUrl = `${env.PUBLIC_URL || 'http://localhost:3000'}/api/v1`
+let baseUrl = `${location.protocol}//${location.host}${env.CONTEXT_PATH || ''}/api/v1`
 let options
-if (process.env.NODE_ENV === 'development') {
+if (env.NODE_ENV === 'development') {
+  baseUrl = `${env.API_BASE_URL || 'http://localhost:3000'}/api/v1`
   // eslint-disable-next-line no-console
   console.info('running in development mode')
-  // eslint-disable-next-line no-restricted-globals
   const team = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
   if (team !== 'admin') window.localStorage.setItem('oboTeamId', `"${team}"`)
   options = {

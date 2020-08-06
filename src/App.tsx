@@ -61,7 +61,7 @@ const App = () => {
             setThemeType: setType,
           }}
         >
-          <Router basename={env.PUBLIC_URL || ''}>
+          <Router basename={env.CONTEXT_PATH || ''}>
             <Switch>
               {/* ! user && <Route path='/' component={Home} exact /> */}
               <Route path='/' component={Dashboard} exact />

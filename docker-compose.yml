@@ -15,4 +15,4 @@ services:
       - 3000:3000
     environment:
       PORT: 3000
-      PUBLIC_URL: 'kubernetes.docker.internal:8080'
+      API_BASE_URL: 'kubernetes.docker.internal:8080'
