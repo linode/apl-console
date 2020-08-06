@@ -148,11 +148,11 @@ export function getServiceUiSchema(schema: Schema, roles: string[], formData, cr
   return uiSchema
 }
 
-export function getSecretUiSchema(schema: Schema, roles: string[], crudMethod: string): any {
+export function getSecretUiSchema(schema: Schema, roles: string[], crudMethod: string, hideNamespaces: boolean): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
-    namespace: { 'ui:placeholder': 'Choose an option' },
+    namespace: { 'ui:placeholder': 'Choose an option', 'ui:widget': hideNamespaces ? 'hidden' : undefined },
     teamId: { 'ui:widget': 'hidden' },
     type: { 'ui:widget': 'hidden', description: undefined },
     ca: { 'ui:widget': 'textarea' },

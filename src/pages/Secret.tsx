@@ -6,22 +6,32 @@ import PaperLayout from '../layouts/Paper'
 
 interface Params {
   teamId?: string
+  secretId: string
 }
 
 export default ({
   match: {
-    params: { teamId },
+    params: { teamId, secretId },
   },
 }: RouteComponentProps<Params>) => {
-  const {
-    sess: { oboTeamId },
-    tid,
-  } = useAuthz(teamId)
+  const { tid } = useAuthz(teamId)
   const [formdata, setFormdata] = useState()
-  const [res, loading, err] = useApi('createSecret', !!formdata, [tid, formdata])
-  if (res && !(loading || err)) {
-    return <Redirect to={`/teams/${oboTeamId}/secrets`} />
+  const [deleteId, setDeleteId]: any = useState()
+  const [secret, secretLoading, secretError]: any = useApi('getSecret', !!secretId, [tid, secretId])
+  const [createRes, createLoading, createError] = useApi(
+    secretId ? 'editSecret' : 'createSecret',
+    !!formdata,
+    secretId ? [tid, secretId] : [tid, formdata],
+  )
+  const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
+  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
+    return <Redirect to={`/teams/${tid}/secrets`} />
   }
-  const comp = !(err || loading) && <Secret onSubmit={setFormdata} secret={formdata} />
+  const loading = secretLoading || createLoading || deleteLoading
+  const err = secretError || createError || deleteError
+  if (createRes && !(createLoading || createError)) {
+    return <Redirect to={`/teams/${tid}/secrets`} />
+  }
+  const comp = !(err || loading) && <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} />
   return <PaperLayout err={err} loading={loading} comp={comp} />
 }

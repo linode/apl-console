@@ -30,7 +30,7 @@ export default ({
     return <Redirect to={`/teams/${tid}/services`} />
   }
   const loading = teamLoading || serviceLoading || secretsLoading || createLoading || deleteLoading
-  const err = teamError || serviceError || secretsError || createError
+  const err = teamError || serviceError || secretsError || createError || deleteError
   const comp = !(err || loading) && (
     <Service
       team={team}

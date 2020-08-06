@@ -1,11 +1,24 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
-import DeleteIcon from '@material-ui/icons/Delete'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import { Link } from 'react-router-dom'
 import React from 'react'
 import { Team } from '@redkubes/otomi-api-client-axios'
+import RLink from './Link'
 import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+
+const getSecretLink = (isAdmin, ownerId) => row => {
+  const { teamId, id, name } = row
+  if (!(isAdmin || teamId === ownerId)) return name
+
+  const link = isAdmin ? `/secrets/${encodeURIComponent(id)}` : `/teams/${teamId}/secrets/${encodeURIComponent(id)}`
+  return (
+    <RLink to={link} label={name}>
+      {name}
+    </RLink>
+  )
+}
 
 interface Props {
   secrets: any[]
@@ -22,6 +35,7 @@ export default ({ secrets, team, setDeleteId }: Props) => {
     {
       id: 'name',
       label: 'Name',
+      renderer: getSecretLink(isAdmin, oboTeamId),
     },
     {
       id: 'type',
@@ -31,15 +45,12 @@ export default ({ secrets, team, setDeleteId }: Props) => {
       id: 'delete',
       label: 'Delete',
       renderer: row => (
-        <Button
-          color='primary'
+        <DeleteForeverIcon
           onClick={() => setDeleteId(row.id)}
-          startIcon={<DeleteIcon />}
-          variant='contained'
+          color='primary'
+          // disabled={isAdmin && !oboTeamId}
           data-cy={`button-delete-${row.name}`}
-        >
-          Delete
-        </Button>
+        />
       ),
     },
   ]
@@ -53,16 +64,16 @@ export default ({ secrets, team, setDeleteId }: Props) => {
     })
   return (
     <>
-      <h1 data-cy='h1-secrets-page'>{!team ? 'Secrets' : `Secrets (team ${team.id})`}</h1>
+      <h1 data-cy='h1-secrets-page'>{!oboTeamId ? 'Secrets' : `Secrets (team ${oboTeamId})`}</h1>
       <Box mb={1}>
-        {oboTeamId && (
+        {(isAdmin || oboTeamId) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
+            to={isAdmin && !oboTeamId ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
-            disabled={isAdmin && !oboTeamId}
+            disabled={!isAdmin && !oboTeamId}
             data-cy='button-create-secret'
           >
             Create secret

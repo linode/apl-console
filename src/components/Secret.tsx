@@ -6,22 +6,25 @@ import { getSecretSchema, getSecretUiSchema, addNamespaceEnum } from '../api-spe
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import Form from './rjsf/Form'
+import DeleteButton from './DeleteButton'
 
 interface Props {
   onSubmit: CallableFunction
+  onDelete?: CallableFunction
   secret?: Secret
 }
 
-export default ({ onSubmit, secret }: Props) => {
+export default ({ onSubmit, onDelete, secret }: Props) => {
   const {
-    user: { roles },
+    user: { roles, isAdmin },
     namespaces,
+    oboTeamId,
   } = useSession()
 
   const crudOperation = 'create'
   const schema = getSecretSchema()
   addNamespaceEnum(schema, namespaces)
-  const uiSchema = getSecretUiSchema(schema, roles, crudOperation)
+  const uiSchema = getSecretUiSchema(schema, roles, crudOperation, !isAdmin || !!oboTeamId)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
@@ -34,7 +37,12 @@ export default ({ onSubmit, secret }: Props) => {
 
   return (
     <Form
-      title={<h1>{data && data.secretId ? `Secret: ${data.name}` : 'New Secret'}</h1>}
+      title={
+        <h1>
+          {data && data.secretId ? `Secret: ${data.name}` : 'New Secret'}
+          {!isAdmin || oboTeamId ? ` (team ${oboTeamId})` : ''}
+        </h1>
+      }
       key='createSecret'
       schema={schema}
       uiSchema={uiSchema}
@@ -49,6 +57,15 @@ export default ({ onSubmit, secret }: Props) => {
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-secret'>
           Submit
         </Button>
+        &nbsp;
+        {data && data.id && (
+          <DeleteButton
+            onDelete={() => onDelete(data.id)}
+            resourceName={data.name}
+            resourceType='service'
+            dataCy='button-delete-service'
+          />
+        )}
       </Box>
     </Form>
   )

@@ -10,13 +10,13 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
-  onDelete?: any
+  onDelete?: CallableFunction
   team: any
   service?: Service
   secrets: Secret[]
 }
 
-export default ({ onSubmit, onDelete, team, service = undefined, secrets }: Props) => {
+export default ({ onSubmit, onDelete, team, service, secrets }: Props) => {
   const {
     clusters,
     user: { roles, isAdmin },
@@ -74,7 +74,7 @@ export default ({ onSubmit, onDelete, team, service = undefined, secrets }: Prop
           Submit
         </Button>
         &nbsp;
-        {data.id && (
+        {data && data.id && (
           <DeleteButton
             onDelete={() => onDelete(data.id)}
             resourceName={data.name}

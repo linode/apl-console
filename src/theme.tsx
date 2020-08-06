@@ -205,7 +205,10 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles(theme => ({
   forms: {
     '@global': {
-      '.MuiButtonBase-root.Mui-checked span': {
+      '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
+        color: theme.palette.primary.main,
+      },
+      '.MuiButtonBase-root.Mui-checked:not(.Mui-disabled) span': {
         color: type === 'dark' ? 'inherit' : theme.palette.primary.main,
       },
       '.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
@@ -217,6 +220,9 @@ export const mainStyles = makeStyles(theme => ({
         minWidth: '10rem',
         paddingLeft: '1rem',
         paddingRight: '1rem',
+      },
+      '.MuiFormControl-root:has(> input)': {
+        display: 'none',
       },
     },
   },

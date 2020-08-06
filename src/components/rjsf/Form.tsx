@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link, makeStyles, createStyles, Theme } from '@material-ui/core'
+import { Link, makeStyles, createStyles, Theme, Button, IconButton } from '@material-ui/core'
 import HelpRoundedIcon from '@material-ui/icons/HelpRounded'
 import Form from '@rjsf/material-ui'
 import { FormProps } from '@rjsf/core'
@@ -10,14 +10,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
     },
-    link: {
-      // display: 'flex',
-      float: 'right',
-    },
     helpIcon: {
-      margin: theme.spacing(1),
-      fontSize: theme.spacing(5),
-      height: theme.spacing(5),
+      marginTop: theme.spacing(3),
+      // fontSize: theme.spacing(3),
+      // width: theme.spacing(4),
+      height: theme.spacing(4),
     },
   }),
 )
@@ -35,9 +32,18 @@ export default ({ children, title, ...props }: Props) => {
       <div className={classes.root}>
         {title}
         {docUrl && (
-          <Link className={classes.helpIcon} aria-label='Go to the documentation' href={`${docUrl}`}>
-            <HelpRoundedIcon className={classes.helpIcon} />
-          </Link>
+          <Button
+            size='large'
+            className={classes.helpIcon}
+            startIcon={<HelpRoundedIcon />}
+            variant='contained'
+            color='primary'
+            aria-label='Read the documentation'
+            data-cy='button-help'
+            href={`${docUrl}`}
+          >
+            Help
+          </Button>
         )}
       </div>
       <Form {...props}>{children}</Form>

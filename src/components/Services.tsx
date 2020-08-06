@@ -70,10 +70,10 @@ export default ({ services, team }: Props) => {
     <>
       <h1 data-cy='h1-services-page'>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
       <Box mb={1}>
-        {(isAdmin || team) && (
+        {(isAdmin || oboTeamId) && (
           <Button
             component={Link}
-            to={isAdmin ? '/create-service' : `/teams/${team.id}/create-service`}
+            to={isAdmin && !oboTeamId ? '/create-service' : `/teams/${oboTeamId}/create-service`}
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'

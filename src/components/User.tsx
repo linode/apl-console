@@ -1,5 +1,4 @@
-import { MenuItem, Select, Typography, Hidden, Link, Tooltip } from '@material-ui/core'
-import Avatar from '@material-ui/core/Avatar'
+import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
@@ -24,10 +23,10 @@ const useStyles = makeStyles(theme => {
       height: theme.spacing(4),
     },
     select: {
-      minWidth: '6rem !important',
+      // minWidth: '6rem !important',
       marginRight: '0.5rem',
       paddingLeft: '0.5rem',
-      marginLeft: 10,
+      marginLeft: 3,
       background,
       fontSize: '1rem',
       color,
@@ -50,15 +49,23 @@ export default ({ allTeams = [] }: Props) => {
   } = useSession()
   const teams: any[] = isAdmin ? allTeams : userTeams.map(id => ({ id }))
   const handleChange = event => {
-    const val = event.target.value
-    const url = val ? `/teams/${val}/services` : '/teams'
-    setOboTeamId(event.target.value)
+    const team = event.target.value
+    const path = window.location.pathname
+    const teamPart = `/teams/${oboTeamId}`
+    const hasTeamId = path.includes(teamPart)
+    let url
+    if (!team) {
+      url = hasTeamId ? path.replace(teamPart, '') : '/teams'
+    } else {
+      url = !hasTeamId ? path.replace(/^\//, `${teamPart}/`) : path.replace(oboTeamId, team) // `/teams/${team}/services`
+    }
+    setOboTeamId(team)
     history.push(url)
     event.preventDefault()
   }
   return (
     <>
-      <Typography variant='body1'>acting for team:</Typography>
+      <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'
         disableUnderline
