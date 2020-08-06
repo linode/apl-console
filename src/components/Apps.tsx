@@ -4,7 +4,7 @@ import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import AppCard from './AppCard'
 
-const publicUrl = process.env.CONTEXT_PATH
+const contextPath = process.env.CONTEXT_PATH || ''
 
 interface Props {
   teamId: string
@@ -41,7 +41,7 @@ export default ({ teamId }: Props) => {
                 teamId={teamId}
                 title={name}
                 link={link}
-                img={`${publicUrl}/logos/${logoName}_logo.svg`}
+                img={`${contextPath}/logos/${logoName}_logo.svg`}
               />
             </Grid>
           )
