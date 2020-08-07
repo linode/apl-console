@@ -12,7 +12,6 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import Menu from '../components/Menu'
 import User from '../components/User'
-import { useApi } from '../hooks/api'
 import ErrorBoundary from '../utils/error'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
@@ -106,12 +105,11 @@ interface Props {
 
 export default (props: Props) => {
   const { children } = props
-  const { oboTeamId } = useSession()
+  const { oboTeamId, teams } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
   const [open, setOpen] = useState(false)
-  const [teams]: any = useApi('getTeams')
   const handleDrawerOpen = e => {
     e.preventDefault()
     if (!open) setOpen(true)

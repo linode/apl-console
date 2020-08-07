@@ -1,17 +1,16 @@
 import React, { useContext } from 'react'
 import { Session } from '@redkubes/otomi-api-client-axios'
 
-let session
-
 export interface SessionContext extends Session {
   isAdmin?: boolean
   oboTeamId?: string
   setOboTeamId?: CallableFunction
   setThemeType?: CallableFunction
   themeType: string
+  setTeams: CallableFunction
 }
 
-export const SessionContext = React.createContext<SessionContext>({
+const context = React.createContext<SessionContext>({
   clusters: undefined,
   core: undefined,
   currentClusterId: undefined,
@@ -21,10 +20,13 @@ export const SessionContext = React.createContext<SessionContext>({
   setOboTeamId: undefined,
   setThemeType: undefined,
   themeType: undefined,
-  user: { teams: [], email: undefined, isAdmin: undefined, roles: [] },
+  user: { teams: undefined, email: undefined, isAdmin: undefined, roles: undefined },
+  teams: undefined,
+  setTeams: undefined,
 })
 
 export const useSession = (): SessionContext => {
-  session = useContext(SessionContext)
-  return session
+  return useContext(context)
 }
+
+export default context

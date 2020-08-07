@@ -19,7 +19,7 @@ it('should make a field readonly since there is x-acl field', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, ['anonymous'], 'create')
+  applyAclToUiSchema(uiSchema, schema, new Set(['anonymous']), 'create')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -35,7 +35,7 @@ it('should not add any readonly property since there is no x-acl', () => {
 
   const expectedUiSchema = {}
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, ['anonymous'], 'create')
+  applyAclToUiSchema(uiSchema, schema, new Set(['anonymous']), 'create')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -55,7 +55,7 @@ it('should make a field readonly due to single read permission', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, ['admin'], 'create')
+  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'create')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -75,7 +75,7 @@ it('should not make a field readonly due to write permission', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, ['admin'], 'update')
+  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'update')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -95,7 +95,7 @@ it('should not make a field readonly due to read and write permissions', () => {
   }
 
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, ['admin'], 'update')
+  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'update')
   expect(uiSchema).toEqual(expectedUiSchema)
 })
 
@@ -115,6 +115,6 @@ it('should not overwrite existing uiSchema properties', () => {
   }
 
   const uiSchema = { f1: { existing: 1 } }
-  applyAclToUiSchema(uiSchema, schema, ['admin'], 'create')
+  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'create')
   expect(uiSchema).toEqual(expectedUiSchema)
 })

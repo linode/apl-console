@@ -50,9 +50,9 @@ let spec: OpenApi
 
 const aclChangeActions = ['patch', 'patch-any', 'create', 'create-any', 'update', 'update-any']
 
-export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: string[], crudOperation: string): void {
+export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: any, crudOperation: string): void {
   const role = ['team', 'admin'].reduce((role, _role) => {
-    if (roles.includes(_role)) role = _role
+    if ((roles as string[]).includes(_role)) role = _role
     return role
   })
   const path = `x-acl.${role}`
@@ -81,7 +81,7 @@ export function getEditableSchemaAttributes(schema: Schema, role: string): strin
   return attributes
 }
 
-export function getTeamUiSchema(schema: Schema, roles: string[], crudMethod: string): any {
+export function getTeamUiSchema(schema: Schema, roles: Set<string>, crudMethod: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
@@ -105,7 +105,7 @@ export function getTeamUiSchema(schema: Schema, roles: string[], crudMethod: str
   return uiSchema
 }
 
-export function getServiceUiSchema(schema: Schema, roles: string[], formData, crudMethod: string): any {
+export function getServiceUiSchema(schema: Schema, roles: Set<string>, formData, crudMethod: string): any {
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCert = !formData || !formData.ingress || !formData.ingress.hasCert
   const noCertArn = notAws || noCert
@@ -148,7 +148,12 @@ export function getServiceUiSchema(schema: Schema, roles: string[], formData, cr
   return uiSchema
 }
 
-export function getSecretUiSchema(schema: Schema, roles: string[], crudMethod: string, hideNamespaces: boolean): any {
+export function getSecretUiSchema(
+  schema: Schema,
+  roles: Set<string>,
+  crudMethod: string,
+  hideNamespaces: boolean,
+): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },

@@ -11,6 +11,7 @@ export default () => {
     sess: {
       user: { isAdmin },
       clusters,
+      setTeams,
     },
     tid,
   } = useAuthz()
@@ -23,6 +24,7 @@ export default () => {
   const team: Team = !(teamsLoading || teamsError) && find(teams, { id: tid })
   const err = servicesError || teamsError
   const loading = servicesLoading || teamsLoading
+  if (!(err || loading)) setTeams(teams)
   const comp = !(err || loading) && (
     <Dashboard services={services} team={team} teams={teams} clusters={clusters as any} />
   )

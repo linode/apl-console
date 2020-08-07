@@ -127,8 +127,8 @@ const getOverrides = (c: any): ThemeOptions => {
   }
 }
 
-let name: string
-let type: string
+let name = 'admin'
+let type = 'light'
 
 export function setThemeName(inName: string): void {
   name = inName
