@@ -46,7 +46,6 @@ export default ({ teamId }: Props) => {
   useEffect(() => {
     ;(async function checkDeploy() {
       if (deploy) {
-        console.log('deploy:', deploy)
         snack.info('Scheduling...')
         await client.deploy()
         snack.success('Scheduled for deployment')
