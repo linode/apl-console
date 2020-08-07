@@ -6,10 +6,6 @@ import { Team } from '@redkubes/otomi-api-client-axios'
 import { mainStyles, getThemeType } from '../theme'
 import { useSession } from '../session-context'
 
-interface Props {
-  allTeams: Team[]
-}
-
 const useStyles = makeStyles(theme => {
   const isDark = getThemeType() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
@@ -38,16 +34,19 @@ const useStyles = makeStyles(theme => {
   }
 })
 
-export default ({ allTeams = [] }: Props) => {
+export default () => {
   const mainClasses = mainStyles()
   const classes = useStyles()
   const history = useHistory()
   const {
     user: { email, teams: userTeams, isAdmin },
+    teams: allTeams,
     oboTeamId,
     setOboTeamId,
   } = useSession()
-  const teams: any[] = isAdmin ? allTeams : [...userTeams].map(id => ({ id }))
+  const teams: any[] = ((isAdmin ? allTeams : userTeams) as Team[]).map(({ id }) => ({
+    id,
+  }))
   const handleChange = event => {
     const teamId = event.target.value
     const path = window.location.pathname

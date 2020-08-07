@@ -105,7 +105,7 @@ interface Props {
 
 export default (props: Props) => {
   const { children } = props
-  const { oboTeamId, teams } = useSession()
+  const { oboTeamId } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
@@ -150,7 +150,7 @@ export default (props: Props) => {
           <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
         </Hidden>
       </div>
-      <User allTeams={teams} />
+      <User />
       <IconButton color='inherit'>
         <Badge badgeContent={4} color='secondary'>
           <NotificationsIcon />

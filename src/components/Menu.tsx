@@ -10,9 +10,9 @@ import LockIcon from '@material-ui/icons/Lock'
 import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getDirty, useApi } from '../hooks/api'
+import { getDirty, client } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
 import Cluster from './Cluster'
@@ -43,12 +43,18 @@ export default ({ teamId }: Props) => {
   } = useSession()
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
-  useApi('deploy', deploy)
-  if (deploy) {
-    snack.success('Scheduled for deployment')
-    setDirty(false)
-    setDeploy(false)
-  }
+  useEffect(() => {
+    ;(async function deploy() {
+      if (deploy) {
+        snack.info('Scheduling...')
+        await client.deploy()
+        snack.success('Scheduled for deployment')
+        setDeploy(false)
+        setDirty(false)
+      }
+    })()
+  }, [deploy])
+
   const classes = useStyles()
   const mainClasses = mainStyles()
 

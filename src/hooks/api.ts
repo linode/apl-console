@@ -22,7 +22,7 @@ if (env.NODE_ENV === 'development') {
 
 export type ApiHook = LoadingHook<object, ApiError>
 
-const client = new DefaultApi(baseUrl)
+export const client = new DefaultApi(baseUrl)
 let dirty = false
 
 const checkDirty = (method: any): boolean => {
