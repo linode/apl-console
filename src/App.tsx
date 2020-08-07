@@ -5,6 +5,7 @@ import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
 import { useApi } from './hooks/api'
+import { useLocalStorage } from './hooks/useLocalStorage'
 import Cluster from './pages/Cluster'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
@@ -18,8 +19,8 @@ import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import ErrorComponent from './components/Error'
-import SessionProvider from './session-provider'
-import { getTheme } from './theme'
+import Context from './session-context'
+import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
 
@@ -28,6 +29,9 @@ const env = process.env
 const App = () => {
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocsGet')
+  const [themeType, setType] = useLocalStorage('themeType', 'light')
+  const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
+  setThemeType(themeType)
   if (sessionError || apiDocsError) {
     return <ErrorComponent code={500} />
   }
@@ -35,13 +39,27 @@ const App = () => {
     return <Loader />
   }
   setSpec(apiDocs)
+  const { user } = session
+  if (!user.isAdmin && !oboTeamId) {
+    setOboTeamId(user.teams[0])
+    return <Loader />
+  }
+  setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
     <ThemeProvider theme={getTheme()}>
       <NotistackProvider>
         <SnackbarUtilsConfigurator />
         <CssBaseline />
         <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-        <SessionProvider session={session}>
+        <Context.Provider
+          value={{
+            ...session,
+            oboTeamId,
+            setOboTeamId,
+            themeType,
+            setThemeType: setType,
+          }}
+        >
           <Router basename={env.CONTEXT_PATH || ''}>
             <Switch>
               {/* ! user && <Route path='/' component={Home} exact /> */}
@@ -68,7 +86,7 @@ const App = () => {
               </Route>
             </Switch>
           </Router>
-        </SessionProvider>
+        </Context.Provider>
       </NotistackProvider>
     </ThemeProvider>
   )

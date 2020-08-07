@@ -24,7 +24,7 @@ export default ({ onSubmit, onDelete, secret }: Props) => {
   const crudOperation = 'create'
   const schema = getSecretSchema()
   addNamespaceEnum(schema, namespaces)
-  const uiSchema = getSecretUiSchema(schema, roles, crudOperation, !isAdmin || !!oboTeamId)
+  const uiSchema = getSecretUiSchema(schema, roles as any, crudOperation, !isAdmin || !!oboTeamId)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
@@ -39,7 +39,7 @@ export default ({ onSubmit, onDelete, secret }: Props) => {
     <Form
       title={
         <h1>
-          {data && data.secretId ? `Secret: ${data.name}` : 'New Secret'}
+          {data && data.id ? `Secret: ${data.name}` : 'New Secret'}
           {!isAdmin || oboTeamId ? ` (team ${oboTeamId})` : ''}
         </h1>
       }

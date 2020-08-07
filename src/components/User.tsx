@@ -2,7 +2,6 @@ import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@ma
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
-import { Team } from '@redkubes/otomi-api-client-axios'
 import { mainStyles, getThemeType } from '../theme'
 import { useSession } from '../session-context'
 
@@ -44,21 +43,31 @@ export default () => {
     oboTeamId,
     setOboTeamId,
   } = useSession()
-  const teams: any[] = ((isAdmin ? allTeams : userTeams) as Team[]).map(({ id }) => ({
-    id,
-  }))
+  let teams: any[]
+  if (isAdmin)
+    teams = (allTeams as any).map(({ id }) => ({
+      id,
+    }))
+  else
+    teams = (userTeams as any).map(id => ({
+      id,
+    }))
   const handleChange = event => {
     const teamId = event.target.value
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`
+    const newTeamPart = `/teams/${teamId}`
     const hasTeamId = path.includes(teamId)
     const hasTeamPart = path.includes(teamPart)
+    const hasIDvalue = path.split('/').length === 5
     let url
     if (teamId) {
-      if (hasTeamPart) {
-        url = path.replace(teamPart, `/teams/${teamId}`)
-      } else if (hasTeamId) {
+      if (hasTeamPart && !hasIDvalue) {
+        url = path.replace(teamPart, newTeamPart)
+      } else if (hasTeamId && !hasIDvalue) {
         url = path.replace(oboTeamId, teamId)
+      } else {
+        url = `${newTeamPart}/services`
       }
     } else {
       url = hasTeamPart ? path.replace(teamPart, '') : '/teams'

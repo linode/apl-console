@@ -3,11 +3,11 @@ import { Session } from '@redkubes/otomi-api-client-axios'
 
 export interface SessionContext extends Session {
   isAdmin?: boolean
+  setSession: CallableFunction
   oboTeamId?: string
   setOboTeamId?: CallableFunction
   setThemeType?: CallableFunction
   themeType: string
-  setTeams: CallableFunction
 }
 
 const context = React.createContext<SessionContext>({
@@ -16,13 +16,13 @@ const context = React.createContext<SessionContext>({
   currentClusterId: undefined,
   isAdmin: undefined,
   namespaces: undefined,
+  setSession: undefined,
   oboTeamId: undefined,
   setOboTeamId: undefined,
   setThemeType: undefined,
   themeType: undefined,
   user: { teams: undefined, email: undefined, isAdmin: undefined, roles: undefined },
   teams: undefined,
-  setTeams: undefined,
 })
 
 export const useSession = (): SessionContext => {
