@@ -44,8 +44,9 @@ export default ({ teamId }: Props) => {
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
   useEffect(() => {
-    ;(async function deploy() {
+    ;(async function checkDeploy() {
       if (deploy) {
+        console.log('deploy:', deploy)
         snack.info('Scheduling...')
         await client.deploy()
         snack.success('Scheduled for deployment')
