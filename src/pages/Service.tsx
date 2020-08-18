@@ -23,7 +23,7 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
     !!formdata,
-    serviceId ? [tid, serviceId] : [tid, formdata],
+    serviceId ? [tid, serviceId, formdata] : [tid, formdata],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {

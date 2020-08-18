@@ -21,7 +21,7 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     secretId ? 'editSecret' : 'createSecret',
     !!formdata,
-    secretId ? [tid, secretId] : [tid, formdata],
+    secretId ? [tid, secretId, formdata] : [tid, formdata],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {

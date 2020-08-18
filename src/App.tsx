@@ -23,6 +23,7 @@ import Context from './session-context'
 import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
+import Catch from './utils/error'
 
 const env = process.env
 
@@ -60,32 +61,34 @@ const App = () => {
             setThemeType: setType,
           }}
         >
-          <Router basename={env.CONTEXT_PATH || ''}>
-            <Switch>
-              {/* ! user && <Route path='/' component={Home} exact /> */}
-              <Route path='/' component={Dashboard} exact />
-              <Route path='/apps/:teamId' component={OtomiApps} exact />
-              <Route path='/clusters' component={Clusters} exact />
-              <Route path='/cluster/:clusterId' component={Cluster} exact />
-              <Route path='/create-secret' component={Secret} exact />
-              <Route path='/create-team' component={Team} exact />
-              <Route path='/secrets' component={Secrets} exact />
-              <Route path='/secrets/:secretId' component={Secret} exact />
-              <Route path='/services' component={Services} exact />
-              <Route path='/settings' component={Settings} exact />
-              <Route path='/teams' component={Teams} exact />
-              <Route path='/teams/:teamId' component={Team} exact />
-              <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-              <Route path='/teams/:teamId/create-service' component={Service} exact />
-              <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-              <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-              <Route path='/teams/:teamId/services' component={Services} exact />
-              <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-              <Route path='*'>
-                <Error code={404} />
-              </Route>
-            </Switch>
-          </Router>
+          <Catch>
+            <Router basename={env.CONTEXT_PATH || ''}>
+              <Switch>
+                {/* ! user && <Route path='/' component={Home} exact /> */}
+                <Route path='/' component={Dashboard} exact />
+                <Route path='/apps/:teamId' component={OtomiApps} exact />
+                <Route path='/clusters' component={Clusters} exact />
+                <Route path='/cluster/:clusterId' component={Cluster} exact />
+                <Route path='/create-secret' component={Secret} exact />
+                <Route path='/create-team' component={Team} exact />
+                <Route path='/secrets' component={Secrets} exact />
+                <Route path='/secrets/:secretId' component={Secret} exact />
+                <Route path='/services' component={Services} exact />
+                <Route path='/settings' component={Settings} exact />
+                <Route path='/teams' component={Teams} exact />
+                <Route path='/teams/:teamId' component={Team} exact />
+                <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                <Route path='/teams/:teamId/create-service' component={Service} exact />
+                <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                <Route path='/teams/:teamId/services' component={Services} exact />
+                <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                <Route path='*'>
+                  <Error code={404} />
+                </Route>
+              </Switch>
+            </Router>
+          </Catch>
         </Context.Provider>
       </NotistackProvider>
     </ThemeProvider>
