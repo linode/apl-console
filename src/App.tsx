@@ -69,10 +69,7 @@ const App = () => {
                 <Route path='/apps/:teamId' component={OtomiApps} exact />
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/create-secret' component={Secret} exact />
                 <Route path='/create-team' component={Team} exact />
-                <Route path='/secrets' component={Secrets} exact />
-                <Route path='/secrets/:secretId' component={Secret} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/settings' component={Settings} exact />
                 <Route path='/teams' component={Teams} exact />

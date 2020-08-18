@@ -2,7 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
 import { Secret } from '@redkubes/otomi-api-client-axios'
-import { getSecretSchema, getSecretUiSchema, addNamespaceEnum } from '../api-spec'
+import { getSecretSchema, getSecretUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import Form from './rjsf/Form'
@@ -17,14 +17,12 @@ interface Props {
 export default ({ onSubmit, onDelete, secret }: Props) => {
   const {
     user: { roles, isAdmin },
-    namespaces,
     oboTeamId,
   } = useSession()
 
   const crudOperation = 'create'
   const schema = getSecretSchema()
-  addNamespaceEnum(schema, namespaces)
-  const uiSchema = getSecretUiSchema(schema, roles as any, crudOperation, !isAdmin || !!oboTeamId)
+  const uiSchema = getSecretUiSchema(schema, roles as any, crudOperation)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {

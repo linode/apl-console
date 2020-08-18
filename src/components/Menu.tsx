@@ -120,14 +120,6 @@ export default ({ teamId }: Props) => {
         </ListItemIcon>
         <ListItemText primary='Services' />
       </StyledMenuItem>
-      {isAdmin && (
-        <StyledMenuItem to='/secrets' selected={pathname === '/secrets'} data-cy='menu-item-secrets'>
-          <ListItemIcon>
-            <LockIcon />
-          </ListItemIcon>
-          <ListItemText primary='Secrets' />
-        </StyledMenuItem>
-      )}
       {teamId && (
         <>
           <StyledListSubheader component='div'>
