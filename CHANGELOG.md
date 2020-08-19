@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.13](https://github.com/redkubes/otomi-stack-web/compare/v0.4.12...v0.4.13) (2020-08-19)
+
+
+### Bug Fixes
+
+* snack error when deploy fails [ci skip] ([0922d1d](https://github.com/redkubes/otomi-stack-web/commit/0922d1de27c6ae09dfced4db45d79594cf327347))
+
 ### [0.4.12](https://github.com/redkubes/otomi-stack-web/compare/v0.4.11...v0.4.12) (2020-08-19)
 
 
