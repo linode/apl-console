@@ -1,6 +1,5 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import { Link } from 'react-router-dom'
 import React from 'react'
 import { Team } from '@redkubes/otomi-api-client-axios'
@@ -24,10 +23,9 @@ const getSecretLink = (isAdmin, ownerId) => row => {
 interface Props {
   secrets: any[]
   team?: Team
-  setDeleteId: CallableFunction
 }
 
-export default ({ secrets, team, setDeleteId }: Props) => {
+export default ({ secrets, team }: Props) => {
   const {
     user: { isAdmin },
     oboTeamId,
