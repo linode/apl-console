@@ -46,9 +46,13 @@ export default ({ teamId }: Props) => {
   useEffect(() => {
     ;(async function checkDeploy() {
       if (deploy) {
-        snack.info('Scheduling...')
-        await client.deploy()
-        snack.success('Scheduled for deployment')
+        snack.info('Scheduling...', { autoHideDuration: 7 })
+        try {
+          await client.deploy()
+          snack.success('Scheduled for deployment')
+        } catch (e) {
+          snack.error('Deployment failed. Please contact support@redkubes.com.')
+        }
         setDeploy(false)
         setDirty(false)
       }
