@@ -46,7 +46,7 @@ export default ({ teamId }: Props) => {
   useEffect(() => {
     ;(async function checkDeploy() {
       if (deploy) {
-        snack.info('Scheduling...', { autoHideDuration: 7 })
+        snack.info('Scheduling...', { autoHideDuration: 7000 })
         try {
           await client.deploy()
           snack.success('Scheduled for deployment')
