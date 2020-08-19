@@ -42,18 +42,18 @@ export default ({ secrets, team, setDeleteId }: Props) => {
       id: 'type',
       label: 'Type',
     },
-    {
-      id: 'delete',
-      label: 'Delete',
-      renderer: row => (
-        <DeleteForeverIcon
-          onClick={() => setDeleteId(row.id)}
-          color='primary'
-          // disabled={isAdmin && !oboTeamId}
-          data-cy={`button-delete-${row.name}`}
-        />
-      ),
-    },
+    // {
+    //   id: 'delete',
+    //   label: 'Delete',
+    //   renderer: row => (
+    //     <DeleteForeverIcon
+    //       onClick={() => setDeleteId(row.id)}
+    //       color='primary'
+    //       // disabled={isAdmin && !oboTeamId}
+    //       data-cy={`button-delete-${row.name}`}
+    //     />
+    //   ),
+    // },
   ]
   if (isAdmin && !team)
     headCells.splice(2, 0, {
@@ -65,7 +65,7 @@ export default ({ secrets, team, setDeleteId }: Props) => {
     })
   return (
     <>
-      <h1 data-cy='h1-secrets-page'>{!oboTeamId ? 'Secrets' : `Secrets (team ${oboTeamId})`}</h1>
+      <h1 data-cy='h1-secrets-page'>{`Secrets (team ${team.id})`}</h1>
       <Box mb={1}>
         {(isAdmin || oboTeamId) && (
           <Button
