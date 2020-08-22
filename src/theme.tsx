@@ -205,6 +205,9 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles(theme => ({
   forms: {
     '@global': {
+      '.MuiFormLabel-root': {
+        textTransform: 'capitalize',
+      },
       '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
         color: theme.palette.primary.main,
       },

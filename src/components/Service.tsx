@@ -21,7 +21,6 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props) => {
     clusters,
     user: { roles, isAdmin },
   } = useSession()
-  const secretNames = secrets.map(s => s.name)
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
@@ -38,7 +37,7 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props) => {
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
     }
-    const newSchema = getServiceSchema(team, clusters, formData, secretNames)
+    const newSchema = getServiceSchema(team, clusters, formData, secrets)
     setSchema(newSchema)
     setUiSchema(getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create'))
     setData(formData)

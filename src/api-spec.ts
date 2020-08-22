@@ -186,7 +186,7 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
   schema.properties.namespace.enum = namespaces
 }
 
-export function getServiceSchema(team: any, clusters, formData: any, secretNames): any {
+export function getServiceSchema(team: any, clusters, formData: any, secrets): any {
   const schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, clusters, formData)
   addClustersEnum(schema, team, formData)
@@ -198,10 +198,29 @@ export function getServiceSchema(team: any, clusters, formData: any, secretNames
     const subdomain = get(formData, 'ingress.subdomain', '')
     const domain = get(formData, 'ingress.domain', '')
     if (formData.ingress.certSelect) {
-      schema.properties.ingress.oneOf[1].properties.certName.enum = secretNames
-      if (secretNames.length === 1) formData.ingress.certName = secretNames[0]
-    } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined)
+      schema.properties.ingress.oneOf[1].properties.certName.enum = Object.keys(secrets.filter(s => s.type === 'tls'))
+      if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
+    } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
+    }
+  }
+  if (get(formData, 'ksvc.secrets')) {
+    const genSecrets = secrets.filter(s => s.type === 'generic')
+    formData.ksvc.secrets.forEach(secret => {
+      set(
+        schema,
+        'properties.ksvc.oneOf[0].properties.secrets.items.properties.name.enum',
+        genSecrets.map(s => s.name),
+      )
+      if (secret.name) {
+        // debugger
+        set(
+          schema,
+          'properties.ksvc.oneOf[0].properties.secrets.items.properties.entries.items.enum',
+          secrets.find(s => s.name === secret.name).entries.map(s => s.key),
+        )
+      }
+    })
   }
   return schema
 }
