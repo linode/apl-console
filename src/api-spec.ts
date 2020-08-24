@@ -139,7 +139,9 @@ export function getServiceUiSchema(schema: Schema, roles: Set<string>, formData,
         'ui:widget': CustomRadioGroup,
         tagMatcher: { 'ui:widget': 'hidden' },
       },
-      env: { 'ui:options': { orderable: false }, annotations: { 'ui:options': { orderable: false } } },
+      env: { 'ui:options': { orderable: false } },
+      secrets: { 'ui:options': { orderable: false } },
+      annotations: { 'ui:options': { orderable: false } },
     },
   }
 
@@ -198,7 +200,8 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
     const subdomain = get(formData, 'ingress.subdomain', '')
     const domain = get(formData, 'ingress.domain', '')
     if (formData.ingress.certSelect) {
-      schema.properties.ingress.oneOf[1].properties.certName.enum = Object.keys(secrets.filter(s => s.type === 'tls'))
+      const tlsSecretNames = secrets.filter(s => s.type === 'tls').map(s => s.name)
+      schema.properties.ingress.oneOf[1].properties.certName.enum = tlsSecretNames
       if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
     } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
@@ -206,11 +209,16 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
   }
   if (get(formData, 'ksvc.secrets')) {
     const genSecrets = secrets.filter(s => s.type === 'generic')
-    formData.ksvc.secrets.forEach(secret => {
+    formData.ksvc.secrets.forEach((secret, idx) => {
+      const selectedSecrets = [...Array(idx)].reduce((memo, curr, idy) => {
+        memo.push(formData.ksvc.secrets[idy])
+        return memo
+      }, [])
+      const secretsSelection = genSecrets.filter(s => !selectedSecrets.find(fs => fs.name === s.name))
       set(
         schema,
         'properties.ksvc.oneOf[0].properties.secrets.items.properties.name.enum',
-        genSecrets.map(s => s.name),
+        secretsSelection.map(s => s.name),
       )
       if (secret.name) {
         // debugger

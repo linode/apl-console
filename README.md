@@ -4,28 +4,22 @@ The frontend of the Otomi Container Platform. Communicates with [otomi-stack-api
 
 ## Development
 
-### Setup environment
+### Setting up environment
 
-1. Download .secrets file from Google Drive (<https://drive.google.com/drive/folders/0AGwuKvXYSqGIUk9PVA>) to root directory of this project.
+1. Copy `.env.sample` to `.env` and edit accordingly.
 
-2. Copy `.env.sample` to `.env.dev` and edit accordingly.
+2. Download `otomi-stack-api/.secrets` file from [Google Drive secrets](https://drive.google.com/drive/folders/1N802vs0IplKehkZq8SxMi67RipyO1pHN) and put contents in `.env`.
 
-```
-. ./.secrets && . ./.env.dev
-```
-
-3. Setup access to GitHub packages
+3. Setup access to GitHub packages:
 
 ```
-. ./.secrets && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
+source .env && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
 ```
 
 ### Running in docker-compose with all deps
 
 ```
-
 bin/dc.sh up-all
-
 ```
 
 ### Running with only deps in docker-compose

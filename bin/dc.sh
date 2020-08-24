@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-. ./.env.dev
-. ./.secrets
+source .env
 
 BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
