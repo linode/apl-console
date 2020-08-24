@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.15](https://github.com/redkubes/otomi-stack-web/compare/v0.4.14...v0.4.15) (2020-08-24)
+
+
+### Bug Fixes
+
+* cert name select [ci skip] ([8d874d2](https://github.com/redkubes/otomi-stack-web/commit/8d874d210ba113e4037f37985ef066fd7e920aa7))
+
 ### [0.4.14](https://github.com/redkubes/otomi-stack-web/compare/v0.4.13...v0.4.14) (2020-08-22)
 
 
