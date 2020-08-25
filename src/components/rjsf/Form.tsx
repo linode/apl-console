@@ -40,6 +40,7 @@ export default ({ children, title, ...props }: Props) => {
             color='primary'
             aria-label='Read the documentation'
             data-cy='button-help'
+            target='_blank'
             href={`${docUrl}`}
           >
             Help
