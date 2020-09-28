@@ -6,7 +6,6 @@ import { useSession } from '../session-context'
 
 export default () => {
   const { clusters } = useSession()
-  const teamPrefix = 'team-' // @todo: get from values later
   const headCells: HeadCell[] = [
     {
       id: 'id',
