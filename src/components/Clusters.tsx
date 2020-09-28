@@ -21,7 +21,7 @@ export default () => {
       id: 'domain',
       label: 'Domain',
       renderer: (row: any) => (
-        <MuiLink href={`https://apps.${teamPrefix}admin.${row.domain}/otomi/`} target='_blank' rel='noopener'>
+        <MuiLink href={`https://otomi.${row.domain}/`} target='_blank' rel='noopener'>
           {row.domain}
         </MuiLink>
       ),

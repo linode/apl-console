@@ -48,8 +48,6 @@ export interface Property {
 
 let spec: OpenApi
 
-const aclChangeActions = ['patch', 'patch-any', 'create', 'create-any', 'update', 'update-any']
-
 export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: any, crudOperation: string): void {
   const role = ['team', 'admin'].reduce((role, _role) => {
     if ((roles as string[]).includes(_role)) role = _role
@@ -68,17 +66,6 @@ export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: any, cr
       set(uiSchema, `${k}.ui:readonly`, !acl.includes(crudOperation))
     }
   })
-}
-
-export function getEditableSchemaAttributes(schema: Schema, role: string): string[] {
-  const attributes = []
-  Object.keys(schema.properties).forEach(attributeName => {
-    const acl = schema.properties[attributeName]['x-acl'][role]
-    if (acl.some(r => aclChangeActions.includes(r))) {
-      attributes.push(attributeName)
-    }
-  })
-  return attributes
 }
 
 export function getTeamUiSchema(schema: Schema, roles: Set<string>, crudMethod: string): any {

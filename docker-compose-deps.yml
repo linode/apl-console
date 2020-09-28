@@ -15,8 +15,7 @@ services:
     environment:
       TOOLS_HOST: tools
       CLUSTER_ID: ${CLUSTER_ID:-google/dev}
-      DISABLE_AUTH: ${DISABLE_AUTH:-0}
-      DISABLE_SYNC: ${DISABLE_SYNC:-1}
+      DISABLE_SYNC: ${DISABLE_SYNC:-true}
       GIT_LOCAL_PATH: ${GIT_LOCAL_PATH:-/tmp/otomi-stack}
       GIT_REPO_URL: ${GIT_REPO_URL:-github.com/redkubes/otomi-values.git}
       GIT_BRANCH: ${GIT_BRANCH:-master}
