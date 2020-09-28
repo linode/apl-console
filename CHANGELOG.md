@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.17](https://github.com/redkubes/otomi-stack-web/compare/v0.4.16...v0.4.17) (2020-09-28)
+
+
+### Bug Fixes
+
+* cluster links, cleaned up ([7853760](https://github.com/redkubes/otomi-stack-web/commit/78537608daae45c3080f0f7764c9fdf15e011053))
+* cluster links, cleaned up: [#2](https://github.com/redkubes/otomi-stack-web/issues/2) ([67a02a6](https://github.com/redkubes/otomi-stack-web/commit/67a02a66156e1ff0d1c8e3ca9e62f043e9dbcb49))
+
 ### [0.4.16](https://github.com/redkubes/otomi-stack-web/compare/v0.4.15...v0.4.16) (2020-08-25)
 
 
