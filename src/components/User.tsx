@@ -111,9 +111,14 @@ export default () => {
       <Hidden xsDown>
         <Typography variant='body1' data-cy='text-user-team'>
           <Tooltip title='logout' aria-label='logout'>
-            <Link className={mainClasses.headerlink} href='/logout-otomi'>
-              {email}
-            </Link>
+            <>
+              {mode === 'ee' && (
+                <Link className={mainClasses.headerlink} href='/logout-otomi'>
+                  {email}
+                </Link>
+              )}
+              {mode === 'ce' && email}
+            </>
           </Tooltip>{' '}
           <strong>{isAdmin && '(admin)'}</strong>
         </Typography>

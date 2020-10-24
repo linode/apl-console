@@ -148,30 +148,34 @@ const AppCE = () => {
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
     <ThemeProvider theme={getTheme()}>
-      <CssBaseline />
-      <Helmet titleTemplate='%s | otomi' defaultTitle='otomi' />
-      <Context.Provider
-        value={{
-          ...session,
-          mode,
-          oboTeamId,
-          setOboTeamId,
-          themeType,
-          setThemeType: setType,
-        }}
-      >
-        <Catch>
-          <Router basename={env.CONTEXT_PATH || ''}>
-            <Switch>
-              {/* ! user && <Route path='/' component={Home} exact /> */}
-              <Route path='/apps/:teamId' component={OtomiApps} />
-              <Route path='*'>
-                <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
-              </Route>
-            </Switch>
-          </Router>
-        </Catch>
-      </Context.Provider>
+      <NotistackProvider>
+        <SnackbarUtilsConfigurator />
+        <CssBaseline />
+        <Helmet titleTemplate='%s | otomi' defaultTitle='otomi' />
+        <Context.Provider
+          value={{
+            ...session,
+            mode,
+            oboTeamId,
+            setOboTeamId,
+            themeType,
+            setThemeType: setType,
+          }}
+        >
+          <Catch>
+            <Router basename={env.CONTEXT_PATH || ''}>
+              <Switch>
+                {/* ! user && <Route path='/' component={Home} exact /> */}
+                <Route path='/apps/:teamId' component={OtomiApps} />
+                <Route path='/settings' component={Settings} exact />
+                <Route path='*'>
+                  <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
+                </Route>
+              </Switch>
+            </Router>
+          </Catch>
+        </Context.Provider>
+      </NotistackProvider>
     </ThemeProvider>
   )
 }

@@ -1,4 +1,4 @@
-# Otomi Stack Web
+# Otomi Console
 
 The frontend of the Otomi Container Platform. Communicates with [otomi-stack-api](https://github.com/redkubes/otomi-stack-api).
 

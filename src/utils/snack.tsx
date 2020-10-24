@@ -61,4 +61,7 @@ export default {
   toast(msg: string, options: OptionsObject = {}) {
     if (snackbarRef) snackbarRef.enqueueSnackbar(msg, options)
   },
+  comingSoon(options: OptionsObject = {}) {
+    this.toast('Coming soon!', { ...options, variant: 'warning' })
+  },
 }

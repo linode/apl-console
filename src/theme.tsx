@@ -87,23 +87,15 @@ const getOverrides = (c: any): ThemeOptions => {
       },
     },
     overrides: {
-      MuiCssBaseline: {
-        // '@global': {
-        //   body: {
-        //     backgroundSize: 'cover',
-        //   },
-        // },
-      },
+      MuiCssBaseline: {},
       MuiButton: {
         root: {
           borderRadius: '2em',
-          // color: 'secondary',
         },
       },
       MuiInputBase: {
         root: {
           borderRadius: '6px',
-          // color: 'secondary',
         },
       },
       MuiListItemIcon: {
@@ -123,10 +115,7 @@ const getOverrides = (c: any): ThemeOptions => {
         },
       },
       MuiTableHead: {
-        root: {
-          // color: c.secondary.main,
-          // backgroundColor: c.primary.main,
-        },
+        root: {},
       },
     },
     palette: {
@@ -239,6 +228,14 @@ export const mainStyles = makeStyles(theme => ({
       },
       '.MuiFormControl-root:has(> input)': {
         display: 'none',
+      },
+    },
+  },
+  monospace: {
+    '@global': {
+      '.MuiTypography-root': {
+        fontFamily: 'monospace',
+        fontSize: theme.typography.fontSize,
       },
     },
   },

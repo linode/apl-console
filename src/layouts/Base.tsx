@@ -167,7 +167,7 @@ export default (props: Props) => {
         </Hidden>
       </div>
       <User />
-      <IconButton color='inherit'>
+      <IconButton color='inherit' title='Will soon show updates!'>
         <Badge badgeContent={4} color='secondary'>
           <NotificationsIcon />
         </Badge>

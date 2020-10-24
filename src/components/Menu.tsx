@@ -26,7 +26,11 @@ const useStyles = makeStyles(theme => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
   },
+  listItem: {
+    height: theme.spacing(5),
+  },
   deploy: {
+    height: theme.spacing(5),
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
@@ -39,8 +43,10 @@ interface Props {
 export default ({ teamId }: Props) => {
   const { pathname } = useLocation()
   const {
+    mode,
     user: { isAdmin },
   } = useSession()
+  const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
   useEffect(() => {
@@ -63,7 +69,7 @@ export default ({ teamId }: Props) => {
   const mainClasses = mainStyles()
 
   const StyledMenuItem = (props: any) => {
-    return <MenuItem component={Link} className={mainClasses.selectable} {...props} />
+    return <MenuItem component={Link} className={`${mainClasses.selectable} ${classes.listItem}`} {...props} />
   }
   const StyledListSubheader = props => {
     return <ListSubheader className={classes.listSubheader} {...props} />
@@ -75,9 +81,9 @@ export default ({ teamId }: Props) => {
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-otomi-stack'>
-        <ListItemText primary='Otomi Stack' />
+        <ListItemText primary='Platform' />
       </StyledListSubheader>
-      <StyledMenuItem to='/' selected={pathname === `/`}>
+      <StyledMenuItem disabled={isCE} to='/' selected={pathname === `/`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
@@ -106,19 +112,19 @@ export default ({ teamId }: Props) => {
       <StyledListSubheader component='div' data-cy='list-subheader-enterprise'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
+      <StyledMenuItem disabled={isCE} to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
         <ListItemText primary='Clusters' />
       </StyledMenuItem>
-      <StyledMenuItem to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
+      <StyledMenuItem disabled={isCE} to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
       </StyledMenuItem>
-      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+      <StyledMenuItem disabled={isCE} to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
@@ -130,6 +136,7 @@ export default ({ teamId }: Props) => {
             <ListItemText primary={`Team ${teamId}`} data-cy='list-subheader-team' />
           </StyledListSubheader>
           <StyledMenuItem
+            disabled={isCE}
             to={`/teams/${teamId}`}
             selected={pathname === `/teams/${teamId}`}
             data-cy='menu-item-team-overview'
@@ -140,6 +147,7 @@ export default ({ teamId }: Props) => {
             <ListItemText primary='Overview' />
           </StyledMenuItem>
           <StyledMenuItem
+            disabled={isCE}
             to={`/teams/${teamId}/services`}
             selected={pathname === `/teams/${teamId}/services`}
             data-cy='menu-item-team-services'
@@ -150,6 +158,7 @@ export default ({ teamId }: Props) => {
             <ListItemText primary='Services' />
           </StyledMenuItem>
           <StyledMenuItem
+            disabled={isCE}
             to={`/teams/${teamId}/secrets`}
             selected={pathname === `/teams/${teamId}/secrets`}
             data-cy='menu-item-team-secrets'
