@@ -25,8 +25,8 @@ interface Props {
 
 export default ({ clusterId }: Props) => {
   const { mode, currentClusterId, clusters, oboTeamId } = useSession()
-  const [cloud, name] = (clusterId || currentClusterId).split('/')
-  const cluster = find(clusters, { cloud, name })
+  const [provider, name] = (clusterId || currentClusterId).split('/')
+  const cluster = find(clusters, { provider, name })
   const { k8sVersion, region } = cluster
   const classes = useStyles()
   const mainClasses = mainStyles()
@@ -43,7 +43,7 @@ export default ({ clusterId }: Props) => {
           <ListItemText primary={`Name: ${name}`} data-cy='list-item-text-clustername' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Cloud: ${cloud}`} data-cy='list-item-text-cloud' />
+          <ListItemText primary={`Cloud: ${provider}`} data-cy='list-item-text-cloud' />
         </StyledListItem>
         <StyledListItem>
           <ListItemText primary={`Region: ${region}`} data-cy='list-item-text-region' />
