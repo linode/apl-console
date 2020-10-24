@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Session } from '@redkubes/otomi-api-client-axios'
 
 export interface SessionContext extends Session {
+  mode: string
   isAdmin?: boolean
   setSession: CallableFunction
   oboTeamId?: string
@@ -11,6 +12,7 @@ export interface SessionContext extends Session {
 }
 
 const context = React.createContext<SessionContext>({
+  mode: 'ee',
   clusters: undefined,
   core: undefined,
   currentClusterId: undefined,

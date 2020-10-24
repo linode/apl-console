@@ -22,7 +22,11 @@
   "eslint.enable": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "files.associations": {
-    ".secrets": "shellscript"
+    ".secrets": "shellscript",
+    ".tmpl": "nginxconf"
   },
-  "tslint.enable": false
+  "tslint.enable": false,
+  "Lua.diagnostics.globals": [
+    "ngx"
+  ]
 }

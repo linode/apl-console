@@ -63,6 +63,24 @@ export const adminColors = {
 
 const getOverrides = (c: any): ThemeOptions => {
   return {
+    typography: {
+      button: {
+        textTransform: 'none',
+      },
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        // '"Comfortaa"',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+    },
     props: {
       MuiLink: {
         underline: 'none',
@@ -118,11 +136,6 @@ const getOverrides = (c: any): ThemeOptions => {
       },
       primary: c.primary,
       secondary: c.secondary,
-    },
-    typography: {
-      button: {
-        textTransform: 'none',
-      },
     },
   }
 }

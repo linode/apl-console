@@ -38,6 +38,7 @@ export default () => {
   const classes = useStyles()
   const history = useHistory()
   const {
+    mode,
     user: { email, teams: userTeams, isAdmin },
     teams: allTeams,
     oboTeamId,
@@ -61,7 +62,9 @@ export default () => {
     const hasTeamPart = path.includes(teamPart)
     const hasIDvalue = path.split('/').length === 5
     let url
-    if (teamId) {
+    if (mode === 'ce') {
+      url = `/apps/${teamId || `${isAdmin ? 'admin' : ''}`}`
+    } else if (teamId) {
       if (hasTeamPart && !hasIDvalue) {
         url = path.replace(teamPart, newTeamPart)
       } else if (hasTeamId && !hasIDvalue) {

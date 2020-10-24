@@ -3,7 +3,8 @@ version: '3.4'
 services:
   api:
     container_name: api
-    image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-latest}
+    image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-master}
+    command: sh -c 'DEBUG=@kwsites/file-exists,simple-git node dist/app.js'
     user: ${USER_ID}:${GROUP_ID}
     expose:
       - 8080
@@ -15,6 +16,7 @@ services:
     environment:
       TOOLS_HOST: tools
       CLUSTER_ID: ${CLUSTER_ID:-google/dev}
+      CLUSTER_APISERVER: ${CLUSTER_APISERVER}
       DISABLE_SYNC: ${DISABLE_SYNC:-true}
       GIT_LOCAL_PATH: ${GIT_LOCAL_PATH:-/tmp/otomi-stack}
       GIT_REPO_URL: ${GIT_REPO_URL:-github.com/redkubes/otomi-values.git}
@@ -27,7 +29,7 @@ services:
     depends_on:
       - api
     container_name: tools
-    image: eu.gcr.io/otomi-cloud/otomi-stack:${TOOLS_TAG:-latest}
+    image: eu.gcr.io/otomi-cloud/otomi-stack:${TOOLS_TAG:-master}
     user: ${USER_ID}:${GROUP_ID}
     command: bin/server.sh
     expose:
