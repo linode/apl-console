@@ -19,8 +19,8 @@ export default ({ teamId }: Props) => {
     currentClusterId,
     clusters,
   }: any = useSession()
-  const [provider, name] = currentClusterId.split('/')
-  const cluster = find(clusters, { provider, name })
+  const [cloud, name] = currentClusterId.split('/')
+  const cluster = find(clusters, { cloud, name })
   const apps = teamId === 'admin' ? adminApps : teamApps
   return (
     <Grid container direction='row' alignItems='center' spacing={2} data-cy='grid-apps'>
