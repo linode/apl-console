@@ -121,7 +121,7 @@ const AppCE = () => {
       const session = await response.json()
       const { user, clusters } = session
       const c = clusters[0]
-      session.currentClusterId = `${c.cloud}/${c.name}`
+      session.currentClusterId = `${c.provider}/${c.name}`
       const { groups } = user
       if (groups.includes('admin') || groups.includes('team-admin')) {
         user.isAdmin = true
