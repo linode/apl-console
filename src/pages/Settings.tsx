@@ -35,7 +35,8 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default () => {
-  const { themeType, setThemeType } = useSession()
+  const { mode, themeType, setThemeType } = useSession()
+  const isCE = mode === 'ce'
   const classes = useStyles()
   const toggleTheme = (): void => {
     setThemeType(toggleThemeType())
@@ -67,6 +68,7 @@ export default () => {
           <ListItemText primary={`console@${pkg.version}`} />
           <ListItemSecondaryAction>
             <ChannelSelector
+              disabled={isCE}
               channel={pkg.version === 'master' ? 'alpha' : 'stable'}
               setChannel={event => {
                 snack.comingSoon()
@@ -82,6 +84,7 @@ export default () => {
           <ListItemText primary={`core@${coreVersion}`} />
           <ListItemSecondaryAction>
             <ChannelSelector
+              disabled={isCE}
               channel={coreVersion === 'master' ? 'alpha' : 'stable'}
               setChannel={event => {
                 snack.comingSoon()

@@ -16,6 +16,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 interface Props {
+  disabled: boolean
   channel: string
   setChannel: CallableFunction
 }
@@ -44,7 +45,7 @@ function MyFormControlLabel(props: LabelProps) {
   )
 }
 
-export default ({ channel, setChannel }: Props): any => {
+export default ({ channel, setChannel, disabled }: Props): any => {
   const classes = useStyles()
   return (
     <RadioGroup
@@ -55,9 +56,15 @@ export default ({ channel, setChannel }: Props): any => {
       name='use-radio-group'
       defaultValue={channel}
     >
-      <MyFormControlLabel value='alpha' label='alpha' control={<Radio />} />
-      <MyFormControlLabel value='beta' label='beta' control={<Radio />} />
-      <MyFormControlLabel className={classes.lastItem} value='stable' label='stable' control={<Radio />} />
+      <MyFormControlLabel disabled={disabled} value='alpha' label='alpha' control={<Radio />} />
+      <MyFormControlLabel disabled={disabled} value='beta' label='beta' control={<Radio />} />
+      <MyFormControlLabel
+        disabled={disabled}
+        className={classes.lastItem}
+        value='stable'
+        label='stable'
+        control={<Radio />}
+      />
     </RadioGroup>
   )
 }
