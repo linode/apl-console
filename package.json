@@ -78,6 +78,7 @@
     "react-test-renderer": "^16.13.1",
     "standard-version": "^7.1.0",
     "ts-jest": "^24.3.0",
+    "typeface-comfortaa": "^1.1.13",
     "typeface-roboto": "0.0.75",
     "typescript": "^3.9.5",
     "yup": "^0.27.0"

@@ -150,7 +150,7 @@ const Dashboard = ({ team, services, clusters, teams }: Props) => {
         : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
     },
   ]
-  const teamName = isAdmin ? 'Admin' : team.name
+  const teamName = isAdmin ? 'admin' : team.name
   return (
     <>
       <Grid container spacing={3}>

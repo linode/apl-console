@@ -24,7 +24,7 @@ interface Props {
 }
 
 export default ({ clusterId }: Props) => {
-  const { currentClusterId, clusters, oboTeamId } = useSession()
+  const { mode, currentClusterId, clusters, oboTeamId } = useSession()
   const [cloud, name] = (clusterId || currentClusterId).split('/')
   const cluster = find(clusters, { cloud, name })
   const { k8sVersion, region } = cluster
@@ -51,12 +51,12 @@ export default ({ clusterId }: Props) => {
         <StyledListItem>
           <ListItemText primary={`K8S Version: ${k8sVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {!clusterId && (
+        {mode === 'ee' && !clusterId && (
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
+            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || ''}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
