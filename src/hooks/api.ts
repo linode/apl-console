@@ -5,6 +5,7 @@ import { LoadingHook, useLoadingValue } from '../utils'
 import snack from '../utils/snack'
 import { useSession, SessionContext } from '../session-context'
 import { ApiError, ApiErrorUnauthorized } from '../utils/error'
+import devTokens from '../devtokens'
 
 const env = process.env
 let baseUrl = `${location.protocol}//${location.host}${env.CONTEXT_PATH || ''}/api/v1`
@@ -13,10 +14,16 @@ if (env.NODE_ENV === 'development') {
   baseUrl = `${env.API_BASE_URL || 'http://localhost:3000'}/api/v1`
   // eslint-disable-next-line no-console
   console.info('running in development mode')
-  const team = location.search.includes('team') ? new URLSearchParams(location.search).get('team') : 'admin'
-  if (team !== 'admin') window.localStorage.setItem('oboTeamId', `"${team}"`)
+  const team = location.search.includes('team') ? 'otomi' : 'admin'
+  let token
+  if (team !== 'admin') {
+    window.localStorage.setItem('oboTeamId', `"${team}"`)
+    token = devTokens.team
+  } else {
+    token = devTokens.admin
+  }
   options = {
-    headers: { 'Auth-Group': team },
+    headers: { Authorization: `Bearer ${token}` },
   }
 }
 

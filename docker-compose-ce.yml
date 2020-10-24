@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  web:
+    image: otomi/console:${WEB_TAG:-master}
+    container_name: web
+    expose:
+      - 8080
+    ports:
+      - 8081:80
+    environment:
+      CORE: ${CORE}
+      CLUSTER: ${CLUSTER}
+      TEAMS: ${TEAMS}

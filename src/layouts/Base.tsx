@@ -23,6 +23,17 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     // a: theme.palette.primary.dark,
   },
+  title: {
+    fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
+  },
+  subTitle: {
+    fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
+    fontSize: '14px',
+    marginTop: '3px',
+    marginLeft: '6px',
+    fontStyle: 'italic',
+    fontWeight: 'bolder',
+  },
   logo: {
     flexGrow: 1,
     marginRight: '1vw',
@@ -105,7 +116,7 @@ interface Props {
 
 export default (props: Props) => {
   const { children } = props
-  const { oboTeamId } = useSession()
+  const { mode, oboTeamId } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
@@ -125,7 +136,7 @@ export default (props: Props) => {
     <img
       style={{ marginRight: '1vw' }}
       // eslint-disable-next-line global-require
-      src={`${process.env.CONTEXT_PATH || ''}/logos/otomi_logo.svg`}
+      src={`${process.env.CONTEXT_PATH || ''}/logos/otomi_logo-${mode}.svg`}
       width='40'
       height='40'
       alt='otomi logo'
@@ -143,7 +154,12 @@ export default (props: Props) => {
         <Hidden smDown implementation='css'>
           <IconButton color='inherit'>
             {img}
-            <Typography variant='h5'>Otomi Console</Typography>
+            <Typography className={classes.title} variant='h6'>
+              otomi console
+            </Typography>
+            <Typography className={classes.subTitle} variant='h6'>
+              {mode.toUpperCase()}
+            </Typography>
           </IconButton>
         </Hidden>
         <Hidden mdUp implementation='css'>

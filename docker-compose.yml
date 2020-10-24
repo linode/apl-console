@@ -5,7 +5,9 @@ services:
     build:
       context: .
       target: dev
-    image: eu.gcr.io/otomi-cloud/otomi-stack-web:${WEB_TAG:-dev}
+      args:
+        NPM_TOKEN: ${NPM_TOKEN}
+    image: otomi/console:${WEB_TAG:-master}
     container_name: web
     command: npm run dev:docker
     volumes:

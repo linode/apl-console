@@ -7,7 +7,6 @@ on:
       - '*'
 env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
-  REG: docker.io
   REPO: otomi/console
   E2E_IMG: eu.gcr.io/otomi-cloud/otomi-stack-e2e:latest
   GIT_USER: redkubesbot

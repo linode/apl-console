@@ -5,7 +5,7 @@ import MainLayout from '../layouts/Empty'
 import { useAuthz } from '../hooks/api'
 
 interface Params {
-  teamId: string
+  teamId?: string
 }
 
 export default ({

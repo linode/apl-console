@@ -34,7 +34,14 @@ FROM ci as build
 RUN npm run build
 
 # --------------- production stage
-FROM nginx:1.16.1-alpine as prod
+FROM openresty/openresty:1.17.8.2-5-alpine-fat as prod
+
+RUN luarocks install lua-resty-jwt
+RUN luarocks install lua-resty-http
+# RUN luarocks install cjson
+RUN luarocks install date
+
+COPY nginx/session.lua /session.lua
 
 # # Install app
 RUN mkdir /app
