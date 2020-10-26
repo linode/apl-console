@@ -1,15 +1,16 @@
 events {
   worker_connections 1024;
 }
-env CLUSTER;
+env CLUSTERS;
+env CLUSTER_ID;
 env CORE;
+env CORE_VERSION;
 env TEAMS;
 error_log stderr info;
 http {
   access_log /dev/stdout;
   server {
     include mime.types;
-    # include /usr/local/openresty/nginx/conf/mime.types;
     listen 80;
     root /app/build;
     index index.html;
@@ -24,7 +25,7 @@ http {
       try_files $uri $uri/ /index.html;
     }
     location /session {
-      access_by_lua_file /session.lua;
+      access_by_lua_file /app/session.lua;
     }
     location /healthz {
       return 200 'OK';

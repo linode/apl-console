@@ -1,6 +1,11 @@
 import React, { useContext } from 'react'
 import { Session } from '@redkubes/otomi-api-client-axios'
 
+interface Versions {
+  core: string
+  api?: string
+}
+
 export interface SessionContext extends Session {
   mode: string
   isAdmin?: boolean
@@ -9,6 +14,7 @@ export interface SessionContext extends Session {
   setOboTeamId?: CallableFunction
   setThemeType?: CallableFunction
   themeType: string
+  versions: Versions
 }
 
 const context = React.createContext<SessionContext>({
@@ -25,6 +31,7 @@ const context = React.createContext<SessionContext>({
   themeType: undefined,
   user: { teams: undefined, email: undefined, isAdmin: undefined, roles: undefined },
   teams: undefined,
+  versions: undefined,
 })
 
 export const useSession = (): SessionContext => {

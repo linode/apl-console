@@ -112,7 +112,7 @@ export default ({ teamId }: Props) => {
       <StyledListSubheader component='div' data-cy='list-subheader-enterprise'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      <StyledMenuItem disabled={isCE} to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
+      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>

@@ -8,7 +8,13 @@ services:
       - 8080
     ports:
       - 8081:80
+    volumes:
+      - $PWD/nginx/nginx.tmpl:/app/nginx.tmpl
+      - $PWD/nginx/run.sh:/app/run.sh
+      - $PWD/nginx/session.lua:/app/session.lua
     environment:
       CORE: ${CORE}
-      CLUSTER: ${CLUSTER}
+      CORE_VERSION: ${CORE_VERSION:-x.x.x}
+      CLUSTER_ID: ${CLUSTER_ID:-'google/dev'}
+      CLUSTERS: ${CLUSTERS}
       TEAMS: ${TEAMS}

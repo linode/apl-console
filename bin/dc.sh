@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-source .env
 
 BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
-SUB_COMMAND_NAME=$2
 
 info="(add '-d' to daemonize, or 'logs' for logs on pre-daemonized stack)"
 sub_help () {
@@ -30,12 +28,13 @@ sub_up-all () {
 }
 
 sub_up-deps () {
-    c="docker-compose -f docker-compose-deps.yml  -f docker-compose-ce.yml"
+    c="docker-compose -f docker-compose-deps.yml -f docker-compose-ce.yml"
     $c pull && $c up $1
 }
 
 sub_down () {
-    docker-compose -f docker-compose.yml -f docker-compose-deps.yml down --remove-orphans -v
+    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-ce.yml"
+    $c down --remove-orphans -v
 }
 
 case $COMMAND_NAME in

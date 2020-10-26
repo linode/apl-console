@@ -18,7 +18,7 @@ services:
       CLUSTER_ID: ${CLUSTER_ID:-google/dev}
       CLUSTER_APISERVER: ${CLUSTER_APISERVER}
       DISABLE_SYNC: ${DISABLE_SYNC:-true}
-      GIT_LOCAL_PATH: ${GIT_LOCAL_PATH:-/tmp/otomi-stack}
+      GIT_LOCAL_PATH: /tmp/otomi-values
       GIT_REPO_URL: ${GIT_REPO_URL:-github.com/redkubes/otomi-values.git}
       GIT_BRANCH: ${GIT_BRANCH:-master}
       GIT_USER: ${GIT_USER}
@@ -39,7 +39,7 @@ services:
     volumes:
       - tmp:/tmp
     environment:
-      ENV_DIR: /tmp/otomi-stack
+      ENV_DIR: /tmp/otomi-values
       GCLOUD_SERVICE_KEY: ${GCLOUD_SERVICE_KEY}
 
 volumes:

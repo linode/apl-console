@@ -41,14 +41,11 @@ RUN luarocks install lua-resty-http
 # RUN luarocks install cjson
 RUN luarocks install date
 
-COPY nginx/session.lua /session.lua
-
 # # Install app
 RUN mkdir /app
 WORKDIR /app
 
-
-COPY nginx.tmpl run.sh ./
+COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
 COPY --from=build /app/build build

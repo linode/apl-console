@@ -19,8 +19,6 @@ import pkg from '../../package.json'
 import ChannelSelector from '../components/ChannelSelector'
 import snack from '../utils/snack'
 
-const coreVersion = process.env.CORE_VERSION || 'x.x.x'
-
 const useStyles = makeStyles(theme => ({
   root: {},
   version: {
@@ -35,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default () => {
-  const { mode, themeType, setThemeType } = useSession()
+  const { mode, themeType, setThemeType, versions } = useSession()
   const isCE = mode === 'ce'
   const classes = useStyles()
   const toggleTheme = (): void => {
@@ -81,11 +79,11 @@ export default () => {
           <ListItemIcon title='Up to date!'>
             <CheckIcon />
           </ListItemIcon>
-          <ListItemText primary={`core@${coreVersion}`} />
+          <ListItemText primary={`core@${versions.core}`} />
           <ListItemSecondaryAction>
             <ChannelSelector
               disabled={isCE}
-              channel={coreVersion === 'master' ? 'alpha' : 'stable'}
+              channel={versions.core === 'master' ? 'alpha' : 'stable'}
               setChannel={event => {
                 snack.comingSoon()
                 event.preventDefault()
@@ -93,6 +91,24 @@ export default () => {
             />
           </ListItemSecondaryAction>
         </ListItem>
+        {!isCE && (
+          <ListItem className={classes.listItem}>
+            <ListItemIcon title='Up to date!'>
+              <CheckIcon />
+            </ListItemIcon>
+            <ListItemText primary={`api@${versions.api}`} />
+            <ListItemSecondaryAction>
+              <ChannelSelector
+                disabled={isCE}
+                channel={versions.api === 'master' ? 'alpha' : 'stable'}
+                setChannel={event => {
+                  snack.comingSoon()
+                  event.preventDefault()
+                }}
+              />
+            </ListItemSecondaryAction>
+          </ListItem>
+        )}
       </List>
 
       {/* <Form

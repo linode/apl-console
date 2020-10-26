@@ -167,6 +167,8 @@ const AppCE = () => {
               <Switch>
                 {/* ! user && <Route path='/' component={Home} exact /> */}
                 <Route path='/apps/:teamId' component={OtomiApps} />
+                <Route path='/clusters' component={Clusters} exact />
+                <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/settings' component={Settings} exact />
                 <Route path='*'>
                   <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
