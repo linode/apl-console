@@ -43,7 +43,7 @@ jobs:
         with:
           username: otomi
           password: '${{ secrets.DOCKERHUB_OTOMI_TOKEN }}'
-          registry: ${{ env.REG }}
+          # registry: ${{ env.REG }}
           image_name: ${{ env.REPO }}
           image_tag: ${{ env.TAG }}
           build_extra_args: '--build-arg=NPM_TOKEN=${{ secrets.NPM_TOKEN }}'
