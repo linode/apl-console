@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.20](https://github.com/redkubes/otomi-stack-web/compare/v0.4.17...v0.4.20) (2020-10-26)
+
+
+### Bug Fixes
+
+* merge issue ([7ae16af](https://github.com/redkubes/otomi-stack-web/commit/7ae16afe107a84ede4a4ac46cb0337b01f25dab4))
+* user logout for ce ([ec1fbf8](https://github.com/redkubes/otomi-stack-web/commit/ec1fbf808a58ac1e7f093c4b76e2026b27596f8f))
+* workflow reg access ([903e352](https://github.com/redkubes/otomi-stack-web/commit/903e35232969a90a6c6b46eaaf0ea2d58250e343))
+* workflow was not pushing public image to docker hub ([84cf2be](https://github.com/redkubes/otomi-stack-web/commit/84cf2be072b98e8b2d91a2fc4f6b6518c1da2efd))
+
+
+### CI
+
+* workflow fix [ci skip] ([ec0c023](https://github.com/redkubes/otomi-stack-web/commit/ec0c023691739fc6840478d53676147bc373dc1d))
+
+
+### Feature Improvements
+
+* added clusters to ce ([359e6b6](https://github.com/redkubes/otomi-stack-web/commit/359e6b68cc22a4797d113193e219a8ce1b9efb40))
+* disabled update channel preview settings for ce ([c760a5b](https://github.com/redkubes/otomi-stack-web/commit/c760a5b2fbd15b3b909c7daa25d80282fb6d204f))
+* locked menu items, enriched settings ([868aead](https://github.com/redkubes/otomi-stack-web/commit/868aeadbd907b6be030d7d859e46cc39b2e5a5dd))
+* locked menu items, enriched settings ([f88a50c](https://github.com/redkubes/otomi-stack-web/commit/f88a50ca464116bb2c6839607b6ce68026641ffe))
+
+
+### Others
+
+* **release:** 0.4.18 ([d084901](https://github.com/redkubes/otomi-stack-web/commit/d084901c182e40f38b85954016510e976a99c281))
+* **release:** 0.4.19 ([5f24477](https://github.com/redkubes/otomi-stack-web/commit/5f24477cc83f436dbc2b5ba052a38c17418d8cab))
+
 ### [0.4.19](https://github.com/redkubes/otomi-stack-web/compare/v0.4.17...v0.4.19) (2020-10-26)
 
 
