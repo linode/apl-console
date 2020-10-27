@@ -4,7 +4,7 @@ services:
   api:
     container_name: api
     image: eu.gcr.io/otomi-cloud/otomi-stack-api:${API_TAG:-master}
-    command: sh -c 'DEBUG=@kwsites/file-exists,simple-git node dist/app.js'
+    command: sh -c 'DEBUG=@kwsites/file-exists,simple-git node dist/src/app.js'
     user: ${USER_ID}:${GROUP_ID}
     expose:
       - 8080

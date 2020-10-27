@@ -119,9 +119,7 @@ const AppCE = () => {
         `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' && `?token=${devTokens.admin}`}`,
       )
       const session = await response.json()
-      const { user, clusters } = session
-      const c = clusters[0]
-      session.currentClusterId = `${c.cloud}/${c.name}`
+      const { user } = session
       const { groups } = user
       if (groups.includes('admin') || groups.includes('team-admin')) {
         user.isAdmin = true
