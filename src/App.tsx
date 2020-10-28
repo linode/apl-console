@@ -21,7 +21,7 @@ import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import ErrorComponent from './components/Error'
-import Context from './session-context'
+import Context, { SessionContext } from './session-context'
 import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
@@ -118,8 +118,8 @@ const AppCE = () => {
       const response = await fetch(
         `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' && `?token=${devTokens.admin}`}`,
       )
-      const session = await response.json()
-      const { user } = session
+      const session: SessionContext = await response.json()
+      const { user }: any = session
       const { groups } = user
       if (groups.includes('admin') || groups.includes('team-admin')) {
         user.isAdmin = true

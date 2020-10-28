@@ -21,7 +21,6 @@ type Panel = {
 }
 interface Props {
   team?: Team
-  isAdmin?: boolean
   services: Array<Service>
   clusters: Array<Cluster>
   teams: Array<Team>

@@ -68,7 +68,7 @@ export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: any, cr
   })
 }
 
-export function getTeamUiSchema(schema: Schema, roles: Set<string>, crudMethod: string): any {
+export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
@@ -92,7 +92,7 @@ export function getTeamUiSchema(schema: Schema, roles: Set<string>, crudMethod: 
   return uiSchema
 }
 
-export function getServiceUiSchema(schema: Schema, roles: Set<string>, formData, crudMethod: string): any {
+export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMethod: string): any {
   const notAws = !get(formData, 'clusterId', '').startsWith('aws')
   const noCert = !formData || !formData.ingress || !formData.ingress.hasCert
   const noCertArn = notAws || noCert
@@ -137,7 +137,7 @@ export function getServiceUiSchema(schema: Schema, roles: Set<string>, formData,
   return uiSchema
 }
 
-export function getSecretUiSchema(schema: Schema, roles: Set<string>, crudMethod: string): any {
+export function getSecretUiSchema(schema: Schema, roles: Array<string>, crudMethod: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },

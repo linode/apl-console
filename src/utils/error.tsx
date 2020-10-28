@@ -29,7 +29,7 @@ type ErrorHandlingComponent<Props> = (props: Props, error?: Error) => React.Reac
 
 type ErrorState = { error?: Error }
 
-function Catch<Props extends {}>(
+function Catch<Props extends Record<string, unknown>>(
   component: ErrorHandlingComponent<Props>,
   errorHandler?: ErrorHandler,
 ): React.ComponentType<Props> {

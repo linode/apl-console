@@ -27,7 +27,7 @@ if (env.NODE_ENV === 'development') {
   }
 }
 
-export type ApiHook = LoadingHook<object, ApiError>
+export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
 let dirty = false
@@ -54,6 +54,7 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
   } = useSession()
   dirty = dirty || isDirty
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     ;(async (): Promise<any> => {
       if (!active) {
         setValue(undefined)

@@ -7,11 +7,14 @@ on:
       - '*'
 env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
+  CACHE_REGISTRY: ghcr.io
+  CACHE_REPO: redkubes/otomi-console
   REPO: otomi/console
   REG_GCR: eu.gcr.io
   E2E_IMG: eu.gcr.io/otomi-cloud/otomi-e2e:latest
   GIT_USER: redkubesbot
   GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_OTOMI_TOKEN }}
   PERCY_TOKEN: '${{ secrets.PERCY_TOKEN }}'
   GCLOUD_SERVICE_KEY: '${{ secrets.GCLOUD_SERVICE_KEY }}'
 
@@ -37,14 +40,20 @@ jobs:
           echo ::set-env name=TAG::$tag
       - name: Checkout
         uses: actions/checkout@v2
-      - name: CI tests, image build and push tag for master or branch
+      - name: CI tests, image build and push tag to cache for master or branch
         uses: whoan/docker-build-with-cache-action@v5
         with:
-          username: otomi
-          password: '${{ secrets.DOCKERHUB_OTOMI_TOKEN }}'
-          image_name: ${{ env.REPO }}
+          username: redkubesbot
+          password: '${{ secrets.NPM_TOKEN }}'
+          registry: ${{ env.CACHE_REGISTRY }}
+          image_name: ${{ env.CACHE_REPO }}
           image_tag: ${{ env.TAG }}
           build_extra_args: '--build-arg=NPM_TOKEN=${{ secrets.NPM_TOKEN }}'
+      - name: Retag from cache and push
+        run: |
+          docker login -u otomi -p $DOCKER_PASSWORD
+          docker tag $CACHE_REGISTRY/$CACHE_REPO:$TAG $REPO:$TAG
+          docker push $REPO:$TAG
       - name: Run e2e
         if: "github.ref == 'refs/heads/master'"
         env:

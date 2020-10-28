@@ -37,7 +37,6 @@ const renderPublicUrl = row => {
 interface Props {
   services: Service[]
   team?: Team
-  oboTeamId?: string
 }
 
 export default ({ services, team }: Props) => {

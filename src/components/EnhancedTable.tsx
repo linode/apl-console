@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 import {
   Checkbox,
@@ -308,6 +309,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
             />
             <TableBody>
               {stableSort(rows, getComparator(order, orderBy))
+                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name)

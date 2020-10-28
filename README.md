@@ -1,6 +1,9 @@
 # Otomi Console
 
-The frontend of the Otomi Container Platform. Communicates with [otomi-api](https://github.com/redkubes/otomi-api).
+The frontend of the Otomi Container Platform. Communicates with [otomi-api](https://github.com/redkubes/otomi-api) with a paid license.
+In Community Edition mode, it will not have self service features enabled by the api, but it is functional and even implements authorization.
+
+[Otomi Core](https://github.com/redkubes/otomi-core) is the platform that houses the console, and feeds it all the data it needs to start using it.
 
 ## Development
 
@@ -8,9 +11,7 @@ The frontend of the Otomi Container Platform. Communicates with [otomi-api](http
 
 1. Copy `.env.sample` to `.env` and edit accordingly.
 
-2. Download `otomi-api/.secrets` file from [Google Drive secrets](https://drive.google.com/drive/folders/1N802vs0IplKehkZq8SxMi67RipyO1pHN) and put contents in `.env`.
-
-3. Setup access to GitHub packages:
+2. Setup access to GitHub packages:
 
 ```
 source .env && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc

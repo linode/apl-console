@@ -13,6 +13,9 @@ COPY package*.json ./
 COPY .npmrc ./
 RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
+RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
+RUN echo "EXTEND_ESLINT=true=true" >> .env
+
 RUN npm ci
 
 # --------------- ci stage for CI runner
@@ -24,12 +27,12 @@ COPY ts*.json .es* ./
 COPY src src
 COPY public public
 
+RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
+RUN echo "EXTEND_ESLINT=true=true" >> .env
+
 # ARG CI=true
 RUN npm run lint
 # RUN npm run test
-
-# --------------- build stage
-FROM ci as build
 
 RUN npm run build
 
@@ -48,7 +51,7 @@ WORKDIR /app
 COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
-COPY --from=build /app/build build
+COPY --from=ci /app/build build
 
 RUN chmod +r /app/build
 

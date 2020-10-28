@@ -50,7 +50,8 @@ export default ({ teamId }: Props) => {
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
   useEffect(() => {
-    ;(async function checkDeploy() {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    ;(async () => {
       if (deploy) {
         snack.info('Scheduling...', { autoHideDuration: 7000 })
         try {

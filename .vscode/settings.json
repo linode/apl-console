@@ -12,5 +12,7 @@
     ".secrets": "shellscript",
     "*.tmpl": "nginx"
   },
-  "tslint.enable": false
+  "tslint.enable": false,
+  "eslint.lintTask.enable": true
+  // "eslint.debug": true
 }
