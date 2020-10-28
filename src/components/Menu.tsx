@@ -80,7 +80,7 @@ export default ({ teamId }: Props) => {
   }
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
-      <StyledListSubheader component='div' data-cy='list-subheader-otomi-stack'>
+      <StyledListSubheader component='div' data-cy='list-subheader-platform'>
         <ListItemText primary='Platform' />
       </StyledListSubheader>
       <StyledMenuItem disabled={isCE} to='/' selected={pathname === `/`}>

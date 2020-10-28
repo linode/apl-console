@@ -98,7 +98,7 @@
       "eslint --ext js,ts,tsx --fix"
     ]
   },
-  "name": "otomi-stack-web",
+  "name": "otomi-console",
   "private": true,
   "run-if-changed": {
     "package-lock.json": "npm install --prefer-offline --no-audit"

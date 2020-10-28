@@ -1,6 +1,6 @@
 # Otomi Console
 
-The frontend of the Otomi Container Platform. Communicates with [otomi-stack-api](https://github.com/redkubes/otomi-stack-api).
+The frontend of the Otomi Container Platform. Communicates with [otomi-api](https://github.com/redkubes/otomi-api).
 
 ## Development
 
@@ -8,7 +8,7 @@ The frontend of the Otomi Container Platform. Communicates with [otomi-stack-api
 
 1. Copy `.env.sample` to `.env` and edit accordingly.
 
-2. Download `otomi-stack-api/.secrets` file from [Google Drive secrets](https://drive.google.com/drive/folders/1N802vs0IplKehkZq8SxMi67RipyO1pHN) and put contents in `.env`.
+2. Download `otomi-api/.secrets` file from [Google Drive secrets](https://drive.google.com/drive/folders/1N802vs0IplKehkZq8SxMi67RipyO1pHN) and put contents in `.env`.
 
 3. Setup access to GitHub packages:
 
