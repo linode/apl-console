@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.24](https://github.com/redkubes/otomi-console/compare/v0.4.23...v0.4.24) (2020-10-30)
+
+
+### Features
+
+* now showing otomi and k8s version [ci skip] ([ab873af](https://github.com/redkubes/otomi-console/commit/ab873af535f02e011b52fce1ca87bdd161443c08))
+
 ### [0.4.23](https://github.com/redkubes/otomi-console/compare/v0.4.22...v0.4.23) (2020-10-30)
 
 
