@@ -14,7 +14,8 @@ export default ({
   },
 }: RouteComponentProps<Params>) => {
   const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
-  const [services, servicesLoading, servicesError]: any = useApi(servicesMethod, true, [teamId])
+  const servicesArgs = teamId ? [teamId] : []
+  const [services, servicesLoading, servicesError]: any = useApi(servicesMethod, true, servicesArgs)
   const [team, teamLoading, teamError]: any = useApi('getTeam', !!teamId, [teamId])
   const loading = servicesLoading || teamLoading
   const err = servicesError || teamError

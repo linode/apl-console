@@ -5,7 +5,7 @@ import EnhancedTable, { HeadCell } from './EnhancedTable'
 import { useSession } from '../session-context'
 
 export default () => {
-  const { clusters } = useSession()
+  const { clusters }: any = useSession()
   const headCells: HeadCell[] = [
     {
       id: 'id',
@@ -33,7 +33,13 @@ export default () => {
   return (
     <>
       <h1 data-cy='h1-clusters-page'>Clusters</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={clusters as any} idKey='id' />
+      <EnhancedTable
+        disableSelect
+        headCells={headCells}
+        orderByStart='name'
+        rows={clusters.filter(c => c.enabled)}
+        idKey='id'
+      />
     </>
   )
 }
