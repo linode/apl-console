@@ -83,7 +83,13 @@ export default ({ services, team }: Props) => {
           </Button>
         )}
       </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
+      <EnhancedTable
+        disableSelect
+        headCells={headCells}
+        orderByStart='name'
+        rows={services.filter(s => s.enabled)}
+        idKey='id'
+      />
     </>
   )
 }
