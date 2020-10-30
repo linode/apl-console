@@ -127,7 +127,7 @@
       "tag": true
     }
   },
-  "version": "0.4.21",
+  "version": "0.4.22",
   "dependencies": {
     "@redkubes/otomi-api-client-axios": "^0.4.14"
   }

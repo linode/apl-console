@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.22](https://github.com/redkubes/otomi-console/compare/v0.4.21...v0.4.22) (2020-10-30)
+
+
+### Features
+
+* filtering out resources for disabled clusters ([8029461](https://github.com/redkubes/otomi-console/commit/802946141832c63952dec2a742aef65b7f8ae72c))
+
+
+### Bug Fixes
+
+* current cluster id ([36a4476](https://github.com/redkubes/otomi-console/commit/36a44763bc8f05399ec74c6e7c405b8ee2fb26aa))
+* package-lock ([7eebf88](https://github.com/redkubes/otomi-console/commit/7eebf88e2ce325083677dccdd73d3b2b0792bc8c))
+
+
+### Code Refactoring
+
+* renamed repo to otomi-console ([a94a916](https://github.com/redkubes/otomi-console/commit/a94a91649a028fcf29e6b2ceaa8d026ba5e5fad4))
+
+
+### Docs
+
+* updated with links to components [ci skip] ([7d2f538](https://github.com/redkubes/otomi-console/commit/7d2f53846bce004b8dfa2b8f28fad7d8dcda9c28))
+
 ### [0.4.21](https://github.com/redkubes/otomi-console/compare/v0.4.17...v0.4.21) (2020-10-26)
 
 
