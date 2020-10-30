@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.23](https://github.com/redkubes/otomi-console/compare/v0.4.22...v0.4.23) (2020-10-30)
+
+
+### Features
+
+* service filtering based on enabled flag [ci skip] ([5caa795](https://github.com/redkubes/otomi-console/commit/5caa7957b80f7dd54da49973441b9935c566c4cc))
+
 ### [0.4.22](https://github.com/redkubes/otomi-console/compare/v0.4.21...v0.4.22) (2020-10-30)
 
 
