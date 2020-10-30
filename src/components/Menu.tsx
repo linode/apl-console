@@ -21,7 +21,7 @@ import { useSession } from '../session-context'
 const useStyles = makeStyles(theme => ({
   root: {
     paddingTop: 0,
-    textTransform: 'capitalize',
+    // textTransform: 'capitalize',
   },
   listSubheader: {
     backgroundColor: theme.palette.divider,
@@ -183,7 +183,7 @@ export default ({ teamId }: Props) => {
         </>
       )}
       <StyledListSubheader component='div' data-cy='list-subheader-current-context'>
-        <ListItemText primary='Current Context' />
+        <ListItemText primary='Cluster' />
       </StyledListSubheader>
       <Cluster />
     </MenuList>

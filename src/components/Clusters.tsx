@@ -26,8 +26,16 @@ export default () => {
       ),
     },
     {
-      id: 'cloud',
-      label: 'Cloud',
+      id: 'region',
+      label: 'Region',
+    },
+    {
+      id: 'k8sVersion',
+      label: 'K8S Version',
+    },
+    {
+      id: 'otomiVersion',
+      label: 'Otomi Version',
     },
   ]
   return (

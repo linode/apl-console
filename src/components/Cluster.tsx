@@ -27,7 +27,7 @@ export default ({ clusterId }: Props) => {
   const { mode, currentClusterId, clusters, oboTeamId } = useSession()
   const [cloud, name] = (clusterId || currentClusterId).split('/')
   const cluster = find(clusters, { cloud, name })
-  const { k8sVersion, region } = cluster
+  const { k8sVersion, otomiVersion, region } = cluster
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
@@ -50,6 +50,9 @@ export default ({ clusterId }: Props) => {
         </StyledListItem>
         <StyledListItem>
           <ListItemText primary={`K8S Version: ${k8sVersion}`} data-cy='list-item-text-k8v' />
+        </StyledListItem>
+        <StyledListItem>
+          <ListItemText primary={`Otomi Version: ${otomiVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
         {mode === 'ee' && !clusterId && (
           <StyledMenuItem
