@@ -2,7 +2,7 @@
 
 Run keycloak locally with `otomi` theme mounted.
 ```
-docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -v $PWD/src/keycloak/themes/otomi:/opt/jboss/keycloak/themes/otomi jboss/keycloak
+docker run -p 8080:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -v $PWD/keycloak/themes/otomi:/opt/jboss/keycloak/themes/otomi jboss/keycloak
 ```
 Next:
 - go to http://localhost:8080/auth/admin/master/console/#/realms/master/theme-settings and login with default credentials,
