@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+source .env
 BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
 
