@@ -52,6 +52,7 @@ COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
 COPY --from=ci /app/build build
+COPY  keycloak /app/keycloak
 
 RUN chmod +r /app/build
 
