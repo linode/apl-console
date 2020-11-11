@@ -125,11 +125,13 @@ const Dashboard = ({ team, services, clusters, teams }: Props) => {
   const {
     user: { isAdmin },
   } = useSession()
+  const clustersEnabled = clusters.filter(c => c.enabled)
+  const servicesEnabled = services.filter(s => s.enabled)
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
   const panels = [
-    { name: 'cluster', data: clusters, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
+    { name: 'cluster', data: clustersEnabled, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
     {
       name: 'team',
       data: teams,
@@ -140,7 +142,7 @@ const Dashboard = ({ team, services, clusters, teams }: Props) => {
     },
     {
       name: 'service',
-      data: services,
+      data: servicesEnabled,
       icon: <SwapVerticalCircleIcon />,
       canCreate: true,
       disabled: isServiceDisabled,
