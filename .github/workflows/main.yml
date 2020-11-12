@@ -37,8 +37,6 @@ jobs:
           echo "TAG=$tag" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v2
-        # with:
-        #   token: ${{ env.GIT_PASSWORD }}
       - name: CI tests, image build and push tag for master or branch
         uses: whoan/docker-build-with-cache-action@v5
         with:
