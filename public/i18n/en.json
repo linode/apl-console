@@ -1,0 +1,6 @@
+{
+  "CREATE_MODEL": "Create a {{model}}",
+  "WELCOME_DASHBOARD": "Welcome to the team <1>{{teamName}}</1> dashboard!",
+  "SELECT_TEAM": "Select a team to create {{model}}",
+  "CREATE_MODEL_FOR_TEAM": "Create a {{model}} for team {{teamName}}"
+}

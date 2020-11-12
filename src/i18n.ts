@@ -1,33 +1,22 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
-import { Keys } from './translations/keys'
-
-type TranslationKeys = keyof typeof Keys
-type TranslationResources = {
-  [lang: string]: {
-    translation: {
-      [key in TranslationKeys]: string
-    }
-  }
-}
-
-const resources: TranslationResources = {
-  en: {
-    translation: {
-      CREATE_MODEL: 'Create a {{model}}',
-      WELCOME_DASHBOARD: 'Welcome to the team <1>{{teamName}}</1> dashboard!',
-      SELECT_TEAM: 'Select a team to create {{model}}',
-      CREATE_MODEL_FOR_TEAM: 'Create a {{model}} for team {{teamName}}',
-    },
-  },
-}
+import Backend from 'i18next-http-backend';
+import LanguageDetector from 'i18next-browser-languagedetector'
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
+  // load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
+  // learn more: https://github.com/i18next/i18next-http-backend
+  .use(new Backend(null, {loadPath: '/i18n/{{lng}}.json'}))
+  // detect user language
+  // learn more: https://github.com/i18next/i18next-browser-languageDetector
+  .use(LanguageDetector)
+  // passes i18n down to react-i18next
+  .use(initReactI18next)
+  // init i18next
+  // for all options read: https://www.i18next.com/overview/configuration-options
   .init({
-    resources,
-    lng: 'en',
+    fallbackLng: 'en',
 
     keySeparator: false, // we do not use keys in form messages.welcome
 
