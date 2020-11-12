@@ -302,7 +302,7 @@ margin-bottom: 10px;
 }
 .zocial,
 a.zocial {
-  /* padding: 6px 16px; */
+  padding: 6px 16px !important;
   color: #fff !important;
   background-color: #C03518 !important;
   font-size: 1rem !important;
@@ -538,7 +538,7 @@ margin-right: auto;
 .btn-primary {
   padding: 6px 16px;
   border: 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   min-width: 64px;
   box-sizing: border-box;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
