@@ -249,7 +249,7 @@ margin-bottom: 10px;
 /* Social */
 
 #kc-social-providers ul {
-  padding: 0;
+  padding: 15px 0 0 0;
 }
 
 #kc-social-providers li {
@@ -300,18 +300,20 @@ margin-bottom: 10px;
   border-style: solid;
   border-color: transparent black transparent transparent;
 }
-
 .zocial,
-a.zocial  {
-  width: 100%;
-  font-weight: normal;
-  font-size: 14px;
-  text-shadow: none;
+a.zocial {
+  padding: 6px 16px !important;
+  color: #fff !important;
+  background-color: #C03518 !important;
+  font-size: 1rem !important;
+  min-width: 64px;
+  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-weight: 500;
+  line-height: 1.75;
   border: 0;
-  background: #f5f5f5;
-  color: #72767b;
-  border-radius: 0;
-  white-space: normal;
+  border-radius: 2em;
+  text-transform: none;
+  text-shadow: none;
 }
 .zocial:before {
 border-right: 0;
@@ -322,7 +324,8 @@ margin-right: 0;
   font-size: 14px;
 }
 .zocial:hover {
-  background: #ededed !important;
+  box-shadow: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+  background-color: #992911 !important;
 }
 
 .zocial.facebook,
@@ -514,8 +517,9 @@ margin-right: 0;
 .login-pf-page .login-pf-social-link {
 margin-bottom: 25px;
 }
+
 .login-pf-page .login-pf-social-link a {
-padding: 2px 0;
+  padding: 2px 0;
 }
 
 .login-pf-page.login-pf-page-accounts {
@@ -525,7 +529,7 @@ margin-right: auto;
 
 .login-pf-page .btn-primary {
   margin-top: 0;
-  background-color: #a11900;
+  background-color: #C03518;
   background-repeat: repeat-x;
   background-image: none;
   color: #fff;
@@ -534,7 +538,7 @@ margin-right: auto;
 .btn-primary {
   padding: 6px 16px;
   border: 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   min-width: 64px;
   box-sizing: border-box;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -578,4 +582,8 @@ margin-bottom: 10px;
 form#kc-select-back-form div.login-pf-social-section {
   padding-left: 0px;
   border-left: 0px;
+}
+
+.login-pf-social-section {
+  padding-top: 15px;
 }
