@@ -14,7 +14,7 @@ COPY .npmrc ./
 RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
-RUN echo "EXTEND_ESLINT=true=true" >> .env
+RUN echo "EXTEND_ESLINT=true" >> .env
 
 RUN npm ci
 
@@ -23,7 +23,7 @@ FROM dev as ci
 
 ENV NODE_ENV=test
 
-COPY ts*.json .es* ./
+COPY ts*.json .es* .prettier*  ./
 COPY src src
 COPY public public
 

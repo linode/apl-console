@@ -96,11 +96,11 @@
     }
   },
   "lint-staged": {
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
     "*.{js,ts,tsx}": [
       "eslint --ext js,ts,tsx --fix"
-    ],
-    "public/**/*.{json}": [
-      "cspell"
     ]
   },
   "name": "otomi-console",
