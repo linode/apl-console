@@ -78,6 +78,7 @@
     "react-scripts": "^v3.4.4",
     "react-test-renderer": "^16.13.1",
     "standard-version": "^9.0.0",
+    "stylelint-config-recommended": "^3.0.0",
     "ts-jest": "^26.4.3",
     "typeface-comfortaa": "^1.1.13",
     "typeface-roboto": "0.0.75",

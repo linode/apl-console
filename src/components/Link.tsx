@@ -8,7 +8,5 @@ interface LinkExtendedProps extends LinkProps {
 
 export default (props: LinkExtendedProps) => {
   const { label } = props
-  return (
-    <Link {...props} className={mainStyles().selectable} data-cy={`link-${label}`} />
-  )
+  return <Link {...props} className={mainStyles().selectable} data-cy={`link-${label}`} />
 }

@@ -33,7 +33,7 @@ export default function DeleteDialog(props: DeleteDialogProps) {
         <DialogContent>
           <DialogContentText>{`Type the name of the ${resourceType} ("${resourceName}") to confirm.`}</DialogContentText>
           <TextField
-            autoComplete='off'            
+            autoComplete='off'
             margin='dense'
             onChange={onTextFieldChange}
             variant='outlined'
