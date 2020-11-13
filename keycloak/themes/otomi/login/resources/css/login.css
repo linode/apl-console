@@ -586,3 +586,7 @@ form#kc-select-back-form div.login-pf-social-section {
 .login-pf-social-section {
   padding-top: 15px;
 }
+
+.body {
+  background-color: #992911;
+}
