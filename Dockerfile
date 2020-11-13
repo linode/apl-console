@@ -28,7 +28,7 @@ COPY src src
 COPY public public
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
-RUN echo "EXTEND_ESLINT=true=true" >> .env
+RUN echo "EXTEND_ESLINT=true" >> .env
 
 # ARG CI=true
 RUN npm run lint
