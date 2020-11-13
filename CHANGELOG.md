@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.25](https://github.com/redkubes/otomi-console/compare/v0.4.24...v0.4.25) (2020-11-13)
+
+
+### Features
+
+* add otomi keycloak theme ([#52](https://github.com/redkubes/otomi-console/issues/52)) ([eedd232](https://github.com/redkubes/otomi-console/commit/eedd232bb54a1f47ec3f85227916c4321eb2a822))
+* otomi keycloak theme ([#54](https://github.com/redkubes/otomi-console/issues/54)) ([3393008](https://github.com/redkubes/otomi-console/commit/3393008c5c0bced0c1d0df494658f268434ca200))
+
+
+### Bug Fixes
+
+* added prettier files for ci ([cd2de47](https://github.com/redkubes/otomi-console/commit/cd2de479afa97859a1917d8f57e21c62149f7391))
+* filtering with 'enabled' flag ([#53](https://github.com/redkubes/otomi-console/issues/53)) ([f4ba18b](https://github.com/redkubes/otomi-console/commit/f4ba18b564900e1478e0821961d28bdb924037ea))
+* logo clipping ([9e7e59f](https://github.com/redkubes/otomi-console/commit/9e7e59ffc5416e52fa7e8d4b0c997a972fed2d5d))
+
+
+### CI
+
+* no more versionrc section 'improvements' ([f01018b](https://github.com/redkubes/otomi-console/commit/f01018b7d139e3a152ab2a3a1238f59a38fd2ecd))
+* release step added [ci skip] ([a00d67d](https://github.com/redkubes/otomi-console/commit/a00d67ddddadea442e19add9412279a02548468e))
+
+
+### Code Refactoring
+
+* **i18n:** loading language json files over http ([2d4c1bf](https://github.com/redkubes/otomi-console/commit/2d4c1bf48953d112ac891140ed7c4220f8b13a83))
+
+
+### Others
+
+* trigger to check why prettier is involved ([baaec22](https://github.com/redkubes/otomi-console/commit/baaec22611968d0ac76b03bf2650ec96b14e658a))
+* **coding-standards:** fixed eslint regression [ci skip] ([b4002b6](https://github.com/redkubes/otomi-console/commit/b4002b6187f0cf9c6a448566200fa0b76d5625b0))
+* re-enabled prettier formatting [ci skip] ([58864da](https://github.com/redkubes/otomi-console/commit/58864dad337b053d19b2240d854df40ac064b17f))
+* split formatting between eslint and prettier [ci skip] ([7255a92](https://github.com/redkubes/otomi-console/commit/7255a924a3caa7bf7cf116165cb783d2296c2438))
+* **coding-standards:** enabled stylelint for css, fixed eslint autofix ([0a42ac2](https://github.com/redkubes/otomi-console/commit/0a42ac27a5e08af3259b035de743ec723371306d))
+* **coding-standards:** removing comment from workflow [ci skip] ([0eed029](https://github.com/redkubes/otomi-console/commit/0eed029ea6bcbec0075c61458823d2f590a55a15))
+
+
+### Tests
+
+* **lint:** lint-staged before rest [ci skip] ([e3944c2](https://github.com/redkubes/otomi-console/commit/e3944c22c977eab6eb84cb981cdcbdea8e949f81))
+
+
+### Styling
+
+* **keycloak:** body background color ([f194bea](https://github.com/redkubes/otomi-console/commit/f194bea4e929bfa843fb0d5c59c44581e39b61f6))
+* **keycloak:** login button ([139957e](https://github.com/redkubes/otomi-console/commit/139957e88b2611ad7a78e07f15193e36e66d78ea))
+
 ### [0.4.24](https://github.com/redkubes/otomi-console/compare/v0.4.23...v0.4.24) (2020-10-30)
 
 
