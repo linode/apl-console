@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.26](https://github.com/redkubes/otomi-console/compare/v0.4.25...v0.4.26) (2020-11-16)
+
+
+### Styling
+
+* **keycloak:** background fix [ci skip] ([288812c](https://github.com/redkubes/otomi-console/commit/288812cbc22692f470cb0a2a0ba2dd2152816e25))
+
 ### [0.4.25](https://github.com/redkubes/otomi-console/compare/v0.4.24...v0.4.25) (2020-11-13)
 
 
