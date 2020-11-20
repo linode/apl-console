@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.27](https://github.com/redkubes/otomi-console/compare/v0.4.26...v0.4.27) (2020-11-20)
+
+
+### Bug Fixes
+
+* development session url mangle [ci skip] ([2075986](https://github.com/redkubes/otomi-console/commit/2075986c5c06782d3328f2afd3f52cfad71eb44b))
+
 ### [0.4.26](https://github.com/redkubes/otomi-console/compare/v0.4.25...v0.4.26) (2020-11-16)
 
 
