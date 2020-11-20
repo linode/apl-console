@@ -116,7 +116,7 @@ const AppCE = () => {
   useEffect(() => {
     const loadSession: any = async () => {
       const response = await fetch(
-        `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' && `?token=${devTokens.admin}`}`,
+        `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
       )
       const session: SessionContext = await response.json()
       const { user }: any = session
