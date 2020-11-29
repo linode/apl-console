@@ -75,17 +75,17 @@ export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string):
     clusters: {
       'ui:widget': 'checkboxes',
     },
-    receiver: {
-      'ui:widget': CustomRadioGroup,
-      // 'ui:title': ' ',
-      'ui:options': {
-        inline: true,
+    alerts: {
+      receivers: {
+        'ui:widget': 'checkboxes',
+        // 'ui:title': ' ',
+        'ui:options': {
+          inline: true,
+        },
+        type: { 'ui:widget': 'hidden' },
       },
-      type: { 'ui:widget': 'hidden' },
     },
-    azure: {
-      monitor: { 'ui:widget': CustomRadioGroup, useAdmin: { 'ui:widget': 'hidden' } },
-    },
+    azureMonitor: { 'ui:widget': CustomRadioGroup },
   }
 
   applyAclToUiSchema(uiSchema, schema, roles, crudMethod)
@@ -225,9 +225,14 @@ export function getSecretSchema(): any {
   return schema
 }
 
-export function getTeamSchema(clusters): any {
-  const schema = { ...spec.components.schemas.Team }
+export function getTeamSchema(clusters, team): any {
+  const schema = cloneDeep(spec.components.schemas.Team)
   schema.properties.clusters.items.enum = map(clusters, 'id')
+  schema.properties.alerts.properties.receivers.items.enum.forEach(receiver => {
+    if (!team.alerts || !(team.alerts.receivers || []).includes(receiver)) {
+      delete schema.properties.alerts.properties[receiver]
+    }
+  })
   return schema
 }
 

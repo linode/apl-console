@@ -30,7 +30,7 @@ export default ({ onSubmit, onDelete, team }: Props) => {
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
   }
-  const schema = getTeamSchema(clusters)
+  const schema = getTeamSchema(clusters, data)
   const uiSchema = getTeamUiSchema(schema, roles, crudMethod)
   return (
     <Form
