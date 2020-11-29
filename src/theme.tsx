@@ -85,6 +85,15 @@ const getOverrides = (c: any): ThemeOptions => {
       MuiLink: {
         underline: 'none',
       },
+      MuiCheckbox: {
+        color: 'primary',
+      },
+      MuiSwitch: {
+        color: 'primary',
+      },
+      MuiRadio: {
+        color: 'primary',
+      },
     },
     overrides: {
       MuiCssBaseline: {},
@@ -98,6 +107,12 @@ const getOverrides = (c: any): ThemeOptions => {
           borderRadius: '6px',
         },
       },
+      MuiFormLabel: {
+        root: {
+          textTransform: 'capitalize',
+        },
+      },
+
       MuiListItemIcon: {
         root: {
           minWidth: '38px',
@@ -207,20 +222,6 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles(theme => ({
   forms: {
     '@global': {
-      '.MuiFormLabel-root': {
-        textTransform: 'capitalize',
-      },
-      '.MuiCheckbox-colorSecondary.Mui-checked:not(.Mui-disabled), .MuiCheckbox-colorSecondary.Mui-checked input:not(disabled), .MuiButton-textSecondary': {
-        color: theme.palette.primary.main,
-      },
-      '.MuiButtonBase-root.Mui-checked:not(.Mui-disabled) span': {
-        color: type === 'dark' ? 'inherit' : theme.palette.primary.main,
-      },
-      '.MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-        // color: theme.palette.primary.main,
-        color: type === 'dark' ? 'inherit' : theme.palette.primary.main,
-        backgroundColor: type === 'dark' ? 'inherit' : theme.palette.primary.light,
-      },
       '.MuiInput-root:not([data-cy="select-oboteam"])': {
         minWidth: '10rem',
         paddingLeft: '1rem',
@@ -231,18 +232,10 @@ export const mainStyles = makeStyles(theme => ({
       },
     },
   },
-  monospace: {
-    '@global': {
-      '.MuiTypography-root': {
-        fontFamily: 'monospace',
-        fontSize: theme.typography.fontSize,
-      },
-    },
-  },
-  button: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.primary.main,
-  },
+  // button: {
+  //   color: theme.palette.common.white,
+  //   backgroundColor: theme.palette.primary.main,
+  // },
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,

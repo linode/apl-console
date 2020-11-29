@@ -10,9 +10,9 @@ import LockIcon from '@material-ui/icons/Lock'
 import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getDirty, client } from '../hooks/api'
+import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
 import Cluster from './Cluster'
@@ -49,22 +49,31 @@ export default ({ teamId }: Props) => {
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    ;(async () => {
-      if (deploy) {
-        snack.info('Scheduling...', { autoHideDuration: 7000 })
-        try {
-          await client.deploy()
-          snack.success('Scheduled for deployment')
-        } catch (e) {
-          snack.error('Deployment failed. Please contact support@redkubes.com.')
-        }
-        setDeploy(false)
-        setDirty(false)
+  const [msgKey, setMsgKey] = useState()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [deployRes, deploying, deployError]: any = useApi('deploy', !!deploy)
+  if (deploy) {
+    if (!deploying) {
+      if (!msgKey) {
+        setTimeout(() => {
+          const key = snack.info('Scheduling...', { persist: true })
+          setMsgKey(key)
+        })
+        setTimeout(() => {
+          if (deploying) snack.info('Still scheduling...hold on', { persist: true, key: msgKey })
+        }, 5000)
       }
-    })()
-  }, [deploy])
+    }
+    if (deployRes || deployError) {
+      setTimeout(() => {
+        snack.close(msgKey)
+      })
+      if (deployError) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
+      else setTimeout(() => snack.success('Scheduled for deployment'))
+      setDeploy(false)
+      setDirty(false)
+    }
+  }
 
   const classes = useStyles()
   const mainClasses = mainStyles()

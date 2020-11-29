@@ -2,6 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { uniq } from 'lodash'
 import { useSession } from '../session-context'
 import RLink from './Link'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
@@ -30,7 +31,7 @@ export default ({ teams }: Props) => {
     {
       id: 'cloud',
       label: 'Cloud',
-      renderer: row => row.clusters.map(c => c.substr(0, c.indexOf('/'))).join(', '),
+      renderer: row => uniq(row.clusters.map(c => c.substr(0, c.indexOf('/')))).join(', '),
     },
     {
       id: 'id',

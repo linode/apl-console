@@ -47,21 +47,26 @@ export const SnackbarUtilsConfigurator = () => {
 
 export default {
   success(msg: string, options: OptionsObject = {}) {
-    this.toast(msg, { ...options, variant: 'success' })
+    return this.toast(msg, { ...options, variant: 'success' })
   },
   warning(msg: string, options: OptionsObject = {}) {
-    this.toast(msg, { ...options, variant: 'warning' })
+    return this.toast(msg, { ...options, variant: 'warning' })
   },
   info(msg: string, options: OptionsObject = {}) {
-    this.toast(msg, { ...options, variant: 'info' })
+    return this.toast(msg, { ...options, variant: 'info' })
   },
   error(msg: string, options: OptionsObject = {}) {
-    this.toast(msg, { ...options, variant: 'error' })
+    return this.toast(msg, { ...options, variant: 'error' })
   },
+  // eslint-disable-next-line consistent-return
   toast(msg: string, options: OptionsObject = {}) {
-    if (snackbarRef) snackbarRef.enqueueSnackbar(msg, options)
+    if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
   comingSoon(options: OptionsObject = {}) {
-    this.toast('Coming soon!', { ...options, variant: 'warning' })
+    return this.toast('Coming soon!', { ...options, variant: 'warning' })
+  },
+  // eslint-disable-next-line consistent-return
+  close(id: number) {
+    if (snackbarRef) return snackbarRef.closeSnackbar(id)
   },
 }
