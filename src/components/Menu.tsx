@@ -55,12 +55,16 @@ export default ({ teamId }: Props) => {
   if (deploy) {
     if (!deploying) {
       if (!msgKey) {
+        let key
         setTimeout(() => {
-          const key = snack.info('Scheduling...', { persist: true })
+          key = snack.info('Scheduling...', { persist: true })
           setMsgKey(key)
         })
         setTimeout(() => {
-          if (deploying) snack.info('Still scheduling...hold on', { persist: true, key: msgKey })
+          if (deploy) {
+            snack.close(key)
+            snack.info('Still scheduling...hold on', { persist: true, key })
+          }
         }, 5000)
       }
     }
