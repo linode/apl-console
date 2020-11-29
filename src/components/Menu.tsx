@@ -49,28 +49,20 @@ export default ({ teamId }: Props) => {
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
-  const [msgKey, setMsgKey] = useState()
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deployRes, deploying, deployError]: any = useApi('deploy', !!deploy)
+  let key
   if (deploy) {
     if (!deploying) {
-      if (!msgKey) {
+      if (!key) {
         setTimeout(() => {
-          const key = snack.info('Scheduling...', { autoHideDuration: 7000 })
-          setMsgKey(key)
+          key = snack.info('Scheduling...hold on', { autoHideDuration: 20000 })
         })
-        setTimeout(() => {
-          if (deploying) {
-            snack.close(msgKey)
-            const key = snack.info('Still scheduling...hold on', { persist: true })
-            setMsgKey(key)
-          }
-        }, 7100)
       }
     }
     if (deployRes || deployError) {
       setTimeout(() => {
-        snack.close(msgKey)
+        snack.close(key)
       })
       if (deployError) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
