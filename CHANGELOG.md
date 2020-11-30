@@ -4,22 +4,19 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.28](https://github.com/redkubes/otomi-console/compare/v0.4.27...v0.4.28) (2020-11-29)
 
-
 ### Features
 
-* multiple alert endpoints ([9977b57](https://github.com/redkubes/otomi-console/commit/9977b578e42d170a69b152b218a095926d215371))
-
+- multiple alert endpoints ([9977b57](https://github.com/redkubes/otomi-console/commit/9977b578e42d170a69b152b218a095926d215371))
 
 ### Bug Fixes
 
-* message bubble logic ([9900058](https://github.com/redkubes/otomi-console/commit/99000583b33c781061fd1743ef8b57a3b46d27d3))
-
+- message bubble logic ([9900058](https://github.com/redkubes/otomi-console/commit/99000583b33c781061fd1743ef8b57a3b46d27d3))
 
 ### Code Refactoring
 
-* deploy snack, theme cruft cleaned ([6ec43fc](https://github.com/redkubes/otomi-console/commit/6ec43fc2d393244853a22d4d6c9eb535236abd6e))
-* extra msg bubble for long deploy ([3238dd7](https://github.com/redkubes/otomi-console/commit/3238dd7b3a9e4f270183ae303c74650f77ba1ac3))
-* removed extra msg bubble ([818b477](https://github.com/redkubes/otomi-console/commit/818b477c5437fe87947743dfe75e46679f73082e))
+- deploy snack, theme cruft cleaned ([6ec43fc](https://github.com/redkubes/otomi-console/commit/6ec43fc2d393244853a22d4d6c9eb535236abd6e))
+- extra msg bubble for long deploy ([3238dd7](https://github.com/redkubes/otomi-console/commit/3238dd7b3a9e4f270183ae303c74650f77ba1ac3))
+- removed extra msg bubble ([818b477](https://github.com/redkubes/otomi-console/commit/818b477c5437fe87947743dfe75e46679f73082e))
 
 ### [0.4.27](https://github.com/redkubes/otomi-console/compare/v0.4.26...v0.4.27) (2020-11-20)
 
