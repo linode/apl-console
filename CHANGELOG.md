@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.30](https://github.com/redkubes/otomi-console/compare/v0.4.29...v0.4.30) (2020-11-30)
 
-
 ### Bug Fixes
 
-* updated keycloak logo and ico [ci skip] ([75cf966](https://github.com/redkubes/otomi-console/commit/75cf9667ba618e2d7172202550450e3d412d9e35))
+- updated keycloak logo and ico [ci skip](<[75cf966](https://github.com/redkubes/otomi-console/commit/75cf9667ba618e2d7172202550450e3d412d9e35)>)
 
 ### [0.4.29](https://github.com/redkubes/otomi-console/compare/v0.4.28...v0.4.29) (2020-11-30)
 
