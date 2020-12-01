@@ -229,7 +229,7 @@ export function getTeamSchema(clusters, team): any {
   const schema = cloneDeep(spec.components.schemas.Team)
   schema.properties.clusters.items.enum = map(clusters, 'id')
   schema.properties.alerts.properties.receivers.items.enum.forEach(receiver => {
-    if (!team.alerts || !(team.alerts.receivers || []).includes(receiver)) {
+    if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]
     }
   })
