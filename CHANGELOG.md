@@ -4,11 +4,10 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.31](https://github.com/redkubes/otomi-console/compare/v0.4.30...v0.4.31) (2020-12-01)
 
-
 ### Bug Fixes
 
-* default title [ci skip] ([b4ee181](https://github.com/redkubes/otomi-console/commit/b4ee18165e169a2f8ee57c9f31798ea34418c89e))
-* undefined team when not operating for [ci skip] ([db82492](https://github.com/redkubes/otomi-console/commit/db824924fc030c5916e95ded87d46e45fc441d40))
+- default title [ci skip](<[b4ee181](https://github.com/redkubes/otomi-console/commit/b4ee18165e169a2f8ee57c9f31798ea34418c89e)>)
+- undefined team when not operating for [ci skip](<[db82492](https://github.com/redkubes/otomi-console/commit/db824924fc030c5916e95ded87d46e45fc441d40)>)
 
 ### [0.4.30](https://github.com/redkubes/otomi-console/compare/v0.4.29...v0.4.30) (2020-11-30)
 
