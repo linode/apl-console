@@ -4,19 +4,17 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.33](https://github.com/redkubes/otomi-console/compare/v0.4.32...v0.4.33) (2020-12-02)
 
-
 ### Bug Fixes
 
-* added CORS settings for manifest ([9307f1f](https://github.com/redkubes/otomi-console/commit/9307f1f4cec2b301314b89f6e063a5c88bfaf442))
-* added json to nginx handlers for manifest ([6be2051](https://github.com/redkubes/otomi-console/commit/6be20514e6fcd0905c95cfaf8e1d813d889bd87c))
-* added suspense to catch xhr errors like for i18n json loading ([3038344](https://github.com/redkubes/otomi-console/commit/3038344350e7fbf6c4da9109b83085e650ad6d0b))
+- added CORS settings for manifest ([9307f1f](https://github.com/redkubes/otomi-console/commit/9307f1f4cec2b301314b89f6e063a5c88bfaf442))
+- added json to nginx handlers for manifest ([6be2051](https://github.com/redkubes/otomi-console/commit/6be20514e6fcd0905c95cfaf8e1d813d889bd87c))
+- added suspense to catch xhr errors like for i18n json loading ([3038344](https://github.com/redkubes/otomi-console/commit/3038344350e7fbf6c4da9109b83085e650ad6d0b))
 
 ### [0.4.32](https://github.com/redkubes/otomi-console/compare/v0.4.31...v0.4.32) (2020-12-01)
 
-
 ### Bug Fixes
 
-* missing image [ci skip] ([e474bff](https://github.com/redkubes/otomi-console/commit/e474bff0c6fccb4765728af09b3c862465081165))
+- missing image [ci skip](<[e474bff](https://github.com/redkubes/otomi-console/commit/e474bff0c6fccb4765728af09b3c862465081165)>)
 
 ### [0.4.31](https://github.com/redkubes/otomi-console/compare/v0.4.30...v0.4.31) (2020-12-01)
 

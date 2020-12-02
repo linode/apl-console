@@ -67,7 +67,7 @@ const AppEE = () => {
         <NotistackProvider>
           <SnackbarUtilsConfigurator />
           <CssBaseline />
-          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi - all your apps in the cloud' />
+          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi EE' />
           <Context.Provider
             value={{
               ...session,
@@ -152,7 +152,7 @@ const AppCE = () => {
         <NotistackProvider>
           <SnackbarUtilsConfigurator />
           <CssBaseline />
-          <Helmet titleTemplate='%s | otomi' defaultTitle='otomi console' />
+          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi CE' />
           <Context.Provider
             value={{
               ...session,
