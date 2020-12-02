@@ -2,7 +2,7 @@
 /* eslint-disable no-restricted-globals */
 import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
@@ -62,49 +62,51 @@ const AppEE = () => {
   }
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
-    <ThemeProvider theme={getTheme()}>
-      <NotistackProvider>
-        <SnackbarUtilsConfigurator />
-        <CssBaseline />
-        <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi - all your apps in the cloud' />
-        <Context.Provider
-          value={{
-            ...session,
-            mode,
-            oboTeamId,
-            setOboTeamId,
-            themeType,
-            setThemeType: setType,
-          }}
-        >
-          <Catch>
-            <Router basename={env.CONTEXT_PATH || ''}>
-              <Switch>
-                {/* ! user && <Route path='/' component={Home} exact /> */}
-                <Route path='/' component={Dashboard} exact />
-                <Route path='/apps/:teamId' component={OtomiApps} exact />
-                <Route path='/clusters' component={Clusters} exact />
-                <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/create-team' component={Team} exact />
-                <Route path='/services' component={Services} exact />
-                <Route path='/settings' component={Settings} exact />
-                <Route path='/teams' component={Teams} exact />
-                <Route path='/teams/:teamId' component={Team} exact />
-                <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-                <Route path='/teams/:teamId/create-service' component={Service} exact />
-                <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-                <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-                <Route path='/teams/:teamId/services' component={Services} exact />
-                <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                <Route path='*'>
-                  <Error code={404} />
-                </Route>
-              </Switch>
-            </Router>
-          </Catch>
-        </Context.Provider>
-      </NotistackProvider>
-    </ThemeProvider>
+    <Suspense fallback={<Loader />}>
+      <ThemeProvider theme={getTheme()}>
+        <NotistackProvider>
+          <SnackbarUtilsConfigurator />
+          <CssBaseline />
+          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi - all your apps in the cloud' />
+          <Context.Provider
+            value={{
+              ...session,
+              mode,
+              oboTeamId,
+              setOboTeamId,
+              themeType,
+              setThemeType: setType,
+            }}
+          >
+            <Catch>
+              <Router basename={env.CONTEXT_PATH || ''}>
+                <Switch>
+                  {/* ! user && <Route path='/' component={Home} exact /> */}
+                  <Route path='/' component={Dashboard} exact />
+                  <Route path='/apps/:teamId' component={OtomiApps} exact />
+                  <Route path='/clusters' component={Clusters} exact />
+                  <Route path='/cluster/:clusterId' component={Cluster} exact />
+                  <Route path='/create-team' component={Team} exact />
+                  <Route path='/services' component={Services} exact />
+                  <Route path='/settings' component={Settings} exact />
+                  <Route path='/teams' component={Teams} exact />
+                  <Route path='/teams/:teamId' component={Team} exact />
+                  <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                  <Route path='/teams/:teamId/create-service' component={Service} exact />
+                  <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                  <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                  <Route path='/teams/:teamId/services' component={Services} exact />
+                  <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                  <Route path='*'>
+                    <Error code={404} />
+                  </Route>
+                </Switch>
+              </Router>
+            </Catch>
+          </Context.Provider>
+        </NotistackProvider>
+      </ThemeProvider>
+    </Suspense>
   )
 }
 
@@ -145,38 +147,40 @@ const AppCE = () => {
   }
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
-    <ThemeProvider theme={getTheme()}>
-      <NotistackProvider>
-        <SnackbarUtilsConfigurator />
-        <CssBaseline />
-        <Helmet titleTemplate='%s | otomi' defaultTitle='otomi' />
-        <Context.Provider
-          value={{
-            ...session,
-            mode,
-            oboTeamId,
-            setOboTeamId,
-            themeType,
-            setThemeType: setType,
-          }}
-        >
-          <Catch>
-            <Router basename={env.CONTEXT_PATH || ''}>
-              <Switch>
-                {/* ! user && <Route path='/' component={Home} exact /> */}
-                <Route path='/apps/:teamId' component={OtomiApps} />
-                <Route path='/clusters' component={Clusters} exact />
-                <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/settings' component={Settings} exact />
-                <Route path='*'>
-                  <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
-                </Route>
-              </Switch>
-            </Router>
-          </Catch>
-        </Context.Provider>
-      </NotistackProvider>
-    </ThemeProvider>
+    <Suspense fallback={<Loader />}>
+      <ThemeProvider theme={getTheme()}>
+        <NotistackProvider>
+          <SnackbarUtilsConfigurator />
+          <CssBaseline />
+          <Helmet titleTemplate='%s | otomi' defaultTitle='otomi console' />
+          <Context.Provider
+            value={{
+              ...session,
+              mode,
+              oboTeamId,
+              setOboTeamId,
+              themeType,
+              setThemeType: setType,
+            }}
+          >
+            <Catch>
+              <Router basename={env.CONTEXT_PATH || ''}>
+                <Switch>
+                  {/* ! user && <Route path='/' component={Home} exact /> */}
+                  <Route path='/apps/:teamId' component={OtomiApps} />
+                  <Route path='/clusters' component={Clusters} exact />
+                  <Route path='/cluster/:clusterId' component={Cluster} exact />
+                  <Route path='/settings' component={Settings} exact />
+                  <Route path='*'>
+                    <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
+                  </Route>
+                </Switch>
+              </Router>
+            </Catch>
+          </Context.Provider>
+        </NotistackProvider>
+      </ThemeProvider>
+    </Suspense>
   )
 }
 
