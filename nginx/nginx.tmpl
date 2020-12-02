@@ -18,7 +18,7 @@ http {
     gzip_min_length 1000;
     gzip_buffers 4 32k;
     gzip_proxied any;
-    gzip_types text/plain application/javascript application/x-javascript text/javascript text/xml text/css;
+    gzip_types text/plain application/javascript application/x-javascript text/javascript application/json text/xml text/css;
     gzip_vary on;
     proxy_set_header Host $http_host;
     location / {
@@ -30,7 +30,7 @@ http {
     location /healthz {
       return 200 'OK';
     }
-    location ~* \.(?:css|js|eot|woff|woff2|ttf|svg|otf) {
+    location ~* \.(?:css|js|eot|woff|woff2|ttf|svg|otf|json) {
       # Enable GZip for static files
       gzip_static on;
       # Indefinite caching for static files
