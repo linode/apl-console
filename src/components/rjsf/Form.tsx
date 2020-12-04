@@ -25,7 +25,7 @@ interface Props extends FormProps<any> {
 
 export default ({ children, title, ...props }: Props) => {
   const { schema } = props
-  const docUrl = schema['x-externalDocsPath'] && `https://redkubes.github.io/${schema['x-externalDocsPath']}`
+  const docUrl = schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
   return (
     <>
