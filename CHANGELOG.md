@@ -4,15 +4,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.34](https://github.com/redkubes/otomi-console/compare/v0.4.33...v0.4.34) (2020-12-04)
 
-
 ### Bug Fixes
 
-* docs host [ci skip] ([cb485b3](https://github.com/redkubes/otomi-console/commit/cb485b3103dea38cd96ddc46958ae26810a3f0ec))
-
+- docs host [ci skip](<[cb485b3](https://github.com/redkubes/otomi-console/commit/cb485b3103dea38cd96ddc46958ae26810a3f0ec)>)
 
 ### Others
 
-* **release:** v0.4.33 ([472d9ed](https://github.com/redkubes/otomi-console/commit/472d9ed70cb3d1b15dd82badb9193875ca48a47e))
+- **release:** v0.4.33 ([472d9ed](https://github.com/redkubes/otomi-console/commit/472d9ed70cb3d1b15dd82badb9193875ca48a47e))
 
 ### [0.4.33](https://github.com/redkubes/otomi-console/compare/v0.4.32...v0.4.33) (2020-12-02)
 
