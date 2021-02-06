@@ -24,7 +24,13 @@ interface Props {
 }
 
 export default ({ clusterId }: Props) => {
-  const { mode, currentClusterId, clusters, oboTeamId } = useSession()
+  const {
+    mode,
+    currentClusterId,
+    clusters,
+    oboTeamId,
+    user: { isAdmin },
+  } = useSession()
   const [cloud, name] = (clusterId || currentClusterId).split('/')
   const cluster = find(clusters, { cloud, name })
   const { k8sVersion, otomiVersion, region } = cluster
@@ -59,7 +65,7 @@ export default ({ clusterId }: Props) => {
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || ''}`}
+            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || isAdmin ? 'admin' : ''}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />

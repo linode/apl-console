@@ -98,6 +98,7 @@ export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMet
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    enabled: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {

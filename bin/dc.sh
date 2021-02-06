@@ -32,6 +32,11 @@ sub_up-deps () {
     $c pull && $c up $1
 }
 
+sub_up-deps-ce () {
+    c="docker-compose -f docker-compose-ce.yml"
+    $c pull && $c up $1
+}
+
 sub_down () {
     c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-ce.yml"
     $c down --remove-orphans -v

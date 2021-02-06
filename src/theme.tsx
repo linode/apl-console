@@ -230,6 +230,11 @@ export const mainStyles = makeStyles(theme => ({
       '.MuiFormControl-root:has(> input)': {
         display: 'none',
       },
+      h5: {
+        fontSize: '1.2rem',
+        fontWeight: 'bold',
+        textTransform: 'capitalize',
+      },
     },
   },
   // button: {

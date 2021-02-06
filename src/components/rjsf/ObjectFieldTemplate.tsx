@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import { Box, Grid, Paper } from '@material-ui/core'
+import { Box, Grid, Paper, Typography } from '@material-ui/core'
 import React from 'react'
 
 export default function ObjectFieldTemplate(props: any) {
@@ -21,7 +21,7 @@ export default function ObjectFieldTemplate(props: any) {
   return (
     <Box my={1}>
       <Box>
-        <h2>{title}</h2>
+        <Typography variant='h5'>{title}</Typography>
         <p>{description}</p>
       </Box>
 
