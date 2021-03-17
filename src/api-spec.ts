@@ -213,7 +213,7 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
         set(
           schema,
           'properties.ksvc.oneOf[0].properties.secrets.items.properties.entries.items.enum',
-          secrets.find(s => s.name === secret.name).entries.map(s => s.key),
+          secrets.find(s => s.name === secret.name).entries,
         )
       }
     })
