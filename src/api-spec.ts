@@ -128,7 +128,7 @@ export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMet
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false } },
-      secrets: { 'ui:options': { orderable: false } },
+      secrets: { 'ui:options': { orderable: false }, items: { entries: { 'ui:widget': 'checkboxes' } } },
       annotations: { 'ui:options': { orderable: false } },
     },
   }
