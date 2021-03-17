@@ -221,8 +221,9 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
   return schema
 }
 
-export function getSecretSchema(): any {
+export function getSecretSchema(team): any {
   const schema = cloneDeep(spec.components.schemas.Secret)
+  addClustersEnum(schema, team, {})
   return schema
 }
 
