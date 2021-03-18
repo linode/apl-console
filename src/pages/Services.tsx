@@ -19,6 +19,6 @@ export default ({
   const [team, teamLoading, teamError]: any = useApi('getTeam', !!teamId, [teamId])
   const loading = servicesLoading || teamLoading
   const err = servicesError || teamError
-  const comp = !loading && <Services services={services} team={team} />
+  const comp = !(err || loading) && <Services services={services} team={team} />
   return <PaperLayout err={err} loading={loading} comp={comp} />
 }

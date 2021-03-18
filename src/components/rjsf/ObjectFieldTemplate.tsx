@@ -9,7 +9,7 @@ export default function ObjectFieldTemplate(props: any) {
   properties.forEach(o => {
     if (grouped === undefined) grouped = []
     const type = o.content.props.schema.type
-    if (type !== 'string') {
+    if (!['string', 'integer', 'float'].includes(type)) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined
@@ -38,6 +38,9 @@ export default function ObjectFieldTemplate(props: any) {
           )
         }
         if (o.content.props.schema.type === 'boolean') {
+          return <Box key={`row-${idx}`}>{o.content}</Box>
+        }
+        if (o.content.props.schema.type === 'integer') {
           return <Box key={`row-${idx}`}>{o.content}</Box>
         }
         if (o.content.props.schema.type === 'array') {

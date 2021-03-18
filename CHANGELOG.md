@@ -4,29 +4,26 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.36](https://github.com/redkubes/otomi-console/compare/v0.4.35...v0.4.36) (2021-03-18)
 
-
 ### Features
 
-* add cluster id dropdown to secret details view ([#64](https://github.com/redkubes/otomi-console/issues/64)) ([edc38d4](https://github.com/redkubes/otomi-console/commit/edc38d40148738c89a9a122baf8cd61b9bb2b7a5))
-* add vault and clusterId column to secret collection view ([#66](https://github.com/redkubes/otomi-console/issues/66) [#63](https://github.com/redkubes/otomi-console/issues/63)) ([343ba43](https://github.com/redkubes/otomi-console/commit/343ba43540a4c51f1eb3607a5ead3021a46a652f))
-* add vault logo ([#59](https://github.com/redkubes/otomi-console/issues/59)) ([ba1f581](https://github.com/redkubes/otomi-console/commit/ba1f581a6ea64055c4582adbd1c5d68a265c15e7))
-* add vault logo ([#59](https://github.com/redkubes/otomi-console/issues/59)) ([2bf6d5c](https://github.com/redkubes/otomi-console/commit/2bf6d5cda4915f6c2d991e019ee32813290734b6))
-* change multiselect dropdown into checkboxes ([6a573b5](https://github.com/redkubes/otomi-console/commit/6a573b5ab7bb725a0f2097a3d6ca3c3526abc34b))
-
+- add cluster id dropdown to secret details view ([#64](https://github.com/redkubes/otomi-console/issues/64)) ([edc38d4](https://github.com/redkubes/otomi-console/commit/edc38d40148738c89a9a122baf8cd61b9bb2b7a5))
+- add vault and clusterId column to secret collection view ([#66](https://github.com/redkubes/otomi-console/issues/66) [#63](https://github.com/redkubes/otomi-console/issues/63)) ([343ba43](https://github.com/redkubes/otomi-console/commit/343ba43540a4c51f1eb3607a5ead3021a46a652f))
+- add vault logo ([#59](https://github.com/redkubes/otomi-console/issues/59)) ([ba1f581](https://github.com/redkubes/otomi-console/commit/ba1f581a6ea64055c4582adbd1c5d68a265c15e7))
+- add vault logo ([#59](https://github.com/redkubes/otomi-console/issues/59)) ([2bf6d5c](https://github.com/redkubes/otomi-console/commit/2bf6d5cda4915f6c2d991e019ee32813290734b6))
+- change multiselect dropdown into checkboxes ([6a573b5](https://github.com/redkubes/otomi-console/commit/6a573b5ab7bb725a0f2097a3d6ca3c3526abc34b))
 
 ### Bug Fixes
 
-* admin kubecfg ([64e794c](https://github.com/redkubes/otomi-console/commit/64e794c567db64dc28ab0f6e44ad8c09e5dac13d))
-* api patch [ci skip] ([e00b7e9](https://github.com/redkubes/otomi-console/commit/e00b7e94b571616a2aad10f8b62573d1514b6de2))
-* package-lock [ci-skip] ([9e24fca](https://github.com/redkubes/otomi-console/commit/9e24fcaef36389cd8c128495c524d45493d5650c))
-* secret entries without key property ([92f6a79](https://github.com/redkubes/otomi-console/commit/92f6a79593ae959387f61fd445b590bf01c2c391))
-* vulnerabilities, upgraded api ([77b34fc](https://github.com/redkubes/otomi-console/commit/77b34fcb5b5d03f3a7d62d4bd3f1673615493ef3))
-
+- admin kubecfg ([64e794c](https://github.com/redkubes/otomi-console/commit/64e794c567db64dc28ab0f6e44ad8c09e5dac13d))
+- api patch [ci skip](<[e00b7e9](https://github.com/redkubes/otomi-console/commit/e00b7e94b571616a2aad10f8b62573d1514b6de2)>)
+- package-lock [ci-skip](<[9e24fca](https://github.com/redkubes/otomi-console/commit/9e24fcaef36389cd8c128495c524d45493d5650c)>)
+- secret entries without key property ([92f6a79](https://github.com/redkubes/otomi-console/commit/92f6a79593ae959387f61fd445b590bf01c2c391))
+- vulnerabilities, upgraded api ([77b34fc](https://github.com/redkubes/otomi-console/commit/77b34fcb5b5d03f3a7d62d4bd3f1673615493ef3))
 
 ### Others
 
-* **deps-dev:** bump axios from 0.19.2 to 0.21.1 ([#57](https://github.com/redkubes/otomi-console/issues/57)) ([b9ebb54](https://github.com/redkubes/otomi-console/commit/b9ebb5420fd240f1bed3c687a7e5d983fdfc2c5e))
-* **release:** 0.4.36 ([7904fea](https://github.com/redkubes/otomi-console/commit/7904fea74cb3a123af4601086e08827ce6c06ad0))
+- **deps-dev:** bump axios from 0.19.2 to 0.21.1 ([#57](https://github.com/redkubes/otomi-console/issues/57)) ([b9ebb54](https://github.com/redkubes/otomi-console/commit/b9ebb5420fd240f1bed3c687a7e5d983fdfc2c5e))
+- **release:** 0.4.36 ([7904fea](https://github.com/redkubes/otomi-console/commit/7904fea74cb3a123af4601086e08827ce6c06ad0))
 
 ### [0.4.35](https://github.com/redkubes/otomi-console/compare/v0.4.34...v0.4.35) (2020-12-05)
 

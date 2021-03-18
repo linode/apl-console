@@ -128,7 +128,9 @@ export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMet
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false } },
-      secrets: { 'ui:options': { orderable: false }, items: { entries: { 'ui:widget': 'checkboxes' } } },
+      // secrets: {
+      //   'ui:widget': 'checkboxes',
+      // },
       annotations: { 'ui:options': { orderable: false } },
     },
   }
@@ -195,29 +197,8 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
-  if (get(formData, 'ksvc.secrets')) {
-    const genSecrets = secrets.filter(s => s.type === 'generic')
-    formData.ksvc.secrets.forEach((secret, idx) => {
-      const selectedSecrets = [...Array(idx)].reduce((memo, curr, idy) => {
-        memo.push(formData.ksvc.secrets[idy])
-        return memo
-      }, [])
-      const secretsSelection = genSecrets.filter(s => !selectedSecrets.find(fs => fs.name === s.name))
-      set(
-        schema,
-        'properties.ksvc.oneOf[0].properties.secrets.items.properties.name.enum',
-        secretsSelection.map(s => s.name),
-      )
-      if (secret.name) {
-        // debugger
-        set(
-          schema,
-          'properties.ksvc.oneOf[0].properties.secrets.items.properties.entries.items.enum',
-          secrets.find(s => s.name === secret.name).entries,
-        )
-      }
-    })
-  }
+  const secretNames = secrets.filter(s => s.type === 'generic').map(s => s.name)
+  schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   return schema
 }
 

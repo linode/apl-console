@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
+    disabled: {
+      backgroundColor: theme.palette.action.disabledBackground,
+      color: theme.palette.action.disabled,
+    },
     content: {
       flex: '1 0 auto',
     },
@@ -37,11 +41,11 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export default function AppCard({ img, title, link }: any) {
+export default function AppCard({ img, title, link, disabled }: any) {
   const classes = useStyles()
 
   return (
-    <Card className={classes.root}>
+    <Card className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}`}>
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component='h6' variant='h6'>
@@ -49,18 +53,13 @@ export default function AppCard({ img, title, link }: any) {
           </Typography>
         </CardContent>
         <div className={classes.controls}>
-          <IconButton
-            aria-label='settings'
-            component={Link}
-            to={`/settings/charts/${title}`}
-            onClick={event => event.preventDefault()}
-          >
+          <IconButton aria-label='app settings' component={Link} to={`/appsettings/${title}`} disabled={disabled}>
             <SettingsIcon />
           </IconButton>
-          <IconButton aria-label='start' href={link} target='_blank' rel='noopener'>
+          <IconButton aria-label='start' href={link} target='_blank' rel='noopener' disabled={disabled}>
             <PlayArrowIcon className={classes.playIcon} />
           </IconButton>
-          <IconButton aria-label='help'>
+          <IconButton aria-label='help' disabled={disabled}>
             <HelpIcon />
           </IconButton>
         </div>
