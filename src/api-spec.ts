@@ -128,7 +128,7 @@ export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMet
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false } },
-      secrets: { 'ui:options': { orderable: false } },
+      secrets: { 'ui:options': { orderable: false }, items: { entries: { 'ui:widget': 'checkboxes' } } },
       annotations: { 'ui:options': { orderable: false } },
     },
   }
@@ -213,7 +213,7 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
         set(
           schema,
           'properties.ksvc.oneOf[0].properties.secrets.items.properties.entries.items.enum',
-          secrets.find(s => s.name === secret.name).entries.map(s => s.key),
+          secrets.find(s => s.name === secret.name).entries,
         )
       }
     })
@@ -221,8 +221,9 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
   return schema
 }
 
-export function getSecretSchema(): any {
+export function getSecretSchema(team): any {
   const schema = cloneDeep(spec.components.schemas.Secret)
+  addClustersEnum(schema, team, {})
   return schema
 }
 
