@@ -17,7 +17,7 @@ export default ({
   const { tid } = useAuthz(teamId)
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [team, teamLoading, teamError]: any = useApi('getTeam', !!teamId, [teamId])
+  const [team, teamLoading]: any = useApi('getTeam', !!teamId, [teamId])
   const [secret, secretLoading, secretError]: any = useApi('getSecret', !!secretId, [tid, secretId])
   const [createRes, createLoading, createError] = useApi(
     secretId ? 'editSecret' : 'createSecret',
