@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.38](https://github.com/redkubes/otomi-console/compare/v0.4.37...v0.4.38) (2021-03-19)
+
+
+### Bug Fixes
+
+* disabled settings button on app for now [ci skip] ([dcd6a31](https://github.com/redkubes/otomi-console/commit/dcd6a31d833a3d2074aa2c5a2e28c151b52af705))
+* missing gitea logo [ci skip] ([5bb6a75](https://github.com/redkubes/otomi-console/commit/5bb6a758e27d1fb0f2ae62182b7fdc265a5f93e0))
+* scope logo rename [ci skip] ([e42e1e5](https://github.com/redkubes/otomi-console/commit/e42e1e577d9a11d1a9f09c3f2b44b139cfabe646))
+
+
+### Others
+
+* **release:** 0.4.37 ([2bce6ae](https://github.com/redkubes/otomi-console/commit/2bce6aea11da669c0564429b7ae498050458ee65))
+
 ### [0.4.36](https://github.com/redkubes/otomi-console/compare/v0.4.35...v0.4.36) (2021-03-18)
 
 ### Features
