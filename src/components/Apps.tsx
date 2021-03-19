@@ -22,8 +22,9 @@ export default ({ teamId }: Props) => {
   const [cloud, name] = currentClusterId.split('/')
   const cluster = find(clusters, { cloud, name })
   const apps = (teamId === 'admin' ? adminApps : teamApps).filter(app => !app.hide && app.name !== 'otomi')
-  const enabledApps = apps.filter(app => app.enabled !== false).sort()
-  const disabledApps = apps.filter(app => app.enabled === false).sort()
+  const sorter = (a, b) => (a.name > b.name ? 1 : -1)
+  const enabledApps = apps.filter(app => app.enabled !== false).sort(sorter)
+  const disabledApps = apps.filter(app => app.enabled === false).sort(sorter)
   const out = items => {
     return items.map(({ name, isShared, logo, domain, host, path, ownHost, enabled }) => {
       const teamPrefix = 'team-' // @todo: get from values later

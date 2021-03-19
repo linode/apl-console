@@ -53,7 +53,13 @@ export default function AppCard({ img, title, link, disabled }: any) {
           </Typography>
         </CardContent>
         <div className={classes.controls}>
-          <IconButton aria-label='app settings' component={Link} to={`/appsettings/${title}`} disabled={disabled}>
+          <IconButton
+            aria-label='app settings'
+            component={Link}
+            to={`/appsettings/${title}`}
+            disabled={disabled}
+            onClick={event => event.preventDefault()}
+          >
             <SettingsIcon />
           </IconButton>
           <IconButton aria-label='start' href={link} target='_blank' rel='noopener' disabled={disabled}>
