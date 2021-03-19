@@ -197,7 +197,7 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
-  const secretNames = secrets.filter(s => s.type === 'generic').map(s => s.name)
+  const secretNames = secrets.filter(s => s.type === 'generic' && s.clusterId === formData.clusterId).map(s => s.name)
   schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   return schema
 }
