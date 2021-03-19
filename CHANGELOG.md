@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.39](https://github.com/redkubes/otomi-console/compare/v0.4.38...v0.4.39) (2021-03-19)
+
+
+### Bug Fixes
+
+* scope logo add [ci skip] ([d0f48bf](https://github.com/redkubes/otomi-console/commit/d0f48bfae871c046abd42c1a77c148d1d0712ff3))
+
 ### [0.4.38](https://github.com/redkubes/otomi-console/compare/v0.4.37...v0.4.38) (2021-03-19)
 
 ### Bug Fixes
