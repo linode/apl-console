@@ -4,10 +4,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### [0.4.40](https://github.com/redkubes/otomi-console/compare/v0.4.39...v0.4.40) (2021-03-19)
 
-
 ### Bug Fixes
 
-* secret scope ([57aef87](https://github.com/redkubes/otomi-console/commit/57aef8721179c597d5ef27320cc8b412d08c4b47))
+- secret scope ([57aef87](https://github.com/redkubes/otomi-console/commit/57aef8721179c597d5ef27320cc8b412d08c4b47))
 
 ### [0.4.39](https://github.com/redkubes/otomi-console/compare/v0.4.38...v0.4.39) (2021-03-19)
 
