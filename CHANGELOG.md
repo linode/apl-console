@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.41](https://github.com/redkubes/otomi-console/compare/v0.4.40...v0.4.41) (2021-03-24)
+
+
+### Bug Fixes
+
+* allow service creation when no secrets exist [ci skip] ([21a3b05](https://github.com/redkubes/otomi-console/commit/21a3b0530d637001df309ed2868b247cb7f7cf43))
+
 ### [0.4.40](https://github.com/redkubes/otomi-console/compare/v0.4.39...v0.4.40) (2021-03-19)
 
 ### Bug Fixes
