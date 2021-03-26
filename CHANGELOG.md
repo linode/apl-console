@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.42](https://github.com/redkubes/otomi-console/compare/v0.4.41...v0.4.42) (2021-03-26)
+
+
+### Bug Fixes
+
+* bigger logos for services, upgraded packages ([e6f614f](https://github.com/redkubes/otomi-console/commit/e6f614f2bb26268db7d202b9300d0d83cf585576))
+
 ### [0.4.41](https://github.com/redkubes/otomi-console/compare/v0.4.40...v0.4.41) (2021-03-24)
 
 ### Bug Fixes
