@@ -18,7 +18,7 @@ import { mainStyles } from '../theme'
 
 const drawerWidth = '240px'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     // a: theme.palette.primary.dark,
@@ -114,18 +114,18 @@ interface Props {
   children?: any
 }
 
-export default (props: Props) => {
+export default (props: Props): React.ReactElement => {
   const { children } = props
   const { mode, oboTeamId } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
   const [open, setOpen] = useState(false)
-  const handleDrawerOpen = e => {
+  const handleDrawerOpen = (e) => {
     e.preventDefault()
     if (!open) setOpen(true)
   }
-  const handleDrawerClose = e => {
+  const handleDrawerClose = (e) => {
     e.preventDefault()
     setOpen(false)
   }

@@ -23,7 +23,7 @@ interface Props extends FormProps<any> {
   title: any
 }
 
-export default ({ children, title, ...props }: Props) => {
+export default ({ children, title, ...props }: Props): React.ReactElement => {
   const { schema } = props
   const docUrl = schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()

@@ -219,7 +219,7 @@ export function getTheme(): Theme {
 
 export const createClasses = (stylesObj): any => makeStyles(() => createStyles(stylesObj))({})
 
-export const mainStyles = makeStyles(theme => ({
+export const mainStyles = makeStyles((theme) => ({
   forms: {
     '@global': {
       '.MuiInput-root:not([data-cy="select-oboteam"])': {

@@ -13,7 +13,7 @@ export default ({
   match: {
     params: { teamId, serviceId },
   },
-}: RouteComponentProps<Params>) => {
+}: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
   const [team, teamLoading, teamError]: [any, boolean, any] = useApi('getTeam', true, [tid])
   const [formdata, setFormdata] = useState()

@@ -6,7 +6,7 @@ import Dashboard from '../components/Dashboard'
 import { useApi, useAuthz } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 
-export default () => {
+export default (): React.ReactElement => {
   const {
     sess: {
       user: { isAdmin },

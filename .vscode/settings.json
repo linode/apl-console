@@ -3,14 +3,24 @@
     "source.fixAll": true
   },
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "[javascript]": {
+    "editor.defaultFormatter": null
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": null
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": null
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "editor.formatOnSave": true,
-  "eslint.enable": true,
   "eslint.format.enable": true,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "files.associations": {
     "*.tmpl": "nginx"
   },
-  "prettier.disableLanguages": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "prettier.enable": true,
   "stylelint.enable": true,
   "tslint.enable": false

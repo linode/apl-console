@@ -6,7 +6,7 @@ export default function ObjectFieldTemplate(props: any) {
   const { title, description, properties } = props
   let grouped
   const fields = []
-  properties.forEach(o => {
+  properties.forEach((o) => {
     if (grouped === undefined) grouped = []
     const type = o.content.props.schema.type
     if (!['string', 'integer', 'float'].includes(type)) {

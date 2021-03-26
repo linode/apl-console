@@ -12,7 +12,7 @@ export default ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>) => {
+}: RouteComponentProps<Params>): React.ReactElement => {
   const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
   const servicesArgs = teamId ? [teamId] : []
   const [services, servicesLoading, servicesError]: any = useApi(servicesMethod, true, servicesArgs)

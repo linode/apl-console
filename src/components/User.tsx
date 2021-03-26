@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import { mainStyles, getThemeType } from '../theme'
 import { useSession } from '../session-context'
 
-const useStyles = makeStyles(theme => {
+const useStyles = makeStyles((theme) => {
   const isDark = getThemeType() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => {
   }
 })
 
-export default () => {
+export default (): React.ReactElement => {
   const mainClasses = mainStyles()
   const classes = useStyles()
   const history = useHistory()
@@ -50,10 +50,10 @@ export default () => {
       id,
     }))
   else
-    teams = (userTeams as any).map(id => ({
+    teams = (userTeams as any).map((id) => ({
       id,
     }))
-  const handleChange = event => {
+  const handleChange = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`

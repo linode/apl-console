@@ -56,7 +56,7 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     if (order !== 0) return order
     return a[1] - b[1]
   })
-  return stabilizedThis.map(el => el[0])
+  return stabilizedThis.map((el) => el[0])
 }
 
 export interface HeadCell {
@@ -137,7 +137,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             />
           </TableCell>
         )}
-        {headCells.map(headCell => (
+        {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -224,7 +224,7 @@ interface Props {
 }
 
 // eslint-disable-next-line react/prop-types
-export default function EnhancedTable({ disableSelect, orderByStart, headCells, rows, idKey }: Props) {
+export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props): React.ReactElement => {
   const classes = useEnhancedStyles()
   const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
   const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)
@@ -241,7 +241,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map(n => n.name)
+      const newSelecteds = rows.map((n) => n.name)
       setSelected(newSelecteds)
       return
     }
@@ -319,7 +319,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
                     <TableRow
                       hover
                       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                      onClick={event => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.name)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -331,7 +331,7 @@ export default function EnhancedTable({ disableSelect, orderByStart, headCells, 
                           <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
                         </TableCell>
                       )}
-                      {headCells.map(c => (
+                      {headCells.map((c) => (
                         <TableCell
                           key={`cell-${c.id}`}
                           align={c.numeric ? 'right' : 'left'}

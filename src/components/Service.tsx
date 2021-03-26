@@ -16,7 +16,7 @@ interface Props {
   secrets: Secret[]
 }
 
-export default ({ onSubmit, onDelete, team, service, secrets }: Props) => {
+export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.ReactElement => {
   const {
     clusters,
     user: { roles, isAdmin },

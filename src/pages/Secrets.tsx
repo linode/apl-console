@@ -12,7 +12,7 @@ export default ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>) => {
+}: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
   const secretsMethod = !teamId ? 'getAllSecrets' : 'getSecrets'
   const [secrets, secretsLoading, secretsError]: any = useApi(secretsMethod, true, [tid])

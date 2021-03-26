@@ -9,7 +9,7 @@ import RLink from './Link'
 import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId) => row => {
+const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
   const { teamId, id, name } = row
   if (!(isAdmin || teamId === ownerId)) return name
 
@@ -21,12 +21,13 @@ const getServiceLink = (isAdmin, ownerId) => row => {
   )
 }
 
-const renderPublicUrl = row => {
+const renderPublicUrl = (row): React.ReactElement | string => {
   if (isEmpty(row.ingress)) {
     return ''
   }
-  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}${row.ingress.path ||
-    ''}`
+  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}${
+    row.ingress.path || ''
+  }`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
@@ -39,7 +40,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ services, team }: Props) => {
+export default ({ services, team }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -87,7 +88,7 @@ export default ({ services, team }: Props) => {
         disableSelect
         headCells={headCells}
         orderByStart='name'
-        rows={services.filter(s => s.enabled)}
+        rows={services.filter((s) => s.enabled)}
         idKey='id'
       />
     </>

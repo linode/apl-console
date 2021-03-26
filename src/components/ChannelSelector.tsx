@@ -45,12 +45,12 @@ function MyFormControlLabel(props: LabelProps) {
   )
 }
 
-export default ({ channel, setChannel, disabled }: Props): any => {
+export default ({ channel, setChannel, disabled }: Props): React.ReactElement => {
   const classes = useStyles()
   return (
     <RadioGroup
       row
-      onChange={event => {
+      onChange={(event) => {
         setChannel(event)
       }}
       name='use-radio-group'

@@ -4,24 +4,24 @@ import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import { useSession } from '../session-context'
 
-export default () => {
+export default (): React.ReactElement => {
   const { clusters }: any = useSession()
   const headCells: HeadCell[] = [
     {
       id: 'id',
       label: 'ID',
-      renderer: (row: any) => (
-        <RLink to={`/cluster/${encodeURIComponent(row.id)}`} label={row.id}>
-          {row.id}
+      renderer: ({ id }: any) => (
+        <RLink to={`/cluster/${encodeURIComponent(id)}`} label={id}>
+          {id}
         </RLink>
       ),
     },
     {
       id: 'domain',
       label: 'Domain',
-      renderer: (row: any) => (
-        <MuiLink href={`https://otomi.${row.domain}/`} target='_blank' rel='noopener'>
-          {row.domain}
+      renderer: ({ domain }: any) => (
+        <MuiLink href={`https://otomi.${domain}/`} target='_blank' rel='noopener'>
+          {domain}
         </MuiLink>
       ),
     },
@@ -45,7 +45,7 @@ export default () => {
         disableSelect
         headCells={headCells}
         orderByStart='name'
-        rows={clusters.filter(c => c.enabled)}
+        rows={clusters.filter((c) => c.enabled)}
         idKey='id'
       />
     </>

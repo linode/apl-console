@@ -11,7 +11,7 @@ interface Props {
   teams: any[]
 }
 
-export default ({ teams }: Props) => {
+export default ({ teams }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
   } = useSession()
@@ -31,12 +31,12 @@ export default ({ teams }: Props) => {
     {
       id: 'cloud',
       label: 'Cloud',
-      renderer: row => uniq(row.clusters.map(c => c.substr(0, c.indexOf('/')))).join(', '),
+      renderer: (row) => uniq(row.clusters.map((c) => c.substr(0, c.indexOf('/')))).join(', '),
     },
     {
       id: 'id',
       label: 'Cluster',
-      renderer: row => row.clusters.join(', '),
+      renderer: (row) => row.clusters.join(', '),
     },
   ]
 

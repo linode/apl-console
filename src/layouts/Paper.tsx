@@ -4,7 +4,7 @@ import MainLayout from './Base'
 import { Error, Loader } from '../components'
 import { ApiError } from '../utils/error'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     // paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(2),
@@ -22,7 +22,7 @@ interface Props {
   loading?: boolean
   comp: React.ReactElement
 }
-export default ({ err, loading, comp }: Props) => {
+export default ({ err, loading, comp }: Props): React.ReactElement => {
   const classes = useStyles()
   return (
     <MainLayout>

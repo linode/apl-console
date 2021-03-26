@@ -23,7 +23,7 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }))
 
-export const NotistackProvider = ({ children }: SnackbarProviderProps) => {
+export const NotistackProvider = ({ children }: SnackbarProviderProps): React.ReactElement => {
   const classes = useStyles()
   return (
     <SnackbarProvider
@@ -40,33 +40,33 @@ export const NotistackProvider = ({ children }: SnackbarProviderProps) => {
 }
 
 let snackbarRef: WithSnackbarProps
-export const SnackbarUtilsConfigurator = () => {
+export const SnackbarUtilsConfigurator = (): React.ReactElement => {
   snackbarRef = useSnackbar()
   return null
 }
 
 export default {
-  success(msg: string, options: OptionsObject = {}) {
+  success(msg: string, options: OptionsObject = {}): React.ReactElement {
     return this.toast(msg, { ...options, variant: 'success' })
   },
-  warning(msg: string, options: OptionsObject = {}) {
+  warning(msg: string, options: OptionsObject = {}): React.ReactElement {
     return this.toast(msg, { ...options, variant: 'warning' })
   },
-  info(msg: string, options: OptionsObject = {}) {
+  info(msg: string, options: OptionsObject = {}): React.ReactElement {
     return this.toast(msg, { ...options, variant: 'info' })
   },
-  error(msg: string, options: OptionsObject = {}) {
+  error(msg: string, options: OptionsObject = {}): React.ReactElement {
     return this.toast(msg, { ...options, variant: 'error' })
   },
   // eslint-disable-next-line consistent-return
-  toast(msg: string, options: OptionsObject = {}) {
+  toast(msg: string, options: OptionsObject = {}): React.ReactElement | any {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
-  comingSoon(options: OptionsObject = {}) {
+  comingSoon(options: OptionsObject = {}): React.ReactElement {
     return this.toast('Coming soon!', { ...options, variant: 'warning' })
   },
   // eslint-disable-next-line consistent-return
-  close(id: number) {
+  close(id: number): React.ReactElement | any {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)
   },
 }

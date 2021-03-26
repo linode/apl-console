@@ -8,7 +8,7 @@ interface Props {
   message?: string
 }
 
-export default (props: Props) => {
+export default (props: Props): React.ReactElement => {
   const { code, message } = props
   const error = <Error code={code} msg={message} />
   return <>{code === 401 ? error : <PaperLayout comp={error} />}</>

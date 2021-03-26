@@ -7,7 +7,7 @@ import { mainStyles } from '../theme'
 
 const baseUrl = process.env.CONTEXT_PATH || ''
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
   },
@@ -23,7 +23,7 @@ interface Props {
   clusterId?: string
 }
 
-export default ({ clusterId }: Props) => {
+export default ({ clusterId }: Props): React.ReactElement => {
   const {
     mode,
     currentClusterId,

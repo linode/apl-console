@@ -19,7 +19,7 @@ import pkg from '../../package.json'
 import ChannelSelector from '../components/ChannelSelector'
 import snack from '../utils/snack'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   version: {
     fontSize: theme.typography.fontSize,
@@ -32,14 +32,14 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default () => {
+export default (): React.ReactElement => {
   const { mode, themeType, setThemeType, versions } = useSession()
   const isCE = mode === 'ce'
   const classes = useStyles()
   const toggleTheme = (): void => {
     setThemeType(toggleThemeType())
   }
-  const StyledListSubheader = props => {
+  const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
@@ -68,7 +68,7 @@ export default () => {
             <ChannelSelector
               disabled={isCE}
               channel={pkg.version === 'master' ? 'alpha' : 'stable'}
-              setChannel={event => {
+              setChannel={(event) => {
                 snack.comingSoon()
                 event.preventDefault()
               }}
@@ -84,7 +84,7 @@ export default () => {
             <ChannelSelector
               disabled={isCE}
               channel={versions.core === 'master' ? 'alpha' : 'stable'}
-              setChannel={event => {
+              setChannel={(event) => {
                 snack.comingSoon()
                 event.preventDefault()
               }}
@@ -101,7 +101,7 @@ export default () => {
               <ChannelSelector
                 disabled={isCE}
                 channel={versions.api === 'master' ? 'alpha' : 'stable'}
-                setChannel={event => {
+                setChannel={(event) => {
                   snack.comingSoon()
                   event.preventDefault()
                 }}

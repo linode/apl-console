@@ -13,7 +13,7 @@ export default ({
   match: {
     params: { teamId, secretId },
   },
-}: RouteComponentProps<Params>) => {
+}: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()

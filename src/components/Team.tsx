@@ -13,7 +13,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ onSubmit, onDelete, team }: Props) => {
+export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
   const {
     clusters,
     user: { roles },

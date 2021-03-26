@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 )
 
-export default function AppCard({ img, title, link, disabled }: any) {
+export default ({ img, title, link, disabled }: any): React.ReactElement => {
   const classes = useStyles()
 
   return (
@@ -58,7 +58,7 @@ export default function AppCard({ img, title, link, disabled }: any) {
             component={Link}
             to={`/appsettings/${title}`}
             disabled={disabled}
-            onClick={event => event.preventDefault()}
+            onClick={(event) => event.preventDefault()}
           >
             <SettingsIcon />
           </IconButton>

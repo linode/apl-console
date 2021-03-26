@@ -9,7 +9,7 @@ interface DeleteButtonProps {
   resourceName: string
   resourceType: string
 }
-export default function DeleteButton(props: DeleteButtonProps) {
+export default (props: DeleteButtonProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { dataCy } = props
   const onButtonClick = () => {

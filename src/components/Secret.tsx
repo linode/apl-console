@@ -15,7 +15,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ onSubmit, onDelete, secret, team }: Props) => {
+export default ({ onSubmit, onDelete, secret, team }: Props): React.ReactElement => {
   const {
     user: { roles, isAdmin },
     oboTeamId,

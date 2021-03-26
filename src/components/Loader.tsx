@@ -2,7 +2,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import React from 'react'
 import { createClasses } from '../theme'
 
-export default () => {
+export default (): React.ReactElement => {
   const classes = createClasses({
     root: {
       display: 'flex',

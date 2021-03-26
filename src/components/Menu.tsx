@@ -18,7 +18,7 @@ import snack from '../utils/snack'
 import Cluster from './Cluster'
 import { useSession } from '../session-context'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: 0,
     // textTransform: 'capitalize',
@@ -40,7 +40,7 @@ interface Props {
   teamId?: any
 }
 
-export default ({ teamId }: Props) => {
+export default ({ teamId }: Props): React.ReactElement => {
   const { pathname } = useLocation()
   const {
     mode,
@@ -77,7 +77,7 @@ export default ({ teamId }: Props) => {
   const StyledMenuItem = (props: any) => {
     return <MenuItem component={Link} className={`${mainClasses.selectable} ${classes.listItem}`} {...props} />
   }
-  const StyledListSubheader = props => {
+  const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 

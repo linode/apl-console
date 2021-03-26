@@ -8,7 +8,7 @@ interface CustomRadioGroupProps extends RadioGroupProps {
   onChange
 }
 
-export default function CustomRadioGroup(props: CustomRadioGroupProps) {
+export default (props: CustomRadioGroupProps): React.ReactElement => {
   const {
     id,
     onChange,
@@ -23,7 +23,7 @@ export default function CustomRadioGroup(props: CustomRadioGroupProps) {
         aria-label={name}
         name={name}
         value={value}
-        onChange={event => {
+        onChange={(event) => {
           onChange(event.target.value)
         }}
       >

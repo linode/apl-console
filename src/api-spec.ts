@@ -179,7 +179,7 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
 }
 
 export function getServiceSchema(team: any, clusters, formData: any, secrets): any {
-  const schema = cloneDeep(spec.components.schemas.Service)
+  const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, clusters, formData)
   addClustersEnum(schema, team, formData)
 
@@ -190,7 +190,7 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
     const subdomain = get(formData, 'ingress.subdomain', '')
     const domain = get(formData, 'ingress.domain', '')
     if (formData.ingress.certSelect) {
-      const tlsSecretNames = secrets.filter(s => s.type === 'tls').map(s => s.name)
+      const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
       schema.properties.ingress.oneOf[1].properties.certName.enum = tlsSecretNames
       if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
     } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
@@ -198,7 +198,9 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
     }
   }
   if (secrets.length) {
-    const secretNames = secrets.filter(s => s.type === 'generic' && s.clusterId === formData.clusterId).map(s => s.name)
+    const secretNames = secrets
+      .filter((s) => s.type === 'generic' && s.clusterId === formData.clusterId)
+      .map((s) => s.name)
     schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   }
   return schema
@@ -213,7 +215,7 @@ export function getSecretSchema(team): any {
 export function getTeamSchema(clusters, team): any {
   const schema = cloneDeep(spec.components.schemas.Team)
   schema.properties.clusters.items.enum = map(clusters, 'id')
-  schema.properties.alerts.properties.receivers.items.enum.forEach(receiver => {
+  schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
     if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]
     }

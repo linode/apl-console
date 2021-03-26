@@ -26,7 +26,7 @@ interface Props {
   teams: Array<Team>
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
@@ -78,7 +78,7 @@ interface DashboardCardProps {
   classes: any
 }
 
-const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
+const DashboardCard = ({ classes, teamId, item }: DashboardCardProps): React.ReactElement => {
   const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
     <Grid item xs={12} sm={6} md={4}>
@@ -121,12 +121,12 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps) => {
   )
 }
 
-const Dashboard = ({ team, services, clusters, teams }: Props) => {
+export default ({ team, services, clusters, teams }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
   } = useSession()
-  const clustersEnabled = clusters.filter(c => c.enabled)
-  const servicesEnabled = services.filter(s => s.enabled)
+  const clustersEnabled = clusters.filter((c) => c.enabled)
+  const servicesEnabled = services.filter((s) => s.enabled)
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
@@ -163,12 +163,10 @@ const Dashboard = ({ team, services, clusters, teams }: Props) => {
           </Typography>
           <Divider />
         </Grid>
-        {panels.map(panel => (
+        {panels.map((panel) => (
           <DashboardCard classes={classes} teamId={team && team.id} item={panel} key={panel.name} />
         ))}
       </Grid>
     </>
   )
 }
-
-export default Dashboard

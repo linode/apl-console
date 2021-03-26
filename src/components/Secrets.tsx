@@ -9,7 +9,7 @@ import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import MuiLink from './MuiLink'
 
-const getSecretLink = (isAdmin, ownerId) => row => {
+const getSecretLink = (isAdmin, ownerId) => (row) => {
   const { teamId, id, name } = row
   if (!(isAdmin || teamId === ownerId)) return name
 
@@ -22,7 +22,7 @@ const getSecretLink = (isAdmin, ownerId) => row => {
   )
 }
 
-const getVaultSecretLink = clusters => row => {
+const getVaultSecretLink = (clusters) => (row) => {
   const { teamId, clusterId, name } = row
   const cluster: Cluster = find(clusters, { id: clusterId })
   const url = `https://vault.${cluster.domain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
@@ -38,7 +38,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ secrets, team }: Props) => {
+export default ({ secrets, team }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -80,7 +80,7 @@ export default ({ secrets, team }: Props) => {
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',
-      renderer: row => {
+      renderer: (row) => {
         return row.namespace || `team-${row.teamId}`
       },
     })

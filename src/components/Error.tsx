@@ -7,7 +7,7 @@ export interface ErrorProps {
   msg?: string
 }
 
-export default ({ code = 500, msg: inMsg }: ErrorProps) => {
+export default ({ code = 500, msg: inMsg }: ErrorProps): React.ReactElement => {
   let msg = inMsg
   if (!inMsg)
     switch (code) {

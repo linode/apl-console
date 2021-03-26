@@ -11,7 +11,7 @@ export default ({
   match: {
     params: { clusterId },
   },
-}: RouteComponentProps<Params>) => {
+}: RouteComponentProps<Params>): React.ReactElement => {
   const err = undefined
   const loading = undefined
   const comp = !(err || loading) && <Cluster clusterId={decodeURIComponent(clusterId)} />

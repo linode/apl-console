@@ -3,7 +3,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, makeS
 import React from 'react'
 import { mainStyles } from '../theme'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     background: theme.palette.background.paper,
   },
@@ -18,17 +18,19 @@ const useStyles = makeStyles(theme => ({
   row: {},
 }))
 
-const OTable = (props): any => <Table {...props} className={useStyles().root} />
+const OTable = (props): React.ReactElement => <Table {...props} className={useStyles().root} />
 
-const OTableBody = (props): any => <TableBody {...props} />
+const OTableBody = (props): React.ReactElement => <TableBody {...props} />
 
-const OTableCell = (props): any => <TableCell {...props} className={useStyles().cell} />
+const OTableCell = (props): React.ReactElement => <TableCell {...props} className={useStyles().cell} />
 
-const OTableContainer = (props): any => <TableContainer {...props} className={useStyles().container} />
+const OTableContainer = (props): React.ReactElement => <TableContainer {...props} className={useStyles().container} />
 
-const OTableHead = (props): any => <TableHead {...props} className={useStyles().head} />
+const OTableHead = (props): React.ReactElement => <TableHead {...props} className={useStyles().head} />
 
-const OTableRow = (props): any => <TableRow {...props} className={`${useStyles().row} ${mainStyles().selectable}`} />
+const OTableRow = (props): React.ReactElement => (
+  <TableRow {...props} className={`${useStyles().row} ${mainStyles().selectable}`} />
+)
 
 export {
   OTable as Table,

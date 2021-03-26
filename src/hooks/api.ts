@@ -33,7 +33,7 @@ export const client = new DefaultApi(baseUrl)
 let dirty = false
 
 const checkDirty = (method: any): boolean => {
-  ;['create', 'edit', 'update', 'delete'].forEach(prefix => {
+  ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
     if (method.indexOf(prefix) === 0) {
       dirty = true
     }
@@ -96,7 +96,7 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
 
 export const getDirty = (): any => dirty
 
-export function useAuthz(teamId?): { sess: SessionContext; tid: string } {
+export function useAuthz(teamId?: string): { sess: SessionContext; tid: string } {
   const session: SessionContext = useSession()
   const {
     user: { isAdmin },

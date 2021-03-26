@@ -6,7 +6,7 @@ interface LinkExtendedProps extends LinkProps {
   label: string
 }
 
-export default (props: LinkExtendedProps) => {
+export default (props: LinkExtendedProps): React.ReactElement => {
   const { label } = props
   return <Link {...props} className={mainStyles().selectable} data-cy={`link-${label}`} />
 }

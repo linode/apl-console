@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button'
 
 import Modal from 'react-bootstrap/Modal'
 
-const ModalWrapper = ({ onClose, title, body }: any) => {
+export default ({ onClose, title, body }: any): React.ReactElement => {
   const onClick = () => {
     onClose()
   }
@@ -24,5 +24,3 @@ const ModalWrapper = ({ onClose, title, body }: any) => {
     </Modal.Dialog>
   )
 }
-
-export default ModalWrapper
