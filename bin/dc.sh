@@ -12,6 +12,7 @@ sub_help () {
     echo "   up                 Start standalone docker-compose version of web without dependent services $info"
     echo "   up-all             Start docker-compose version of web with dependent services $info"
     echo "   up-deps            Start docker-compose version of only dependent services $info"
+    echo "   up-deps-ce         Start docker-compose version of only dependent services $info in CE mode"
     echo "   down               Stop and clean docker-compose containers"
     echo "   e2e                Run e2e tests in docker-compose against running dev server"
     echo "   e2e-ci             Run e2e tests in docker-compose in CI"
@@ -48,7 +49,7 @@ case $COMMAND_NAME in
         ;;
     *)
         shift
-        sub_${COMMAND_NAME} $@
+        sub_${COMMAND_NAME} "$@"
         if [ $? = 127 ]; then
             echo "'$COMMAND_NAME' is not a known command or has errors." >&2
             sub_help

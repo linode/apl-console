@@ -60,12 +60,12 @@ export default ({ clusterId }: Props): React.ReactElement => {
         <StyledListItem>
           <ListItemText primary={`Otomi Version: ${otomiVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {mode === 'ee' && !clusterId && (
+        {mode === 'ee' && !clusterId && (oboTeamId || isAdmin) && (
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || isAdmin ? 'admin' : ''}`}
+            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || 'admin'}`}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
