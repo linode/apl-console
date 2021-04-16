@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Settings from '../components/Settings'
 

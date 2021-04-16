@@ -8,19 +8,22 @@ import {
   ListItemSecondaryAction,
   Switch,
 } from '@material-ui/core'
-import React from 'react'
+import React, { useState } from 'react'
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import Brightness3Icon from '@material-ui/icons/Brightness3'
 import CheckIcon from '@material-ui/icons/Check'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore: has no exported member 'Settings'
 import { Settings } from '@redkubes/otomi-api-client-axios'
+import Form from '@rjsf/core'
+import { ObjectFieldTemplate } from '@rjsf/material-ui'
 import { useSession } from '../session-context'
 
 import { toggleThemeType } from '../theme'
 import pkg from '../../package.json'
 import ChannelSelector from './ChannelSelector'
 import snack from '../utils/snack'
+import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
@@ -50,6 +53,14 @@ export default ({ onSubmit, settings }: Props): React.ReactElement => {
   const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
+
+  const [schema, setSchema] = useState()
+  const [uiSchema, setUiSchema] = useState()
+  const [data, setData]: any = useState(settings)
+
+  setSchema(getSettingsSchema())
+  setUiSchema(getSettingsUiSchema())
+  setData({})
 
   return (
     <>
@@ -129,13 +140,15 @@ export default ({ onSubmit, settings }: Props): React.ReactElement => {
         </ListItem>
       </List>
 
-      {/* <Form
+      <Form
         key='settings'
         schema={schema}
+        uiSchema={uiSchema}
+        formData={data}
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
-      /> */}
+      />
     </>
   )
 }
