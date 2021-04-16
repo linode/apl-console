@@ -12,6 +12,9 @@ import React from 'react'
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import Brightness3Icon from '@material-ui/icons/Brightness3'
 import CheckIcon from '@material-ui/icons/Check'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore: has no exported member 'Settings'
+import { Settings } from '@redkubes/otomi-api-client-axios'
 import { useSession } from '../session-context'
 
 import { toggleThemeType } from '../theme'
@@ -21,6 +24,7 @@ import snack from '../utils/snack'
 
 interface Props {
   onSubmit: CallableFunction
+  settings: Settings
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default ({ onSubmit }: Props): React.ReactElement => {
+export default ({ onSubmit, settings }: Props): React.ReactElement => {
   const { mode, themeType, setThemeType, versions } = useSession()
   const isCE = mode === 'ce'
   const classes = useStyles()

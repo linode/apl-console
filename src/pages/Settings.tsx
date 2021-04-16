@@ -1,21 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Settings from '../components/Settings'
 
-const doNothing = () => {
-  const something = 'nothing'
-}
-
-interface Params {
-  teamId?: string
-}
-
-export default ({
-  match: {
-    params: { teamId },
-  },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  const comp = <Settings onSubmit={doNothing} />
+export default (): React.ReactElement => {
+  const [formdata, setFormdata] = useState()
+  const comp = <Settings onSubmit={setFormdata} settings={formdata} />
   return <PaperLayout comp={comp} />
 }
