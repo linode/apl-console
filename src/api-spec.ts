@@ -241,7 +241,7 @@ export function getTeamSchema(team): any {
 }
 
 export function getSettingsSchema(): any {
-  return spec.components.schemas.Settings
+  return {}
 }
 
 export function getSettingsUiSchema(): any {
