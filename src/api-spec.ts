@@ -29,6 +29,7 @@ export interface Schema {
     [propertyName: string]: Property
   }
   items?: any
+  title?: string
 }
 
 export interface Acl {
@@ -241,7 +242,9 @@ export function getTeamSchema(team): any {
 }
 
 export function getSettingsSchema(): any {
-  return {}
+  const schema = spec.components.schemas.Settings
+  schema.title = 'Settings'
+  return schema
 }
 
 export function getSettingsUiSchema(): any {

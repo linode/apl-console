@@ -4,6 +4,6 @@ import Settings from '../components/Settings'
 
 export default (): React.ReactElement => {
   const [formdata, setFormdata] = useState()
-  const comp = <Settings onSubmit={setFormdata} settings={formdata} />
+  const comp = <Settings settings={formdata} onSubmit={setFormdata} />
   return <PaperLayout comp={comp} />
 }
