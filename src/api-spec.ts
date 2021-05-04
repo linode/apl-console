@@ -242,9 +242,7 @@ export function getTeamSchema(team): any {
 }
 
 export function getSettingsSchema(): any {
-  const schema = spec.components.schemas.Settings
-  schema.title = 'Settings'
-  return schema
+  return spec.components.schemas.Settings
 }
 
 export function getSettingsUiSchema(): any {

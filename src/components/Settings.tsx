@@ -1,6 +1,6 @@
 import { Settings } from '@redkubes/otomi-api-client-axios'
-import Form from '@rjsf/core'
 import React, { useState } from 'react'
+import Form from './rjsf/Form'
 import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
 
 interface Props {
@@ -10,6 +10,15 @@ interface Props {
 
 export default ({ onSubmit, settings }: Props): React.ReactElement => {
   // const [schema, setSchema] = useState()
+  const [data, setData]: any = useState(settings)
 
-  return <Form schema={getSettingsSchema()} />
+  return (
+    <Form
+      title={<h1>Settings</h1>}
+      key='updateSettings'
+      schema={getSettingsSchema()}
+      uiSchema={getSettingsUiSchema()}
+      formData={data}
+    />
+  )
 }
