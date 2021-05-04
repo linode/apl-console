@@ -1,6 +1,5 @@
 import { Grid } from '@material-ui/core'
 import React from 'react'
-import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import AppCard from './AppCard'
 
@@ -16,11 +15,8 @@ export default ({ teamId }: Props): React.ReactElement => {
       services: adminApps,
       teamConfig: { services: teamApps },
     },
-    currentClusterId,
-    clusters,
+    cluster,
   }: any = useSession()
-  const [cloud, name] = currentClusterId.split('/')
-  const cluster = find(clusters, { cloud, name })
   const apps = (teamId === 'admin' ? adminApps : teamApps).filter((app) => !app.hide && app.name !== 'otomi')
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
   const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)

@@ -2,8 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { Link } from 'react-router-dom'
 import React from 'react'
-import { Cluster, Team } from '@redkubes/otomi-api-client-axios'
-import { find } from 'lodash'
+import { Team } from '@redkubes/otomi-api-client-axios'
 import RLink from './Link'
 import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
@@ -22,10 +21,9 @@ const getSecretLink = (isAdmin, ownerId) => (row) => {
   )
 }
 
-const getVaultSecretLink = (clusters) => (row) => {
-  const { teamId, clusterId, name } = row
-  const cluster: Cluster = find(clusters, { id: clusterId })
-  const url = `https://vault.${cluster.domain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
+const getVaultSecretLink = (clusterDomain) => (row) => {
+  const { teamId, name } = row
+  const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
   return (
     <MuiLink href={`${url}`} target='_blank' rel='noopener'>
       vault:{name}
@@ -42,7 +40,7 @@ export default ({ secrets, team }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
     oboTeamId,
-    clusters,
+    dns,
   } = useSession()
   const headCells: HeadCell[] = [
     {
@@ -55,13 +53,9 @@ export default ({ secrets, team }: Props): React.ReactElement => {
       label: 'Type',
     },
     {
-      id: 'clusterId',
-      label: 'Cluster',
-    },
-    {
       id: 'vaultLink',
       label: 'Vault',
-      renderer: getVaultSecretLink(clusters),
+      renderer: getVaultSecretLink(dns.domain),
     },
     // {
     //   id: 'delete',

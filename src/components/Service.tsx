@@ -18,8 +18,9 @@ interface Props {
 
 export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.ReactElement => {
   const {
-    clusters,
     user: { roles, isAdmin },
+    cluster,
+    dns,
   } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
@@ -27,8 +28,7 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
-    const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
-    const defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
+    const defaultSubdomain = `${teamSubdomain}${cluster.provider}`
     const formData = { ...inData }
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
@@ -37,9 +37,11 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
     }
-    const newSchema = getServiceSchema(team, clusters, formData, secrets)
+    const newSchema = getServiceSchema(team, dns, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create'))
+    setUiSchema(
+      getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create', cluster.provider.toString()),
+    )
     setData(formData)
     setDirty(!isEqual(formData, service))
   }

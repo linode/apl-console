@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { entries, get, set, unset } from 'lodash/object'
-import { find, map } from 'lodash/collection'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { Cluster } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 export type AclAction =
@@ -72,9 +70,6 @@ export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string):
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     password: { 'ui:widget': 'hidden' },
-    clusters: {
-      'ui:widget': 'checkboxes',
-    },
     alerts: {
       receivers: {
         'ui:widget': 'checkboxes',
@@ -92,8 +87,14 @@ export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string):
   return uiSchema
 }
 
-export function getServiceUiSchema(schema: Schema, roles: any, formData, crudMethod: string): any {
-  const notAws = !get(formData, 'clusterId', '').startsWith('aws')
+export function getServiceUiSchema(
+  schema: Schema,
+  roles: any,
+  formData,
+  crudMethod: string,
+  cloudProvider: string,
+): any {
+  const notAws = cloudProvider !== 'aws'
   const noCert = !formData || !formData.ingress || !formData.ingress.hasCert
   const noCertArn = notAws || noCert
   const uiSchema = {
@@ -161,27 +162,19 @@ export function setSpec(inSpec): void {
   spec = inSpec
 }
 
-function addDomainEnumField(schema: Schema, clusters: Cluster[], formData): void {
-  if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
-  const cluster = find(clusters, { id: formData.clusterId })
-  schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.dnsZones
-  if (cluster.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain)
-    formData.ingress.domain = cluster.dnsZones[0]
-}
-
-function addClustersEnum(schema: Schema, team, formData): void {
-  schema.properties.clusterId.enum = team.clusters
-  if (formData && team.clusters.length === 1) formData.clusterId = team.clusters[0]
+function addDomainEnumField(schema: Schema, dns: any, formData): void {
+  if (!formData || isEmpty(formData.ingress)) return
+  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.dnsZones
+  if (dns.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.dnsZones[0]
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
   schema.properties.namespace.enum = namespaces
 }
 
-export function getServiceSchema(team: any, clusters, formData: any, secrets): any {
+export function getServiceSchema(team: any, dns, formData: any, secrets): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
-  addDomainEnumField(schema, clusters, formData)
-  addClustersEnum(schema, team, formData)
+  addDomainEnumField(schema, dns, formData)
 
   if (!get(formData, 'ingress.hasCert', '')) {
     unset(schema, 'properties.ingress.oneOf[1].properties.certName')
@@ -198,9 +191,7 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
     }
   }
   if (secrets.length) {
-    const secretNames = secrets
-      .filter((s) => s.type === 'generic' && s.clusterId === formData.clusterId)
-      .map((s) => s.name)
+    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
     schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   }
   return schema
@@ -208,13 +199,11 @@ export function getServiceSchema(team: any, clusters, formData: any, secrets): a
 
 export function getSecretSchema(team): any {
   const schema = cloneDeep(spec.components.schemas.Secret)
-  addClustersEnum(schema, team, {})
   return schema
 }
 
-export function getTeamSchema(clusters, team): any {
+export function getTeamSchema(team): any {
   const schema = cloneDeep(spec.components.schemas.Team)
-  schema.properties.clusters.items.enum = map(clusters, 'id')
   schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
     if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]

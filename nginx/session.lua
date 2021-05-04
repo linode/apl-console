@@ -36,8 +36,7 @@ local teamSet = {}
 local core = cjson.decode(os.getenv('CORE'))
 local versions = {}
 local coreVersion = os.getenv('CORE_VERSION')
-local currentClusterId = os.getenv('CLUSTER_ID')
-local clusters = cjson.decode(os.getenv('CLUSTERS'))
+local cluster = cjson.decode(os.getenv('CLUSTER'))
 local teamList = cjson.decode(os.getenv('TEAMS'))
 local isAdmin = false
 for _,v in ipairs(groups) do
@@ -63,7 +62,7 @@ if isAdmin then
     table.insert(allTeams, { id = team })
   end
 end
-local out = cjson.encode({ user = { isAdmin = isAdmin, name = name, email = email, groups = groups, teams = teams }, teams = allTeams, core = core, clusters = clusters, currentClusterId = currentClusterId, versions = { core = coreVersion } })
+local out = cjson.encode({ user = { isAdmin = isAdmin, name = name, email = email, groups = groups, teams = teams }, teams = allTeams, core = core, cluster = cluster, versions = { core = coreVersion } })
 -- Build json response at Nginx using Lua
 ngx.header.content_type = "application/json; charset=utf-8"
 ngx.say(out)

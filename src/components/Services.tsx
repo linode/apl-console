@@ -58,7 +58,6 @@ export default ({ services, team }: Props): React.ReactElement => {
       renderer: renderPublicUrl,
       component: MuiLink,
     },
-    { id: 'clusterId', numeric: false, disablePadding: false, label: 'Cluster' },
   ]
   if (showTeam)
     headCells.push({
@@ -84,13 +83,7 @@ export default ({ services, team }: Props): React.ReactElement => {
           </Button>
         )}
       </Box>
-      <EnhancedTable
-        disableSelect
-        headCells={headCells}
-        orderByStart='name'
-        rows={services.filter((s) => s.enabled)}
-        idKey='id'
-      />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
     </>
   )
 }

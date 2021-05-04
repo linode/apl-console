@@ -1,14 +1,14 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { Team } from '@redkubes/otomi-api-client-axios'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { uniq } from 'lodash'
 import { useSession } from '../session-context'
 import RLink from './Link'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 
 interface Props {
-  teams: any[]
+  teams: Team[]
 }
 
 export default ({ teams }: Props): React.ReactElement => {
@@ -27,16 +27,6 @@ export default ({ teams }: Props): React.ReactElement => {
         ) : (
           id
         ),
-    },
-    {
-      id: 'cloud',
-      label: 'Cloud',
-      renderer: (row) => uniq(row.clusters.map((c) => c.substr(0, c.indexOf('/')))).join(', '),
-    },
-    {
-      id: 'id',
-      label: 'Cluster',
-      renderer: (row) => row.clusters.join(', '),
     },
   ]
 

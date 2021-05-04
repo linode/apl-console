@@ -19,9 +19,9 @@ export interface SessionContext extends Session {
 
 const context = React.createContext<SessionContext>({
   mode: 'ee',
-  clusters: undefined,
+  cluster: undefined,
   core: undefined,
-  currentClusterId: undefined,
+  dns: undefined,
   isAdmin: undefined,
   namespaces: undefined,
   setSession: undefined,
@@ -29,7 +29,7 @@ const context = React.createContext<SessionContext>({
   setOboTeamId: undefined,
   setThemeType: undefined,
   themeType: undefined,
-  user: { teams: undefined, email: undefined, isAdmin: undefined, roles: undefined },
+  user: { teams: undefined, email: undefined, isAdmin: undefined, name: undefined, roles: undefined },
   teams: undefined,
   versions: undefined,
 })

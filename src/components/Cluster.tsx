@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
-import { find } from 'lodash/collection'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
 
@@ -19,48 +18,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-interface Props {
-  clusterId?: string
-}
-
-export default ({ clusterId }: Props): React.ReactElement => {
+export default (): React.ReactElement => {
   const {
     mode,
-    currentClusterId,
-    clusters,
+    cluster,
     oboTeamId,
     user: { isAdmin },
   } = useSession()
-  const [cloud, name] = (clusterId || currentClusterId).split('/')
-  const cluster = find(clusters, { cloud, name })
-  const { k8sVersion, otomiVersion, region } = cluster
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
-    return <ListItem className={`${clusterId ? classes.listItem : classes.listItemSmall}, ${className}`} {...props} />
+    return <ListItem className={`${classes.listItem}, ${className}`} {...props} />
   }
   const StyledMenuItem = (props: any) => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
   return (
     <>
-      <List dense={!clusterId}>
+      <List dense>
         <StyledListItem>
-          <ListItemText primary={`Name: ${name}`} data-cy='list-item-text-clustername' />
+          <ListItemText primary={`Name: ${cluster.name}`} data-cy='list-item-text-clustername' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Cloud: ${cloud}`} data-cy='list-item-text-cloud' />
+          <ListItemText primary={`Cloud: ${cluster.provider}`} data-cy='list-item-text-cloud' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Region: ${region}`} data-cy='list-item-text-region' />
+          <ListItemText primary={`Region: ${cluster.region}`} data-cy='list-item-text-region' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`K8S Version: ${k8sVersion}`} data-cy='list-item-text-k8v' />
+          <ListItemText primary={`K8S Version: ${cluster.k8sVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Otomi Version: ${otomiVersion}`} data-cy='list-item-text-k8v' />
+          <ListItemText primary={`Otomi Version: ${cluster.otomiVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {mode === 'ee' && !clusterId && (oboTeamId || isAdmin) && (
+        {mode === 'ee' && (oboTeamId || isAdmin) && (
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}
