@@ -44,7 +44,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const AppEE = () => {
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
-  const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocsGet')
+  const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   setThemeType(themeType)
