@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.44](https://github.com/redkubes/otomi-console/compare/v0.4.43...v0.4.44) (2021-05-04)
+
+
+### Bug Fixes
+
+* lang file 404, apiDocsGet to apiDocs [ci skip] ([24472af](https://github.com/redkubes/otomi-console/commit/24472afd6a755e43591e1ff973c05d8dc3bdad38))
+
 ### [0.4.43](https://github.com/redkubes/otomi-console/compare/v0.4.42...v0.4.43) (2021-04-13)
 
 ### Bug Fixes
