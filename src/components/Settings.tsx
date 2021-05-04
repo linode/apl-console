@@ -11,13 +11,16 @@ interface Props {
 export default ({ onSubmit, settings }: Props): React.ReactElement => {
   // const [schema, setSchema] = useState()
   const [data, setData]: any = useState(settings)
-
+  const handleSubmit = ({ formData }) => {
+    onSubmit(formData)
+  }
   return (
     <Form
       title={<h1>Settings</h1>}
       key='updateSettings'
       schema={getSettingsSchema()}
       uiSchema={getSettingsUiSchema()}
+      onSubmit={handleSubmit}
       formData={data}
     />
   )
