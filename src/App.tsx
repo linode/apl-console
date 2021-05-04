@@ -48,7 +48,12 @@ const AppEE = () => {
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   setThemeType(themeType)
-  if (sessionError || apiDocsError) {
+  if (sessionError) {
+    console.error(sessionError)
+    return <ErrorComponent code={500} />
+  }
+  if (apiDocsError) {
+    console.error(apiDocsError)
     return <ErrorComponent code={500} />
   }
   if (sessionLoading || apiDocsLoading) {
