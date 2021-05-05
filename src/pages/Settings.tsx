@@ -5,16 +5,9 @@ import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
   const [getFormData, getLoading, getErr] = useApi('getSettings')
-  const [stateData, setStateData] = useState(getFormData)
 
   const err = getErr
   const loading = getLoading
 
-  return (
-    <PaperLayout
-      err={err}
-      loading={loading}
-      comp={!(err || loading) && <Settings formData={stateData} onSubmit={setStateData} />}
-    />
-  )
+  return <PaperLayout err={err} loading={loading} comp={!(err || loading) && <Settings formData={getFormData} />} />
 }
