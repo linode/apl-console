@@ -4,17 +4,17 @@ import Form from './rjsf/Form'
 import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
 
 interface Props {
-  settings: Settings
+  formData: Settings
 }
 
-export default ({ settings }: Props): React.ReactElement => {
+export default ({ formData }: Props): React.ReactElement => {
   return (
     <Form
       title={<h1>Settings</h1>}
       key='updateSettings'
       schema={getSettingsSchema()}
       uiSchema={getSettingsUiSchema()}
-      formData={settings}
+      formData={formData}
     />
   )
 }

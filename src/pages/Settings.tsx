@@ -4,6 +4,6 @@ import Settings from '../components/Settings'
 import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
-  const [settings, loading, err]: any = useApi('getSettings')
-  return <PaperLayout comp={<Settings settings={settings} />} />
+  const [formData, loading, err]: any = useApi('getSettings')
+  return <PaperLayout comp={<Settings formData={formData} />} />
 }
