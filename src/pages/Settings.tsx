@@ -4,6 +4,17 @@ import Settings from '../components/Settings'
 import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
-  const [formData, loading, err]: any = useApi('getSettings')
-  return <PaperLayout comp={<Settings formData={formData} />} />
+  const [getFormData, getLoading, getErr] = useApi('getSettings')
+  const [stateData, setStateData] = useState(getFormData)
+
+  const err = getErr
+  const loading = getLoading
+
+  return (
+    <PaperLayout
+      err={err}
+      loading={loading}
+      comp={!(err || loading) && <Settings formData={stateData} onSubmit={setStateData} />}
+    />
+  )
 }
