@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PaperLayout from '../layouts/Paper'
 import Settings from '../components/Settings'
 import { useApi } from '../hooks/api'

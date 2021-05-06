@@ -1,6 +1,5 @@
 import { Settings } from '@redkubes/otomi-api-client-axios'
 import React, { useState } from 'react'
-import { ErrorSchema, IChangeEvent, ISubmitEvent } from '@rjsf/core'
 import Form from './rjsf/Form'
 import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
 import { useApi } from '../hooks/api'
@@ -12,7 +11,7 @@ interface Props {
 export default ({ formData }: Props): React.ReactElement => {
   const [state, setState] = useState(formData)
   const [send, setSend] = useState(false)
-  const [updateRes, updateLoading, updateError] = useApi('editSettings', send, [state])
+  useApi('editSettings', send, [state])
 
   return (
     <Form
@@ -22,7 +21,7 @@ export default ({ formData }: Props): React.ReactElement => {
       uiSchema={getSettingsUiSchema()}
       formData={state}
       onChange={(e) => setState(e.formData)}
-      onSubmit={(e) => setSend(true)}
+      onSubmit={() => setSend(true)}
     />
   )
 }
