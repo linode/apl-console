@@ -1,6 +1,6 @@
 import React from 'react'
 import PaperLayout from '../layouts/Paper'
-import Settings from '../components/Settings'
+import SettingsForm from '../components/SettingsForm'
 import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
@@ -10,7 +10,7 @@ export default (): React.ReactElement => {
     <PaperLayout
       err={getErr}
       loading={getLoading}
-      comp={!(getErr || getLoading) && <Settings formData={getFormData} />}
+      comp={!(getErr || getLoading) && <SettingsForm formData={getFormData} />}
     />
   )
 }
