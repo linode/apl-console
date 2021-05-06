@@ -11,6 +11,9 @@ interface Props {
 
 export default ({ formData }: Props): React.ReactElement => {
   const [state, setState] = useState(formData)
+  const [send, setSend] = useState(false)
+  const [updateRes, updateLoading, updateError] = useApi('editSettings', send, [state])
+
   return (
     <Form
       title={<h1>Settings</h1>}
@@ -19,7 +22,7 @@ export default ({ formData }: Props): React.ReactElement => {
       uiSchema={getSettingsUiSchema()}
       formData={state}
       onChange={(e) => setState(e.formData)}
-      onSubmit={(e) => useApi('editSettings', true, e.formData)[0]}
+      onSubmit={(e) => setSend(true)}
     />
   )
 }
