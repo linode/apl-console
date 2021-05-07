@@ -12,8 +12,7 @@ export default ({
     params: { clusterId },
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
-  const err = undefined
   const loading = undefined
-  const comp = !(err || loading) && <Cluster clusterId={decodeURIComponent(clusterId)} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  const comp = !loading && <Cluster clusterId={decodeURIComponent(clusterId)} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

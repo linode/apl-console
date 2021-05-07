@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Service from '../components/Service'
@@ -23,7 +24,7 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
     !!formdata,
-    serviceId ? [tid, serviceId, formdata] : [tid, formdata],
+    serviceId ? [tid, serviceId, omit(formdata, ['id', 'teamId'])] : [tid, omit(formdata, ['id', 'teamId'])],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -31,7 +32,7 @@ export default ({
   }
   const loading = teamLoading || serviceLoading || secretsLoading || createLoading || deleteLoading
   const err = teamError || serviceError || secretsError || createError || deleteError
-  const comp = !(err || loading) && (
+  const comp = !loading && (!err || formdata || service) && (
     <Service
       team={team}
       service={formdata || service}
@@ -40,5 +41,5 @@ export default ({
       onDelete={setDeleteId}
     />
   )
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

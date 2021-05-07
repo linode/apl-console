@@ -26,5 +26,5 @@ export default (): React.ReactElement => {
   const comp = !(err || loading) && (
     <Dashboard services={services} team={team} teams={teams} clusters={clusters as any} />
   )
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

@@ -29,6 +29,8 @@ export default ({
   }
   const loading = teamLoading || createLoading
   const err = teamError || createError || deleteError
-  const comp = !(err || loading) && <Team team={formdata || team} onSubmit={setFormdata} onDelete={setDeleteId} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  const comp = !loading && (!err || formdata || team) && (
+    <Team team={formdata || team} onSubmit={setFormdata} onDelete={setDeleteId} />
+  )
+  return <PaperLayout loading={loading} comp={comp} />
 }
