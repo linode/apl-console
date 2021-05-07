@@ -10,15 +10,13 @@ export default (): React.ReactElement => {
 
   const [editRes, editLoading, editErr] = useApi('editSettings', !!formData, [formData])
 
-  const err = getErr || editErr
   const loading = getLoading || editLoading
 
   return (
     <PaperLayout
-      err={err}
       loading={loading}
       comp={
-        !(err || loading) && (
+        !loading && (
           <>
             <Console />
             <Otomi setFormData={setFormData} formData={getFormData} />
