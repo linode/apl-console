@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import PaperLayout from '../layouts/Paper'
-import SettingsForm from '../components/SettingsForm'
+import Console from '../components/settings/Console'
+import Otomi from '../components/settings/Otomi'
 import { useApi } from '../hooks/api'
-import SettingsVersionForm from '../components/SettingsVersionForm'
 
 export default (): React.ReactElement => {
   const [getFormData, getLoading, getErr] = useApi('getSettings')
@@ -20,8 +20,8 @@ export default (): React.ReactElement => {
       comp={
         !(err || loading) && (
           <>
-            <SettingsVersionForm />
-            <SettingsForm setFormData={setFormData} formData={getFormData} />
+            <Console />
+            <Otomi setFormData={setFormData} formData={getFormData} />
           </>
         )
       }

@@ -1,9 +1,8 @@
 import { Settings } from '@redkubes/otomi-api-client-axios'
 import React, { useState } from 'react'
 import { Box, Button } from '@material-ui/core'
-import Form from './rjsf/Form'
-import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
-import { useApi } from '../hooks/api'
+import Form from '../rjsf/Form'
+import { getSettingsSchema, getSettingsUiSchema } from '../../api-spec'
 
 interface Props {
   setFormData: React.Dispatch<React.SetStateAction<boolean>>
@@ -15,7 +14,7 @@ export default ({ setFormData, formData }: Props): React.ReactElement => {
 
   return (
     <Form
-      title={<h1>Settings</h1>}
+      title={<h1>Otomi Settings</h1>}
       key='editSettings'
       schema={getSettingsSchema()}
       uiSchema={getSettingsUiSchema()}
