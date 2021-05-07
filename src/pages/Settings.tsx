@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import PaperLayout from '../layouts/Paper'
-import Console from '../components/settings/Console'
-import Otomi from '../components/settings/Otomi'
+import ConsoleForm from '../components/settings/ConsoleForm'
+import OtomiValuesForm from '../components/settings/OtomiValuesForm'
 import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
-  const [getFormData, getLoading, getErr] = useApi('getSettings')
+  const [getFormData, getLoading] = useApi('getSettings')
   const [formData, setFormData] = useState()
 
-  const [editRes, editLoading, editErr] = useApi('editSettings', !!formData, [formData])
+  const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])
 
   const loading = getLoading || editLoading
 
@@ -18,8 +18,8 @@ export default (): React.ReactElement => {
       comp={
         !loading && (
           <>
-            <Console />
-            <Otomi setFormData={setFormData} formData={getFormData} />
+            <ConsoleForm />
+            <OtomiValuesForm setFormData={setFormData} formData={getFormData} />
           </>
         )
       }
