@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import PaperLayout from '../layouts/Paper'
-import ConsoleForm from '../components/settings/ConsoleForm'
-import OtomiValuesForm from '../components/settings/OtomiValuesForm'
+import SettingsAccordion from '../components/SettingsAccordion'
 import { useApi } from '../hooks/api'
 
 export default (): React.ReactElement => {
@@ -18,8 +17,7 @@ export default (): React.ReactElement => {
       comp={
         !loading && (
           <>
-            <ConsoleForm />
-            <OtomiValuesForm setFormData={setFormData} formData={getFormData} />
+            <SettingsAccordion />
           </>
         )
       }

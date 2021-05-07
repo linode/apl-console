@@ -44,7 +44,6 @@ export default (): React.ReactElement => {
 
   return (
     <>
-      <h1>Console Settings</h1>
       <List className={classes.root}>
         <StyledListSubheader>
           <ListItemText primary='Interface' data-cy='list-item-interface-text' />
