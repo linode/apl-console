@@ -167,6 +167,8 @@ function addDomainEnumField(schema: Schema, clusters: Cluster[], formData): void
   schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.dnsZones
   if (cluster.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain)
     formData.ingress.domain = cluster.dnsZones[0]
+  schema.properties.ingress.oneOf[1].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
+  schema.properties.ingress.oneOf[1].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
 }
 
 function addClustersEnum(schema: Schema, team, formData): void {
