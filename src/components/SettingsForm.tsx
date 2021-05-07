@@ -22,6 +22,12 @@ export default ({ setFormData, formData }: Props): React.ReactElement => {
       formData={state}
       onChange={(e) => setState(e.formData)}
       onSubmit={(e) => setFormData(e.formData)}
-    />
+    >
+      <Box display='flex' flexDirection='row-reverse' m={1}>
+        <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team'>
+          Submit
+        </Button>
+      </Box>
+    </Form>
   )
 }
