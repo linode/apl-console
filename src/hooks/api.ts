@@ -82,10 +82,12 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
         const err = e.response?.body?.error ?? e.response?.statusMessage ?? e.message
         const statusCode = e.statusCode
         let msg = err
-        if (env.NODE_ENV !== 'production') msg = `Api Error[${statusCode}] calling '${method}': ${err}`
+        if (env.NODE_ENV !== 'production') {
+          msg = `Api Error[${statusCode}] calling '${method}': ${err}`
+          // eslint-disable-next-line no-console
+          console.error(e)
+        }
         snack.error(msg)
-        // eslint-disable-next-line no-console
-        console.error(e)
         const apiError = new ApiError(err, statusCode)
         setError(apiError)
         if (setGlobalError) setGlobalError(apiError)
