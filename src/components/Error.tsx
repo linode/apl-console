@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       width: '100%',
       padding: 0,
+      paddingTop: theme.spacing(2),
     },
     message: {
       backgroundColor: theme.palette.error.light,
@@ -35,6 +36,10 @@ export default (): React.ReactElement => {
       <Collapse in={!!globalError}>
         <Alert
           severity='error'
+          variant='outlined'
+          onClick={() => {
+            setGlobalError()
+          }}
           action={
             <IconButton
               aria-label='close'
