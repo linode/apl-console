@@ -8,10 +8,10 @@ interface Versions {
 
 export interface SessionContext extends Session {
   mode: string
-  isAdmin?: boolean
+  isAdmin: boolean
   setSession: CallableFunction
-  oboTeamId?: string
-  setOboTeamId?: CallableFunction
+  oboTeamId: string
+  setOboTeamId: CallableFunction
   setThemeType?: CallableFunction
   themeType: string
   versions: Versions

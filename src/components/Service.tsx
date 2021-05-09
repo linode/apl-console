@@ -1,5 +1,6 @@
 import { Box, Button } from '@material-ui/core'
 import { isEmpty, isEqual } from 'lodash/lang'
+import omit from 'lodash/omit'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
 import Form from './rjsf/Form'
@@ -11,12 +12,12 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  team: any
   service?: Service
   secrets: Secret[]
+  teamId: string
 }
 
-export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.ReactElement => {
+export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
   const {
     user: { roles, isAdmin },
     cluster,
@@ -27,9 +28,9 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
-    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
-    const defaultSubdomain = `${teamSubdomain}${cluster.provider}`
-    const formData = { ...inData }
+    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
+    const defaultSubdomain = teamSubdomain
+    const formData = { ...inData, teamId }
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
@@ -37,7 +38,7 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
     }
-    const newSchema = getServiceSchema(team, dns, formData, secrets)
+    const newSchema = getServiceSchema(dns, formData, secrets)
     setSchema(newSchema)
     setUiSchema(
       getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create', cluster.provider.toString()),
@@ -50,14 +51,14 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
     return null
   }
   const handleSubmit = ({ formData }) => {
-    onSubmit(formData)
+    onSubmit(omit(formData, 'id', 'teamId'))
   }
   return (
     <Form
       title={
         <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
           {data && data.id ? `Service: ${data.name}` : 'New Service'}
-          {isAdmin && team ? ` (team ${team.id})` : ''}
+          {isAdmin && teamId ? ` (team ${teamId})` : ''}
         </h1>
       }
       key='createService'

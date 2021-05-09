@@ -15,7 +15,6 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
-  const [team, teamLoading, teamError]: [any, boolean, any] = useApi('getTeam', true, [tid])
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [service, serviceLoading, serviceError]: any = useApi('getService', !!serviceId, [tid, serviceId])
@@ -29,15 +28,15 @@ export default ({
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
     return <Redirect to={`/teams/${tid}/services`} />
   }
-  const loading = teamLoading || serviceLoading || secretsLoading || createLoading || deleteLoading
-  const err = teamError || serviceError || secretsError || createError || deleteError
+  const loading = serviceLoading || secretsLoading || createLoading || deleteLoading
+  const err = serviceError || secretsError || createError || deleteError
   const comp = !(err || loading) && (
     <Service
-      team={team}
       service={formdata || service}
       secrets={secrets}
       onSubmit={setFormdata}
       onDelete={setDeleteId}
+      teamId={tid}
     />
   )
   return <PaperLayout err={err} loading={loading} comp={comp} />

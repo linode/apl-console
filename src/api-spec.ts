@@ -172,7 +172,7 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
   schema.properties.namespace.enum = namespaces
 }
 
-export function getServiceSchema(team: any, dns, formData: any, secrets): any {
+export function getServiceSchema(dns, formData: any, secrets): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, dns, formData)
 
@@ -197,7 +197,7 @@ export function getServiceSchema(team: any, dns, formData: any, secrets): any {
   return schema
 }
 
-export function getSecretSchema(team): any {
+export function getSecretSchema(): any {
   const schema = cloneDeep(spec.components.schemas.Secret)
   return schema
 }
