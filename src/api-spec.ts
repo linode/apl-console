@@ -164,8 +164,8 @@ export function setSpec(inSpec): void {
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
   if (!formData || isEmpty(formData.ingress)) return
-  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.dnsZones
-  if (dns.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.dnsZones[0]
+  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.zones
+  if (dns.zones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.zones[0]
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
