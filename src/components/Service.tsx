@@ -51,7 +51,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     return null
   }
   const handleSubmit = ({ formData }) => {
-    onSubmit(omit(formData, 'id', 'teamId'))
+    onSubmit(omit(formData, 'id'))
   }
   return (
     <Form

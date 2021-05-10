@@ -1,41 +1,22 @@
 import React from 'react'
-import RLink from './Link'
+import { Settings } from '@redkubes/otomi-api-client-axios'
 import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
-import { useSession } from '../session-context'
 
-export default (): React.ReactElement => {
-  const { clusters }: any = useSession()
+interface Props {
+  settings: Settings
+}
+
+export default ({ settings }: Props): React.ReactElement => {
   const headCells: HeadCell[] = [
     {
-      id: 'id',
-      label: 'ID',
-      renderer: ({ id }: any) => (
-        <RLink to={`/cluster/${encodeURIComponent(id)}`} label={id}>
-          {id}
-        </RLink>
-      ),
-    },
-    {
-      id: 'domain',
-      label: 'Domain',
-      renderer: ({ domain }: any) => (
-        <MuiLink href={`https://otomi.${domain}/`} target='_blank' rel='noopener'>
-          {domain}
+      id: 'url',
+      label: 'Url',
+      renderer: (url: string) => (
+        <MuiLink href={url} target='_blank' rel='noopener'>
+          {url}
         </MuiLink>
       ),
-    },
-    {
-      id: 'region',
-      label: 'Region',
-    },
-    {
-      id: 'k8sVersion',
-      label: 'K8S Version',
-    },
-    {
-      id: 'otomiVersion',
-      label: 'Otomi Version',
     },
   ]
   return (
@@ -45,7 +26,7 @@ export default (): React.ReactElement => {
         disableSelect
         headCells={headCells}
         orderByStart='name'
-        rows={clusters.filter((c) => c.enabled)}
+        rows={settings.otomiInstanceUrls}
         idKey='id'
       />
     </>
