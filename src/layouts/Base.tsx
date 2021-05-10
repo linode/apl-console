@@ -12,7 +12,6 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import Menu from '../components/Menu'
 import User from '../components/User'
-import ErrorBoundary from '../utils/error'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
 
@@ -221,7 +220,7 @@ export default (props: Props): React.ReactElement => {
       </Hidden>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
-        <ErrorBoundary>{children}</ErrorBoundary>
+        <>{children}</>
       </main>
     </div>
   )

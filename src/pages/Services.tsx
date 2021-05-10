@@ -20,5 +20,5 @@ export default ({
   const loading = servicesLoading || teamLoading
   const err = servicesError || teamError
   const comp = !(err || loading) && <Services services={services} team={team} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

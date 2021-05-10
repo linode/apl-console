@@ -23,5 +23,5 @@ export default (): React.ReactElement => {
   const err = servicesError || teamsError
   const loading = servicesLoading || teamsLoading
   const comp = !(err || loading) && <Dashboard services={services} team={team} teams={teams} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

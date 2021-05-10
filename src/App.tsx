@@ -25,7 +25,6 @@ import Context, { SessionContext } from './session-context'
 import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
-import Catch from './utils/error'
 import devTokens from './devtokens'
 
 const env = process.env
@@ -43,18 +42,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const AppEE = () => {
+  const [globalError, setGlobalError] = useState('globalError')
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
+  if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   setThemeType(themeType)
-  if (sessionError) {
-    console.error(sessionError)
-    return <ErrorComponent code={500} />
-  }
-  if (apiDocsError) {
-    console.error(apiDocsError)
-    return <ErrorComponent code={500} />
+  if (sessionError || apiDocsError) {
+    return <ErrorComponent />
   }
   if (sessionLoading || apiDocsLoading) {
     return <Loader />
@@ -77,37 +73,37 @@ const AppEE = () => {
             value={{
               ...session,
               mode,
+              globalError,
+              setGlobalError,
               oboTeamId,
               setOboTeamId,
               themeType,
               setThemeType: setType,
             }}
           >
-            <Catch>
-              <Router basename={env.CONTEXT_PATH || ''}>
-                <Switch>
-                  {/* ! user && <Route path='/' component={Home} exact /> */}
-                  <Route path='/' component={Dashboard} exact />
-                  <Route path='/apps/:teamId' component={OtomiApps} exact />
-                  <Route path='/clusters' component={Clusters} exact />
-                  <Route path='/cluster/:clusterId' component={Cluster} exact />
-                  <Route path='/create-team' component={Team} exact />
-                  <Route path='/services' component={Services} exact />
-                  <Route path='/settings' component={Settings} exact />
-                  <Route path='/teams' component={Teams} exact />
-                  <Route path='/teams/:teamId' component={Team} exact />
-                  <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-                  <Route path='/teams/:teamId/create-service' component={Service} exact />
-                  <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-                  <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-                  <Route path='/teams/:teamId/services' component={Services} exact />
-                  <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                  <Route path='*'>
-                    <Error code={404} />
-                  </Route>
-                </Switch>
-              </Router>
-            </Catch>
+            <Router basename={env.CONTEXT_PATH || ''}>
+              <Switch>
+                {/* ! user && <Route path='/' component={Home} exact /> */}
+                <Route path='/' component={Dashboard} exact />
+                <Route path='/apps/:teamId' component={OtomiApps} exact />
+                <Route path='/clusters' component={Clusters} exact />
+                <Route path='/cluster/:clusterId' component={Cluster} exact />
+                <Route path='/create-team' component={Team} exact />
+                <Route path='/services' component={Services} exact />
+                <Route path='/settings' component={Settings} exact />
+                <Route path='/teams' component={Teams} exact />
+                <Route path='/teams/:teamId' component={Team} exact />
+                <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                <Route path='/teams/:teamId/create-service' component={Service} exact />
+                <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                <Route path='/teams/:teamId/services' component={Services} exact />
+                <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                <Route path='*'>
+                  <Error code={404} />
+                </Route>
+              </Switch>
+            </Router>
           </Context.Provider>
         </NotistackProvider>
       </ThemeProvider>
@@ -168,20 +164,18 @@ const AppCE = () => {
               setThemeType: setType,
             }}
           >
-            <Catch>
-              <Router basename={env.CONTEXT_PATH || ''}>
-                <Switch>
-                  {/* ! user && <Route path='/' component={Home} exact /> */}
-                  <Route path='/apps/:teamId' component={OtomiApps} />
-                  <Route path='/clusters' component={Clusters} exact />
-                  <Route path='/cluster/:clusterId' component={Cluster} exact />
-                  <Route path='/settings' component={Settings} exact />
-                  <Route path='*'>
-                    <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
-                  </Route>
-                </Switch>
-              </Router>
-            </Catch>
+            <Router basename={env.CONTEXT_PATH || ''}>
+              <Switch>
+                {/* ! user && <Route path='/' component={Home} exact /> */}
+                <Route path='/apps/:teamId' component={OtomiApps} />
+                <Route path='/clusters' component={Clusters} exact />
+                <Route path='/cluster/:clusterId' component={Cluster} exact />
+                <Route path='/settings' component={Settings} exact />
+                <Route path='*'>
+                  <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
+                </Route>
+              </Switch>
+            </Router>
           </Context.Provider>
         </NotistackProvider>
       </ThemeProvider>
