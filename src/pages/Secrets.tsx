@@ -20,5 +20,5 @@ export default ({
   const loading = secretsLoading || teamLoading
   const err = secretsError || teamError
   const comp = !(err || loading) && <Secrets team={team} secrets={secrets} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} />
 }

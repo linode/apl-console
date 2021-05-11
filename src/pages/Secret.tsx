@@ -1,3 +1,4 @@
+import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Secret from '../components/Secret'
@@ -21,7 +22,7 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     secretId ? 'editSecret' : 'createSecret',
     !!formdata,
-    secretId ? [tid, secretId, formdata] : [tid, formdata],
+    secretId ? [tid, secretId, omit(formdata, ['id'])] : [tid, omit(formdata, ['id', 'teamId'])],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -32,6 +33,8 @@ export default ({
   if (createRes && !(createLoading || createError)) {
     return <Redirect to={`/teams/${tid}/secrets`} />
   }
-  const comp = !(err || loading) && <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} />
-  return <PaperLayout err={err} loading={loading} comp={comp} />
+  const comp = !loading && (!err || formdata || secret) && (
+    <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} />
+  )
+  return <PaperLayout loading={loading} comp={comp} />
 }

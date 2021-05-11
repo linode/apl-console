@@ -2,12 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.4.43](https://github.com/redkubes/otomi-console/compare/v0.4.42...v0.4.43) (2021-04-13)
-
+### [0.4.44](https://github.com/redkubes/otomi-console/compare/v0.4.43...v0.4.44) (2021-05-04)
 
 ### Bug Fixes
 
-* kubecfg team id param ([316724f](https://github.com/redkubes/otomi-console/commit/316724f9a345006c4bb937b44f0703245910f027))
+- lang file 404, apiDocsGet to apiDocs [ci skip] ([24472af](https://github.com/redkubes/otomi-console/commit/24472afd6a755e43591e1ff973c05d8dc3bdad38))
+
+### [0.4.43](https://github.com/redkubes/otomi-console/compare/v0.4.42...v0.4.43) (2021-04-13)
+
+### Bug Fixes
+
+- kubecfg team id param ([316724f](https://github.com/redkubes/otomi-console/commit/316724f9a345006c4bb937b44f0703245910f027))
 
 ### [0.4.42](https://github.com/redkubes/otomi-console/compare/v0.4.41...v0.4.42) (2021-03-26)
 

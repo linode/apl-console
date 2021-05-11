@@ -45,12 +45,13 @@ const checkDirty = (method: any): boolean => {
 }
 
 export const useApi = (method: string, active = true, args: any[] = []): ApiHook => {
-  const signature = `args.length:${args.length}/${args.join(',').length}`
+  const signature = JSON.stringify(args)
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
     user: { isAdmin },
     isDirty,
+    setGlobalError,
   } = useSession()
   dirty = dirty || isDirty
   useEffect(() => {
@@ -75,14 +76,21 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
           const value = await client[method].call(client, ...args, options)
           checkDirty(method)
           setValue(value.response.body)
+          if (setGlobalError) setGlobalError()
         }
       } catch (e) {
-        if (process.env.NODE_ENV !== 'production') {
-          snack.error(`Api Error calling '${method}': ${e.toString()}`)
+        const err = e.response?.body?.error ?? e.response?.statusMessage ?? e.message
+        const statusCode = e.statusCode
+        let msg = err
+        if (env.NODE_ENV !== 'production') {
+          msg = `Api Error[${statusCode}] calling '${method}': ${err}`
+          // eslint-disable-next-line no-console
+          console.error(e)
         }
-        // eslint-disable-next-line no-console
-        console.warn(`Api Error calling '${method}':`, e)
-        setError(new ApiError(e))
+        snack.error(msg)
+        const apiError = new ApiError(err, statusCode)
+        setError(apiError)
+        if (setGlobalError) setGlobalError(apiError)
       }
     })()
     return () => {

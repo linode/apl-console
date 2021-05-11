@@ -1,31 +1,61 @@
+import Alert from '@material-ui/lab/Alert'
 import React from 'react'
-import { Container, Box, Typography } from '@material-ui/core'
+import { Container, makeStyles, Theme, createStyles, Collapse, IconButton } from '@material-ui/core'
 import Helmet from 'react-helmet'
+import { Trans } from 'react-i18next'
+import CloseIcon from '@material-ui/icons/Close'
+import { Keys as k } from '../translations/keys'
+import { useSession } from '../session-context'
 
-export interface ErrorProps {
-  code: number
-  msg?: string
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      width: '100%',
+      padding: 0,
+      paddingTop: theme.spacing(2),
+    },
+    message: {
+      backgroundColor: theme.palette.error.light,
+      padding: theme.spacing(2),
+    },
+  }),
+)
 
-export default ({ code = 500, msg: inMsg }: ErrorProps): React.ReactElement => {
-  let msg = inMsg
-  if (!inMsg)
-    switch (code) {
-      case 401:
-        msg = 'Unauthorized'
-        break
-      default:
-        msg = 'Not Found'
-    }
+export default (): React.ReactElement => {
+  const classes = useStyles()
+  const { globalError, setGlobalError } = useSession()
+  if (!globalError) return null
+  const code = globalError.code
+  const message = globalError.message
   return (
-    <Container maxWidth='xs'>
+    <Container className={classes.root}>
       <Helmet>
-        <title>{`${code}: ${msg}`}</title>
-        <meta name='description' content={`${code}: ${msg}`} />
+        <title>{`${code}: ${message}`}</title>
+        <meta name='description' content={`${code}: ${message}`} />
       </Helmet>
-      <Box justifyContent='center' display='flex' alignItems='center' textAlign='center'>
-        <Typography variant='h3'>{msg}</Typography>
-      </Box>
+      <Collapse in={!!globalError}>
+        <Alert
+          severity='error'
+          variant='outlined'
+          onClick={() => {
+            setGlobalError()
+          }}
+          action={
+            <IconButton
+              aria-label='close'
+              color='inherit'
+              size='small'
+              onClick={() => {
+                setGlobalError()
+              }}
+            >
+              <CloseIcon fontSize='inherit' />
+            </IconButton>
+          }
+        >
+          <Trans i18nKey={k.ERROR}>Error</Trans>: <Trans i18nKey={k[message]} />
+        </Alert>
+      </Collapse>
     </Container>
   )
 }

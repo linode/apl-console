@@ -2,7 +2,6 @@ import React from 'react'
 import { Container, Grid, Paper, makeStyles } from '@material-ui/core'
 import MainLayout from './Base'
 import { Error, Loader } from '../components'
-import { ApiError } from '../utils/error'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,18 +17,19 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface Props {
-  err?: ApiError
   loading?: boolean
   comp: React.ReactElement
 }
-export default ({ err, loading, comp }: Props): React.ReactElement => {
+export default ({ loading, comp }: Props): React.ReactElement => {
   const classes = useStyles()
   return (
     <MainLayout>
       <Container maxWidth='lg' className={classes.container}>
         <Grid container spacing={3}>
           <Grid item xs={12} component={Paper}>
-            {(err && <Error msg={err.message} code={err.code} />) || (loading && <Loader />) || comp}
+            <Error />
+            {loading && <Loader />}
+            {!loading && comp}
           </Grid>
         </Grid>
       </Container>
