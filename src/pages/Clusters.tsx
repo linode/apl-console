@@ -6,5 +6,5 @@ import PaperLayout from '../layouts/Paper'
 export default (): React.ReactElement => {
   const [settings, settingsLoading, settingsError]: any = useApi('getSettings')
   const comp = !(settingsError || settingsLoading) && <Clusters settings={settings} />
-  return <PaperLayout err={settingsError} loading={settingsLoading} comp={comp} />
+  return <PaperLayout loading={settingsLoading} comp={comp} />
 }

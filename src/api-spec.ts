@@ -2,8 +2,8 @@
 import { entries, get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
 import { find } from 'lodash'
-import CustomRadioGroup from './components/rjsf/RadioGroup'
 import { Cluster } from '@redkubes/otomi-api-client-axios'
+import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 export type AclAction =
   | 'create'
@@ -164,11 +164,10 @@ export function setSpec(inSpec): void {
   spec = inSpec
 }
 
-function addDomainEnumField(schema: Schema, clusters: Cluster[], formData): void {
-  if (!formData || !formData.clusterId || isEmpty(formData.ingress)) return
-  const cluster = find(clusters, { id: formData.clusterId })
-  schema.properties.ingress.oneOf[1].properties.domain.enum = cluster.zones
-  if (cluster.zones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = cluster.zones[0]
+function addDomainEnumField(schema: Schema, dns: any, formData): void {
+  if (!formData || isEmpty(formData.ingress)) return
+  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.dnsZones
+  if (dns.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.dnsZones[0]
   schema.properties.ingress.oneOf[1].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
   schema.properties.ingress.oneOf[1].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
 }
