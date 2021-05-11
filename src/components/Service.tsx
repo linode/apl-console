@@ -30,7 +30,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
-    const formData = { ...inData, teamId }
+    const formData = { ...inData }
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
         // Set default subdomain of domain change
@@ -51,7 +51,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     return null
   }
   const handleSubmit = ({ formData }) => {
-    onSubmit(omit(formData, 'id'))
+    onSubmit(omit(formData, 'id', 'teamId'))
   }
   return (
     <Form
