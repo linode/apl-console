@@ -7,29 +7,31 @@ import Form from './rjsf/Form'
 import { getSettingsSchema } from '../api-spec'
 
 interface Props {
-  formData: Settings
+  header: string
+  formData: any
   setFormData: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default ({ formData, setFormData }: Props): React.ReactElement => {
-  const [state, setState] = useState(formData)
-
+export default ({ header, formData, setFormData }: Props): React.ReactElement => {
   return (
-    <>
-      <h1>Otomi Settings</h1>
-      <Form
-        key='editSettings'
-        schema={getSettingsSchema()}
-        formData={state}
-        onChange={(e) => setState(e.formData)}
-        onSubmit={(e) => setFormData(e.formData)}
-      >
-        <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team'>
-            Submit
-          </Button>
-        </Box>
-      </Form>
-    </>
+    <Accordion>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography>{header}</Typography>
+      </AccordionSummary>
+      <AccordionDetails>
+        <Form
+          schema={getSettingsSchema()}
+          formData={formData}
+          onChange={(e) => setFormData(e.formData)}
+          onSubmit={(e) => setFormData(e.formData)}
+        >
+          <Box display='flex' flexDirection='row-reverse' m={1}>
+            <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team'>
+              Submit
+            </Button>
+          </Box>
+        </Form>
+      </AccordionDetails>
+    </Accordion>
   )
 }

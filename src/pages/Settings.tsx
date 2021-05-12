@@ -11,8 +11,6 @@ export default (): React.ReactElement => {
   const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])
   const loading = getLoading || editLoading
 
-  const subSchemas = []
-
   return (
     <PaperLayout
       loading={loading}
@@ -20,7 +18,9 @@ export default (): React.ReactElement => {
         !loading && (
           <>
             <SettingsConsoleList />
-            <SettingsAccordion formData={formData} setFormData={setFormData} />
+            {Object.keys(getFormData).map((val) => {
+              return <SettingsAccordion header={val} formData={getFormData[val]} setFormData={setFormData} />
+            })}
           </>
         )
       }
