@@ -5,11 +5,11 @@ import Form from '../rjsf/Form'
 import { getSettingsSchema, getSettingsUiSchema } from '../../api-spec'
 
 interface Props {
-  setFormData: React.Dispatch<React.SetStateAction<boolean>>
   formData: Settings
+  setFormData: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export default ({ setFormData, formData }: Props): React.ReactElement => {
+export default ({ formData, setFormData }: Props): React.ReactElement => {
   const [state, setState] = useState(formData)
 
   return (

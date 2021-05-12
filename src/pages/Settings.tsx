@@ -17,7 +17,7 @@ export default (): React.ReactElement => {
       comp={
         !loading && (
           <>
-            <SettingsAccordion />
+            <SettingsAccordion formData={formData} setFormData={setFormData} />
           </>
         )
       }
