@@ -44,7 +44,7 @@ Run react app in development mode
 npm run dev
 ```
 
-In vscode: open `Run and Debug` window, select `Attach to Chrome and run debugging
+In vscode: open `Run and Debug` window, select `Attach to Chrome and run debugging`
 
 ### Api client
 
