@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Accordion from '@material-ui/core/Accordion'
-import { AccordionDetails, AccordionSummary, Typography } from '@material-ui/core'
+import { AccordionDetails, AccordionSummary, Typography, Box, Button } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import Container from '@material-ui/core/Container'
 import { Settings } from '@redkubes/otomi-api-client-axios'
-import ConsoleForm from './settings/ConsoleForm'
-import OtomiValuesForm from './settings/OtomiValuesForm'
+import Form from './rjsf/Form'
+import { getSettingsSchema } from '../api-spec'
 
 interface Props {
   formData: Settings
@@ -13,28 +12,24 @@ interface Props {
 }
 
 export default ({ formData, setFormData }: Props): React.ReactElement => {
+  const [state, setState] = useState(formData)
+
   return (
-    <div>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Console Settings</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Container>
-            <ConsoleForm />
-          </Container>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography>Otomi Settings</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Container>
-            <OtomiValuesForm formData={formData} setFormData={setFormData} />
-          </Container>
-        </AccordionDetails>
-      </Accordion>
-    </div>
+    <>
+      <h1>Otomi Settings</h1>
+      <Form
+        key='editSettings'
+        schema={getSettingsSchema()}
+        formData={state}
+        onChange={(e) => setState(e.formData)}
+        onSubmit={(e) => setFormData(e.formData)}
+      >
+        <Box display='flex' flexDirection='row-reverse' m={1}>
+          <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team'>
+            Submit
+          </Button>
+        </Box>
+      </Form>
+    </>
   )
 }

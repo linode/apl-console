@@ -12,11 +12,11 @@ import {
 import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
 import Brightness3Icon from '@material-ui/icons/Brightness3'
 import CheckIcon from '@material-ui/icons/Check'
-import ChannelSelector from '../ChannelSelector'
-import { useSession } from '../../session-context'
-import { toggleThemeType } from '../../theme'
-import pkg from '../../../package.json'
-import snack from '../../utils/snack'
+import ChannelSelector from './ChannelSelector'
+import { useSession } from '../session-context'
+import { toggleThemeType } from '../theme'
+import pkg from '../../package.json'
+import snack from '../utils/snack'
 
 const useStyles = makeStyles((theme) => ({
   root: {},

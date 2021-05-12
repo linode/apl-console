@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PaperLayout from '../layouts/Paper'
+import SettingsConsoleList from '../components/SettingsConsoleList'
 import SettingsAccordion from '../components/SettingsAccordion'
 import { useApi } from '../hooks/api'
 
@@ -8,8 +9,9 @@ export default (): React.ReactElement => {
   const [formData, setFormData] = useState()
 
   const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])
-
   const loading = getLoading || editLoading
+
+  const subSchemas = []
 
   return (
     <PaperLayout
@@ -17,6 +19,7 @@ export default (): React.ReactElement => {
       comp={
         !loading && (
           <>
+            <SettingsConsoleList />
             <SettingsAccordion formData={formData} setFormData={setFormData} />
           </>
         )

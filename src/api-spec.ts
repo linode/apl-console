@@ -241,10 +241,6 @@ export function getTeamSchema(team): any {
   return schema
 }
 
-export function getSettingsSchema(): any {
-  return spec.components.schemas.Settings
-}
-
-export function getSettingsUiSchema(): any {
-  return {}
+export function getSettingsSchema(key?: string): any {
+  return key ? spec.components.schemas.Settings[key] : spec.components.schemas.Settings
 }
