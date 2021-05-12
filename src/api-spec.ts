@@ -241,8 +241,9 @@ export function getTeamSchema(team): any {
   return schema
 }
 
-export function getSettingsSchema(): any {
-  return spec.components.schemas.Settings
+export function getSettingsSchema(idx?: string): any {
+  const schema = cloneDeep(spec.components.schemas.Settings)
+  return idx ? schema.properties[idx] : schema
 }
 
 export function getSettingsUiSchema(): any {
