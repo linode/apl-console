@@ -52,17 +52,17 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     return null
   }
   const handleSubmit = ({ formData }) => {
+    const secrets = []
     if (formData.serviceType === 'ksvc') {
       const data = cloneDeep(formData)
-      const secrets = []
       Object.entries(data.ksvc.secrets).forEach((key, value) => {
         secrets.push({
           name: key,
           entries: value,
         })
       })
-      data.ksvc.secrets = secrets
     }
+    data.ksvc.secrets = secrets
     onSubmit(omit(data, 'id', 'teamId'))
   }
   return (
