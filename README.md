@@ -29,3 +29,27 @@ bin/dc.sh up-all
 bin/dc.sh up-deps &
 npm run dev
 ```
+
+### Debugging
+
+Run chrome with remote debugger plugin enabled, e.g.:
+
+```
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
+```
+
+Run react app in development mode
+
+```
+npm run dev
+```
+
+In vscode: open `Run and Debug` window, select `Attach to Chrome and run debugging`
+
+### Api client
+
+The otomi-console uses `@redkubes/otomi-api-client-axios` package that is released whenever OpenApi schema is changed. For development purpose you can link local npm package:
+
+```
+npm link @redkubes/otomi-api-client-axios
+```

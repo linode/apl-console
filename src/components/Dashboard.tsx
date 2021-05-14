@@ -7,7 +7,7 @@ import CloudIcon from '@material-ui/icons/Cloud'
 import Link from '@material-ui/core/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
-import { Team, Service, Cluster } from '@redkubes/otomi-api-client-axios'
+import { Team, Service } from '@redkubes/otomi-api-client-axios'
 import { Keys as k } from '../translations/keys'
 import { useSession } from '../session-context'
 
@@ -22,7 +22,6 @@ type Panel = {
 interface Props {
   team?: Team
   services: Array<Service>
-  clusters: Array<Cluster>
   teams: Array<Team>
 }
 
@@ -121,17 +120,15 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps): React.Rea
   )
 }
 
-export default ({ team, services, clusters, teams }: Props): React.ReactElement => {
+export default ({ team, services, teams }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
   } = useSession()
-  const clustersEnabled = clusters.filter((c) => c.enabled)
-  const servicesEnabled = services.filter((s) => s.enabled)
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
   const panels = [
-    { name: 'cluster', data: clustersEnabled, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
+    { name: 'cluster', data: undefined, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
     {
       name: 'team',
       data: teams,
@@ -142,7 +139,7 @@ export default ({ team, services, clusters, teams }: Props): React.ReactElement 
     },
     {
       name: 'service',
-      data: servicesEnabled,
+      data: services,
       icon: <SwapVerticalCircleIcon />,
       canCreate: true,
       disabled: isServiceDisabled,

@@ -1,7 +1,7 @@
 import { Box, Button } from '@material-ui/core'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
-import { Secret, Team } from '@redkubes/otomi-api-client-axios'
+import { Secret } from '@redkubes/otomi-api-client-axios'
 import { getSecretSchema, getSecretUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
@@ -12,17 +12,16 @@ interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
   secret?: Secret
-  team?: Team
 }
 
-export default ({ onSubmit, onDelete, secret, team }: Props): React.ReactElement => {
+export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
   const {
     user: { roles, isAdmin },
     oboTeamId,
   } = useSession()
 
   const crudOperation = 'create'
-  const schema = getSecretSchema(team)
+  const schema = getSecretSchema()
   const uiSchema = getSecretUiSchema(schema, roles as any, crudOperation)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)

@@ -10,7 +10,6 @@ export default (): React.ReactElement => {
   const {
     sess: {
       user: { isAdmin },
-      clusters,
     },
     tid,
   } = useAuthz()
@@ -23,8 +22,6 @@ export default (): React.ReactElement => {
   const team: Team = !(teamsLoading || teamsError) && find(teams, { id: tid })
   const err = servicesError || teamsError
   const loading = servicesLoading || teamsLoading
-  const comp = !(err || loading) && (
-    <Dashboard services={services} team={team} teams={teams} clusters={clusters as any} />
-  )
+  const comp = !(err || loading) && <Dashboard services={services} team={team} teams={teams} />
   return <PaperLayout loading={loading} comp={comp} />
 }

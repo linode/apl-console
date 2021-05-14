@@ -11,24 +11,24 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  team: any
   service?: Service
   secrets: Secret[]
+  teamId: string
 }
 
-export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.ReactElement => {
+export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
   const {
-    clusters,
     user: { roles, isAdmin },
+    cluster,
+    dns,
   } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
-    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${team.id}` : ''
-    const clusterSuffix = inData && inData.clusterId ? `.${inData.clusterId.split('/')[1]}` : ''
-    const defaultSubdomain = `${teamSubdomain}${clusterSuffix}`
+    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
+    const defaultSubdomain = teamSubdomain
     const formData = { ...inData }
     if (!isEmpty(formData.ingress)) {
       if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
@@ -37,9 +37,11 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
         formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
       }
     }
-    const newSchema = getServiceSchema(team, clusters, formData, secrets)
+    const newSchema = getServiceSchema(dns, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create'))
+    setUiSchema(
+      getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create', cluster.provider.toString()),
+    )
     setData(formData)
     setDirty(!isEqual(formData, service))
   }
@@ -55,7 +57,7 @@ export default ({ onSubmit, onDelete, team, service, secrets }: Props): React.Re
       title={
         <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
           {data && data.id ? `Service: ${data.name}` : 'New Service'}
-          {isAdmin && team ? ` (team ${team.id})` : ''}
+          {isAdmin && teamId ? ` (team ${teamId})` : ''}
         </h1>
       }
       key='createService'

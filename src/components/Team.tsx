@@ -15,7 +15,6 @@ interface Props {
 
 export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
   const {
-    clusters,
     user: { roles },
   } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
@@ -30,7 +29,7 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
   }
-  const schema = getTeamSchema(clusters, data)
+  const schema = getTeamSchema(data)
   const uiSchema = getTeamUiSchema(schema, roles, crudMethod)
   return (
     <Form

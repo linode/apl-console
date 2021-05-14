@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Session } from '@redkubes/otomi-api-client-axios'
+import { Cluster, Session } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from './utils/error'
 
 interface Versions {
@@ -9,7 +9,9 @@ interface Versions {
 
 export interface SessionContext extends Session {
   mode: string
-  isAdmin?: boolean
+  isAdmin: boolean
+  cluster: Cluster
+  dns: any
   setSession: CallableFunction
   globalError?: ApiError
   setGlobalError?: CallableFunction
@@ -22,9 +24,9 @@ export interface SessionContext extends Session {
 
 const context = React.createContext<SessionContext>({
   mode: 'ee',
-  clusters: undefined,
+  cluster: undefined,
   core: undefined,
-  currentClusterId: undefined,
+  dns: undefined,
   isAdmin: undefined,
   namespaces: undefined,
   setSession: undefined,

@@ -18,7 +18,6 @@ export default ({
   const { tid } = useAuthz(teamId)
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [team, teamLoading]: any = useApi('getTeam', !!teamId, [teamId])
   const [secret, secretLoading, secretError]: any = useApi('getSecret', !!secretId, [tid, secretId])
   const [createRes, createLoading, createError] = useApi(
     secretId ? 'editSecret' : 'createSecret',
@@ -29,13 +28,13 @@ export default ({
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
     return <Redirect to={`/teams/${tid}/secrets`} />
   }
-  const loading = secretLoading || createLoading || deleteLoading || teamLoading
+  const loading = secretLoading || createLoading || deleteLoading
   const err = secretError || createError || deleteError
   if (createRes && !(createLoading || createError)) {
     return <Redirect to={`/teams/${tid}/secrets`} />
   }
   const comp = !loading && (!err || formdata || secret) && (
-    <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} team={team} />
+    <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} />
   )
   return <PaperLayout loading={loading} comp={comp} />
 }
