@@ -176,7 +176,7 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
   schema.properties.namespace.enum = namespaces
 }
 
-export function getServiceSchema(dns, formData: any, secrets): any {
+export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, dns, formData)
 
@@ -194,10 +194,36 @@ export function getServiceSchema(dns, formData: any, secrets): any {
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
+
   if (secrets.length) {
-    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
-    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
+    const sec = {}
+    secrets.forEach((s) => {
+      if (s.type !== 'generic') return
+      sec[s.name] = {
+        type: 'array',
+        title: s.name,
+        items: {
+          type: 'string',
+          enum: s.entries,
+        },
+        uniqueItems: true,
+      }
+    })
+    schema.properties.ksvc.oneOf[0].properties.secrets = {
+      type: 'object',
+      properties: sec,
+    }
+  } else {
+    schema.properties.ksvc.oneOf[0].properties.secrets = {
+      properties: {
+        empty: {
+          type: 'null',
+          description: 'No applicable secrets',
+        },
+      },
+    }
   }
+
   return schema
 }
 
