@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { entries, get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { find } from 'lodash'
-import { Cluster } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 export type AclAction =

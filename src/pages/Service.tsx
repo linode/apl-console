@@ -1,4 +1,4 @@
-import { omit } from 'lodash'
+import { cloneDeep, omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Service from '../components/Service'
@@ -8,6 +8,34 @@ import PaperLayout from '../layouts/Paper'
 interface Params {
   teamId?: string
   serviceId?: string
+}
+
+function convertDataFromServer(input) {
+  const data = cloneDeep(input)
+  if (data && data.ksvc.serviceType === 'ksvc') {
+    const secrets = {}
+    data.ksvc.secrets.forEach((secret) => {
+      secrets[secret.name] = secret.entries
+    })
+    data.ksvc.secrets = secrets
+  }
+  return data
+}
+
+function convertDataFromClient(formData) {
+  if (!formData) return formData
+  const secrets = []
+  const data = cloneDeep(formData)
+  if (formData.ksvc.serviceType === 'ksvc') {
+    Object.keys(data.ksvc.secrets).forEach((key) => {
+      secrets.push({
+        name: key,
+        entries: data.ksvc.secrets[key],
+      })
+    })
+  }
+  data.ksvc.secrets = secrets
+  return omit(data, ['id', 'teamId'])
 }
 
 export default ({
@@ -23,7 +51,7 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
     !!formdata,
-    serviceId ? [tid, serviceId, omit(formdata, ['id', 'teamId'])] : [tid, omit(formdata, ['id', 'teamId'])],
+    serviceId ? [tid, serviceId, convertDataFromClient(formdata)] : [tid, convertDataFromClient(formdata)],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -34,7 +62,7 @@ export default ({
   const comp = !loading && (!err || formdata || service) && (
     <Service
       teamId={tid}
-      service={formdata || service}
+      service={formdata || convertDataFromServer(service)}
       secrets={secrets}
       onSubmit={setFormdata}
       onDelete={setDeleteId}

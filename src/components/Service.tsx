@@ -1,7 +1,5 @@
 import { Box, Button } from '@material-ui/core'
 import { isEmpty, isEqual } from 'lodash/lang'
-import omit from 'lodash/omit'
-import cloneDeep from 'lodash/cloneDeep'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
 import Form from './rjsf/Form'
@@ -52,18 +50,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     return null
   }
   const handleSubmit = ({ formData }) => {
-    const secrets = []
-    if (formData.serviceType === 'ksvc') {
-      const data = cloneDeep(formData)
-      Object.entries(data.ksvc.secrets).forEach((key, value) => {
-        secrets.push({
-          name: key,
-          entries: value,
-        })
-      })
-    }
-    data.ksvc.secrets = secrets
-    onSubmit(omit(data, 'id', 'teamId'))
+    onSubmit(formData)
   }
   return (
     <Form
