@@ -56,7 +56,7 @@ export default ({ header, settings, onSubmit, schema }: Props): React.ReactEleme
   const [data, setData]: any = useState(settings)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    setData(formData)
+    setData({ ...settings, [header]: formData })
     setDirty(!isEqual(formData, settings))
   }
 
