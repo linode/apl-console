@@ -10,17 +10,59 @@ import {
   AccordionActions,
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import { Settings } from '@redkubes/otomi-api-client-axios'
+import {
+  SettingsAlerts,
+  SettingsAlertsEmail,
+  SettingsAlertsMsteams,
+  SettingsAlertsSlack,
+  SettingsAzure,
+  SettingsAzureAppgw,
+  SettingsAzureKeyVault,
+  SettingsCustomer,
+  SettingsGoogle,
+  SettingsOidc,
+  SettingsOtomi,
+  SettingsOtomiAddons,
+  SettingsOtomiAddonsConftest,
+  SettingsSmtp,
+} from '@redkubes/otomi-api-client-axios'
+import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
+
+type Settings =
+  | SettingsAlerts
+  | SettingsAlertsEmail
+  | SettingsAlertsMsteams
+  | SettingsAlertsSlack
+  | SettingsAzure
+  | SettingsAzureAppgw
+  | SettingsAzureKeyVault
+  | SettingsCustomer
+  | SettingsGoogle
+  | SettingsOidc
+  | SettingsOtomi
+  | SettingsOtomiAddons
+  | SettingsOtomiAddonsConftest
+  | SettingsSmtp
 
 interface Props {
   header: string
-  formData: any
-  setFormData: React.Dispatch<React.SetStateAction<boolean>>
+  settings: Settings
+  onSubmit: CallableFunction
   schema: any
 }
 
-export default ({ header, formData, setFormData, schema }: Props): React.ReactElement => {
+export default ({ header, settings, onSubmit, schema }: Props): React.ReactElement => {
+  const [data, setData]: any = useState(settings)
+  const [dirty, setDirty] = useState(false)
+  const handleChange = ({ formData }) => {
+    setData(formData)
+    setDirty(!isEqual(formData, settings))
+  }
+
+  const handleSubmit = ({ formData }) => {
+    onSubmit(formData)
+  }
   return (
     <Accordion TransitionProps={{ unmountOnExit: true }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -28,9 +70,9 @@ export default ({ header, formData, setFormData, schema }: Props): React.ReactEl
       </AccordionSummary>
       <AccordionDetails>
         <Container>
-          <Form schema={schema} formData={formData} onSubmit={(e) => setFormData(e.formData)} aria-label='Input'>
+          <Form schema={schema} formData={settings} onSubmit={handleSubmit} onChange={handleChange} aria-label='Input'>
             <Box display='flex' flexDirection='row-reverse' m={1}>
-              <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team'>
+              <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team' disabled={!dirty}>
                 Submit
               </Button>
             </Box>
