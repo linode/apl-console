@@ -66,7 +66,7 @@ export default ({ header, settings, onSubmit, schema }: Props): React.ReactEleme
   return (
     <Accordion TransitionProps={{ unmountOnExit: true }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>{header.charAt(0).toUpperCase() + header.slice(1)}</Typography>
+        <Typography>{header}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Container>
