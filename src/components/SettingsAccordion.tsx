@@ -53,24 +53,30 @@ interface Props {
 }
 
 export default ({ header, settings, onSubmit, schema }: Props): React.ReactElement => {
-  const [data, setData]: any = useState(settings)
+  const [data, setData]: any = useState(settings[header])
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    setData({ ...settings, [header]: formData })
+    setData(formData)
     setDirty(!isEqual(formData, settings))
   }
 
   const handleSubmit = ({ formData }) => {
-    onSubmit(formData)
+    onSubmit({ ...settings, [header]: formData })
   }
   return (
-    <Accordion TransitionProps={{ unmountOnExit: true }}>
+    <Accordion>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>{header}</Typography>
       </AccordionSummary>
       <AccordionDetails>
         <Container>
-          <Form schema={schema} formData={settings} onSubmit={handleSubmit} onChange={handleChange} aria-label='Input'>
+          <Form
+            schema={schema}
+            formData={settings[header]}
+            onSubmit={handleSubmit}
+            onChange={handleChange}
+            aria-label='Input'
+          >
             <Box display='flex' flexDirection='row-reverse' m={1}>
               <Button variant='contained' color='primary' type='submit' data-cy='button-submit-team' disabled={!dirty}>
                 Submit
