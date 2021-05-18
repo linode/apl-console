@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { isEqual, values } from 'lodash'
 import PaperLayout from '../layouts/Paper'
 import SettingsConsoleList from '../components/SettingsConsoleList'
 import SettingsAccordion from '../components/SettingsAccordion'
@@ -10,7 +9,7 @@ export default (): React.ReactElement => {
   const [settings, getLoading] = useApi('getSettings')
   const [formData, setFormData] = useState()
 
-  const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])
+  const editLoading = useApi('editSettings', !!formData, [formData])[1]
   const loading = getLoading || editLoading
 
   return (

@@ -1,14 +1,6 @@
 import React, { useState } from 'react'
 import Accordion from '@material-ui/core/Accordion'
-import {
-  AccordionDetails,
-  AccordionSummary,
-  Typography,
-  Box,
-  Button,
-  Container,
-  AccordionActions,
-} from '@material-ui/core'
+import { AccordionDetails, AccordionSummary, Typography, Box, Button, Container } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   SettingsAlerts,
