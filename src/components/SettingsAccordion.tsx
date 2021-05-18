@@ -57,11 +57,7 @@ export default ({ header, settings, onSubmit, schema }: Props): React.ReactEleme
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
     setData(formData)
-    setDirty(!isEqual(formData, settings))
-  }
-
-  const handleSubmit = ({ formData }) => {
-    onSubmit({ ...settings, [header]: formData })
+    setDirty(!isEqual(formData, settings[header]))
   }
   return (
     <Accordion>
@@ -72,8 +68,8 @@ export default ({ header, settings, onSubmit, schema }: Props): React.ReactEleme
         <Container>
           <Form
             schema={schema}
-            formData={settings[header]}
-            onSubmit={handleSubmit}
+            formData={data}
+            onSubmit={(e) => onSubmit({ ...settings, [header]: e.formData })}
             onChange={handleChange}
             aria-label='Input'
           >
