@@ -27,6 +27,7 @@ import {
   SettingsSmtp,
 } from '@redkubes/otomi-api-client-axios'
 import { isEqual } from 'lodash'
+import { JSONSchema7 } from 'json-schema'
 import Form from './rjsf/Form'
 
 type Settings =
@@ -49,7 +50,7 @@ interface Props {
   header: string
   settings: Settings
   onSubmit: CallableFunction
-  schema: any
+  schema: JSONSchema7
 }
 
 export default ({ header, settings, onSubmit, schema }: Props): React.ReactElement => {
