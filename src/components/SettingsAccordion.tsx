@@ -13,13 +13,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import {
   SettingsAlerts,
   SettingsAlertsEmail,
-  SettingsAlertsMsteams,
-  SettingsAlertsSlack,
   SettingsAzure,
   SettingsAzureAppgw,
-  SettingsAzureKeyVault,
   SettingsCustomer,
-  SettingsGoogle,
   SettingsOidc,
   SettingsOtomi,
   SettingsOtomiAddons,
@@ -33,13 +29,9 @@ import Form from './rjsf/Form'
 type Settings =
   | SettingsAlerts
   | SettingsAlertsEmail
-  | SettingsAlertsMsteams
-  | SettingsAlertsSlack
   | SettingsAzure
   | SettingsAzureAppgw
-  | SettingsAzureKeyVault
   | SettingsCustomer
-  | SettingsGoogle
   | SettingsOidc
   | SettingsOtomi
   | SettingsOtomiAddons
