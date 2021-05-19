@@ -6,10 +6,10 @@ import { useApi } from '../hooks/api'
 import { getSettingsSchema } from '../api-spec'
 
 export default (): React.ReactElement => {
-  const [settings, getLoading] = useApi('getSettings')
+  const [settings, settingsLoading] = useApi('getSettings')
   const [formData, setFormData] = useState()
 
-  const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])[1]
+  const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])
   const loading = settingsLoading || editLoading
 
   return (
