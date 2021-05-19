@@ -12,23 +12,20 @@ export default ({ settings }: Props): React.ReactElement => {
     {
       id: 'url',
       label: 'Url',
-      renderer: (url: string) => (
-        <MuiLink href={url} target='_blank' rel='noopener'>
-          {url}
-        </MuiLink>
-      ),
+      renderer: (cluster: any) => {
+        const { url, name } = cluster
+        return (
+          <MuiLink href={url} target='_blank' rel='noopener'>
+            {name}
+          </MuiLink>
+        )
+      },
     },
   ]
   return (
     <>
       <h1 data-cy='h1-clusters-page'>Clusters</h1>
-      <EnhancedTable
-        disableSelect
-        headCells={headCells}
-        orderByStart='name'
-        rows={settings.otomiInstanceUrls}
-        idKey='id'
-      />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={settings.clusters} idKey='id' />
     </>
   )
 }
