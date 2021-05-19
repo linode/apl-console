@@ -9,8 +9,8 @@ export default (): React.ReactElement => {
   const [settings, getLoading] = useApi('getSettings')
   const [formData, setFormData] = useState()
 
-  const editLoading = useApi('editSettings', !!formData, [formData])[1]
-  const loading = getLoading || editLoading
+  const [editRes, editLoading] = useApi('editSettings', !!formData, [formData])[1]
+  const loading = settingsLoading || editLoading
 
   return (
     <PaperLayout
