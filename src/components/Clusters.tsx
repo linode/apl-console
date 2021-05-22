@@ -21,6 +21,14 @@ export default ({ settings }: Props): React.ReactElement => {
         )
       },
     },
+    {
+      id: 'name',
+      label: 'Name',
+    },
+    {
+      id: 'provider',
+      label: 'Provider',
+    },
   ]
   return (
     <>
