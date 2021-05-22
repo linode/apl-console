@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { entries, get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
+import { Settings } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 export type AclAction =
@@ -164,8 +165,8 @@ export function setSpec(inSpec): void {
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
   if (!formData || isEmpty(formData.ingress)) return
-  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.dnsZones
-  if (dns.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.dnsZones[0]
+  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.zones
+  if (dns.zones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.zones[0]
   schema.properties.ingress.oneOf[1].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
   schema.properties.ingress.oneOf[1].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
 }
