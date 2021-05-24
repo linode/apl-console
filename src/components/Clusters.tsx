@@ -18,7 +18,7 @@ export default (): React.ReactElement => {
     },
     {
       id: 'url',
-      label: 'Url',
+      label: 'URL',
       renderer: (c: Cluster) => {
         const { domainSuffix } = c
         const domain = `otomi.${domainSuffix}`

@@ -10,33 +10,34 @@ interface Params {
   serviceId?: string
 }
 
-function convertDataFromServer(input) {
-  const data = cloneDeep(input)
-  if (data && data.ksvc.serviceType === 'ksvc') {
-    const secrets = {}
-    data.ksvc.secrets.forEach((secret) => {
-      secrets[secret.name] = secret.entries
-    })
-    data.ksvc.secrets = secrets
-  }
-  return data
-}
+// function convertDataFromServer(input) {
+//   const data = cloneDeep(input)
+//   if (data && data.ksvc.serviceType === 'ksvc') {
+//     const secrets = {}
+//     const serverSecrets = data.ksvc.secrets || []
+//     serverSecrets.forEach((secret) => {
+//       secrets[secret.name] = secret.entries
+//     })
+//     data.ksvc.secrets = secrets
+//   }
+//   return data
+// }
 
-function convertDataFromClient(formData) {
-  if (!formData) return formData
-  const secrets = []
-  const data = cloneDeep(formData)
-  if (formData.ksvc.serviceType === 'ksvc') {
-    Object.keys(data.ksvc.secrets).forEach((key) => {
-      secrets.push({
-        name: key,
-        entries: data.ksvc.secrets[key],
-      })
-    })
-  }
-  data.ksvc.secrets = secrets
-  return omit(data, ['id', 'teamId'])
-}
+// function convertDataFromClient(formData) {
+//   if (!formData) return formData
+//   const secrets = []
+//   const data = cloneDeep(formData)
+//   if (formData.ksvc.serviceType === 'ksvc') {
+//     Object.keys(data.ksvc.secrets).forEach((key) => {
+//       secrets.push({
+//         name: key,
+//         entries: data.ksvc.secrets[key],
+//       })
+//     })
+//   }
+//   data.ksvc.secrets = secrets
+//   return omit(data, ['id', 'teamId'])
+// }
 
 export default ({
   match: {
@@ -51,7 +52,8 @@ export default ({
   const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
     !!formdata,
-    serviceId ? [tid, serviceId, convertDataFromClient(formdata)] : [tid, convertDataFromClient(formdata)],
+    // serviceId ? [tid, serviceId, convertDataFromClient(formdata)] : [tid, convertDataFromClient(formdata)],
+    serviceId ? [tid, serviceId, omit(formdata, ['id', 'teamId'])] : [tid, formdata],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -62,7 +64,8 @@ export default ({
   const comp = !loading && (!err || formdata || service) && (
     <Service
       teamId={tid}
-      service={formdata || convertDataFromServer(service)}
+      // service={formdata || convertDataFromServer(service)}
+      service={formdata || service}
       secrets={secrets}
       onSubmit={setFormdata}
       onDelete={setDeleteId}

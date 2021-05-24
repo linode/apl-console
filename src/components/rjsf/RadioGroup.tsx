@@ -6,6 +6,7 @@ interface CustomRadioGroupProps extends RadioGroupProps {
   name: string
   readonly: boolean
   onChange
+  inline?: boolean
 }
 
 export default (props: CustomRadioGroupProps): React.ReactElement => {
@@ -16,10 +17,12 @@ export default (props: CustomRadioGroupProps): React.ReactElement => {
     options: { enumOptions },
     name,
     readonly,
+    inline,
   } = props
   return (
     <FormControl component='fieldset'>
       <RadioGroup
+        row={!!inline}
         aria-label={name}
         name={name}
         value={value}

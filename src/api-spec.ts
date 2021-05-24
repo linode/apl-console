@@ -105,9 +105,7 @@ export function getServiceUiSchema(
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': CustomRadioGroup,
-      'ui:options': {
-        inline: true,
-      },
+      'ui:options': { inline: true },
       internal: { 'ui:widget': 'hidden' },
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : undefined,
@@ -121,19 +119,19 @@ export function getServiceUiSchema(
     },
     ksvc: {
       'ui:widget': CustomRadioGroup,
-      'ui:options': {
-        inline: true,
-      },
+      'ui:options': { inline: true },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
         'ui:widget': CustomRadioGroup,
+        'ui:options': { inline: true },
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false } },
-      // secrets: {
-      //   'ui:widget': 'checkboxes',
-      // },
       annotations: { 'ui:options': { orderable: false } },
+      secrets: {
+        // 'ui:widget': 'checkboxes',
+        'ui:options': { orderable: false, addable: false, removable: false },
+      },
     },
   }
 
@@ -192,36 +190,13 @@ export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
-
   if (secrets.length) {
-    const sec = {}
-    secrets.forEach((s) => {
-      if (s.type !== 'generic') return
-      sec[s.name] = {
-        type: 'array',
-        title: s.name,
-        items: {
-          type: 'string',
-          enum: s.entries,
-        },
-        uniqueItems: true,
-      }
-    })
-    schema.properties.ksvc.oneOf[0].properties.secrets = {
-      type: 'object',
-      properties: sec,
-    }
+    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
+    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   } else {
-    schema.properties.ksvc.oneOf[0].properties.secrets = {
-      properties: {
-        empty: {
-          type: 'null',
-          description: 'No applicable secrets',
-        },
-      },
-    }
+    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = []
+    schema.properties.ksvc.oneOf[0].properties.secrets.readOnly = true
   }
-
   return schema
 }
 
