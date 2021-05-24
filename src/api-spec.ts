@@ -165,10 +165,10 @@ export function setSpec(inSpec): void {
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
   if (!formData || isEmpty(formData.ingress)) return
-  schema.properties.ingress.oneOf[1].properties.domain.enum = dns.zones
+  schema.properties.ingress.oneOf[0].properties.domain.enum = dns.zones
   if (dns.zones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.zones[0]
-  schema.properties.ingress.oneOf[1].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
-  schema.properties.ingress.oneOf[1].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
+  schema.properties.ingress.oneOf[0].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
+  schema.properties.ingress.oneOf[0].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
@@ -178,16 +178,15 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
 export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, dns, formData)
-
   if (!get(formData, 'ingress.hasCert', '')) {
-    unset(schema, 'properties.ingress.oneOf[1].properties.certName')
-    unset(schema, 'properties.ingress.oneOf[1].properties.certSelect')
+    unset(schema, 'properties.ingress.oneOf[0].properties.certName')
+    unset(schema, 'properties.ingress.oneOf[0].properties.certSelect')
   } else {
     const subdomain = get(formData, 'ingress.subdomain', '')
     const domain = get(formData, 'ingress.domain', '')
     if (formData.ingress.certSelect) {
       const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
-      schema.properties.ingress.oneOf[1].properties.certName.enum = tlsSecretNames
+      schema.properties.ingress.oneOf[0].properties.certName.enum = tlsSecretNames
       if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
     } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
       formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
