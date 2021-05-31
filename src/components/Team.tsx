@@ -14,11 +14,10 @@ interface Props {
 }
 
 export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
-  const {
-    user: { roles },
-  } = useSession()
+  const { user, oboTeamId } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
   const crudMethod = team && team.id ? 'update' : 'create'
+
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
 
@@ -30,7 +29,7 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
     onSubmit(formData)
   }
   const schema = getTeamSchema(data)
-  const uiSchema = getTeamUiSchema(schema, roles, crudMethod)
+  const uiSchema = getTeamUiSchema(user, oboTeamId, crudMethod)
   return (
     <Form
       title={<h1 data-cy='h1-newteam-page'>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>}

@@ -1,120 +1,13 @@
-import { applyAclToUiSchema, Schema } from '../api-spec'
-
-it('should make a field readonly since there is x-acl field', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-        'x-acl': {},
-      },
-      f2: {
-        type: 'string',
-      },
-    },
-  }
-
-  const expectedUiSchema = {
-    f1: { 'ui:readonly': true },
-  }
-
-  const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, new Set(['anonymous']), 'create')
-  expect(uiSchema).toEqual(expectedUiSchema)
-})
-
-it('should not add any readonly property since there is no x-acl', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-      },
-    },
-  }
-
-  const expectedUiSchema = {}
-  const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, new Set(['anonymous']), 'create')
-  expect(uiSchema).toEqual(expectedUiSchema)
-})
-
-it('should make a field readonly due to single read permission', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-        'x-acl': { admin: ['read'] },
-      },
-    },
-  }
-
-  const expectedUiSchema = {
-    f1: { 'ui:readonly': true },
-  }
-
-  const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'create')
-  expect(uiSchema).toEqual(expectedUiSchema)
-})
-
-it('should not make a field readonly due to write permission', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-        'x-acl': { admin: ['update'] },
-      },
-    },
-  }
-
-  const expectedUiSchema = {
-    f1: { 'ui:readonly': false },
-  }
-
-  const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'update')
-  expect(uiSchema).toEqual(expectedUiSchema)
-})
+import { applyAclToUiSchema } from '../api-spec'
 
 it('should not make a field readonly due to read and write permissions', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-        'x-acl': { admin: ['read', 'update'] },
-      },
-    },
-  }
-
+  const deniedAttributes = ['a.b.c']
   const expectedUiSchema = {
-    f1: { 'ui:readonly': false },
+    a: { b: { c: { 'ui:readonly': true } } },
   }
-
   const uiSchema = {}
-  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'update')
-  expect(uiSchema).toEqual(expectedUiSchema)
-})
 
-it('should not overwrite existing uiSchema properties', () => {
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      f1: {
-        type: 'string',
-        'x-acl': { admin: ['read'] },
-      },
-    },
-  }
-
-  const expectedUiSchema = {
-    f1: { existing: 1, 'ui:readonly': true },
-  }
-
-  const uiSchema = { f1: { existing: 1 } }
-  applyAclToUiSchema(uiSchema, schema, new Set(['admin']), 'create')
+  // applyAclToUiSchema(uiSchema, deniedAttributes)
+  // expect(uiSchema).toEqual(expectedUiSchema)
   expect(uiSchema).toEqual(expectedUiSchema)
 })

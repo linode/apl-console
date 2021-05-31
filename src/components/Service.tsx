@@ -18,9 +18,11 @@ interface Props {
 
 export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
   const {
-    user: { roles, isAdmin },
+    user: { roles, isAdmin, authz },
+    user,
     cluster,
     dns,
+    oboTeamId,
   } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
@@ -40,7 +42,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     const newSchema = getServiceSchema(dns, formData, secrets)
     setSchema(newSchema)
     setUiSchema(
-      getServiceUiSchema(newSchema, roles, formData, formData.id ? 'update' : 'create', cluster.provider.toString()),
+      getServiceUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
     )
     setData(formData)
     setDirty(!isEqual(formData, service))

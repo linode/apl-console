@@ -26,7 +26,7 @@ export default ({ settings }: Props): React.ReactElement => {
         disableSelect
         headCells={headCells}
         orderByStart='name'
-        rows={settings.otomiInstanceUrls}
+        rows={settings.otomi.additionalClusters}
         idKey='id'
       />
     </>

@@ -16,13 +16,14 @@ interface Props {
 
 export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
   const {
-    user: { roles, isAdmin },
+    user: { roles, isAdmin, authz },
+    user,
     oboTeamId,
   } = useSession()
 
   const crudOperation = 'create'
   const schema = getSecretSchema()
-  const uiSchema = getSecretUiSchema(schema, roles as any, crudOperation)
+  const uiSchema = getSecretUiSchema(user, oboTeamId, crudOperation)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
