@@ -4,6 +4,7 @@ import { isEmpty, cloneDeep } from 'lodash/lang'
 import { User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
+const ingressPublicSchemaPath = 'properties.ingress.oneOf[2].properties.public.properties'
 export type AclAction =
   | 'create'
   | 'create-any'
@@ -83,7 +84,7 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
 
 export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
   const notAws = cloudProvider !== 'aws'
-  const noCert = !formData || !formData.ingress || !formData.ingress.hasCert
+  const noCert = !formData || get(formData, 'ingress.public.hasCert')
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
@@ -95,15 +96,17 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
       'ui:options': {
         inline: true,
       },
-      internal: { 'ui:widget': 'hidden' },
-      certArn: {
-        'ui:widget': noCertArn ? 'hidden' : undefined,
-      },
-      certName: {
-        'ui:widget': noCert ? 'hidden' : undefined,
-      },
-      certSelect: {
-        'ui:widget': noCert ? 'hidden' : undefined,
+      public: {
+        internal: { 'ui:widget': 'hidden' },
+        certArn: {
+          'ui:widget': noCertArn ? 'hidden' : undefined,
+        },
+        certName: {
+          'ui:widget': noCert ? 'hidden' : undefined,
+        },
+        certSelect: {
+          'ui:widget': noCert ? 'hidden' : undefined,
+        },
       },
     },
     ksvc: {
@@ -151,11 +154,14 @@ export function setSpec(inSpec): void {
 }
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
-  if (!formData || isEmpty(formData.ingress)) return
-  schema.properties.ingress.oneOf[0].properties.domain.enum = dns.dnsZones
-  if (dns.dnsZones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.dnsZones[0]
-  schema.properties.ingress.oneOf[0].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
-  schema.properties.ingress.oneOf[0].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
+  const ingressPublicData = get(formData, 'ingress.public')
+
+  if (!formData || isEmpty(ingressPublicData)) return
+  const ingressPublicSchema = get(schema, ingressPublicSchemaPath)
+  ingressPublicSchema.domain.enum = dns.dnsZones
+  if (dns.dnsZones.length === 1 || ingressPublicData.useDefaultSubdomain) ingressPublicData.domain = dns.dnsZones[0]
+  ingressPublicSchema.domain.readOnly = ingressPublicData.useDefaultSubdomain
+  ingressPublicSchema.subdomain.readOnly = ingressPublicData.useDefaultSubdomain
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
@@ -165,19 +171,21 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
 export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, dns, formData)
+  const ingressPublicData = get(formData, 'ingress.public', {})
 
-  if (!get(formData, 'ingress.hasCert', '')) {
-    unset(schema, 'properties.ingress.oneOf[1].properties.certName')
-    unset(schema, 'properties.ingress.oneOf[1].properties.certSelect')
+  if (!ingressPublicData.hasCert) {
+    unset(schema, `${ingressPublicSchemaPath}.certName`)
+    unset(schema, `${ingressPublicSchemaPath}.certSelect`)
   } else {
-    const subdomain = get(formData, 'ingress.subdomain', '')
-    const domain = get(formData, 'ingress.domain', '')
-    if (formData.ingress.certSelect) {
+    const subdomain = get(formData, 'ingress.public.subdomain', '')
+    const domain = get(formData, 'ingress.public.domain', '')
+
+    if (ingressPublicData.certSelect) {
       const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
-      schema.properties.ingress.oneOf[1].properties.certName.enum = tlsSecretNames
-      if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
-    } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
-      formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
+      set(schema, `${ingressPublicSchemaPath}.certName.enum`, tlsSecretNames)
+      if (secrets.length === 1) ingressPublicData.certName = Object.keys(secrets)[0]
+    } else if (!ingressPublicData.certSelect && ingressPublicData.certName === undefined) {
+      ingressPublicData.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
 

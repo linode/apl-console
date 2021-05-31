@@ -15,11 +15,7 @@ interface Props {
 }
 
 export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
-  const {
-    user: { roles, isAdmin, authz },
-    user,
-    oboTeamId,
-  } = useSession()
+  const { user, oboTeamId } = useSession()
 
   const crudOperation = 'create'
   const schema = getSecretSchema()
@@ -39,7 +35,7 @@ export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
       title={
         <h1>
           {data && data.id ? `Secret: ${data.name}` : 'New Secret'}
-          {!isAdmin || oboTeamId ? ` (team ${oboTeamId})` : ''}
+          {!user.isAdmin || oboTeamId ? ` (team ${oboTeamId})` : ''}
         </h1>
       }
       key='createSecret'

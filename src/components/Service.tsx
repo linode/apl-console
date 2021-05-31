@@ -1,5 +1,6 @@
 import { Box, Button } from '@material-ui/core'
-import { isEmpty, isEqual } from 'lodash/lang'
+import isEqual from 'lodash/isEqual'
+import has from 'lodash/has'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
 import Form from './rjsf/Form'
@@ -17,13 +18,7 @@ interface Props {
 }
 
 export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
-  const {
-    user: { roles, isAdmin, authz },
-    user,
-    cluster,
-    dns,
-    oboTeamId,
-  } = useSession()
+  const { user, cluster, dns, oboTeamId } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
@@ -32,11 +27,14 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
     const formData = { ...inData }
-    if (!isEmpty(formData.ingress)) {
-      if (formData.ingress.useDefaultSubdomain || formData.ingress.domain !== data.ingress.domain) {
+    if (has(formData, 'ingress.public')) {
+      if (
+        formData.ingress.public.useDefaultSubdomain ||
+        formData.ingress.public.domain !== data.ingress.public.domain
+      ) {
         // Set default subdomain of domain change
-        formData.ingress = { ...formData.ingress }
-        formData.ingress.subdomain = formData.ingress.useDefaultSubdomain ? defaultSubdomain : ''
+        formData.ingress.public = { ...formData.ingress.public }
+        formData.ingress.public.subdomain = formData.ingress.public.useDefaultSubdomain ? defaultSubdomain : ''
       }
     }
     const newSchema = getServiceSchema(dns, formData, secrets)
@@ -59,7 +57,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       title={
         <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
           {data && data.id ? `Service: ${data.name}` : 'New Service'}
-          {isAdmin && teamId ? ` (team ${teamId})` : ''}
+          {user.isAdmin && teamId ? ` (team ${teamId})` : ''}
         </h1>
       }
       key='createService'
