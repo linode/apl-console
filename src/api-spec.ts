@@ -52,7 +52,8 @@ export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, sc
   if (user.isAdmin) return
 
   get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
-    set(uiSchema, `${path}.ui:readonly`, true)
+    set(uiSchema, `${path}.ui:disabled`, true)
+    set(uiSchema, `${path}.ui:title`, `${path.split('.').pop()} (No permission to set this parameter)`)
   })
 }
 
