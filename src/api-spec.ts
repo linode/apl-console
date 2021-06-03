@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
-import { entries, get, set, unset } from 'lodash/object'
+import { get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { Settings } from '@redkubes/otomi-api-client-axios'
+import { User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
+const ingressPublicSchemaPath = 'properties.ingress.oneOf[2].properties.public.properties'
 export type AclAction =
   | 'create'
   | 'create-any'
@@ -47,29 +48,18 @@ export interface Property {
 
 let spec: OpenApi
 
-export function applyAclToUiSchema(uiSchema: any, schema: Schema, roles: any, crudOperation: string): void {
-  const role = ['team', 'admin'].reduce((role, _role) => {
-    if ((roles as string[]).includes(_role)) role = _role
-    return role
-  })
-  const path = `x-acl.${role}`
-  entries(schema.properties).forEach(([k, v]) => {
-    if (!('x-acl' in v)) {
-      // If there is no x-acl then field is rendered in read-write mode
-      return
-    }
-    const acl: string[] = get(v, path, [])
-    if (acl.length === 0) {
-      set(uiSchema, `${k}.ui:widget`, 'hidden')
-    } else {
-      set(uiSchema, `${k}.ui:readonly`, !acl.includes(crudOperation))
-    }
+export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, schemaName: string): void {
+  if (user.isAdmin) return
+
+  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
+    set(uiSchema, `${path}.ui:readonly`, true)
   })
 }
 
-export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string): any {
+export function getTeamUiSchema(user: User, teamId: string, action: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': action !== 'create' },
     password: { 'ui:widget': 'hidden' },
     alerts: {
       receivers: {
@@ -82,39 +72,41 @@ export function getTeamUiSchema(schema: Schema, roles: any, crudMethod: string):
       },
     },
     azureMonitor: { 'ui:widget': CustomRadioGroup },
+    selfService: {
+      Team: { 'ui:title': 'Team', 'ui:widget': 'checkboxes' },
+      Service: { 'ui:title': 'Service', 'ui:widget': 'checkboxes' },
+    },
   }
 
-  applyAclToUiSchema(uiSchema, schema, roles, crudMethod)
+  applyAclToUiSchema(uiSchema, user, teamId, 'Team')
   return uiSchema
 }
 
-export function getServiceUiSchema(
-  schema: Schema,
-  roles: any,
-  formData,
-  crudMethod: string,
-  cloudProvider: string,
-): any {
+export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
   const notAws = cloudProvider !== 'aws'
-  const noCert = !formData || !formData.ingress || !formData.ingress.hasCert
+  const noCert = !formData?.ingress?.public?.hasCert
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     enabled: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
+    name: { 'ui:autofocus': true, 'ui:readonly': action !== 'create' },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': CustomRadioGroup,
-      'ui:options': { inline: true },
-      internal: { 'ui:widget': 'hidden' },
-      certArn: {
-        'ui:widget': noCertArn ? 'hidden' : undefined,
+      'ui:options': {
+        inline: true,
       },
-      certName: {
-        'ui:widget': noCert ? 'hidden' : undefined,
-      },
-      certSelect: {
-        'ui:widget': noCert ? 'hidden' : undefined,
+      public: {
+        internal: { 'ui:widget': 'hidden' },
+        certArn: {
+          'ui:widget': noCertArn ? 'hidden' : undefined,
+        },
+        certName: {
+          'ui:widget': noCert ? 'hidden' : undefined,
+        },
+        certSelect: {
+          'ui:widget': noCert ? 'hidden' : undefined,
+        },
       },
     },
     ksvc: {
@@ -135,15 +127,15 @@ export function getServiceUiSchema(
     },
   }
 
-  applyAclToUiSchema(uiSchema, schema, roles, crudMethod)
+  applyAclToUiSchema(uiSchema, user, teamId, 'Service')
 
   return uiSchema
 }
 
-export function getSecretUiSchema(schema: Schema, roles: Array<string>, crudMethod: string): any {
+export function getSecretUiSchema(user: User, teamId: string, action: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
+    name: { 'ui:autofocus': true, 'ui:readonly': action !== 'create' },
     teamId: { 'ui:widget': 'hidden' },
     type: { 'ui:widget': 'hidden', description: undefined },
     ca: { 'ui:widget': 'textarea' },
@@ -152,7 +144,7 @@ export function getSecretUiSchema(schema: Schema, roles: Array<string>, crudMeth
     entries: { 'ui:options': { orderable: false } },
   }
 
-  applyAclToUiSchema(uiSchema, schema, roles, crudMethod)
+  applyAclToUiSchema(uiSchema, user, teamId, 'Secret')
 
   return uiSchema
 }
@@ -162,11 +154,14 @@ export function setSpec(inSpec): void {
 }
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
-  if (!formData || isEmpty(formData.ingress)) return
-  schema.properties.ingress.oneOf[0].properties.domain.enum = dns.zones
-  if (dns.zones.length === 1 || formData.ingress.useDefaultSubdomain) formData.ingress.domain = dns.zones[0]
-  schema.properties.ingress.oneOf[0].properties.domain.readOnly = formData.ingress.useDefaultSubdomain
-  schema.properties.ingress.oneOf[0].properties.subdomain.readOnly = formData.ingress.useDefaultSubdomain
+  const ingressPublicData = formData?.ingress?.public
+
+  if (!formData || isEmpty(ingressPublicData)) return
+  const ingressPublicSchema = get(schema, ingressPublicSchemaPath)
+  ingressPublicSchema.domain.enum = dns.dnsZones
+  if (dns.dnsZones.length === 1 || ingressPublicData.useDefaultSubdomain) ingressPublicData.domain = dns.dnsZones[0]
+  ingressPublicSchema.domain.readOnly = ingressPublicData.useDefaultSubdomain
+  ingressPublicSchema.subdomain.readOnly = ingressPublicData.useDefaultSubdomain
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
@@ -176,25 +171,28 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
 export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   addDomainEnumField(schema, dns, formData)
-  if (!get(formData, 'ingress.hasCert', '')) {
-    unset(schema, 'properties.ingress.oneOf[0].properties.certName')
-    unset(schema, 'properties.ingress.oneOf[0].properties.certSelect')
+  const ingressPublicData = get(formData, 'ingress.public', {})
+
+  if (!ingressPublicData.hasCert) {
+    unset(schema, `${ingressPublicSchemaPath}.certName`)
+    unset(schema, `${ingressPublicSchemaPath}.certSelect`)
   } else {
-    const subdomain = get(formData, 'ingress.subdomain', '')
-    const domain = get(formData, 'ingress.domain', '')
-    if (formData.ingress.certSelect) {
+    const subdomain = get(formData, 'ingress.public.subdomain', '')
+    const domain = get(formData, 'ingress.public.domain', '')
+
+    if (ingressPublicData.certSelect) {
       const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
-      schema.properties.ingress.oneOf[0].properties.certName.enum = tlsSecretNames
-      if (secrets.length === 1) formData.ingress.certName = Object.keys(secrets)[0]
-    } else if (!formData.ingress.certSelect && formData.ingress.certName === undefined) {
-      formData.ingress.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
+      set(schema, `${ingressPublicSchemaPath}.certName.enum`, tlsSecretNames)
+      if (secrets.length === 1) ingressPublicData.certName = Object.keys(secrets)[0]
+    } else if (!ingressPublicData.certSelect && ingressPublicData.certName === undefined) {
+      ingressPublicData.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
     schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   } else {
-    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = []
+    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = undefined
     schema.properties.ksvc.oneOf[0].properties.secrets.readOnly = true
   }
   return schema
@@ -213,6 +211,10 @@ export function getTeamSchema(team): any {
     }
   })
   return schema
+}
+
+export function getTeamSelfServiceSchema(): any {
+  return spec.components.schemas.TeamSelfService
 }
 
 export function getSettingsSchema(): any {

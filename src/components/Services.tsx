@@ -1,6 +1,5 @@
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
-import { isEmpty } from 'lodash/lang'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Team, Service } from '@redkubes/otomi-api-client-axios'
@@ -22,11 +21,12 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.Reac
 }
 
 const renderPublicUrl = (row): React.ReactElement | string => {
-  if (isEmpty(row.ingress)) {
+  if (!row?.ingress?.public) {
     return ''
   }
-  const url = `${row.ingress.subdomain ? `${row.ingress.subdomain}.` : ''}${row.ingress.domain}${
-    row.ingress.path || ''
+  const ingressPublic = row.ingress.public
+  const url = `${ingressPublic.subdomain ? `${ingressPublic.subdomain}.` : ''}${ingressPublic.domain}${
+    ingressPublic.path || ''
   }`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
