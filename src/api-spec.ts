@@ -53,7 +53,6 @@ export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, sc
 
   get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
     set(uiSchema, `${path}.ui:readonly`, true)
-    set(uiSchema, `${path}.ui:title`, `${path.split('.').pop()} (No permission to configure it)`)
   })
 }
 
