@@ -193,7 +193,7 @@ export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
     const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
     schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
   } else {
-    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = []
+    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = undefined
     schema.properties.ksvc.oneOf[0].properties.secrets.readOnly = true
   }
   return schema
