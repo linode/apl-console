@@ -21,7 +21,7 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.Reac
 }
 
 const renderPublicUrl = (row): React.ReactElement | string => {
-  if (!row?.ingress.public) {
+  if (!row?.ingress?.public) {
     return ''
   }
   const ingressPublic = row.ingress.public

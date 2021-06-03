@@ -84,7 +84,7 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
 
 export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
   const notAws = cloudProvider !== 'aws'
-  const noCert = !formData || formData?.ingress?.public?.hasCert
+  const noCert = !formData?.ingress?.public?.hasCert
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
