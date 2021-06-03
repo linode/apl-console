@@ -84,7 +84,7 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
 
 export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
   const notAws = cloudProvider !== 'aws'
-  const noCert = !formData || get(formData, 'ingress.public.hasCert')
+  const noCert = !formData || formData?.ingress?.public?.hasCert
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
@@ -154,7 +154,7 @@ export function setSpec(inSpec): void {
 }
 
 function addDomainEnumField(schema: Schema, dns: any, formData): void {
-  const ingressPublicData = get(formData, 'ingress.public')
+  const ingressPublicData = formData?.ingress?.public
 
   if (!formData || isEmpty(ingressPublicData)) return
   const ingressPublicSchema = get(schema, ingressPublicSchemaPath)
