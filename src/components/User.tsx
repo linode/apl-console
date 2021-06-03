@@ -39,12 +39,15 @@ export default (): React.ReactElement => {
   const history = useHistory()
   const {
     mode,
+    cluster,
+    clusters,
     user: { email, teams: userTeams, isAdmin },
     teams: allTeams,
     oboTeamId,
     setOboTeamId,
   } = useSession()
   let teams: any[]
+  const allClusters = [...clusters, cluster]
   if (isAdmin)
     teams = (allTeams as any).map(({ id }) => ({
       id,
@@ -79,8 +82,38 @@ export default (): React.ReactElement => {
     history.push(url)
     event.preventDefault()
   }
+  const handleChangeCluster = (event) => {
+    const id = event.target.value
+    const [provider, name] = id.split('-')
+    const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
+    window.location.href = `https://otomi.${domainSuffix}`
+  }
   return (
     <>
+      <Typography variant='body1'>cluster:</Typography>
+      <Select
+        color='secondary'
+        disableUnderline
+        value={`${cluster.provider}-${cluster.name}`}
+        onChange={handleChangeCluster}
+        className={classes.select}
+        data-cy='select-cluster'
+        inputProps={{
+          classes: {
+            icon: classes.icon,
+          },
+        }}
+      >
+        {allClusters.map(({ name, provider }) => {
+          const id = `${provider}-${name}`
+          return (
+            <MenuItem key={id} value={id} data-cy={`select-cluster-${id}`}>
+              {id}
+            </MenuItem>
+          )
+        })}
+      </Select>
+      &nbsp;
       <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'

@@ -11,6 +11,7 @@ export interface SessionContext extends Session {
   mode: string
   isAdmin: boolean
   cluster: Cluster
+  clusters: Cluster[]
   dns: any
   setSession: CallableFunction
   globalError?: ApiError
@@ -25,6 +26,7 @@ export interface SessionContext extends Session {
 const context = React.createContext<SessionContext>({
   mode: 'ee',
   cluster: undefined,
+  clusters: undefined,
   core: undefined,
   dns: undefined,
   isAdmin: undefined,

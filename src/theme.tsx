@@ -98,6 +98,9 @@ const getOverrides = (c: any): ThemeOptions => {
     overrides: {
       MuiCssBaseline: {},
       MuiButton: {
+        label: {
+          color: 'primary',
+        },
         root: {
           borderRadius: '2em',
         },
@@ -229,6 +232,9 @@ export const mainStyles = makeStyles((theme) => ({
       },
       '.MuiFormControl-root:has(> input)': {
         display: 'none',
+      },
+      '.MuiButton-textSecondary': {
+        color: theme.palette.primary,
       },
       h5: {
         fontSize: '1.2rem',

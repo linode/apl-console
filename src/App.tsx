@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const AppEE = () => {
-  const [globalError, setGlobalError] = useState('globalError')
+  const [globalError, setGlobalError] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
@@ -112,9 +112,11 @@ const AppEE = () => {
 }
 
 const AppCE = () => {
+  const [globalError, setGlobalError] = useState()
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const [session, setSession] = useState() as any
+  const [session, setSession, sessionError] = useState() as any
+  if (sessionError) setGlobalError(sessionError)
   setThemeType(themeType)
   useEffect(() => {
     const loadSession: any = async () => {
@@ -158,6 +160,8 @@ const AppCE = () => {
             value={{
               ...session,
               mode,
+              globalError,
+              setGlobalError,
               oboTeamId,
               setOboTeamId,
               themeType,

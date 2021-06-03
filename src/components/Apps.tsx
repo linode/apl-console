@@ -29,7 +29,7 @@ export default ({ teamId }: Props): React.ReactElement => {
         domain ||
         `${isShared || ownHost ? host || name : 'apps'}${
           !(isShared || teamId === 'admin') ? `.${teamPrefix}${teamId}` : ''
-        }.${cluster.domain}/${isShared || ownHost ? '' : `${host || name}/`}`
+        }.${cluster.domainSuffix}/${isShared || ownHost ? '' : `${host || name}/`}`
       }${(path || '').replace('#NS#', `team-${teamId}`)}`
       // eslint-disable-next-line consistent-return
       return (
