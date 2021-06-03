@@ -1,6 +1,5 @@
 import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
-import has from 'lodash/has'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
 import Form from './rjsf/Form'
@@ -27,7 +26,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
     const formData = { ...inData }
-    if (has(formData, 'ingress.public')) {
+    if (formData?.ingress?.public) {
       if (
         formData.ingress.public.useDefaultSubdomain ||
         formData.ingress.public.domain !== data.ingress.public.domain

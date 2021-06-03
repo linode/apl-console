@@ -3,7 +3,6 @@ import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import { has } from 'lodash'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
@@ -22,7 +21,7 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.Reac
 }
 
 const renderPublicUrl = (row): React.ReactElement | string => {
-  if (!has(row, 'ingress.public')) {
+  if (row?.ingress.public) {
     return ''
   }
   const ingressPublic = row.ingress.public
