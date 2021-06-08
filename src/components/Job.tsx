@@ -1,10 +1,10 @@
 import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
-import { Service, Secret } from '@redkubes/otomi-api-client-axios'
+import { Job, Secret } from '@redkubes/otomi-api-client-axios'
 import { cloneDeep } from 'lodash'
 import Form from './rjsf/Form'
-import { getServiceSchema, getServiceUiSchema } from '../api-spec'
+import { getJobSchema, getJobUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import { useSession } from '../session-context'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
@@ -12,16 +12,16 @@ import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  service?: Service
+  job?: Job
   secrets: Secret[]
   teamId: string
 }
 
-export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
+export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.ReactElement => {
   const { user, cluster, dns, oboTeamId } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
-  const [data, setData]: any = useState(service)
+  const [data, setData]: any = useState(job)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
@@ -37,16 +37,16 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
         formData.ingress.public.subdomain = defaultSubdomain
       }
     }
-    const newSchema = getServiceSchema(cluster, dns, formData, secrets)
+    const newSchema = getJobSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
     setUiSchema(
-      getServiceUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
+      getJobUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
     )
     setData(formData)
-    setDirty(!isEqual(formData, service))
+    setDirty(!isEqual(formData, job))
   }
   if (!(schema || uiSchema)) {
-    handleChange({ formData: service || {} })
+    handleChange({ formData: job || {} })
     return null
   }
   const handleSubmit = ({ formData }) => {
@@ -55,12 +55,12 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   return (
     <Form
       title={
-        <h1 data-cy={data && data.serviceId ? `h1-edit-service-page` : 'h1-newservice-page'}>
-          {data && data.id ? `Service: ${data.name}` : 'New Service'}
+        <h1 data-cy={data && data.jobId ? `h1-edit-job-page` : 'h1-newjob-page'}>
+          {data && data.id ? `Job: ${data.name}` : 'New Job'}
           {user.isAdmin && teamId ? ` (team ${teamId})` : ''}
         </h1>
       }
-      key='createService'
+      key='createJob'
       schema={schema}
       uiSchema={uiSchema}
       onSubmit={handleSubmit}
@@ -71,7 +71,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
+        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-job'>
           Submit
         </Button>
         &nbsp;
@@ -79,8 +79,8 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
           <DeleteButton
             onDelete={() => onDelete(data.id)}
             resourceName={data.name}
-            resourceType='service'
-            dataCy='button-delete-service'
+            resourceType='job'
+            dataCy='button-delete-job'
           />
         )}
       </Box>

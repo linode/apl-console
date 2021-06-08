@@ -17,9 +17,8 @@ interface Props {
 export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
   const { user, oboTeamId } = useSession()
 
-  const crudOperation = 'create'
   const schema = getSecretSchema()
-  const uiSchema = getSecretUiSchema(user, oboTeamId, crudOperation)
+  const uiSchema = getSecretUiSchema(user, oboTeamId, secret?.id ? 'edit' : 'create')
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
@@ -57,8 +56,8 @@ export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
           <DeleteButton
             onDelete={() => onDelete(data.id)}
             resourceName={data.name}
-            resourceType='service'
-            dataCy='button-delete-service'
+            resourceType='secret'
+            dataCy='button-delete-secret'
           />
         )}
       </Box>

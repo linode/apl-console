@@ -2,14 +2,14 @@
 import { Box, Grid, Paper, Typography } from '@material-ui/core'
 import React from 'react'
 
-export default function ObjectFieldTemplate(props: any) {
+export default (props: any): React.ReactElement => {
   const { title, description, properties } = props
   let grouped
   const fields = []
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
     const type = o.content.props.schema.type
-    if (!['string', 'integer', 'float'].includes(type)) {
+    if (!['string', 'integer', 'float', 'number'].includes(type)) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined

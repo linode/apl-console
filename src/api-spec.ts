@@ -5,6 +5,11 @@ import { User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 const ingressPublicSchemaPath = 'properties.ingress.oneOf[2].properties.public.properties'
+const ksvcSchemaPath = 'properties.ksvc.oneOf[0].allOf[1].properties'
+const jobSpecSchemaPath = 'allOf[0].properties'
+const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
+const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
+
 export type AclAction =
   | 'create'
   | 'create-any'
@@ -71,7 +76,12 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
         type: { 'ui:widget': 'hidden' },
       },
     },
-    azureMonitor: { 'ui:widget': CustomRadioGroup },
+    azureMonitor: {
+      'ui:widget': CustomRadioGroup,
+      'ui:options': {
+        inline: true,
+      },
+    },
     selfService: {
       Team: { 'ui:title': 'Team', 'ui:widget': 'checkboxes' },
       Service: { 'ui:title': 'Service', 'ui:widget': 'checkboxes' },
@@ -82,6 +92,31 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
   return uiSchema
 }
 
+export function getJobUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
+  const secretsSchema = {
+    secrets: {
+      'ui:options': { orderable: false, addable: false, removable: false },
+    },
+  }
+  const containerSpecSchema = {
+    files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
+    script: { 'ui:widget': 'textarea' },
+  }
+
+  const uiSchema = {
+    ...containerSpecSchema,
+    ...secretsSchema,
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
+    teamId: { 'ui:widget': 'hidden' },
+    init: { ...containerSpecSchema, ...secretsSchema },
+  }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Job')
+
+  return uiSchema
+}
+
 export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
   const notAws = cloudProvider !== 'aws'
   const noCert = !formData?.ingress?.public?.hasCert
@@ -89,39 +124,34 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     enabled: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true, 'ui:readonly': action !== 'create' },
+    name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
+      'ui:title': '',
       'ui:widget': CustomRadioGroup,
-      'ui:options': {
-        inline: true,
+      internal: { 'ui:widget': 'hidden' },
+      certArn: {
+        'ui:widget': noCertArn ? 'hidden' : undefined,
       },
-      public: {
-        internal: { 'ui:widget': 'hidden' },
-        certArn: {
-          'ui:widget': noCertArn ? 'hidden' : undefined,
-        },
-        certName: {
-          'ui:widget': noCert ? 'hidden' : undefined,
-        },
-        certSelect: {
-          'ui:widget': noCert ? 'hidden' : undefined,
-        },
+      certName: {
+        'ui:widget': noCert ? 'hidden' : undefined,
       },
+      certSelect: {
+        'ui:widget': noCert ? 'hidden' : undefined,
+      },
+      type: { 'ui:widget': 'hidden' },
     },
     ksvc: {
       'ui:widget': CustomRadioGroup,
-      'ui:options': { inline: true },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
         'ui:widget': CustomRadioGroup,
-        'ui:options': { inline: true },
         tagMatcher: { 'ui:widget': 'hidden' },
       },
       env: { 'ui:options': { orderable: false } },
       annotations: { 'ui:options': { orderable: false } },
+      files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
       secrets: {
-        // 'ui:widget': 'checkboxes',
         'ui:options': { orderable: false, addable: false, removable: false },
       },
     },
@@ -135,8 +165,9 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
 export function getSecretUiSchema(user: User, teamId: string, action: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true, 'ui:readonly': action !== 'create' },
+    name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
+    dockerconfig: { 'ui:widget': 'hidden', description: undefined },
     type: { 'ui:widget': 'hidden', description: undefined },
     ca: { 'ui:widget': 'textarea' },
     crt: { 'ui:widget': 'textarea' },
@@ -153,13 +184,14 @@ export function setSpec(inSpec): void {
   spec = inSpec
 }
 
-function addDomainEnumField(schema: Schema, dns: any, formData): void {
+function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const ingressPublicData = formData?.ingress?.public
 
   if (!formData || isEmpty(ingressPublicData)) return
   const ingressPublicSchema = get(schema, ingressPublicSchemaPath)
-  ingressPublicSchema.domain.enum = dns.dnsZones
-  if (dns.dnsZones.length === 1 || ingressPublicData.useDefaultSubdomain) ingressPublicData.domain = dns.dnsZones[0]
+  const zones = [cluster.domainSuffix, ...(dns.zones || [])]
+  set(ingressPublicSchema, 'domain.enum', zones)
+  if (zones.length === 1 || ingressPublicData.useDefaultSubdomain) ingressPublicData.domain = zones[0]
   ingressPublicSchema.domain.readOnly = ingressPublicData.useDefaultSubdomain
   ingressPublicSchema.subdomain.readOnly = ingressPublicData.useDefaultSubdomain
 }
@@ -168,9 +200,28 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
   schema.properties.namespace.enum = namespaces
 }
 
-export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
+export function getJobSchema(cluster, dns, formData, secrets: Array<any>): any {
+  const schema: Schema = cloneDeep(spec.components.schemas.Job)
+  if (formData.type === 'Job') {
+    unset(schema, `${jobSpecSchemaPath}.schedule`)
+  }
+  if (secrets.length) {
+    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
+    set(schema, `${jobInitSpecSecretsPath}.items.enum`, secretNames)
+    set(schema, `${jobSpecSecretsPath}.items.enum`, secretNames)
+  } else {
+    unset(schema, `${jobInitSpecSecretsPath}.items.enum`)
+    unset(schema, `${jobSpecSecretsPath}.items.enum`)
+    set(schema, `${jobInitSpecSecretsPath}.secrets.readOnly`, true)
+    set(schema, `${jobSpecSecretsPath}.secrets.readOnly`, true)
+  }
+  return schema
+}
+
+export function getServiceSchema(cluster, dns, formData, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
-  addDomainEnumField(schema, dns, formData)
+  unset(schema, `properties.ksvc.oneOf[0].allOf[0].allOf[1].properties.securityContext`)
+  addDomainEnumField(schema, cluster, dns, formData)
   const ingressPublicData = get(formData, 'ingress.public', {})
 
   if (!ingressPublicData.hasCert) {
@@ -190,10 +241,13 @@ export function getServiceSchema(dns, formData: any, secrets: Array<any>): any {
   }
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
-    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = secretNames
+    set(schema, `${ksvcSchemaPath}.secrets.items.enum`, secretNames)
   } else {
-    schema.properties.ksvc.oneOf[0].properties.secrets.items.enum = undefined
-    schema.properties.ksvc.oneOf[0].properties.secrets.readOnly = true
+    unset(schema, `${ksvcSchemaPath}.secrets.items.enum`)
+    set(schema, `${ksvcSchemaPath}.secrets.items.readOnly`, true)
+  }
+  if (schema.properties && formData?.ksvc?.serviceType === 'svcPredeployed') {
+    schema.properties.ingress.oneOf.splice(0, 1)
   }
   return schema
 }

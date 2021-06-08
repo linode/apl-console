@@ -22,6 +22,5 @@
     "*.tmpl": "nginx"
   },
   "prettier.enable": true,
-  "stylelint.enable": true,
-  "tslint.enable": false
+  "stylelint.enable": true
 }
