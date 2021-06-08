@@ -134,7 +134,6 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
     ingress: {
       'ui:title': '',
       'ui:widget': CustomRadioGroup,
-      internal: { 'ui:widget': 'hidden' },
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : undefined,
       },
@@ -145,6 +144,8 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
         'ui:widget': noCert ? 'hidden' : undefined,
       },
       type: { 'ui:widget': 'hidden' },
+      domain: { 'ui:readonly': formData.ingress?.useDefaultSubdomain },
+      subdomain: { 'ui:readonly': formData.ingress?.useDefaultSubdomain },
     },
     ksvc: {
       'ui:widget': CustomRadioGroup,
@@ -198,9 +199,8 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const ingressSchema = get(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
   if (zones.length === 1 || ingressData.useDefaultSubdomain) ingressData.domain = zones[0]
+  if (!ingressSchema) return
   set(ingressSchema, 'domain.enum', zones)
-  set(ingressSchema, 'domain.readOnly', ingressData.useDefaultSubdomain)
-  set(ingressSchema, 'subdomain.readOnly', ingressData.useDefaultSubdomain)
 }
 
 export function addNamespaceEnum(schema: Schema, namespaces): void {
