@@ -2,7 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, merge } from 'lodash'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
@@ -26,15 +26,13 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
-    const formData = cloneDeep(inData)
-    if (formData?.ingress?.public) {
-      if (
-        !data.ingress?.public?.domain ||
-        (formData.ingress?.public?.useDefaultSubdomain && !data.ingress?.public?.useDefaultSubdomain)
-      ) {
+    // create a new object extending a clone of existing data with incoming data
+    const formData = { ...cloneDeep(data), ...cloneDeep(inData) }
+    if (formData.ingress) {
+      if (!data.ingress?.domain || (formData.ingress.useDefaultSubdomain && !data.ingress?.useDefaultSubdomain)) {
         // Set default subdomain of domain change
-        formData.ingress.public = { ...formData.ingress.public }
-        formData.ingress.public.subdomain = defaultSubdomain
+        formData.ingress = { ...formData.ingress }
+        formData.ingress.subdomain = defaultSubdomain
       }
     }
     const newSchema = getServiceSchema(cluster, dns, formData, secrets)
