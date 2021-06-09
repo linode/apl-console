@@ -29,13 +29,19 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     // create a new object extending a clone of existing data with incoming data
     const formData = { ...cloneDeep(data), ...cloneDeep(inData) }
     if (formData.ingress) {
-      if (
-        !['cluster', 'tlsPass'].includes(formData.ingress.type) &&
-        (!data.ingress?.domain || (formData.ingress.useDefaultSubdomain && !data.ingress?.useDefaultSubdomain))
-      ) {
+      let ing = formData.ingress
+      if (!['cluster'].includes(ing.type) && (!data.ingress?.domain || ing.useDefaultSubdomain)) {
         // Set default domain and subdomain if ingress type not is 'cluster'
-        formData.ingress = { ...formData.ingress }
-        formData.ingress.subdomain = defaultSubdomain
+        ing = { ...ing }
+        ing.subdomain = defaultSubdomain
+        formData.ingress = ing
+      }
+      if (ing && ['cluster', 'tlsPass'].includes(ing.type)) {
+        ing = { ...ing }
+        ing.hasCert = undefined
+        ing.certArn = undefined
+        ing.forwardPath = undefined
+        formData.ingress = ing
       }
     }
     const newSchema = getServiceSchema(cluster, dns, formData, secrets)

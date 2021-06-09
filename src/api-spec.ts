@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { User } from '@redkubes/otomi-api-client-axios'
+import { Service, User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[1].properties'
@@ -13,6 +13,7 @@ const getIngressSchemaPath = (idx) => `properties.ingress.oneOf[${idx}].allOf[0]
 const idxMap = {
   private: 1,
   public: 2,
+  tlsPass: 3,
 }
 
 export type AclAction =
@@ -122,9 +123,16 @@ export function getJobUiSchema(formData, cloudProvider: string, user: User, team
   return uiSchema
 }
 
-export function getServiceUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
+export function getServiceUiSchema(
+  formData: Service,
+  cloudProvider: string,
+  user: User,
+  teamId: string,
+  action: string,
+): any {
   const notAws = cloudProvider !== 'aws'
-  const noCert = !formData?.ingress?.public?.hasCert
+  const ing = formData?.ingress as any
+  const noCert = ing && !ing.hasCert
   const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
@@ -142,10 +150,11 @@ export function getServiceUiSchema(formData, cloudProvider: string, user: User, 
       },
       certSelect: {
         'ui:widget': noCert ? 'hidden' : undefined,
+        description: noCert ? '' : undefined,
       },
       type: { 'ui:widget': 'hidden' },
-      domain: { 'ui:readonly': formData.ingress?.useDefaultSubdomain },
-      subdomain: { 'ui:readonly': formData.ingress?.useDefaultSubdomain },
+      domain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
     },
     ksvc: {
       'ui:widget': CustomRadioGroup,
@@ -191,14 +200,14 @@ export function setSpec(inSpec): void {
 }
 
 function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
-  if (formData?.ingress?.type === 'cluster') return
-  const ingressData = formData?.ingress
+  if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
+  const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
-  if (!formData || isEmpty(ingressData)) return
+  if (!formData || isEmpty(ing)) return
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = get(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
-  if (zones.length === 1 || ingressData.useDefaultSubdomain) ingressData.domain = zones[0]
+  if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
   set(ingressSchema, 'domain.enum', zones)
 }
@@ -229,39 +238,49 @@ export function getServiceSchema(cluster, dns, formData, secrets: Array<any>): a
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[1].properties.securityContext`)
   addDomainEnumField(schema, cluster, dns, formData)
-  const ingressData = formData?.ingress
+  const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = get(schema, ingressSchemaPath)
 
-  if (!ingressData?.hasCert) {
+  if (!ing?.hasCert) {
     unset(ingressSchema, `certName`)
     unset(ingressSchema, `certSelect`)
-  } else if (ingressData) {
+  } else if (ing) {
     const subdomain = get(formData, 'ingress.subdomain', '')
     const domain = get(formData, 'ingress.domain', '')
 
     // Give the certName an enum selector with names of existing tls secrets
-    if (ingressData.certSelect) {
+    if (ing.certSelect) {
       const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
       set(ingressSchema, `certName.enum`, tlsSecretNames)
-      if (secrets.length === 1) ingressData.certName = Object.keys(secrets)[0]
-    } else if (!ingressData.certSelect && ingressData.certName === undefined) {
-      ingressData.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
+      if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
+    } else if (!ing.certSelect && ing.certName === undefined) {
+      ing.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
   // set the Secrets enum with items to choose from
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
     set(schema, `${ksvcSchemaPath}.secrets.items.enum`, secretNames)
+    set(schema, `${ksvcSchemaPath}.secretMounts.items.properties.name.enum`, secretNames)
   } else {
     unset(schema, `${ksvcSchemaPath}.secrets.items.enum`)
+    unset(schema, `${ksvcSchemaPath}.secretMounts.items.properties.name.enum`)
     set(schema, `${ksvcSchemaPath}.secrets.items.readOnly`, true)
+    set(schema, `${ksvcSchemaPath}.secretMounts.items.readOnly`, true)
   }
   // remove type 'Cluster' when not using ksvc
-  if (schema.properties && formData?.ksvc?.serviceType === 'svcPredeployed') {
-    schema.properties.ingress.oneOf.splice(0, 1)
+  // if (schema.properties && formData?.ksvc?.serviceType === 'svcPredeployed') {
+  //   schema.properties.ingress.oneOf.splice(0, 1)
+  // }
+  if (['cluster', 'tlsPass'].includes(ing?.type)) {
+    unset(ingressSchema, 'auth')
+    unset(ingressSchema, 'forwardPath')
+    unset(ingressSchema, 'path')
+    unset(ingressSchema, 'hasCert')
   }
+
   return schema
 }
 
