@@ -81,15 +81,6 @@ export default ({
     if (o.length) {
       return (
         <>
-          {(uiSchema['ui:title'] || title || description) && (
-            <Box>
-              {(uiSchema['ui:title'] || title) && (
-                <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
-              )}
-              {description && <DescriptionField id={`${idSchema.$id}-description`} description={description} />}
-            </Box>
-          )}
-
           <Grid key={`row-${idx}`} container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
             {o.map((el, idz) => {
               return render(el, idz)
@@ -104,6 +95,14 @@ export default ({
   return (
     <Box my={1}>
       {/* <Grid container spacing={2} className={classes.root}> */}
+      {(uiSchema['ui:title'] || title || description) && (
+        <Box>
+          {(uiSchema['ui:title'] || title) && (
+            <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
+          )}
+          {description && <DescriptionField id={`${idSchema.$id}-description`} description={description} />}
+        </Box>
+      )}
       {fields.map((o: any, idx: number) => {
         return render(o, idx)
       })}
