@@ -50,9 +50,14 @@ export default ({ services, team }: Props): React.ReactElement => {
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
-      id: 'type',
-      label: 'Type',
+      id: 'ingressType',
+      label: 'Ingress',
       renderer: (row) => row.ingress?.type ?? '',
+    },
+    {
+      id: 'serviceType',
+      label: 'Type',
+      renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',

@@ -5,7 +5,7 @@ import { Service, User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[1].properties'
-const jobSpecSchemaPath = 'allOf[0].properties'
+const jobSpecUiSchemaPath = 'allOf[0].properties'
 const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
 const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
 
@@ -14,6 +14,20 @@ const idxMap = {
   private: 1,
   public: 2,
   tlsPass: 3,
+}
+
+const podSpecUiSchema = {
+  files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
+  secrets: {
+    'ui:options': { orderable: false, addable: false, removable: false },
+  },
+  secretMounts: {
+    'ui:options': { orderable: false },
+  },
+}
+const jobSpecUiSchema = {
+  ...podSpecUiSchema,
+  script: { 'ui:widget': 'textarea' },
 }
 
 export type AclAction =
@@ -99,23 +113,12 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
 }
 
 export function getJobUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
-  const secretsSchema = {
-    secrets: {
-      'ui:options': { orderable: false, addable: false, removable: false },
-    },
-  }
-  const containerSpecSchema = {
-    files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
-    script: { 'ui:widget': 'textarea' },
-  }
-
   const uiSchema = {
-    ...containerSpecSchema,
-    ...secretsSchema,
+    ...jobSpecUiSchema,
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
-    init: { ...containerSpecSchema, ...secretsSchema },
+    init: { 'ui:field': 'collapse', ...jobSpecUiSchema },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Job')
@@ -131,6 +134,7 @@ export function getServiceUiSchema(
   action: string,
 ): any {
   const notAws = cloudProvider !== 'aws'
+  //
   const ing = formData?.ingress as any
   const noCert = ing && !ing.hasCert
   const noCertArn = notAws || noCert
@@ -157,6 +161,7 @@ export function getServiceUiSchema(
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
     },
     ksvc: {
+      ...podSpecUiSchema,
       'ui:widget': CustomRadioGroup,
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
@@ -219,7 +224,7 @@ export function addNamespaceEnum(schema: Schema, namespaces): void {
 export function getJobSchema(cluster, dns, formData, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   if (formData.type === 'Job') {
-    unset(schema, `${jobSpecSchemaPath}.schedule`)
+    unset(schema, `${jobSpecUiSchemaPath}.schedule`)
   }
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)

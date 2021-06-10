@@ -24,19 +24,7 @@ export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.Reac
   const [data, setData]: any = useState(job)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
-    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
-    const defaultSubdomain = teamSubdomain
     const formData = cloneDeep(inData)
-    if (formData?.ingress?.public) {
-      if (
-        !data.ingress?.public?.domain ||
-        (formData.ingress?.public?.useDefaultSubdomain && !data.ingress?.public?.useDefaultSubdomain)
-      ) {
-        // Set default subdomain of domain change
-        formData.ingress.public = { ...formData.ingress.public }
-        formData.ingress.public.subdomain = defaultSubdomain
-      }
-    }
     const newSchema = getJobSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
     setUiSchema(

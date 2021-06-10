@@ -239,6 +239,9 @@ export const mainStyles = makeStyles((theme) => ({
       '.MuiButton-textSecondary': {
         color: theme.palette.primary,
       },
+      '.MuiTypography-root': {
+        // maxWidth: '300px',
+      },
       h5: {
         fontSize: '1.2rem',
         fontWeight: 'bold',

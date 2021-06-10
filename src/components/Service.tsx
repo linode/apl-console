@@ -36,12 +36,16 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
         ing.subdomain = defaultSubdomain
         formData.ingress = ing
       }
-      if (ing && ['cluster', 'tlsPass'].includes(ing.type)) {
+      if (ing?.type === 'tlsPass') {
+        // we don't expect some props when choosing tlsPass
         ing = { ...ing }
-        ing.hasCert = undefined
-        ing.certArn = undefined
-        ing.forwardPath = undefined
+        delete ing.hasCert
+        delete ing.certArn
+        delete ing.forwardPath
         formData.ingress = ing
+      } else if (ing?.type === 'cluster') {
+        // cluster has an empty ingress
+        formData.ingress = { type: 'cluster' }
       }
     }
     const newSchema = getServiceSchema(cluster, dns, formData, secrets)
