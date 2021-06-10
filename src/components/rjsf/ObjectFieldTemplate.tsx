@@ -13,6 +13,12 @@ const isHidden = (element: any): boolean => {
   return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
 }
 
+const useStyles = makeStyles({
+  root: {
+    marginTop: 10,
+  },
+})
+
 const renderSimple = (o, idx) => {
   if (isHidden(o)) {
     return o.content
@@ -39,25 +45,6 @@ const renderSimple = (o, idx) => {
     </Paper>
   )
 }
-
-const render = (o, idx) => {
-  if (o.length) {
-    return (
-      <Grid key={`row-${idx}`} container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
-        {o.map((el, idz) => {
-          return render(el, idz)
-        })}
-      </Grid>
-    )
-  }
-  return renderSimple(o, idx)
-}
-
-const useStyles = makeStyles({
-  root: {
-    marginTop: 10,
-  },
-})
 
 export default ({
   DescriptionField,
@@ -89,16 +76,33 @@ export default ({
     }
   })
   if (grouped) fields.push(grouped)
+
+  const render = (o, idx) => {
+    if (o.length) {
+      return (
+        <>
+          {(uiSchema['ui:title'] || title || description) && (
+            <Box>
+              {(uiSchema['ui:title'] || title) && (
+                <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
+              )}
+              {description && <DescriptionField id={`${idSchema.$id}-description`} description={description} />}
+            </Box>
+          )}
+
+          <Grid key={`row-${idx}`} container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
+            {o.map((el, idz) => {
+              return render(el, idz)
+            })}
+          </Grid>
+        </>
+      )
+    }
+    return renderSimple(o, idx)
+  }
+
   return (
     <Box my={1}>
-      {(uiSchema['ui:title'] || title || description) && (
-        <Box>
-          {(uiSchema['ui:title'] || title) && (
-            <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
-          )}
-          {description && <DescriptionField id={`${idSchema.$id}-description`} description={description} />}
-        </Box>
-      )}
       {/* <Grid container spacing={2} className={classes.root}> */}
       {fields.map((o: any, idx: number) => {
         return render(o, idx)

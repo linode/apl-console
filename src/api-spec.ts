@@ -17,7 +17,9 @@ const idxMap = {
 }
 
 const podSpecUiSchema = {
-  files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
+  annotations: { 'ui:options': { orderable: false } },
+  env: { 'ui:options': { orderable: false } },
+  files: { 'ui:options': { orderable: false }, items: { content: { 'ui:widget': 'textarea' } } },
   secrets: {
     'ui:options': { orderable: false, addable: false, removable: false },
   },
@@ -144,7 +146,7 @@ export function getServiceUiSchema(
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
-      'ui:title': '',
+      // 'ui:title': 'Exposure (Ingress)',
       'ui:widget': CustomRadioGroup,
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : undefined,
@@ -167,12 +169,6 @@ export function getServiceUiSchema(
       autoCD: {
         'ui:widget': CustomRadioGroup,
         tagMatcher: { 'ui:widget': 'hidden' },
-      },
-      env: { 'ui:options': { orderable: false } },
-      annotations: { 'ui:options': { orderable: false } },
-      files: { 'ui:options': { orderable: false }, items: { value: { 'ui:widget': 'textarea' } } },
-      secrets: {
-        'ui:options': { orderable: false, addable: false, removable: false },
       },
     },
   }
