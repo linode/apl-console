@@ -237,7 +237,8 @@ export const mainStyles = makeStyles((theme) => ({
         display: 'none',
       },
       '.MuiButton-textSecondary': {
-        color: theme.palette.primary,
+        color: theme.palette.primary.contrastText,
+        backgroundColor: theme.palette.primary.main,
       },
       '.MuiTypography-root': {
         // maxWidth: '300px',

@@ -146,7 +146,6 @@ export function getServiceUiSchema(
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
-      // 'ui:title': 'Exposure (Ingress)',
       'ui:widget': CustomRadioGroup,
       certArn: {
         'ui:widget': noCertArn ? 'hidden' : undefined,

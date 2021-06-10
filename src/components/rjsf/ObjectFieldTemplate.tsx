@@ -2,12 +2,9 @@
 import { Box, Grid, Paper } from '@material-ui/core'
 import React from 'react'
 
-import { ObjectFieldTemplateProps, utils } from '@rjsf/core'
+import { ObjectFieldTemplateProps } from '@rjsf/core'
 
-import AddButton from '@rjsf/core/lib/components/AddButton'
 import { makeStyles } from '@material-ui/styles'
-
-const { canExpand } = utils
 
 const isHidden = (element: any): boolean => {
   return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
@@ -15,7 +12,8 @@ const isHidden = (element: any): boolean => {
 
 const useStyles = makeStyles({
   root: {
-    marginTop: 10,
+    // marginTop: 10,
+    marginBottom: 20,
   },
 })
 
@@ -94,9 +92,8 @@ export default ({
 
   return (
     <Box my={1}>
-      {/* <Grid container spacing={2} className={classes.root}> */}
       {(uiSchema['ui:title'] || title || description) && (
-        <Box>
+        <Box className={classes.root}>
           {(uiSchema['ui:title'] || title) && (
             <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
           )}
@@ -106,18 +103,6 @@ export default ({
       {fields.map((o: any, idx: number) => {
         return render(o, idx)
       })}
-      {canExpand(schema, uiSchema, formData) && (
-        <Grid container justify='flex-end'>
-          <Grid item>
-            <AddButton
-              className='object-property-expand'
-              onClick={onAddClick(schema)}
-              disabled={disabled || readonly}
-            />
-          </Grid>
-        </Grid>
-      )}
-      {/* </Grid> */}
     </Box>
   )
 }
