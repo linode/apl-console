@@ -3,14 +3,15 @@ import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
+  propertyName: string
   schema: any
 }
 
-export default ({ schema }: Props): React.ReactElement => {
+export default ({ propertyName, schema }: Props): React.ReactElement => {
   return (
     <Form
-      title='setting'
-      key='settings'
+      title={propertyName}
+      key={propertyName}
       schema={schema}
       liveValidate={false}
       showErrorList={false}

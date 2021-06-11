@@ -17,7 +17,7 @@ import Secret from './pages/Secret'
 import Secrets from './pages/Secrets'
 import Service from './pages/Service'
 import Services from './pages/Services'
-import Settings from './pages/Settings'
+import UiSettings from './pages/UiSettings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import ErrorComponent from './components/Error'
@@ -26,6 +26,7 @@ import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
 import devTokens from './devtokens'
+import Setting from './pages/Setting'
 
 const env = process.env
 let mode = 'ee'
@@ -90,7 +91,8 @@ const AppEE = () => {
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/create-team' component={Team} exact />
                 <Route path='/services' component={Services} exact />
-                <Route path='/settings' component={Settings} exact />
+                <Route path='/settings' component={UiSettings} exact />
+                <Route path='/settings/:settingId' component={Setting} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
@@ -174,7 +176,8 @@ const AppCE = () => {
                 <Route path='/apps/:teamId' component={OtomiApps} />
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/settings' component={Settings} exact />
+                <Route path='/settings' component={UiSettings} exact />
+                <Route path='/settings/:settingId' component={Setting} exact />
                 <Route path='*'>
                   <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
                 </Route>

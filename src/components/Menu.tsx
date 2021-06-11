@@ -102,7 +102,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     setOpen((prevOpen) => !prevOpen)
   }
 
-  const endpoints = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
+  const settingIds = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
 
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
@@ -142,14 +142,14 @@ export default ({ teamId }: Props): React.ReactElement => {
       </li>
       <Collapse component='li' in={open} timeout='auto' unmountOnExit>
         <List disablePadding>
-          {endpoints.map((ep) => {
+          {settingIds.map((id) => {
             return (
               <StyledMenuItem
-                to={`/settings/:${ep}`}
-                selected={pathname === `/settings/:${ep}`}
-                data-cy={`menu-item-:${ep}`}
+                to={`/settings/${id}`}
+                selected={pathname === `/settings/${id}`}
+                data-cy={`menu-item-${id}`}
               >
-                <ListItemText primary={ep} />
+                <ListItemText primary={id} />
               </StyledMenuItem>
             )
           })}
