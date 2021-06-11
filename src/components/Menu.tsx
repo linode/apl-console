@@ -90,14 +90,15 @@ export default ({ teamId }: Props): React.ReactElement => {
   const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
-  // const CollapseStyledMenuItem = (props: any) => {
-  //   return (
-  //     <MenuItem component={Link} className={`${mainClasses.selectable} ${classes.listItem}`} {...props} />
-  //   )
-  // }
 
   const handleClick = (): void => {
     setDeploy(true)
+  }
+
+  const [open, setOpen] = React.useState(true)
+
+  const handleCollapse = (): void => {
+    setOpen((prevOpen) => !prevOpen)
   }
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
@@ -120,7 +121,12 @@ export default ({ teamId }: Props): React.ReactElement => {
       )}
 
       <li>
-        <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
+        <StyledMenuItem
+          to='/settings'
+          selected={pathname === '/settings'}
+          data-cy='menu-item-settings'
+          onClick={handleCollapse}
+        >
           <ListItemIcon>
             <SettingsIcon />
           </ListItemIcon>
@@ -128,7 +134,7 @@ export default ({ teamId }: Props): React.ReactElement => {
         </StyledMenuItem>
       </li>
 
-      <Collapse component='li' in timeout='auto' unmountOnExit>
+      <Collapse component='li' in={open} timeout='auto' unmountOnExit>
         <List disablePadding>
           <StyledMenuItem
             to='/settings/:setting'
