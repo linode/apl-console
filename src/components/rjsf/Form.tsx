@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface Props extends FormProps<any> {
-  title: any
+  title?: any
 }
 
 export default ({ children, title, ...props }: Props): React.ReactElement => {

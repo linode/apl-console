@@ -25,8 +25,6 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
   }
   return (
     <Form
-      title={settingId}
-      key={settingId}
       schema={schema}
       onSubmit={handleSubmit}
       onChange={handleChange}
