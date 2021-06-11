@@ -1,4 +1,13 @@
-import { ListItem, ListItemText, ListSubheader, makeStyles, MenuItem, Typography } from '@material-ui/core'
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  makeStyles,
+  MenuItem,
+  Typography,
+} from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -81,6 +90,11 @@ export default ({ teamId }: Props): React.ReactElement => {
   const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
+  // const CollapseStyledMenuItem = (props: any) => {
+  //   return (
+  //     <MenuItem component={Link} className={`${mainClasses.selectable} ${classes.listItem}`} {...props} />
+  //   )
+  // }
 
   const handleClick = (): void => {
     setDeploy(true)
@@ -105,15 +119,24 @@ export default ({ teamId }: Props): React.ReactElement => {
         </StyledMenuItem>
       )}
 
-      <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
-        <ListItemIcon>
-          <SettingsIcon />
-        </ListItemIcon>
-        <ListItemText primary='Settings' />
-      </StyledMenuItem>
-      <ListItem>
-        <Typography>alerts</Typography>
-      </ListItem>
+      <li>
+        <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary='Settings' />
+        </StyledMenuItem>
+      </li>
+
+      <Collapse component='li' in timeout='auto' unmountOnExit>
+        <List disablePadding>
+          <StyledMenuItem
+            to='/settings/:setting'
+            selected={pathname === '/settings/:setting'}
+            data-cy='menu-item-:setting'
+          />
+        </List>
+      </Collapse>
 
       <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
