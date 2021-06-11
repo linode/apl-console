@@ -51,6 +51,9 @@ export default ({ secrets, team }: Props): React.ReactElement => {
     {
       id: 'type',
       label: 'Type',
+      renderer: (row) => {
+        return row.type
+      },
     },
     {
       id: 'vaultLink',

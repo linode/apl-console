@@ -2,6 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
+import { cloneDeep, merge } from 'lodash'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
@@ -25,18 +26,29 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
-    const formData = { ...inData }
-    if (formData?.ingress?.public) {
-      if (
-        formData.ingress.public.useDefaultSubdomain ||
-        formData.ingress.public.domain !== data.ingress.public.domain
-      ) {
-        // Set default subdomain of domain change
-        formData.ingress.public = { ...formData.ingress.public }
-        formData.ingress.public.subdomain = formData.ingress.public.useDefaultSubdomain ? defaultSubdomain : ''
+    // create a new object extending a clone of existing data with incoming data
+    const formData = { ...cloneDeep(data), ...cloneDeep(inData) }
+    if (formData.ingress) {
+      let ing = formData.ingress
+      if (!['cluster'].includes(ing.type) && (!data.ingress?.domain || ing.useDefaultSubdomain)) {
+        // Set default domain and subdomain if ingress type not is 'cluster'
+        ing = { ...ing }
+        ing.subdomain = defaultSubdomain
+        formData.ingress = ing
+      }
+      if (ing?.type === 'tlsPass') {
+        // we don't expect some props when choosing tlsPass
+        ing = { ...ing }
+        delete ing.hasCert
+        delete ing.certArn
+        delete ing.forwardPath
+        formData.ingress = ing
+      } else if (ing?.type === 'cluster') {
+        // cluster has an empty ingress
+        formData.ingress = { type: 'cluster' }
       }
     }
-    const newSchema = getServiceSchema(dns, formData, secrets)
+    const newSchema = getServiceSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
     setUiSchema(
       getServiceUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),

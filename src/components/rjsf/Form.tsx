@@ -10,11 +10,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       justifyContent: 'space-between',
     },
-    helpIcon: {
+    helpButton: {
       marginTop: theme.spacing(3),
       // fontSize: theme.spacing(3),
       // width: theme.spacing(4),
-      height: theme.spacing(4),
+      height: '36px',
     },
   }),
 )
@@ -33,8 +33,8 @@ export default ({ children, title, ...props }: Props): React.ReactElement => {
         {title}
         {docUrl && (
           <Button
-            size='large'
-            className={classes.helpIcon}
+            // size='large'
+            className={classes.helpButton}
             startIcon={<HelpRoundedIcon />}
             variant='contained'
             color='primary'

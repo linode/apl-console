@@ -20,14 +20,11 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.Reac
   )
 }
 
-const renderPublicUrl = (row): React.ReactElement | string => {
-  if (!row?.ingress?.public) {
-    return ''
-  }
-  const ingressPublic = row.ingress.public
-  const url = `${ingressPublic.subdomain ? `${ingressPublic.subdomain}.` : ''}${ingressPublic.domain}${
-    ingressPublic.path || ''
-  }`
+const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
+  if (!ingress) return ''
+  if (ingress.type === 'cluster') return `${name}.team-${teamId}`
+  const { subdomain, domain, path } = ingress
+  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${path || ''}`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
@@ -53,9 +50,19 @@ export default ({ services, team }: Props): React.ReactElement => {
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
-      id: 'url',
-      label: 'Public URL',
-      renderer: renderPublicUrl,
+      id: 'ingressType',
+      label: 'Ingress',
+      renderer: (row) => row.ingress?.type ?? '',
+    },
+    {
+      id: 'serviceType',
+      label: 'Type',
+      renderer: (row) => row.ksvc?.serviceType ?? '',
+    },
+    {
+      id: 'host',
+      label: 'Host Name',
+      renderer: renderHost,
       component: MuiLink,
     },
   ]

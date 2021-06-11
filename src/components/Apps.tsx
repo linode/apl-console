@@ -23,13 +23,12 @@ export default ({ teamId }: Props): React.ReactElement => {
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) => {
     return items.map(({ name, isShared, logo, domain, host, path, ownHost, enabled }) => {
-      const teamPrefix = 'team-' // @todo: get from values later
       const logoName = logo ? logo.name : name
       const link = `https://${
         domain ||
-        `${isShared || ownHost ? host || name : 'apps'}${
-          !(isShared || teamId === 'admin') ? `.${teamPrefix}${teamId}` : ''
-        }.${cluster.domainSuffix}/${isShared || ownHost ? '' : `${host || name}/`}`
+        `${isShared || ownHost ? host || name : 'apps'}${!(isShared || teamId === 'admin') ? `.team-${teamId}` : ''}.${
+          cluster.domainSuffix
+        }/${isShared || ownHost ? '' : `${host || name}/`}`
       }${(path || '').replace('#NS#', `team-${teamId}`)}`
       // eslint-disable-next-line consistent-return
       return (

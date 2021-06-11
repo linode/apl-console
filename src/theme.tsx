@@ -225,16 +225,23 @@ export const createClasses = (stylesObj): any => makeStyles(() => createStyles(s
 export const mainStyles = makeStyles((theme) => ({
   forms: {
     '@global': {
-      '.MuiInput-root:not([data-cy="select-oboteam"])': {
+      '.MuiInput-root:not([data-cy="select-oboteam"],[data-cy="select-cluster"])': {
         minWidth: '10rem',
         paddingLeft: '1rem',
         paddingRight: '1rem',
+      },
+      '.MuiInput-root.MuiInputBase-multiline': {
+        minWidth: '30rem',
       },
       '.MuiFormControl-root:has(> input)': {
         display: 'none',
       },
       '.MuiButton-textSecondary': {
-        color: theme.palette.primary,
+        color: theme.palette.primary.contrastText,
+        backgroundColor: theme.palette.primary.main,
+      },
+      '.MuiTypography-root': {
+        // maxWidth: '300px',
       },
       h5: {
         fontSize: '1.2rem',

@@ -1,41 +1,41 @@
 import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Service from '../components/Service'
+import Job from '../components/Job'
 import { useApi, useAuthz } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 
 interface Params {
   teamId?: string
-  serviceId?: string
+  jobId?: string
 }
 
 export default ({
   match: {
-    params: { teamId, serviceId },
+    params: { teamId, jobId },
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
   const [formdata, setFormdata] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [service, serviceLoading, serviceError]: any = useApi('getService', !!serviceId, [tid, serviceId])
+  const [job, jobLoading, jobError]: any = useApi('getJob', !!jobId, [tid, jobId])
   const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
   const [createRes, createLoading, createError] = useApi(
-    serviceId ? 'editService' : 'createService',
+    jobId ? 'editJob' : 'createJob',
     !!formdata,
-    serviceId ? [tid, serviceId, omit(formdata, ['id', 'teamId'])] : [tid, formdata],
+    jobId ? [tid, jobId, omit(formdata, ['id', 'teamId'])] : [tid, formdata],
   )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
+  const [deleteRes, deleteLoading, deleteError] = useApi('deleteJob', !!deleteId, [tid, jobId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
-    return <Redirect to={`/teams/${tid}/services`} />
+    return <Redirect to={`/teams/${tid}/jobs`} />
   }
-  const loading = serviceLoading || secretsLoading || createLoading || deleteLoading
-  const err = serviceError || secretsError || createError || deleteError
-  const comp = !loading && (!err || formdata || service) && (
-    <Service
+  const loading = jobLoading || secretsLoading || createLoading || deleteLoading
+  const err = jobError || secretsError || createError || deleteError
+  const comp = !loading && (!err || formdata || job) && (
+    <Job
       teamId={tid}
-      // service={formdata || convertDataFromServer(service)}
-      service={formdata || service}
+      // job={formdata || convertDataFromServer(job)}
+      job={formdata || job}
       secrets={secrets}
       onSubmit={setFormdata}
       onDelete={setDeleteId}
