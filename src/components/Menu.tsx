@@ -21,7 +21,8 @@ import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -96,10 +97,11 @@ export default ({ teamId }: Props): React.ReactElement => {
   }
 
   // Settings collapse stuff
-  const [open, setOpen] = React.useState(true)
+  const [open, setOpen] = useState(false)
   const handleCollapse = (): void => {
     setOpen((prevOpen) => !prevOpen)
   }
+
   const endpoints = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
 
   return (
@@ -133,18 +135,34 @@ export default ({ teamId }: Props): React.ReactElement => {
             <SettingsIcon />
           </ListItemIcon>
           <ListItemText primary='Settings' />
+          {
+            // eslint-disable-next-line no-nested-ternary
+            open != null ? open ? <ExpandLess /> : <ExpandMore /> : null
+          }
         </StyledMenuItem>
       </li>
 
       <Collapse component='li' in={open} timeout='auto' unmountOnExit>
         <List disablePadding>
-          <StyledMenuItem
+          {endpoints.map((ep) => {
+            return (
+              <StyledMenuItem
+                to={`/settings/:${ep}`}
+                selected={pathname === `/settings/:${ep}`}
+                data-cy={`menu-item-:${ep}`}
+              >
+                <ListItemText primary={ep} />
+              </StyledMenuItem>
+            )
+          })}
+
+          {/* <StyledMenuItem
             to='/settings/:setting'
             selected={pathname === '/settings/:setting'}
             data-cy='menu-item-:setting'
           >
             <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
-          </StyledMenuItem>
+          </StyledMenuItem> */}
         </List>
       </Collapse>
 
