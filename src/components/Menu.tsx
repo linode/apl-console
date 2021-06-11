@@ -123,7 +123,6 @@ export default ({ teamId }: Props): React.ReactElement => {
           <ListItemText primary='Otomi Apps' />
         </StyledMenuItem>
       )}
-
       <li>
         <StyledMenuItem
           to='/settings'
@@ -141,7 +140,6 @@ export default ({ teamId }: Props): React.ReactElement => {
           }
         </StyledMenuItem>
       </li>
-
       <Collapse component='li' in={open} timeout='auto' unmountOnExit>
         <List disablePadding>
           {endpoints.map((ep) => {
@@ -155,17 +153,8 @@ export default ({ teamId }: Props): React.ReactElement => {
               </StyledMenuItem>
             )
           })}
-
-          {/* <StyledMenuItem
-            to='/settings/:setting'
-            selected={pathname === '/settings/:setting'}
-            data-cy='menu-item-:setting'
-          >
-            <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
-          </StyledMenuItem> */}
         </List>
       </Collapse>
-
       <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
