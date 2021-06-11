@@ -25,7 +25,6 @@ export interface OpenApi {
   }
 }
 export interface Schema {
-  propertyName: any
   'x-acl'?: Acl
   type: SchemaType
   properties?: {
@@ -218,6 +217,6 @@ export function getTeamSelfServiceSchema(): any {
   return spec.components.schemas.TeamSelfService
 }
 
-export function getSettingsSchema(propertyName: string): any {
-  return spec.components.schemas.Settings[propertyName]
+export function getSettingsSchema(): any {
+  return spec.components.schemas.Settings
 }

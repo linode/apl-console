@@ -1,10 +1,11 @@
 import React from 'react'
+import { JSONSchema7 } from 'json-schema'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   propertyName: string
-  schema: any
+  schema: JSONSchema7
 }
 
 export default ({ propertyName, schema }: Props): React.ReactElement => {
