@@ -22,7 +22,7 @@ export default ({
   const comp = !loading && (!err || formdata || setting) && (
     <Setting
       onSubmit={setFormdata}
-      setting={setting}
+      setting={setting[settingId]}
       settingId={settingId}
       schema={getSettingsSchema().properties[settingId]}
     />
