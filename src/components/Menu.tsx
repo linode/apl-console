@@ -95,11 +95,13 @@ export default ({ teamId }: Props): React.ReactElement => {
     setDeploy(true)
   }
 
+  // Settings collapse stuff
   const [open, setOpen] = React.useState(true)
-
   const handleCollapse = (): void => {
     setOpen((prevOpen) => !prevOpen)
   }
+  const endpoints = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
+
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
@@ -140,7 +142,9 @@ export default ({ teamId }: Props): React.ReactElement => {
             to='/settings/:setting'
             selected={pathname === '/settings/:setting'}
             data-cy='menu-item-:setting'
-          />
+          >
+            <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
+          </StyledMenuItem>
         </List>
       </Collapse>
 
