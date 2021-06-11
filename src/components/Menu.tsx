@@ -1,4 +1,4 @@
-import { ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
+import { ListItem, ListItemText, ListSubheader, makeStyles, MenuItem, Typography } from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -12,6 +12,7 @@ import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+
 import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -103,12 +104,17 @@ export default ({ teamId }: Props): React.ReactElement => {
           <ListItemText primary='Otomi Apps' />
         </StyledMenuItem>
       )}
+
       <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
         <ListItemIcon>
           <SettingsIcon />
         </ListItemIcon>
         <ListItemText primary='Settings' />
       </StyledMenuItem>
+      <ListItem>
+        <Typography>alerts</Typography>
+      </ListItem>
+
       <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
