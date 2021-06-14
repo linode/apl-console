@@ -1,5 +1,12 @@
 import React from 'react'
 import { FormControl, RadioGroup, RadioGroupProps, FormControlLabel, Radio } from '@material-ui/core'
+import { makeStyles } from '@material-ui/styles'
+
+const useStyles = makeStyles({
+  root: {
+    padding: 8,
+  },
+})
 
 interface CustomRadioGroupProps extends RadioGroupProps {
   options: any
@@ -18,9 +25,11 @@ export default ({
   readonly,
   inline,
 }: CustomRadioGroupProps): React.ReactElement => {
+  const classes = useStyles()
   return (
     <FormControl component='fieldset'>
       <RadioGroup
+        className={classes.root}
         row={inline !== false}
         aria-label={name}
         name={name}

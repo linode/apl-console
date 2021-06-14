@@ -236,6 +236,9 @@ export const mainStyles = makeStyles((theme) => ({
       '.MuiFormControl-root:has(> input)': {
         display: 'none',
       },
+      '.MuiButton-iconSizeSmall': {
+        marginRight: '3px',
+      },
       '.MuiButton-textSecondary': {
         color: theme.palette.primary.contrastText,
         backgroundColor: theme.palette.primary.main,

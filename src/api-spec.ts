@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { Service, User } from '@redkubes/otomi-api-client-axios'
+import { Cluster, Service, User } from '@redkubes/otomi-api-client-axios'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[1].properties'
@@ -9,7 +9,7 @@ const jobSpecUiSchemaPath = 'allOf[0].properties'
 const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
 const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
 
-const getIngressSchemaPath = (idx) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
+const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 const idxMap = {
   private: 1,
   public: 2,
@@ -114,7 +114,7 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
   return uiSchema
 }
 
-export function getJobUiSchema(formData, cloudProvider: string, user: User, teamId: string, action: string): any {
+export function getJobUiSchema(formData, user: User, teamId: string): any {
   const uiSchema = {
     ...jobSpecUiSchema,
     id: { 'ui:widget': 'hidden' },
@@ -128,18 +128,8 @@ export function getJobUiSchema(formData, cloudProvider: string, user: User, team
   return uiSchema
 }
 
-export function getServiceUiSchema(
-  formData: Service,
-  cloudProvider: string,
-  user: User,
-  teamId: string,
-  action: string,
-): any {
-  const notAws = cloudProvider !== 'aws'
-  //
+export function getServiceUiSchema(formData: Service, user: User, teamId: string): any {
   const ing = formData?.ingress as any
-  const noCert = ing && !ing.hasCert
-  const noCertArn = notAws || noCert
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     enabled: { 'ui:widget': 'hidden' },
@@ -147,19 +137,13 @@ export function getServiceUiSchema(
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
       'ui:widget': CustomRadioGroup,
-      certArn: {
-        'ui:widget': noCertArn ? 'hidden' : undefined,
-      },
-      certName: {
-        'ui:widget': noCert ? 'hidden' : undefined,
-      },
-      certSelect: {
-        'ui:widget': noCert ? 'hidden' : undefined,
-        description: noCert ? '' : undefined,
-      },
       type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      certArn: {
+        // @ts-ignore
+        'ui:readonly': formData.ingress?.certSelect,
+      },
     },
     ksvc: {
       ...podSpecUiSchema,
@@ -177,13 +161,13 @@ export function getServiceUiSchema(
   return uiSchema
 }
 
-export function getSecretUiSchema(user: User, teamId: string, action: string): any {
+export function getSecretUiSchema(user: User, teamId: string): any {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
-    dockerconfig: { 'ui:widget': 'hidden', description: undefined },
-    type: { 'ui:widget': 'hidden', description: undefined },
+    dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
+    type: { 'ui:widget': 'hidden', 'ui:description': undefined },
     ca: { 'ui:widget': 'textarea' },
     crt: { 'ui:widget': 'textarea' },
     key: { 'ui:widget': 'textarea' },
@@ -212,11 +196,7 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   set(ingressSchema, 'domain.enum', zones)
 }
 
-export function addNamespaceEnum(schema: Schema, namespaces): void {
-  schema.properties.namespace.enum = namespaces
-}
-
-export function getJobSchema(cluster, dns, formData, secrets: Array<any>): any {
+export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   if (formData.type === 'Job') {
     unset(schema, `${jobSpecUiSchemaPath}.schedule`)
@@ -234,7 +214,7 @@ export function getJobSchema(cluster, dns, formData, secrets: Array<any>): any {
   return schema
 }
 
-export function getServiceSchema(cluster, dns, formData, secrets: Array<any>): any {
+export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[1].properties.securityContext`)
   addDomainEnumField(schema, cluster, dns, formData)
@@ -243,20 +223,28 @@ export function getServiceSchema(cluster, dns, formData, secrets: Array<any>): a
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = get(schema, ingressSchemaPath)
 
+  if (ing?.tlsPass) {
+    unset(ingressSchema, 'auth')
+    unset(ingressSchema, 'forwardPath')
+    unset(ingressSchema, 'hasCert')
+    unset(ingressSchema, 'path')
+    unset(ingressSchema, `certArn`)
+    unset(ingressSchema, `certName`)
+    unset(ingressSchema, `certSelect`)
+  }
+  if (cluster.provider !== Cluster.ProviderEnum.aws) {
+    unset(ingressSchema, `certArn`)
+  }
   if (!ing?.hasCert) {
+    unset(ingressSchema, `certArn`)
     unset(ingressSchema, `certName`)
     unset(ingressSchema, `certSelect`)
   } else if (ing) {
-    const subdomain = get(formData, 'ingress.subdomain', '')
-    const domain = get(formData, 'ingress.domain', '')
-
     // Give the certName an enum selector with names of existing tls secrets
     if (ing.certSelect) {
       const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
       set(ingressSchema, `certName.enum`, tlsSecretNames)
       if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
-    } else if (!ing.certSelect && ing.certName === undefined) {
-      ing.certName = `${subdomain}.${domain}`.replace(/\./g, '-')
     }
   }
   // set the Secrets enum with items to choose from

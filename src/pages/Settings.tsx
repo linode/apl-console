@@ -116,7 +116,6 @@ export default (): React.ReactElement => {
         schema={schema}
         liveValidate={false}
         showErrorList={false}
-        ObjectFieldTemplate={ObjectFieldTemplate}
       /> */}
     </>
   )

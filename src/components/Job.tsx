@@ -7,7 +7,6 @@ import Form from './rjsf/Form'
 import { getJobSchema, getJobUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import { useSession } from '../session-context'
-import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
@@ -27,9 +26,7 @@ export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.Reac
     const formData = cloneDeep(inData)
     const newSchema = getJobSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(
-      getJobUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
-    )
+    setUiSchema(getJobUiSchema(formData, user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, job))
   }
@@ -56,7 +53,6 @@ export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.Reac
       formData={data}
       liveValidate={false}
       showErrorList={false}
-      ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-job'>

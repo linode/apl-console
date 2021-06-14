@@ -1,5 +1,5 @@
 import React from 'react'
-import { Teams } from '../components'
+import Teams from '../components/Teams'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 

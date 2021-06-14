@@ -2,12 +2,11 @@ import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
-import { cloneDeep, merge } from 'lodash'
+import { cloneDeep } from 'lodash'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import { useSession } from '../session-context'
-import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
@@ -41,6 +40,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
         ing = { ...ing }
         delete ing.hasCert
         delete ing.certArn
+        delete ing.certName
         delete ing.forwardPath
         formData.ingress = ing
       } else if (ing?.type === 'cluster') {
@@ -50,9 +50,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
     }
     const newSchema = getServiceSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(
-      getServiceUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
-    )
+    setUiSchema(getServiceUiSchema(formData, user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, service))
   }
@@ -79,7 +77,6 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       formData={data}
       liveValidate={false}
       showErrorList={false}
-      ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>

@@ -13,12 +13,14 @@
     "noEmit": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "sourceMap": true,
+    "strictNullChecks": false,
     "strict": false,
     "target": "es5",
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
   "exclude": ["node_modules"],
+  "include": ["src"],
   "parserOptions": {
     "ecmaVersion": 12,
     "sourceType": "module"

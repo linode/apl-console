@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { Secret } from '@redkubes/otomi-api-client-axios'
 import { getSecretSchema, getSecretUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
-import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import Form from './rjsf/Form'
 import DeleteButton from './DeleteButton'
 
@@ -18,7 +17,7 @@ export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
   const { user, oboTeamId } = useSession()
 
   const schema = getSecretSchema()
-  const uiSchema = getSecretUiSchema(user, oboTeamId, secret?.id ? 'edit' : 'create')
+  const uiSchema = getSecretUiSchema(user, oboTeamId)
   const [data, setData]: any = useState(secret)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
@@ -45,7 +44,6 @@ export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
       formData={data}
       liveValidate={false}
       showErrorList={false}
-      ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-secret'>

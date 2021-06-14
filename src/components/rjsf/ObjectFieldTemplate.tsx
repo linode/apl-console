@@ -1,71 +1,28 @@
 /* eslint-disable react/no-array-index-key */
 import { Box, Grid, Paper } from '@material-ui/core'
 import React from 'react'
+import { ObjectFieldTemplateProps, utils } from '@rjsf/core'
+import TitleField from './TitleField'
+import AddButton from './AddButton'
+import { useStyles } from './styles'
 
-import { ObjectFieldTemplateProps } from '@rjsf/core'
-
-import { makeStyles } from '@material-ui/styles'
+const { canExpand } = utils
 
 const isHidden = (element: any): boolean => {
   return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
 }
 
-const useStyles = makeStyles({
-  root: {
-    // marginTop: 10,
-    marginBottom: 20,
-  },
-})
-
-const renderSimple = (o, idx) => {
-  if (isHidden(o)) {
-    return o.content
-  }
-  const schema = o.content?.props?.schema
-  if (!['object'].includes(schema.type)) {
-    if (schema.type === 'array')
-      return (
-        <Grid key={`row-${idx}`} container item>
-          {o.content}
-        </Grid>
-      )
-    return (
-      <Grid key={`${o.title}-${idx}`} item>
-        {o.content}
-      </Grid>
-    )
-  }
-  return (
-    <Paper key={`item-${idx}`}>
-      <Box padding='1em' key={`${o.title}-${idx}`}>
-        {o.content}
-      </Box>
-    </Paper>
-  )
-}
-
-export default ({
-  DescriptionField,
-  description,
-  TitleField,
-  title,
-  properties,
-  required,
-  disabled,
-  readonly,
-  uiSchema,
-  idSchema,
-  schema,
-  formData,
-  onAddClick,
-}: ObjectFieldTemplateProps): React.ReactElement => {
+export default (props: ObjectFieldTemplateProps): React.ReactElement => {
+  const { DescriptionField, disabled, formData, onAddClick, properties, readonly, schema, uiSchema } = props
   const classes = useStyles()
   let grouped
   const fields = []
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
-    const type = o.content.props.schema.type
-    if (type === 'object') {
+    const schema = o.content.props.schema
+    const type = schema.type
+    // we group props together that we want to render in their own row
+    if (['allOf', 'anyOf', 'oneOf'].some((p) => p in schema) || ['boolean', 'object'].includes(type)) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined
@@ -75,34 +32,94 @@ export default ({
   })
   if (grouped) fields.push(grouped)
 
-  const render = (o, idx) => {
-    if (o.length) {
-      return (
-        <>
-          <Grid key={`row-${idx}`} container spacing={3} direction='row' justify='flex-start' alignItems='flex-start'>
-            {o.map((el, idz) => {
-              return render(el, idz)
-            })}
-          </Grid>
-        </>
-      )
+  const renderHead = (props): React.ReactElement | undefined => {
+    const { idSchema, uiSchema, title, description, required, schema } = props
+    const displayTitle = uiSchema['ui:title'] || title || schema.title
+    const displayDescription = uiSchema['ui:description'] || description || schema.description
+    if (!(displayTitle || displayDescription)) return
+    // eslint-disable-next-line consistent-return
+    return (
+      <Box key={`${idSchema.$id}-header`} className={classes.header}>
+        {displayTitle && (
+          <TitleField
+            {...props}
+            key={`${idSchema.$id}-title`}
+            id={`${idSchema.$id}-title`}
+            title={displayTitle}
+            required={required}
+            docUrl={schema['x-externalDocsPath']}
+          />
+        )}
+        {displayDescription && (
+          <DescriptionField
+            key={`${idSchema.$id}-description`}
+            id={`${idSchema.$id}-description`}
+            description={displayDescription}
+          />
+        )}
+      </Box>
+    )
+  }
+
+  const render = (o) => {
+    if (isHidden(o)) {
+      return o.content
     }
-    return renderSimple(o, idx)
+    const schema = o.content?.props?.schema
+    const isSomeOf = ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema)
+    const isTopLevel = Object.prototype.hasOwnProperty.call(o.content.props.registry.rootSchema.properties, o.name)
+    // object/*Ofs we want to elevate in their own paper
+    if (schema.type === 'object' || (isTopLevel && isSomeOf))
+      return (
+        <Grid className={classes.grid} container>
+          <Paper className={classes.paper}>
+            {/* due to a bug in rjsf we sometimes don't see title rendered for *Of, so we do it here 
+                In order to make this work we also disable the title rendering in the TitleTemplate for those occasions. */}
+            {isTopLevel && isSomeOf && renderHead(o.content?.props)}
+            {o.content}
+          </Paper>
+        </Grid>
+      )
+
+    if (schema.type === 'array' || schema.type === 'boolean')
+      // array items will get their own grid row
+      return (
+        <Grid className={classes.grid} container>
+          {o.content}
+        </Grid>
+      )
+    return (
+      <Grid className={classes.grid} item>
+        <Box className={classes.box}>{o.content}</Box>
+      </Grid>
+    )
   }
 
   return (
-    <Box my={1}>
-      {(uiSchema['ui:title'] || title || description) && (
-        <Box className={classes.root}>
-          {(uiSchema['ui:title'] || title) && (
-            <TitleField id={`${idSchema.$id}-title`} title={title} required={required} />
-          )}
-          {description && <DescriptionField id={`${idSchema.$id}-description`} description={description} />}
-        </Box>
-      )}
+    <Grid container spacing={2} className={classes.root}>
+      {renderHead(props)}
       {fields.map((o: any, idx: number) => {
-        return render(o, idx)
+        if (o.length)
+          return (
+            <Grid key={idx} container>
+              {o.map((el) => render(el))}
+            </Grid>
+          )
+        return render(o)
       })}
-    </Box>
+      {canExpand(schema, uiSchema, formData) && (
+        <Grid container justify='flex-end' className={classes.grid}>
+          <Grid item>
+            <Box mt={2}>
+              <AddButton
+                className='object-property-expand'
+                onClick={onAddClick(schema)}
+                disabled={disabled || readonly}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+      )}
+    </Grid>
   )
 }

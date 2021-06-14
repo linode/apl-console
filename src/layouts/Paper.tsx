@@ -1,7 +1,8 @@
 import React from 'react'
 import { Container, Grid, Paper, makeStyles } from '@material-ui/core'
 import MainLayout from './Base'
-import { Error, Loader } from '../components'
+import Error from '../components/Error'
+import Loader from '../components/Loader'
 
 const useStyles = makeStyles((theme) => ({
   container: {
