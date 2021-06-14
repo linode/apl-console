@@ -61,21 +61,25 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     )
   }
 
-  const render = (o) => {
+  const render = (o, id = o.name) => {
     if (isHidden(o)) {
-      return o.content
+      return (
+        <span id={id} key={id}>
+          {o.content}
+        </span>
+      )
     }
     const schema = o.content?.props?.schema
     const isSomeOf = ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema)
-    const isTopLevel = Object.prototype.hasOwnProperty.call(o.content.props.registry.rootSchema.properties, o.name)
+    // const isTopLevel = Object.prototype.hasOwnProperty.call(o.content.props.registry.rootSchema.properties, o.name)
     // object/*Ofs we want to elevate in their own paper
-    if (schema.type === 'object' || (isTopLevel && isSomeOf))
+    if (schema.type === 'object' || isSomeOf)
       return (
-        <Grid className={classes.grid} container>
+        <Grid key={id} className={classes.grid} container>
           <Paper className={classes.paper}>
             {/* due to a bug in rjsf we sometimes don't see title rendered for *Of, so we do it here 
                 In order to make this work we also disable the title rendering in the TitleTemplate for those occasions. */}
-            {isTopLevel && isSomeOf && renderHead(o.content?.props)}
+            {isSomeOf && renderHead(o.content?.props)}
             {o.content}
           </Paper>
         </Grid>
@@ -84,12 +88,12 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     if (schema.type === 'array' || schema.type === 'boolean')
       // array items will get their own grid row
       return (
-        <Grid className={classes.grid} container>
+        <Grid key={id} className={classes.grid} container>
           {o.content}
         </Grid>
       )
     return (
-      <Grid className={classes.grid} item>
+      <Grid key={id} className={classes.grid} item>
         <Box className={classes.box}>{o.content}</Box>
       </Grid>
     )
@@ -102,7 +106,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         if (o.length)
           return (
             <Grid key={idx} container>
-              {o.map((el) => render(el))}
+              {o.map((el, idz) => render(el, idz))}
             </Grid>
           )
         return render(o)

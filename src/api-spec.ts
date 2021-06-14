@@ -166,12 +166,16 @@ export function getSecretUiSchema(user: User, teamId: string): any {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
-    dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
-    type: { 'ui:widget': 'hidden', 'ui:description': undefined },
-    ca: { 'ui:widget': 'textarea' },
-    crt: { 'ui:widget': 'textarea' },
-    key: { 'ui:widget': 'textarea' },
-    entries: { 'ui:options': { orderable: false } },
+    secret: {
+      'ui:widget': CustomRadioGroup,
+      'ui:description': undefined,
+      dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
+      ca: { 'ui:widget': 'textarea' },
+      crt: { 'ui:widget': 'textarea' },
+      key: { 'ui:widget': 'textarea' },
+      entries: { 'ui:options': { orderable: false } },
+      type: { 'ui:widget': 'hidden' },
+    },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Secret')

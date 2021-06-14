@@ -10,7 +10,6 @@ import ListItem from '@material-ui/core/ListItem'
 import Typography from '@material-ui/core/Typography'
 
 import WrapIfAdditional from './WrapIfAdditional'
-import HelpButton from '../../HelpButton'
 
 export default ({
   id,
