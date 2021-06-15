@@ -45,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
+  settingItem: {
+    backgroundColor: theme.palette.divider,
+    marginLeft: 55,
+  },
 }))
 
 interface Props {
@@ -140,6 +144,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           {settingIds.map((id) => {
             return (
               <StyledMenuItem
+                className={classes.settingItem}
                 to={`/settings/${id}`}
                 selected={pathname === `/settings/${id}`}
                 data-cy={`menu-item-${id}`}
