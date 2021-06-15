@@ -19,6 +19,8 @@ export interface SessionContext extends Session {
   oboTeamId?: string
   setOboTeamId?: CallableFunction
   setThemeType?: CallableFunction
+  collapseSettings: boolean
+  setCollapseSettings: CallableFunction
   themeType: string
   versions: Versions
 }
@@ -37,6 +39,9 @@ const context = React.createContext<SessionContext>({
   oboTeamId: undefined,
   setOboTeamId: undefined,
   setThemeType: undefined,
+  collapseSettings: true,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setCollapseSettings: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   teams: undefined,

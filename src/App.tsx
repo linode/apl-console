@@ -49,6 +49,7 @@ const AppEE = () => {
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
+  const [collapseSettings, setCollapseSettings] = useState(true)
   setThemeType(themeType)
   if (sessionError || apiDocsError) {
     return <ErrorComponent />
@@ -80,6 +81,8 @@ const AppEE = () => {
               setOboTeamId,
               themeType,
               setThemeType: setType,
+              collapseSettings,
+              setCollapseSettings,
             }}
           >
             <Router basename={env.CONTEXT_PATH || ''}>

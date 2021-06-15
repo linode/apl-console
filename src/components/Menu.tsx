@@ -57,6 +57,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     mode,
     user: { isAdmin },
   } = useSession()
+  const { collapseSettings, setCollapseSettings } = useSession()
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
   const [dirty, setDirty] = useState(getDirty())
@@ -92,14 +93,8 @@ export default ({ teamId }: Props): React.ReactElement => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
-  const handleClick = (): void => {
-    setDeploy(true)
-  }
-
-  // Settings collapse stuff
-  const [open, setOpen] = useState(false)
   const handleCollapse = (): void => {
-    setOpen((prevOpen) => !prevOpen)
+    setCollapseSettings((prevCollapse) => !prevCollapse)
   }
 
   const settingIds = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
@@ -136,11 +131,11 @@ export default ({ teamId }: Props): React.ReactElement => {
           <ListItemText primary='Settings' />
           {
             // eslint-disable-next-line no-nested-ternary
-            open != null ? open ? <ExpandLess /> : <ExpandMore /> : null
+            collapseSettings != null ? collapseSettings ? <ExpandLess /> : <ExpandMore /> : null
           }
         </StyledMenuItem>
       </li>
-      <Collapse component='li' in={open} timeout='auto' unmountOnExit>
+      <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
         <List disablePadding>
           {settingIds.map((id) => {
             return (
@@ -155,7 +150,12 @@ export default ({ teamId }: Props): React.ReactElement => {
           })}
         </List>
       </Collapse>
-      <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <MenuItem
+        className={classes.deploy}
+        disabled={!dirty}
+        onClick={handleCollapse}
+        data-cy='menu-item-deploy-changes'
+      >
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
