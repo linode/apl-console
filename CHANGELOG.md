@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.46](https://github.com/redkubes/otomi-console/compare/v0.4.44...v0.4.46) (2021-06-15)
+
+
+### Features
+
+* clusters as objects ([#74](https://github.com/redkubes/otomi-console/issues/74)) ([6bdf29c](https://github.com/redkubes/otomi-console/commit/6bdf29c70cdd62b16ecc989fe7ced6453660c9b6))
+* convert service data ([44f3664](https://github.com/redkubes/otomi-console/commit/44f3664b096bf9a104fa3a0604d40f52ee343163))
+* do not pass teamId on service update/create ([97307b7](https://github.com/redkubes/otomi-console/commit/97307b7b9551907580ecdd2e4f036cecff07347d))
+* error messages ([c923e90](https://github.com/redkubes/otomi-console/commit/c923e907fd30aee2296789a873a92a1c8cf183f7))
+* Jobs ([#80](https://github.com/redkubes/otomi-console/issues/80)) ([212aefc](https://github.com/redkubes/otomi-console/commit/212aefc9a2da8c5f3d99b177788da37b90dc01ef))
+* outlined error ([1516108](https://github.com/redkubes/otomi-console/commit/15161082e7dfef8953cf1f9b467a8c6a76bb5c4f))
+* print error to console ([37a83b7](https://github.com/redkubes/otomi-console/commit/37a83b76826c03f61d09efdae17af0dfe64862b7))
+* remove multi-cluster awareness ([d6abac0](https://github.com/redkubes/otomi-console/commit/d6abac08459f9918fca34f0eb96673c46d5314d9))
+* show cluster urls ([c4bbfa4](https://github.com/redkubes/otomi-console/commit/c4bbfa4031b4ea0ab5185ef4374a8d02d85ac3f1))
+* Team self service flags ([#78](https://github.com/redkubes/otomi-console/issues/78)) ([636c301](https://github.com/redkubes/otomi-console/commit/636c301c21bd5b447ba71d7162ff261e38d3978c))
+* update otomi-client ([c6b6442](https://github.com/redkubes/otomi-console/commit/c6b6442cc09c384639c31d597b80646af0527435))
+
+
+### Bug Fixes
+
+* broken code ([c35e5c9](https://github.com/redkubes/otomi-console/commit/c35e5c995b4666404267b0b18c52dc13ed76fcc6))
+* clusters in ce ([7ccf71f](https://github.com/redkubes/otomi-console/commit/7ccf71f1ebad85309cd3f741a7327e6e30935911))
+* console log api error only in dev mode ([27afcae](https://github.com/redkubes/otomi-console/commit/27afcae5dbadce75d9c8ac59f9cb6e5446a6270d))
+* disabling fields for useDefaultSubdomain ([edd675b](https://github.com/redkubes/otomi-console/commit/edd675b9413e07063c69ca267797b473b7565949))
+* do not load team while dealing with services and secrets ([2a894e9](https://github.com/redkubes/otomi-console/commit/2a894e959cbaf603c6dc49a1e71dd8b394dd19ba))
+* globlError, cluster selector ([583dc1f](https://github.com/redkubes/otomi-console/commit/583dc1f91a331f7216be742ed15dec19d85acb7a))
+* knative schema, file mounts ([f47241f](https://github.com/redkubes/otomi-console/commit/f47241f768b627e1a79cc38db296eb925c9a2d83))
+* missing env vars ([5b963ff](https://github.com/redkubes/otomi-console/commit/5b963ff1ba7a88c85bf5349b662ff5763107491f))
+* old dns zondes ref ([e6dc0ca](https://github.com/redkubes/otomi-console/commit/e6dc0cafd90813376bc6300c3b71b341e03c2e12))
+* package lock ([fdde6aa](https://github.com/redkubes/otomi-console/commit/fdde6aaf16373da75e62d325a7d113388a0be8b7))
+* package version ([488664f](https://github.com/redkubes/otomi-console/commit/488664f42fc1225f70294f1088cab431a73d9300))
+* rename dnsZones to zones [ci skip] ([3fd59c3](https://github.com/redkubes/otomi-console/commit/3fd59c3685467240e29d16971ace823e58cfdf66))
+* schema ([1c4bee5](https://github.com/redkubes/otomi-console/commit/1c4bee5b0d62ca7aad13ee1c524b3c7a52457bd0))
+* schema descriptions ([94db91b](https://github.com/redkubes/otomi-console/commit/94db91b42c8352f40ad114f15a60cf4ab15591ef))
+* secret assignment at service ([5968e34](https://github.com/redkubes/otomi-console/commit/5968e3465fe468acb80e1a4e7704c7548ef32633))
+* secrets empty array by default ([48feb5c](https://github.com/redkubes/otomi-console/commit/48feb5ca08c7c1edd765da47b0af1f29543ce5c2))
+* secrets, form rendering ([f5dc6a8](https://github.com/redkubes/otomi-console/commit/f5dc6a8b02075806266d178f73570a69d55bc16d))
+* styling ([34b8d13](https://github.com/redkubes/otomi-console/commit/34b8d13727ef1ccec86a2c5e0fe14f23a70a245e))
+* update README.md ([dc2abf5](https://github.com/redkubes/otomi-console/commit/dc2abf59cac96ac41e6a0c7163dc7611745480d9))
+* what I have so far [ci skip] ([e2c52b9](https://github.com/redkubes/otomi-console/commit/e2c52b906464efdb9ea47856f6b4f3b057c53647))
+* what I have so far [ci skip] ([4d3e641](https://github.com/redkubes/otomi-console/commit/4d3e64154aebc4ed262d112f96d3ba5075f20882))
+
+
+### Others
+
+* add debugging section to readme ([0d93496](https://github.com/redkubes/otomi-console/commit/0d9349663df198628fdb1fd746a2503dba03e780))
+* add section about development with otomi-api-client-axios package ([1e914ce](https://github.com/redkubes/otomi-console/commit/1e914cee1c2a524eb7ad1db65b30d434f41e996b))
+* api upgrade ([c795e20](https://github.com/redkubes/otomi-console/commit/c795e20cc5dee13cfa616ba148b2c14bb252d178))
+* api upgrade ([267a74c](https://github.com/redkubes/otomi-console/commit/267a74c94c3db6e151c529493adcf4643df2fbd9))
+* change version of @material-ui/lab ([4b771fc](https://github.com/redkubes/otomi-console/commit/4b771fcc4192f6b6844a841e30d826ec75884545))
+* set default formater ([f77c866](https://github.com/redkubes/otomi-console/commit/f77c8663c163c5e8fa01a0fce83b3cd0ff39c029))
+
 ### [0.4.44](https://github.com/redkubes/otomi-console/compare/v0.4.43...v0.4.44) (2021-05-04)
 
 ### Bug Fixes
