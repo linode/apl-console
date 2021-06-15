@@ -34,7 +34,13 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
       ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-team'>
+        <Button
+          variant='contained'
+          color='primary'
+          type='submit'
+          disabled={!dirty}
+          data-cy={`button-submit-${setting}`}
+        >
           Submit
         </Button>
       </Box>

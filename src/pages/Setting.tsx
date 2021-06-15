@@ -16,13 +16,13 @@ export default ({
 }: RouteComponentProps<Params>): React.ReactElement => {
   const [formdata, setFormdata] = useState()
   const [setting, settingLoading, settingError]: any = useApi('getSubSetting', !!settingId, [settingId])
-  const [createRes, createLoading, createError] = useApi('editSubSetting', !!formdata, [settingId, formdata])
-  const loading = settingLoading || createLoading
-  const err = settingError || createError
+  const [editRes, editLoading, editError] = useApi('editSubSetting', !!formdata, [settingId, { [settingId]: formdata }])
+  const loading = settingLoading || editLoading
+  const err = settingError || editError
   const comp = !loading && (!err || formdata || setting) && (
     <Setting
       onSubmit={setFormdata}
-      setting={setting[settingId]}
+      setting={formdata || setting[settingId]}
       settingId={settingId}
       schema={getSettingsSchema().properties[settingId]}
     />
