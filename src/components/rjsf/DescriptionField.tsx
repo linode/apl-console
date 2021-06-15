@@ -13,7 +13,7 @@ const DescriptionField = ({ description }: FieldProps) => {
   const classes = useStyles()
   if (description) {
     return (
-      <Typography variant='caption' className={classes.root}>
+      <Typography variant='caption' color='textSecondary' className={classes.root}>
         {description}
       </Typography>
     )

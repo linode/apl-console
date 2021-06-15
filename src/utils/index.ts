@@ -23,7 +23,7 @@ export function set(obj: any, path: string, value: any) {
 }
 
 export function unset(obj: any, path: string) {
-  get(obj, path, undefined) // will throw if bogus path
+  get(obj, path, undefined) // will warn if bogus path
   loUnset(obj, path)
 }
 

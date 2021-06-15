@@ -236,31 +236,39 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
   addDomainEnumField(schema, cluster, dns, formData)
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
-  const ingressSchemaPath = getIngressSchemaPath(idx)
-  const ingressSchema = get(schema, ingressSchemaPath)
+  if (idx) {
+    const ingressSchemaPath = getIngressSchemaPath(idx)
+    const ingressSchema = get(schema, ingressSchemaPath)
 
-  if (ing?.tlsPass) {
-    unset(ingressSchema, 'auth')
-    unset(ingressSchema, 'forwardPath')
-    unset(ingressSchema, 'hasCert')
-    unset(ingressSchema, 'path')
-    unset(ingressSchema, `certArn`)
-    unset(ingressSchema, `certName`)
-    unset(ingressSchema, `certSelect`)
-  }
-  if (cluster.provider !== Cluster.ProviderEnum.aws) {
-    unset(ingressSchema, `certArn`)
-  }
-  if (!ing?.hasCert) {
-    unset(ingressSchema, `certArn`)
-    unset(ingressSchema, `certName`)
-    unset(ingressSchema, `certSelect`)
-  } else if (ing) {
-    // Give the certName an enum selector with names of existing tls secrets
-    if (ing.certSelect) {
-      const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLS.TypeEnum.tls).map((s) => s.name)
-      set(ingressSchema, `certName.enum`, tlsSecretNames)
-      if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
+    if (ing?.tlsPass) {
+      unset(ingressSchema, 'auth')
+      unset(ingressSchema, 'forwardPath')
+      unset(ingressSchema, 'hasCert')
+      unset(ingressSchema, 'path')
+      unset(ingressSchema, `certArn`)
+      unset(ingressSchema, `certName`)
+      unset(ingressSchema, `certSelect`)
+    }
+    if (cluster.provider !== Cluster.ProviderEnum.aws) {
+      unset(ingressSchema, `certArn`)
+    }
+    if (!ing?.hasCert) {
+      unset(ingressSchema, `certArn`)
+      unset(ingressSchema, `certName`)
+      unset(ingressSchema, `certSelect`)
+    } else if (ing) {
+      // Give the certName an enum selector with names of existing tls secrets
+      if (ing.certSelect) {
+        const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLS.TypeEnum.tls).map((s) => s.name)
+        set(ingressSchema, `certName.enum`, tlsSecretNames)
+        if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
+      }
+    }
+    if (['cluster', 'tlsPass'].includes(ing?.type)) {
+      unset(ingressSchema, 'auth')
+      unset(ingressSchema, 'forwardPath')
+      unset(ingressSchema, 'path')
+      unset(ingressSchema, 'hasCert')
     }
   }
   // set the Secrets enum with items to choose from
@@ -273,16 +281,6 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
   } else {
     set(schema, `${ksvcSchemaPath}.secrets.items.readOnly`, true)
     set(schema, `${ksvcSchemaPath}.secretMounts.items.readOnly`, true)
-  }
-  // remove type 'Cluster' when not using ksvc
-  // if (schema.properties && formData?.ksvc?.serviceType === 'svcPredeployed') {
-  //   schema.properties.ingress.oneOf.splice(0, 1)
-  // }
-  if (['cluster', 'tlsPass'].includes(ing?.type)) {
-    unset(ingressSchema, 'auth')
-    unset(ingressSchema, 'forwardPath')
-    unset(ingressSchema, 'path')
-    unset(ingressSchema, 'hasCert')
   }
 
   return schema

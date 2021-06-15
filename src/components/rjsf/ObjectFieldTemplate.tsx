@@ -24,7 +24,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     const schema = o.content.props.schema
     const type = schema.type
     // we group props together that we want to render in their own row
-    if (['allOf', 'anyOf', 'oneOf'].some((p) => p in schema) || ['boolean', 'object'].includes(type)) {
+    if (isHidden(o) || ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema) || ['boolean', 'object'].includes(type)) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined
@@ -40,9 +40,11 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     const displayTitle = uiSchema['ui:title'] || title || schema.title
     const displayDescription = uiSchema['ui:description'] || description || schema.description
     if (!(displayTitle || displayDescription)) return
+    // eslint-disable-next-line no-param-reassign
+    if (isOf) skipTitle = true
     // eslint-disable-next-line consistent-return
     return (
-      <Box key={`${idSchema.$id}-header`} className={classes[`header${skipTitle ?? 'Skip'}`]}>
+      <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
         {displayTitle && !skipTitle && (
           <TitleField
             {...props}
@@ -61,7 +63,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
             description={displayDescription}
           />
         )}
-      </Box>
+      </Grid>
     )
   }
 
@@ -78,28 +80,25 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         )
       return undefined
     }
-    if (hidden) {
-      return (
-        <span id={id} key={id}>
-          {o.content}
-        </span>
-      )
-    }
     // object/*Ofs we want to elevate in their own paper
     if (schema.type === 'object' || isOf)
       return (
-        <Paper key={id} className={classes.paper}>
-          <Grid className={classes.grid} container>
-            {isOf && renderTitleDescription(o.content?.props)}
+        <Grid key={id} className={classes.grid} item xs={12}>
+          <Paper key={id} className={classes.paper}>
+            {isOf && (
+              <Grid key={idSchema.$id} item className={classes.isOfHeader}>
+                {renderTitleDescription(o.content?.props)}
+              </Grid>
+            )}
             {o.content}
-          </Grid>
-        </Paper>
+          </Paper>
+        </Grid>
       )
 
     if (schema.type === 'array' && !schema.items.enum)
       // array items will get their own grid row
       return (
-        <Grid key={id} container>
+        <Grid key={id} container className={classes.gridIsOf}>
           {o.content}
         </Grid>
       )
@@ -116,7 +115,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
       )
     return (
       <Grid key={id} className={classes.grid} item>
-        <Box className={classes.box}>{o.content}</Box>
+        {o.content}
       </Grid>
     )
   }
@@ -124,7 +123,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   return (
     <Grid container spacing={2} className={classes.root}>
       {!isOf && (
-        <Grid key={idSchema.$id} container>
+        <Grid key={idSchema.$id} item>
           {renderTitleDescription(props)}
         </Grid>
       )}
