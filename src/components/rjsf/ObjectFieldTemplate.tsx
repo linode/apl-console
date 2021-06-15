@@ -1,10 +1,11 @@
 /* eslint-disable react/no-array-index-key */
-import { Box, Grid, Paper } from '@material-ui/core'
+import { Box, Divider, Grid, Paper } from '@material-ui/core'
 import React from 'react'
 import { ObjectFieldTemplateProps, utils } from '@rjsf/core'
 import TitleField from './TitleField'
 import AddButton from './AddButton'
 import { useStyles } from './styles'
+import { isSomeOf } from '../../utils'
 
 const { canExpand } = utils
 
@@ -13,8 +14,9 @@ const isHidden = (element: any): boolean => {
 }
 
 export default (props: ObjectFieldTemplateProps): React.ReactElement => {
-  const { DescriptionField, disabled, formData, onAddClick, properties, readonly, schema, uiSchema } = props
+  const { DescriptionField, disabled, formData, onAddClick, properties, readonly, idSchema, schema, uiSchema } = props
   const classes = useStyles()
+  const isOf = isSomeOf(schema)
   let grouped
   const fields = []
   properties.forEach((o) => {
@@ -32,15 +34,16 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   })
   if (grouped) fields.push(grouped)
 
-  const renderHead = (props): React.ReactElement | undefined => {
+  const renderTitleDescription = (props, skipTitle = false): React.ReactElement | undefined => {
     const { idSchema, uiSchema, title, description, required, schema } = props
+    if (schema.type === 'boolean' && !skipTitle) return
     const displayTitle = uiSchema['ui:title'] || title || schema.title
     const displayDescription = uiSchema['ui:description'] || description || schema.description
     if (!(displayTitle || displayDescription)) return
     // eslint-disable-next-line consistent-return
     return (
-      <Box key={`${idSchema.$id}-header`} className={classes.header}>
-        {displayTitle && (
+      <Box key={`${idSchema.$id}-header`} className={classes[`header${skipTitle ?? 'Skip'}`]}>
+        {displayTitle && !skipTitle && (
           <TitleField
             {...props}
             key={`${idSchema.$id}-title`}
@@ -50,6 +53,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
             docUrl={schema['x-externalDocsPath']}
           />
         )}
+        {displayDescription && skipTitle && <Divider />}
         {displayDescription && (
           <DescriptionField
             key={`${idSchema.$id}-description`}
@@ -62,34 +66,52 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   }
 
   const render = (o, id = o.name) => {
-    if (isHidden(o)) {
+    const schema = o.content?.props?.schema
+    const isOf = isSomeOf(schema)
+    const hidden = isHidden(o)
+    if (hidden) {
+      if (!schema.properties && !isOf)
+        return (
+          <span id={id} key={id}>
+            {o.content}
+          </span>
+        )
+      return undefined
+    }
+    if (hidden) {
       return (
         <span id={id} key={id}>
           {o.content}
         </span>
       )
     }
-    const schema = o.content?.props?.schema
-    const isSomeOf = ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema)
-    // const isTopLevel = Object.prototype.hasOwnProperty.call(o.content.props.registry.rootSchema.properties, o.name)
     // object/*Ofs we want to elevate in their own paper
-    if (schema.type === 'object' || isSomeOf)
+    if (schema.type === 'object' || isOf)
       return (
-        <Grid key={id} className={classes.grid} container>
-          <Paper className={classes.paper}>
-            {/* due to a bug in rjsf we sometimes don't see title rendered for *Of, so we do it here 
-                In order to make this work we also disable the title rendering in the TitleTemplate for those occasions. */}
-            {isSomeOf && renderHead(o.content?.props)}
+        <Paper key={id} className={classes.paper}>
+          <Grid className={classes.grid} container>
+            {isOf && renderTitleDescription(o.content?.props)}
             {o.content}
-          </Paper>
+          </Grid>
+        </Paper>
+      )
+
+    if (schema.type === 'array' && !schema.items.enum)
+      // array items will get their own grid row
+      return (
+        <Grid key={id} container>
+          {o.content}
         </Grid>
       )
 
-    if (schema.type === 'array' || schema.type === 'boolean')
+    if ((schema.type === 'array' && !schema.items.enum) || schema.type === 'boolean')
       // array items will get their own grid row
       return (
         <Grid key={id} className={classes.grid} container>
-          {o.content}
+          <Grid className={classes.box} container item>
+            {o.content}
+          </Grid>
+          {schema.type === 'boolean' && renderTitleDescription(o.content?.props, true)}
         </Grid>
       )
     return (
@@ -101,7 +123,11 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
 
   return (
     <Grid container spacing={2} className={classes.root}>
-      {renderHead(props)}
+      {!isOf && (
+        <Grid key={idSchema.$id} container>
+          {renderTitleDescription(props)}
+        </Grid>
+      )}
       {fields.map((o: any, idx: number) => {
         if (o.length)
           return (

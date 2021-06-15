@@ -7,6 +7,7 @@ import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
 import TitleField from './TitleField'
 import ArrayFieldTemplate from './ArrayFieldTemplate'
+import DescriptionField from './DescriptionField'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -36,7 +37,7 @@ export default ({ children, title, ...props }: Props): React.ReactElement => {
         ObjectFieldTemplate={ObjectFieldTemplate}
         ArrayFieldTemplate={ArrayFieldTemplate}
         FieldTemplate={FieldTemplate}
-        fields={{ TitleField }}
+        fields={{ TitleField, DescriptionField }}
         {...props}
       >
         {children}

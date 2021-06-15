@@ -7,9 +7,11 @@ export const useStyles = makeStyles({
   },
   header: {
     paddingTop: 8,
-    margin: 8,
+    // margin: 8,
     marginTop: 4,
-    // marginBottom: 16,
+  },
+  headerSkip: {
+    paddingTop: 2,
   },
   box: {
     // margin: 4,
@@ -23,6 +25,7 @@ export const useStyles = makeStyles({
   },
   paper: {
     marginTop: 16,
+    paddingTop: 8,
     padding: 4,
     // marginRight: 16,
   },

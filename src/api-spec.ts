@@ -1,10 +1,17 @@
 /* eslint-disable no-param-reassign */
-import { get, set, unset } from 'lodash/object'
 import { isEmpty, cloneDeep } from 'lodash/lang'
-import { Cluster, Service, User } from '@redkubes/otomi-api-client-axios'
+import {
+  Cluster,
+  SecretDockerRegistry,
+  SecretGeneric,
+  SecretTLS,
+  Service,
+  User,
+} from '@redkubes/otomi-api-client-axios'
+import { get, set, unset } from './utils'
 import CustomRadioGroup from './components/rjsf/RadioGroup'
 
-const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[1].properties'
+const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
 const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
 const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
@@ -20,6 +27,8 @@ const podSpecUiSchema = {
   annotations: { 'ui:options': { orderable: false } },
   env: { 'ui:options': { orderable: false } },
   files: { 'ui:options': { orderable: false }, items: { content: { 'ui:widget': 'textarea' } } },
+  podSecurityContext: { 'ui:widget': 'hidden' },
+  securityContext: { 'ui:widget': 'hidden' },
   secrets: {
     'ui:options': { orderable: false, addable: false, removable: false },
   },
@@ -206,7 +215,7 @@ export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets:
     unset(schema, `${jobSpecUiSchemaPath}.schedule`)
   }
   if (secrets.length) {
-    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
+    const secretNames = secrets.filter((s) => s.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
     set(schema, `${jobInitSpecSecretsPath}.items.enum`, secretNames)
     set(schema, `${jobSpecSecretsPath}.items.enum`, secretNames)
   } else {
@@ -220,7 +229,10 @@ export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets:
 
 export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
-  unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[1].properties.securityContext`)
+  // since we ask for podSecurityContext and have only one container we don't offer container.securityContext:
+  unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[0].properties.securityContext`)
+  // and we also disable podSecurityContext for now since it's only available from knative 1.21
+  unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[0].properties.podSecurityContext`)
   addDomainEnumField(schema, cluster, dns, formData)
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
@@ -246,19 +258,19 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
   } else if (ing) {
     // Give the certName an enum selector with names of existing tls secrets
     if (ing.certSelect) {
-      const tlsSecretNames = secrets.filter((s) => s.type === 'tls').map((s) => s.name)
+      const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLS.TypeEnum.tls).map((s) => s.name)
       set(ingressSchema, `certName.enum`, tlsSecretNames)
       if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
     }
   }
   // set the Secrets enum with items to choose from
   if (secrets.length) {
-    const secretNames = secrets.filter((s) => s.type === 'generic').map((s) => s.name)
+    const secretNames = secrets
+      .filter((s) => s.secret.type !== SecretDockerRegistry.TypeEnum.docker_registry)
+      .map((s) => s.name)
     set(schema, `${ksvcSchemaPath}.secrets.items.enum`, secretNames)
     set(schema, `${ksvcSchemaPath}.secretMounts.items.properties.name.enum`, secretNames)
   } else {
-    unset(schema, `${ksvcSchemaPath}.secrets.items.enum`)
-    unset(schema, `${ksvcSchemaPath}.secretMounts.items.properties.name.enum`)
     set(schema, `${ksvcSchemaPath}.secrets.items.readOnly`, true)
     set(schema, `${ksvcSchemaPath}.secretMounts.items.readOnly`, true)
   }
