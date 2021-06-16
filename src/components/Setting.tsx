@@ -14,15 +14,17 @@ interface Props {
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
   const [data, setData] = useState(setting)
+  const [initialState, setInitialState] = useState(data)
   const [dirty, setDirty] = useState<boolean>(false)
 
   useEffect(() => {
     setData(setting)
-  }, [setting, settingId])
+    setInitialState(data)
+  }, [data, setting])
 
   const handleChange = ({ formData }) => {
+    setDirty(!isEqual(data, initialState))
     setData(formData)
-    setDirty(!isEqual(formData, setting))
   }
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
