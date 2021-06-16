@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Setting from '../components/Setting'
-import { getSettingsSchema } from '../api-spec'
 import { useApi } from '../hooks/api'
 
 interface Params {
@@ -25,13 +24,7 @@ export default ({
   const loading = settingLoading || editLoading
   const err = settingError || editError
   const comp = !loading && (!err || formdata || setting) && (
-    <Setting
-      key={settingId}
-      onSubmit={setFormdata}
-      setting={setting[settingId]}
-      settingId={settingId}
-      schema={getSettingsSchema().properties[settingId]}
-    />
+    <Setting onSubmit={setFormdata} setting={setting[settingId]} settingId={settingId} />
   )
   return <PaperLayout comp={comp} loading={loading} />
 }

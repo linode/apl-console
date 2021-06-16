@@ -3,7 +3,7 @@ import { Box, Grid, Paper, Typography } from '@material-ui/core'
 import React from 'react'
 
 export default function ObjectFieldTemplate(props: any) {
-  const { title, description, properties } = props
+  const { title, properties } = props
   let grouped
   const fields = []
   properties.forEach((o) => {
@@ -22,7 +22,7 @@ export default function ObjectFieldTemplate(props: any) {
     <Box my={1}>
       <Box>
         <Typography variant='h5'>{title}</Typography>
-        <p>{description}</p>
+        &nbsp;
       </Box>
 
       {fields.map((o, idx) => {

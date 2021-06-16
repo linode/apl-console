@@ -4,15 +4,15 @@ import { isEqual } from 'lodash'
 import { Box, Button } from '@material-ui/core'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
+import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
 
 interface Props {
   onSubmit: CallableFunction
   setting: any
   settingId: string
-  schema: JSONSchema7
 }
 
-export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactElement => {
+export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
   const [data, setData] = useState(setting)
   const [dirty, setDirty] = useState<boolean>(false)
 
@@ -31,7 +31,8 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
     <Form
       key={settingId}
       id={settingId}
-      schema={schema}
+      schema={getSettingsSchema().properties[settingId]}
+      uiSchema={getSettingsUiSchema()}
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
@@ -39,13 +40,13 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
       showErrorList={false}
       ObjectFieldTemplate={ObjectFieldTemplate}
     >
-      <Box key={settingId} display='flex' flexDirection='row-reverse' m={1}>
+      <Box display='flex' flexDirection='row-reverse' m={1}>
         <Button
           variant='contained'
           color='primary'
           type='submit'
           disabled={!dirty}
-          data-cy={`button-submit-${setting}`}
+          data-cy={`button-submit-${settingId}`}
         >
           Submit
         </Button>
