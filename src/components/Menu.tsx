@@ -144,6 +144,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           {settingIds.map((id) => {
             return (
               <StyledMenuItem
+                key={id}
                 className={classes.settingItem}
                 to={`/settings/${id}`}
                 selected={pathname === `/settings/${id}`}

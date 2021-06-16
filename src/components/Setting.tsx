@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import { Box, Button } from '@material-ui/core'
@@ -13,8 +13,12 @@ interface Props {
 }
 
 export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactElement => {
-  const [data, setData]: any = useState(setting)
-  const [dirty, setDirty] = useState(false)
+  const [data, setData] = useState(setting)
+  const [dirty, setDirty] = useState<boolean>(false)
+
+  useEffect(() => {
+    setData(setting)
+  }, [setting, settingId])
 
   const handleChange = ({ formData }) => {
     setData(formData)
@@ -25,6 +29,8 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
   }
   return (
     <Form
+      key={settingId}
+      id={settingId}
       schema={schema}
       onSubmit={handleSubmit}
       onChange={handleChange}
@@ -33,7 +39,7 @@ export default ({ onSubmit, setting, settingId, schema }: Props): React.ReactEle
       showErrorList={false}
       ObjectFieldTemplate={ObjectFieldTemplate}
     >
-      <Box display='flex' flexDirection='row-reverse' m={1}>
+      <Box key={settingId} display='flex' flexDirection='row-reverse' m={1}>
         <Button
           variant='contained'
           color='primary'
