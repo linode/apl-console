@@ -137,12 +137,12 @@ export default ({ teamId }: Props): React.ReactElement => {
         </ListItemIcon>
         <ListItemText primary='Services' />
       </StyledMenuItem>
-      {/* <StyledMenuItem disabled={isCE} to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
+      <StyledMenuItem disabled={isCE} to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
         <ListItemIcon>
           <HourglassEmptyIcon />
         </ListItemIcon>
         <ListItemText primary='Jobs' />
-      </StyledMenuItem> */}
+      </StyledMenuItem>
       {teamId && (
         <>
           <StyledListSubheader component='div'>
@@ -170,7 +170,7 @@ export default ({ teamId }: Props): React.ReactElement => {
             </ListItemIcon>
             <ListItemText primary='Services' />
           </StyledMenuItem>
-          {/* <StyledMenuItem
+          <StyledMenuItem
             disabled={isCE}
             to={`/teams/${teamId}/jobs`}
             selected={pathname === `/teams/${teamId}/jobs`}
@@ -180,7 +180,7 @@ export default ({ teamId }: Props): React.ReactElement => {
               <HourglassEmptyIcon />
             </ListItemIcon>
             <ListItemText primary='Jobs' />
-          </StyledMenuItem> */}
+          </StyledMenuItem>
           <StyledMenuItem
             disabled={isCE}
             to={`/teams/${teamId}/secrets`}
