@@ -10,6 +10,7 @@ interface Versions {
 export interface SessionContext extends Session {
   cluster: Cluster | undefined
   clusters: Cluster[] | undefined
+  core: any
   dns: any
   globalError?: ApiError
   isAdmin: boolean | undefined
