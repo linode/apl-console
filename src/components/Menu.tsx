@@ -101,7 +101,18 @@ export default ({ teamId }: Props): React.ReactElement => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
   }
 
-  const settingIds = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
+  // const settingIds = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
+  const settingIds = {
+    alerts: 'Alerts',
+    azure: 'Azure',
+    customer: 'Customer',
+    dns: 'DNS',
+    kms: 'KMS',
+    home: 'Home',
+    oidc: 'OIDC',
+    otomi: 'Otomi',
+    smtp: 'SMTP',
+  }
 
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
@@ -141,7 +152,7 @@ export default ({ teamId }: Props): React.ReactElement => {
       </li>
       <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
         <List disablePadding>
-          {settingIds.map((id) => {
+          {Object.keys(settingIds).map((id) => {
             return (
               <StyledMenuItem
                 key={id}
@@ -150,7 +161,7 @@ export default ({ teamId }: Props): React.ReactElement => {
                 selected={pathname === `/settings/${id}`}
                 data-cy={`menu-item-${id}`}
               >
-                <ListItemText primary={id} />
+                <ListItemText primary={settingIds[id]} />
               </StyledMenuItem>
             )
           })}
