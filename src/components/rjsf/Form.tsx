@@ -1,26 +1,26 @@
 import React from 'react'
-import { makeStyles, createStyles, Theme, Button } from '@material-ui/core'
-import HelpRoundedIcon from '@material-ui/icons/HelpRounded'
+import { makeStyles, createStyles } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { FormProps } from '@rjsf/core'
+import HelpButton from '../HelpButton'
+import FieldTemplate from './FieldTemplate/FieldTemplate'
+import ObjectFieldTemplate from './ObjectFieldTemplate'
+import TitleField from './TitleField'
+import ArrayFieldTemplate from './ArrayFieldTemplate'
+import DescriptionField from './DescriptionField'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
   createStyles({
     root: {
       display: 'flex',
       justifyContent: 'space-between',
-    },
-    helpIcon: {
-      marginTop: theme.spacing(3),
-      // fontSize: theme.spacing(3),
-      // width: theme.spacing(4),
-      height: theme.spacing(4),
     },
   }),
 )
 
 interface Props extends FormProps<any> {
   title?: any
+  key: string
 }
 
 export default ({ children, title, ...props }: Props): React.ReactElement => {
@@ -31,23 +31,17 @@ export default ({ children, title, ...props }: Props): React.ReactElement => {
     <>
       <div className={classes.root}>
         {title}
-        {docUrl && (
-          <Button
-            size='large'
-            className={classes.helpIcon}
-            startIcon={<HelpRoundedIcon />}
-            variant='contained'
-            color='primary'
-            aria-label='Read the documentation'
-            data-cy='button-help'
-            target='_blank'
-            href={`${docUrl}`}
-          >
-            Help
-          </Button>
-        )}
+        {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
       </div>
-      <Form {...props}>{children}</Form>
+      <Form
+        ObjectFieldTemplate={ObjectFieldTemplate}
+        ArrayFieldTemplate={ArrayFieldTemplate}
+        FieldTemplate={FieldTemplate}
+        fields={{ TitleField, DescriptionField }}
+        {...props}
+      >
+        {children}
+      </Form>
     </>
   )
 }

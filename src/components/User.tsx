@@ -53,7 +53,7 @@ export default (): React.ReactElement => {
       id,
     }))
   else
-    teams = (userTeams as any).map((id) => ({
+    teams = userTeams.map((id) => ({
       id,
     }))
   const handleChange = (event) => {

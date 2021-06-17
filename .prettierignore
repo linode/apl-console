@@ -2,3 +2,4 @@
 .cache/
 build/
 *.svg
+package-*.json

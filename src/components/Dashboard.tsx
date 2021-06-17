@@ -123,12 +123,21 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps): React.Rea
 export default ({ team, services, teams }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
+    cluster,
+    clusters,
   } = useSession()
   const classes = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
   const panels = [
-    { name: 'cluster', data: undefined, icon: <CloudIcon />, canCreate: false, disabled: false, tooltip: '' },
+    {
+      name: 'cluster',
+      data: [cluster, ...clusters],
+      icon: <CloudIcon />,
+      canCreate: false,
+      disabled: false,
+      tooltip: '',
+    },
     {
       name: 'team',
       data: teams,

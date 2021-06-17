@@ -40,7 +40,7 @@ export default ({ secrets, team }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
     oboTeamId,
-    dns,
+    cluster,
   } = useSession()
   const headCells: HeadCell[] = [
     {
@@ -51,11 +51,14 @@ export default ({ secrets, team }: Props): React.ReactElement => {
     {
       id: 'type',
       label: 'Type',
+      renderer: (row) => {
+        return row.secret.type
+      },
     },
     {
       id: 'vaultLink',
       label: 'Vault',
-      renderer: getVaultSecretLink(dns.domain),
+      renderer: getVaultSecretLink(cluster.domainSuffix),
     },
     // {
     //   id: 'delete',

@@ -2,11 +2,11 @@ import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
+import { cloneDeep } from 'lodash'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
 import { useSession } from '../session-context'
-import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 
 interface Props {
   onSubmit: CallableFunction
@@ -25,22 +25,32 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   const handleChange = ({ formData: inData }) => {
     const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
-    const formData = { ...inData }
-    if (formData?.ingress?.public) {
-      if (
-        formData.ingress.public.useDefaultSubdomain ||
-        formData.ingress.public.domain !== data.ingress.public.domain
-      ) {
-        // Set default subdomain of domain change
-        formData.ingress.public = { ...formData.ingress.public }
-        formData.ingress.public.subdomain = formData.ingress.public.useDefaultSubdomain ? defaultSubdomain : ''
+    // create a new object extending a clone of existing data with incoming data
+    const formData = { ...cloneDeep(data), ...inData }
+    if (formData.ingress) {
+      let ing = formData.ingress
+      if (!['cluster'].includes(ing.type) && (!data.ingress?.domain || ing.useDefaultSubdomain)) {
+        // Set default domain and subdomain if ingress type not is 'cluster'
+        ing = { ...ing }
+        ing.subdomain = defaultSubdomain
+        formData.ingress = ing
+      }
+      if (ing?.type === 'tlsPass') {
+        // we don't expect some props when choosing tlsPass
+        ing = { ...ing }
+        delete ing.hasCert
+        delete ing.certArn
+        delete ing.certName
+        delete ing.forwardPath
+        formData.ingress = ing
+      } else if (ing?.type === 'cluster') {
+        // cluster has an empty ingress
+        formData.ingress = { type: 'cluster' }
       }
     }
-    const newSchema = getServiceSchema(dns, formData, secrets)
+    const newSchema = getServiceSchema(cluster, dns, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(
-      getServiceUiSchema(formData, cluster.provider.toString(), user, oboTeamId, formData.id ? 'update' : 'create'),
-    )
+    setUiSchema(getServiceUiSchema(formData, user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, service))
   }
@@ -67,7 +77,6 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       formData={data}
       liveValidate={false}
       showErrorList={false}
-      ObjectFieldTemplate={ObjectFieldTemplate}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>

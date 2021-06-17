@@ -9,7 +9,7 @@ import devTokens from '../devtokens'
 
 const env = process.env
 let baseUrl = `${location.protocol}//${location.host}${env.CONTEXT_PATH || ''}/api/v1`
-let options
+let options: any
 if (env.NODE_ENV === 'development') {
   baseUrl = `${env.API_BASE_URL || 'http://localhost:3000'}/api/v1`
   // eslint-disable-next-line no-console

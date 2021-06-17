@@ -27,6 +27,8 @@ import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
 import devTokens from './devtokens'
 import Setting from './pages/Setting'
+import Job from './pages/Job'
+import Jobs from './pages/Jobs'
 
 const env = process.env
 let mode = 'ee'
@@ -96,10 +98,14 @@ const AppEE = () => {
                 <Route path='/services' component={Services} exact />
                 <Route path='/settings' component={UiSettings} exact />
                 <Route path='/settings/:settingId' component={Setting} exact />
+                <Route path='/jobs' component={Jobs} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
+                <Route path='/teams/:teamId/create-job' component={Job} exact />
                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                 <Route path='/teams/:teamId/create-service' component={Service} exact />
+                <Route path='/teams/:teamId/jobs' component={Jobs} exact />
+                <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
                 <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                 <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
                 <Route path='/teams/:teamId/services' component={Services} exact />

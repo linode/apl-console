@@ -16,6 +16,7 @@ import CloudIcon from '@material-ui/icons/Cloud'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import LockIcon from '@material-ui/icons/Lock'
+import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'
 import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
@@ -188,6 +189,12 @@ export default ({ teamId }: Props): React.ReactElement => {
         </ListItemIcon>
         <ListItemText primary='Services' />
       </StyledMenuItem>
+      <StyledMenuItem disabled={isCE} to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
+        <ListItemIcon>
+          <HourglassEmptyIcon />
+        </ListItemIcon>
+        <ListItemText primary='Jobs' />
+      </StyledMenuItem>
       {teamId && (
         <>
           <StyledListSubheader component='div'>
@@ -214,6 +221,17 @@ export default ({ teamId }: Props): React.ReactElement => {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary='Services' />
+          </StyledMenuItem>
+          <StyledMenuItem
+            disabled={isCE}
+            to={`/teams/${teamId}/jobs`}
+            selected={pathname === `/teams/${teamId}/jobs`}
+            data-cy='menu-item-team-jobs'
+          >
+            <ListItemIcon>
+              <HourglassEmptyIcon />
+            </ListItemIcon>
+            <ListItemText primary='Jobs' />
           </StyledMenuItem>
           <StyledMenuItem
             disabled={isCE}

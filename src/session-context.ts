@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Cluster, Session } from '@redkubes/otomi-api-client-axios'
+import { Cluster, Session, User } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from './utils/error'
 
 interface Versions {
@@ -8,43 +8,42 @@ interface Versions {
 }
 
 export interface SessionContext extends Session {
-  mode: string
-  isAdmin: boolean
-  cluster: Cluster
-  clusters: Cluster[]
+  cluster: Cluster | undefined
+  clusters: Cluster[] | undefined
   dns: any
-  setSession: CallableFunction
   globalError?: ApiError
-  setGlobalError?: CallableFunction
+  isAdmin: boolean | undefined
+  mode: string | undefined
   oboTeamId?: string
+  setGlobalError?: CallableFunction
   setOboTeamId?: CallableFunction
+  setSession: CallableFunction | undefined
   setThemeType?: CallableFunction
   collapseSettings: boolean
   setCollapseSettings: CallableFunction
   themeType: string
-  versions: Versions
+  user: User | any
+  versions: Versions | undefined
 }
 
 const context = React.createContext<SessionContext>({
-  mode: 'ee',
   cluster: undefined,
   clusters: undefined,
   core: undefined,
   dns: undefined,
-  isAdmin: undefined,
-  namespaces: undefined,
-  setSession: undefined,
   globalError: undefined,
-  setGlobalError: undefined,
+  isAdmin: undefined,
+  mode: undefined,
+  namespaces: undefined,
   oboTeamId: undefined,
+  setGlobalError: undefined,
   setOboTeamId: undefined,
+  setSession: undefined,
   setThemeType: undefined,
   collapseSettings: true,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   setCollapseSettings: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
-  teams: undefined,
   versions: undefined,
 })
 
