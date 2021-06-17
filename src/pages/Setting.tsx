@@ -20,7 +20,7 @@ export default ({
   }, [settingId])
 
   const [setting, settingLoading, settingError]: any = useApi('getSubSetting', !!settingId, [settingId])
-  const [editRes, editLoading, editError] = useApi('editSubSetting', !!formdata, [settingId, { [settingId]: formdata }])
+  const [, editLoading, editError] = useApi('editSubSetting', !!formdata, [settingId, { [settingId]: formdata }])
   const loading = settingLoading || editLoading
   const err = settingError || editError
   const comp = !loading && (!err || formdata || setting) && (

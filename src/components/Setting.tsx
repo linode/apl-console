@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { JSONSchema7 } from 'json-schema'
-import { isEqual } from 'lodash'
 import { Box, Button } from '@material-ui/core'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
@@ -14,16 +12,12 @@ interface Props {
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
   const [data, setData] = useState(setting)
-  const [initialState, setInitialState] = useState(data)
-  const [dirty, setDirty] = useState<boolean>(false)
 
   useEffect(() => {
     setData(setting)
-    setInitialState(data)
-  }, [data, setting])
+  }, [setting])
 
   const handleChange = ({ formData }) => {
-    setDirty(!isEqual(data, initialState))
     setData(formData)
   }
   const handleSubmit = ({ formData }) => {
@@ -47,7 +41,11 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
           variant='contained'
           color='primary'
           type='submit'
-          disabled={!dirty}
+          // TODO: dirty. It's hard to fix:
+          // The `setting` parameter does not include the default values from the formData,
+          // hence they are never equal like in e.g. the Team.tsx component.
+          //  There is not enough time to finish it now.
+          // disabled={!dirty}
           data-cy={`button-submit-${settingId}`}
         >
           Submit
