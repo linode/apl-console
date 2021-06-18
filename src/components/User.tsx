@@ -1,8 +1,18 @@
-import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@material-ui/core'
+import {
+  MenuItem,
+  Select,
+  Typography,
+  Hidden,
+  Link,
+  Tooltip,
+  Avatar,
+  Switch,
+  FormControlLabel,
+} from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
-import { mainStyles, getThemeType } from '../theme'
+import { mainStyles, getThemeType, toggleThemeType } from '../theme'
 import { useSession } from '../session-context'
 
 const useStyles = makeStyles((theme) => {
@@ -27,6 +37,15 @@ const useStyles = makeStyles((theme) => {
       color,
       fontWeight: 'bold',
     },
+    switchLabel: {
+      // minWidth: '6rem !important',
+      marginRight: '0.5rem',
+      paddingLeft: '0.5rem',
+      marginLeft: 3,
+      fontSize: '1rem',
+      fontWeight: 'bold',
+    },
+    switch: {},
     icon: {
       fill: color,
     },
@@ -45,6 +64,8 @@ export default (): React.ReactElement => {
     teams: allTeams,
     oboTeamId,
     setOboTeamId,
+    themeType,
+    setThemeType,
   } = useSession()
   let teams: any[]
   const allClusters = [...clusters, cluster]
@@ -88,8 +109,27 @@ export default (): React.ReactElement => {
     const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
+  const toggleTheme = (): void => {
+    setThemeType(toggleThemeType())
+  }
   return (
     <>
+      <FormControlLabel
+        className={classes.switchLabel}
+        control={
+          <Switch
+            className={classes.icon}
+            size='small'
+            edge='end'
+            onChange={toggleTheme}
+            checked={themeType === 'dark'}
+            color='default'
+          />
+        }
+        label='dark mode:'
+        labelPlacement='start'
+      />
+      &nbsp;
       <Typography variant='body1'>cluster:</Typography>
       <Select
         color='secondary'
