@@ -102,7 +102,6 @@ export default ({ teamId }: Props): React.ReactElement => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
   }
 
-  // const settingIds = ['alerts', 'azure', 'customer', 'dns', 'kms', 'home', 'oidc', 'otomi', 'smtp']
   const settingIds = {
     alerts: 'Alerts',
     azure: 'Azure',
@@ -136,7 +135,7 @@ export default ({ teamId }: Props): React.ReactElement => {
       )}
       <li>
         <StyledMenuItem
-          to='/settings'
+          to='/settings/otomi'
           selected={pathname === '/settings'}
           data-cy='menu-item-settings'
           onClick={handleCollapse}
