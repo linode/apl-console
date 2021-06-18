@@ -17,7 +17,6 @@ import Secret from './pages/Secret'
 import Secrets from './pages/Secrets'
 import Service from './pages/Service'
 import Services from './pages/Services'
-import Settings from './pages/Settings'
 import Team from './pages/Team'
 import Teams from './pages/Teams'
 import ErrorComponent from './components/Error'
@@ -26,6 +25,7 @@ import { getTheme, setThemeName, setThemeType } from './theme'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 import { setSpec } from './api-spec'
 import devTokens from './devtokens'
+import Setting from './pages/Setting'
 import Job from './pages/Job'
 import Jobs from './pages/Jobs'
 
@@ -45,11 +45,13 @@ if (process.env.NODE_ENV === 'development') {
 
 const AppEE = () => {
   const [globalError, setGlobalError] = useState()
+  const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
+  const [collapseSettings, setCollapseSettings] = useState(true)
   setThemeType(themeType)
   if (sessionError || apiDocsError) {
     return <ErrorComponent />
@@ -74,13 +76,17 @@ const AppEE = () => {
           <Context.Provider
             value={{
               ...session,
-              mode,
+              collapseSettings,
+              dirty,
               globalError,
-              setGlobalError,
+              mode,
               oboTeamId,
+              setCollapseSettings,
+              setDirty,
+              setGlobalError,
               setOboTeamId,
-              themeType,
               setThemeType: setType,
+              themeType,
             }}
           >
             <Router basename={env.CONTEXT_PATH || ''}>
@@ -92,8 +98,8 @@ const AppEE = () => {
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/create-team' component={Team} exact />
                 <Route path='/services' component={Services} exact />
+                <Route path='/settings/:settingId' component={Setting} exact />
                 <Route path='/jobs' component={Jobs} exact />
-                <Route path='/settings' component={Settings} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-job' component={Job} exact />
@@ -180,7 +186,7 @@ const AppCE = () => {
                 <Route path='/apps/:teamId' component={OtomiApps} />
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/settings' component={Settings} exact />
+                <Route path='/settings/:settingId' component={Setting} exact />
                 <Route path='*'>
                   <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
                 </Route>

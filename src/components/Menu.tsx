@@ -1,4 +1,13 @@
-import { ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
+import {
+  Collapse,
+  List,
+  ListItem,
+  ListItemText,
+  ListSubheader,
+  makeStyles,
+  MenuItem,
+  Typography,
+} from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -13,7 +22,16 @@ import PersonIcon from '@material-ui/icons/Person'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { getDirty, useApi } from '../hooks/api'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import AnnouncementIcon from '@material-ui/icons/Announcement'
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet'
+import DnsIcon from '@material-ui/icons/Dns'
+import LockOpenIcon from '@material-ui/icons/LockOpen'
+import HomeIcon from '@material-ui/icons/Home'
+import DonutLargeIcon from '@material-ui/icons/DonutLarge'
+import MailIcon from '@material-ui/icons/Mail'
+import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
 import Cluster from './Cluster'
@@ -35,6 +53,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
+  settingsList: {
+    background: 'rgba(0, 0, 0, 0.05)',
+  },
+  settingsItem: {
+    marginLeft: '30px',
+  },
 }))
 
 interface Props {
@@ -44,12 +68,13 @@ interface Props {
 export default ({ teamId }: Props): React.ReactElement => {
   const { pathname } = useLocation()
   const {
+    dirty,
     mode,
     user: { isAdmin },
   } = useSession()
+  const { collapseSettings, setCollapseSettings } = useSession()
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
-  const [dirty, setDirty] = useState(getDirty())
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deployRes, deploying, deployError]: any = useApi('deploy', !!deploy)
   let key
@@ -57,7 +82,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     if (!deploying) {
       if (!key) {
         setTimeout(() => {
-          key = snack.info('Scheduling...hold on', { autoHideDuration: 20000 })
+          key = snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 })
         })
       }
     }
@@ -68,7 +93,6 @@ export default ({ teamId }: Props): React.ReactElement => {
       if (deployError) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
-      setDirty(false)
     }
   }
 
@@ -82,9 +106,26 @@ export default ({ teamId }: Props): React.ReactElement => {
     return <ListSubheader className={classes.listSubheader} {...props} />
   }
 
+  const handleCollapse = (): void => {
+    setCollapseSettings((prevCollapse) => !prevCollapse)
+  }
+
   const handleClick = (): void => {
     setDeploy(true)
   }
+
+  const settingIds = {
+    alerts: ['Alerts', <AnnouncementIcon />],
+    azure: ['Azure', <CloudIcon />],
+    customer: ['Customer', <PeopleIcon />],
+    dns: ['DNS', <DnsIcon />],
+    kms: ['KMS', <LockOpenIcon />],
+    home: ['Home', <HomeIcon />],
+    oidc: ['OIDC', <SettingsEthernetIcon />],
+    otomi: ['Otomi', <DonutLargeIcon />],
+    smtp: ['SMTP', <MailIcon />],
+  }
+
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
@@ -104,12 +145,40 @@ export default ({ teamId }: Props): React.ReactElement => {
           <ListItemText primary='Otomi Apps' />
         </StyledMenuItem>
       )}
-      <StyledMenuItem to='/settings' selected={pathname === '/settings'} data-cy='menu-item-settings'>
-        <ListItemIcon>
-          <SettingsIcon />
-        </ListItemIcon>
-        <ListItemText primary='Settings' />
-      </StyledMenuItem>
+      <li>
+        <StyledMenuItem
+          to='/settings/otomi'
+          selected={pathname === '/settings'}
+          data-cy='menu-item-settings'
+          onClick={handleCollapse}
+        >
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary='Settings' />
+          {
+            // eslint-disable-next-line no-nested-ternary
+            collapseSettings != null ? collapseSettings ? <ExpandLess /> : <ExpandMore /> : null
+          }
+        </StyledMenuItem>
+      </li>
+      <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
+        <List className={classes.settingsList} disablePadding>
+          {Object.keys(settingIds).map((id) => {
+            return (
+              <StyledMenuItem
+                key={id}
+                to={`/settings/${id}`}
+                selected={pathname === `/settings/${id}`}
+                data-cy={`menu-item-${id}`}
+              >
+                <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
+                <ListItemText primary={settingIds[id][0]} />
+              </StyledMenuItem>
+            )
+          })}
+        </List>
+      </Collapse>
       <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />

@@ -19,7 +19,7 @@ const useStyles = makeStyles(() =>
 )
 
 interface Props extends FormProps<any> {
-  title: any
+  title?: any
   key: string
 }
 

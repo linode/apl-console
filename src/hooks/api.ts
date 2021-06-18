@@ -30,19 +30,6 @@ if (env.NODE_ENV === 'development') {
 export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
-let dirty = false
-
-const checkDirty = (method: any): boolean => {
-  ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
-    if (method.indexOf(prefix) === 0) {
-      dirty = true
-    }
-  })
-  if (method.indexOf('deploy') === 0) {
-    dirty = false
-  }
-  return dirty
-}
 
 export const useApi = (method: string, active = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
@@ -50,10 +37,20 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
     user: { isAdmin },
-    isDirty,
+    setDirty,
     setGlobalError,
   } = useSession()
-  dirty = dirty || isDirty
+  const checkDirty = (method: any): void => {
+    ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
+      if (method.indexOf(prefix) === 0) {
+        setDirty(true)
+      }
+    })
+    if (method.indexOf('deploy') === 0) {
+      setDirty(false)
+    }
+  }
+
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     ;(async (): Promise<any> => {
@@ -101,8 +98,6 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
 
   return [value, loading, error]
 }
-
-export const getDirty = (): any => dirty
 
 export function useAuthz(teamId?: string): { sess: SessionContext; tid: string } {
   const session: SessionContext = useSession()

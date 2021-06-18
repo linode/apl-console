@@ -308,3 +308,7 @@ export function getTeamSelfServiceSchema(): any {
 export function getSettingsSchema(): any {
   return spec.components.schemas.Settings
 }
+
+export function getSettingsUiSchema() {
+  return {}
+}

@@ -2,7 +2,7 @@ import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@ma
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
-import { mainStyles, getThemeType } from '../theme'
+import { mainStyles, getThemeType, toggleThemeType } from '../theme'
 import { useSession } from '../session-context'
 
 const useStyles = makeStyles((theme) => {
@@ -27,6 +27,15 @@ const useStyles = makeStyles((theme) => {
       color,
       fontWeight: 'bold',
     },
+    switchLabel: {
+      // minWidth: '6rem !important',
+      marginRight: '0.5rem',
+      paddingLeft: '0.5rem',
+      marginLeft: 3,
+      fontSize: '1rem',
+      fontWeight: 'bold',
+    },
+    switch: {},
     icon: {
       fill: color,
     },
@@ -45,6 +54,8 @@ export default (): React.ReactElement => {
     teams: allTeams,
     oboTeamId,
     setOboTeamId,
+    themeType,
+    setThemeType,
   } = useSession()
   let teams: any[]
   const allClusters = [...clusters, cluster]
@@ -87,6 +98,9 @@ export default (): React.ReactElement => {
     const [provider, name] = id.split('-')
     const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
+  }
+  const toggleTheme = (): void => {
+    setThemeType(toggleThemeType())
   }
   return (
     <>
