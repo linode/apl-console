@@ -10,10 +10,12 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import clsx from 'clsx'
 import React, { useState } from 'react'
+import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
+import Brightness3Icon from '@material-ui/icons/Brightness3'
 import Menu from '../components/Menu'
 import User from '../components/User'
 import { useSession } from '../session-context'
-import { mainStyles } from '../theme'
+import { mainStyles, toggleThemeType } from '../theme'
 
 const drawerWidth = '240px'
 
@@ -115,7 +117,7 @@ interface Props {
 
 export default (props: Props): React.ReactElement => {
   const { children } = props
-  const { mode, oboTeamId } = useSession()
+  const { mode, oboTeamId, themeType, setThemeType } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
@@ -127,6 +129,9 @@ export default (props: Props): React.ReactElement => {
   const handleDrawerClose = (e) => {
     e.preventDefault()
     setOpen(false)
+  }
+  const toggleTheme = (): void => {
+    setThemeType(toggleThemeType())
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -170,6 +175,9 @@ export default (props: Props): React.ReactElement => {
         <Badge badgeContent={4} color='secondary'>
           <NotificationsIcon />
         </Badge>
+      </IconButton>
+      <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
+        {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
       </IconButton>
     </Toolbar>
   )

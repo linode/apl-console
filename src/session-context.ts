@@ -10,18 +10,20 @@ interface Versions {
 export interface SessionContext extends Session {
   cluster: Cluster | undefined
   clusters: Cluster[] | undefined
+  collapseSettings: boolean
   core: any
+  dirty: boolean
   dns: any
   globalError?: ApiError
   isAdmin: boolean | undefined
   mode: string | undefined
   oboTeamId?: string
+  setCollapseSettings: CallableFunction
+  setDirty?: CallableFunction
   setGlobalError?: CallableFunction
   setOboTeamId?: CallableFunction
   setSession: CallableFunction | undefined
   setThemeType?: CallableFunction
-  collapseSettings: boolean
-  setCollapseSettings: CallableFunction
   themeType: string
   user: User | any
   versions: Versions | undefined
@@ -30,19 +32,21 @@ export interface SessionContext extends Session {
 const context = React.createContext<SessionContext>({
   cluster: undefined,
   clusters: undefined,
+  collapseSettings: true,
   core: undefined,
+  dirty: undefined,
   dns: undefined,
   globalError: undefined,
   isAdmin: undefined,
   mode: undefined,
   namespaces: undefined,
   oboTeamId: undefined,
+  setCollapseSettings: undefined,
+  setDirty: undefined,
   setGlobalError: undefined,
   setOboTeamId: undefined,
   setSession: undefined,
   setThemeType: undefined,
-  collapseSettings: true,
-  setCollapseSettings: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,

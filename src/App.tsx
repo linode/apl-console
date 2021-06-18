@@ -45,6 +45,7 @@ if (process.env.NODE_ENV === 'development') {
 
 const AppEE = () => {
   const [globalError, setGlobalError] = useState()
+  const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
@@ -75,15 +76,17 @@ const AppEE = () => {
           <Context.Provider
             value={{
               ...session,
-              mode,
-              globalError,
-              setGlobalError,
-              oboTeamId,
-              setOboTeamId,
-              themeType,
-              setThemeType: setType,
               collapseSettings,
+              dirty,
+              globalError,
+              mode,
+              oboTeamId,
               setCollapseSettings,
+              setDirty,
+              setGlobalError,
+              setOboTeamId,
+              setThemeType: setType,
+              themeType,
             }}
           >
             <Router basename={env.CONTEXT_PATH || ''}>

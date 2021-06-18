@@ -31,7 +31,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen'
 import HomeIcon from '@material-ui/icons/Home'
 import DonutLargeIcon from '@material-ui/icons/DonutLarge'
 import MailIcon from '@material-ui/icons/Mail'
-import { getDirty, useApi } from '../hooks/api'
+import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
 import Cluster from './Cluster'
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   settingsList: {
-    opacity: '0.6',
+    background: 'rgba(0, 0, 0, 0.05)',
   },
   settingsItem: {
     marginLeft: '30px',
@@ -68,13 +68,13 @@ interface Props {
 export default ({ teamId }: Props): React.ReactElement => {
   const { pathname } = useLocation()
   const {
+    dirty,
     mode,
     user: { isAdmin },
   } = useSession()
   const { collapseSettings, setCollapseSettings } = useSession()
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
-  const [dirty, setDirty] = useState(getDirty())
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deployRes, deploying, deployError]: any = useApi('deploy', !!deploy)
   let key
@@ -82,7 +82,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     if (!deploying) {
       if (!key) {
         setTimeout(() => {
-          key = snack.info('Scheduling...hold on', { autoHideDuration: 20000 })
+          key = snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 })
         })
       }
     }
@@ -93,7 +93,6 @@ export default ({ teamId }: Props): React.ReactElement => {
       if (deployError) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
-      setDirty(false)
     }
   }
 
@@ -109,6 +108,10 @@ export default ({ teamId }: Props): React.ReactElement => {
 
   const handleCollapse = (): void => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
+  }
+
+  const handleClick = (): void => {
+    setDeploy(true)
   }
 
   const settingIds = {
@@ -176,12 +179,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           })}
         </List>
       </Collapse>
-      <MenuItem
-        className={classes.deploy}
-        disabled={!dirty}
-        onClick={handleCollapse}
-        data-cy='menu-item-deploy-changes'
-      >
+      <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>

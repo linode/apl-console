@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button } from '@material-ui/core'
+import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
@@ -12,13 +13,14 @@ interface Props {
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
   const [data, setData] = useState(setting)
-
+  const [dirty, setDirty] = useState(false)
   useEffect(() => {
     setData(setting)
   }, [setting])
 
   const handleChange = ({ formData }) => {
     setData(formData)
+    setDirty(!isEqual(formData, setting))
   }
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
@@ -45,7 +47,7 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
           // The `setting` parameter does not include the default values from the formData,
           // hence they are never equal like in e.g. the Team.tsx component.
           //  There is not enough time to finish it now.
-          // disabled={!dirty}
+          disabled={!dirty}
           data-cy={`button-submit-${settingId}`}
         >
           Submit

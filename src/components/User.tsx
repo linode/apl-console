@@ -1,14 +1,4 @@
-import {
-  MenuItem,
-  Select,
-  Typography,
-  Hidden,
-  Link,
-  Tooltip,
-  Avatar,
-  Switch,
-  FormControlLabel,
-} from '@material-ui/core'
+import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
@@ -114,22 +104,6 @@ export default (): React.ReactElement => {
   }
   return (
     <>
-      <FormControlLabel
-        className={classes.switchLabel}
-        control={
-          <Switch
-            className={classes.icon}
-            size='small'
-            edge='end'
-            onChange={toggleTheme}
-            checked={themeType === 'dark'}
-            color='default'
-          />
-        }
-        label={<Typography variant='body1'>dark mode:</Typography>}
-        labelPlacement='start'
-      />
-      &nbsp;
       <Typography variant='body1'>cluster:</Typography>
       <Select
         color='secondary'
