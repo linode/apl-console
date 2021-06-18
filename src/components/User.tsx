@@ -126,7 +126,7 @@ export default (): React.ReactElement => {
             color='default'
           />
         }
-        label='dark mode:'
+        label={<Typography variant='body1'>dark mode:</Typography>}
         labelPlacement='start'
       />
       &nbsp;

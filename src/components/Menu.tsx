@@ -25,6 +25,12 @@ import { Link, useLocation } from 'react-router-dom'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import AnnouncementIcon from '@material-ui/icons/Announcement'
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet'
+import DnsIcon from '@material-ui/icons/Dns'
+import LockOpenIcon from '@material-ui/icons/LockOpen'
+import HomeIcon from '@material-ui/icons/Home'
+import DonutLargeIcon from '@material-ui/icons/DonutLarge'
+import MailIcon from '@material-ui/icons/Mail'
 import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -48,10 +54,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   settingsList: {
-    opacity: '0.7',
+    opacity: '0.6',
   },
   settingsItem: {
-    marginLeft: '55px',
+    marginLeft: '30px',
   },
 }))
 
@@ -107,14 +113,14 @@ export default ({ teamId }: Props): React.ReactElement => {
 
   const settingIds = {
     alerts: ['Alerts', <AnnouncementIcon />],
-    azure: 'Azure',
-    customer: 'Customer',
-    dns: 'DNS',
-    kms: 'KMS',
-    home: 'Home',
-    oidc: 'OIDC',
-    otomi: 'Otomi',
-    smtp: 'SMTP',
+    azure: ['Azure', <CloudIcon />],
+    customer: ['Customer', <PeopleIcon />],
+    dns: ['DNS', <DnsIcon />],
+    kms: ['KMS', <LockOpenIcon />],
+    home: ['Home', <HomeIcon />],
+    oidc: ['OIDC', <SettingsEthernetIcon />],
+    otomi: ['Otomi', <DonutLargeIcon />],
+    smtp: ['SMTP', <MailIcon />],
   }
 
   return (
