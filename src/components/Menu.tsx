@@ -24,6 +24,7 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import AnnouncementIcon from '@material-ui/icons/Announcement'
 import { getDirty, useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -46,9 +47,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
   },
-  settingItem: {
-    backgroundColor: theme.palette.divider,
-    marginLeft: 55,
+  settingsList: {
+    opacity: '0.7',
+  },
+  settingsItem: {
+    marginLeft: '55px',
   },
 }))
 
@@ -103,7 +106,7 @@ export default ({ teamId }: Props): React.ReactElement => {
   }
 
   const settingIds = {
-    alerts: 'Alerts',
+    alerts: ['Alerts', <AnnouncementIcon />],
     azure: 'Azure',
     customer: 'Customer',
     dns: 'DNS',
@@ -151,17 +154,17 @@ export default ({ teamId }: Props): React.ReactElement => {
         </StyledMenuItem>
       </li>
       <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
-        <List disablePadding>
+        <List className={classes.settingsList} disablePadding>
           {Object.keys(settingIds).map((id) => {
             return (
               <StyledMenuItem
                 key={id}
-                className={classes.settingItem}
                 to={`/settings/${id}`}
                 selected={pathname === `/settings/${id}`}
                 data-cy={`menu-item-${id}`}
               >
-                <ListItemText primary={settingIds[id]} />
+                <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
+                <ListItemText primary={settingIds[id][0]} />
               </StyledMenuItem>
             )
           })}
