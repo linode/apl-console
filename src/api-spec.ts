@@ -9,7 +9,6 @@ import {
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from './utils'
-import CustomRadioGroup from './components/rjsf/RadioGroup'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
@@ -108,7 +107,6 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
       },
     },
     azureMonitor: {
-      'ui:widget': CustomRadioGroup,
       'ui:options': {
         inline: true,
       },
@@ -145,7 +143,6 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
-      'ui:widget': CustomRadioGroup,
       type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
@@ -156,10 +153,8 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
     },
     ksvc: {
       ...podSpecUiSchema,
-      'ui:widget': CustomRadioGroup,
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
-        'ui:widget': CustomRadioGroup,
         tagMatcher: { 'ui:widget': 'hidden' },
       },
     },
@@ -176,7 +171,6 @@ export function getSecretUiSchema(user: User, teamId: string): any {
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     secret: {
-      'ui:widget': CustomRadioGroup,
       'ui:description': undefined,
       dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
       ca: { 'ui:widget': 'textarea' },
@@ -305,10 +299,14 @@ export function getTeamSelfServiceSchema(): any {
   return spec.components.schemas.TeamSelfService
 }
 
-export function getSettingsSchema(): any {
-  return spec.components.schemas.Settings
+export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
+  const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
+  const provider = cluster.provider
+  if (provider !== Cluster.ProviderEnum.azure) unset(schema, 'properties.azure')
+  return schema
 }
 
-export function getSettingsUiSchema() {
-  return {}
+export function getSettingUiSchema(): any {
+  const uiSchema = {}
+  return uiSchema
 }

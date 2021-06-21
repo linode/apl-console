@@ -249,6 +249,9 @@ export const mainStyles = makeStyles((theme) => ({
       '.MuiTypography-root': {
         // maxWidth: '300px',
       },
+      '.MuiTypography-caption': {
+        maxWidth: 'fit-content',
+      },
       h5: {
         fontSize: '1.2rem',
         fontWeight: 'bold',

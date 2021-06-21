@@ -27,7 +27,10 @@ export default ({
   rawDescription,
   schema,
 }: FieldTemplateProps) => {
-  const hideDescription = ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema)
+  // @ts-ignore
+  const isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
+  const hideDescription = !!isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
+
   return (
     <WrapIfAdditional
       classNames={classNames}

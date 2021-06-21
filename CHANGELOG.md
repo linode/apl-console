@@ -427,7 +427,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-- resource edit formdata [ci skip](<[af9395d](https://github.com/redkubes/otomi-console/commit/af9395daa24bb682dc615b9525d612b202e2f837)>)
+- resource edit formData [ci skip](<[af9395d](https://github.com/redkubes/otomi-console/commit/af9395daa24bb682dc615b9525d612b202e2f837)>)
 
 ### [0.4.7](https://github.com/redkubes/otomi-console/compare/v0.4.6...v0.4.7) (2020-08-07)
 

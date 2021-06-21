@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import { Box, Divider, Grid, Paper } from '@material-ui/core'
 import React from 'react'
@@ -32,10 +33,11 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
       grouped.push(o)
     }
   })
+  // to catch the last iteration
   if (grouped) fields.push(grouped)
 
   const renderTitleDescription = (props, skipTitle = false): React.ReactElement | undefined => {
-    const { idSchema, uiSchema, title, description, required, schema } = props
+    const { idSchema, uiSchema = {}, title, description, required, schema } = props
     if (schema.type === 'boolean' && !skipTitle) return
     const displayTitle = uiSchema['ui:title'] || title || schema.title
     const displayDescription = uiSchema['ui:description'] || description || schema.description
@@ -70,6 +72,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   const render = (o, id = o.name) => {
     const schema = o.content?.props?.schema
     const isOf = isSomeOf(schema)
+    const isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
     const hidden = isHidden(o)
     if (hidden) {
       if (!schema.properties && !isOf)
@@ -80,12 +83,13 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         )
       return undefined
     }
+
     // object/*Ofs we want to elevate in their own paper
-    if (schema.type === 'object' || isOf)
+    if (!schema.type || schema.type === 'object' || isOf)
       return (
         <Grid key={id} className={classes.grid} item xs={12}>
           <Paper key={id} className={classes.paper}>
-            {isOf && (
+            {(isOf || isCustomArray) && (
               <Grid key={idSchema.$id} item className={classes.isOfHeader}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>
@@ -95,24 +99,39 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         </Grid>
       )
 
-    if (schema.type === 'array' && !schema.items.enum)
-      // array items will get their own grid row
+    if (isCustomArray) {
       return (
-        <Grid key={id} container className={classes.gridIsOf}>
-          {o.content}
+        <Grid key={id} className={classes.gridIsOf} item xs={12}>
+          <Paper key={id} className={classes.paper}>
+            <Grid key={idSchema.$id} item className={classes.isOfHeader}>
+              {renderTitleDescription(o.content?.props)}
+            </Grid>
+            <Grid key={id} item xs={12} className={classes.gridIsOf}>
+              {o.content}
+            </Grid>
+          </Paper>
         </Grid>
       )
+    }
 
-    if ((schema.type === 'array' && !schema.items.enum) || schema.type === 'boolean')
+    if (schema.type === 'boolean')
       // array items will get their own grid row
       return (
-        <Grid key={id} className={classes.grid} container>
+        <Grid key={id} className={classes.grid} item xs={12}>
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
           {schema.type === 'boolean' && renderTitleDescription(o.content?.props, true)}
         </Grid>
       )
+    // array items will get their own grid row
+    if (schema.type === 'array') {
+      return (
+        <Grid key={id} item xs={12} className={classes.gridIsOf}>
+          {o.content}
+        </Grid>
+      )
+    }
     return (
       <Grid key={id} className={classes.grid} item>
         {o.content}

@@ -16,14 +16,14 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
-  const [formdata, setFormdata] = useState()
+  const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [service, serviceLoading, serviceError]: any = useApi('getService', !!serviceId, [tid, serviceId])
   const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
   const [createRes, createLoading, createError] = useApi(
     serviceId ? 'editService' : 'createService',
-    !!formdata,
-    serviceId ? [tid, serviceId, omit(formdata, ['id', 'teamId'])] : [tid, formdata],
+    !!formData,
+    serviceId ? [tid, serviceId, omit(formData, ['id', 'teamId'])] : [tid, formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -31,13 +31,13 @@ export default ({
   }
   const loading = serviceLoading || secretsLoading || createLoading || deleteLoading
   const err = serviceError || secretsError || createError || deleteError
-  const comp = !loading && (!err || formdata || service) && (
+  const comp = !loading && (!err || formData || service) && (
     <Service
       teamId={tid}
-      // service={formdata || convertDataFromServer(service)}
-      service={formdata || service}
+      // service={formData || convertDataFromServer(service)}
+      service={formData || service}
       secrets={secrets}
-      onSubmit={setFormdata}
+      onSubmit={setFormData}
       onDelete={setDeleteId}
     />
   )

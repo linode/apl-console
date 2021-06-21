@@ -16,14 +16,14 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
-  const [formdata, setFormdata] = useState()
+  const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [job, jobLoading, jobError]: any = useApi('getJob', !!jobId, [tid, jobId])
   const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
   const [createRes, createLoading, createError] = useApi(
     jobId ? 'editJob' : 'createJob',
-    !!formdata,
-    jobId ? [tid, jobId, omit(formdata, ['id', 'teamId'])] : [tid, formdata],
+    !!formData,
+    jobId ? [tid, jobId, omit(formData, ['id', 'teamId'])] : [tid, formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteJob', !!deleteId, [tid, jobId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -31,13 +31,13 @@ export default ({
   }
   const loading = jobLoading || secretsLoading || createLoading || deleteLoading
   const err = jobError || secretsError || createError || deleteError
-  const comp = !loading && (!err || formdata || job) && (
+  const comp = !loading && (!err || formData || job) && (
     <Job
       teamId={tid}
-      // job={formdata || convertDataFromServer(job)}
-      job={formdata || job}
+      // job={formData || convertDataFromServer(job)}
+      job={formData || job}
       secrets={secrets}
-      onSubmit={setFormdata}
+      onSubmit={setFormData}
       onDelete={setDeleteId}
     />
   )

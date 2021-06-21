@@ -3,7 +3,8 @@ import { Box, Button } from '@material-ui/core'
 import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
-import { getSettingsSchema, getSettingsUiSchema } from '../api-spec'
+import { getSettingSchema, getSettingUiSchema } from '../api-spec'
+import { useSession } from '../session-context'
 
 interface Props {
   onSubmit: CallableFunction
@@ -12,15 +13,23 @@ interface Props {
 }
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
-  const [data, setData] = useState(setting)
-  const [dirty, setDirty] = useState(false)
+  const [data, setData]: any = useState(setting)
   useEffect(() => {
     setData(setting)
   }, [setting])
-
+  const [schema, setSchema] = useState()
+  const [uiSchema, setUiSchema] = useState()
+  const { cluster } = useSession()
+  const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
+    setSchema(getSettingSchema(settingId, cluster, formData))
+    setUiSchema(getSettingUiSchema())
     setData(formData)
     setDirty(!isEqual(formData, setting))
+  }
+  if (!(schema || uiSchema)) {
+    handleChange({ formData: setting || {} })
+    return null
   }
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
@@ -29,8 +38,8 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
     <Form
       key={settingId}
       id={settingId}
-      schema={getSettingsSchema().properties[settingId]}
-      uiSchema={getSettingsUiSchema()}
+      schema={schema}
+      uiSchema={uiSchema}
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}

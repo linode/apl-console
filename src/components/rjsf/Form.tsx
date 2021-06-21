@@ -6,8 +6,10 @@ import HelpButton from '../HelpButton'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
 import TitleField from './TitleField'
-import ArrayFieldTemplate from './ArrayFieldTemplate'
+import ArrayField from './ArrayField'
 import DescriptionField from './DescriptionField'
+import OneOfField from './OneOfField'
+// import SchemaField from './SchemaField'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -25,7 +27,7 @@ interface Props extends FormProps<any> {
 
 export default ({ children, title, ...props }: Props): React.ReactElement => {
   const { schema } = props
-  const docUrl = schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
+  const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
   return (
     <>
@@ -35,9 +37,8 @@ export default ({ children, title, ...props }: Props): React.ReactElement => {
       </div>
       <Form
         ObjectFieldTemplate={ObjectFieldTemplate}
-        ArrayFieldTemplate={ArrayFieldTemplate}
         FieldTemplate={FieldTemplate}
-        fields={{ TitleField, DescriptionField }}
+        fields={{ ArrayField, TitleField, DescriptionField, OneOfField }}
         {...props}
       >
         {children}

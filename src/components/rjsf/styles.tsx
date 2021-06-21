@@ -32,7 +32,7 @@ export const useStyles = makeStyles({
   },
   gridIsOf: {
     paddingLeft: 8,
-    paddingTop: 4,
+    // paddingTop: 4,
     paddingRight: 8,
   },
   paper: {

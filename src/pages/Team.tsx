@@ -15,13 +15,13 @@ export default ({
 }: RouteComponentProps<Params>): React.ReactElement => {
   useAuthz(teamId)
   const tid = teamId
-  const [formdata, setFormdata] = useState()
+  const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [team, teamLoading, teamError]: any = useApi('getTeam', !!tid, [tid])
   const [createRes, createLoading, createError] = useApi(
     teamId ? 'editTeam' : 'createTeam',
-    !!formdata,
-    teamId ? [tid, formdata] : [formdata],
+    !!formData,
+    teamId ? [tid, formData] : [formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteTeam', !!deleteId, [deleteId])
   if ((createRes && (!createLoading || createError)) || (deleteRes && !(deleteLoading || deleteError))) {
@@ -29,8 +29,8 @@ export default ({
   }
   const loading = teamLoading || createLoading
   const err = teamError || createError || deleteError
-  const comp = !loading && (!err || formdata || team) && (
-    <Team team={formdata || team} onSubmit={setFormdata} onDelete={setDeleteId} />
+  const comp = !loading && (!err || formData || team) && (
+    <Team team={formData || team} onSubmit={setFormData} onDelete={setDeleteId} />
   )
   return <PaperLayout loading={loading} comp={comp} />
 }

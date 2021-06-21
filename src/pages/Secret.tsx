@@ -16,13 +16,13 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { tid } = useAuthz(teamId)
-  const [formdata, setFormdata] = useState()
+  const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const [secret, secretLoading, secretError]: any = useApi('getSecret', !!secretId, [tid, secretId])
   const [createRes, createLoading, createError] = useApi(
     secretId ? 'editSecret' : 'createSecret',
-    !!formdata,
-    secretId ? [tid, secretId, omit(formdata, ['id'])] : [tid, omit(formdata, ['id', 'teamId'])],
+    !!formData,
+    secretId ? [tid, secretId, omit(formData, ['id'])] : [tid, omit(formData, ['id', 'teamId'])],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
   if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
@@ -33,8 +33,8 @@ export default ({
   if (createRes && !(createLoading || createError)) {
     return <Redirect to={`/teams/${tid}/secrets`} />
   }
-  const comp = !loading && (!err || formdata || secret) && (
-    <Secret onSubmit={setFormdata} secret={formdata || secret} onDelete={setDeleteId} />
+  const comp = !loading && (!err || formData || secret) && (
+    <Secret onSubmit={setFormData} secret={formData || secret} onDelete={setDeleteId} />
   )
   return <PaperLayout loading={loading} comp={comp} />
 }
