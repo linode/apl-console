@@ -37,6 +37,7 @@ import { mainStyles } from '../theme'
 import snack from '../utils/snack'
 import Cluster from './Cluster'
 import { useSession } from '../session-context'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,7 +75,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     mode,
     user: { isAdmin },
   } = useSession()
-  const { collapseSettings, setCollapseSettings } = useSession()
+  const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const isCE = mode === 'ce'
   const [deploy, setDeploy] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -140,49 +141,48 @@ export default ({ teamId }: Props): React.ReactElement => {
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
       </StyledMenuItem>
       {isAdmin && (
-        <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
-          <ListItemIcon>
-            <AppsIcon />
-          </ListItemIcon>
-          <ListItemText primary='Otomi Apps' />
-        </StyledMenuItem>
+        <>
+          <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
+            <ListItemIcon>
+              <AppsIcon />
+            </ListItemIcon>
+            <ListItemText primary='Otomi Apps' />
+          </StyledMenuItem>
+          <li>
+            <StyledMenuItem
+              to='/settings/otomi'
+              selected={pathname === '/settings'}
+              data-cy='menu-item-settings'
+              onClick={handleCollapse}
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary='Settings' />
+              {collapseSettings ? <ExpandLess /> : <ExpandMore />}
+            </StyledMenuItem>
+          </li>
+          <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
+            <List className={classes.settingsList} disablePadding>
+              {Object.keys(settingIds).map((id) => {
+                // TODO: fix this hack with a generic x-provider approach?
+                if (cluster.provider !== ClusterModel.ProviderEnum.azure && id === 'azure') return undefined
+                return (
+                  <StyledMenuItem
+                    key={id}
+                    to={`/settings/${id}`}
+                    selected={pathname === `/settings/${id}`}
+                    data-cy={`menu-item-${id}`}
+                  >
+                    <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
+                    <ListItemText primary={settingIds[id][0]} />
+                  </StyledMenuItem>
+                )
+              })}
+            </List>
+          </Collapse>
+        </>
       )}
-      <li>
-        <StyledMenuItem
-          to='/settings/otomi'
-          selected={pathname === '/settings'}
-          data-cy='menu-item-settings'
-          onClick={handleCollapse}
-        >
-          <ListItemIcon>
-            <SettingsIcon />
-          </ListItemIcon>
-          <ListItemText primary='Settings' />
-          {
-            // eslint-disable-next-line no-nested-ternary
-            collapseSettings != null ? collapseSettings ? <ExpandLess /> : <ExpandMore /> : null
-          }
-        </StyledMenuItem>
-      </li>
-      <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
-        <List className={classes.settingsList} disablePadding>
-          {Object.keys(settingIds).map((id) => {
-            // TODO: fix this hack with a generic x-provider approach?
-            if (cluster.provider !== ClusterModel.ProviderEnum.azure && id === 'azure') return undefined
-            return (
-              <StyledMenuItem
-                key={id}
-                to={`/settings/${id}`}
-                selected={pathname === `/settings/${id}`}
-                data-cy={`menu-item-${id}`}
-              >
-                <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
-                <ListItemText primary={settingIds[id][0]} />
-              </StyledMenuItem>
-            )
-          })}
-        </List>
-      </Collapse>
       <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
