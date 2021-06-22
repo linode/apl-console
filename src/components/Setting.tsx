@@ -52,10 +52,6 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
           variant='contained'
           color='primary'
           type='submit'
-          // TODO: dirty. It's hard to fix:
-          // The `setting` parameter does not include the default values from the formData,
-          // hence they are never equal like in e.g. the Team.tsx component.
-          //  There is not enough time to finish it now.
           disabled={!dirty}
           data-cy={`button-submit-${settingId}`}
         >
