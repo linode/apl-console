@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Setting from '../components/Setting'
 import { useApi } from '../hooks/api'
@@ -20,9 +20,19 @@ export default ({
   }, [settingId])
 
   const [setting, settingLoading, settingError]: any = useApi('getSetting', !!settingId, [settingId])
-  const [, editLoading, editError] = useApi('editSetting', !!formdata, [settingId, { [settingId]: formdata }])
+  console.info(`useApi parameter: ${JSON.stringify({ [settingId]: formdata })}`)
+
+  const [editRes, editLoading, editError] = useApi('editSetting', !!formdata, [
+    'policies',
+    { policies: { banned_image_tags: { enabled: true } } },
+  ])
+
   const loading = settingLoading || editLoading
   const err = settingError || editError
+
+  if (editRes && !(editLoading || editError)) {
+    window.location.reload()
+  }
   const comp = !loading && (!err || formdata || setting) && (
     <Setting onSubmit={setFormdata} setting={setting[settingId]} settingId={settingId} />
   )
