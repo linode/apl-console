@@ -39,6 +39,8 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   const renderTitleDescription = (props, skipTitle = false): React.ReactElement | undefined => {
     const { idSchema, uiSchema = {}, title, description, required, schema } = props
     if (schema.type === 'boolean' && !skipTitle) return
+    const docUrl =
+      schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
     const displayTitle = uiSchema['ui:title'] || title || schema.title
     const displayDescription = uiSchema['ui:description'] || description || schema.description
     if (!(displayTitle || displayDescription)) return
@@ -54,7 +56,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
             id={`${idSchema.$id}-title`}
             title={displayTitle}
             required={required}
-            docUrl={schema['x-externalDocsPath']}
+            docUrl={docUrl}
           />
         )}
         {displayDescription && skipTitle && <Divider />}
