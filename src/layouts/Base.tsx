@@ -1,4 +1,4 @@
-import { Hidden, makeStyles, Typography } from '@material-ui/core'
+import { Hidden, makeStyles, Tooltip, Typography } from '@material-ui/core'
 import AppBar from '@material-ui/core/AppBar'
 import Badge from '@material-ui/core/Badge'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -171,11 +171,13 @@ export default (props: Props): React.ReactElement => {
         </Hidden>
       </div>
       <User />
-      <IconButton color='inherit' title='Will soon show updates!'>
-        <Badge badgeContent={4} color='secondary'>
-          <NotificationsIcon />
-        </Badge>
-      </IconButton>
+      <Tooltip title='Coming soon: notifications' aria-label='notifications'>
+        <IconButton color='inherit' title='Will soon show notifications!'>
+          <Badge badgeContent={1} color='secondary'>
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+      </Tooltip>
       <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
         {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
       </IconButton>
