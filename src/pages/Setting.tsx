@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Setting from '../components/Setting'
 import { useApi } from '../hooks/api'
 
 interface Params {
   settingId?: string
+}
+
+// TODO: https://github.com/redkubes/otomi-api/issues/183
+function renameKeys(policies) {
+  if (policies === undefined) return policies
+  const keyValues = Object.keys(policies).map((key) => {
+    const newKey = key.replaceAll('-', '_')
+    return { [newKey]: policies[key] }
+  })
+  return Object.assign({}, ...keyValues)
 }
 
 export default ({
@@ -20,19 +30,15 @@ export default ({
   }, [settingId])
 
   const [setting, settingLoading, settingError]: any = useApi('getSetting', !!settingId, [settingId])
-  console.info(`useApi parameter: ${JSON.stringify({ [settingId]: formdata })}`)
 
-  const [editRes, editLoading, editError] = useApi('editSetting', !!formdata, [
-    'policies',
-    { policies: { banned_image_tags: { enabled: true } } },
+  const [, editLoading, editError] = useApi('editSetting', !!formdata, [
+    settingId,
+    { [settingId]: renameKeys(formdata) },
   ])
 
   const loading = settingLoading || editLoading
   const err = settingError || editError
 
-  if (editRes && !(editLoading || editError)) {
-    window.location.reload()
-  }
   const comp = !loading && (!err || formdata || setting) && (
     <Setting onSubmit={setFormdata} setting={setting[settingId]} settingId={settingId} />
   )

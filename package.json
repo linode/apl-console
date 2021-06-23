@@ -37,6 +37,7 @@
     "@typescript-eslint/parser": "^4.9.1",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "chokidar": "^3.5.2",
     "clsx": "^1.1.0",
     "commitizen": "^4.2.3",
     "cspell": "^4.2.8",
