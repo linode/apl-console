@@ -1,13 +1,4 @@
-import {
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  makeStyles,
-  MenuItem,
-  Typography,
-} from '@material-ui/core'
+import { Collapse, List, ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
@@ -32,6 +23,7 @@ import HomeIcon from '@material-ui/icons/Home'
 import DonutLargeIcon from '@material-ui/icons/DonutLarge'
 import MailIcon from '@material-ui/icons/Mail'
 import { Cluster as ClusterModel } from '@redkubes/otomi-api-client-axios'
+import PolicyIcon from '@material-ui/icons/Policy'
 import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -126,6 +118,7 @@ export default ({ teamId }: Props): React.ReactElement => {
     home: ['Home', <HomeIcon />],
     oidc: ['OIDC', <SettingsEthernetIcon />],
     otomi: ['Otomi', <DonutLargeIcon />],
+    policies: ['Policies', <PolicyIcon />],
     smtp: ['SMTP', <MailIcon />],
   }
 

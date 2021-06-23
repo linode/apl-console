@@ -299,7 +299,7 @@ export function getTeamSelfServiceSchema(): any {
   return spec.components.schemas.TeamSelfService
 }
 
-export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
+export function getSettingSchema(settingId, cluster: Cluster): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
   if (provider !== Cluster.ProviderEnum.azure) unset(schema, 'properties.azure')

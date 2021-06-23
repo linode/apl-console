@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button } from '@material-ui/core'
+import { Box, Button, makeStyles } from '@material-ui/core'
 import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
 import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import { getSettingSchema, getSettingUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
 
+const useStyles = makeStyles((theme) => ({
+  alwaysBottom: {
+    position: 'fixed',
+    bottom: theme.spacing(2),
+    right: theme.spacing(2),
+  },
+}))
 interface Props {
   onSubmit: CallableFunction
   setting: any
@@ -13,6 +20,7 @@ interface Props {
 }
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
+  const classes = useStyles()
   const [data, setData]: any = useState(setting)
   useEffect(() => {
     setData(setting)
@@ -22,7 +30,7 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
   const { cluster } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    setSchema(getSettingSchema(settingId, cluster, formData))
+    setSchema(getSettingSchema(settingId, cluster))
     setUiSchema(getSettingUiSchema())
     setData(formData)
     setDirty(!isEqual(formData, setting))
@@ -47,15 +55,11 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
       showErrorList={false}
       ObjectFieldTemplate={ObjectFieldTemplate}
     >
-      <Box display='flex' flexDirection='row-reverse' m={1}>
+      <Box className={classes.alwaysBottom} display='flex' flexDirection='row-reverse' m={1}>
         <Button
           variant='contained'
           color='primary'
           type='submit'
-          // TODO: dirty. It's hard to fix:
-          // The `setting` parameter does not include the default values from the formData,
-          // hence they are never equal like in e.g. the Team.tsx component.
-          //  There is not enough time to finish it now.
           disabled={!dirty}
           data-cy={`button-submit-${settingId}`}
         >
