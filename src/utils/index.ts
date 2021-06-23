@@ -11,14 +11,14 @@ export function get(obj: any, path: string, def: any = undefined) {
   const holderPath = getHolderPath(path)
   const val = loGet(obj, holderPath)
   if (val === undefined)
-    console.warn(`Path ${path} does not exist on obj. Existing props: ${JSON.stringify(Object.keys(obj))}`)
+    throw new Error(`Path ${path} does not exist on obj. Existing props: ${JSON.stringify(Object.keys(obj))}`)
   return loGet(obj, path, def)
 }
 
 export function set(obj: any, path: string, value: any) {
   const holderPath = getHolderPath(path)
   if (loGet(obj, holderPath) === undefined)
-    console.warn(`Path ${path} does not exist on obj. Existing props: ${JSON.stringify(Object.keys(obj))}`)
+    throw new Error(`Path ${path} does not exist on obj. Existing props: ${JSON.stringify(Object.keys(obj))}`)
   loSet(obj, path, value)
 }
 

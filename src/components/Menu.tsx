@@ -1,13 +1,4 @@
-import {
-  Collapse,
-  List,
-  ListItem,
-  ListItemText,
-  ListSubheader,
-  makeStyles,
-  MenuItem,
-  Typography,
-} from '@material-ui/core'
+import { Collapse, List, ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
 import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
