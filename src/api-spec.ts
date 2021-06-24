@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { isEmpty, cloneDeep } from 'lodash/lang'
 import {
-  Cluster,
+  BaseCluster as Cluster,
   SecretDockerRegistry,
   SecretGeneric,
   SecretTLS,

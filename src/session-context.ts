@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Cluster, Session, User } from '@redkubes/otomi-api-client-axios'
+import { AdditionalCluster, BaseCluster, Session, User } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from './utils/error'
 
 interface Versions {
@@ -8,8 +8,8 @@ interface Versions {
 }
 
 export interface SessionContext extends Session {
-  cluster: Cluster | undefined
-  clusters: Cluster[] | undefined
+  cluster: BaseCluster | undefined
+  clusters: AdditionalCluster[] | undefined
   collapseSettings: boolean
   core: any
   dirty: boolean

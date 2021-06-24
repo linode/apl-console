@@ -22,8 +22,9 @@ import LockOpenIcon from '@material-ui/icons/LockOpen'
 import HomeIcon from '@material-ui/icons/Home'
 import DonutLargeIcon from '@material-ui/icons/DonutLarge'
 import MailIcon from '@material-ui/icons/Mail'
-import { Cluster as ClusterModel } from '@redkubes/otomi-api-client-axios'
+import { BaseCluster as ClusterModel } from '@redkubes/otomi-api-client-axios'
 import PolicyIcon from '@material-ui/icons/Policy'
+import ComputerIcon from '@material-ui/icons/Computer'
 import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
 import snack from '../utils/snack'
@@ -112,6 +113,7 @@ export default ({ teamId }: Props): React.ReactElement => {
   const settingIds = {
     alerts: ['Alerts', <AnnouncementIcon />],
     azure: ['Azure', <CloudIcon />],
+    cluster: ['Cluster', <ComputerIcon />],
     customer: ['Customer', <PeopleIcon />],
     dns: ['DNS', <DnsIcon />],
     kms: ['KMS', <LockOpenIcon />],
