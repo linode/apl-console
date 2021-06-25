@@ -21,6 +21,9 @@ interface Props {
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
   const classes = useStyles()
+
+  const { user, oboTeamId } = useSession()
+
   const [data, setData]: any = useState(setting)
   useEffect(() => {
     setData(setting)
@@ -31,7 +34,7 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
     setSchema(getSettingSchema(settingId, cluster))
-    setUiSchema(getSettingUiSchema())
+    setUiSchema(getSettingUiSchema(user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, setting))
   }

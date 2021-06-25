@@ -5,7 +5,18 @@ import Setting from '../components/Setting'
 import { useApi } from '../hooks/api'
 
 interface Params {
-  settingId?: string
+  settingId?:
+    | 'alerts'
+    | 'azure'
+    | 'cluster'
+    | 'customer'
+    | 'dns'
+    | 'home'
+    | 'kms'
+    | 'oidc'
+    | 'otomi'
+    | 'policies'
+    | 'smtp'
 }
 
 // TODO: https://github.com/redkubes/otomi-api/issues/183
