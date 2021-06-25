@@ -1,5 +1,5 @@
 import React from 'react'
-import { BaseCluster } from '@redkubes/otomi-api-client-axios'
+import { Cluster } from '@redkubes/otomi-api-client-axios'
 import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import { useSession } from '../session-context'
@@ -19,7 +19,7 @@ export default (): React.ReactElement => {
     {
       id: 'url',
       label: 'URL',
-      renderer: (c: BaseCluster) => {
+      renderer: (c: Cluster) => {
         const { domainSuffix } = c
         const domain = `otomi.${domainSuffix}`
         if (domainSuffix === cluster.domainSuffix) return domain
