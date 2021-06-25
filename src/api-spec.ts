@@ -308,8 +308,23 @@ export function getSettingSchema(settingId, cluster: Cluster): any {
 
 export function getSettingUiSchema(user: User, teamId: string): any {
   const uiSchema = {
+    apiName: { 'ui:readonly': true },
+    apiServer: { 'ui:readonly': true },
+    domainSuffix: { 'ui:readonly': true },
+    entrypoint: { 'ui:readonly': true },
+    k8sVersion: { 'ui:readonly': true },
     id: { 'ui:readonly': true },
+    name: { 'ui:readonly': true },
+    provider: { 'ui:readonly': true },
+    region: { 'ui:readonly': true },
+    vpcID: { 'ui:readonly': true },
+    additionalClusters: {
+      items: {
+        id: { 'ui:readonly': true },
+        name: { 'ui:readonly': true },
+      },
+    },
   }
-  applyAclToUiSchema(uiSchema, user, teamId, 'Cluster')
+  applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
   return uiSchema
 }
