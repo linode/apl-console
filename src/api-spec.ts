@@ -8,7 +8,8 @@ import {
   Service,
   User,
 } from '@redkubes/otomi-api-client-axios'
-import { get, set, unset } from './utils'
+import { get, set, unset } from 'lodash'
+import { getStrict } from './utils'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
@@ -196,7 +197,7 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const idx = idxMap[formData?.ingress?.type]
   if (!formData || isEmpty(ing)) return
   const ingressSchemaPath = getIngressSchemaPath(idx)
-  const ingressSchema = get(schema, ingressSchemaPath)
+  const ingressSchema = getStrict(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
@@ -232,7 +233,7 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
   const idx = idxMap[formData?.ingress?.type]
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
-    const ingressSchema = get(schema, ingressSchemaPath)
+    const ingressSchema = getStrict(schema, ingressSchemaPath)
 
     if (ing?.tlsPass) {
       unset(ingressSchema, 'auth')
