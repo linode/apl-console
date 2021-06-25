@@ -306,7 +306,10 @@ export function getSettingSchema(settingId, cluster: Cluster): any {
   return schema
 }
 
-export function getSettingUiSchema(): any {
-  const uiSchema = {}
+export function getSettingUiSchema(user: User, teamId: string): any {
+  const uiSchema = {
+    id: { 'ui:readonly': true },
+  }
+  applyAclToUiSchema(uiSchema, user, teamId, 'Cluster')
   return uiSchema
 }
