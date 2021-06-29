@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.47](https://github.com/redkubes/otomi-console/compare/v0.4.46...v0.4.47) (2021-06-29)
+
+
+### Features
+
+* resourceQuota [ci skip] ([b1b82c1](https://github.com/redkubes/otomi-console/commit/b1b82c17cbfd7ca50673955d3df0d490e9351bdf))
+
 ### [0.4.46](https://github.com/redkubes/otomi-console/compare/v0.4.44...v0.4.46) (2021-06-24)
 
 
