@@ -34,6 +34,7 @@ export const useStyles = makeStyles({
     paddingLeft: 8,
     // paddingTop: 4,
     paddingRight: 8,
+    paddingBottom: 8,
   },
   paper: {
     // marginTop: 4,
