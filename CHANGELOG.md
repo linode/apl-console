@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.49](https://github.com/redkubes/otomi-console/compare/v0.4.48...v0.4.49) (2021-06-30)
+
+
+### Bug Fixes
+
+* subdomain length validation [ci skip] ([a09ad25](https://github.com/redkubes/otomi-console/commit/a09ad2599fbcfc21054ba67f4c40b65ae5ab415a))
+
 ### [0.4.48](https://github.com/redkubes/otomi-console/compare/v0.4.47...v0.4.48) (2021-06-29)
 
 
