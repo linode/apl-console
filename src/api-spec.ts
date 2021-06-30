@@ -181,6 +181,10 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
+  if (formData.ingress.domain) {
+    const length = formData.ingress.domain.length
+    set(ingressSchema, 'subdomain.maxLength', 64 - length)
+  }
   set(ingressSchema, 'domain.enum', zones)
 }
 
