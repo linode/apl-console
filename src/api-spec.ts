@@ -10,6 +10,7 @@ import {
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
+import { JSONSchema4 } from 'json-schema'
 import { getStrict } from './utils'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
@@ -61,26 +62,13 @@ export interface OpenApi {
     }
   }
 }
-export interface Schema {
-  'x-acl'?: Acl
-  type: SchemaType
-  properties?: {
-    [propertyName: string]: Property
-  }
-  items?: any
-}
-
 export interface Acl {
   team?: AclAction[]
   admin?: AclAction[]
 }
-
-export interface Property {
-  type: string
+export interface Schema extends JSONSchema4 {
   'x-acl'?: Acl
-  oneOf?: any
-  enum?: string[]
-  items?: any
+  'x-readOnly'?: Acl
 }
 
 let spec: OpenApi
