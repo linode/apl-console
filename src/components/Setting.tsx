@@ -33,8 +33,9 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
   const { cluster } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    setSchema(getSettingSchema(settingId, cluster))
-    setUiSchema(getSettingUiSchema(user, oboTeamId))
+    const settingSchema = getSettingSchema(settingId, cluster)
+    setSchema(settingSchema)
+    setUiSchema(getSettingUiSchema(user, oboTeamId, settingSchema))
     setData(formData)
     setDirty(!isEqual(formData, setting))
   }

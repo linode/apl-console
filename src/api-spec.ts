@@ -308,8 +308,11 @@ export function getSettingSchema(settingId, cluster: Cluster): any {
   return schema
 }
 
-export function getSettingUiSchema(user: User, teamId: string): any {
+export function getSettingUiSchema(user: User, teamId: string, schema: any): any {
   const uiSchema = {}
+  Object.entries(schema.properties).forEach(([propertyName, o]) => {
+    if (o['x-readOnly']) Object.assign(uiSchema, { [propertyName]: { 'ui:readonly': true } })
+  })
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
   return uiSchema
 }
