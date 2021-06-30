@@ -13,9 +13,6 @@ const { canExpand } = utils
 const isHidden = (element: any): boolean => {
   return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
 }
-const makeReadOnly = (element: any): boolean => {
-  return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
-}
 
 export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   const { DescriptionField, disabled, formData, onAddClick, properties, readonly, idSchema, schema, uiSchema } = props
@@ -23,7 +20,6 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   const isOf = isSomeOf(schema)
   let grouped
   const fields = []
-
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
     const schema = o.content.props.schema
