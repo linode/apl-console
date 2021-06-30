@@ -26,16 +26,11 @@ const idxMap = {
 }
 
 const podSpecUiSchema = {
-  annotations: { 'ui:options': { orderable: false } },
-  env: { 'ui:options': { orderable: false } },
-  files: { 'ui:options': { orderable: false }, items: { content: { 'ui:widget': 'textarea' } } },
+  files: { items: { content: { 'ui:widget': 'textarea' } } },
   podSecurityContext: { 'ui:widget': 'hidden' },
   securityContext: { 'ui:widget': 'hidden' },
   secrets: {
-    'ui:options': { orderable: false, addable: false, removable: false },
-  },
-  secretMounts: {
-    'ui:options': { orderable: false },
+    'ui:options': { addable: false, removable: false },
   },
 }
 const jobSpecUiSchema = {
@@ -88,22 +83,8 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
     password: { 'ui:widget': 'hidden' },
     alerts: {
       receivers: {
-        'ui:widget': 'checkboxes',
-        // 'ui:title': ' ',
-        'ui:options': {
-          inline: true,
-        },
         type: { 'ui:widget': 'hidden' },
       },
-    },
-    azureMonitor: {
-      'ui:options': {
-        inline: true,
-      },
-    },
-    selfService: {
-      Team: { 'ui:title': 'Team', 'ui:widget': 'checkboxes' },
-      Service: { 'ui:title': 'Service', 'ui:widget': 'checkboxes' },
     },
   }
 
@@ -166,7 +147,6 @@ export function getSecretUiSchema(user: User, teamId: string): any {
       ca: { 'ui:widget': 'textarea' },
       crt: { 'ui:widget': 'textarea' },
       key: { 'ui:widget': 'textarea' },
-      entries: { 'ui:options': { orderable: false } },
       type: { 'ui:widget': 'hidden' },
     },
   }
