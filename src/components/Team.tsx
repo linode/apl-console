@@ -39,8 +39,6 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
-      liveValidate={false}
-      showErrorList={false}
     >
       <Box display='flex' flexDirection='row-reverse' m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-team'>
