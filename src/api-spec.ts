@@ -6,6 +6,7 @@ import {
   SecretGeneric,
   SecretTLS,
   Service,
+  SvcPredeployed,
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
@@ -128,10 +129,9 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
       type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      certArn: {
-        // @ts-ignore
-        'ui:readonly': formData.ingress?.certSelect,
-      },
+      // @ts-ignore
+      certArn: { 'ui:readonly': formData.ingress?.certSelect },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployed.ServiceTypeEnum.svcPredeployed },
     },
     ksvc: {
       ...podSpecUiSchema,
