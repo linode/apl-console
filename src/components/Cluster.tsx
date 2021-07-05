@@ -22,6 +22,7 @@ export default (): React.ReactElement => {
   const {
     mode,
     cluster,
+    versions,
     oboTeamId,
     user: { isAdmin },
   } = useSession()
@@ -49,7 +50,7 @@ export default (): React.ReactElement => {
           <ListItemText primary={`K8S Version: ${cluster.k8sVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
         <StyledListItem>
-          <ListItemText primary={`Otomi Version: ${cluster.otomiVersion}`} data-cy='list-item-text-k8v' />
+          <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
         {mode === 'ee' && (oboTeamId || isAdmin) && (
           <StyledMenuItem
