@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.50](https://github.com/redkubes/otomi-console/compare/v0.4.49...v0.4.50) (2021-07-04)
+
+
+### Bug Fixes
+
+* api schema update [ci skip] ([8490c96](https://github.com/redkubes/otomi-console/commit/8490c961251f76d73da804fc40f0d4943e66eba1))
+* schema additions, help rendering ([f9c7113](https://github.com/redkubes/otomi-console/commit/f9c7113e062ab16e4101740fb7dfbb3368ec81ca))
+* tlspass only for regular svc [ci skip] ([ab4bb9f](https://github.com/redkubes/otomi-console/commit/ab4bb9ff0d5f52844fa69de8fb4eba07ad6582de))
+
+### [0.4.49](https://github.com/redkubes/otomi-console/compare/v0.4.48...v0.4.49) (2021-06-30)
+
+
+### Bug Fixes
+
+* subdomain length validation [ci skip] ([a09ad25](https://github.com/redkubes/otomi-console/commit/a09ad2599fbcfc21054ba67f4c40b65ae5ab415a))
+
 ### [0.4.48](https://github.com/redkubes/otomi-console/compare/v0.4.47...v0.4.48) (2021-06-29)
 
 

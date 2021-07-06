@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, makeStyles } from '@material-ui/core'
 import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
-import ObjectFieldTemplate from './rjsf/ObjectFieldTemplate'
 import { getSettingSchema, getSettingUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
 
@@ -55,9 +54,7 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
-      liveValidate={false}
-      showErrorList={false}
-      ObjectFieldTemplate={ObjectFieldTemplate}
+      hideHelp
     >
       <Box className={classes.alwaysBottom} display='flex' flexDirection='row-reverse' m={1}>
         <Button

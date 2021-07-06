@@ -7,6 +7,7 @@ import {
   SecretGeneric,
   SecretTLS,
   Service,
+  SvcPredeployed,
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
@@ -117,10 +118,9 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
       type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      certArn: {
-        // @ts-ignore
-        'ui:readonly': formData.ingress?.certSelect,
-      },
+      // @ts-ignore
+      certArn: { 'ui:readonly': formData.ingress?.certSelect },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployed.ServiceTypeEnum.svcPredeployed },
     },
     ksvc: {
       ...podSpecUiSchema,
@@ -170,6 +170,10 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
+  if (formData.ingress.domain) {
+    const length = formData.ingress.domain.length
+    set(ingressSchema, 'subdomain.maxLength', 64 - length)
+  }
   set(ingressSchema, 'domain.enum', zones)
 }
 

@@ -75,8 +75,6 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
-      liveValidate={false}
-      showErrorList={false}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
