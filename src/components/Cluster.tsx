@@ -48,9 +48,6 @@ export default (): React.ReactElement => {
         <StyledListItem>
           <ListItemText primary={`K8S Version: ${cluster.k8sVersion}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        <StyledListItem>
-          <ListItemText primary={`Otomi Version: ${cluster.otomiVersion}`} data-cy='list-item-text-k8v' />
-        </StyledListItem>
         {mode === 'ee' && (oboTeamId || isAdmin) && (
           <StyledMenuItem
             className={mainClasses.selectable}
