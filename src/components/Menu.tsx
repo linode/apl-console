@@ -22,7 +22,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen'
 import HomeIcon from '@material-ui/icons/Home'
 import DonutLargeIcon from '@material-ui/icons/DonutLarge'
 import MailIcon from '@material-ui/icons/Mail'
-import { Cluster as ClusterModel } from '@redkubes/otomi-api-client-axios'
+import { Provider } from '@redkubes/otomi-api-client-axios'
 import PolicyIcon from '@material-ui/icons/Policy'
 import { useApi } from '../hooks/api'
 import { mainStyles } from '../theme'
@@ -159,7 +159,7 @@ export default ({ teamId }: Props): React.ReactElement => {
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {
                 // TODO: fix this hack with a generic x-provider approach?
-                if (cluster.provider !== ClusterModel.ProviderEnum.azure && id === 'azure') return undefined
+                if (cluster.provider !== Provider.azure && id === 'azure') return undefined
                 return (
                   <StyledMenuItem
                     key={id}
