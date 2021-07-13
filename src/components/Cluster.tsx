@@ -22,6 +22,7 @@ export default (): React.ReactElement => {
   const {
     mode,
     cluster,
+    versions,
     oboTeamId,
     user: { isAdmin },
   } = useSession()
