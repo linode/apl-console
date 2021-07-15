@@ -143,7 +143,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           </StyledMenuItem>
           <li>
             <StyledMenuItem
-              to='/settings/otomi'
+              to={isCE ? undefined : '/settings/otomi'}
               selected={pathname === '/settings'}
               data-cy='menu-item-settings'
               onClick={handleCollapse}
@@ -162,6 +162,7 @@ export default ({ teamId }: Props): React.ReactElement => {
                 if (cluster.provider !== Provider.azure && id === 'azure') return undefined
                 return (
                   <StyledMenuItem
+                    disabled={isCE}
                     key={id}
                     to={`/settings/${id}`}
                     selected={pathname === `/settings/${id}`}
