@@ -2,6 +2,7 @@
 import { isEmpty, cloneDeep } from 'lodash/lang'
 import {
   Cluster,
+  Provider,
   SecretDockerRegistry,
   SecretGeneric,
   SecretTLS,
@@ -228,7 +229,7 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
-    if (cluster.provider !== Cluster.ProviderEnum.aws) {
+    if (cluster.provider !== Provider.aws) {
       unset(ingressSchema, `certArn`)
     }
     if (!ing?.hasCert) {
@@ -287,7 +288,7 @@ export function getTeamSelfServiceSchema(): any {
 export function getSettingSchema(settingId, cluster: Cluster): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
-  if (provider !== Cluster.ProviderEnum.azure) unset(schema, 'properties.azure')
+  if (provider !== Provider.azure) unset(schema, 'properties.azure')
   return schema
 }
 
