@@ -16,5 +16,7 @@ services:
       CORE: ${CORE}
       CORE_VERSION: ${CORE_VERSION:-x.x.x}
       CLUSTER_ID: ${CLUSTER_ID:-'google/dev'}
+      CLUSTER: ${CLUSTER}
       CLUSTERS: ${CLUSTERS}
+      TEAM_SERVICES: ${TEAM_SERVICES}
       TEAMS: ${TEAMS}
