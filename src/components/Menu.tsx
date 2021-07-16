@@ -198,7 +198,7 @@ export default ({ teamId }: Props): React.ReactElement => {
         </ListItemIcon>
         <ListItemText primary='Teams' />
       </StyledMenuItem>
-      <StyledMenuItem disabled={isCE} to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>

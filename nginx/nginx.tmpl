@@ -29,6 +29,9 @@ http {
     location /session {
       access_by_lua_file /app/session.lua;
     }
+    location /services {
+      access_by_lua_file /app/services.lua;
+    }
     location /healthz {
       return 200 'OK';
     }
