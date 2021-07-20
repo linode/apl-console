@@ -5,6 +5,7 @@ import { ThemeProvider } from '@material-ui/styles'
 import React, { Suspense, useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
+import { Session, User } from '@redkubes/otomi-api-client-axios'
 import Loader from './components/Loader'
 import { useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
@@ -28,6 +29,7 @@ import devTokens from './devtokens'
 import Setting from './pages/Setting'
 import Job from './pages/Job'
 import Jobs from './pages/Jobs'
+import { ApiError } from './utils/error'
 
 const env = process.env
 let mode = 'ee'
@@ -124,10 +126,10 @@ const AppEE = () => {
 }
 
 const AppCE = () => {
-  const [globalError, setGlobalError] = useState()
+  const [globalError, setGlobalError] = useState<ApiError>()
   const [themeType, setType] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const [session, setSession, sessionError] = useState() as any
+  const [session, setSession, sessionError] = useState<Session>() as any
   if (sessionError) setGlobalError(sessionError)
   setThemeType(themeType)
   useEffect(() => {
@@ -136,16 +138,17 @@ const AppCE = () => {
         `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
       )
       const session: SessionContext = await response.json()
-      const { user }: any = session
-      const { groups } = user
-      if (groups.includes('admin') || groups.includes('team-admin')) {
+      const { user }: { user: User } = session
+      const { teams } = user
+      if (teams.has('admin') || teams.has('team-admin')) {
         user.isAdmin = true
+        // @ts-ignore
         user.roles = ['team']
-        if (groups.includes('admin')) {
-          user.roles.push('admin')
+        if (teams.has('admin')) {
+          user.roles.add('admin')
         }
-        if (groups.includes('team-admin')) {
-          user.roles.push('team-admin')
+        if (teams.has('team-admin')) {
+          user.roles.add('team-admin')
         }
       }
       setSession(session)
