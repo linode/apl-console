@@ -66,6 +66,9 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
             `${env.CONTEXT_PATH || ''}/${method}${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
           )
           value = await response.json()
+          // eslint-disable-next-line no-console
+          console.info(`RESPONSE: ${value}`)
+          setValue(value)
         } else if (!client[method]) {
           const err = `Api method does not exist: ${method}`
           setError(new ApiError(err))
@@ -78,9 +81,9 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
         } else {
           if (canceled) return
           value = await client[method].call(client, ...args, options)
+          setValue(value.response.body)
           checkDirty(method)
         }
-        setValue(value.response.body)
         if (setGlobalError) setGlobalError()
       } catch (e) {
         const err = e.response?.body?.error ?? e.response?.statusMessage ?? e.message
