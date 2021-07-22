@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.51](https://github.com/redkubes/otomi-console/compare/v0.4.50...v0.4.51) (2021-07-22)
+
+
+### Bug Fixes
+
+* as array ([47b1994](https://github.com/redkubes/otomi-console/commit/47b19941338bb80d58f9fa5213618bcc800f6b46))
+* dev setup for ce [ci skip] ([c2a2a7b](https://github.com/redkubes/otomi-console/commit/c2a2a7b3b5bd026ae082641205a96a96c24f5daf))
+* read otomi version from session ([#89](https://github.com/redkubes/otomi-console/issues/89)) ([e25fb16](https://github.com/redkubes/otomi-console/commit/e25fb16fed0a992c808be962c4e28036cea7bdc8))
+* temporarily remove v0.69 redkubes client lib ([62c689d](https://github.com/redkubes/otomi-console/commit/62c689d20975b4829b0f9fe1547e5aaed2a7110f))
+
 ### [0.4.50](https://github.com/redkubes/otomi-console/compare/v0.4.49...v0.4.50) (2021-07-04)
 
 
