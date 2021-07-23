@@ -39,6 +39,7 @@ interface Props {
 
 export default ({ services, team }: Props): React.ReactElement => {
   const {
+    mode,
     user: { isAdmin },
     oboTeamId,
   } = useSession()
@@ -47,7 +48,7 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'name',
       label: 'Service Name',
-      renderer: getServiceLink(isAdmin, oboTeamId),
+      renderer: (row) => (mode === 'ce' ? row.name : getServiceLink(isAdmin, oboTeamId)),
     },
     {
       id: 'ingressType',

@@ -9,5 +9,8 @@ module.exports = function(app) {
     proxy('/session', {
       target: `http://${process.env.WEB_BASE_URL || 'localhost:8081'}`,
     }),
+    proxy('/services', {
+      target: `http://${process.env.WEB_BASE_URL || 'localhost:8081'}`,
+    }),
   )
 }
