@@ -17,8 +17,8 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { mode } = useSession()
-  // eslint-disable-next-line no-nested-ternary
-  const servicesMethod = teamId ? 'getTeamServices' : mode ? 'services' : 'getAllServices'
+  let servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
+  servicesMethod = mode === 'ce' ? 'services' : servicesMethod
   const servicesArgs = teamId ? [teamId] : []
   const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(
     servicesMethod,

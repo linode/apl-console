@@ -9,9 +9,9 @@ import RLink from './Link'
 import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
+const getServiceLink = (isAdmin, ownerId, isCE): CallableFunction => (row): React.ReactElement => {
   const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+  if (isCE || !(isAdmin || teamId === ownerId)) return name
 
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return (
@@ -51,7 +51,7 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'name',
       label: 'Service Name',
-      renderer: (row) => (isCE ? row.name : getServiceLink(isAdmin, oboTeamId)),
+      renderer: getServiceLink(isAdmin, oboTeamId, isCE),
     },
     {
       id: 'ingressType',
