@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import React from 'react'
@@ -8,9 +9,9 @@ import RLink from './Link'
 import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
+const getServiceLink = (isAdmin, ownerId, isCE): CallableFunction => (row): React.ReactElement => {
   const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+  if (isCE || !(isAdmin || teamId === ownerId)) return name
 
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return (
@@ -37,32 +38,35 @@ interface Props {
   team?: Team
 }
 
+// TODO: https://github.com/redkubes/otomi-core/discussions/475
 export default ({ services, team }: Props): React.ReactElement => {
   const {
+    mode,
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const showTeam = !team
+  const isCE = mode === 'ce'
+  const showTeam = isCE ? false : !team
   const headCells: HeadCell[] = [
     {
       id: 'name',
       label: 'Service Name',
-      renderer: getServiceLink(isAdmin, oboTeamId),
+      renderer: getServiceLink(isAdmin, oboTeamId, isCE),
     },
     {
       id: 'ingressType',
       label: 'Ingress',
-      renderer: (row) => row.ingress?.type ?? '',
+      renderer: (row) => (isCE ? row.type : row.ingress?.type ?? ''),
     },
     {
       id: 'serviceType',
       label: 'Type',
-      renderer: (row) => row.ksvc?.serviceType ?? '',
+      renderer: (row) => (isCE ? ('ksvc' in row ? 'ksvc' : 'regular') : row.ksvc?.serviceType ?? ''),
     },
     {
       id: 'host',
-      label: 'Host Name',
-      renderer: renderHost,
+      label: isCE ? 'Port' : 'Host Name',
+      renderer: (row) => (isCE ? `:${row.port}` : renderHost),
       component: MuiLink,
     },
   ]
@@ -83,7 +87,7 @@ export default ({ services, team }: Props): React.ReactElement => {
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
-            disabled={isAdmin && !oboTeamId}
+            disabled={isCE || (isAdmin && !oboTeamId)}
             data-cy='button-create-service'
           >
             Create service
