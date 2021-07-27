@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.52](https://github.com/redkubes/otomi-console/compare/v0.4.51...v0.4.52) (2021-07-27)
+
+
+### Features
+
+* add services proxy ([0548c56](https://github.com/redkubes/otomi-console/commit/0548c563972d4a980549e8a5d86ee84d7318428b))
+* add team services env ([8604ce6](https://github.com/redkubes/otomi-console/commit/8604ce66790eb27f85efa1076f198498f8e300e8))
+* correct path rewrite but wrong services ([e27a096](https://github.com/redkubes/otomi-console/commit/e27a0961b2aab232d67b411c585c7d94a7d8d333))
+* poc for useApi isCE ([7847764](https://github.com/redkubes/otomi-console/commit/78477640bf3ef50443832f161ddb92352e5fc37f))
+* this works ([7f11aff](https://github.com/redkubes/otomi-console/commit/7f11affa9650a4c013dfeaa92200260b214b15f7))
+
+
+### Bug Fixes
+
+* add sample TEAM_SERVICES ([30cb943](https://github.com/redkubes/otomi-console/commit/30cb943ed82879e2f550ffd663f9cb85541c554b))
+* bump console to 0.4.51 ([29e8c2f](https://github.com/redkubes/otomi-console/commit/29e8c2faecdb5453e8577cdb2f5d6d3cf149a7d8))
+* clean up services ([9ceaca7](https://github.com/redkubes/otomi-console/commit/9ceaca7a41cf272f498917d0b685ccdc5851c53f))
+* ee stuff ([429eca0](https://github.com/redkubes/otomi-console/commit/429eca04a3feeb7087aa4ab937ea66ba360a19ef))
+* lua auth works, non-issue ([1235d9a](https://github.com/redkubes/otomi-console/commit/1235d9ad8601dc1355b98e66dd36e3d554435b2c))
+* services are readonly in ce ([c1d3b83](https://github.com/redkubes/otomi-console/commit/c1d3b837fdfb615effdba6e6e2246dd2beb6b1a1))
+* wrangle demo values ([7a0c493](https://github.com/redkubes/otomi-console/commit/7a0c4935980b02a377f701c21b401e79389427b2))
+
+
+### Others
+
+* merge branch 'master' into task/229/team-services ([1c59136](https://github.com/redkubes/otomi-console/commit/1c59136ac8c76b82cae6c41df7eb11f9e9f159ce))
+* merge branch 'master' into task/229/team-services ([521afaa](https://github.com/redkubes/otomi-console/commit/521afaa68054050bc2c0b60c64b4b170bc86e2a3))
+* merge master ([46fa7d5](https://github.com/redkubes/otomi-console/commit/46fa7d57e464b8fcdf0bf2a848c3c833b9f3614b))
+
 ### [0.4.51](https://github.com/redkubes/otomi-console/compare/v0.4.50...v0.4.51) (2021-07-22)
 
 
