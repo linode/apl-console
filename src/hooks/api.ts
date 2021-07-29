@@ -36,6 +36,7 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
+    mode,
     user: { isAdmin },
     setDirty,
     setGlobalError,
@@ -59,7 +60,16 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
         return
       }
       try {
-        if (!client[method]) {
+        let value
+        if (mode === 'ce') {
+          const response = await fetch(
+            `${env.CONTEXT_PATH || ''}/${method}${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
+          )
+          value = await response.json()
+          // eslint-disable-next-line no-console
+          console.info(`RESPONSE: ${value}`)
+          setValue(value)
+        } else if (!client[method]) {
           const err = `Api method does not exist: ${method}`
           setError(new ApiError(err))
           if (process.env.NODE_ENV !== 'production') {
@@ -70,11 +80,11 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
           }
         } else {
           if (canceled) return
-          const value = await client[method].call(client, ...args, options)
-          checkDirty(method)
+          value = await client[method].call(client, ...args, options)
           setValue(value.response.body)
-          if (setGlobalError) setGlobalError()
+          checkDirty(method)
         }
+        if (setGlobalError) setGlobalError()
       } catch (e) {
         const err = e.response?.body?.error ?? e.response?.statusMessage ?? e.message
         const statusCode = e.statusCode

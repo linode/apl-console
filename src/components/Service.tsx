@@ -2,7 +2,7 @@ import { Box, Button } from '@material-ui/core'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Service, Secret } from '@redkubes/otomi-api-client-axios'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
@@ -38,10 +38,10 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       if (ing?.type === 'tlsPass') {
         // we don't expect some props when choosing tlsPass
         ing = { ...ing }
-        delete ing.hasCert
-        delete ing.certArn
-        delete ing.certName
-        delete ing.forwardPath
+        unset(ing, 'hasCert')
+        unset(ing, 'certArn')
+        unset(ing, 'certName')
+        unset(ing, 'forwardPath')
         formData.ingress = ing
       } else if (ing?.type === 'cluster') {
         // cluster has an empty ingress
@@ -75,8 +75,6 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
-      liveValidate={false}
-      showErrorList={false}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>

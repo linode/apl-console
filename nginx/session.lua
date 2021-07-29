@@ -1,5 +1,6 @@
 local jwt = require "resty.jwt"
 local cjson = require "cjson"
+cjson.encode_empty_table_as_object(false)
 
 -- first try to find JWT token as url parameter e.g. ?token=BLAH
 local token = ngx.var.arg_token

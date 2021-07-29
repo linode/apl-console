@@ -5,7 +5,9 @@ env CLUSTER;
 env CLUSTERS;
 env CORE;
 env CORE_VERSION;
+env TEAM_SERVICES;
 env TEAMS;
+
 error_log stderr info;
 http {
   access_log /dev/stdout;
@@ -26,6 +28,9 @@ http {
     }
     location /session {
       access_by_lua_file /app/session.lua;
+    }
+    location /services {
+      access_by_lua_file /app/services.lua;
     }
     location /healthz {
       return 200 'OK';

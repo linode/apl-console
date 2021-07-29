@@ -12,9 +12,11 @@ services:
       - $PWD/nginx/nginx.tmpl:/app/nginx.tmpl
       - $PWD/nginx/run.sh:/app/run.sh
       - $PWD/nginx/session.lua:/app/session.lua
+      - $PWD/nginx/services.lua:/app/services.lua
     environment:
       CORE: ${CORE}
-      CORE_VERSION: ${CORE_VERSION:-x.x.x}
-      CLUSTER_ID: ${CLUSTER_ID:-'google/dev'}
+      CORE_VERSION: ${CORE_VERSION:-master}
+      CLUSTER: ${CLUSTER}
       CLUSTERS: ${CLUSTERS}
+      TEAM_SERVICES: ${TEAM_SERVICES}
       TEAMS: ${TEAMS}

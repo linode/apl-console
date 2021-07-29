@@ -2,13 +2,16 @@
 import { isEmpty, cloneDeep } from 'lodash/lang'
 import {
   Cluster,
+  Provider,
   SecretDockerRegistry,
   SecretGeneric,
   SecretTLS,
   Service,
+  SvcPredeployed,
   User,
 } from '@redkubes/otomi-api-client-axios'
-import { get, set, unset } from './utils'
+import { get, set, unset } from 'lodash'
+import { getStrict } from './utils'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
@@ -23,16 +26,11 @@ const idxMap = {
 }
 
 const podSpecUiSchema = {
-  annotations: { 'ui:options': { orderable: false } },
-  env: { 'ui:options': { orderable: false } },
-  files: { 'ui:options': { orderable: false }, items: { content: { 'ui:widget': 'textarea' } } },
+  files: { items: { content: { 'ui:widget': 'textarea' } } },
   podSecurityContext: { 'ui:widget': 'hidden' },
   securityContext: { 'ui:widget': 'hidden' },
   secrets: {
-    'ui:options': { orderable: false, addable: false, removable: false },
-  },
-  secretMounts: {
-    'ui:options': { orderable: false },
+    'ui:options': { addable: false, removable: false },
   },
 }
 const jobSpecUiSchema = {
@@ -98,22 +96,8 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
     password: { 'ui:widget': 'hidden' },
     alerts: {
       receivers: {
-        'ui:widget': 'checkboxes',
-        // 'ui:title': ' ',
-        'ui:options': {
-          inline: true,
-        },
         type: { 'ui:widget': 'hidden' },
       },
-    },
-    azureMonitor: {
-      'ui:options': {
-        inline: true,
-      },
-    },
-    selfService: {
-      Team: { 'ui:title': 'Team', 'ui:widget': 'checkboxes' },
-      Service: { 'ui:title': 'Service', 'ui:widget': 'checkboxes' },
     },
   }
 
@@ -146,10 +130,9 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
       type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      certArn: {
-        // @ts-ignore
-        'ui:readonly': formData.ingress?.certSelect,
-      },
+      // @ts-ignore
+      certArn: { 'ui:readonly': formData.ingress?.certSelect },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployed.ServiceTypeEnum.svcPredeployed },
     },
     ksvc: {
       ...podSpecUiSchema,
@@ -176,7 +159,6 @@ export function getSecretUiSchema(user: User, teamId: string): any {
       ca: { 'ui:widget': 'textarea' },
       crt: { 'ui:widget': 'textarea' },
       key: { 'ui:widget': 'textarea' },
-      entries: { 'ui:options': { orderable: false } },
       type: { 'ui:widget': 'hidden' },
     },
   }
@@ -196,10 +178,14 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   const idx = idxMap[formData?.ingress?.type]
   if (!formData || isEmpty(ing)) return
   const ingressSchemaPath = getIngressSchemaPath(idx)
-  const ingressSchema = get(schema, ingressSchemaPath)
+  const ingressSchema = getStrict(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns.zones || [])]
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
+  if (formData.ingress.domain) {
+    const length = formData.ingress.domain.length
+    set(ingressSchema, 'subdomain.maxLength', 64 - length)
+  }
   set(ingressSchema, 'domain.enum', zones)
 }
 
@@ -232,7 +218,7 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
   const idx = idxMap[formData?.ingress?.type]
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
-    const ingressSchema = get(schema, ingressSchemaPath)
+    const ingressSchema = getStrict(schema, ingressSchemaPath)
 
     if (ing?.tlsPass) {
       unset(ingressSchema, 'auth')
@@ -243,7 +229,7 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
-    if (cluster.provider !== Cluster.ProviderEnum.aws) {
+    if (cluster.provider !== Provider.aws) {
       unset(ingressSchema, `certArn`)
     }
     if (!ing?.hasCert) {
@@ -299,10 +285,10 @@ export function getTeamSelfServiceSchema(): any {
   return spec.components.schemas.TeamSelfService
 }
 
-export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
+export function getSettingSchema(settingId, cluster: Cluster): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
-  if (provider !== Cluster.ProviderEnum.azure) unset(schema, 'properties.azure')
+  if (provider !== Provider.azure) unset(schema, 'properties.azure')
   return schema
 }
 

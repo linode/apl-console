@@ -23,19 +23,24 @@ const useStyles = makeStyles(() =>
 interface Props extends FormProps<any> {
   title?: any
   key: string
+  hideHelp?: boolean
 }
 
-export default ({ children, title, ...props }: Props): React.ReactElement => {
+export default ({ children, title, hideHelp = false, ...props }: Props): React.ReactElement => {
   const { schema } = props
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
   return (
     <>
-      <div className={classes.root}>
-        {title}
-        {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
-      </div>
+      {!hideHelp && (
+        <div className={classes.root}>
+          {title}
+          {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
+        </div>
+      )}
       <Form
+        liveValidate={false}
+        showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, TitleField, DescriptionField, OneOfField }}
