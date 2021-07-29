@@ -17,6 +17,7 @@ const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
 const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
 const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
+const containerSpecPath = 'allOf[1].allOf[1].properties'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 const idxMap = {
@@ -191,6 +192,8 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
 
 export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
+  unset(schema, `${containerSpecPath}.command`)
+  unset(schema, `${containerSpecPath}.args`)
   if (formData.type === 'Job') {
     unset(schema, `${jobSpecUiSchemaPath}.schedule`)
   }
