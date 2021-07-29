@@ -65,8 +65,8 @@ export default ({ services, team }: Props): React.ReactElement => {
     },
     {
       id: 'host',
-      label: isCE ? 'Port' : 'Host Name',
-      renderer: (row) => (isCE ? `:${row.port}` : renderHost),
+      label: 'Host',
+      renderer: renderHost,
       component: MuiLink,
     },
   ]

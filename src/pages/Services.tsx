@@ -17,15 +17,16 @@ export default ({
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
   const { mode } = useSession()
+  const isCE = mode === 'ce'
   let servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
-  servicesMethod = mode === 'ce' ? 'services' : servicesMethod
+  servicesMethod = isCE ? 'services' : servicesMethod
   const servicesArgs = teamId ? [teamId] : []
   const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(
     servicesMethod,
     true,
     servicesArgs,
   )
-  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !!teamId, [teamId])
+  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !isCE && !!teamId, [teamId])
   const loading = servicesLoading || teamLoading
   const err = servicesError || teamError
   const comp = !(err || loading) && <Services services={services} team={team} />
