@@ -187,6 +187,7 @@ const AppCE = () => {
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/settings/:settingId' component={Setting} exact />
+                <Route path='/services' component={Services} exact />
                 <Route path='*'>
                   <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
                 </Route>

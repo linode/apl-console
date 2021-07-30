@@ -110,19 +110,19 @@
   "name": "otomi-console",
   "private": true,
   "run-if-changed": {
-    "package-lock.json": "npm install --prefer-offline --no-audit"
+    "package-lock.json": "npm ci --prefer-offline --no-audit"
   },
   "scripts": {
     "build": "PUBLIC_URL='##CONTEXT_PATH##' react-scripts build",
     "cz": "git-cz",
     "cz:retry": "git-cz --retry",
     "dev": "run-p start watch:ts",
-    "dev:docker": "npm install && npm run dev",
+    "dev:docker": "npm ci && npm run dev",
     "eject": "react-scripts eject",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "husky:lint-staged": "lint-staged",
-    "husky:pre-commit": "lint-staged && npm run lint && npm install",
+    "husky:pre-commit": "lint-staged && npm run lint && npm ci",
     "lint": "run-p types lint:es spellcheck",
     "lint:es": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
