@@ -17,12 +17,6 @@
       "request": "launch",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceRoot}/src"
-    },
-    {
-      "type": "lua",
-      "request": "launch",
-      "name": "Launch the test lua file",
-      "program": "${workspaceFolder}/nginx/session_test.lua"
     }
   ]
 }
