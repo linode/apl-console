@@ -26,6 +26,13 @@ if token == nil then
     ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
+for _, svc in pairs(items) do
+    if not ngx.var.team or svc.teamId == ngx.var.team then
+        -- append to map
+        break
+    end
+end
+
 local out = os.getenv('TEAM_SERVICES')
 -- Build json response at Nginx using Lua
 ngx.header.content_type = "application/json; charset=utf-8"

@@ -9,6 +9,7 @@
     "redhat.vscode-yaml",
     "stylelint.vscode-stylelint",
     "william-voyek.vscode-nginx",
-    "xyz.local-history"
+    "xyz.local-history",
+    "yinfei.luahelper"
   ]
 }
