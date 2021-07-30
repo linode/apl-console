@@ -38,8 +38,6 @@ export function lookUpCEPath(operationId: string, args?: any[]) {
       return `${cePath}/session`
     case 'getTeamServices':
       return `${cePath}/teams/${args[0]}/services`
-    case 'getTeam':
-      return `${cePath}/teams/${args[0]}`
     default:
       throw new ApiError(`CE operationId does not exist: ${operationId}`)
   }

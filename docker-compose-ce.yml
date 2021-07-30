@@ -13,7 +13,6 @@ services:
       - $PWD/nginx/run.sh:/app/run.sh
       - $PWD/nginx/session.lua:/app/session.lua
       - $PWD/nginx/services.lua:/app/services.lua
-      - $PWD/nginx/team.lua:/app/team.lua
     environment:
       CORE: ${CORE}
       CORE_VERSION: ${CORE_VERSION:-master}
