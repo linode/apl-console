@@ -27,7 +27,7 @@ if token == nil then
 end
 
 local payload = {
-    name = ngx.var.team
+    id = ngx.var.team
 }
 
 -- Build json response at Nginx using Lua
