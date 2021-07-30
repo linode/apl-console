@@ -4,7 +4,6 @@ import { RouteComponentProps } from 'react-router-dom'
 import Services from '../components/Services'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
-import { useSession } from '../session-context'
 import { ApiError } from '../utils/error'
 
 interface Params {
@@ -16,17 +15,14 @@ export default ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
-  const { mode } = useSession()
-  const isCE = mode === 'ce'
-  let servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
-  servicesMethod = isCE ? 'services' : servicesMethod
+  const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
   const servicesArgs = teamId ? [teamId] : []
   const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(
     servicesMethod,
     true,
     servicesArgs,
   )
-  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !isCE && !!teamId, [teamId])
+  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !!teamId, [teamId])
   const loading = servicesLoading || teamLoading
   const err = servicesError || teamError
   const comp = !(err || loading) && <Services services={services} team={team} />

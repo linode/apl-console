@@ -6,7 +6,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
-import { useApi } from './hooks/api'
+import { lookUpCEPath, useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import Cluster from './pages/Cluster'
 import Clusters from './pages/Clusters'
@@ -133,7 +133,9 @@ const AppCE = () => {
   useEffect(() => {
     const loadSession: any = async () => {
       const response = await fetch(
-        `${env.CONTEXT_PATH || ''}/session${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
+        `${env.CONTEXT_PATH || ''}/${lookUpCEPath('getSession')}${
+          env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''
+        }`,
       )
       const session: SessionContext = await response.json()
       const { user }: any = session

@@ -31,7 +31,21 @@ export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
 
-export const useApi = (method: string, active = true, args: any[] = []): ApiHook => {
+export function lookUpCEPath(operationId: string, args?: any[]) {
+  const cePath = 'v1'
+  switch (operationId) {
+    case 'getSession':
+      return `${cePath}/session`
+    case 'getTeamServices':
+      return `${cePath}/teams/${args[0]}/services`
+    case 'getTeam':
+      return `${cePath}/teams/${args[0]}`
+    default:
+      throw new ApiError(`CE operationId does not exist: ${operationId}`)
+  }
+}
+
+export const useApi = (operationId: string, active = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
@@ -41,13 +55,13 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
     setDirty,
     setGlobalError,
   } = useSession()
-  const checkDirty = (method: any): void => {
+  const checkDirty = (operationId: any): void => {
     ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
-      if (method.indexOf(prefix) === 0) {
+      if (operationId.indexOf(prefix) === 0) {
         setDirty(true)
       }
     })
-    if (method.indexOf('deploy') === 0) {
+    if (operationId.indexOf('deploy') === 0) {
       setDirty(false)
     }
   }
@@ -63,14 +77,16 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
         let value
         if (mode === 'ce') {
           const response = await fetch(
-            `${env.CONTEXT_PATH || ''}/${method}${env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''}`,
+            `${env.CONTEXT_PATH || ''}/${lookUpCEPath(operationId, args)}${
+              env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''
+            }`,
           )
           value = await response.json()
           // eslint-disable-next-line no-console
           console.info(`RESPONSE: ${value}`)
           setValue(value)
-        } else if (!client[method]) {
-          const err = `Api method does not exist: ${method}`
+        } else if (!client[operationId]) {
+          const err = `Api operationId does not exist: ${operationId}`
           setError(new ApiError(err))
           if (process.env.NODE_ENV !== 'production') {
             snack.error(err)
@@ -80,9 +96,9 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
           }
         } else {
           if (canceled) return
-          value = await client[method].call(client, ...args, options)
+          value = await client[operationId].call(client, ...args, options)
           setValue(value.response.body)
-          checkDirty(method)
+          checkDirty(operationId)
         }
         if (setGlobalError) setGlobalError()
       } catch (e) {
@@ -90,7 +106,7 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
         const statusCode = e.statusCode
         let msg = err
         if (env.NODE_ENV !== 'production') {
-          msg = `Api Error[${statusCode}] calling '${method}': ${err}`
+          msg = `Api Error[${statusCode}] calling '${operationId}': ${err}`
           // eslint-disable-next-line no-console
           console.error(e)
         }
@@ -104,7 +120,7 @@ export const useApi = (method: string, active = true, args: any[] = []): ApiHook
       // eslint-disable-next-line react-hooks/exhaustive-deps
       canceled = true
     }
-  }, [method, signature, active, isAdmin])
+  }, [operationId, signature, active, isAdmin])
 
   return [value, loading, error]
 }

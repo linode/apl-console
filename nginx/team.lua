@@ -26,14 +26,9 @@ if token == nil then
     ngx.exit(ngx.HTTP_UNAUTHORIZED)
 end
 
-local teamServices = cjson.decode(os.getenv('TEAM_SERVICES'))
-local payload = {}
-for _, svc in pairs(teamServices) do
-    if svc.teamId == ngx.var.team then
-        table.insert(payload, svc)
-        break
-    end
-end
+local payload = {
+    name = ngx.var.team
+}
 
 -- Build json response at Nginx using Lua
 ngx.header.content_type = "application/json; charset=utf-8"
