@@ -15,9 +15,9 @@ import { getStrict } from './utils'
 
 const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
 const jobSpecUiSchemaPath = 'allOf[0].properties'
-const jobInitSpecSecretsPath = 'allOf[0].properties.init.properties.secrets'
 const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
 const containerSpecPath = 'allOf[1].allOf[1].properties'
+const initContainerSpecPath = 'allOf[0].properties.init.items.properties'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 const idxMap = {
@@ -194,17 +194,19 @@ export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets:
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   unset(schema, `${containerSpecPath}.command`)
   unset(schema, `${containerSpecPath}.args`)
+  unset(schema, `${initContainerSpecPath}.command`)
+  unset(schema, `${initContainerSpecPath}.args`)
   if (formData.type === 'Job') {
     unset(schema, `${jobSpecUiSchemaPath}.schedule`)
   }
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
-    set(schema, `${jobInitSpecSecretsPath}.items.enum`, secretNames)
+    set(schema, `${initContainerSpecPath}.secrets.items.enum`, secretNames)
     set(schema, `${jobSpecSecretsPath}.items.enum`, secretNames)
   } else {
-    unset(schema, `${jobInitSpecSecretsPath}.items.enum`)
+    unset(schema, `${initContainerSpecPath}.secrets.items.enum`)
     unset(schema, `${jobSpecSecretsPath}.items.enum`)
-    set(schema, `${jobInitSpecSecretsPath}.secrets.readOnly`, true)
+    set(schema, `${initContainerSpecPath}.secrets.readOnly`, true)
     set(schema, `${jobSpecSecretsPath}.secrets.readOnly`, true)
   }
   return schema
