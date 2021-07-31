@@ -26,13 +26,14 @@ http {
     location / {
       try_files $uri $uri/ /index.html;
     }
-    location /session {
+    location /v1/session {
       access_by_lua_file /app/session.lua;
     }
-    location /services {
-      access_by_lua_file /app/services.lua;
+    location ~ ^/v1/teams/([^/]+)/services$ {
+     set $team $1;
+     content_by_lua_file /app/services.lua;
     }
-    location /healthz {
+    location /v1/healthz {
       return 200 'OK';
     }
     location ~* \.(?:css|js|eot|woff|woff2|ttf|svg|otf|json) {

@@ -9,9 +9,9 @@ import RLink from './Link'
 import MuiLink from './MuiLink'
 import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId, isCE): CallableFunction => (row): React.ReactElement => {
+const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
   const { teamId, id, name } = row
-  if (isCE || !(isAdmin || teamId === ownerId)) return name
+  if (!(isAdmin || teamId === ownerId)) return name
 
   const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
   return (
@@ -46,17 +46,17 @@ export default ({ services, team }: Props): React.ReactElement => {
     oboTeamId,
   } = useSession()
   const isCE = mode === 'ce'
-  const showTeam = isCE ? false : !team
+  const showTeam = !team
   const headCells: HeadCell[] = [
     {
       id: 'name',
       label: 'Service Name',
-      renderer: getServiceLink(isAdmin, oboTeamId, isCE),
+      renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
       id: 'ingressType',
       label: 'Ingress',
-      renderer: (row) => (isCE ? row.type : row.ingress?.type ?? ''),
+      renderer: (row) => row.ingress?.type ?? '',
     },
     {
       id: 'serviceType',
@@ -65,8 +65,8 @@ export default ({ services, team }: Props): React.ReactElement => {
     },
     {
       id: 'host',
-      label: isCE ? 'Port' : 'Host Name',
-      renderer: (row) => (isCE ? `:${row.port}` : renderHost),
+      label: 'Host Name',
+      renderer: renderHost,
       component: MuiLink,
     },
   ]

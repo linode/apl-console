@@ -3,3 +3,4 @@
 build/
 *.svg
 package-*.json
+nginx/
