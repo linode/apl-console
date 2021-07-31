@@ -3,18 +3,6 @@
     "source.fixAll": true
   },
   "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "[javascript]": {
-    "editor.defaultFormatter": "null"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": null
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
   "[lua]": {
     "editor.defaultFormatter": "yinfei.luahelper"
   },
