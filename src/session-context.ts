@@ -16,7 +16,6 @@ export interface SessionContext extends Session {
   dns: any
   globalError?: ApiError
   isAdmin: boolean | undefined
-  mode: string | undefined
   oboTeamId?: string
   setCollapseSettings: CallableFunction
   setDirty?: CallableFunction
@@ -38,7 +37,6 @@ const context = React.createContext<SessionContext>({
   dns: undefined,
   globalError: undefined,
   isAdmin: undefined,
-  mode: undefined,
   namespaces: undefined,
   oboTeamId: undefined,
   setCollapseSettings: undefined,

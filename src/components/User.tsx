@@ -47,7 +47,6 @@ export default (): React.ReactElement => {
   const classes = useStyles()
   const history = useHistory()
   const {
-    mode,
     cluster,
     clusters,
     user: { email, teams: userTeams, isAdmin },
@@ -74,9 +73,7 @@ export default (): React.ReactElement => {
     const hasTeamPart = path.includes(teamPart)
     const hasIDvalue = path.split('/').length === 5
     let url
-    if (mode === 'ce') {
-      url = `/apps/${teamId || `${isAdmin ? 'admin' : ''}`}`
-    } else if (teamId) {
+    if (teamId) {
       if (hasTeamPart && !hasIDvalue) {
         url = path.replace(teamPart, newTeamPart)
       } else if (hasTeamId && !hasIDvalue) {
