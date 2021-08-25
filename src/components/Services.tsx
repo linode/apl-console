@@ -59,7 +59,7 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'serviceType',
       label: 'Type',
-      renderer: (row) => (row.ksvc?.serviceType ?? ''),
+      renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',

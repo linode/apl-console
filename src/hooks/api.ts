@@ -31,18 +31,6 @@ export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
 
-export function lookUpCEPath(operationId: string, args?: any[]) {
-  const cePath = 'v1'
-  switch (operationId) {
-    case 'getSession':
-      return `${cePath}/session`
-    case 'getTeamServices':
-      return `${cePath}/teams/${args[0]}/services`
-    default:
-      throw new ApiError(`CE operationId does not exist: ${operationId}`)
-  }
-}
-
 export const useApi = (operationId: string, active = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false

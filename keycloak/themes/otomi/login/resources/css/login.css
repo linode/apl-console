@@ -97,6 +97,21 @@ a#kc-current-locale-link::after {
   width: 100%;
 }
 
+#kc-logo-wrapper {
+  background-image: url(../img/otomi_logo-ce.svg);
+  background-repeat: no-repeat;
+  height: 192px;
+  width: 192px;
+  margin: auto;}
+
+div.kc-logo-text {
+  background-image: url(../img/otomi_logo-ce.svg);
+  background-repeat: no-repeat;
+  height: 192px;
+  width: 192px;
+  margin: auto;
+}
+
 div.kc-logo-text span {
   display: none;
 }

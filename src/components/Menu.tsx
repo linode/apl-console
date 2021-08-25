@@ -125,7 +125,7 @@ export default ({ teamId }: Props): React.ReactElement => {
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
         <ListItemText primary='Platform' />
       </StyledListSubheader>
-      <StyledMenuItem  to='/' selected={pathname === `/`}>
+      <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
@@ -160,7 +160,6 @@ export default ({ teamId }: Props): React.ReactElement => {
                 if (cluster.provider !== Provider.azure && id === 'azure') return undefined
                 return (
                   <StyledMenuItem
-                    
                     key={id}
                     to={`/settings/${id}`}
                     selected={pathname === `/settings/${id}`}
@@ -190,19 +189,19 @@ export default ({ teamId }: Props): React.ReactElement => {
         </ListItemIcon>
         <ListItemText primary='Clusters' />
       </StyledMenuItem>
-      <StyledMenuItem  to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
+      <StyledMenuItem to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary='Teams' />
       </StyledMenuItem>
-      <StyledMenuItem  to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
         <ListItemText primary='Services' />
       </StyledMenuItem>
-      <StyledMenuItem  to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
+      <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
         <ListItemIcon>
           <HourglassEmptyIcon />
         </ListItemIcon>
@@ -214,7 +213,6 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemText primary={`Team ${teamId}`} data-cy='list-subheader-team' />
           </StyledListSubheader>
           <StyledMenuItem
-            
             to={`/teams/${teamId}`}
             selected={pathname === `/teams/${teamId}`}
             data-cy='menu-item-team-overview'
@@ -235,7 +233,6 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemText primary='Services' />
           </StyledMenuItem>
           <StyledMenuItem
-            
             to={`/teams/${teamId}/jobs`}
             selected={pathname === `/teams/${teamId}/jobs`}
             data-cy='menu-item-team-jobs'
@@ -246,7 +243,6 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemText primary='Jobs' />
           </StyledMenuItem>
           <StyledMenuItem
-            
             to={`/teams/${teamId}/secrets`}
             selected={pathname === `/teams/${teamId}/secrets`}
             data-cy='menu-item-team-secrets'
