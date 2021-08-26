@@ -1,7 +1,6 @@
 # Otomi Console
 
-The frontend of the Otomi Container Platform. Communicates with [otomi-api](https://github.com/redkubes/otomi-api) with a paid license.
-In Community Edition mode, it will not have self service features enabled by the api, but it is functional and even implements authorization.
+The frontend of the Otomi Container Platform that communicates with [otomi-api](https://github.com/redkubes/otomi-api).
 
 [Otomi Core](https://github.com/redkubes/otomi-core) is the platform that houses the console, and feeds it all the data it needs to start using it.
 

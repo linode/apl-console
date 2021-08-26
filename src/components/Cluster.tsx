@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default (): React.ReactElement => {
   const {
-    mode,
     cluster,
     versions,
     oboTeamId,
@@ -52,7 +51,7 @@ export default (): React.ReactElement => {
         <StyledListItem>
           <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {mode === 'ee' && (oboTeamId || isAdmin) && (
+        {(oboTeamId || isAdmin) && (
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}

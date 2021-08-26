@@ -98,14 +98,14 @@ a#kc-current-locale-link::after {
 }
 
 #kc-logo-wrapper {
-  background-image: url(../img/otomi_logo-ce.svg);
+  background-image: url(../img/otomi_logo.svg);
   background-repeat: no-repeat;
   height: 192px;
   width: 192px;
   margin: auto;}
 
 div.kc-logo-text {
-  background-image: url(../img/otomi_logo-ce.svg);
+  background-image: url(../img/otomi_logo.svg);
   background-repeat: no-repeat;
   height: 192px;
   width: 192px;

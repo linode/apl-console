@@ -41,11 +41,9 @@ interface Props {
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
 export default ({ services, team }: Props): React.ReactElement => {
   const {
-    mode,
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const isCE = mode === 'ce'
   const showTeam = !team
   const headCells: HeadCell[] = [
     {
@@ -61,7 +59,7 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'serviceType',
       label: 'Type',
-      renderer: (row) => (isCE ? ('ksvc' in row ? 'ksvc' : 'regular') : row.ksvc?.serviceType ?? ''),
+      renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',
@@ -87,7 +85,7 @@ export default ({ services, team }: Props): React.ReactElement => {
             startIcon={<AddCircleIcon />}
             variant='contained'
             color='primary'
-            disabled={isCE || (isAdmin && !oboTeamId)}
+            disabled={isAdmin && !oboTeamId}
             data-cy='button-create-service'
           >
             Create service

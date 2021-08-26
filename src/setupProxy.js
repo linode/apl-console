@@ -6,8 +6,5 @@ module.exports = function (app) {
       target: `http://${process.env.API_BASE_URL || 'localhost:8080'}`,
       pathRewrite: { '^/api/': '/' },
     }),
-    proxy('/v1', {
-      target: `http://${process.env.WEB_BASE_URL || 'localhost:8081'}`,
-    }),
   )
 }

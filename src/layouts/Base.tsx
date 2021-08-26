@@ -117,7 +117,7 @@ interface Props {
 
 export default (props: Props): React.ReactElement => {
   const { children } = props
-  const { mode, oboTeamId, themeType, setThemeType } = useSession()
+  const { oboTeamId, themeType, setThemeType } = useSession()
 
   const classes = useStyles(props)
   const mainClasses = mainStyles()
@@ -160,9 +160,6 @@ export default (props: Props): React.ReactElement => {
             {img}
             <Typography className={classes.title} variant='h6'>
               otomi console
-            </Typography>
-            <Typography className={classes.subTitle} variant='h6'>
-              {mode.toUpperCase()}
             </Typography>
           </IconButton>
         </Hidden>

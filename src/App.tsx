@@ -6,7 +6,7 @@ import React, { Suspense, useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom'
 import Loader from './components/Loader'
-import { lookUpCEPath, useApi } from './hooks/api'
+import { useApi } from './hooks/api'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import Cluster from './pages/Cluster'
 import Clusters from './pages/Clusters'
@@ -30,20 +30,8 @@ import Job from './pages/Job'
 import Jobs from './pages/Jobs'
 
 const env = process.env
-let mode = 'ee'
-if (process.env.NODE_ENV === 'development') {
-  if (location.search.includes('mode')) {
-    mode = new URLSearchParams(location.search).get('mode')
-  }
-} else {
-  mode = '##CONSOLE_MODE##' // will be replaced at deploy time
-  if (mode.includes('##')) {
-    console.warn('No CONSOLE_MODE known. Defaulting to CE.')
-    mode = 'ce'
-  }
-}
 
-const AppEE = () => {
+const App = () => {
   const [globalError, setGlobalError] = useState()
   const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
@@ -72,14 +60,13 @@ const AppEE = () => {
         <NotistackProvider>
           <SnackbarUtilsConfigurator />
           <CssBaseline />
-          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi EE' />
+          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
           <Context.Provider
             value={{
               ...session,
               collapseSettings,
               dirty,
               globalError,
-              mode,
               oboTeamId,
               setCollapseSettings,
               setDirty,
@@ -123,84 +110,4 @@ const AppEE = () => {
   )
 }
 
-const AppCE = () => {
-  const [globalError, setGlobalError] = useState()
-  const [themeType, setType] = useLocalStorage('themeType', 'light')
-  const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const [session, setSession, sessionError] = useState() as any
-  if (sessionError) setGlobalError(sessionError)
-  setThemeType(themeType)
-  useEffect(() => {
-    const loadSession: any = async () => {
-      const response = await fetch(
-        `${env.CONTEXT_PATH || ''}/${lookUpCEPath('getSession')}${
-          env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''
-        }`,
-      )
-      const session: SessionContext = await response.json()
-      const { user }: any = session
-      const { groups } = user
-      if (groups.includes('admin') || groups.includes('team-admin')) {
-        user.isAdmin = true
-        user.roles = ['team']
-        if (groups.includes('admin')) {
-          user.roles.push('admin')
-        }
-        if (groups.includes('team-admin')) {
-          user.roles.push('team-admin')
-        }
-      }
-      setSession(session)
-    }
-    loadSession()
-  }, [setSession])
-  if (!session) {
-    return <Loader />
-  }
-  const { user } = session
-  if (!user.isAdmin && !oboTeamId) {
-    setOboTeamId(user.teams[0])
-    return <Loader />
-  }
-  setThemeName(user.isAdmin ? 'admin' : 'team')
-  return (
-    <Suspense fallback={<Loader />}>
-      <ThemeProvider theme={getTheme()}>
-        <NotistackProvider>
-          <SnackbarUtilsConfigurator />
-          <CssBaseline />
-          <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi CE' />
-          <Context.Provider
-            value={{
-              ...session,
-              mode,
-              globalError,
-              setGlobalError,
-              oboTeamId,
-              setOboTeamId,
-              themeType,
-              setThemeType: setType,
-            }}
-          >
-            <Router basename={env.CONTEXT_PATH || ''}>
-              <Switch>
-                {/* ! user && <Route path='/' component={Home} exact /> */}
-                <Route path='/apps/:teamId' component={OtomiApps} />
-                <Route path='/clusters' component={Clusters} exact />
-                <Route path='/cluster/:clusterId' component={Cluster} exact />
-                <Route path='/settings/:settingId' component={Setting} exact />
-                <Route path='/teams/:teamId/services' component={Services} exact />
-                <Route path='*'>
-                  <Redirect to={`/apps/${oboTeamId || `${user.isAdmin ? 'admin' : ''}`}`} />
-                </Route>
-              </Switch>
-            </Router>
-          </Context.Provider>
-        </NotistackProvider>
-      </ThemeProvider>
-    </Suspense>
-  )
-}
-
-const App = mode === 'ce' ? AppCE : AppEE
 export default App

@@ -31,24 +31,11 @@ export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
 
-export function lookUpCEPath(operationId: string, args?: any[]) {
-  const cePath = 'v1'
-  switch (operationId) {
-    case 'getSession':
-      return `${cePath}/session`
-    case 'getTeamServices':
-      return `${cePath}/teams/${args[0]}/services`
-    default:
-      throw new ApiError(`CE operationId does not exist: ${operationId}`)
-  }
-}
-
 export const useApi = (operationId: string, active = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
-    mode,
     user: { isAdmin },
     setDirty,
     setGlobalError,
@@ -73,17 +60,7 @@ export const useApi = (operationId: string, active = true, args: any[] = []): Ap
       }
       try {
         let value
-        if (mode === 'ce') {
-          const response = await fetch(
-            `${env.CONTEXT_PATH || ''}/${lookUpCEPath(operationId, args)}${
-              env.NODE_ENV === 'development' ? `?token=${devTokens.admin}` : ''
-            }`,
-          )
-          value = await response.json()
-          // eslint-disable-next-line no-console
-          console.info(`RESPONSE: ${value}`)
-          setValue(value)
-        } else if (!client[operationId]) {
+        if (!client[operationId]) {
           const err = `Api operationId does not exist: ${operationId}`
           setError(new ApiError(err))
           if (process.env.NODE_ENV !== 'production') {
