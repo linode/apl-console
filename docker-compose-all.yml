@@ -9,5 +9,3 @@ services:
     environment:
       API_BASE_URL: 'api:8080'
       WEB_BASE_URL: 'web:8081'
-      CORE: ${CORE}
-      CLUSTER: ${CLUSTER}

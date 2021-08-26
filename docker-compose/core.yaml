@@ -216,6 +216,7 @@ services:
     type: public
     auth: true
   - name: kubeapps
+    enabled: false
     svc: kubeapps
     namespace: kubeapps
     ownHost: true

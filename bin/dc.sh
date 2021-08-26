@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source .env
+# source .env
 BIN_NAME=$(basename "$0")
 COMMAND_NAME=$1
 
@@ -19,17 +19,17 @@ sub_help() {
 
 sub_up() {
     c="docker-compose -f docker-compose.yml"
-    $c pull && $c up "$1"
+    $c pull && $c up $1
 }
 
 sub_up-all() {
     c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml"
-    $c pull && $c up "$1"
+    $c pull && $c up $1
 }
 
 sub_up-deps() {
     c="docker-compose -f docker-compose-deps.yml"
-    $c pull && $c up "$1"
+    $c pull && $c up $1
 }
 
 sub_down() {

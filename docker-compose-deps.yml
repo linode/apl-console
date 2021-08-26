@@ -4,7 +4,7 @@ services:
   api:
     container_name: api
     image: eu.gcr.io/otomi-cloud/otomi-api:${API_TAG:-master}
-    command: sh -c 'rm -rf /tmp/otomi-values && node dist/src/app.js'
+    command: sh -c 'rm -rf /tmp/otomi-values && node dist/app.js'
     user: ${USER_ID}:${GROUP_ID}
     expose:
       - 8080
@@ -19,11 +19,12 @@ services:
       CLUSTER_APISERVER: ${CLUSTER_APISERVER}
       DISABLE_SYNC: ${DISABLE_SYNC:-true}
       GIT_LOCAL_PATH: /tmp/otomi-values
-      GIT_REPO_URL: ${GIT_REPO_URL:-github.com/redkubes/otomi-values.git}
-      GIT_BRANCH: ${GIT_BRANCH:-master}
-      GIT_USER: ${GIT_USER}
-      GIT_EMAIL: ${GIT_EMAIL}
-      GIT_PASSWORD: ${GIT_PASSWORD}
+      GIT_REPO_URL: ${GIT_REPO_URL:-gitea.dev.eks.otomi.cloud/otomi/values}
+      GIT_SSL_NO_VERIFY: 'true'
+      GIT_BRANCH: ${GIT_BRANCH:-main}
+      GIT_USER: ${GIT_USER:-otomi-admin}
+      GIT_EMAIL: ${GIT_EMAIL:-not@us.ed}
+      GIT_PASSWORD: ${GIT_PASSWORD:-bladibla}
 
   tools:
     depends_on:
@@ -31,7 +32,7 @@ services:
     container_name: tools
     image: otomi/core:${TOOLS_TAG:-master}
     user: ${USER_ID}:${GROUP_ID}
-    command: bin/server.sh
+    command: sh -c 'binzx/otomi server -vv'
     expose:
       - 17771
     ports:
