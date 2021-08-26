@@ -19,26 +19,21 @@ sub_help() {
 
 sub_up() {
     c="docker-compose -f docker-compose.yml"
-    $c pull && $c up $1
+    $c pull && $c up "$1"
 }
 
 sub_up-all() {
     c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml"
-    $c pull && $c up $1
+    $c pull && $c up "$1"
 }
 
 sub_up-deps() {
-    c="docker-compose -f docker-compose-deps.yml -f docker-compose-ce.yml"
-    $c pull && $c up $1
-}
-
-sub_up-deps-ce() {
-    c="docker-compose -f docker-compose-ce.yml"
-    $c pull && $c up $1
+    c="docker-compose -f docker-compose-deps.yml"
+    $c pull && $c up "$1"
 }
 
 sub_down() {
-    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-ce.yml"
+    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml"
     $c down --remove-orphans -v
 }
 
@@ -48,7 +43,7 @@ case $COMMAND_NAME in
     ;;
 *)
     shift
-    sub_${COMMAND_NAME} "$@"
+    sub_"${COMMAND_NAME}" "$@"
     if [ $? = 127 ]; then
         echo "'$COMMAND_NAME' is not a known command or has errors." >&2
         sub_help
