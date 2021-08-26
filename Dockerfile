@@ -39,21 +39,25 @@ RUN npm run build
 # --------------- production stage
 FROM openresty/openresty:1.17.8.2-5-alpine-fat as prod
 
+RUN mkdir /app
+RUN addgroup -S app &&\
+  adduser -S app -G app -h /app -s /sbin/nologin
+ENV HOME=/app
+WORKDIR /app
+
 RUN luarocks install lua-resty-jwt
 RUN luarocks install lua-resty-http
-# RUN luarocks install cjson
 RUN luarocks install date
-
-# # Install app
-RUN mkdir /app
-WORKDIR /app
 
 COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
-COPY --from=ci /app/build build
-COPY  keycloak /app/keycloak
+COPY --from=ci --chown=app /app/build build
+COPY --chown=app keycloak /app/keycloak
 
-RUN chmod +r /app/build
+RUN chown -R app:app /app
+RUN chown -R app:app /usr/local
+
+USER app
 
 CMD ["sh", "-c", "/app/run.sh"]
