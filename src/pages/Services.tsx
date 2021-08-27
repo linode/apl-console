@@ -5,7 +5,6 @@ import Services from '../components/Services'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { ApiError } from '../utils/error'
-import { useSession } from '../session-context'
 
 interface Params {
   teamId?: string
