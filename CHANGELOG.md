@@ -23,6 +23,30 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Others
 
+* **release:** 0.4.52 ([8a1694e](https://github.com/redkubes/otomi-console/commit/8a1694e5eb229d2a007375639a79cfe1877cc531))
+* add issue templates [#97](https://github.com/redkubes/otomi-console/issues/97) ([112af8b](https://github.com/redkubes/otomi-console/commit/112af8bc3361595afc8bcc8ddb5253765ddf862c)), closes [#95](https://github.com/redkubes/otomi-console/issues/95) [#93](https://github.com/redkubes/otomi-console/issues/93)
+
+### [0.4.52](https://github.com/redkubes/otomi-console/compare/v0.4.51...v0.4.52) (2021-08-27)
+
+
+### Features
+
+* team services in CE mode ([#102](https://github.com/redkubes/otomi-console/issues/102)) ([01ff9a1](https://github.com/redkubes/otomi-console/commit/01ff9a18ea5ee3c9bb818d76738b76a75ebffe05))
+
+
+### Bug Fixes
+
+* non root dockerfile ([#104](https://github.com/redkubes/otomi-console/issues/104)) ([a572768](https://github.com/redkubes/otomi-console/commit/a572768ed844d7db74b4e2b3b6b52294e31551d1))
+* non root port 8080 ([#107](https://github.com/redkubes/otomi-console/issues/107)) ([f39c5c3](https://github.com/redkubes/otomi-console/commit/f39c5c3bc0011f2368c4fdd2fded00c25b9c7485))
+* old logo back (reviews first) ([#105](https://github.com/redkubes/otomi-console/issues/105)) ([69756a9](https://github.com/redkubes/otomi-console/commit/69756a9d05f6d116a7d975071045468fe4f56846))
+* pod spec ([#108](https://github.com/redkubes/otomi-console/issues/108)) ([a0e815d](https://github.com/redkubes/otomi-console/commit/a0e815de1e766934a6e79a690718872f80724253))
+* podspec ([#109](https://github.com/redkubes/otomi-console/issues/109)) ([161afad](https://github.com/redkubes/otomi-console/commit/161afad6caaf64cbb1fb5dc9cc455e4fb3ce4eba))
+* removes CE and EE mode ([#103](https://github.com/redkubes/otomi-console/issues/103)) ([d7b4881](https://github.com/redkubes/otomi-console/commit/d7b48813f3f2a33d33b080a386aad666dbcf7134))
+* unset command and args ([b0d7586](https://github.com/redkubes/otomi-console/commit/b0d75862eb06cfafdb4a09ebfefea1eb7ef9db00))
+
+
+### Others
+
 * add issue templates [#97](https://github.com/redkubes/otomi-console/issues/97) ([112af8b](https://github.com/redkubes/otomi-console/commit/112af8bc3361595afc8bcc8ddb5253765ddf862c)), closes [#95](https://github.com/redkubes/otomi-console/issues/95) [#93](https://github.com/redkubes/otomi-console/issues/93)
 
 ### [0.4.51](https://github.com/redkubes/otomi-console/compare/v0.4.50...v0.4.51) (2021-07-22)
