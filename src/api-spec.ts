@@ -28,8 +28,6 @@ const idxMap = {
 
 const podSpecUiSchema = {
   files: { items: { content: { 'ui:widget': 'textarea' } } },
-  podSecurityContext: { 'ui:widget': 'hidden' },
-  securityContext: { 'ui:widget': 'hidden' },
   secrets: {
     'ui:options': { addable: false, removable: false },
   },
@@ -137,6 +135,8 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
     },
     ksvc: {
       ...podSpecUiSchema,
+      podSecurityContext: { 'ui:widget': 'hidden' },
+      securityContext: { 'ui:widget': 'hidden' },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
         tagMatcher: { 'ui:widget': 'hidden' },
