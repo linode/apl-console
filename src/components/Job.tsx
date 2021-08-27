@@ -51,6 +51,8 @@ export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.Reac
       onSubmit={handleSubmit}
       onChange={handleChange}
       formData={data}
+      omitExtraData
+      liveOmit
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-job'>
