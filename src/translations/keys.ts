@@ -40,8 +40,9 @@ export enum Keys {
   'Not Extended' = 'Not Extended',
   'Network Authentication Required' = 'Network Authentication Required',
   // custom otomi errors:
-  'The URL is already in use' = 'The URL is already in use',
   'Git error occured' = 'Git error occured',
+  'Invalid values detected' = 'Invalid values detected',
+  'The URL is already in use' = 'The URL is already in use',
 }
 
 export default Keys
