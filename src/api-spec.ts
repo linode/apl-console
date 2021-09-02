@@ -13,12 +13,6 @@ import {
 import { get, set, unset } from 'lodash'
 import { getStrict } from './utils'
 
-const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[0].allOf[1].properties'
-const jobSpecUiSchemaPath = 'allOf[0].properties'
-const jobSpecSecretsPath = 'allOf[1].allOf[1].properties.secrets'
-const containerSpecPath = 'allOf[1].allOf[1].properties'
-const initContainerSpecPath = 'allOf[0].properties.init.items.properties'
-
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 const idxMap = {
   private: 1,
@@ -135,8 +129,6 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
     },
     ksvc: {
       ...podSpecUiSchema,
-      podSecurityContext: { 'ui:widget': 'hidden' },
-      securityContext: { 'ui:widget': 'hidden' },
       serviceType: { 'ui:widget': 'hidden' },
       autoCD: {
         tagMatcher: { 'ui:widget': 'hidden' },
@@ -192,32 +184,32 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
 
 export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
+  const jobSpecPath = 'allOf[1].properties'
+  const containerSpecPath = 'allOf[2].allOf[2].allOf[1].properties'
+  const initcontainerSpecPath = 'allOf[1].properties.init.items.properties'
   unset(schema, `${containerSpecPath}.command`)
   unset(schema, `${containerSpecPath}.args`)
-  unset(schema, `${initContainerSpecPath}.command`)
-  unset(schema, `${initContainerSpecPath}.args`)
+  unset(schema, `${initcontainerSpecPath}.command`)
+  unset(schema, `${initcontainerSpecPath}.args`)
   if (formData.type === 'Job') {
-    unset(schema, `${jobSpecUiSchemaPath}.schedule`)
+    unset(schema, `${jobSpecPath}.schedule`)
   }
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
-    set(schema, `${initContainerSpecPath}.secrets.items.enum`, secretNames)
-    set(schema, `${jobSpecSecretsPath}.items.enum`, secretNames)
+    set(schema, `${initcontainerSpecPath}.secrets.items.enum`, secretNames)
+    set(schema, `${containerSpecPath}.secrets.items.enum`, secretNames)
   } else {
-    unset(schema, `${initContainerSpecPath}.secrets.items.enum`)
-    unset(schema, `${jobSpecSecretsPath}.items.enum`)
-    set(schema, `${initContainerSpecPath}.secrets.readOnly`, true)
-    set(schema, `${jobSpecSecretsPath}.secrets.readOnly`, true)
+    unset(schema, `${initcontainerSpecPath}.secrets.items.enum`)
+    unset(schema, `${containerSpecPath}.secrets.items.enum`)
+    set(schema, `${initcontainerSpecPath}.secrets.readOnly`, true)
+    set(schema, `${containerSpecPath}.secrets.secrets.readOnly`, true)
   }
   return schema
 }
 
 export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array<any>): any {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
-  // since we ask for podSecurityContext and have only one container we don't offer container.securityContext:
-  unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[0].properties.securityContext`)
-  // and we also disable podSecurityContext for now since it's only available from knative 1.21
-  unset(schema, `properties.ksvc.oneOf[2].allOf[0].allOf[0].properties.podSecurityContext`)
+  const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   addDomainEnumField(schema, cluster, dns, formData)
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
