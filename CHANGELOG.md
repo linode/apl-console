@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.54](https://github.com/redkubes/otomi-console/compare/v0.4.53...v0.4.54) (2021-09-02)
+
+
+### Bug Fixes
+
+* api spec ([9e260ab](https://github.com/redkubes/otomi-console/commit/9e260abb1578b63a3911fb43641b52a9a395866c))
+* frontend error string ([c5f72e5](https://github.com/redkubes/otomi-console/commit/c5f72e5b519654ad17dd0807e971778bbcb870bb))
+
 ### [0.4.53](https://github.com/redkubes/otomi-console/compare/v0.4.51...v0.4.53) (2021-08-30)
 
 
