@@ -149,9 +149,6 @@ export function getSecretUiSchema(user: User, teamId: string): any {
     secret: {
       'ui:description': undefined,
       dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
-      ca: { 'ui:widget': 'textarea' },
-      crt: { 'ui:widget': 'textarea' },
-      key: { 'ui:widget': 'textarea' },
       type: { 'ui:widget': 'hidden' },
     },
   }
@@ -238,7 +235,7 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
       if (ing.certSelect) {
         const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLS.TypeEnum.tls).map((s) => s.name)
         set(ingressSchema, `certName.enum`, tlsSecretNames)
-        if (secrets.length === 1) ing.certName = Object.keys(secrets)[0]
+        if (secrets.length === 1) ing.certName = tlsSecretNames[0]
       }
     }
     if (['cluster', 'tlsPass'].includes(ing?.type)) {
@@ -286,10 +283,25 @@ export function getSettingSchema(settingId, cluster: Cluster): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
   if (provider !== Provider.azure) unset(schema, 'properties.azure')
+  if (provider !== Provider.aws) unset(schema, 'properties.aws')
+  if (provider !== Provider.google) unset(schema, 'properties.google')
+  if (provider !== Provider.onprem) unset(schema, 'properties.onprem')
   return schema
 }
 
-export function getSettingUiSchema(): any {
-  const uiSchema = {}
-  return uiSchema
+export function getSettingUiSchema(settingId: string, user: User, teamId: string): any {
+  const uiSchema = {
+    kms: {
+      sops: {
+        provider: { 'ui:widget': 'hidden' },
+        google: {
+          accountJson: { 'ui:widget': 'textarea' },
+        },
+      },
+    },
+  }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
+
+  return uiSchema[settingId] || {}
 }

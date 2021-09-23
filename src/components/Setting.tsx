@@ -26,11 +26,11 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
   }, [setting])
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
-  const { cluster } = useSession()
+  const { cluster, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
     setSchema(getSettingSchema(settingId, cluster))
-    setUiSchema(getSettingUiSchema())
+    setUiSchema(getSettingUiSchema(settingId, user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, setting))
   }
@@ -52,7 +52,7 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
       formData={data}
       hideHelp
     >
-      <Box className={classes.alwaysBottom} display='flex' flexDirection='row-reverse' m={1}>
+      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
         <Button
           variant='contained'
           color='primary'
