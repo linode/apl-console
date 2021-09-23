@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.55](https://github.com/redkubes/otomi-console/compare/v0.4.54...v0.4.55) (2021-09-23)
+
+
+### Bug Fixes
+
+* secrets array, tls fields now text, closes [#110](https://github.com/redkubes/otomi-console/issues/110) ([a51b961](https://github.com/redkubes/otomi-console/commit/a51b961eb80a822b8305c0ffa7ee90ea38811765))
+
+
+### Others
+
+* **deps:** updated api ([fa63a75](https://github.com/redkubes/otomi-console/commit/fa63a753f859222afbc3cfff88484e3afac5caad))
+
 ### [0.4.54](https://github.com/redkubes/otomi-console/compare/v0.4.53...v0.4.54) (2021-09-02)
 
 
