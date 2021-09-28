@@ -110,7 +110,6 @@ export default ({ teamId }: Props): React.ReactElement => {
   const settingIds = {
     alerts: ['Alerts', <AnnouncementIcon />],
     azure: ['Azure', <CloudIcon />],
-    customer: ['Customer', <PeopleIcon />],
     dns: ['DNS', <DnsIcon />],
     kms: ['KMS', <LockOpenIcon />],
     home: ['Home', <HomeIcon />],
