@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.56](https://github.com/redkubes/otomi-console/compare/v0.4.55...v0.4.56) (2021-09-28)
+
+
+### Bug Fixes
+
+* removed customer from settings ([a699a43](https://github.com/redkubes/otomi-console/commit/a699a4360b1135472ced6d5d51c976abaf959bf0))
+
 ### [0.4.55](https://github.com/redkubes/otomi-console/compare/v0.4.54...v0.4.55) (2021-09-23)
 
 
