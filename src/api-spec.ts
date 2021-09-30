@@ -192,7 +192,7 @@ export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets:
     unset(schema, `${jobSpecPath}.schedule`)
   }
   if (secrets.length) {
-    const secretNames = secrets.filter((s) => s.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
+    const secretNames = secrets.filter((s) => s.secret.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
     set(schema, `${initcontainerSpecPath}.secrets.items.enum`, secretNames)
     set(schema, `${containerSpecPath}.secrets.items.enum`, secretNames)
   } else {

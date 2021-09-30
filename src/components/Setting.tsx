@@ -5,13 +5,6 @@ import Form from './rjsf/Form'
 import { getSettingSchema, getSettingUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
 
-const useStyles = makeStyles((theme) => ({
-  alwaysBottom: {
-    position: 'fixed',
-    bottom: theme.spacing(2),
-    right: theme.spacing(2),
-  },
-}))
 interface Props {
   onSubmit: CallableFunction
   setting: any
@@ -19,7 +12,6 @@ interface Props {
 }
 
 export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
-  const classes = useStyles()
   const [data, setData]: any = useState(setting)
   useEffect(() => {
     setData(setting)
@@ -32,7 +24,8 @@ export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => 
     setSchema(getSettingSchema(settingId, cluster))
     setUiSchema(getSettingUiSchema(settingId, user, oboTeamId))
     setData(formData)
-    setDirty(!isEqual(formData, setting))
+    const isDirty = !isEqual(formData, setting || {})
+    setDirty(isDirty)
   }
   if (!(schema || uiSchema)) {
     handleChange({ formData: setting || {} })

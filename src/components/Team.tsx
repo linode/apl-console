@@ -21,6 +21,9 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
 
+  const schema = getTeamSchema(data)
+  const uiSchema = getTeamUiSchema(user, oboTeamId, crudMethod)
+
   const handleChange = ({ formData }) => {
     setData(formData)
     setDirty(!isEqual(formData, team))
@@ -28,8 +31,6 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
   }
-  const schema = getTeamSchema(data)
-  const uiSchema = getTeamUiSchema(user, oboTeamId, crudMethod)
   return (
     <Form
       title={<h1 data-cy='h1-newteam-page'>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>}
