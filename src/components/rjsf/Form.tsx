@@ -9,7 +9,8 @@ import TitleField from './TitleField'
 import ArrayField from './ArrayField'
 import DescriptionField from './DescriptionField'
 import OneOfField from './OneOfField'
-// import SchemaField from './SchemaField'
+import StringField from './StringField'
+import { cleanData } from '../../utils/data'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,9 +28,17 @@ interface Props extends FormProps<any> {
 }
 
 export default ({ children, title, hideHelp = false, ...props }: Props): React.ReactElement => {
-  const { schema } = props
+  const { schema, onChange, onSubmit }: any = props
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
+  const onChangeWrapper = ({ formData }, errors) => {
+    const cleanFormData = cleanData(formData)
+    onChange({ formData: cleanFormData }, errors)
+  }
+  const onSubmitWrapper = ({ formData }) => {
+    const cleanFormData = cleanData(formData)
+    onSubmit({ formData: cleanFormData })
+  }
   return (
     <>
       {!hideHelp && (
@@ -43,7 +52,9 @@ export default ({ children, title, hideHelp = false, ...props }: Props): React.R
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
-        fields={{ ArrayField, TitleField, DescriptionField, OneOfField }}
+        fields={{ ArrayField, TitleField, DescriptionField, OneOfField, StringField }}
+        onChange={onChangeWrapper}
+        onSubmit={onSubmitWrapper}
         {...props}
       >
         {children}
