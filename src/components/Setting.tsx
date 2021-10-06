@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, makeStyles } from '@material-ui/core'
+import { Box, Button } from '@material-ui/core'
 import { isEqual } from 'lodash'
 import Form from './rjsf/Form'
 import { getSettingSchema, getSettingUiSchema } from '../api-spec'
