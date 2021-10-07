@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.57](https://github.com/redkubes/otomi-console/compare/v0.4.56...v0.4.57) (2021-10-07)
+
+
+### Features
+
+* **schema:** 🎸 added new x-default field to not force strings in forms ([#111](https://github.com/redkubes/otomi-console/issues/111)) ([64dd33b](https://github.com/redkubes/otomi-console/commit/64dd33b07e7daf1738728f7de4accfbde3da8100))
+
+
+### Others
+
+* **deps:** bumping console ([0547a24](https://github.com/redkubes/otomi-console/commit/0547a24a08b591019b5f47773b04b93cfdd74bf0))
+
 ### [0.4.56](https://github.com/redkubes/otomi-console/compare/v0.4.55...v0.4.56) (2021-09-28)
 
 

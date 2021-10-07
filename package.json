@@ -129,7 +129,7 @@
       "tag": true
     }
   },
-  "version": "0.4.56",
+  "version": "0.4.57",
   "dependencies": {
     "eslint-plugin-chai-expect": "^2.2.0"
   }
