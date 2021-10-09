@@ -1,7 +1,9 @@
 import React from 'react'
 import { makeStyles, createStyles } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
-import { FormProps } from '@rjsf/core'
+import { FormProps, IChangeEvent } from '@rjsf/core'
+// import applyRules from 'rjsf-conditionals'
+// import { Engine } from 'json-rules-engine-simplified'
 import HelpButton from '../HelpButton'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
@@ -9,8 +11,10 @@ import TitleField from './TitleField'
 import ArrayField from './ArrayField'
 import DescriptionField from './DescriptionField'
 import OneOfField from './OneOfField'
+import RadioWidget from './RadioWidget'
 import StringField from './StringField'
 import { cleanData } from '../../utils/data'
+import CheckboxesWidget from './CheckboxesWidget'
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -27,17 +31,20 @@ interface Props extends FormProps<any> {
   hideHelp?: boolean
 }
 
-export default ({ children, title, hideHelp = false, ...props }: Props): React.ReactElement => {
-  const { schema, onChange, onSubmit }: any = props
+export default ({ children, title, hideHelp = false, onChange, onSubmit, ...props }: Props): React.ReactElement => {
+  const { schema, uiSchema }: any = props
+  // const rules = schema['x-rules'] ?? undefined
+  // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
+  const MoForm = Form
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
-  const onChangeWrapper = ({ formData }, errors) => {
+  const onChangeWrapper = ({ formData, ...rest }: IChangeEvent<any>, errors) => {
     const cleanFormData = cleanData(formData)
-    onChange({ formData: cleanFormData }, errors)
+    onChange({ formData: cleanFormData, ...rest }, errors)
   }
-  const onSubmitWrapper = ({ formData }) => {
+  const onSubmitWrapper = ({ formData, ...rest }: IChangeEvent<any>) => {
     const cleanFormData = cleanData(formData)
-    onSubmit({ formData: cleanFormData })
+    onSubmit({ formData: cleanFormData, ...rest })
   }
   return (
     <>
@@ -47,18 +54,19 @@ export default ({ children, title, hideHelp = false, ...props }: Props): React.R
           {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
         </div>
       )}
-      <Form
+      <MoForm
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
-        fields={{ ArrayField, TitleField, DescriptionField, OneOfField, StringField }}
+        fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
+        widgets={{ CheckboxesWidget, RadioWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
         {...props}
       >
         {children}
-      </Form>
+      </MoForm>
     </>
   )
 }

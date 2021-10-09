@@ -2,6 +2,18 @@
 /* eslint-disable no-param-reassign */
 import { isEmpty, isPlainObject, transform } from 'lodash'
 
+export const cleanOptions = {
+  cleanKeys: [],
+  cleanValues: [],
+  cleanArrays: true,
+  emptyArrays: true,
+  emptyObjects: true,
+  emptyStrings: true,
+  NaNValues: false,
+  nullValues: true,
+  undefinedValues: true,
+}
+
 const cleanDeep = (
   object: any,
   {
@@ -82,14 +94,16 @@ const cleanDeep = (
   })
 }
 
-export const cleanData = (obj: Record<string, unknown>): Record<string, unknown> => {
+export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<string, unknown> => {
   const options = {
+    ...cleanOptions,
     cleanArrays: false,
     emptyArrays: false,
     emptyObjects: true,
     emptyStrings: true,
     nullValues: true,
     undefinedValues: true,
+    ...inOptions,
   }
   return cleanDeep(obj, options) as Record<string, unknown>
 }

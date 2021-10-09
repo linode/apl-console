@@ -255,6 +255,8 @@ export const mainStyles = makeStyles((theme) => ({
       h5: {
         fontSize: '1.2rem',
         fontWeight: 'bold',
+      },
+      'h5:first-letter,h6:first-letter,h7:first-letter': {
         textTransform: 'capitalize',
       },
     },

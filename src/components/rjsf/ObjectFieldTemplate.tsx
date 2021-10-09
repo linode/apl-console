@@ -116,14 +116,14 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
       )
     }
 
-    if (schema.type === 'boolean')
+    if (schema.type === 'boolean' || (schema.type === 'string' && schema.enum))
       // array items will get their own grid row
       return (
         <Grid key={id} className={classes.grid} item xs={12}>
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
-          {schema.type === 'boolean' && renderTitleDescription(o.content?.props, true)}
+          {renderTitleDescription(o.content?.props, true)}
         </Grid>
       )
     // array items will get their own grid row

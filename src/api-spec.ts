@@ -7,6 +7,7 @@ import {
   SecretGeneric,
   SecretTLS,
   Service,
+  Settings,
   SvcPredeployed,
   User,
 } from '@redkubes/otomi-api-client-axios'
@@ -14,6 +15,7 @@ import { get, set, unset } from 'lodash'
 import { getStrict } from './utils'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
+
 const idxMap = {
   private: 1,
   public: 2,
@@ -265,13 +267,17 @@ export function getSecretSchema(): any {
   return schema
 }
 
-export function getTeamSchema(team): any {
+export function getTeamSchema(team, cluster: Cluster): any {
   const schema = cloneDeep(spec.components.schemas.Team)
+  const provider = cluster.provider
+  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
+
   schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
     if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]
     }
   })
+  unset(schema, 'properties.alerts.properties.drone')
   return schema
 }
 
@@ -279,13 +285,40 @@ export function getTeamSelfServiceSchema(): any {
   return spec.components.schemas.TeamSelfService
 }
 
-export function getSettingSchema(settingId, cluster: Cluster): any {
+function deleteAlertEndpoints(schema, formData) {
+  schema.properties.receivers.items.enum.forEach((receiver) => {
+    if (formData && !(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
+      delete schema.properties[receiver]
+    }
+  })
+}
+export function getSettingSchema(settingId, cluster: Cluster, formData: any, settings: Settings): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
-  if (provider !== Provider.azure) unset(schema, 'properties.azure')
-  if (provider !== Provider.aws) unset(schema, 'properties.aws')
-  if (provider !== Provider.google) unset(schema, 'properties.google')
-  if (provider !== Provider.onprem) unset(schema, 'properties.onprem')
+  switch (settingId) {
+    case 'home':
+      deleteAlertEndpoints(schema, formData)
+      break
+    case 'alerts':
+      deleteAlertEndpoints(schema, formData)
+      break
+    case 'azure':
+      if (provider !== Provider.azure) unset(schema, 'properties.azure')
+      break
+    case 'dns':
+      if (formData.provider?.azure?.useManagedIdentityExtension) {
+        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.aadClientId')
+        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.aadClientSecret')
+      } else {
+        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.userAssignedIdentityID')
+        set(schema, 'properties.provider.oneOf[1].properties.azure.required', ['aadClientId', 'aadClientSecret'])
+      }
+      break
+    case 'oidc':
+      break
+    default:
+      break
+  }
   return schema
 }
 
@@ -300,7 +333,6 @@ export function getSettingUiSchema(settingId: string, user: User, teamId: string
       },
     },
   }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}

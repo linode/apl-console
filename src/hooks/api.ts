@@ -31,7 +31,7 @@ export type ApiHook = LoadingHook<any, ApiError>
 
 export const client = new DefaultApi(baseUrl)
 
-export const useApi = (operationId: string, active = true, args: any[] = []): ApiHook => {
+export const useApi = (operationId: string, active: boolean | string | undefined = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()

@@ -7,32 +7,35 @@ import { useSession } from '../session-context'
 
 interface Props {
   onSubmit: CallableFunction
-  setting: any
+  settings: any
   settingId: string
 }
 
-export default ({ onSubmit, setting, settingId }: Props): React.ReactElement => {
-  const [data, setData]: any = useState(setting)
+export default ({ onSubmit, settings, settingId }: Props): React.ReactElement => {
+  const [data, setData]: any = useState(settings[settingId])
   useEffect(() => {
-    setData(setting)
-  }, [setting])
+    setData(settings[settingId])
+  }, [settingId, settings])
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const { cluster, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    setSchema(getSettingSchema(settingId, cluster))
-    setUiSchema(getSettingUiSchema(settingId, user, oboTeamId))
+    const newSchema = getSettingSchema(settingId, cluster, formData, settings)
+    setSchema(newSchema)
+    const newUiSchema = getSettingUiSchema(settingId, user, oboTeamId)
+    setUiSchema(newUiSchema)
     setData(formData)
-    const isDirty = !isEqual(formData, setting || {})
+    const isDirty = !isEqual(formData, settings[settingId] || {})
     setDirty(isDirty)
-  }
-  if (!(schema || uiSchema)) {
-    handleChange({ formData: setting || {} })
-    return null
   }
   const handleSubmit = ({ formData }) => {
     onSubmit(formData)
+    setDirty(false)
+  }
+  if (!(schema || uiSchema)) {
+    handleChange({ formData: data || {} })
+    return null
   }
   return (
     <Form

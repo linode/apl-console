@@ -71,4 +71,5 @@ rules:
   react/require-default-props: off
   react/no-unused-prop-types: warn
   object-shorthand: warn
+  no-fallthrough: warn
   # no-debugger: warn

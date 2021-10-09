@@ -9,11 +9,11 @@ interface Params {
 }
 
 // TODO: https://github.com/redkubes/otomi-api/issues/183
-function renameKeys(policies) {
-  if (policies === undefined) return policies
-  const keyValues = Object.keys(policies).map((key) => {
+function renameKeys(data) {
+  if (data === undefined) return data
+  const keyValues = Object.keys(data).map((key) => {
     const newKey = key.replaceAll('-', '_')
-    return { [newKey]: policies[key] }
+    return { [newKey]: data[key] }
   })
   return Object.assign({}, ...keyValues)
 }
@@ -29,18 +29,18 @@ export default ({
     setFormdata(undefined)
   }, [settingId])
 
-  const [setting, settingLoading, settingError]: any = useApi('getSetting', !!settingId, [settingId])
+  const [settings, settingsLoading, settingsError]: any = useApi('getAllSettings', settingId)
 
   const [, editLoading, editError] = useApi('editSetting', !!formdata, [
     settingId,
     { [settingId]: renameKeys(formdata) },
   ])
 
-  const loading = settingLoading || editLoading
-  const err = settingError || editError
+  const loading = settingsLoading || editLoading
+  const err = settingsError || editError
 
-  const comp = !loading && (!err || formdata || setting) && (
-    <Setting onSubmit={setFormdata} setting={setting[settingId]} settingId={settingId} />
+  const comp = !loading && (!err || formdata || settings) && (
+    <Setting onSubmit={setFormdata} settings={formdata || settings} settingId={settingId} />
   )
   return <PaperLayout comp={comp} loading={loading} />
 }
