@@ -23,7 +23,7 @@ export default ({
     params: { settingId },
   },
 }: RouteComponentProps<Params>): React.ReactElement => {
-  const [formdata, setFormdata] = useState()
+  const [formData, setFormdata] = useState()
 
   useEffect(() => {
     setFormdata(undefined)
@@ -31,16 +31,17 @@ export default ({
 
   const [settings, settingsLoading, settingsError]: any = useApi('getAllSettings', settingId)
 
-  const [, editLoading, editError] = useApi('editSetting', !!formdata, [
+  const [, editLoading, editError] = useApi('editSetting', !!formData, [
     settingId,
-    { [settingId]: renameKeys(formdata) },
+    { [settingId]: renameKeys(formData) },
   ])
 
   const loading = settingsLoading || editLoading
   const err = settingsError || editError
-
-  const comp = !loading && (!err || formdata || settings) && (
-    <Setting onSubmit={setFormdata} settings={formdata || settings} settingId={settingId} />
+  let formSettings = settings
+  if (formData) formSettings = { ...formSettings, [settingId]: formData }
+  const comp = !loading && (!err || formData || settings) && (
+    <Setting onSubmit={setFormdata} settings={formSettings} settingId={settingId} />
   )
   return <PaperLayout comp={comp} loading={loading} />
 }
