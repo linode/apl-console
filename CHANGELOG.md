@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+
+### [0.4.59](https://github.com/redkubes/otomi-console/compare/v0.4.58...v0.4.59) (2021-10-09)
+
+
+### Bug Fixes
+
+* settings put, default over null enum [ci skip] ([5925305](https://github.com/redkubes/otomi-console/commit/592530556028520fcedcf2fed95dece894e533f6))
+
 ### [0.4.58](https://github.com/redkubes/otomi-console/compare/v0.4.57...v0.4.58) (2021-10-09)
 
 
