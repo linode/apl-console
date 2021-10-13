@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.60](https://github.com/redkubes/otomi-console/compare/v0.4.59...v0.4.60) (2021-10-13)
+
+
+### Features
+
+* add dotenv ([#114](https://github.com/redkubes/otomi-console/issues/114)) ([50cce95](https://github.com/redkubes/otomi-console/commit/50cce95c0b67da1c6d0b911a141772d7936b9390))
 
 ### [0.4.59](https://github.com/redkubes/otomi-console/compare/v0.4.58...v0.4.59) (2021-10-09)
 
