@@ -111,23 +111,25 @@
   },
   "scripts": {
     "build": "PUBLIC_URL='##CONTEXT_PATH##' react-scripts build",
-    "cz": "git-cz",
     "cz:retry": "git-cz --retry",
-    "dev": "run-p start watch:ts",
+    "cz": "git-cz",
     "dev:docker": "npm ci && npm run dev",
+    "dev": "run-p start watch:ts",
     "eject": "react-scripts eject",
-    "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
-    "lint": "run-p types lint:es spellcheck",
+    "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
+    "lint-staged": "lint-staged",
     "lint:es": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
+    "lint": "run-p types lint:es spellcheck",
+    "prepare": "husky install",
     "release": "standard-version",
+    "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
     "start": "dotenv -e .env react-scripts start --no-cache",
     "test:enzyme": "react-scripts test",
     "types": "tsc --noEmit",
-    "watch:ts": "tsc -w --noEmit",
-    "prepare": "husky install"
+    "watch:ts": "tsc -w --noEmit"
   },
   "standard-version": {
     "skip": {
