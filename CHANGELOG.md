@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.61](https://github.com/redkubes/otomi-console/compare/v0.4.60...v0.4.61) (2021-10-15)
+
+
+### Bug Fixes
+
+* clean empty arrays ([65d5345](https://github.com/redkubes/otomi-console/commit/65d53454d01c16986ccd7a92879a08561955c5b7))
+* husky [ci skip] ([c2110e6](https://github.com/redkubes/otomi-console/commit/c2110e60d3c148f0af870ba083779d0373a6720f))
+
+
+### Others
+
+* update browserslist db ([d076356](https://github.com/redkubes/otomi-console/commit/d0763569b4d63e7390f01f207209f61b38db93d8))
+
 ### [0.4.60](https://github.com/redkubes/otomi-console/compare/v0.4.59...v0.4.60) (2021-10-13)
 
 
