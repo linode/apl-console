@@ -98,7 +98,7 @@ export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<
   const options = {
     ...cleanOptions,
     cleanArrays: false,
-    emptyArrays: false,
+    emptyArrays: true,
     emptyObjects: true,
     emptyStrings: true,
     nullValues: true,
