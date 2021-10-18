@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import { get } from 'lodash'
+import { User } from '@redkubes/otomi-api-client-axios'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
 
@@ -18,12 +20,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+export function canDownloadKubecfg(user: User, teamId: string): boolean {
+  if (user.isAdmin) return true
+  const permission = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
+  return !permission.includes('downloadKubeConfig')
+}
+
 export default (): React.ReactElement => {
   const {
     cluster,
     versions,
     oboTeamId,
     user: { isAdmin },
+    user,
   } = useSession()
   const classes = useStyles()
   const mainClasses = mainStyles()
@@ -33,6 +42,9 @@ export default (): React.ReactElement => {
   const StyledMenuItem = (props: any) => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
+
+  const teamId = oboTeamId || 'admin'
+  const isButtonDisabled = !canDownloadKubecfg(user, teamId)
   return (
     <>
       <List dense>
@@ -56,7 +68,8 @@ export default (): React.ReactElement => {
             className={mainClasses.selectable}
             component={Link}
             aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || 'admin'}`}
+            href={`${baseUrl}/api/v1/kubecfg/${teamId}`}
+            disabled={isButtonDisabled}
           >
             <ListItemIcon>
               <CloudDownloadIcon />

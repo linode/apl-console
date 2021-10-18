@@ -10,7 +10,6 @@ sub_help() {
     echo "Commands:"
     echo "   help               This help message"
     echo "   up                 Start standalone docker-compose version of web without dependent services $info"
-    echo "   up-all             Start docker-compose version of web with dependent services $info"
     echo "   up-deps            Start docker-compose version of only dependent services $info"
     echo "   down               Stop and clean docker-compose containers"
     echo "   e2e                Run e2e tests in docker-compose against running dev server"
@@ -19,11 +18,6 @@ sub_help() {
 
 sub_up() {
     c="docker-compose -f docker-compose.yml"
-    $c pull && $c up $1
-}
-
-sub_up-all() {
-    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml -f docker-compose-all.yml"
     $c pull && $c up $1
 }
 
