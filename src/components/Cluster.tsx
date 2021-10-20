@@ -20,20 +20,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export function canDownloadKubecfg(user: User, teamId: string): boolean {
+export function canDownloadKubecfg(user: User, teamId: string | undefined): boolean {
+  if (!teamId) return false
   if (user.isAdmin) return true
   const permission = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
   return !permission.includes('downloadKubeConfig')
 }
 
 export default (): React.ReactElement => {
-  const {
-    cluster,
-    versions,
-    oboTeamId,
-    user: { isAdmin },
-    user,
-  } = useSession()
+  const { cluster, versions, oboTeamId, user } = useSession()
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
@@ -43,8 +38,7 @@ export default (): React.ReactElement => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
 
-  const teamId = oboTeamId || 'admin'
-  const isButtonDisabled = !canDownloadKubecfg(user, teamId)
+  const isButtonDisabled = !canDownloadKubecfg(user, oboTeamId)
   return (
     <>
       <List dense>
@@ -63,20 +57,18 @@ export default (): React.ReactElement => {
         <StyledListItem>
           <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {(oboTeamId || isAdmin) && (
-          <StyledMenuItem
-            className={mainClasses.selectable}
-            component={Link}
-            aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${teamId}`}
-            disabled={isButtonDisabled}
-          >
-            <ListItemIcon>
-              <CloudDownloadIcon />
-            </ListItemIcon>
-            <ListItemText primary='Download KUBECFG' />
-          </StyledMenuItem>
-        )}
+        <StyledMenuItem
+          className={mainClasses.selectable}
+          component={Link}
+          aria-label='download'
+          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
+          disabled={isButtonDisabled}
+        >
+          <ListItemIcon>
+            <CloudDownloadIcon />
+          </ListItemIcon>
+          <ListItemText primary='Download KUBECFG' />
+        </StyledMenuItem>
       </List>
     </>
   )
