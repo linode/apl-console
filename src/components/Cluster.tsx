@@ -38,7 +38,8 @@ export default (): React.ReactElement => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
 
-  const isButtonDisabled = !canDownloadKubecfg(user, oboTeamId)
+  const teamId = oboTeamId || (user.isAdmin ? 'admin' : undefined)
+  const isButtonDisabled = !canDownloadKubecfg(user, teamId)
   return (
     <>
       <List dense>
@@ -61,7 +62,7 @@ export default (): React.ReactElement => {
           className={mainClasses.selectable}
           component={Link}
           aria-label='download'
-          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
+          href={`${baseUrl}/api/v1/kubecfg/${teamId}`}
           disabled={isButtonDisabled}
         >
           <ListItemIcon>
