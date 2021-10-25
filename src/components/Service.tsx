@@ -23,10 +23,9 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
   const [data, setData]: any = useState(service)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
-    const teamSubdomain = inData && inData.name ? `${inData.name}.team-${teamId}` : ''
+    const formData = { ...inData }
+    const teamSubdomain = formData && formData.name ? `${formData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
-    // create a new object extending a clone of existing data with incoming data
-    const formData = { ...cloneDeep(data), ...inData }
     if (formData.ingress) {
       let ing = formData.ingress
       if (!['cluster'].includes(ing.type) && (!data.ingress?.domain || ing.useDefaultSubdomain)) {
