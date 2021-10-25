@@ -1,10 +1,9 @@
 import React from 'react'
 import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
-import { get } from 'lodash'
-import { User } from '@redkubes/otomi-api-client-axios'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
+import canDo from '../utils/permission'
 
 const baseUrl = process.env.CONTEXT_PATH || ''
 
@@ -20,13 +19,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export function canDownloadKubecfg(user: User, teamId: string | undefined): boolean {
-  if (!teamId) return false
-  if (user.isAdmin) return true
-  const permission = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
-  return !permission.includes('downloadKubeConfig')
-}
-
 export default (): React.ReactElement => {
   const { cluster, versions, oboTeamId, user } = useSession()
   const classes = useStyles()
@@ -38,8 +30,7 @@ export default (): React.ReactElement => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
 
-  const teamId = oboTeamId || (user.isAdmin ? 'admin' : undefined)
-  const isButtonDisabled = !canDownloadKubecfg(user, teamId)
+  const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   return (
     <>
       <List dense>
@@ -62,7 +53,7 @@ export default (): React.ReactElement => {
           className={mainClasses.selectable}
           component={Link}
           aria-label='download'
-          href={`${baseUrl}/api/v1/kubecfg/${teamId}`}
+          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
           disabled={isButtonDisabled}
         >
           <ListItemIcon>
