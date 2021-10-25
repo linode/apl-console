@@ -3,6 +3,7 @@ import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem 
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
 import { useSession } from '../session-context'
 import { mainStyles } from '../theme'
+import canDo from '../utils/permission'
 
 const baseUrl = process.env.CONTEXT_PATH || ''
 
@@ -19,12 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default (): React.ReactElement => {
-  const {
-    cluster,
-    versions,
-    oboTeamId,
-    user: { isAdmin },
-  } = useSession()
+  const { cluster, versions, oboTeamId, user } = useSession()
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
@@ -33,6 +29,8 @@ export default (): React.ReactElement => {
   const StyledMenuItem = (props: any) => {
     return <MenuItem className={mainClasses.selectable} {...props} />
   }
+
+  const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   return (
     <>
       <List dense>
@@ -51,19 +49,18 @@ export default (): React.ReactElement => {
         <StyledListItem>
           <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
         </StyledListItem>
-        {(oboTeamId || isAdmin) && (
-          <StyledMenuItem
-            className={mainClasses.selectable}
-            component={Link}
-            aria-label='download'
-            href={`${baseUrl}/api/v1/kubecfg/${oboTeamId || 'admin'}`}
-          >
-            <ListItemIcon>
-              <CloudDownloadIcon />
-            </ListItemIcon>
-            <ListItemText primary='Download KUBECFG' />
-          </StyledMenuItem>
-        )}
+        <StyledMenuItem
+          className={mainClasses.selectable}
+          component={Link}
+          aria-label='download'
+          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
+          disabled={isButtonDisabled}
+        >
+          <ListItemIcon>
+            <CloudDownloadIcon />
+          </ListItemIcon>
+          <ListItemText primary='Download KUBECFG' />
+        </StyledMenuItem>
       </List>
     </>
   )
