@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.62](https://github.com/redkubes/otomi-console/compare/v0.4.61...v0.4.62) (2021-11-01)
+
+
+### Features
+
+* gatekeeper and owasp logo [ci skip] ([86aaedb](https://github.com/redkubes/otomi-console/commit/86aaedb34046ff233a84fe1a671247762a9d0bfb))
+* selfservice kubecfg ([#117](https://github.com/redkubes/otomi-console/issues/117)) ([9c06a31](https://github.com/redkubes/otomi-console/commit/9c06a31679b4190d6f14c96f4cb4fb81995cd561))
+
 ### [0.4.61](https://github.com/redkubes/otomi-console/compare/v0.4.60...v0.4.61) (2021-10-15)
 
 
