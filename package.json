@@ -26,6 +26,7 @@
     "clsx": "^1.1.0",
     "debug": "^4.3.1",
     "dotenv-cli": "^4.0.0",
+    "generate-download-link": "^1.0.1",
     "http-proxy-middleware": "^0.20.0",
     "i18next": "^19.9.2",
     "i18next-browser-languagedetector": "^6.1.0",
