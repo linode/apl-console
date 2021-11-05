@@ -29,6 +29,7 @@ export interface SessionContext extends Session {
 }
 
 const context = React.createContext<SessionContext>({
+  ca: undefined,
   cluster: undefined,
   clusters: undefined,
   collapseSettings: true,

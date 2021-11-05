@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default (): React.ReactElement => {
-  const { cluster, versions, oboTeamId, user } = useSession()
+  const { ca, cluster, versions, oboTeamId, user } = useSession()
   const classes = useStyles()
   const mainClasses = mainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
@@ -34,7 +34,7 @@ export default (): React.ReactElement => {
 
   const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   const downloadOpts = {
-    data: process.env.CUSTOM_ROOT_CA ?? '',
+    data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
     filename: 'ca.crt',
   }
