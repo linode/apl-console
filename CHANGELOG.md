@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.65](https://github.com/redkubes/otomi-console/compare/v0.4.64...v0.4.65) (2021-11-05)
+
+
+### Bug Fixes
+
+* ca empty string error [ci skip] ([0cdb86e](https://github.com/redkubes/otomi-console/commit/0cdb86e3ccb5d67fdd52d3574d0868118a8e563b))
+
 ### [0.4.64](https://github.com/redkubes/otomi-console/compare/v0.4.63...v0.4.64) (2021-11-05)
 
 
