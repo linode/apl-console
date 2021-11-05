@@ -38,7 +38,7 @@ export default (): React.ReactElement => {
     title: 'Click to download the custom root CA used to generate the browser certs.',
     filename: 'ca.crt',
   }
-  const anchor = generateDownloadLink(downloadOpts)
+  const anchor = ca ? generateDownloadLink(downloadOpts) : ''
   return (
     <>
       <List dense>
@@ -69,7 +69,7 @@ export default (): React.ReactElement => {
           </ListItemIcon>
           <ListItemText primary='Download KUBECFG' />
         </StyledMenuItem>
-        {downloadOpts.data !== '' && (
+        {ca && (
           <StyledMenuItem
             className={mainClasses.selectable}
             component={Link}
