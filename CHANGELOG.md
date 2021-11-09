@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.66](https://github.com/redkubes/otomi-console/compare/v0.4.65...v0.4.66) (2021-11-09)
+
+
+### Bug Fixes
+
+* dns is optional ([#120](https://github.com/redkubes/otomi-console/issues/120)) ([b50e945](https://github.com/redkubes/otomi-console/commit/b50e9453f3ac5a091abc334881618e702fbd7457))
+
+
+### Others
+
+* **deps:** bumped api [ci skip] ([676b0ee](https://github.com/redkubes/otomi-console/commit/676b0ee10917f69c228cded5dfba15ada8e68343))
+
 ### [0.4.65](https://github.com/redkubes/otomi-console/compare/v0.4.64...v0.4.65) (2021-11-05)
 
 
