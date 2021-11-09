@@ -171,7 +171,7 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   if (!formData || isEmpty(ing)) return
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = getStrict(schema, ingressSchemaPath)
-  const zones = [cluster.domainSuffix, ...(dns.zones || [])]
+  const zones = [cluster.domainSuffix, ...(dns?.zones || [])]
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
   if (formData.ingress.domain) {
