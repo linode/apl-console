@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Cluster, Session, User } from '@redkubes/otomi-api-client-axios'
+import { Cluster, Dns, Session, User } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from './utils/error'
 
 interface Versions {
@@ -13,7 +13,7 @@ export interface SessionContext extends Session {
   collapseSettings: boolean
   core: any
   dirty: boolean
-  dns: any
+  dns: Dns | undefined
   globalError?: ApiError
   isAdmin: boolean | undefined
   oboTeamId?: string
