@@ -20,7 +20,7 @@
     "@redkubes/otomi-api-client-axios": "^0.4.84",
     "@rjsf/core": "^2.5.1",
     "@rjsf/material-ui": "^2.5.1",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "bootstrap": "^4.6.0",
     "chokidar": "^3.5.2",
     "clsx": "^1.1.0",
