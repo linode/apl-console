@@ -287,7 +287,7 @@ export function getTeamSelfServiceSchema(): any {
 
 function deleteAlertEndpoints(schema, formData) {
   schema.properties.receivers.items.enum.forEach((receiver) => {
-    if (formData && !(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
+    if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
       delete schema.properties[receiver]
     }
   })

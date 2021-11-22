@@ -32,10 +32,9 @@ interface Props extends FormProps<any> {
 }
 
 export default ({ children, title, hideHelp = false, onChange, onSubmit, ...props }: Props): React.ReactElement => {
-  const { schema, uiSchema }: any = props
+  const { schema }: any = props
   // const rules = schema['x-rules'] ?? undefined
   // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
-  const MoForm = Form
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const classes = useStyles()
   const onChangeWrapper = ({ formData, ...rest }: IChangeEvent<any>, errors) => {
@@ -54,7 +53,7 @@ export default ({ children, title, hideHelp = false, onChange, onSubmit, ...prop
           {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
         </div>
       )}
-      <MoForm
+      <Form
         liveValidate={false}
         showErrorList={false}
         ObjectFieldTemplate={ObjectFieldTemplate}
@@ -66,7 +65,7 @@ export default ({ children, title, hideHelp = false, onChange, onSubmit, ...prop
         {...props}
       >
         {children}
-      </MoForm>
+      </Form>
     </>
   )
 }
