@@ -139,12 +139,7 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemText primary='Otomi Apps' />
           </StyledMenuItem>
           <li>
-            <StyledMenuItem
-              to='/settings/otomi'
-              selected={pathname === '/settings'}
-              data-cy='menu-item-settings'
-              onClick={handleCollapse}
-            >
+            <StyledMenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
               <ListItemIcon>
                 <SettingsIcon />
               </ListItemIcon>
