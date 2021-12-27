@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Button } from '@material-ui/core'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import Form from './rjsf/Form'
 import { getSettingSchema, getSettingUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
@@ -13,10 +13,7 @@ interface Props {
 
 export default ({ onSubmit, settings, settingId }: Props): React.ReactElement => {
   const [data, setData]: any = useState(settings[settingId])
-  useEffect(() => {
-    setData(settings[settingId])
-  }, [settingId, settings])
-  const [schema, setSchema] = useState()
+  const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
   const { cluster, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
@@ -33,10 +30,16 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
     onSubmit(formData)
     setDirty(false)
   }
-  if (!(schema || uiSchema)) {
+  useEffect(() => {
+    setData(settings[settingId])
+    setSchema({})
+  }, [settingId, settings])
+
+  if (isEmpty(schema) || !uiSchema) {
     handleChange({ formData: data || {} })
     return null
   }
+
   return (
     <Form
       key={settingId}
