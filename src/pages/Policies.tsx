@@ -1,9 +1,11 @@
 import React from 'react'
+import Policies from '../components/Policies'
+import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
-import Cluster from '../components/Cluster'
 
 export default (): React.ReactElement => {
-  const loading = undefined
-  const comp = !loading && <Cluster />
-  return <PaperLayout loading={loading} comp={comp} />
+  const [policies, policiesLoading, policiesError]: any = useApi('getAllSettings', 'policies')
+
+  const comp = !policiesLoading && (!policiesError || policies) && <Policies policies={policies} />
+  return <PaperLayout comp={comp} loading={policiesLoading} />
 }
