@@ -7,8 +7,8 @@ interface Props {
   policies: Policies
 }
 
-// TODO: https://github.com/redkubes/otomi-core/discussions/475
 export default ({ policies }: Props): React.ReactElement => {
+  const policyEntries = Object.entries(policies).map((entry) => ({ name: entry[0], status: '' }))
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -22,13 +22,7 @@ export default ({ policies }: Props): React.ReactElement => {
   return (
     <>
       <h1 data-cy='h1-policies-page'>Policies</h1>
-      <EnhancedTable
-        disableSelect
-        headCells={headCells}
-        orderByStart='name'
-        rows={[{ name: 'bla', status: 'otherbla' }]}
-        idKey='id'
-      />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={policyEntries} idKey='id' />
     </>
   )
 }
