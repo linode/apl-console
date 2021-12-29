@@ -2,6 +2,20 @@
 import React from 'react'
 import { Policies } from '@redkubes/otomi-api-client-axios'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import RLink from './Link'
+
+interface RowProps {
+  name: string
+}
+
+const getPolicyLink = (): CallableFunction => ({ name }: RowProps): React.ReactElement => {
+  const link = `/policies/${name}`
+  return (
+    <RLink to={link} label={name}>
+      {name}
+    </RLink>
+  )
+}
 
 interface Props {
   policies: Policies
@@ -13,6 +27,7 @@ export default ({ policies }: Props): React.ReactElement => {
     {
       id: 'name',
       label: 'Policy Name',
+      renderer: getPolicyLink(),
     },
     {
       id: 'status',
