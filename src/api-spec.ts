@@ -7,7 +7,6 @@ import {
   SecretGeneric,
   SecretTLS,
   Service,
-  Settings,
   SvcPredeployed,
   User,
 } from '@redkubes/otomi-api-client-axios'
@@ -292,7 +291,7 @@ function deleteAlertEndpoints(schema, formData) {
     }
   })
 }
-export function getSettingSchema(settingId, cluster: Cluster, formData: any, settings: Settings): any {
+export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
   switch (settingId) {

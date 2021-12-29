@@ -115,7 +115,6 @@ export default ({ teamId }: Props): React.ReactElement => {
     kms: ['KMS', <LockOpenIcon />],
     oidc: ['OIDC', <SettingsEthernetIcon />],
     otomi: ['Otomi', <DonutLargeIcon />],
-    policies: ['Policies', <PolicyIcon />],
     smtp: ['SMTP', <MailIcon />],
   }
 
@@ -137,6 +136,12 @@ export default ({ teamId }: Props): React.ReactElement => {
               <AppsIcon />
             </ListItemIcon>
             <ListItemText primary='Otomi Apps' />
+          </StyledMenuItem>
+          <StyledMenuItem to='/policies' selected={pathname === `/policies`} data-cy='menu-item-policies'>
+            <ListItemIcon>
+              <PolicyIcon />
+            </ListItemIcon>
+            <ListItemText primary='Policies' />
           </StyledMenuItem>
           <li>
             <StyledMenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>

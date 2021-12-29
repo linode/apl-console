@@ -18,7 +18,7 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
   const { cluster, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    const newSchema = getSettingSchema(settingId, cluster, formData, settings)
+    const newSchema = getSettingSchema(settingId, cluster, formData)
     setSchema(newSchema)
     const newUiSchema = getSettingUiSchema(settingId, user, oboTeamId)
     setUiSchema(newUiSchema)

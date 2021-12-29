@@ -27,6 +27,7 @@ import { setSpec } from './api-spec'
 import Setting from './pages/Setting'
 import Job from './pages/Job'
 import Jobs from './pages/Jobs'
+import Policies from './pages/Policies'
 
 const env = process.env
 
@@ -83,9 +84,10 @@ const App = () => {
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/create-team' component={Team} exact />
+                <Route path='/jobs' component={Jobs} exact />
+                <Route path='/policies' component={Policies} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/settings/:settingId' component={Setting} exact />
-                <Route path='/jobs' component={Jobs} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-job' component={Job} exact />
