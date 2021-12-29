@@ -21,8 +21,14 @@ export default ({ policies }: Props): React.ReactElement => {
   ]
   return (
     <>
-      <h1 data-cy='h1-services-page'>Policies</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={[]} idKey='id' />
+      <h1 data-cy='h1-policies-page'>Policies</h1>
+      <EnhancedTable
+        disableSelect
+        headCells={headCells}
+        orderByStart='name'
+        rows={[{ name: 'bla', status: 'otherbla' }]}
+        idKey='id'
+      />
     </>
   )
 }
