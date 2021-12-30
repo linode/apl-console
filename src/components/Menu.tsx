@@ -115,7 +115,6 @@ export default ({ teamId }: Props): React.ReactElement => {
     kms: ['KMS', <LockOpenIcon />],
     oidc: ['OIDC', <SettingsEthernetIcon />],
     otomi: ['Otomi', <DonutLargeIcon />],
-    policies: ['Policies', <PolicyIcon />],
     smtp: ['SMTP', <MailIcon />],
   }
 
@@ -138,15 +137,19 @@ export default ({ teamId }: Props): React.ReactElement => {
             </ListItemIcon>
             <ListItemText primary='Otomi Apps' />
           </StyledMenuItem>
-          <li>
-            <StyledMenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary='Settings' />
-              {collapseSettings ? <ExpandLess /> : <ExpandMore />}
-            </StyledMenuItem>
-          </li>
+          <StyledMenuItem to='/policies' selected={pathname === `/policies`} data-cy='menu-item-policies'>
+            <ListItemIcon>
+              <PolicyIcon />
+            </ListItemIcon>
+            <ListItemText primary='Policies' />
+          </StyledMenuItem>
+          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary='Settings' />
+            {collapseSettings ? <ExpandLess /> : <ExpandMore />}
+          </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {

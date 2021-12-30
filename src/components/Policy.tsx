@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react'
+/* eslint-disable no-nested-ternary */
 import { Box, Button } from '@material-ui/core'
-import { isEmpty, isEqual } from 'lodash'
-import Form from './rjsf/Form'
-import { getSettingSchema, getSettingUiSchema } from '../api-spec'
+import { isEqual, isEmpty } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { getPolicySchema, getPolicyUiSchema } from '../api-spec'
 import { useSession } from '../session-context'
+import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
-  settings: any
-  settingId: string
+  policies: any
+  policyId: string
 }
 
-export default ({ onSubmit, settings, settingId }: Props): React.ReactElement => {
-  const [data, setData]: any = useState(settings[settingId])
+export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => {
+  const [data, setData]: any = useState(policies[policyId])
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
   const { cluster, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    const newSchema = getSettingSchema(settingId, cluster, formData)
+    const newSchema = getPolicySchema(policyId, cluster, formData)
     setSchema(newSchema)
-    const newUiSchema = getSettingUiSchema(settingId, user, oboTeamId)
+    const newUiSchema = getPolicyUiSchema(policyId, user, oboTeamId)
     setUiSchema(newUiSchema)
     setData(formData)
-    const isDirty = !isEqual(formData, settings[settingId] || {})
+    const isDirty = !isEqual(formData, policies[policyId] || {})
     setDirty(isDirty)
   }
   const handleSubmit = ({ formData }) => {
@@ -31,9 +32,9 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
     setDirty(false)
   }
   useEffect(() => {
-    setData(settings[settingId])
+    setData(policies[policyId])
     setSchema({})
-  }, [settingId, settings])
+  }, [policyId, policies])
 
   if (isEmpty(schema) || !uiSchema) {
     handleChange({ formData: data || {} })
@@ -42,10 +43,10 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
 
   return (
     <>
-      <h1 data-cy='h1-edit-setting-page'>Setting:</h1>
+      <h1 data-cy='h1-edit-policy-page'>Policy:</h1>
       <Form
-        key={settingId}
-        id={settingId}
+        key={policyId}
+        id={policyId}
         schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}
@@ -59,7 +60,7 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
             color='primary'
             type='submit'
             disabled={!dirty}
-            data-cy={`button-submit-${settingId}`}
+            data-cy={`button-submit-${policyId}`}
           >
             Submit
           </Button>
