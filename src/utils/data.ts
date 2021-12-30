@@ -107,3 +107,13 @@ export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<
   }
   return cleanDeep(obj, options) as Record<string, unknown>
 }
+
+// TODO: https://github.com/redkubes/otomi-api/issues/183
+export const renameKeys = (data) => {
+  if (data === undefined) return data
+  const keyValues = Object.keys(data).map((key) => {
+    const newKey = key.replaceAll('-', '_')
+    return { [newKey]: data[key] }
+  })
+  return Object.assign({}, ...keyValues)
+}

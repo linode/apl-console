@@ -1,43 +1,71 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react'
-import { Policies } from '@redkubes/otomi-api-client-axios'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
-import RLink from './Link'
-
-interface RowProps {
-  name: string
-}
-
-const getPolicyLink = (): CallableFunction => ({ name }: RowProps): React.ReactElement => {
-  const link = `/policies/${name}`
-  return (
-    <RLink to={link} label={name}>
-      {name}
-    </RLink>
-  )
-}
+import { Box, Button } from '@material-ui/core'
+import { isEqual, isEmpty } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { getPolicySchema, getPolicyUiSchema } from '../api-spec'
+import { useSession } from '../session-context'
+import Form from './rjsf/Form'
 
 interface Props {
-  policies: Policies
+  onSubmit: CallableFunction
+  policies: any
+  policyId: string
 }
 
-export default ({ policies }: Props): React.ReactElement => {
-  const policyEntries = Object.entries(policies).map((entry) => ({ name: entry[0], status: '' }))
-  const headCells: HeadCell[] = [
-    {
-      id: 'name',
-      label: 'Policy Name',
-      renderer: getPolicyLink(),
-    },
-    {
-      id: 'status',
-      label: 'Status',
-    },
-  ]
+export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => {
+  const [data, setData]: any = useState(policies[policyId])
+  const [schema, setSchema] = useState({})
+  const [uiSchema, setUiSchema] = useState()
+  const { cluster, oboTeamId, user } = useSession()
+  const [dirty, setDirty] = useState(false)
+  const handleChange = ({ formData }) => {
+    const newSchema = getPolicySchema(policyId, cluster, formData)
+    setSchema(newSchema)
+    const newUiSchema = getPolicyUiSchema(policyId, user, oboTeamId)
+    setUiSchema(newUiSchema)
+    setData(formData)
+    const isDirty = !isEqual(formData, policies[policyId] || {})
+    setDirty(isDirty)
+  }
+  const handleSubmit = ({ formData }) => {
+    onSubmit(formData)
+    setDirty(false)
+  }
+  useEffect(() => {
+    setData(policies[policyId])
+    setSchema({})
+  }, [policyId, policies])
+
+  if (isEmpty(schema) || !uiSchema) {
+    handleChange({ formData: data || {} })
+    return null
+  }
+
   return (
     <>
-      <h1 data-cy='h1-policies-page'>Policies</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={policyEntries} idKey='id' />
+      <h1 data-cy='h1-edit-policy-page'>Policy:</h1>
+      <Form
+        key={policyId}
+        id={policyId}
+        schema={schema}
+        uiSchema={uiSchema}
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        formData={data}
+        hideHelp
+      >
+        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
+          <Button
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={!dirty}
+            data-cy={`button-submit-${policyId}`}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Form>
     </>
   )
 }

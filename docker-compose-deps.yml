@@ -11,19 +11,13 @@ services:
     ports:
       - 8080:8080
     volumes:
+      - $PWD/core.yaml:/etc/otomi/core.yaml
       - tmp:/tmp
     environment:
       TOOLS_HOST: tools
-      CLUSTER_ID: ${CLUSTER_ID:-google/dev}
-      CLUSTER_APISERVER: ${CLUSTER_APISERVER}
-      DISABLE_SYNC: ${DISABLE_SYNC:-true}
       GIT_LOCAL_PATH: /tmp/otomi-values
-      GIT_REPO_URL: ${GIT_REPO_URL:-gitea.dev.eks.otomi.cloud/otomi/values}
-      GIT_SSL_NO_VERIFY: 'true'
-      GIT_BRANCH: ${GIT_BRANCH:-main}
-      GIT_USER: ${GIT_USER:-otomi-admin}
-      GIT_EMAIL: ${GIT_EMAIL:-not@us.ed}
-      GIT_PASSWORD: ${GIT_PASSWORD:-bladibla}
+    env_file:
+      - .env
 
   tools:
     depends_on:
@@ -40,7 +34,8 @@ services:
       - tmp:/tmp
     environment:
       ENV_DIR: /tmp/otomi-values
-      GCLOUD_SERVICE_KEY: ${GCLOUD_SERVICE_KEY}
+    env_file:
+      - .env
 
 volumes:
   tmp:

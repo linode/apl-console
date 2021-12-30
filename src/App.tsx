@@ -87,7 +87,7 @@ const App = () => {
                 <Route path='/create-team' component={Team} exact />
                 <Route path='/jobs' component={Jobs} exact />
                 <Route path='/policies' component={Policies} exact />
-                <Route path='/policies/:policyName' component={Policy} exact />
+                <Route path='/policies/:policyId' component={Policy} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/settings/:settingId' component={Setting} exact />
                 <Route path='/teams' component={Teams} exact />

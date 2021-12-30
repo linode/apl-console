@@ -291,6 +291,7 @@ function deleteAlertEndpoints(schema, formData) {
     }
   })
 }
+
 export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
@@ -332,6 +333,23 @@ export function getSettingUiSchema(settingId: string, user: User, teamId: string
       },
     },
   }
+  applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
+
+  return uiSchema[settingId] || {}
+}
+
+export function getPolicySchema(policyId, cluster: Cluster, formData: any): any {
+  const schema = cloneDeep(get(spec, `components.schemas.Settings.properties.policies.properties[${policyId}]`))
+  const provider = cluster.provider
+  switch (policyId) {
+    default:
+      break
+  }
+  return schema
+}
+
+export function getPolicyUiSchema(settingId: string, user: User, teamId: string): any {
+  const uiSchema = {}
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}

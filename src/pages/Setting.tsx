@@ -3,19 +3,10 @@ import { RouteComponentProps } from 'react-router-dom'
 import PaperLayout from '../layouts/Paper'
 import Setting from '../components/Setting'
 import { useApi } from '../hooks/api'
+import { renameKeys } from '../utils/data'
 
 interface Params {
   settingId?: string
-}
-
-// TODO: https://github.com/redkubes/otomi-api/issues/183
-function renameKeys(data) {
-  if (data === undefined) return data
-  const keyValues = Object.keys(data).map((key) => {
-    const newKey = key.replaceAll('-', '_')
-    return { [newKey]: data[key] }
-  })
-  return Object.assign({}, ...keyValues)
 }
 
 export default ({

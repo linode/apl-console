@@ -1,18 +1,19 @@
 /* eslint-disable no-nested-ternary */
 import React from 'react'
 import { Policies } from '@redkubes/otomi-api-client-axios'
+import { map } from 'lodash'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
 interface RowProps {
-  name: string
+  policyId: string
 }
 
-const getPolicyLink = (): CallableFunction => ({ name }: RowProps): React.ReactElement => {
-  const link = `/policies/${name}`
+const getPolicyLink = (): CallableFunction => ({ policyId }: RowProps): React.ReactElement => {
+  const link = `/policies/${policyId}`
   return (
-    <RLink to={link} label={name}>
-      {name}
+    <RLink to={link} label={policyId}>
+      {policyId}
     </RLink>
   )
 }
@@ -22,22 +23,25 @@ interface Props {
 }
 
 export default ({ policies }: Props): React.ReactElement => {
-  const policyEntries = Object.entries(policies).map((entry) => ({ name: entry[0], status: '' }))
+  const policyEntries = map(policies, (pol, policyId) => {
+    return { policyId, ...pol }
+  })
   const headCells: HeadCell[] = [
     {
-      id: 'name',
-      label: 'Policy Name',
+      id: 'policyId',
+      label: 'Policy',
       renderer: getPolicyLink(),
     },
     {
-      id: 'status',
-      label: 'Status',
+      id: 'enabled',
+      label: 'Enabled',
+      renderer: (pol) => (pol.enabled ? 'yes' : 'no'),
     },
   ]
   return (
     <>
       <h1 data-cy='h1-policies-page'>Policies</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={policyEntries} idKey='id' />
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='enabled' rows={policyEntries} idKey='policyId' />
     </>
   )
 }

@@ -41,27 +41,30 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
   }
 
   return (
-    <Form
-      key={settingId}
-      id={settingId}
-      schema={schema}
-      uiSchema={uiSchema}
-      onSubmit={handleSubmit}
-      onChange={handleChange}
-      formData={data}
-      hideHelp
-    >
-      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button
-          variant='contained'
-          color='primary'
-          type='submit'
-          disabled={!dirty}
-          data-cy={`button-submit-${settingId}`}
-        >
-          Submit
-        </Button>
-      </Box>
-    </Form>
+    <>
+      <h1 data-cy='h1-edit-setting-page'>Setting:</h1>
+      <Form
+        key={settingId}
+        id={settingId}
+        schema={schema}
+        uiSchema={uiSchema}
+        onSubmit={handleSubmit}
+        onChange={handleChange}
+        formData={data}
+        hideHelp
+      >
+        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
+          <Button
+            variant='contained'
+            color='primary'
+            type='submit'
+            disabled={!dirty}
+            data-cy={`button-submit-${settingId}`}
+          >
+            Submit
+          </Button>
+        </Box>
+      </Form>
+    </>
   )
 }

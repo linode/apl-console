@@ -1,19 +1,42 @@
-import React from 'react'
-import { Policies as PoliciesType } from '@redkubes/otomi-api-client-axios'
+import React, { useEffect, useState } from 'react'
+import { Settings } from '@redkubes/otomi-api-client-axios'
+import { RouteComponentProps } from 'react-router-dom'
 import { useApi } from '../hooks/api'
 import PaperLayout from '../layouts/Paper'
 import { ApiError } from '../utils/error'
 import Policy from '../components/Policy'
+import { renameKeys } from '../utils/data'
 
-interface IncomingPolicies {
-  policies: PoliciesType
+interface Params {
+  policyId?: string
 }
 
-export default (): React.ReactElement => {
-  const [policies, policiesLoading, policiesError]: [IncomingPolicies, boolean, ApiError] = useApi('getSetting', true, [
+export default ({
+  match: {
+    params: { policyId },
+  },
+}: RouteComponentProps<Params>): React.ReactElement => {
+  const [formData, setFormdata] = useState()
+
+  useEffect(() => {
+    setFormdata(undefined)
+  }, [policyId])
+
+  const [settings, settingsLoading, settingsError]: [Settings, boolean, ApiError] = useApi('getSetting', !!policyId, [
     'policies',
   ])
 
-  const comp = !policiesLoading && (!policiesError || policies) && <Policy policies={policies.policies} />
-  return <PaperLayout comp={comp} loading={policiesLoading} />
+  const [, editLoading, editError] = useApi('editSetting', !!formData, [
+    'policies',
+    { policies: renameKeys({ [policyId]: formData }) },
+  ])
+
+  const loading = settingsLoading || editLoading
+  const err = settingsError || editError
+  let formSettings = settings?.policies
+  if (formData) formSettings = { ...formSettings, [policyId]: formData }
+  const comp = !loading && (!err || formData || settings) && (
+    <Policy onSubmit={setFormdata} policies={formSettings} policyId={policyId} />
+  )
+  return <PaperLayout comp={comp} loading={loading} />
 }

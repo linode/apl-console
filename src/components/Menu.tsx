@@ -143,15 +143,13 @@ export default ({ teamId }: Props): React.ReactElement => {
             </ListItemIcon>
             <ListItemText primary='Policies' />
           </StyledMenuItem>
-          <li>
-            <StyledMenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
-              <ListItemIcon>
-                <SettingsIcon />
-              </ListItemIcon>
-              <ListItemText primary='Settings' />
-              {collapseSettings ? <ExpandLess /> : <ExpandMore />}
-            </StyledMenuItem>
-          </li>
+          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary='Settings' />
+            {collapseSettings ? <ExpandLess /> : <ExpandMore />}
+          </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {
