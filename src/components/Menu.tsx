@@ -121,7 +121,7 @@ export default ({ teamId }: Props): React.ReactElement => {
   return (
     <MenuList className={classes.root} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
-        <ListItemText primary='Platform' />
+        <ListItemText primary='Enterprise' />
       </StyledListSubheader>
       <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
@@ -130,19 +130,51 @@ export default ({ teamId }: Props): React.ReactElement => {
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
       </StyledMenuItem>
       {isAdmin && (
+        <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
+          <ListItemIcon>
+            <AppsIcon />
+          </ListItemIcon>
+          <ListItemText primary='Otomi Apps' />
+        </StyledMenuItem>
+      )}
+      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
+        <ListItemIcon>
+          <CloudIcon />
+        </ListItemIcon>
+        <ListItemText primary='Clusters' />
+      </StyledMenuItem>
+      {isAdmin && (
+        <StyledMenuItem to='/policies' selected={pathname.indexOf(`/policies`) === 0} data-cy='menu-item-policies'>
+          <ListItemIcon>
+            <PolicyIcon />
+          </ListItemIcon>
+          <ListItemText primary='Policies' />
+        </StyledMenuItem>
+      )}
+      <StyledMenuItem
+        to='/teams'
+        selected={pathname.indexOf('/teams') === 0 && pathname.match(/\//g).length < 3}
+        data-cy='menu-item-teams'
+      >
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary='Teams' />
+      </StyledMenuItem>
+      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+        <ListItemIcon>
+          <SwapVerticalCircleIcon />
+        </ListItemIcon>
+        <ListItemText primary='Services' />
+      </StyledMenuItem>
+      <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
+        <ListItemIcon>
+          <HourglassEmptyIcon />
+        </ListItemIcon>
+        <ListItemText primary='Jobs' />
+      </StyledMenuItem>
+      {isAdmin && (
         <>
-          <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
-            <ListItemIcon>
-              <AppsIcon />
-            </ListItemIcon>
-            <ListItemText primary='Otomi Apps' />
-          </StyledMenuItem>
-          <StyledMenuItem to='/policies' selected={pathname === `/policies`} data-cy='menu-item-policies'>
-            <ListItemIcon>
-              <PolicyIcon />
-            </ListItemIcon>
-            <ListItemText primary='Policies' />
-          </StyledMenuItem>
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
             <ListItemIcon>
               <SettingsIcon />
@@ -177,33 +209,6 @@ export default ({ teamId }: Props): React.ReactElement => {
         </ListItemIcon>
         <ListItemText primary='Deploy Changes' />
       </MenuItem>
-      <StyledListSubheader component='div' data-cy='list-subheader-enterprise'>
-        <ListItemText primary='Enterprise' />
-      </StyledListSubheader>
-      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
-        <ListItemIcon>
-          <CloudIcon />
-        </ListItemIcon>
-        <ListItemText primary='Clusters' />
-      </StyledMenuItem>
-      <StyledMenuItem to='/teams' selected={pathname === '/teams'} data-cy='menu-item-teams'>
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary='Teams' />
-      </StyledMenuItem>
-      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
-        <ListItemIcon>
-          <SwapVerticalCircleIcon />
-        </ListItemIcon>
-        <ListItemText primary='Services' />
-      </StyledMenuItem>
-      <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
-        <ListItemIcon>
-          <HourglassEmptyIcon />
-        </ListItemIcon>
-        <ListItemText primary='Jobs' />
-      </StyledMenuItem>
       {teamId && (
         <>
           <StyledListSubheader component='div'>
@@ -221,7 +226,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/services`}
-            selected={pathname === `/teams/${teamId}/services`}
+            selected={pathname.indexOf(`/teams/${teamId}/services`) === 0}
             data-cy='menu-item-team-services'
           >
             <ListItemIcon>
@@ -231,7 +236,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/jobs`}
-            selected={pathname === `/teams/${teamId}/jobs`}
+            selected={pathname.indexOf(`/teams/${teamId}/jobs`) === 0}
             data-cy='menu-item-team-jobs'
           >
             <ListItemIcon>
@@ -241,7 +246,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}
-            selected={pathname === `/teams/${teamId}/secrets`}
+            selected={pathname.indexOf(`/teams/${teamId}/secrets`) === 0}
             data-cy='menu-item-team-secrets'
           >
             <ListItemIcon>
@@ -252,7 +257,7 @@ export default ({ teamId }: Props): React.ReactElement => {
 
           <StyledMenuItem
             to={`/apps/${teamId}`}
-            selected={pathname === `/apps/${teamId}`}
+            selected={pathname.indexOf(`/apps/${teamId}`) === 0}
             data-cy='menu-item-team-otomiapps'
           >
             <ListItemIcon>

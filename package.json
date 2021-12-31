@@ -47,7 +47,6 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "^4.0.3",
     "react-test-renderer": "^16.13.1",
-    "rjsf-conditionals": "^1.2.0",
     "typeface-comfortaa": "^1.1.13",
     "typeface-roboto": "0.0.75"
   },

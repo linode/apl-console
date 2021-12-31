@@ -338,9 +338,8 @@ export function getSettingUiSchema(settingId: string, user: User, teamId: string
   return uiSchema[settingId] || {}
 }
 
-export function getPolicySchema(policyId, cluster: Cluster, formData: any): any {
+export function getPolicySchema(policyId): any {
   const schema = cloneDeep(get(spec, `components.schemas.Settings.properties.policies.properties[${policyId}]`))
-  const provider = cluster.provider
   switch (policyId) {
     default:
       break

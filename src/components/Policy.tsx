@@ -16,10 +16,10 @@ export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => 
   const [data, setData]: any = useState(policies[policyId])
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
-  const { cluster, oboTeamId, user } = useSession()
+  const { oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    const newSchema = getPolicySchema(policyId, cluster, formData)
+    const newSchema = getPolicySchema(policyId)
     setSchema(newSchema)
     const newUiSchema = getPolicyUiSchema(policyId, user, oboTeamId)
     setUiSchema(newUiSchema)
