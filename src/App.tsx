@@ -66,7 +66,7 @@ const App = () => {
             value={{
               ...session,
               collapseSettings,
-              dirty,
+              dirty: dirty === undefined ? session.isDirty : dirty,
               globalError,
               oboTeamId,
               setCollapseSettings,
