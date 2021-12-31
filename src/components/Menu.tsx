@@ -5,7 +5,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AppsIcon from '@material-ui/icons/Apps'
 import CloudIcon from '@material-ui/icons/Cloud'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
-import DashboardIcon from '@material-ui/icons/Dashboard'
 import LockIcon from '@material-ui/icons/Lock'
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'
 import PeopleIcon from '@material-ui/icons/People'
@@ -123,18 +122,18 @@ export default ({ teamId }: Props): React.ReactElement => {
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      <StyledMenuItem to='/' selected={pathname === `/`}>
+      {/* <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
-      </StyledMenuItem>
+      </StyledMenuItem> */}
       {isAdmin && (
         <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
-          <ListItemText primary='Otomi Apps' />
+          <ListItemText primary='Apps' />
         </StyledMenuItem>
       )}
       <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
@@ -215,14 +214,14 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemText primary={`Team ${teamId}`} data-cy='list-subheader-team' />
           </StyledListSubheader>
           <StyledMenuItem
-            to={`/teams/${teamId}`}
-            selected={pathname === `/teams/${teamId}`}
-            data-cy='menu-item-team-overview'
+            to={`/apps/${teamId}`}
+            selected={pathname.indexOf(`/apps/${teamId}`) === 0}
+            data-cy='menu-item-team-otomiapps'
           >
             <ListItemIcon>
-              <PersonIcon />
+              <AppsIcon />
             </ListItemIcon>
-            <ListItemText primary='Overview' />
+            <ListItemText primary='Apps' />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/services`}
@@ -254,16 +253,15 @@ export default ({ teamId }: Props): React.ReactElement => {
             </ListItemIcon>
             <ListItemText primary='Secrets' />
           </StyledMenuItem>
-
           <StyledMenuItem
-            to={`/apps/${teamId}`}
-            selected={pathname.indexOf(`/apps/${teamId}`) === 0}
-            data-cy='menu-item-team-otomiapps'
+            to={`/teams/${teamId}`}
+            selected={pathname === `/teams/${teamId}`}
+            data-cy='menu-item-team-settings'
           >
             <ListItemIcon>
-              <AppsIcon />
+              <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary='Otomi Apps' />
+            <ListItemText primary='Settings' />
           </StyledMenuItem>
         </>
       )}

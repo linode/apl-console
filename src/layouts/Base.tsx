@@ -168,13 +168,6 @@ export default (props: Props): React.ReactElement => {
         </Hidden>
       </div>
       <User />
-      <Tooltip title='Coming soon: notifications' aria-label='notifications'>
-        <IconButton color='inherit'>
-          <Badge badgeContent={1} color='secondary'>
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-      </Tooltip>
       <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
         {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
       </IconButton>
