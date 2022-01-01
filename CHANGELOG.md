@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.68](https://github.com/redkubes/otomi-console/compare/v0.4.67...v0.4.68) (2022-01-01)
+
+
+### Features
+
+* policies in list view ([#126](https://github.com/redkubes/otomi-console/issues/126)) ([6765a7c](https://github.com/redkubes/otomi-console/commit/6765a7c20e6d80eed1d8f6af23f6e2bb3873340f))
+
+
+### Bug Fixes
+
+* dirty session ([b33bb73](https://github.com/redkubes/otomi-console/commit/b33bb739185c01fa2d636189b81eabfb0b2dcc6d))
+* menu and selected state ([1bee480](https://github.com/redkubes/otomi-console/commit/1bee4803602c6ee057b40fe6e4a3715cecf3a11d))
+* menu ordering and naming ([0de2053](https://github.com/redkubes/otomi-console/commit/0de20536cc6ca983653188af2e012628ea5861a9))
+
+
+### Others
+
+* **deps:** bumped api ([4707a5b](https://github.com/redkubes/otomi-console/commit/4707a5b29641c50618db8964b5c90a961ddf9f19))
+
 ### [0.4.67](https://github.com/redkubes/otomi-console/compare/v0.4.66...v0.4.67) (2021-11-22)
 
 
