@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Others
 
 * **deps:** bumped api ([4707a5b](https://github.com/redkubes/otomi-console/commit/4707a5b29641c50618db8964b5c90a961ddf9f19))
+* **release:** 0.4.68 ([86f9534](https://github.com/redkubes/otomi-console/commit/86f9534376915d05052576627794cbe81ffcd796))
 
 ### [0.4.67](https://github.com/redkubes/otomi-console/compare/v0.4.66...v0.4.67) (2021-11-22)
 
