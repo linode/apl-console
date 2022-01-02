@@ -41,9 +41,9 @@ export default ({ children, title, hideHelp = false, onChange, onSubmit, ...prop
     const cleanFormData = cleanData(formData)
     onChange({ formData: cleanFormData, ...rest }, errors)
   }
-  const onSubmitWrapper = ({ formData, ...rest }: IChangeEvent<any>) => {
+  const onSubmitWrapper = ({ formData, ...rest }: IChangeEvent<any>, ev) => {
     const cleanFormData = cleanData(formData)
-    onSubmit({ formData: cleanFormData, ...rest })
+    onSubmit({ formData: cleanFormData, ...rest }, ev)
   }
   return (
     <>
@@ -56,6 +56,7 @@ export default ({ children, title, hideHelp = false, onChange, onSubmit, ...prop
       <Form
         liveValidate={false}
         showErrorList={false}
+        noHtml5Validate
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
