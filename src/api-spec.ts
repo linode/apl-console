@@ -135,6 +135,11 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
         tagMatcher: { 'ui:widget': 'hidden' },
       },
     },
+    networkPolicy: {
+      ingressPrivate: {
+        mode: { 'ui:widget': 'hidden' },
+      },
+    },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Service')
