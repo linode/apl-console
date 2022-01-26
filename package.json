@@ -17,7 +17,7 @@
     "@material-ui/lab": "^4.0.0-alpha.58",
     "@material-ui/pickers": "^3.3.10",
     "@material-ui/styles": "^4.11.4",
-    "@redkubes/otomi-api-client-axios": "^0.4.91",
+    "@redkubes/otomi-api-client-axios": "^0.4.92",
     "@rjsf/core": "^3.2.1",
     "@rjsf/material-ui": "^3.2.1",
     "axios": "^0.21.2",
