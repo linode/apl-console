@@ -26,6 +26,7 @@ export interface SessionContext extends Session {
   themeType: string
   user: User | any
   versions: Versions | undefined
+  isMultitenant: boolean
 }
 
 const context = React.createContext<SessionContext>({
@@ -49,6 +50,7 @@ const context = React.createContext<SessionContext>({
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,
+  isMultitenant: true,
 })
 
 export const useSession = (): SessionContext => {

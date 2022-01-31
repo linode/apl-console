@@ -16,6 +16,7 @@ export default ({ teamId }: Props): React.ReactElement => {
       teamConfig: { services: teamApps },
     },
     cluster,
+    isMultitenant,
   }: any = useSession()
   const apps = (teamId === 'admin' ? adminApps : teamApps).filter((app) => !app.hide && app.name !== 'otomi')
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
@@ -26,9 +27,9 @@ export default ({ teamId }: Props): React.ReactElement => {
       const logoName = logo ? logo.name : name
       const link = `https://${
         domain ||
-        `${isShared || ownHost ? host || name : 'apps'}${!(isShared || teamId === 'admin') ? `.team-${teamId}` : ''}.${
-          cluster.domainSuffix
-        }/${isShared || ownHost ? '' : `${host || name}/`}`
+        `${isShared || ownHost || !isMultitenant ? host || name : 'apps'}${
+          !(isShared || teamId === 'admin' || isMultitenant) ? `.team-${teamId}` : ''
+        }.${cluster.domainSuffix}/${isShared || ownHost || !isMultitenant ? '' : `${host || name}/`}`
       }${(path || '').replace('#NS#', `team-${teamId}`)}`
       // eslint-disable-next-line consistent-return
       return (
@@ -40,6 +41,7 @@ export default ({ teamId }: Props): React.ReactElement => {
             link={link}
             img={`${contextPath}/logos/${logoName}_logo.svg`}
             disabled={enabled === false}
+            isMultitenant={isMultitenant}
           />
         </Grid>
       )
