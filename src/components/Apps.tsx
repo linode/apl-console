@@ -25,11 +25,12 @@ export default ({ teamId }: Props): React.ReactElement => {
   const out = (items) => {
     return items.map(({ name, isShared, logo, domain, host, path, ownHost, enabled }) => {
       const logoName = logo ? logo.name : name
+
       const link = `https://${
         domain ||
-        `${isShared || ownHost || !isMultitenant ? host || name : 'apps'}${
-          !(isShared || teamId === 'admin' || isMultitenant) ? `.team-${teamId}` : ''
-        }.${cluster.domainSuffix}/${isShared || ownHost || !isMultitenant ? '' : `${host || name}/`}`
+        `${isShared || ownHost ? host || name : 'apps'}${
+          !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+        }.${cluster.domainSuffix}/${isShared || ownHost ? '' : `${host || name}/`}`
       }${(path || '').replace('#NS#', `team-${teamId}`)}`
       // eslint-disable-next-line consistent-return
       return (
