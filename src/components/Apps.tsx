@@ -1,6 +1,7 @@
 import { Grid } from '@material-ui/core'
 import React from 'react'
 import { useSession } from '../session-context'
+import { getAppData, getApps } from '../utils/data'
 import AppCard from './AppCard'
 
 const contextPath = process.env.CONTEXT_PATH || ''
@@ -10,36 +11,35 @@ interface Props {
 }
 
 export default ({ teamId }: Props): React.ReactElement => {
+  const session = useSession()
   const {
     core: {
-      services: adminApps,
-      teamConfig: { services: teamApps },
+      apps: adminApps,
+      teamConfig: { apps: teamApps },
     },
     cluster,
-  }: any = useSession()
-  const apps = (teamId === 'admin' ? adminApps : teamApps).filter((app) => !app.hide && app.name !== 'otomi')
+  }: any = session
+  const isAdminApps = teamId === 'admin'
+  const apps = getApps(adminApps, teamApps, teamId)
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
   const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) => {
-    return items.map(({ name, isShared, logo, domain, host, path, ownHost, enabled }) => {
-      const logoName = logo ? logo.name : name
-      const link = `https://${
-        domain ||
-        `${isShared || ownHost ? host || name : 'apps'}${!(isShared || teamId === 'admin') ? `.team-${teamId}` : ''}.${
-          cluster.domainSuffix
-        }/${isShared || ownHost ? '' : `${host || name}/`}`
-      }${(path || '').replace('#NS#', `team-${teamId}`)}`
-      // eslint-disable-next-line consistent-return
+    return items.map((item) => {
+      const name = item?.name
+      const { id, schema, link, logo, enabled, docUrl } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={6} lg={3} md={4} key={name}>
           <AppCard
             cluster={cluster}
             teamId={teamId}
-            title={name}
+            id={id}
+            title={schema.title}
             link={link}
-            img={`${contextPath}/logos/${logoName}_logo.svg`}
+            docUrl={docUrl}
+            img={`${contextPath}/logos/${logo}`}
             disabled={enabled === false}
+            hideConfButton={!isAdminApps || !schema.properties?.values}
           />
         </Grid>
       )

@@ -12,7 +12,8 @@ import Cluster from './pages/Cluster'
 import Clusters from './pages/Clusters'
 import Dashboard from './pages/Dashboard'
 import Error from './pages/Error'
-import OtomiApps from './pages/OtomiApps'
+import OtomiApp from './pages/App'
+import Apps from './pages/Apps'
 import Secret from './pages/Secret'
 import Secrets from './pages/Secrets'
 import Service from './pages/Service'
@@ -29,6 +30,7 @@ import Job from './pages/Job'
 import Jobs from './pages/Jobs'
 import Policies from './pages/Policies'
 import Policy from './pages/Policy'
+import Shortcuts from './pages/Shortcuts'
 
 const env = process.env
 
@@ -81,7 +83,8 @@ const App = () => {
               <Switch>
                 {/* ! user && <Route path='/' component={Home} exact /> */}
                 <Route path='/' component={Dashboard} exact />
-                <Route path='/apps/:teamId' component={OtomiApps} exact />
+                <Route path='/apps/:teamId' component={Apps} exact />
+                <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
                 <Route path='/clusters' component={Clusters} exact />
                 <Route path='/cluster/:clusterId' component={Cluster} exact />
                 <Route path='/create-team' component={Team} exact />
@@ -90,6 +93,7 @@ const App = () => {
                 <Route path='/policies/:policyId' component={Policy} exact />
                 <Route path='/services' component={Services} exact />
                 <Route path='/settings/:settingId' component={Setting} exact />
+                <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                 <Route path='/teams' component={Teams} exact />
                 <Route path='/teams/:teamId' component={Team} exact />
                 <Route path='/teams/:teamId/create-job' component={Job} exact />

@@ -15,6 +15,7 @@ const { ADDITIONAL_PROPERTY_FLAG } = utils
 
 type WrapIfAdditionalProps = {
   children: React.ReactElement
+  classNames: string
   disabled: boolean
   id: string
   label: string

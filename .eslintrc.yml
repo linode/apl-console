@@ -58,6 +58,8 @@ rules:
   '@typescript-eslint/explicit-module-boundary-types': off
   '@typescript-eslint/restrict-template-expressions': off
   '@typescript-eslint/no-unsafe-call': off
+  '@typescript-eslint/no-debugger': off
+  '@typescript-eslint/no-param-reassign': off
   no-use-before-define: 0
   import/no-extraneous-dependencies: off
   eol-last: ['error', 'always']
@@ -72,4 +74,8 @@ rules:
   react/no-unused-prop-types: warn
   object-shorthand: warn
   no-fallthrough: warn
-  # no-debugger: warn
+  no-debugger: warn
+  no-param-reassign:
+    - error
+    - props: true
+      ignorePropertyModificationsFor: [memo]

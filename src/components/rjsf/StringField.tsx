@@ -12,7 +12,7 @@ export default ({ children, schema, uiSchema, formData, placeholder, ...props }:
     newUiSchema['ui:widget'] = RadioWidget
     set(newUiSchema, 'ui:options.inline', shortList)
     set(newUiSchema, 'ui:options.hasLabel', true)
-    if (!props.required && !props.default && schema.enum[0] !== '') schema.enum.unshift('')
+    // if (!props.required && !props.default && schema.enum[0] !== '') schema.enum.unshift('')
   }
   if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
   return (

@@ -25,14 +25,15 @@ import {
 } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/Delete'
 import clsx from 'clsx'
+import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
+  if (get(b, orderBy) < get(a, orderBy)) {
     return -1
   }
-  if (b[orderBy] > a[orderBy]) {
+  if (get(b, orderBy) > get(a, orderBy)) {
     return 1
   }
   return 0
@@ -141,7 +142,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -335,7 +336,7 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
                         <TableCell
                           key={`cell-${c.id}`}
                           align={c.numeric ? 'right' : 'left'}
-                          padding={c.disablePadding ? 'none' : 'default'}
+                          padding={c.disablePadding ? 'none' : 'normal'}
                           sortDirection={orderBy === c.id ? order : false}
                         >
                           {c.renderer ? c.renderer(row) : row[c.id]}
@@ -358,8 +359,8 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
       <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label='Dense padding' />

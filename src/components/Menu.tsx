@@ -3,6 +3,7 @@ import MenuList from '@material-ui/core/List'
 import SettingsIcon from '@material-ui/icons/Settings'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import AppsIcon from '@material-ui/icons/Apps'
+import ShortcutIcon from '@material-ui/icons/Link'
 import CloudIcon from '@material-ui/icons/Cloud'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import LockIcon from '@material-ui/icons/Lock'
@@ -129,11 +130,23 @@ export default ({ teamId }: Props): React.ReactElement => {
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
       </StyledMenuItem> */}
       {isAdmin && (
-        <StyledMenuItem to='/apps/admin' selected={pathname === `/apps/admin`} data-cy='menu-item-otomiapps'>
+        <StyledMenuItem to='/apps/admin' selected={pathname.indexOf(`/apps/admin`) === 0} data-cy='menu-item-otomiapps'>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
           <ListItemText primary='Apps' />
+        </StyledMenuItem>
+      )}
+      {isAdmin && (
+        <StyledMenuItem
+          to='/shortcuts/admin'
+          selected={pathname === '/shortcuts/admin'}
+          data-cy='menu-item-otomishortcuts'
+        >
+          <ListItemIcon>
+            <ShortcutIcon />
+          </ListItemIcon>
+          <ListItemText primary='App shortcuts' />
         </StyledMenuItem>
       )}
       <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
@@ -222,6 +235,16 @@ export default ({ teamId }: Props): React.ReactElement => {
               <AppsIcon />
             </ListItemIcon>
             <ListItemText primary='Apps' />
+          </StyledMenuItem>
+          <StyledMenuItem
+            to={`/shortcuts/${teamId}`}
+            selected={pathname === `/shortcuts/${teamId}`}
+            data-cy='menu-item-otomishortcuts'
+          >
+            <ListItemIcon>
+              <ShortcutIcon />
+            </ListItemIcon>
+            <ListItemText primary='App shortcuts' />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/services`}

@@ -11,7 +11,9 @@ import {
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
-import { getStrict } from './utils'
+import camelcase from 'camelcase'
+import { extract, getStrict } from './utils'
+import CodeEditor from './components/rjsf/FieldTemplate/CodeEditor'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 
@@ -74,6 +76,8 @@ export interface Property {
 }
 
 let spec: OpenApi
+
+export const getSpec = () => spec
 
 export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, schemaName: string): void {
   if (user.isAdmin) return
@@ -352,4 +356,33 @@ export function getPolicyUiSchema(settingId: string, user: User, teamId: string)
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}
+}
+
+export function getAppSchema(appId, cluster: Cluster, formData: any): any {
+  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+  const provider = cluster.provider
+  const schema = cloneDeep(spec.components.schemas[modelName])
+  switch (appId) {
+    default:
+      break
+  }
+  return schema
+}
+
+export function getAppUiSchema(appId, cluster: Cluster, formData: any): any {
+  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+  const model = spec.components.schemas[modelName].properties.values
+  const uiSchema = {}
+  if (model)
+    extract(model, (o) => o.type === 'object' && !o.properties).forEach((path) => {
+      set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
+    })
+  const provider = cluster.provider
+  switch (appId) {
+    case 'drone':
+      return { ...uiSchema, sourceControl: { provider: { 'ui:widget': 'hidden' } } }
+    default:
+      break
+  }
+  return uiSchema
 }

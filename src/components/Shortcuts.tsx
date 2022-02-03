@@ -1,0 +1,54 @@
+import React from 'react'
+import { App } from '@redkubes/otomi-api-client-axios'
+import { capitalize } from 'lodash'
+import MuiLink from './MuiLink'
+import EnhancedTable, { HeadCell } from './EnhancedTable'
+import RLink from './Link'
+
+const getAppLink = (teamId) => (app): React.ReactElement => {
+  const { id } = app
+  const link = `/apps/${teamId}/${id}`
+  return (
+    <RLink to={link} label={id}>
+      {capitalize(id)}
+    </RLink>
+  )
+}
+
+const getShortcutLink = (app) => {
+  const {
+    baseUrl,
+    shortcut: { path, title, description },
+  } = app
+  return (
+    <MuiLink href={`${baseUrl}${path}`} target='_blank' rel='noopener' label={title} about={description}>
+      <b>{title}</b>: {description}
+    </MuiLink>
+  )
+}
+
+interface Props {
+  apps: App[]
+  teamId?: string
+}
+
+export default ({ apps, teamId }: Props): React.ReactElement => {
+  const headCells: HeadCell[] = [
+    {
+      id: 'id',
+      label: 'App',
+      renderer: getAppLink(teamId),
+    },
+    {
+      id: 'shortcut.title',
+      label: 'Link',
+      renderer: getShortcutLink,
+    },
+  ]
+  return (
+    <>
+      <h1 data-cy='h1-shortcuts-page'>{`Shortcuts${teamId !== 'admin' ? ` (team ${teamId})` : ''}`}</h1>
+      <EnhancedTable disableSelect headCells={headCells} orderByStart='id' rows={apps} idKey='description' />
+    </>
+  )
+}

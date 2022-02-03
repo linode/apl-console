@@ -1,6 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
-import { isEmpty, isPlainObject, transform } from 'lodash'
+import { Session } from '@redkubes/otomi-api-client-axios'
+import camelcase from 'camelcase'
+import { JSONSchema7 } from 'json-schema'
+import { find, isEmpty, isPlainObject, transform } from 'lodash'
+import { getSpec } from '../api-spec'
 
 export const cleanOptions = {
   cleanKeys: [],
@@ -116,4 +120,70 @@ export const renameKeys = (data) => {
     return { [newKey]: data[key] }
   })
   return Object.assign({}, ...keyValues)
+}
+
+export const getApps = (adminApps, teamApps, teamId) =>
+  (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter((app) => !app.hide)
+
+export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
+  const {
+    core: {
+      apps: adminApps,
+      teamConfig: { apps: teamApps },
+    },
+    cluster,
+    isMultitenant,
+  }: any = session
+  let appId = appOrId
+  let ownShortcuts = []
+  if (mergeShortcuts) {
+    // we know we were given an app from values, so we pluck shortcuts from it to merge later
+    ownShortcuts = appOrId.shortcuts || []
+  }
+  if (typeof appOrId !== 'string') {
+    appId = appOrId.id ?? appOrId.name
+  }
+  // get the core app
+  const apps = getApps(adminApps, teamApps, teamId)
+  const coreApp = find(apps, { name: appId })
+  const { logo, ingress, isShared } = coreApp
+  // bundle the shortcuts
+  const coreShortcuts = coreApp.shortcuts ?? []
+  const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
+  let substShortcuts
+  if (mergedShortcuts.length)
+    substShortcuts = mergedShortcuts.map(({ path, ...rest }) => ({
+      path: path.replace('#NS#', `team-${teamId}`),
+      ...rest,
+    }))
+  // compose the derived ingress props
+  const { domain, host, ownHost, path } = (ingress && ingress[0]) || {}
+  const baseUrl = `https://${
+    domain ||
+    `${isShared || ownHost ? host || appId : 'apps'}${
+      !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+    }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${host || appId}`}`
+  }`
+  const substPath = `${(path || '').replace('#NS#', `team-${teamId}`)}`
+  // create a default link if we have ingress or shortcuts
+  let link
+  if (substShortcuts?.length) link = `${baseUrl}/${substShortcuts[0].path}`
+  else if (ingress) link = `${baseUrl}/${substPath}`
+  // also get schema info such as title, desc
+  const spec = getSpec()
+  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+  const schema = spec.components.schemas[modelName]
+    ? (spec.components.schemas[modelName] as JSONSchema7)
+    : { title: appId, description: '' }
+  return {
+    ...coreApp,
+    id: appId,
+    baseUrl,
+    docUrl: schema['x-externalDocsPath'],
+    logo: logo ?? `${appId}_logo.svg`,
+    schema,
+    link,
+    path: substPath,
+    shortcuts: substShortcuts,
+  }
 }

@@ -2,7 +2,6 @@ import { Box, Button } from '@material-ui/core'
 import AddCircleIcon from '@material-ui/icons/AddCircle'
 import { Link } from 'react-router-dom'
 import React from 'react'
-import { Team } from '@redkubes/otomi-api-client-axios'
 import RLink from './Link'
 import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
@@ -33,10 +32,10 @@ const getVaultSecretLink = (clusterDomain) => (row) => {
 
 interface Props {
   secrets: any[]
-  team?: Team
+  teamId?: string
 }
 
-export default ({ secrets, team }: Props): React.ReactElement => {
+export default ({ secrets, teamId }: Props): React.ReactElement => {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -73,7 +72,7 @@ export default ({ secrets, team }: Props): React.ReactElement => {
     //   ),
     // },
   ]
-  if (isAdmin && !team)
+  if (isAdmin && !teamId)
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',
@@ -83,7 +82,7 @@ export default ({ secrets, team }: Props): React.ReactElement => {
     })
   return (
     <>
-      <h1 data-cy='h1-secrets-page'>{`Secrets (team ${team.id})`}</h1>
+      <h1 data-cy='h1-secrets-page'>{`Secrets (team ${teamId})`}</h1>
       <Box mb={1}>
         {(isAdmin || oboTeamId) && (
           <Button

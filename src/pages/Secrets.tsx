@@ -16,9 +16,6 @@ export default ({
   const { tid } = useAuthz(teamId)
   const secretsMethod = !teamId ? 'getAllSecrets' : 'getSecrets'
   const [secrets, secretsLoading, secretsError]: any = useApi(secretsMethod, true, [tid])
-  const [team, teamLoading, teamError]: any = useApi('getTeam', !!teamId, [teamId])
-  const loading = secretsLoading || teamLoading
-  const err = secretsError || teamError
-  const comp = !(err || loading) && <Secrets team={team} secrets={secrets} />
-  return <PaperLayout loading={loading} comp={comp} />
+  const comp = !(secretsError || secretsLoading) && <Secrets teamId={teamId} secrets={secrets} />
+  return <PaperLayout loading={secretsLoading} comp={comp} />
 }

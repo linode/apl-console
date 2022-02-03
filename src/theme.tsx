@@ -1,4 +1,4 @@
-import { createMuiTheme, createStyles, makeStyles, Theme, ThemeOptions } from '@material-ui/core/styles'
+import { createTheme, createStyles, makeStyles, Theme, ThemeOptions } from '@material-ui/core/styles'
 
 export const c = {
   light: '#ccc',
@@ -167,8 +167,8 @@ export const toggleThemeType = (): string => {
 }
 
 const teamOverrides = getOverrides(teamColors)
-const teamLight = createMuiTheme(teamOverrides)
-const teamDark = createMuiTheme({
+const teamLight = createTheme(teamOverrides)
+const teamDark = createTheme({
   ...teamOverrides,
   palette: {
     type: 'dark',
@@ -186,8 +186,8 @@ const teamDark = createMuiTheme({
   },
 })
 const adminOverrides = getOverrides(adminColors)
-const adminLight = createMuiTheme(adminOverrides)
-const adminDark = createMuiTheme({
+const adminLight = createTheme(adminOverrides)
+const adminDark = createTheme({
   ...adminOverrides,
   palette: {
     type: 'dark',

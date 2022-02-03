@@ -21,7 +21,7 @@ const deselectValue = (value: any, selected: any) => {
   return selected.filter((v: any) => v !== value)
 }
 
-const CheckboxesWidget = ({
+export default ({
   schema,
   label,
   id,
@@ -81,5 +81,3 @@ const CheckboxesWidget = ({
     </>
   )
 }
-
-export default CheckboxesWidget

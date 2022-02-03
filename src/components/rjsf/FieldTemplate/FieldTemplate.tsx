@@ -14,6 +14,7 @@ import WrapIfAdditional from './WrapIfAdditional'
 export default ({
   id,
   children,
+  classNames,
   disabled,
   displayLabel,
   label,
@@ -33,6 +34,7 @@ export default ({
 
   return (
     <WrapIfAdditional
+      classNames={classNames}
       disabled={disabled}
       id={id}
       label={label}

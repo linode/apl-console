@@ -29,15 +29,24 @@ const RadioWidget = ({
   onBlur,
   onFocus,
 }: WidgetProps) => {
-  const { enumOptions, enumDisabled } = options
+  const { inline, enumOptions, enumDisabled } = options
   const renderOptions = [...(enumOptions as any[])]
   const classes = useStyles()
   const _onChange = ({}, value: any) => onChange(schema.type === 'boolean' ? value !== 'false' : value)
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onFocus(id, value)
   const hasLabel = !!options.hasLabel
-  const row = options && options.inline ? options.inline : renderOptions.length <= 7
-  if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: '' }
+  const row = inline || renderOptions.length <= 7
+  // if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: undefined }
+  if (!required && schema.default === undefined) {
+    if (renderOptions[0].value !== '') {
+      renderOptions.unshift({ label: 'Off', value: '' })
+    }
+    if (value === undefined) {
+      // eslint-disable-next-line no-param-reassign
+      value = ''
+    }
+  }
   return (
     <>
       {hasLabel && (
