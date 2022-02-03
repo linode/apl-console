@@ -19,13 +19,24 @@ export default ({ teamId }: Props): React.ReactElement => {
     isMultitenant,
   }: any = useSession()
   const apps = (teamId === 'admin' ? adminApps : teamApps).filter((app) => !app.hide && app.name !== 'otomi')
+
+  // If iisMultitenant flag is false it must link the apps like the admin team
+  if (!isMultitenant) {
+    for (let i = 0; i < apps.length; i += 1) {
+      const teamApp = apps[i]
+      const appFoundInAdmin = adminApps.find((adminApp) => adminApp.name === teamApp.name)
+      if (appFoundInAdmin) {
+        apps[i] = appFoundInAdmin
+      }
+    }
+  }
+
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
   const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) => {
     return items.map(({ name, isShared, logo, domain, host, path, ownHost, enabled }) => {
       const logoName = logo ? logo.name : name
-
       const link = `https://${
         domain ||
         `${isShared || ownHost ? host || name : 'apps'}${
