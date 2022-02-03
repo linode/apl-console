@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.71](https://github.com/redkubes/otomi-stack-web/compare/v0.4.69...v0.4.71) (2022-01-26)
+
+
+### Features
+
+* network policies ([#128](https://github.com/redkubes/otomi-stack-web/issues/128)) ([702e274](https://github.com/redkubes/otomi-stack-web/commit/702e274c2c1890431cd1710976ea31fdfda1fe91))
+
+
+### Others
+
+* update otomi-api-client version ([8e20e7b](https://github.com/redkubes/otomi-stack-web/commit/8e20e7b2d75bcf70f5f2c8555fe73cc6aca28bcc))
+* **release:** 0.4.70 ([9a36f2d](https://github.com/redkubes/otomi-stack-web/commit/9a36f2d5f19757892b57371b6ceeafcbee3c4352))
+
+### [0.4.70](https://github.com/redkubes/otomi-stack-web/compare/v0.4.69...v0.4.70) (2022-01-26)
+
+
+### Features
+
+* network policies ([#128](https://github.com/redkubes/otomi-stack-web/issues/128)) ([702e274](https://github.com/redkubes/otomi-stack-web/commit/702e274c2c1890431cd1710976ea31fdfda1fe91))
+
 ### [0.4.69](https://github.com/redkubes/otomi-console/compare/v0.4.68...v0.4.69) (2022-01-02)
 
 
