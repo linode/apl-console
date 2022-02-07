@@ -81,7 +81,6 @@ const App = () => {
           >
             <Router basename={env.CONTEXT_PATH || ''}>
               <Switch>
-                {/* ! user && <Route path='/' component={Home} exact /> */}
                 <Route path='/' component={Dashboard} exact />
                 <Route path='/apps/:teamId' component={Apps} exact />
                 <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />

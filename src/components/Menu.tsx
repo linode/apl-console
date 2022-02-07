@@ -10,6 +10,7 @@ import LockIcon from '@material-ui/icons/Lock'
 import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'
 import PeopleIcon from '@material-ui/icons/People'
 import PersonIcon from '@material-ui/icons/Person'
+import DashboardIcon from '@material-ui/icons/Dashboard'
 import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -123,12 +124,12 @@ export default ({ teamId }: Props): React.ReactElement => {
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>
-      {/* <StyledMenuItem to='/' selected={pathname === `/`}>
+      <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
         <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
-      </StyledMenuItem> */}
+      </StyledMenuItem>
       {isAdmin && (
         <StyledMenuItem to='/apps/admin' selected={pathname.indexOf(`/apps/admin`) === 0} data-cy='menu-item-otomiapps'>
           <ListItemIcon>
@@ -146,7 +147,7 @@ export default ({ teamId }: Props): React.ReactElement => {
           <ListItemIcon>
             <ShortcutIcon />
           </ListItemIcon>
-          <ListItemText primary='App shortcuts' />
+          <ListItemText primary='Shortcuts' />
         </StyledMenuItem>
       )}
       <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
@@ -244,7 +245,7 @@ export default ({ teamId }: Props): React.ReactElement => {
             <ListItemIcon>
               <ShortcutIcon />
             </ListItemIcon>
-            <ListItemText primary='App shortcuts' />
+            <ListItemText primary='Shortcuts' />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/services`}
