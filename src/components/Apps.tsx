@@ -13,10 +13,7 @@ interface Props {
 export default ({ teamId }: Props): React.ReactElement => {
   const session = useSession()
   const {
-    core: {
-      apps: adminApps,
-      teamConfig: { apps: teamApps },
-    },
+    core: { adminApps, teamApps },
     cluster,
   }: any = session
   const isAdminApps = teamId === 'admin'

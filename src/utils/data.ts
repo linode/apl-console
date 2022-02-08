@@ -127,10 +127,7 @@ export const getApps = (adminApps, teamApps, teamId) =>
 
 export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
   const {
-    core: {
-      apps: adminApps,
-      teamConfig: { apps: teamApps },
-    },
+    core: { adminApps, teamApps },
     cluster,
     isMultitenant,
   }: any = session
