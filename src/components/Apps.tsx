@@ -53,7 +53,6 @@ export default ({ teamId }: Props): React.ReactElement => {
             link={link}
             img={`${contextPath}/logos/${logoName}_logo.svg`}
             disabled={enabled === false}
-            isMultitenant={isMultitenant}
           />
         </Grid>
       )
