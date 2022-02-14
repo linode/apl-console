@@ -16,8 +16,21 @@ export default ({ teamId }: Props): React.ReactElement => {
       teamConfig: { services: teamApps },
     },
     cluster,
+    isMultitenant,
   }: any = useSession()
   const apps = (teamId === 'admin' ? adminApps : teamApps).filter((app) => !app.hide && app.name !== 'otomi')
+
+  // If iisMultitenant flag is false it must link the apps like the admin team
+  if (!isMultitenant) {
+    for (let i = 0; i < apps.length; i += 1) {
+      const teamApp = apps[i]
+      const appFoundInAdmin = adminApps.find((adminApp) => adminApp.name === teamApp.name)
+      if (appFoundInAdmin) {
+        apps[i] = appFoundInAdmin
+      }
+    }
+  }
+
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
   const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
@@ -26,9 +39,9 @@ export default ({ teamId }: Props): React.ReactElement => {
       const logoName = logo ? logo.name : name
       const link = `https://${
         domain ||
-        `${isShared || ownHost ? host || name : 'apps'}${!(isShared || teamId === 'admin') ? `.team-${teamId}` : ''}.${
-          cluster.domainSuffix
-        }/${isShared || ownHost ? '' : `${host || name}/`}`
+        `${isShared || ownHost ? host || name : 'apps'}${
+          !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+        }.${cluster.domainSuffix}/${isShared || ownHost ? '' : `${host || name}/`}`
       }${(path || '').replace('#NS#', `team-${teamId}`)}`
       // eslint-disable-next-line consistent-return
       return (
