@@ -1,8 +1,0 @@
-export { default as Clusters } from './Clusters'
-export { default as Dashboard } from './Dashboard'
-export { default as Error } from './Error'
-export { default as Apps } from './Apps'
-export { default as Service } from './Service'
-export { default as Services } from './Services'
-export { default as Team } from './Team'
-export { default as Teams } from './Teams'

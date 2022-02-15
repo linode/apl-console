@@ -5,7 +5,7 @@ import 'typeface-comfortaa'
 import 'typeface-roboto'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import './i18n'
+import 'common/i18n'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 

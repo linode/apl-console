@@ -1,6 +1,6 @@
 import React from 'react'
-import PaperLayout from '../layouts/Paper'
-import Cluster from '../components/Cluster'
+import Cluster from 'components/Cluster'
+import PaperLayout from 'layouts/Paper'
 
 export default (): React.ReactElement => {
   const loading = undefined

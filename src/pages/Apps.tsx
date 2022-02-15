@@ -1,8 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import Apps from '../components/Apps'
-import MainLayout from '../layouts/Empty'
-import { useAuthz } from '../hooks/api'
+import Apps from 'components/Apps'
+import { useAuthz } from 'hooks/useApi'
+import MainLayout from 'layouts/Empty'
 
 interface Params {
   teamId?: string

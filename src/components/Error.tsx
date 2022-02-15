@@ -1,28 +1,27 @@
-import Alert from '@material-ui/lab/Alert'
+import Alert from '@mui/lab/Alert'
 import React from 'react'
-import { Container, makeStyles, Theme, createStyles, Collapse, IconButton } from '@material-ui/core'
+import { Container, Collapse, IconButton, Theme } from '@mui/material'
 import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
-import CloseIcon from '@material-ui/icons/Close'
-import { Keys as k } from '../translations/keys'
-import { useSession } from '../session-context'
+import CloseIcon from '@mui/icons-material/Close'
+import { makeStyles } from 'common/theme'
+import { useSession } from 'common/session-context'
+import { Keys as k } from 'translations/keys'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      padding: 0,
-      paddingTop: theme.spacing(2),
-    },
-    message: {
-      backgroundColor: theme.palette.error.light,
-      padding: theme.spacing(2),
-    },
-  }),
-)
+const useStyles = makeStyles()((theme: Theme) => ({
+  root: {
+    width: '100%',
+    padding: 0,
+    paddingTop: theme.spacing(2),
+  },
+  message: {
+    backgroundColor: theme.palette.error.light,
+    padding: theme.spacing(2),
+  },
+}))
 
 export default (): React.ReactElement => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   const { globalError, setGlobalError } = useSession()
   if (!globalError) return null
   const code = globalError.code

@@ -1,5 +1,7 @@
 import { useReducer } from 'react'
 
+export type LoadingHook<T, E> = [T | undefined, boolean, E | undefined]
+
 export interface LoadingValue<T, E> {
   error?: E
   loading: boolean
@@ -36,28 +38,30 @@ const defaultState = (defaultValue?: any): any => {
   }
 }
 
-const reducer = <E>(): any => (state: ReducerState<E>, action: ReducerAction<E>): ReducerState<E> => {
-  switch (action.type) {
-    case 'error':
-      return {
-        ...state,
-        error: action.error,
-        loading: false,
-        value: undefined,
-      }
-    case 'reset':
-      return defaultState(action.defaultValue)
-    case 'value':
-      return {
-        ...state,
-        error: undefined,
-        loading: false,
-        value: action.value,
-      }
-    default:
-      return state
+const reducer =
+  <E>(): any =>
+  (state: ReducerState<E>, action: ReducerAction<E>): ReducerState<E> => {
+    switch (action.type) {
+      case 'error':
+        return {
+          ...state,
+          error: action.error,
+          loading: false,
+          value: undefined,
+        }
+      case 'reset':
+        return defaultState(action.defaultValue)
+      case 'value':
+        return {
+          ...state,
+          error: undefined,
+          loading: false,
+          value: action.value,
+        }
+      default:
+        return state
+    }
   }
-}
 
 export default <T, E>(getDefaultValue?: () => T | null): LoadingValue<T, E> => {
   const defaultValue = getDefaultValue ? getDefaultValue() : undefined

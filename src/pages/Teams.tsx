@@ -1,7 +1,7 @@
 import React from 'react'
-import Teams from '../components/Teams'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import Teams from 'components/Teams'
+import { useApi } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 export default (): React.ReactElement => {
   const [teams, loading, err]: any = useApi('getTeams')

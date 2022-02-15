@@ -1,15 +1,16 @@
-import { Typography, Grid, Card, CardHeader, Avatar, IconButton, makeStyles, Divider, Tooltip } from '@material-ui/core'
+import { Typography, Grid, Card, CardHeader, Avatar, IconButton, Divider, Theme, Tooltip } from '@mui/material'
 import * as React from 'react'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
-import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
-import PeopleIcon from '@material-ui/icons/People'
-import CloudIcon from '@material-ui/icons/Cloud'
-import Link from '@material-ui/core/Link'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
+import PeopleIcon from '@mui/icons-material/People'
+import CloudIcon from '@mui/icons-material/Cloud'
+import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
 import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import { Keys as k } from '../translations/keys'
-import { useSession } from '../session-context'
+import { makeStyles } from 'common/theme'
+import { Keys as k } from 'translations/keys'
+import { useSession } from 'common/session-context'
 
 type Panel = {
   name: string
@@ -25,7 +26,7 @@ interface Props {
   teams: Array<Team>
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   card: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
@@ -126,7 +127,7 @@ export default ({ team, services, teams }: Props): React.ReactElement => {
     cluster,
     clusters,
   } = useSession()
-  const classes = useStyles()
+  const { classes } = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
   const panels = [

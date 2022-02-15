@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import React from 'react'
 
-import FormLabel from '@material-ui/core/FormLabel'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import FormLabel from '@mui/material/FormLabel'
+import FormGroup from '@mui/material/FormGroup'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Checkbox from '@mui/material/Checkbox'
 
 import { WidgetProps } from '@rjsf/core'
 
@@ -38,15 +38,17 @@ export default ({
   const { enumOptions, enumDisabled, inline } = options
   const renderOptions = [...(enumOptions as any[])]
 
-  const _onChange = (option: any) => ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
-    const all = (enumOptions as any).map(({ value }: any) => value)
+  const _onChange =
+    (option: any) =>
+    ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+      const all = (enumOptions as any).map(({ value }: any) => value)
 
-    if (checked) {
-      onChange(selectValue(option.value, value, all))
-    } else {
-      onChange(deselectValue(option.value, value))
+      if (checked) {
+        onChange(selectValue(option.value, value, all))
+      } else {
+        onChange(deselectValue(option.value, value))
+      }
     }
-  }
 
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onFocus(id, value)

@@ -1,14 +1,8 @@
-import {
-  useRadioGroup,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  FormControlLabelProps,
-  makeStyles,
-} from '@material-ui/core'
+import { useRadioGroup, FormControlLabel, RadioGroup, Radio, FormControlLabelProps } from '@mui/material'
 import React from 'react'
+import { makeStyles } from 'common/theme'
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles()(() => ({
   labelChecked: {},
   lastItem: {
     marginRight: 0,
@@ -25,8 +19,8 @@ interface LabelProps extends FormControlLabelProps {
   value: any
 }
 
-function MyFormControlLabel(props: LabelProps) {
-  const classes = useStyles()
+export const MyFormControlLabel = (props: LabelProps) => {
+  const { classes } = useStyles()
   const radioGroup = useRadioGroup()
 
   let checked = false
@@ -46,7 +40,7 @@ function MyFormControlLabel(props: LabelProps) {
 }
 
 export default ({ channel, setChannel, disabled }: Props): React.ReactElement => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <RadioGroup
       row

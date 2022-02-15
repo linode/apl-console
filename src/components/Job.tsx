@@ -1,12 +1,12 @@
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import isEqual from 'lodash/isEqual'
 import React, { useState } from 'react'
 import { Job, Secret } from '@redkubes/otomi-api-client-axios'
 import { cloneDeep } from 'lodash'
+import { getJobSchema, getJobUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
 import Form from './rjsf/Form'
-import { getJobSchema, getJobUiSchema } from '../api-spec'
 import DeleteButton from './DeleteButton'
-import { useSession } from '../session-context'
 
 interface Props {
   onSubmit: CallableFunction

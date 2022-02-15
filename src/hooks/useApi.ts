@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
 import { useEffect } from 'react'
 import { DefaultApi } from '@redkubes/otomi-api-client-axios'
-import { LoadingHook, useLoadingValue } from '../utils'
-import snack from '../utils/snack'
-import { useSession, SessionContext } from '../session-context'
-import { ApiError, ApiErrorUnauthorized } from '../utils/error'
-import devTokens from '../devtokens'
+import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
+import snack from 'utils/snack'
+import devTokens from 'common/devtokens'
+import { useSession, SessionContext } from 'common/session-context'
+import { ApiError, ApiErrorUnauthorized } from 'utils/error'
 
 const env = process.env
 let baseUrl = `${location.protocol}//${location.host}${env.CONTEXT_PATH || ''}/api/v1`

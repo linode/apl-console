@@ -2,10 +2,10 @@ import React from 'react'
 
 import { FieldProps } from '@rjsf/core'
 
-import Box from '@material-ui/core/Box'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import HelpButton from '../HelpButton'
+import Box from '@mui/material/Box'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
+import HelpButton from 'components/HelpButton'
 
 interface Props extends FieldProps {
   docUrl?: string

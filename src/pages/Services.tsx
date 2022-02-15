@@ -1,10 +1,10 @@
 import { Service, Team } from '@redkubes/otomi-api-client-axios'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import Services from '../components/Services'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { ApiError } from '../utils/error'
+import { ApiError } from 'utils/error'
+import Services from 'components/Services'
+import { useApi } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   teamId?: string

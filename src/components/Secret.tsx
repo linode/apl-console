@@ -1,9 +1,9 @@
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
 import { Secret } from '@redkubes/otomi-api-client-axios'
-import { getSecretSchema, getSecretUiSchema } from '../api-spec'
-import { useSession } from '../session-context'
+import { getSecretSchema, getSecretUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
 import Form from './rjsf/Form'
 import DeleteButton from './DeleteButton'
 

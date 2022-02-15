@@ -5,15 +5,17 @@ import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
-const getAppLink = (teamId) => (app): React.ReactElement => {
-  const { id } = app
-  const link = `/apps/${teamId}/${id}`
-  return (
-    <RLink to={link} label={id}>
-      {capitalize(id)}
-    </RLink>
-  )
-}
+const getAppLink =
+  (teamId: string) =>
+  (app): React.ReactElement => {
+    const { id } = app
+    const link = `/apps/${teamId}/${id}`
+    return (
+      <RLink to={link} label={id}>
+        {capitalize(id)}
+      </RLink>
+    )
+  }
 
 const getShortcutLink = (app) => {
   const {

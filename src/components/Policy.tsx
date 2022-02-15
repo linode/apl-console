@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { isEqual, isEmpty } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { getPolicySchema, getPolicyUiSchema } from '../api-spec'
-import { useSession } from '../session-context'
+import { getPolicySchema, getPolicyUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
 import Form from './rjsf/Form'
 
 interface Props {

@@ -1,23 +1,25 @@
-import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { Box, Button } from '@mui/material'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Team, Job } from '@redkubes/otomi-api-client-axios'
+import { useSession } from 'common/session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
-import { useSession } from '../session-context'
 
-const getJobLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
-  const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+const getJobLink =
+  (isAdmin, ownerId): CallableFunction =>
+  (row): React.ReactElement => {
+    const { teamId, id, name } = row
+    if (!(isAdmin || teamId === ownerId)) return name
 
-  const link = `/teams/${teamId}/jobs/${encodeURIComponent(id)}`
-  return (
-    <RLink to={link} label={name}>
-      {name}
-    </RLink>
-  )
-}
+    const link = `/teams/${teamId}/jobs/${encodeURIComponent(id)}`
+    return (
+      <RLink to={link} label={name}>
+        {name}
+      </RLink>
+    )
+  }
 
 interface Props {
   jobs: Job[]

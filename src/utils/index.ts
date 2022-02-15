@@ -1,9 +1,6 @@
 import { get, isEqual, set, unset } from 'lodash'
 
-export { default as useLoadingValue } from './useLoadingValue'
 export * from './refHooks'
-
-export type LoadingHook<T, E> = [T | undefined, boolean, E | undefined]
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 

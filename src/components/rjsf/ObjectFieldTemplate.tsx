@@ -1,14 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
-import { Box, Divider, Grid, Paper } from '@material-ui/core'
+import { Box, Divider, Grid, Paper } from '@mui/material'
 import React from 'react'
 import { ObjectFieldTemplateProps, utils } from '@rjsf/core'
 import { isEqual } from 'lodash'
-import CodeEditorTemplate from './CodeEditorWidget'
+import { getSchemaType, isSomeOf } from 'utils'
 import TitleField from './TitleField'
 import AddButton from './AddButton'
 import { useStyles } from './styles'
-import { getSchemaType, isSomeOf } from '../../utils'
 
 const { canExpand } = utils
 
@@ -18,7 +17,7 @@ const isHidden = (element: any): boolean => {
 
 export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   const { DescriptionField, disabled, formData, onAddClick, properties, readonly, idSchema, schema, uiSchema } = props
-  const classes = useStyles()
+  const { classes } = useStyles()
   const isOf = isSomeOf(schema)
   let grouped
   const fields = []
@@ -78,7 +77,6 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
 
   const render = (o, id = o.name) => {
     const schema = o.content?.props?.schema
-    const uiSchema = o.content?.props?.uiSchema
     const isOf = isSomeOf(schema)
     const type = getSchemaType(schema)
     const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum

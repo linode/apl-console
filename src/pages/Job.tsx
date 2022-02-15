@@ -1,9 +1,9 @@
 import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Job from '../components/Job'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import Job from 'components/Job'
+import { useApi, useAuthz } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   teamId?: string

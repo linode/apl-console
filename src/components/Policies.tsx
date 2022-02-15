@@ -2,23 +2,25 @@
 import React from 'react'
 import { Policies } from '@redkubes/otomi-api-client-axios'
 import { map } from 'lodash'
+import { getPolicySchema } from 'common/api-spec'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
-import { getPolicySchema } from '../api-spec'
 
 interface RowProps {
   policyId: string
 }
 
-const getPolicyLink = (): CallableFunction => ({ policyId }: RowProps): React.ReactElement => {
-  const link = `/policies/${policyId}`
-  const title = getPolicySchema(policyId).title
-  return (
-    <RLink to={link} label={policyId}>
-      {title}
-    </RLink>
-  )
-}
+const getPolicyLink =
+  (): CallableFunction =>
+  ({ policyId }: RowProps): React.ReactElement => {
+    const link = `/policies/${policyId}`
+    const title = getPolicySchema(policyId).title
+    return (
+      <RLink to={link} label={policyId}>
+        {title}
+      </RLink>
+    )
+  }
 
 interface Props {
   policies: Policies

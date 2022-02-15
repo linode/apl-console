@@ -1,15 +1,16 @@
 import React from 'react'
-import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser'
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import { Link, ListItem, List, ListItemText, ListItemIcon, MenuItem, Theme } from '@mui/material'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import generateDownloadLink from 'generate-download-link'
-import { useSession } from '../session-context'
-import { mainStyles } from '../theme'
-import canDo from '../utils/permission'
+import { makeStyles, useMainStyles } from 'common/theme'
+import { useSession } from 'common/session-context'
+
+import canDo from 'utils/permission'
 
 const baseUrl = process.env.CONTEXT_PATH || ''
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
   },
@@ -23,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default (): React.ReactElement => {
   const { ca, cluster, versions, oboTeamId, user } = useSession()
-  const classes = useStyles()
-  const mainClasses = mainStyles()
+  const { classes } = useStyles()
+  const { classes: mainClasses } = useMainStyles()
   const StyledListItem = ({ className, ...props }: any) => {
     return <ListItem className={`${classes.listItem}, ${className}`} {...props} />
   }

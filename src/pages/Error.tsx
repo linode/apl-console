@@ -1,9 +1,9 @@
 import React from 'react'
-import Error from '../components/Error'
+import { useSession } from 'common/session-context'
+import { ApiError } from 'utils/error'
+import Error from 'components/Error'
 
-import PaperLayout from '../layouts/Paper'
-import { useSession } from '../session-context'
-import { ApiError } from '../utils/error'
+import PaperLayout from 'layouts/Paper'
 
 interface Props {
   code: number

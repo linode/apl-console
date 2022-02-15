@@ -16,13 +16,15 @@ The frontend of the Otomi Container Platform that communicates with [otomi-api](
 source .env && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
 ```
 
-### Running in docker-compose with all deps
+### Start the dependencies
 
-```
-bin/dc.sh up-all
-```
+It is expected to have `$ENV_DIR` pointing to a valid values repo. Please follow the instructions in [otomi-core's readme]() if you need to create one.
 
-### Running with only deps in docker-compose
+#### Locally
+
+Just clone `otomi-core` somewhere, run `npm install` and start the tools server with `otomi server`.
+
+#### In docker-compose
 
 ```
 bin/dc.sh up-deps &

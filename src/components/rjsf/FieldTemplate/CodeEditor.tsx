@@ -3,7 +3,7 @@ import { dump, load } from 'js-yaml'
 import { isEqual } from 'lodash'
 import React, { ChangeEventHandler, useState } from 'react'
 
-import CodeEditor from '../../CodeEditor'
+import CodeEditor from 'components/CodeEditor'
 
 import FieldTemplate from './FieldTemplate'
 

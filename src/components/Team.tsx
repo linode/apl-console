@@ -1,10 +1,10 @@
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { isEqual } from 'lodash/lang'
 import React, { useState } from 'react'
 import { Team } from '@redkubes/otomi-api-client-axios'
+import { getTeamSchema, getTeamUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
 import DeleteButton from './DeleteButton'
-import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema } from '../api-spec'
 import Form from './rjsf/Form'
 
 interface Props {

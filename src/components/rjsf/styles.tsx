@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from 'common/theme'
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles()(() => ({
   root: {
     padding: 8,
   },
@@ -39,4 +39,4 @@ export const useStyles = makeStyles({
   paper: {
     // marginTop: 4,
   },
-})
+}))

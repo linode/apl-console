@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import PaperLayout from '../layouts/Paper'
-import App from '../components/App'
-import { useApi } from '../hooks/api'
-import { renameKeys } from '../utils/data'
+import { renameKeys } from 'utils/data'
+import App from 'components/App'
+import { useApi } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   teamId: string

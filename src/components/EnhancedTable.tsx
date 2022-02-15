@@ -3,11 +3,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import {
   Checkbox,
-  createStyles,
   FormControlLabel,
   IconButton,
   lighten,
-  makeStyles,
   Paper,
   Switch,
   Table,
@@ -22,12 +20,12 @@ import {
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
-import clsx from 'clsx'
+} from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { makeStyles } from 'common/theme'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (get(b, orderBy) < get(a, orderBy)) {
@@ -69,34 +67,32 @@ export interface HeadCell {
   component?: any
 }
 
-const useEnhancedStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-    },
-    paper: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-    table: {
-      minWidth: 750,
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: 'rect(0 0 0 0)',
-      height: 1,
-      margin: -1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      top: 20,
-      width: 1,
-    },
-  }),
-)
+const useEnhancedStyles = makeStyles()((theme: Theme) => ({
+  root: {
+    width: '100%',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+}))
 
 interface EnhancedTableProps {
-  classes?: ReturnType<typeof useEnhancedStyles>
+  classes?: any // ReturnType<typeof useEnhancedStyles>
   numSelected: number
   onRequestSort: (event: MouseEvent<unknown>, property: string) => void
   onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
@@ -109,18 +105,9 @@ interface EnhancedTableProps {
   disableSelect?: boolean
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    disableSelect,
-    classes,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onSelectAllClick,
-    onRequestSort,
-    headCells,
-  } = props
+export const EnhancedTableHead = (props: EnhancedTableProps) => {
+  const { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
+    props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -164,39 +151,37 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   )
 }
 
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    title: {
-      flex: '1 1 100%',
-    },
-  }),
-)
+const useToolbarStyles = makeStyles()((theme: Theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.mode === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
+  title: {
+    flex: '1 1 100%',
+  },
+}))
 
 interface EnhancedTableToolbarProps {
   numSelected: number
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const classes = useToolbarStyles()
+  const { classes, cx } = useToolbarStyles()
   const { numSelected } = props
 
   return (
     <Toolbar
-      className={clsx(classes.root, {
+      className={cx(classes.root, {
         [classes.highlight]: numSelected > 0,
       })}
     >
@@ -226,7 +211,7 @@ interface Props {
 
 // eslint-disable-next-line react/prop-types
 export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props): React.ReactElement => {
-  const classes = useEnhancedStyles()
+  const { classes } = useEnhancedStyles()
   const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
   const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)
   const [selected, setSelected] = useState<string[]>([])

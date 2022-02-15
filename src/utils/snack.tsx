@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSnackbar, WithSnackbarProps, OptionsObject, SnackbarProvider, SnackbarProviderProps } from 'notistack'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles } from 'common/theme'
 
 export const defaultOpts = {
   maxSnack: 3,
@@ -8,7 +8,7 @@ export const defaultOpts = {
   preventDuplicate: true,
 }
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles()(({ palette }) => ({
   variantSuccess: {
     backgroundColor: palette.success.main,
   },
@@ -24,7 +24,7 @@ const useStyles = makeStyles(({ palette }) => ({
 }))
 
 export const NotistackProvider = ({ children }: SnackbarProviderProps): React.ReactElement => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <SnackbarProvider
       classes={classes}

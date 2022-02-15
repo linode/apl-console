@@ -1,9 +1,9 @@
-import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { Box, Button } from '@mui/material'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Link } from 'react-router-dom'
 import React from 'react'
+import { useSession } from 'common/session-context'
 import RLink from './Link'
-import { useSession } from '../session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import MuiLink from './MuiLink'
 

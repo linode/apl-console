@@ -1,6 +1,6 @@
 import { User } from '@redkubes/otomi-api-client-axios'
 import { set } from 'lodash'
-import canDo from '../../utils/permission'
+import canDo from 'utils/permission'
 
 it('admin can download kubecfg', () => {
   const user = new User()

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Settings } from '@redkubes/otomi-api-client-axios'
 import { RouteComponentProps } from 'react-router-dom'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { ApiError } from '../utils/error'
-import Policy from '../components/Policy'
-import { renameKeys } from '../utils/data'
+import { ApiError } from 'utils/error'
+import { renameKeys } from 'utils/data'
+import Policy from 'components/Policy'
+import { useApi } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   policyId?: string

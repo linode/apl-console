@@ -2,9 +2,9 @@
 import find from 'lodash/find'
 import React from 'react'
 import { Team } from '@redkubes/otomi-api-client-axios'
-import Dashboard from '../components/Dashboard'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import Dashboard from 'components/Dashboard'
+import { useApi, useAuthz } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 export default (): React.ReactElement => {
   const {

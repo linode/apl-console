@@ -1,38 +1,39 @@
-import { Collapse, List, ListItemText, ListSubheader, makeStyles, MenuItem } from '@material-ui/core'
-import MenuList from '@material-ui/core/List'
-import SettingsIcon from '@material-ui/icons/Settings'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import AppsIcon from '@material-ui/icons/Apps'
-import ShortcutIcon from '@material-ui/icons/Link'
-import CloudIcon from '@material-ui/icons/Cloud'
-import CloudUploadIcon from '@material-ui/icons/CloudUpload'
-import LockIcon from '@material-ui/icons/Lock'
-import HourglassEmptyIcon from '@material-ui/icons/HourglassEmpty'
-import PeopleIcon from '@material-ui/icons/People'
-import PersonIcon from '@material-ui/icons/Person'
-import DashboardIcon from '@material-ui/icons/Dashboard'
-import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
+import { Collapse, List, ListItemText, ListSubheader, MenuItem, Theme } from '@mui/material'
+import MenuList from '@mui/material/List'
+import SettingsIcon from '@mui/icons-material/Settings'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import AppsIcon from '@mui/icons-material/Apps'
+import ShortcutIcon from '@mui/icons-material/Link'
+import CloudIcon from '@mui/icons-material/Cloud'
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'
+import LockIcon from '@mui/icons-material/Lock'
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
+import PeopleIcon from '@mui/icons-material/People'
+// import PersonIcon from '@mui/icons-material/Person'
+import DashboardIcon from '@mui/icons-material/Dashboard'
+import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import ExpandLess from '@material-ui/icons/ExpandLess'
-import ExpandMore from '@material-ui/icons/ExpandMore'
-import AnnouncementIcon from '@material-ui/icons/Announcement'
-import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet'
-import DnsIcon from '@material-ui/icons/Dns'
-import LockOpenIcon from '@material-ui/icons/LockOpen'
-import HomeIcon from '@material-ui/icons/Home'
-import DonutLargeIcon from '@material-ui/icons/DonutLarge'
-import MailIcon from '@material-ui/icons/Mail'
+import ExpandLess from '@mui/icons-material/ExpandLess'
+import ExpandMore from '@mui/icons-material/ExpandMore'
+import AnnouncementIcon from '@mui/icons-material/Announcement'
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
+import DnsIcon from '@mui/icons-material/Dns'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
+import HomeIcon from '@mui/icons-material/Home'
+import DonutLargeIcon from '@mui/icons-material/DonutLarge'
+import MailIcon from '@mui/icons-material/Mail'
 import { Provider } from '@redkubes/otomi-api-client-axios'
-import PolicyIcon from '@material-ui/icons/Policy'
-import { useApi } from '../hooks/api'
-import { mainStyles } from '../theme'
-import snack from '../utils/snack'
-import Cluster from './Cluster'
-import { useSession } from '../session-context'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import PolicyIcon from '@mui/icons-material/Policy'
+import { makeStyles, useMainStyles } from 'common/theme'
+import { useSession } from 'common/session-context'
+import snack from 'utils/snack'
+import { useApi } from 'hooks/useApi'
 
-const useStyles = makeStyles((theme) => ({
+import { useLocalStorage } from 'hooks/useLocalStorage'
+import Cluster from './Cluster'
+
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     paddingTop: 0,
     // textTransform: 'capitalize',
@@ -57,10 +58,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 interface Props {
+  className?: string
   teamId?: any
 }
 
-export default ({ teamId }: Props): React.ReactElement => {
+export default ({ className, teamId }: Props): React.ReactElement => {
   const { pathname } = useLocation()
   const {
     cluster,
@@ -90,11 +92,11 @@ export default ({ teamId }: Props): React.ReactElement => {
     }
   }
 
-  const classes = useStyles()
-  const mainClasses = mainStyles()
+  const { classes, cx } = useStyles()
+  const { classes: mainClasses } = useMainStyles()
 
   const StyledMenuItem = (props: any) => {
-    return <MenuItem component={Link} className={`${mainClasses.selectable} ${classes.listItem}`} {...props} />
+    return <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
   }
   const StyledListSubheader = (props) => {
     return <ListSubheader className={classes.listSubheader} {...props} />
@@ -120,7 +122,7 @@ export default ({ teamId }: Props): React.ReactElement => {
   }
 
   return (
-    <MenuList className={classes.root} data-cy='menu-list-otomi'>
+    <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
         <ListItemText primary='Enterprise' />
       </StyledListSubheader>

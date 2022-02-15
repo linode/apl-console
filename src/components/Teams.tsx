@@ -1,9 +1,9 @@
-import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { Box, Button } from '@mui/material'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Team } from '@redkubes/otomi-api-client-axios'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSession } from '../session-context'
+import { useSession } from 'common/session-context'
 import RLink from './Link'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 

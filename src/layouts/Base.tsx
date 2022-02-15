@@ -1,28 +1,19 @@
-import { Hidden, makeStyles, Tooltip, Typography } from '@material-ui/core'
-import AppBar from '@material-ui/core/AppBar'
-import Badge from '@material-ui/core/Badge'
-import CssBaseline from '@material-ui/core/CssBaseline'
-import Divider from '@material-ui/core/Divider'
-import Drawer from '@material-ui/core/Drawer'
-import IconButton from '@material-ui/core/IconButton'
-import Toolbar from '@material-ui/core/Toolbar'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import NotificationsIcon from '@material-ui/icons/Notifications'
-import clsx from 'clsx'
+import { Box, Typography, Theme, Toolbar, IconButton, AppBar, Drawer, Divider } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import React, { useState } from 'react'
-import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
-import Brightness3Icon from '@material-ui/icons/Brightness3'
-import Menu from '../components/Menu'
-import User from '../components/User'
-import { useSession } from '../session-context'
-import { mainStyles, toggleThemeType } from '../theme'
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
+import Brightness3Icon from '@mui/icons-material/Brightness3'
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
+import { makeStyles, toggleThemeMode } from 'common/theme'
+import { useSession } from 'common/session-context'
+import Menu from 'components/Menu'
+import User from 'components/User'
 
 const drawerWidth = '240px'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     display: 'flex',
-    // a: theme.palette.primary.dark,
   },
   title: {
     fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
@@ -41,15 +32,13 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'left',
   },
   toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-    ...theme.mixins.toolbar,
+    paddingRight: theme.spacing(3),
   },
   toolbarIcon: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
-    ...theme.mixins.toolbar,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -58,6 +47,12 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    // minHeight: theme.spacing(8),
+    // maxHeight: theme.spacing(8),
+    // [theme.breakpoints.down('sm')]: {
+    //   minHeight: theme.spacing(7),
+    //   maxHeight: theme.spacing(7),
+    // },
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -103,7 +98,6 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
     height: '100vh',
@@ -111,16 +105,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const ToolbarOffset = styled('div')(({ theme }) => theme.mixins.toolbar)
+
 interface Props {
   children?: any
 }
 
 export default (props: Props): React.ReactElement => {
   const { children } = props
-  const { oboTeamId, themeType, setThemeType } = useSession()
+  const { oboTeamId, themeType, setThemeMode } = useSession()
 
-  const classes = useStyles(props)
-  const mainClasses = mainStyles()
+  const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)
   const handleDrawerOpen = (e) => {
     e.preventDefault()
@@ -131,10 +126,8 @@ export default (props: Props): React.ReactElement => {
     setOpen(false)
   }
   const toggleTheme = (): void => {
-    setThemeType(toggleThemeType())
+    setThemeMode(toggleThemeMode())
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const img = (
     <img
@@ -152,40 +145,37 @@ export default (props: Props): React.ReactElement => {
       <Menu teamId={oboTeamId} />
     </div>
   )
-  const toolbar = (
-    <Toolbar className={classes.toolbar}>
-      <div className={classes.logo}>
-        <Hidden smDown implementation='css'>
-          <IconButton color='inherit'>
-            {img}
-            <Typography className={classes.title} variant='h6'>
-              otomi console
-            </Typography>
-          </IconButton>
-        </Hidden>
-        <Hidden mdUp implementation='css'>
-          <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
-        </Hidden>
-      </div>
-      <User />
-      <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
-        {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
-      </IconButton>
-    </Toolbar>
-  )
 
   return (
-    <div className={`${classes.root} ${mainClasses.forms}`}>
-      <CssBaseline />
-      <AppBar position='fixed' className={clsx(classes.appBar, open && classes.appBarShift)}>
-        {toolbar}
+    <div className={classes.root}>
+      <AppBar position='fixed' className={cx(classes.appBar, open && classes.appBarShift)}>
+        <Toolbar className={classes.toolbar}>
+          <div className={classes.logo}>
+            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+              <IconButton color='inherit'>
+                {img}
+                <Typography className={classes.title} variant='h6'>
+                  otomi console
+                </Typography>
+              </IconButton>
+            </Box>
+            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+              <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
+            </Box>
+          </div>
+          <User />
+          <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
+            {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
+          </IconButton>
+        </Toolbar>
+        {/* <ToolbarOffset /> */}
       </AppBar>
-      <Hidden mdUp implementation='css'>
+      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
         <Drawer
           variant='temporary'
           className={classes.drawer}
           classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+            paper: cx(classes.drawerPaper, !open && classes.drawerPaperClose),
           }}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
@@ -194,32 +184,32 @@ export default (props: Props): React.ReactElement => {
           onClick={handleDrawerOpen}
           data-cy='drawer-small-screen'
         >
-          <div className={classes.toolbarIcon}>
+          <ToolbarOffset className={classes.toolbarIcon}>
             <IconButton onClick={handleDrawerClose}>
               <ChevronLeftIcon />
             </IconButton>
-          </div>
+          </ToolbarOffset>
           {/* <Divider /> */}
           {drawer}
           <Divider />
           {/* <List>{secondaryListItems}</List> */}
         </Drawer>
-      </Hidden>
-      <Hidden smDown implementation='css'>
+      </Box>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <Drawer
           className={classes.drawer}
           variant='permanent'
           classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+            paper: cx(classes.drawerPaper, !open && classes.drawerPaperClose),
           }}
           data-cy='drawer-big-screen'
         >
-          <div className={classes.toolbar} />
+          <ToolbarOffset />
           {drawer}
         </Drawer>
-      </Hidden>
+      </Box>
       <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
+        <ToolbarOffset />
         <>{children}</>
       </main>
     </div>

@@ -1,13 +1,13 @@
-import { Card, CardActionArea, CardContent, CardMedia, IconButton, Link, Typography } from '@material-ui/core'
-import { makeStyles, Theme } from '@material-ui/core/styles'
-import InfoIcon from '@material-ui/icons/Info'
-import HelpIcon from '@material-ui/icons/Help'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import SettingsIcon from '@material-ui/icons/Settings'
+import { Card, CardContent, CardMedia, IconButton, Link, Theme, Typography } from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
+// import HelpIcon from '@mui/icons-material/Help'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import SettingsIcon from '@mui/icons-material/Settings'
 import React from 'react'
 import { Link as RLink } from 'react-router-dom'
+import { makeStyles } from 'common/theme'
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     display: 'flex',
     height: theme.spacing(20),
@@ -62,7 +62,7 @@ export default ({
   hideConfButton = false,
   wide = false,
 }: any): React.ReactElement => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <Card className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}`}>
       <div className={classes.details}>

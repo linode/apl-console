@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import PaperLayout from '../layouts/Paper'
-import Setting from '../components/Setting'
-import { useApi } from '../hooks/api'
-import { renameKeys } from '../utils/data'
+import { renameKeys } from 'utils/data'
+import Setting from 'components/Setting'
+import { useApi } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   settingId?: string

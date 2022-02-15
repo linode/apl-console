@@ -1,4 +1,5 @@
-import { createTheme, createStyles, makeStyles, Theme, ThemeOptions } from '@material-ui/core/styles'
+import { createTheme, createStyles, Theme, ThemeOptions } from '@mui/material/styles'
+import { createMakeStyles } from 'tss-react'
 
 export const c = {
   light: '#ccc',
@@ -81,59 +82,67 @@ const getOverrides = (c: any): ThemeOptions => {
         '"Segoe UI Symbol"',
       ].join(','),
     },
-    props: {
+    components: {
       MuiLink: {
-        underline: 'none',
+        defaultProps: {
+          underline: 'none',
+        },
       },
       MuiCheckbox: {
-        color: 'primary',
-      },
-      MuiSwitch: {
-        color: 'primary',
-      },
-      MuiRadio: {
-        color: 'primary',
-      },
-    },
-    overrides: {
-      MuiCssBaseline: {},
-      MuiButton: {
-        label: {
+        defaultProps: {
           color: 'primary',
         },
-        root: {
-          borderRadius: '2em',
+      },
+      MuiSwitch: {
+        defaultProps: {
+          color: 'primary',
+        },
+      },
+      MuiRadio: {
+        defaultProps: {
+          color: 'primary',
+        },
+      },
+      MuiButton: {
+        styleOverrides: {
+          // label: {
+          //   color: 'primary',
+          // },
+          root: {
+            borderRadius: '2em',
+          },
         },
       },
       MuiInputBase: {
-        root: {
-          borderRadius: '6px',
+        styleOverrides: {
+          root: {
+            borderRadius: '6px',
+          },
         },
       },
       MuiFormLabel: {
-        root: {
-          textTransform: 'capitalize',
+        styleOverrides: {
+          root: {
+            textTransform: 'capitalize',
+          },
         },
       },
-
       MuiListItemIcon: {
-        root: {
-          minWidth: '38px',
+        styleOverrides: {
+          root: {
+            minWidth: '38px',
+          },
         },
-      },
-      MuiListItem: {
-        root: {},
       },
       MuiListItemText: {
-        root: {
-          marginTop: 0,
-          marginBottom: 0,
-          paddingTop: 4,
-          paddingBottom: 4,
+        styleOverrides: {
+          root: {
+            marginTop: 0,
+            marginBottom: 0,
+            paddingTop: 4,
+            paddingBottom: 4,
+          },
         },
-      },
-      MuiTableHead: {
-        root: {},
       },
     },
     palette: {
@@ -148,22 +157,22 @@ const getOverrides = (c: any): ThemeOptions => {
 }
 
 let name = 'admin'
-let type = 'light'
+let mode = 'light'
 
-export function setThemeName(inName: string): void {
+export const setThemeName = (inName: string): void => {
   name = inName
 }
 
-export function getThemeType(): string {
-  return type
+export const getThemeMode = (): string => {
+  return mode
 }
-export function setThemeType(inType: string): void {
-  type = inType
+export const setThemeMode = (inMode: string): void => {
+  mode = inMode
 }
 
-export const toggleThemeType = (): string => {
-  type = type === 'light' ? 'dark' : 'light'
-  return type
+export const toggleThemeMode = (): string => {
+  mode = mode === 'light' ? 'dark' : 'light'
+  return mode
 }
 
 const teamOverrides = getOverrides(teamColors)
@@ -171,7 +180,7 @@ const teamLight = createTheme(teamOverrides)
 const teamDark = createTheme({
   ...teamOverrides,
   palette: {
-    type: 'dark',
+    mode: 'dark',
     common: commonDark,
     text: {
       primary: c.light,
@@ -190,7 +199,7 @@ const adminLight = createTheme(adminOverrides)
 const adminDark = createTheme({
   ...adminOverrides,
   palette: {
-    type: 'dark',
+    mode: 'dark',
     common: commonDark,
     text: {
       primary: c.light,
@@ -216,68 +225,31 @@ export const themes = {
   },
 }
 
-export function getTheme(): Theme {
-  return themes[name][type]
+export const getTheme = (): Theme => {
+  return themes[name][mode]
 }
 
-export const createClasses = (stylesObj): any => makeStyles(() => createStyles(stylesObj))({})
+export const {
+  makeStyles,
+  useStyles, // <- To use when you need css or cx but don't have custom classes
+} = createMakeStyles({ useTheme: getTheme })
 
-export const mainStyles = makeStyles((theme) => ({
-  forms: {
-    '@global': {
-      '.MuiInput-root:not([data-cy="select-oboteam"],[data-cy="select-cluster"])': {
-        minWidth: '10rem',
-        paddingLeft: '1rem',
-        paddingRight: '1rem',
-      },
-      '.MuiInput-root.MuiInputBase-multiline': {
-        minWidth: '30rem',
-      },
-      '.MuiFormControl-root:has(> input)': {
-        display: 'none',
-      },
-      '.MuiFormControl-root': {
-        marginTop: 8,
-      },
-      '.MuiButton-iconSizeSmall': {
-        marginRight: '3px',
-      },
-      '.MuiButton-textSecondary': {
-        color: theme.palette.primary.contrastText,
-        backgroundColor: theme.palette.primary.main,
-      },
-      '.MuiTypography-root': {
-        // maxWidth: '300px',
-      },
-      '.MuiTypography-caption': {
-        maxWidth: 'fit-content',
-      },
-      h5: {
-        fontSize: '1.2rem',
-        fontWeight: 'bold',
-      },
-      'h5:first-letter,h6:first-letter,h7:first-letter': {
-        textTransform: 'capitalize',
-      },
-    },
-  },
-  // button: {
-  //   color: theme.palette.common.white,
-  //   backgroundColor: theme.palette.primary.main,
-  // },
+export const createClasses = (stylesObj): any => makeStyles()(() => createStyles(stylesObj))
+
+export const useMainStyles = makeStyles()((theme: Theme) => ({
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,
     fontWeight: 'bold',
     '&&': {
       textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
+      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
     },
     '&&:hover': {
-      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
+      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
     },
     '&&.Mui-selected': {
-      color: type === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.light,
+      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.light,
     },
   },
   selectable: {
@@ -285,13 +257,50 @@ export const mainStyles = makeStyles((theme) => ({
     color: theme.palette.common.white,
     '&&': {
       textDecoration: 'none',
-      color: type === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+      color: mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     },
     '&&:hover': {
-      color: type === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
+      color: mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
     },
     '&&.Mui-selected': {
-      color: type === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
+      color: mode === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
     },
   },
 }))
+
+export const globalStyles = (theme: Theme): any => ({
+  '.MuiInput-root:not([data-cy="select-oboteam"],[data-cy="select-cluster"])': {
+    minWidth: '10rem',
+    paddingLeft: '1rem',
+    paddingRight: '1rem',
+  },
+  '.MuiInput-root.MuiInputBase-multiline': {
+    minWidth: '30rem',
+  },
+  '.MuiFormControl-root:has(> input)': {
+    display: 'none',
+  },
+  '.MuiFormControl-root': {
+    marginTop: 8,
+  },
+  '.MuiButton-iconSizeSmall': {
+    marginRight: '3px',
+  },
+  '.MuiButton-textSecondary': {
+    color: theme.palette.primary.contrastText,
+    backgroundColor: theme.palette.primary.main,
+  },
+  '.MuiTypography-root': {
+    // maxWidth: '300px',
+  },
+  '.MuiTypography-caption': {
+    maxWidth: 'fit-content',
+  },
+  h5: {
+    fontSize: '1.2rem',
+    fontWeight: 'bold',
+  },
+  'h5:first-letter,h6:first-letter,h7:first-letter': {
+    textTransform: 'capitalize',
+  },
+})

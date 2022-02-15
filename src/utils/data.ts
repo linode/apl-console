@@ -4,7 +4,7 @@ import { Session } from '@redkubes/otomi-api-client-axios'
 import camelcase from 'camelcase'
 import { JSONSchema7 } from 'json-schema'
 import { find, isEmpty, isPlainObject, transform } from 'lodash'
-import { getSpec } from '../api-spec'
+import { getSpec } from 'common/api-spec'
 
 export const cleanOptions = {
   cleanKeys: [],

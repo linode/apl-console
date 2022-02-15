@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button } from '@material-ui/core'
+import { Box, Button } from '@mui/material'
 import { isEmpty, isEqual } from 'lodash'
+import { getSettingSchema, getSettingUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
 import Form from './rjsf/Form'
-import { getSettingSchema, getSettingUiSchema } from '../api-spec'
-import { useSession } from '../session-context'
 
 interface Props {
   onSubmit: CallableFunction

@@ -1,10 +1,12 @@
 import React from 'react'
-import { Container, Grid, Paper, makeStyles } from '@material-ui/core'
+import { Container, Grid, Paper } from '@material-ui/core'
+import { Theme } from '@mui/material'
+import { makeStyles } from 'common/theme'
+import Error from 'components/Error'
+import Loader from 'components/Loader'
 import MainLayout from './Base'
-import Error from '../components/Error'
-import Loader from '../components/Loader'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   container: {
     // paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(2),
@@ -21,8 +23,9 @@ interface Props {
   loading?: boolean
   comp: React.ReactElement
 }
+
 export default ({ loading, comp }: Props): React.ReactElement => {
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <MainLayout>
       <Container maxWidth='lg' className={classes.container}>

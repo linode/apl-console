@@ -1,15 +1,17 @@
-import CircularProgress from '@material-ui/core/CircularProgress'
 import React from 'react'
-import { createClasses } from '../theme'
+import CircularProgress from '@mui/material/CircularProgress'
+import { makeStyles } from 'common/theme'
 
-export default (): React.ReactElement => {
-  const classes = createClasses({
-    root: {
-      display: 'flex',
-      height: '100%',
-      justifyContent: 'center',
-    },
-  })
+const useStyles = makeStyles()({
+  root: {
+    display: 'flex',
+    height: '100%',
+    justifyContent: 'center',
+  },
+})
+
+export default () => {
+  const { classes } = useStyles()
   return (
     <div className={classes.root}>
       <CircularProgress />

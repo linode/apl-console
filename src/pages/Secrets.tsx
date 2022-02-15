@@ -1,8 +1,8 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import Secrets from '../components/Secrets'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import Secrets from 'components/Secrets'
+import { useApi, useAuthz } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   teamId?: string

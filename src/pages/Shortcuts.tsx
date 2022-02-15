@@ -1,10 +1,10 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import Shortcuts from '../components/Shortcuts'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { useSession } from '../session-context'
-import { getAppData } from '../utils/data'
+import { useSession } from 'common/session-context'
+import { getAppData } from 'utils/data'
+import Shortcuts from 'components/Shortcuts'
+import { useApi, useAuthz } from 'hooks/useApi'
+import PaperLayout from 'layouts/Paper'
 
 interface Params {
   teamId?: string

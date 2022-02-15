@@ -1,7 +1,7 @@
-import { Grid } from '@material-ui/core'
+import { Grid } from '@mui/material'
 import React from 'react'
-import { useSession } from '../session-context'
-import { getAppData, getApps } from '../utils/data'
+import { getAppData, getApps } from 'utils/data'
+import { useSession } from 'common/session-context'
 import AppCard from './AppCard'
 
 const contextPath = process.env.CONTEXT_PATH || ''

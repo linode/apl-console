@@ -1,5 +1,8 @@
-import { Link } from '@material-ui/core'
+import { Link } from '@mui/material'
 import React from 'react'
-import { mainStyles } from '../theme'
+import { useMainStyles } from 'common/theme'
 
-export default (props): React.ReactElement => <Link {...props} className={mainStyles().selectable} />
+export default (props): React.ReactElement => {
+  const { classes } = useMainStyles()
+  return <Link {...props} className={classes.selectable} />
+}

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Cluster, Dns, Session, User } from '@redkubes/otomi-api-client-axios'
-import { ApiError } from './utils/error'
+import { ApiError } from 'utils/error'
 
 interface Versions {
   core: string
@@ -22,7 +22,7 @@ export interface SessionContext extends Session {
   setGlobalError?: CallableFunction
   setOboTeamId?: CallableFunction
   setSession: CallableFunction | undefined
-  setThemeType?: CallableFunction
+  setThemeMode?: CallableFunction
   themeType: string
   user: User | any
   versions: Versions | undefined
@@ -45,7 +45,7 @@ const context = React.createContext<SessionContext>({
   setGlobalError: undefined,
   setOboTeamId: undefined,
   setSession: undefined,
-  setThemeType: undefined,
+  setThemeMode: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,

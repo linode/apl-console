@@ -1,8 +1,9 @@
-import React, { useEffect, useState, ChangeEventHandler } from 'react'
-import CodeEditor, { SelectionText, TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
-import { makeStyles } from '@material-ui/core/styles'
+import React, { useState } from 'react'
+import CodeEditor, { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
+import { Theme } from '@mui/material'
+import { makeStyles } from 'common/theme'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     backgroundColor: theme.palette.common.white,
     fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
@@ -37,7 +38,7 @@ export default ({
     setCode(e.target.value)
     if (onChange) onChange(e.target.value)
   }
-  const classes = useStyles()
+  const { classes } = useStyles()
   return (
     <CodeEditor
       className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}${invalid ? ` ${classes.invalid}` : ''}`}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, LinkProps } from 'react-router-dom'
-import { mainStyles } from '../theme'
+import { useMainStyles } from 'common/theme'
 
 interface LinkExtendedProps extends LinkProps {
   label: string
@@ -8,5 +8,6 @@ interface LinkExtendedProps extends LinkProps {
 
 export default (props: LinkExtendedProps): React.ReactElement => {
   const { label } = props
-  return <Link {...props} className={mainStyles().selectable} data-cy={`link-${label}`} />
+  const { classes } = useMainStyles()
+  return <Link {...props} className={classes.selectable} data-cy={`link-${label}`} />
 }

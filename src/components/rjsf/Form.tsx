@@ -1,12 +1,11 @@
 import React from 'react'
-import { makeStyles, createStyles } from '@material-ui/core'
 import Form from '@rjsf/material-ui'
 import { FormProps, IChangeEvent } from '@rjsf/core'
 import validator from '@rjsf/core/dist/cjs/validate'
-// import applyRules from 'rjsf-conditionals'
-// import { Engine } from 'json-rules-engine-simplified'
 import { get, isEqual } from 'lodash'
-import HelpButton from '../HelpButton'
+import { makeStyles } from 'common/theme'
+import { cleanData } from 'utils/data'
+import HelpButton from 'components/HelpButton'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
 import TitleField from './TitleField'
@@ -15,17 +14,14 @@ import DescriptionField from './DescriptionField'
 import OneOfField from './OneOfField'
 import RadioWidget from './RadioWidget'
 import StringField from './StringField'
-import { cleanData } from '../../utils/data'
 import CheckboxesWidget from './CheckboxesWidget'
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
-  }),
-)
+const useStyles = makeStyles()(() => ({
+  root: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+}))
 
 interface Props extends FormProps<any> {
   title?: any
@@ -48,7 +44,7 @@ export default ({
   // const rules = schema['x-rules'] ?? undefined
   // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-  const classes = useStyles()
+  const { classes } = useStyles()
   const onChangeWrapper = ({ formData, ...rest }: IChangeEvent<any>, errors) => {
     const cleanFormData = clean ? cleanData(formData) : formData
     // const cleanFormData = formData

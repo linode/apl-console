@@ -1,32 +1,30 @@
-import { AppBar, Box, Button, List, ListItem, ListSubheader, Tab, Typography } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { TabContext, TabList, TabPanel } from '@material-ui/lab'
+import { AppBar, Box, Button, List, ListItem, ListSubheader, Tab, Theme, Typography } from '@mui/material'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { isEqual } from 'lodash'
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { dump, load } from 'js-yaml'
+import { dump } from 'js-yaml'
 import { JSONSchema7 } from 'json-schema'
-import { useSession } from '../session-context'
-import { getAppData } from '../utils/data'
+import { makeStyles } from 'common/theme'
+import { getAppSchema, getAppUiSchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
+import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
 import CodeEditor from './CodeEditor'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
-import { getAppSchema, getAppUiSchema } from '../api-spec'
 
 const contextPath = process.env.CONTEXT_PATH || ''
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    noTabs: {
-      padding: theme.spacing(3),
-    },
-    disabled: {
-      backgroundColor: theme.palette.action.disabledBackground,
-      color: theme.palette.action.disabled,
-    },
-  }),
-)
+const useStyles = makeStyles()((theme: Theme) => ({
+  noTabs: {
+    padding: theme.spacing(3),
+  },
+  disabled: {
+    backgroundColor: theme.palette.action.disabledBackground,
+    color: theme.palette.action.disabled,
+  },
+}))
 
 export default ({
   id,
@@ -43,7 +41,7 @@ export default ({
     values: '2',
     rawvalues: '3',
   }
-  const classes = useStyles()
+  const { classes } = useStyles()
   const session = useSession()
   const { cluster } = session
 
@@ -77,8 +75,8 @@ export default ({
     const d = !isEqual(formData, inValues)
     setDirty(d)
     setValuesDirty(d)
-    const newAppSchema = getAppSchema(id, cluster, values).properties?.values
-    const newAppUiSchema = getAppUiSchema(id, cluster, values)
+    const newAppSchema = getAppSchema(id).properties?.values
+    const newAppUiSchema = getAppUiSchema(id)
     setAppSchema(newAppSchema)
     setAppUiSchema(newAppUiSchema)
   }

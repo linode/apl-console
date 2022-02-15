@@ -1,12 +1,12 @@
-import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@material-ui/core'
+import { Avatar, Box, Link, MenuItem, Select, Theme, Tooltip, Typography } from '@mui/material'
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
-import { mainStyles, getThemeType } from '../theme'
-import { useSession } from '../session-context'
+import { makeStyles, useMainStyles, getThemeMode } from 'common/theme'
 
-const useStyles = makeStyles((theme) => {
-  const isDark = getThemeType() === 'dark'
+import { useSession } from 'common/session-context'
+
+const useStyles = makeStyles()((theme: Theme) => {
+  const isDark = getThemeMode() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
   return {
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => {
 })
 
 export default (): React.ReactElement => {
-  const mainClasses = mainStyles()
-  const classes = useStyles()
+  const { classes: mainClasses } = useMainStyles()
+  const { classes } = useStyles()
   const history = useHistory()
   const {
     cluster,
@@ -99,7 +99,6 @@ export default (): React.ReactElement => {
       <Typography variant='body1'>cluster:</Typography>
       <Select
         color='secondary'
-        disableUnderline
         value={`${cluster.provider}-${cluster.name}`}
         onChange={handleChangeCluster}
         className={classes.select}
@@ -123,7 +122,6 @@ export default (): React.ReactElement => {
       <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'
-        disableUnderline
         value={oboTeamId || ''}
         onChange={handleChange}
         className={classes.select}
@@ -147,7 +145,7 @@ export default (): React.ReactElement => {
       </Select>
       &nbsp;
       <Avatar className={classes.avatar} />
-      <Hidden xsDown>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <Typography variant='body1' data-cy='text-user-team'>
           <Tooltip title='logout' aria-label='logout'>
             <Link className={mainClasses.headerlink} href='/logout-otomi'>
@@ -156,7 +154,7 @@ export default (): React.ReactElement => {
           </Tooltip>{' '}
           <strong>{isAdmin && '(admin)'}</strong>
         </Typography>
-      </Hidden>
+      </Box>
     </>
   )
 }

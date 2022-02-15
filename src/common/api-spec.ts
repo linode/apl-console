@@ -12,8 +12,8 @@ import {
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
 import camelcase from 'camelcase'
-import { extract, getStrict } from './utils'
-import CodeEditor from './components/rjsf/FieldTemplate/CodeEditor'
+import { extract, getStrict } from 'utils'
+import CodeEditor from 'components/rjsf/FieldTemplate/CodeEditor'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 
@@ -79,7 +79,7 @@ let spec: OpenApi
 
 export const getSpec = () => spec
 
-export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, schemaName: string): void {
+export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, schemaName: string): void => {
   if (user.isAdmin) return
 
   get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
@@ -87,7 +87,7 @@ export function applyAclToUiSchema(uiSchema: any, user: User, teamId: string, sc
   })
 }
 
-export function getTeamUiSchema(user: User, teamId: string, action: string): any {
+export const getTeamUiSchema = (user: User, teamId: string, action: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:readonly': action !== 'create' },
@@ -103,7 +103,7 @@ export function getTeamUiSchema(user: User, teamId: string, action: string): any
   return uiSchema
 }
 
-export function getJobUiSchema(formData, user: User, teamId: string): any {
+export const getJobUiSchema = (formData, user: User, teamId: string): any => {
   const uiSchema = {
     ...jobSpecUiSchema,
     id: { 'ui:widget': 'hidden' },
@@ -117,7 +117,7 @@ export function getJobUiSchema(formData, user: User, teamId: string): any {
   return uiSchema
 }
 
-export function getServiceUiSchema(formData: Service, user: User, teamId: string): any {
+export const getServiceUiSchema = (formData: Service, user: User, teamId: string): any => {
   const ing = formData?.ingress as any
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
@@ -151,7 +151,7 @@ export function getServiceUiSchema(formData: Service, user: User, teamId: string
   return uiSchema
 }
 
-export function getSecretUiSchema(user: User, teamId: string): any {
+export const getSecretUiSchema = (user: User, teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
@@ -168,11 +168,11 @@ export function getSecretUiSchema(user: User, teamId: string): any {
   return uiSchema
 }
 
-export function setSpec(inSpec): void {
+export const setSpec = (inSpec): void => {
   spec = inSpec
 }
 
-function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
+const addDomainEnumField = (schema: Schema, cluster, dns, formData): void => {
   if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
@@ -189,11 +189,11 @@ function addDomainEnumField(schema: Schema, cluster, dns, formData): void {
   set(ingressSchema, 'domain.enum', zones)
 }
 
-export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any {
+export const getJobSchema = (cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any => {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   const jobSpecPath = 'allOf[1].properties'
   const containerSpecPath = 'allOf[2].allOf[2].allOf[1].properties'
-  const initcontainerSpecPath = 'allOf[1].properties.init.items.properties'
+  const initcontainerSpecPath = 'allOf[1].properties.init.items.allOf[1].properties'
   unset(schema, `${containerSpecPath}.command`)
   unset(schema, `${containerSpecPath}.args`)
   unset(schema, `${initcontainerSpecPath}.command`)
@@ -201,20 +201,14 @@ export function getJobSchema(cluster: Cluster, dns: any, formData: any, secrets:
   if (formData.type === 'Job') {
     unset(schema, `${jobSpecPath}.schedule`)
   }
-  if (secrets.length) {
-    const secretNames = secrets.filter((s) => s.secret.type === SecretGeneric.TypeEnum.generic).map((s) => s.name)
-    set(schema, `${initcontainerSpecPath}.secrets.items.enum`, secretNames)
-    set(schema, `${containerSpecPath}.secrets.items.enum`, secretNames)
-  } else {
-    unset(schema, `${initcontainerSpecPath}.secrets.items.enum`)
-    unset(schema, `${containerSpecPath}.secrets.items.enum`)
-    set(schema, `${initcontainerSpecPath}.secrets.readOnly`, true)
-    set(schema, `${containerSpecPath}.secrets.secrets.readOnly`, true)
-  }
+  // set the Secrets enum with items to choose from
+  setSecretsEnum(get(schema, initcontainerSpecPath), secrets)
+  setSecretsEnum(get(schema, containerSpecPath), secrets)
+
   return schema
 }
 
-export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array<any>): any {
+export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array<any>): any => {
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   addDomainEnumField(schema, cluster, dns, formData)
@@ -256,26 +250,30 @@ export function getServiceSchema(cluster: Cluster, dns, formData, secrets: Array
     }
   }
   // set the Secrets enum with items to choose from
+  setSecretsEnum(get(schema, ksvcSchemaPath), secrets)
+
+  return schema
+}
+
+export const setSecretsEnum = (schema, secrets) => {
   if (secrets.length) {
     const secretNames = secrets
       .filter((s) => s.secret.type !== SecretDockerRegistry.TypeEnum.docker_registry)
       .map((s) => s.name)
-    set(schema, `${ksvcSchemaPath}.secrets.items.enum`, secretNames)
-    set(schema, `${ksvcSchemaPath}.secretMounts.items.properties.name.enum`, secretNames)
+    set(schema, `secrets.items.enum`, secretNames)
+    set(schema, `secretMounts.items.properties.name.enum`, secretNames)
   } else {
-    set(schema, `${ksvcSchemaPath}.secrets.items.readOnly`, true)
-    set(schema, `${ksvcSchemaPath}.secretMounts.items.readOnly`, true)
+    set(schema, `secrets.items.readOnly`, true)
+    set(schema, `secretMounts.items.readOnly`, true)
   }
-
-  return schema
 }
 
-export function getSecretSchema(): any {
+export const getSecretSchema = (): any => {
   const schema = cloneDeep(spec.components.schemas.Secret)
   return schema
 }
 
-export function getTeamSchema(team, cluster: Cluster): any {
+export const getTeamSchema = (team, cluster: Cluster): any => {
   const schema = cloneDeep(spec.components.schemas.Team)
   const provider = cluster.provider
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
@@ -289,7 +287,7 @@ export function getTeamSchema(team, cluster: Cluster): any {
   return schema
 }
 
-export function getTeamSelfServiceSchema(): any {
+export const getTeamSelfServiceSchema = (): any => {
   return spec.components.schemas.TeamSelfService
 }
 
@@ -301,7 +299,7 @@ function deleteAlertEndpoints(schema, formData) {
   })
 }
 
-export function getSettingSchema(settingId, cluster: Cluster, formData: any): any {
+export const getSettingSchema = (settingId, cluster: Cluster, formData: any): any => {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const provider = cluster.provider
   switch (settingId) {
@@ -331,7 +329,7 @@ export function getSettingSchema(settingId, cluster: Cluster, formData: any): an
   return schema
 }
 
-export function getSettingUiSchema(settingId: string, user: User, teamId: string): any {
+export const getSettingUiSchema = (settingId: string, user: User, teamId: string): any => {
   const uiSchema = {
     kms: {
       sops: {
@@ -347,7 +345,7 @@ export function getSettingUiSchema(settingId: string, user: User, teamId: string
   return uiSchema[settingId] || {}
 }
 
-export function getPolicySchema(policyId): any {
+export const getPolicySchema = (policyId): any => {
   const schema = cloneDeep(get(spec, `components.schemas.Settings.properties.policies.properties[${policyId}]`))
   switch (policyId) {
     default:
@@ -356,16 +354,15 @@ export function getPolicySchema(policyId): any {
   return schema
 }
 
-export function getPolicyUiSchema(settingId: string, user: User, teamId: string): any {
+export const getPolicyUiSchema = (settingId: string, user: User, teamId: string): any => {
   const uiSchema = {}
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}
 }
 
-export function getAppSchema(appId, cluster: Cluster, formData: any): any {
+export const getAppSchema = (appId): any => {
   const modelName = `App${camelcase(appId, { pascalCase: true })}`
-  const provider = cluster.provider
   const schema = cloneDeep(spec.components.schemas[modelName])
   switch (appId) {
     default:
@@ -374,7 +371,7 @@ export function getAppSchema(appId, cluster: Cluster, formData: any): any {
   return schema
 }
 
-export function getAppUiSchema(appId, cluster: Cluster, formData: any): any {
+export const getAppUiSchema = (appId): any => {
   const modelName = `App${camelcase(appId, { pascalCase: true })}`
   const model = spec.components.schemas[modelName].properties.values
   const uiSchema = {}
@@ -382,7 +379,6 @@ export function getAppUiSchema(appId, cluster: Cluster, formData: any): any {
     extract(model, (o) => o.type === 'object' && !o.properties).forEach((path) => {
       set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
     })
-  const provider = cluster.provider
   switch (appId) {
     case 'drone':
       return { ...uiSchema, sourceControl: { provider: { 'ui:widget': 'hidden' } } }
