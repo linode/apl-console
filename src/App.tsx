@@ -29,6 +29,7 @@ import Job from './pages/Job'
 import Jobs from './pages/Jobs'
 import Policies from './pages/Policies'
 import Policy from './pages/Policy'
+import GenericErrorComponent from './components/GenericError'
 
 const env = process.env
 
@@ -60,7 +61,8 @@ const App = () => {
       setOboTeamId(user.teams[0])
       return <Loader />
     }
-    return <Error code={500} message='The user does not have any team assigned' />
+
+    return <GenericErrorComponent code={500} message='The user does not have any team assigned' />
   }
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
