@@ -1,11 +1,6 @@
-import Alert from '@material-ui/lab/Alert'
 import React from 'react'
-import { Container, makeStyles, Theme, createStyles, Collapse, IconButton } from '@material-ui/core'
+import { Container, makeStyles, Theme, createStyles } from '@material-ui/core'
 import Helmet from 'react-helmet'
-import { Trans } from 'react-i18next'
-import CloseIcon from '@material-ui/icons/Close'
-import { Keys as k } from '../translations/keys'
-import { useSession } from '../session-context'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

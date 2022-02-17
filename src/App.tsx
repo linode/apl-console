@@ -44,8 +44,6 @@ const App = () => {
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   const [collapseSettings, setCollapseSettings] = useState(true)
   setThemeType(themeType)
-  console.log(`sessionError: ${JSON.stringify(sessionError)}`)
-  console.log(`sessionError: ${JSON.stringify(apiDocsError)}`)
   if (sessionError || apiDocsError) {
     return <ErrorComponent />
   }
@@ -54,9 +52,7 @@ const App = () => {
   }
   setSpec(apiDocs)
   const { user } = session
-  console.log(`oboTeamId: ${oboTeamId}`)
   if (!user.isAdmin && !oboTeamId) {
-    console.log(`Is not admin and dont have oboTeamId`)
     if (user.teams[0]) {
       setOboTeamId(user.teams[0])
       return <Loader />
