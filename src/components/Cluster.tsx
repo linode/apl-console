@@ -1,16 +1,15 @@
 import React from 'react'
-import { Link, ListItem, List, ListItemText, ListItemIcon, MenuItem, Theme } from '@mui/material'
+import { Link, ListItem, List, ListItemText, ListItemIcon, MenuItem } from '@mui/material'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import generateDownloadLink from 'generate-download-link'
-import { makeStyles, useMainStyles } from 'common/theme'
+import { useMainStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { useSession } from 'common/session-context'
 
 import canDo from 'utils/permission'
 
-const baseUrl = process.env.CONTEXT_PATH || ''
-
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
   },
@@ -26,12 +25,10 @@ export default (): React.ReactElement => {
   const { ca, cluster, versions, oboTeamId, user } = useSession()
   const { classes } = useStyles()
   const { classes: mainClasses } = useMainStyles()
-  const StyledListItem = ({ className, ...props }: any) => {
-    return <ListItem className={`${classes.listItem}, ${className}`} {...props} />
-  }
-  const StyledMenuItem = (props: any) => {
-    return <MenuItem className={mainClasses.selectable} {...props} />
-  }
+  const StyledListItem = ({ className, ...props }: any) => (
+    <ListItem className={`${classes.listItem}, ${className}`} {...props} />
+  )
+  const StyledMenuItem = (props: any) => <MenuItem className={mainClasses.selectable} {...props} />
 
   const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   const downloadOpts = {
@@ -62,7 +59,7 @@ export default (): React.ReactElement => {
           className={mainClasses.selectable}
           component={Link}
           aria-label='download kubecfg'
-          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
+          href={`/api/v1/kubecfg/${oboTeamId}`}
           disabled={isButtonDisabled}
         >
           <ListItemIcon>

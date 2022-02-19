@@ -1,17 +1,18 @@
-import { Box, Typography, Theme, Toolbar, IconButton, AppBar, Drawer, Divider } from '@mui/material'
+import { Box, Typography, Toolbar, IconButton, AppBar, Drawer, Divider } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import React, { useState } from 'react'
 import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { makeStyles, toggleThemeMode } from 'common/theme'
+import { toggleThemeMode } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { useSession } from 'common/session-context'
 import Menu from 'components/Menu'
 import User from 'components/User'
 
 const drawerWidth = '240px'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     display: 'flex',
   },
@@ -73,6 +74,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   drawer: {
     // backgroundColor: theme.palette.secondary.main,
+    zIndex: 1300,
     [theme.breakpoints.up('sm')]: {
       width: drawerWidth,
       flexShrink: 0,
@@ -117,11 +119,11 @@ export default (props: Props): React.ReactElement => {
 
   const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)
-  const handleDrawerOpen = (e) => {
+  const handleDrawerOpen = e => {
     e.preventDefault()
     if (!open) setOpen(true)
   }
-  const handleDrawerClose = (e) => {
+  const handleDrawerClose = e => {
     e.preventDefault()
     setOpen(false)
   }
@@ -133,7 +135,7 @@ export default (props: Props): React.ReactElement => {
     <img
       style={{ marginRight: '1vw' }}
       // eslint-disable-next-line global-require
-      src={`${process.env.CONTEXT_PATH || ''}/logos/otomi_logo.svg`}
+      src='/logos/otomi_logo.svg'
       width='40'
       height='40'
       alt='otomi logo'
@@ -168,7 +170,6 @@ export default (props: Props): React.ReactElement => {
             {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
           </IconButton>
         </Toolbar>
-        {/* <ToolbarOffset /> */}
       </AppBar>
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>
         <Drawer
@@ -189,10 +190,8 @@ export default (props: Props): React.ReactElement => {
               <ChevronLeftIcon />
             </IconButton>
           </ToolbarOffset>
-          {/* <Divider /> */}
           {drawer}
           <Divider />
-          {/* <List>{secondaryListItems}</List> */}
         </Drawer>
       </Box>
       <Box sx={{ display: { xs: 'none', md: 'block' } }}>

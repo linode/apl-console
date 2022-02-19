@@ -1,5 +1,5 @@
-import { createTheme, createStyles, Theme, ThemeOptions } from '@mui/material/styles'
-import { createMakeStyles } from 'tss-react'
+import { createTheme, Theme, ThemeOptions } from '@mui/material/styles'
+import { makeStyles } from 'tss-react/mui'
 
 export const c = {
   light: '#ccc',
@@ -62,99 +62,156 @@ export const adminColors = {
   },
 }
 
-const getOverrides = (c: any): ThemeOptions => {
-  return {
-    typography: {
-      button: {
-        textTransform: 'none',
-      },
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        // '"Comfortaa"',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-      ].join(','),
+const getOverrides = (c: any): ThemeOptions => ({
+  typography: {
+    button: {
+      textTransform: 'none',
     },
-    components: {
-      MuiLink: {
-        defaultProps: {
-          underline: 'none',
-        },
+    fontFamily: [
+      '-apple-system',
+      'BlinkMacSystemFont',
+      // '"Comfortaa"',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  },
+  components: {
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {},
       },
-      MuiCheckbox: {
-        defaultProps: {
-          color: 'primary',
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '2em',
         },
-      },
-      MuiSwitch: {
-        defaultProps: {
-          color: 'primary',
+        iconSizeSmall: {
+          marginRight: '3px',
         },
+        textSecondary: ({ theme }) => ({
+          color: theme.palette.primary.contrastText,
+          backgroundColor: theme.palette.primary.main,
+        }),
       },
-      MuiRadio: {
-        defaultProps: {
-          color: 'primary',
+    },
+    MuiCheckbox: {
+      defaultProps: {
+        color: 'primary',
+      },
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        '.MuiFormControl-root:has(> input)': {
+          display: 'none',
         },
-      },
-      MuiButton: {
-        styleOverrides: {
-          // label: {
-          //   color: 'primary',
-          // },
-          root: {
-            borderRadius: '2em',
-          },
+        body: {
+          fontSize: '0.875rem',
         },
-      },
-      MuiInputBase: {
-        styleOverrides: {
-          root: {
-            borderRadius: '6px',
-          },
-        },
-      },
-      MuiFormLabel: {
-        styleOverrides: {
-          root: {
-            textTransform: 'capitalize',
-          },
-        },
-      },
-      MuiListItemIcon: {
-        styleOverrides: {
-          root: {
-            minWidth: '38px',
-          },
-        },
-      },
-      MuiListItemText: {
-        styleOverrides: {
-          root: {
-            marginTop: 0,
-            marginBottom: 0,
-            paddingTop: 4,
-            paddingBottom: 4,
-          },
+        // h5: {
+        //   fontSize: '1.2rem',
+        //   fontWeight: 'bold',
+        // },
+        'h5:first-letter,h6:first-letter,h7:first-letter': {
+          textTransform: 'capitalize',
         },
       },
     },
-    palette: {
-      background: {
-        default: c.background,
-        paper: c.paper,
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          marginTop: 8,
+        },
       },
-      primary: c.primary,
-      secondary: c.secondary,
     },
-  }
-}
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          textTransform: 'capitalize',
+        },
+      },
+    },
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          minWidth: '10rem',
+          paddingLeft: '1rem',
+          paddingRight: '1rem',
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        multiline: {
+          minWidth: '30rem',
+        },
+        root: {
+          borderRadius: '6px',
+        },
+      },
+    },
+    MuiLink: {
+      defaultProps: {
+        underline: 'none',
+      },
+    },
+    MuiListItemIcon: {
+      styleOverrides: {
+        root: {
+          minWidth: '38px',
+        },
+      },
+    },
+    MuiListItemText: {
+      styleOverrides: {
+        root: {
+          marginBottom: 0,
+          marginTop: 0,
+          paddingBottom: 4,
+          paddingTop: 4,
+        },
+      },
+    },
+    MuiRadio: {
+      defaultProps: {
+        // color: 'primary',
+      },
+    },
+    MuiSwitch: {
+      defaultProps: {
+        // color: 'primary',
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        textColorSecondary: ({ theme }) => ({
+          color: theme.palette.common.white,
+        }),
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        caption: {
+          maxWidth: 'fit-content',
+        },
+      },
+    },
+  },
+  palette: {
+    background: {
+      default: c.background,
+      paper: c.paper,
+    },
+    primary: c.primary,
+    secondary: c.secondary,
+  },
+})
 
 let name = 'admin'
 let mode = 'light'
@@ -163,9 +220,7 @@ export const setThemeName = (inName: string): void => {
   name = inName
 }
 
-export const getThemeMode = (): string => {
-  return mode
-}
+export const getThemeMode = (): string => mode
 export const setThemeMode = (inMode: string): void => {
   mode = inMode
 }
@@ -225,18 +280,9 @@ export const themes = {
   },
 }
 
-export const getTheme = (): Theme => {
-  return themes[name][mode]
-}
+export const getTheme = (): Theme => themes[name][mode]
 
-export const {
-  makeStyles,
-  useStyles, // <- To use when you need css or cx but don't have custom classes
-} = createMakeStyles({ useTheme: getTheme })
-
-export const createClasses = (stylesObj): any => makeStyles()(() => createStyles(stylesObj))
-
-export const useMainStyles = makeStyles()((theme: Theme) => ({
+export const useMainStyles = makeStyles()(theme => ({
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,
@@ -267,40 +313,3 @@ export const useMainStyles = makeStyles()((theme: Theme) => ({
     },
   },
 }))
-
-export const globalStyles = (theme: Theme): any => ({
-  '.MuiInput-root:not([data-cy="select-oboteam"],[data-cy="select-cluster"])': {
-    minWidth: '10rem',
-    paddingLeft: '1rem',
-    paddingRight: '1rem',
-  },
-  '.MuiInput-root.MuiInputBase-multiline': {
-    minWidth: '30rem',
-  },
-  '.MuiFormControl-root:has(> input)': {
-    display: 'none',
-  },
-  '.MuiFormControl-root': {
-    marginTop: 8,
-  },
-  '.MuiButton-iconSizeSmall': {
-    marginRight: '3px',
-  },
-  '.MuiButton-textSecondary': {
-    color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.main,
-  },
-  '.MuiTypography-root': {
-    // maxWidth: '300px',
-  },
-  '.MuiTypography-caption': {
-    maxWidth: 'fit-content',
-  },
-  h5: {
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
-  },
-  'h5:first-letter,h6:first-letter,h7:first-letter': {
-    textTransform: 'capitalize',
-  },
-})

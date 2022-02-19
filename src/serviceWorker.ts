@@ -28,7 +28,7 @@ interface Config {
 const registerValidSW = (swUrl: string, config?: Config): void => {
   navigator.serviceWorker
     .register(swUrl)
-    .then((registration) => {
+    .then(registration => {
       // eslint-disable-next-line no-param-reassign
       registration.onupdatefound = (): any => {
         const installingWorker = registration.installing
@@ -65,7 +65,7 @@ const registerValidSW = (swUrl: string, config?: Config): void => {
         }
       }
     })
-    .catch((error) => {
+    .catch(error => {
       console.error('Error during service worker registration:', error)
     })
 }
@@ -73,21 +73,21 @@ const registerValidSW = (swUrl: string, config?: Config): void => {
 const checkValidServiceWorker = (swUrl: string, config?: Config): void => {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
-    .then((response) => {
+    .then(response => {
       // Ensure service worker exists, and that we really are getting a JS file.
       const contentType = response.headers.get('content-type')
       if (response.status === 404 || (contentType != null && !contentType.includes('javascript'))) {
         // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready
-          .then((registration) => {
+          .then(registration => {
             registration
               .unregister()
               .then(() => {
                 window.location.reload()
               })
-              .catch((err) => console.log(err.message))
+              .catch(err => console.log(err.message))
           })
-          .catch((err) => console.log(err.message))
+          .catch(err => console.log(err.message))
       } else {
         // Service worker found. Proceed as normal.
         registerValidSW(swUrl, config)
@@ -125,7 +125,7 @@ export const register = (config?: Config): void => {
                 'worker. To learn more, visit https://bit.ly/CRA-PWA',
             )
           })
-          .catch((err) => console.log(err.message))
+          .catch(err => console.log(err.message))
       } else {
         // Is not localhost. Just register service worker
         registerValidSW(swUrl, config)
@@ -137,9 +137,9 @@ export const register = (config?: Config): void => {
 export const unregister = (): void => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.ready
-      .then((registration) => {
-        registration.unregister().catch((err) => console.log(err.message))
+      .then(registration => {
+        registration.unregister().catch(err => console.log(err.message))
       })
-      .catch((err) => console.log(err.message))
+      .catch(err => console.log(err.message))
   }
 }

@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import CodeEditor, { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
-import { Theme } from '@mui/material'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     backgroundColor: theme.palette.common.white,
     fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
@@ -34,7 +33,7 @@ export default ({
 }: Props): React.ReactElement => {
   const textRef = React.useRef()
   const [code, setCode] = useState(inCode)
-  const onChangeHandler = (e) => {
+  const onChangeHandler = e => {
     setCode(e.target.value)
     if (onChange) onChange(e.target.value)
   }

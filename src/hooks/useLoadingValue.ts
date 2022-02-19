@@ -31,12 +31,10 @@ interface ValueAction {
 }
 type ReducerAction<E> = ErrorAction<E> | ResetAction | ValueAction
 
-const defaultState = (defaultValue?: any): any => {
-  return {
-    loading: defaultValue === undefined || defaultValue === null,
-    value: defaultValue,
-  }
-}
+const defaultState = (defaultValue?: any): any => ({
+  loading: defaultValue === undefined || defaultValue === null,
+  value: defaultValue,
+})
 
 const reducer =
   <E>(): any =>

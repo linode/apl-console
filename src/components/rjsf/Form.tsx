@@ -1,9 +1,9 @@
 import React from 'react'
-import Form from '@rjsf/material-ui'
-import { FormProps, IChangeEvent } from '@rjsf/core'
+import { Theme5 } from '@rjsf/material-ui'
+import { FormProps, IChangeEvent, withTheme } from '@rjsf/core'
 import validator from '@rjsf/core/dist/cjs/validate'
 import { get, isEqual } from 'lodash'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { cleanData } from 'utils/data'
 import HelpButton from 'components/HelpButton'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
@@ -16,10 +16,16 @@ import RadioWidget from './RadioWidget'
 import StringField from './StringField'
 import CheckboxesWidget from './CheckboxesWidget'
 
+const Form = withTheme(Theme5)
+
 const useStyles = makeStyles()(() => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
+    '& h5': {
+      fontSize: '1.2rem',
+      fontWeight: 'bold',
+    },
   },
 }))
 
@@ -45,16 +51,16 @@ export default ({
   // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const { classes } = useStyles()
-  const onChangeWrapper = ({ formData, ...rest }: IChangeEvent<any>, errors) => {
+  const onChangeWrapper = ({ formData, ...other }: IChangeEvent<any>, errors) => {
     const cleanFormData = clean ? cleanData(formData) : formData
     // const cleanFormData = formData
-    onChange({ formData: cleanFormData, ...rest }, errors)
+    onChange({ formData: cleanFormData, ...other }, errors)
   }
-  const onSubmitWrapper = ({ formData, ...rest }: IChangeEvent<any>, ev) => {
+  const onSubmitWrapper = ({ formData, ...other }: IChangeEvent<any>, ev) => {
     const cleanFormData = clean ? cleanData(formData) : formData
     // nullify(cleanFormData)
     // const cleanFormData = formData
-    onSubmit({ formData: cleanFormData, ...rest }, ev)
+    onSubmit({ formData: cleanFormData, ...other }, ev)
   }
   const validate = (formData, errors): any => {
     const cleanFormData = clean ? cleanData(formData) : formData

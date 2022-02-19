@@ -56,12 +56,12 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'ingressType',
       label: 'Ingress',
-      renderer: (row) => row.ingress?.type ?? '',
+      renderer: row => row.ingress?.type ?? '',
     },
     {
       id: 'serviceType',
       label: 'Type',
-      renderer: (row) => row.ksvc?.serviceType ?? '',
+      renderer: row => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',

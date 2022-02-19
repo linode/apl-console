@@ -16,9 +16,8 @@ extends:
   - plugin:jest/recommended
   - airbnb
   - plugin:prettier/recommended
-  - prettier
   - prettier/react
-  - prettier/@typescript-eslint
+  # - prettier/@typescript-eslint
   - plugin:import/errors
   - plugin:import/warnings
   - plugin:import/typescript
@@ -29,14 +28,13 @@ plugins:
   - react-hooks
   - import
   - jest
-  - prettier
   - '@typescript-eslint'
 
 settings:
   import/resolver:
     node:
       extensions: ['.js', '.ts', '.tsx']
-      paths: src
+      paths: [src]
 
 env:
   es6: true
@@ -60,7 +58,6 @@ rules:
   '@typescript-eslint/no-unused-vars': warn
   '@typescript-eslint/no-use-before-define': off
   '@typescript-eslint/restrict-template-expressions': off
-  # this next line is disabling all the warnings about non typed stuff:
   eol-last: [error, always]
   func-style: [warn, expression]
   import/default: off
@@ -69,14 +66,15 @@ rules:
   no-debugger: warn
   no-fallthrough: warn
   no-param-reassign:
-    - error
+    - warn
     - props: true
       ignorePropertyModificationsFor: [memo]
-  no-shadow: 0
-  no-unused-vars: 0
-  no-use-before-define: 0
-  object-shorthand: warn
-  prefer-destructuring: 0
+  no-shadow: off
+  no-unused-vars: warn
+  no-use-before-define: off
+  object-shorthand: error
+  prefer-destructuring: warn
+  react/destructuring-assignment: off
   react/jsx-filename-extension: off
   react/jsx-props-no-spreading: off
   react/no-unused-prop-types: warn

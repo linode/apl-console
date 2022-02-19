@@ -7,7 +7,7 @@ import RLink from './Link'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import MuiLink from './MuiLink'
 
-const getSecretLink = (isAdmin, ownerId) => (row) => {
+const getSecretLink = (isAdmin, ownerId) => row => {
   const { teamId, id, name } = row
   if (!(isAdmin || teamId === ownerId)) return name
 
@@ -20,7 +20,7 @@ const getSecretLink = (isAdmin, ownerId) => (row) => {
   )
 }
 
-const getVaultSecretLink = (clusterDomain) => (row) => {
+const getVaultSecretLink = clusterDomain => row => {
   const { teamId, name } = row
   const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
   return (
@@ -50,9 +50,7 @@ export default ({ secrets, teamId }: Props): React.ReactElement => {
     {
       id: 'type',
       label: 'Type',
-      renderer: (row) => {
-        return row.secret.type
-      },
+      renderer: row => row.secret.type,
     },
     {
       id: 'vaultLink',
@@ -76,9 +74,7 @@ export default ({ secrets, teamId }: Props): React.ReactElement => {
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',
-      renderer: (row) => {
-        return row.namespace || `team-${row.teamId}`
-      },
+      renderer: row => row.namespace || `team-${row.teamId}`,
     })
   return (
     <>

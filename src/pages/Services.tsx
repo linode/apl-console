@@ -3,7 +3,7 @@ import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { ApiError } from 'utils/error'
 import Services from 'components/Services'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {

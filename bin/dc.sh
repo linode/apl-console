@@ -22,12 +22,12 @@ sub_up() {
 }
 
 sub_up-deps() {
-    c="docker-compose -f docker-compose-deps.yml"
+    c="docker-compose"
     $c pull && $c up $1
 }
 
 sub_down() {
-    c="docker-compose -f docker-compose.yml -f docker-compose-deps.yml"
+    c="docker-compose -f docker-compose.yml"
     $c down --remove-orphans -v
 }
 

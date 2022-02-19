@@ -34,13 +34,7 @@ const isEqual = <T extends HasIsEqual<T>>(v1: T | null | undefined, v2: T | null
 export const useIsEqualRef = <T extends HasIsEqual<T>>(
   value: T | null | undefined,
   onChange?: () => void,
-): RefHook<T | null | undefined> => {
-  return useComparatorRef(value, isEqual, onChange)
-}
+): RefHook<T | null | undefined> => useComparatorRef(value, isEqual, onChange)
 
-export const useIdentifyRef = <T>(
-  value: T | null | undefined,
-  onChange?: () => void,
-): RefHook<T | null | undefined> => {
-  return useComparatorRef(value, (v1, v2) => v1 === v2, onChange)
-}
+export const useIdentifyRef = <T>(value: T | null | undefined, onChange?: () => void): RefHook<T | null | undefined> =>
+  useComparatorRef(value, (v1, v2) => v1 === v2, onChange)

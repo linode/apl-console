@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-globals */
-import { CssBaseline, GlobalStyles } from '@mui/material'
+import { CssBaseline } from '@mui/material'
 import { ThemeProvider } from '@mui/material/styles'
 import React, { Suspense, useState } from 'react'
 import Helmet from 'react-helmet'
@@ -28,13 +28,12 @@ import Shortcuts from 'pages/Shortcuts'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import { setSpec } from 'common/api-spec'
 import { NotistackProvider, SnackbarUtilsConfigurator } from 'utils/snack'
-import { getTheme, globalStyles, setThemeName, setThemeMode } from 'common/theme'
+import { getTheme, setThemeName, setThemeMode } from 'common/theme'
 import Context from 'common/session-context'
-
-const env = process.env
+import { ErrorBoundary } from 'react-error-boundary'
 
 export const muiCache = createCache({
   key: 'mui',
@@ -66,62 +65,63 @@ const App = () => {
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
     <Suspense fallback={<Loader />}>
-      <CacheProvider value={muiCache}>
-        <ThemeProvider theme={getTheme()}>
-          <NotistackProvider>
-            <GlobalStyles styles={globalStyles} />
-            <SnackbarUtilsConfigurator />
-            <CssBaseline />
-            <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-            <Context.Provider
-              value={{
-                ...session,
-                collapseSettings,
-                dirty: dirty === undefined ? session.isDirty : dirty,
-                globalError,
-                oboTeamId,
-                setCollapseSettings,
-                setDirty,
-                setGlobalError,
-                setOboTeamId,
-                setThemeMode: setType,
-                themeType,
-              }}
-            >
-              <Router basename={env.CONTEXT_PATH || ''}>
-                <Switch>
-                  <Route path='/' component={Dashboard} exact />
-                  <Route path='/apps/:teamId' component={Apps} exact />
-                  <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                  <Route path='/clusters' component={Clusters} exact />
-                  <Route path='/cluster/:clusterId' component={Cluster} exact />
-                  <Route path='/create-team' component={Team} exact />
-                  <Route path='/jobs' component={Jobs} exact />
-                  <Route path='/policies' component={Policies} exact />
-                  <Route path='/policies/:policyId' component={Policy} exact />
-                  <Route path='/services' component={Services} exact />
-                  <Route path='/settings/:settingId' component={Setting} exact />
-                  <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
-                  <Route path='/teams' component={Teams} exact />
-                  <Route path='/teams/:teamId' component={Team} exact />
-                  <Route path='/teams/:teamId/create-job' component={Job} exact />
-                  <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-                  <Route path='/teams/:teamId/create-service' component={Service} exact />
-                  <Route path='/teams/:teamId/jobs' component={Jobs} exact />
-                  <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
-                  <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-                  <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-                  <Route path='/teams/:teamId/services' component={Services} exact />
-                  <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                  <Route path='*'>
-                    <Error code={404} />
-                  </Route>
-                </Switch>
-              </Router>
-            </Context.Provider>
-          </NotistackProvider>
-        </ThemeProvider>
-      </CacheProvider>
+      <ErrorBoundary FallbackComponent={ErrorComponent}>
+        <CacheProvider value={muiCache}>
+          <ThemeProvider theme={getTheme()}>
+            <NotistackProvider>
+              <SnackbarUtilsConfigurator />
+              <CssBaseline />
+              <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
+              <Context.Provider
+                value={{
+                  ...session,
+                  collapseSettings,
+                  dirty: dirty === undefined ? session.isDirty : dirty,
+                  globalError,
+                  oboTeamId,
+                  setCollapseSettings,
+                  setDirty,
+                  setGlobalError,
+                  setOboTeamId,
+                  setThemeMode: setType,
+                  themeType,
+                }}
+              >
+                <Router>
+                  <Switch>
+                    <Route path='/' component={Dashboard} exact />
+                    <Route path='/apps/:teamId' component={Apps} exact />
+                    <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
+                    <Route path='/clusters' component={Clusters} exact />
+                    <Route path='/cluster/:clusterId' component={Cluster} exact />
+                    <Route path='/create-team' component={Team} exact />
+                    <Route path='/jobs' component={Jobs} exact />
+                    <Route path='/policies' component={Policies} exact />
+                    <Route path='/policies/:policyId' component={Policy} exact />
+                    <Route path='/services' component={Services} exact />
+                    <Route path='/settings/:settingId' component={Setting} exact />
+                    <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
+                    <Route path='/teams' component={Teams} exact />
+                    <Route path='/teams/:teamId' component={Team} exact />
+                    <Route path='/teams/:teamId/create-job' component={Job} exact />
+                    <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                    <Route path='/teams/:teamId/create-service' component={Service} exact />
+                    <Route path='/teams/:teamId/jobs' component={Jobs} exact />
+                    <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
+                    <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                    <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                    <Route path='/teams/:teamId/services' component={Services} exact />
+                    <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                    <Route path='*'>
+                      <Error code={404} />
+                    </Route>
+                  </Switch>
+                </Router>
+              </Context.Provider>
+            </NotistackProvider>
+          </ThemeProvider>
+        </CacheProvider>
+      </ErrorBoundary>
     </Suspense>
   )
 }

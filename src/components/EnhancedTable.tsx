@@ -16,7 +16,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Theme,
   Toolbar,
   Tooltip,
   Typography,
@@ -24,7 +23,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -55,7 +54,7 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     if (order !== 0) return order
     return a[1] - b[1]
   })
-  return stabilizedThis.map((el) => el[0])
+  return stabilizedThis.map(el => el[0])
 }
 
 export interface HeadCell {
@@ -67,7 +66,7 @@ export interface HeadCell {
   component?: any
 }
 
-const useEnhancedStyles = makeStyles()((theme: Theme) => ({
+const useEnhancedStyles = makeStyles()(theme => ({
   root: {
     width: '100%',
   },
@@ -125,7 +124,7 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
             />
           </TableCell>
         )}
-        {headCells.map((headCell) => (
+        {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -151,7 +150,7 @@ export const EnhancedTableHead = (props: EnhancedTableProps) => {
   )
 }
 
-const useToolbarStyles = makeStyles()((theme: Theme) => ({
+const useToolbarStyles = makeStyles()(theme => ({
   root: {
     paddingLeft: theme.spacing(2),
     paddingRight: theme.spacing(1),
@@ -227,7 +226,7 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
 
   const handleSelectAllClick = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name)
+      const newSelecteds = rows.map(n => n.name)
       setSelected(newSelecteds)
       return
     }
@@ -305,7 +304,7 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
                     <TableRow
                       hover
                       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={event => handleClick(event, row.name)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -317,7 +316,7 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
                           <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
                         </TableCell>
                       )}
-                      {headCells.map((c) => (
+                      {headCells.map(c => (
                         <TableCell
                           key={`cell-${c.id}`}
                           align={c.numeric ? 'right' : 'left'}

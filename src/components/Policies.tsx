@@ -14,7 +14,7 @@ const getPolicyLink =
   (): CallableFunction =>
   ({ policyId }: RowProps): React.ReactElement => {
     const link = `/policies/${policyId}`
-    const title = getPolicySchema(policyId).title
+    const { title } = getPolicySchema(policyId)
     return (
       <RLink to={link} label={policyId}>
         {title}
@@ -27,9 +27,7 @@ interface Props {
 }
 
 export default ({ policies }: Props): React.ReactElement => {
-  const policyEntries = map(policies, (pol, policyId) => {
-    return { policyId, ...pol }
-  })
+  const policyEntries = map(policies, (pol, policyId) => ({ policyId, ...pol }))
   const headCells: HeadCell[] = [
     {
       id: 'policyId',
@@ -39,7 +37,7 @@ export default ({ policies }: Props): React.ReactElement => {
     {
       id: 'enabled',
       label: 'Enabled',
-      renderer: (pol) => (pol.enabled ? 'yes' : 'no'),
+      renderer: pol => (pol.enabled ? 'yes' : 'no'),
     },
   ]
   return (

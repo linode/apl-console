@@ -1,11 +1,12 @@
-import { Avatar, Box, Link, MenuItem, Select, Theme, Tooltip, Typography } from '@mui/material'
+import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { makeStyles, useMainStyles, getThemeMode } from 'common/theme'
+import { useMainStyles, getThemeMode } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 import { useSession } from 'common/session-context'
 
-const useStyles = makeStyles()((theme: Theme) => {
+const useStyles = makeStyles()(theme => {
   const isDark = getThemeMode() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
@@ -61,10 +62,10 @@ export default (): React.ReactElement => {
       id,
     }))
   else
-    teams = userTeams.map((id) => ({
+    teams = userTeams.map(id => ({
       id,
     }))
-  const handleChange = (event) => {
+  const handleChange = event => {
     const teamId = event.target.value
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`
@@ -88,10 +89,10 @@ export default (): React.ReactElement => {
     history.push(url)
     event.preventDefault()
   }
-  const handleChangeCluster = (event) => {
+  const handleChangeCluster = event => {
     const id = event.target.value
     const [provider, name] = id.split('-')
-    const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
+    const { domainSuffix } = clusters.find(c => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
   return (

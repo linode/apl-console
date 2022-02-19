@@ -1,4 +1,4 @@
-import { Typography, Grid, Card, CardHeader, Avatar, IconButton, Divider, Theme, Tooltip } from '@mui/material'
+import { Typography, Grid, Card, CardHeader, Avatar, IconButton, Divider, Tooltip } from '@mui/material'
 import * as React from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
@@ -8,7 +8,7 @@ import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
 import { useTranslation, Trans } from 'react-i18next'
 import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { Keys as k } from 'translations/keys'
 import { useSession } from 'common/session-context'
 
@@ -26,7 +26,7 @@ interface Props {
   teams: Array<Team>
 }
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   card: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
@@ -170,7 +170,7 @@ export default ({ team, services, teams }: Props): React.ReactElement => {
           </Typography>
           <Divider />
         </Grid>
-        {panels.map((panel) => (
+        {panels.map(panel => (
           <DashboardCard classes={classes} teamId={team && team.id} item={panel} key={panel.name} />
         ))}
       </Grid>

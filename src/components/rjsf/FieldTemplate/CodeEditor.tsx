@@ -7,7 +7,7 @@ import CodeEditor from 'components/CodeEditor'
 
 import FieldTemplate from './FieldTemplate'
 
-export default ({ children, onChange, formData, ...props }: FieldTemplateProps) => {
+export default ({ onChange, formData, rawErrors, ...props }: FieldTemplateProps) => {
   const [valid, setValid] = useState(true)
   const fromYaml = (yaml) => {
     try {
@@ -20,6 +20,9 @@ export default ({ children, onChange, formData, ...props }: FieldTemplateProps) 
       return obj
     } catch (e) {
       setValid(false)
+      if (!rawErrors) rawErrors = []
+      if (!rawErrors.find((err) => isEqual(err, e))) rawErrors.push(e)
+      // throw e
       return undefined
     }
   }
@@ -31,7 +34,7 @@ export default ({ children, onChange, formData, ...props }: FieldTemplateProps) 
     if (data) onChange(data)
   }
   return (
-    <FieldTemplate onChange={undefined} formData={formData} {...props}>
+    <FieldTemplate onChange={undefined} formData={formData} rawErrors={rawErrors} {...props}>
       <CodeEditor invalid={!valid} code={data} lang='yaml' onChange={onChangeWrapper} />
     </FieldTemplate>
   )

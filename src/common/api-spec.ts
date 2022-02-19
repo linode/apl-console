@@ -4,7 +4,6 @@ import {
   Cluster,
   Provider,
   SecretDockerRegistry,
-  SecretGeneric,
   SecretTLS,
   Service,
   SvcPredeployed,
@@ -12,7 +11,7 @@ import {
 } from '@redkubes/otomi-api-client-axios'
 import { get, set, unset } from 'lodash'
 import camelcase from 'camelcase'
-import { extract, getStrict } from 'utils'
+import { extract, getStrict, isOf } from 'utils/schema'
 import CodeEditor from 'components/rjsf/FieldTemplate/CodeEditor'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
@@ -82,7 +81,7 @@ export const getSpec = () => spec
 export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, schemaName: string): void => {
   if (user.isAdmin) return
 
-  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
+  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach(path => {
     set(uiSchema, `${path}.ui:readonly`, true)
   })
 }
@@ -121,11 +120,9 @@ export const getServiceUiSchema = (formData: Service, user: User, teamId: string
   const ing = formData?.ingress as any
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
-    enabled: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ingress: {
-      type: { 'ui:widget': 'hidden' },
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
@@ -134,15 +131,6 @@ export const getServiceUiSchema = (formData: Service, user: User, teamId: string
     },
     ksvc: {
       ...podSpecUiSchema,
-      serviceType: { 'ui:widget': 'hidden' },
-      autoCD: {
-        tagMatcher: { 'ui:widget': 'hidden' },
-      },
-    },
-    networkPolicy: {
-      ingressPrivate: {
-        mode: { 'ui:widget': 'hidden' },
-      },
     },
   }
 
@@ -155,12 +143,6 @@ export const getSecretUiSchema = (user: User, teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
-    teamId: { 'ui:widget': 'hidden' },
-    secret: {
-      'ui:description': undefined,
-      dockerconfig: { 'ui:widget': 'hidden', 'ui:description': undefined },
-      type: { 'ui:widget': 'hidden' },
-    },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Secret')
@@ -183,7 +165,7 @@ const addDomainEnumField = (schema: Schema, cluster, dns, formData): void => {
   if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
   if (formData.ingress.domain) {
-    const length = formData.ingress.domain.length
+    const { length } = formData.ingress.domain
     set(ingressSchema, 'subdomain.maxLength', 64 - length)
   }
   set(ingressSchema, 'domain.enum', zones)
@@ -237,7 +219,7 @@ export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array
     } else if (ing) {
       // Give the certName an enum selector with names of existing tls secrets
       if (ing.certSelect) {
-        const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLS.TypeEnum.tls).map((s) => s.name)
+        const tlsSecretNames = secrets.filter(s => s.secret.type === SecretTLS.TypeEnum.tls).map(s => s.name)
         set(ingressSchema, `certName.enum`, tlsSecretNames)
         if (secrets.length === 1) ing.certName = tlsSecretNames[0]
       }
@@ -258,8 +240,8 @@ export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array
 export const setSecretsEnum = (schema, secrets) => {
   if (secrets.length) {
     const secretNames = secrets
-      .filter((s) => s.secret.type !== SecretDockerRegistry.TypeEnum.docker_registry)
-      .map((s) => s.name)
+      .filter(s => s.secret.type !== SecretDockerRegistry.TypeEnum.docker_registry)
+      .map(s => s.name)
     set(schema, `secrets.items.enum`, secretNames)
     set(schema, `secretMounts.items.properties.name.enum`, secretNames)
   } else {
@@ -275,10 +257,10 @@ export const getSecretSchema = (): any => {
 
 export const getTeamSchema = (team, cluster: Cluster): any => {
   const schema = cloneDeep(spec.components.schemas.Team)
-  const provider = cluster.provider
+  const { provider } = cluster
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
 
-  schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
+  schema.properties.alerts.properties.receivers.items.enum.forEach(receiver => {
     if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]
     }
@@ -287,12 +269,10 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
   return schema
 }
 
-export const getTeamSelfServiceSchema = (): any => {
-  return spec.components.schemas.TeamSelfService
-}
+export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamSelfService
 
-function deleteAlertEndpoints(schema, formData) {
-  schema.properties.receivers.items.enum.forEach((receiver) => {
+export const deleteAlertEndpoints = (schema, formData) => {
+  schema.properties.receivers.items.enum.forEach(receiver => {
     if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
       delete schema.properties[receiver]
     }
@@ -301,7 +281,7 @@ function deleteAlertEndpoints(schema, formData) {
 
 export const getSettingSchema = (settingId, cluster: Cluster, formData: any): any => {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
-  const provider = cluster.provider
+  const { provider } = cluster
   switch (settingId) {
     case 'home':
       deleteAlertEndpoints(schema, formData)
@@ -375,10 +355,12 @@ export const getAppUiSchema = (appId): any => {
   const modelName = `App${camelcase(appId, { pascalCase: true })}`
   const model = spec.components.schemas[modelName].properties.values
   const uiSchema = {}
-  if (model)
-    extract(model, (o) => o.type === 'object' && !o.properties).forEach((path) => {
+  if (model) {
+    const leafs = extract(model, o => o.type === 'object' && !o.properties && !isOf(o))
+    leafs.forEach(path => {
       set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
     })
+  }
   switch (appId) {
     case 'drone':
       return { ...uiSchema, sourceControl: { provider: { 'ui:widget': 'hidden' } } }

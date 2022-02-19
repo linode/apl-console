@@ -1,20 +1,46 @@
 version: '3.4'
 
 services:
-  web:
-    build:
-      context: .
-      target: dev
-      args:
-        NPM_TOKEN: ${NPM_TOKEN}
-    image: otomi/console:${WEB_TAG:-master}
-    container_name: web
-    command: npm run dev:docker
-    volumes:
-      - ./:/app
-      - .npm:/root/.npm
+  api:
+    container_name: api
+    image: eu.gcr.io/otomi-cloud/otomi-api:${API_TAG:-master}
+    command: sh -c 'node dist/app.js'
+    user: ${USER_ID}:${GROUP_ID}
+    expose:
+      - 8080
     ports:
-      - 3000:3000
+      - 8080:8080
+    volumes:
+      - $PWD/core.yaml:/etc/otomi/core.yaml
+      - tmp:/tmp
     environment:
-      PORT: 3000
-      API_BASE_URL: 'kubernetes.docker.internal:8080'
+      TOOLS_HOST: tools
+      GIT_LOCAL_PATH: /tmp/otomi-values
+    env_file:
+      - .env
+
+  tools:
+    depends_on:
+      - api
+    container_name: tools
+    image: otomi/core:${TOOLS_TAG:-master}
+    user: ${USER_ID}:${GROUP_ID}
+    command: sh -c 'binzx/otomi server -vv'
+    expose:
+      - 17771
+    ports:
+      - 17771:17771
+    volumes:
+      - tmp:/tmp
+    environment:
+      ENV_DIR: /tmp/otomi-values
+    env_file:
+      - .env
+
+volumes:
+  tmp:
+    driver: local
+    driver_opts:
+      type: None
+      device: /tmp
+      o: bind

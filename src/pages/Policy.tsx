@@ -4,7 +4,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { ApiError } from 'utils/error'
 import { renameKeys } from 'utils/data'
 import Policy from 'components/Policy'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {

@@ -1,8 +1,9 @@
-import { ListItem, ListSubheader, MenuItem, Theme } from '@mui/material'
+import { ListItem, ListSubheader, MenuItem } from '@mui/material'
 import React from 'react'
-import { makeStyles, useMainStyles } from 'common/theme'
+import { useMainStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   listSubHeader: {
     backgroundColor: theme.palette.divider,
     // a: theme.palette.primary.dark,

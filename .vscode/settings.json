@@ -2,12 +2,9 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": true
   },
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "[lua]": {
-    "editor.defaultFormatter": "yinfei.luahelper"
-  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "eslint.format.enable": true,
+  "eslint.format.enable": false,
   "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
   "files.associations": {
     "*.tmpl": "nginx"

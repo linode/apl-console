@@ -1,11 +1,10 @@
-import { AppBar, Box, Button, List, ListItem, ListSubheader, Tab, Theme, Typography } from '@mui/material'
-import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { AppBar, Box, Button, List, ListItem, ListSubheader, Tabs, Tab, Typography } from '@mui/material'
 import { isEqual } from 'lodash'
 import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { dump } from 'js-yaml'
 import { JSONSchema7 } from 'json-schema'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
 import { getAppData } from 'utils/data'
@@ -13,16 +12,18 @@ import AppCard from './AppCard'
 import CodeEditor from './CodeEditor'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
+import TabPanel from './TabPanel'
 
-const contextPath = process.env.CONTEXT_PATH || ''
-
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()((theme) => ({
   noTabs: {
     padding: theme.spacing(3),
   },
   disabled: {
     backgroundColor: theme.palette.action.disabledBackground,
     color: theme.palette.action.disabled,
+  },
+  panelHeader: {
+    padding: theme.spacing(1),
   },
 }))
 
@@ -37,9 +38,9 @@ export default ({
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
-    shortcuts: '1',
-    values: '2',
-    rawvalues: '3',
+    shortcuts: 0,
+    values: 1,
+    rawvalues: 2,
   }
   const { classes } = useStyles()
   const session = useSession()
@@ -48,7 +49,7 @@ export default ({
   const { schema, baseUrl, link, logo, enabled, shortcuts: defaultShortcuts } = getAppData(session, teamId, id)
   const { description, title } = schema
   const disabled = enabled === false
-  const defTab = hashMap[hash] ?? (link ? '1' : '2')
+  const defTab = hashMap[hash] ?? (link ? 0 : 1)
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
     setTab(tab)
@@ -105,9 +106,9 @@ export default ({
 
   const shortcutsPanel = (
     <>
-      <Typography component='h6' variant='h6'>
-        Shortcuts
-      </Typography>
+      <Box className={classes.panelHeader} component='div'>
+        <Typography variant='h6'>Shortcuts</Typography>
+      </Box>
       {link && defaultShortcuts?.length && (
         <List
           subheader={
@@ -150,9 +151,7 @@ export default ({
             hideHelp
             clean={false}
             liveValidate
-          >
-            <></>
-          </Form>
+          />
         )}
       </List>
       <Box display='flex' flexDirection='row-reverse' m={1}>
@@ -178,7 +177,7 @@ export default ({
         teamId={teamId}
         title={title}
         link={link}
-        img={`${contextPath}/logos/${logo}`}
+        img={`/logos/${logo}`}
         disabled={disabled}
         wide
         hideSettings
@@ -187,25 +186,25 @@ export default ({
         description={description}
       />
       {isAdminApps && (
-        <TabContext value={tab}>
-          <AppBar position='static'>
-            <TabList value={tab} onChange={handleTabChange}>
-              <Tab href='#info' label='Info' value='1' disabled={!link} />
-              {isAdminApps && <Tab href='#values' label='Values' value='2' disabled={!appSchema || !inValues} />}
+        <>
+          <AppBar position='relative' color='primary'>
+            <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
+              <Tab href='#info' label='Info' value={0} disabled={!link} />
+              {isAdminApps && <Tab href='#values' label='Values' value={1} disabled={!appSchema || !inValues} />}
               {isAdminApps && (
-                <Tab href='#rawvalues' label='Raw Values' value='3' disabled={!appSchema || !inRawValues} />
+                <Tab href='#rawvalues' label='Raw Values' value={2} disabled={!appSchema || !inRawValues} />
               )}
-            </TabList>
+            </Tabs>
           </AppBar>
-          <TabPanel value='1'>{shortcutsPanel}</TabPanel>
+          <TabPanel value={tab} index={0}>
+            {shortcutsPanel}
+          </TabPanel>
           {inValues && (
-            <TabPanel value='2'>
-              <Typography component='h6' variant='h6'>
-                Values
-              </Typography>
-              <Typography component='h6' variant='caption'>
-                Edit the configuration values of {title}.
-              </Typography>
+            <TabPanel value={tab} index={1}>
+              <Box className={classes.panelHeader} component='div'>
+                <Typography variant='h6'>Values</Typography>
+                <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
+              </Box>
               <Form
                 key='editValues'
                 schema={appSchema}
@@ -230,32 +229,34 @@ export default ({
             </TabPanel>
           )}
           {inValues && (
-            <TabPanel value='3'>
-              <Typography component='h6' variant='h6'>
-                Raw Values
-              </Typography>
-              <Typography component='h6' variant='caption'>
-                Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no
-                schema support so edit at your own risk!
-              </Typography>
-              <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} invalid={!valid} />
-              <Box display='flex' flexDirection='row-reverse' m={1}>
-                <Button
-                  color='primary'
-                  variant='contained'
-                  data-cy='button-edit-rawvalues'
-                  onClick={() => {
-                    if (isEdit) handleSubmit()
-                    setIsEdit(!isEdit)
-                  }}
-                  disabled={!valid}
-                >
-                  {isEdit ? 'Submit' : 'Edit'}
-                </Button>
+            <TabPanel value={tab} index={2}>
+              <Box className={classes.panelHeader} component='div'>
+                <Typography component='h6' variant='h6'>
+                  Raw Values
+                </Typography>
+                <Typography component='h6' variant='caption'>
+                  Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no
+                  schema support so edit at your own risk!
+                </Typography>
+                <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} invalid={!valid} />
+                <Box display='flex' flexDirection='row-reverse' m={1}>
+                  <Button
+                    color='primary'
+                    variant='contained'
+                    data-cy='button-edit-rawvalues'
+                    onClick={() => {
+                      if (isEdit) handleSubmit()
+                      setIsEdit(!isEdit)
+                    }}
+                    disabled={!valid}
+                  >
+                    {isEdit ? 'Submit' : 'Edit'}
+                  </Button>
+                </Box>
               </Box>
             </TabPanel>
           )}
-        </TabContext>
+        </>
       )}
       {!isAdminApps && <div className={classes.noTabs}>{shortcutsPanel}</div>}
     </Box>

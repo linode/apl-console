@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { renameKeys } from 'utils/data'
 import App from 'components/App'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {

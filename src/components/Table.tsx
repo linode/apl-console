@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Theme } from '@mui/material'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import React from 'react'
-import { makeStyles, useMainStyles } from 'common/theme'
+import { useMainStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     background: theme.palette.background.paper,
   },

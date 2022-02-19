@@ -42,7 +42,7 @@ export default ({ onSubmit, settings, settingId }: Props): React.ReactElement =>
 
   return (
     <>
-      <h1 data-cy='h1-edit-setting-page'>Setting:</h1>
+      <h1 data-cy='h1-edit-setting-page'>Settings</h1>
       <Form
         key={settingId}
         id={settingId}

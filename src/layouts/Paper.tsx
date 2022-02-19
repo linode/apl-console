@@ -1,15 +1,29 @@
 import React from 'react'
-import { Container, Grid, Paper } from '@material-ui/core'
-import { Theme } from '@mui/material'
-import { makeStyles } from 'common/theme'
+import { Box, Container, Paper } from '@mui/material'
+import { makeStyles } from 'tss-react/mui'
 import Error from 'components/Error'
 import Loader from 'components/Loader'
 import MainLayout from './Base'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   container: {
-    // paddingTop: theme.spacing(4),
+    paddingTop: 0,
     paddingBottom: theme.spacing(2),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
+  paper: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+    paddingTop: '1px',
+    paddingLeft: theme.spacing(1.5),
+    paddingRight: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1.5),
   },
   // paper: {
   //   padding: theme.spacing(2),
@@ -29,13 +43,11 @@ export default ({ loading, comp }: Props): React.ReactElement => {
   return (
     <MainLayout>
       <Container maxWidth='lg' className={classes.container}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} component={Paper}>
-            <Error />
-            {loading && <Loader />}
-            {!loading && comp}
-          </Grid>
-        </Grid>
+        <Box component={Paper} className={classes.paper}>
+          <Error />
+          {loading && <Loader />}
+          {!loading && comp}
+        </Box>
       </Container>
     </MainLayout>
   )

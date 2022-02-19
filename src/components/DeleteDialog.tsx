@@ -19,7 +19,7 @@ export default (props: DeleteDialogProps): React.ReactElement => {
   const { onCancel, onDelete, resourceName, resourceType } = props
   const [buttonDisabled, setButtonDisabled] = useState(true)
 
-  const onTextFieldChange = (event) => {
+  const onTextFieldChange = event => {
     if (event.target.value === resourceName) setButtonDisabled(false)
     else setButtonDisabled(true)
   }

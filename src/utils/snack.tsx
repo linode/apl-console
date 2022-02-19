@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSnackbar, WithSnackbarProps, OptionsObject, SnackbarProvider, SnackbarProviderProps } from 'notistack'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 export const defaultOpts = {
   maxSnack: 3,

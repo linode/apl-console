@@ -1,6 +1,6 @@
 import React from 'react'
 import CircularProgress from '@mui/material/CircularProgress'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()({
   root: {

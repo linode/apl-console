@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { useSession } from 'common/session-context'
 import { getAppData } from 'utils/data'
 import Shortcuts from 'components/Shortcuts'
-import { useApi, useAuthz } from 'hooks/useApi'
+import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {
@@ -19,11 +19,11 @@ export default ({
   const { tid } = useAuthz(teamId)
   const [apps, loading, err]: any = useApi('getApps', true, [tid])
   const appsWithShortcuts = (apps || [])
-    .map((app) => getAppData(session, teamId, app, true))
-    .filter((a) => a.shortcuts?.length)
+    .map(app => getAppData(session, teamId, app, true))
+    .filter(a => a.shortcuts?.length)
     .reduce((memo, app) => {
       // flatten
-      app.shortcuts.forEach((s) => memo.push({ ...app, shortcut: s, description: s.description }))
+      app.shortcuts.forEach(s => memo.push({ ...app, shortcut: s, description: s.description }))
       return memo
     }, [])
   const comp = !(err || loading) && <Shortcuts teamId={teamId} apps={appsWithShortcuts} />

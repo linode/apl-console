@@ -4,8 +4,6 @@ import { getAppData, getApps } from 'utils/data'
 import { useSession } from 'common/session-context'
 import AppCard from './AppCard'
 
-const contextPath = process.env.CONTEXT_PATH || ''
-
 interface Props {
   teamId: string
 }
@@ -19,10 +17,10 @@ export default ({ teamId }: Props): React.ReactElement => {
   const isAdminApps = teamId === 'admin'
   const apps = getApps(adminApps, teamApps, teamId)
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
-  const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
-  const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
-  const out = (items) => {
-    return items.map((item) => {
+  const enabledApps = apps.filter(app => app.enabled !== false).sort(sorter)
+  const disabledApps = apps.filter(app => app.enabled === false).sort(sorter)
+  const out = items =>
+    items.map(item => {
       const name = item?.name
       const { id, schema, link, logo, enabled, docUrl } = getAppData(session, teamId, item)
       return (
@@ -34,14 +32,13 @@ export default ({ teamId }: Props): React.ReactElement => {
             title={schema.title}
             link={link}
             docUrl={docUrl}
-            img={`${contextPath}/logos/${logo}`}
+            img={`/logos/${logo}`}
             disabled={enabled === false}
             hideConfButton={!isAdminApps || !schema.properties?.values}
           />
         </Grid>
       )
     })
-  }
 
   return (
     <Grid container direction='row' alignItems='center' spacing={2} data-cy='grid-apps'>

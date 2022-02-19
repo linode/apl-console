@@ -2,7 +2,7 @@ import React from 'react'
 import { Policies as PoliciesType } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from 'utils/error'
 import Policies from 'components/Policies'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface IncomingPolicies {

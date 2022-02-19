@@ -1,4 +1,4 @@
-import { Collapse, List, ListItemText, ListSubheader, MenuItem, Theme } from '@mui/material'
+import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
 import MenuList from '@mui/material/List'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -25,15 +25,16 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import MailIcon from '@mui/icons-material/Mail'
 import { Provider } from '@redkubes/otomi-api-client-axios'
 import PolicyIcon from '@mui/icons-material/Policy'
-import { makeStyles, useMainStyles } from 'common/theme'
+import { useMainStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { useSession } from 'common/session-context'
 import snack from 'utils/snack'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import Cluster from './Cluster'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     paddingTop: 0,
     // textTransform: 'capitalize',
@@ -95,15 +96,13 @@ export default ({ className, teamId }: Props): React.ReactElement => {
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
 
-  const StyledMenuItem = (props: any) => {
-    return <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
-  }
-  const StyledListSubheader = (props) => {
-    return <ListSubheader className={classes.listSubheader} {...props} />
-  }
+  const StyledMenuItem = (props: any) => (
+    <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
+  )
+  const StyledListSubheader = props => <ListSubheader className={classes.listSubheader} {...props} />
 
   const handleCollapse = (): void => {
-    setCollapseSettings((prevCollapse) => !prevCollapse)
+    setCollapseSettings(prevCollapse => !prevCollapse)
   }
 
   const handleClick = (): void => {
@@ -199,7 +198,7 @@ export default ({ className, teamId }: Props): React.ReactElement => {
           </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
-              {Object.keys(settingIds).map((id) => {
+              {Object.keys(settingIds).map(id => {
                 // TODO: fix this hack with a generic x-provider approach?
                 if (cluster.provider !== Provider.azure && id === 'azure') return undefined
                 return (

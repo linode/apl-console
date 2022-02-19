@@ -1,14 +1,14 @@
 import Alert from '@mui/lab/Alert'
 import React from 'react'
-import { Container, Collapse, IconButton, Theme } from '@mui/material'
+import { Container, Collapse, IconButton } from '@mui/material'
 import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
 import CloseIcon from '@mui/icons-material/Close'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 import { useSession } from 'common/session-context'
 import { Keys as k } from 'translations/keys'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   root: {
     width: '100%',
     padding: 0,
@@ -24,8 +24,8 @@ export default (): React.ReactElement => {
   const { classes } = useStyles()
   const { globalError, setGlobalError } = useSession()
   if (!globalError) return null
-  const code = globalError.code
-  const message = globalError.message
+  const { code } = globalError
+  const { message } = globalError
   return (
     <Container className={classes.root}>
       <Helmet>

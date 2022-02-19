@@ -1,6 +1,5 @@
-import { get, isEqual, set, unset } from 'lodash'
-
-export * from './refHooks'
+import { JSONSchema7 } from 'json-schema'
+import { find, get, isEqual, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -24,7 +23,12 @@ export function unsetStrict(obj: any, path: string) {
   unset(obj, path)
 }
 
-export const isSomeOf = (schema) => {
+export const isOneOf = (schema: JSONSchema7): boolean =>
+  // we must be a oneOf option when one prop exists that has an enum of length 1
+  schema.properties &&
+  !!Object.keys(schema.properties).find((prop) => (schema.properties[prop] as JSONSchema7).enum?.length === 1)
+
+export const hasSomeOf = (schema) => {
   // we have to wrap items in allOf with one item passed, to be able to add
   // schema props such as 'title' so we exclude that scenario
   if (schema.allOf && schema.allOf.length === 1) return false
@@ -51,19 +55,20 @@ export const nullify = (data) =>
     if (typeof o[i] === 'object' && isEqual(o[i], {})) o[i] = null
   })
 
+export const isOf = (o): boolean => Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
+
 export const extract = (o, f) => {
   const schemaKeywords = ['properties', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
   const leafs = []
   traverse(o, (o, i, path) => {
-    if (f(o, i, path) && !leafs.includes(path)) leafs.push(path)
+    if (path && f(o, i, path) && !leafs.includes(path)) leafs.push(path)
   })
-  return leafs.map((l) => {
-    return schemaKeywords.reduce((memo, k) => {
-      // eslint-disable-next-line no-param-reassign
+  return leafs.map((l) =>
+    schemaKeywords.reduce((memo, k) => {
       memo = memo.replace(`.${k}`, '')
-      // eslint-disable-next-line no-param-reassign
       memo = memo.replace(`${k}.`, '')
+      memo = memo.replace(/[0-9]+\./g, '')
       return memo
-    }, l)
-  })
+    }, l),
+  )
 }

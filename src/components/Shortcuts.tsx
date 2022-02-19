@@ -17,7 +17,7 @@ const getAppLink =
     )
   }
 
-const getShortcutLink = (app) => {
+const getShortcutLink = app => {
   const {
     baseUrl,
     shortcut: { path, title, description },

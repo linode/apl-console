@@ -2,7 +2,7 @@ import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Job from 'components/Job'
-import { useApi, useAuthz } from 'hooks/useApi'
+import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {

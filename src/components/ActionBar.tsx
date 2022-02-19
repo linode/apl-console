@@ -5,6 +5,4 @@ interface Props {
   children: ComponentType
 }
 
-export default ({ children }: Props): React.ReactElement => {
-  return <AppBar>{children}</AppBar>
-}
+export default ({ children }: Props): React.ReactElement => <AppBar>{children}</AppBar>

@@ -8,7 +8,7 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 
 import { WidgetProps } from '@rjsf/core'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()(() => ({
   root: {
@@ -30,7 +30,7 @@ const RadioWidget = ({
   onFocus,
 }: WidgetProps) => {
   const { inline, enumOptions, enumDisabled } = options
-  const renderOptions = [...(enumOptions as any[])]
+  const renderOptions = [...((enumOptions as any[]) || [])]
   const { classes } = useStyles()
   const _onChange = ({}, value: any) => onChange(schema.type === 'boolean' ? value !== 'false' : value)
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onBlur(id, value)
@@ -39,7 +39,7 @@ const RadioWidget = ({
   const row = inline || renderOptions.length <= 7
   // if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: undefined }
   if (!required && schema.default === undefined) {
-    if (renderOptions[0].value !== '') {
+    if (renderOptions.length && renderOptions[0].value !== '') {
       renderOptions.unshift({ label: 'Off', value: '' })
     }
     if (value === undefined) {

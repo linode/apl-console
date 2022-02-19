@@ -1,6 +1,6 @@
 import { useRadioGroup, FormControlLabel, RadioGroup, Radio, FormControlLabelProps } from '@mui/material'
 import React from 'react'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()(() => ({
   labelChecked: {},
@@ -44,7 +44,7 @@ export default ({ channel, setChannel, disabled }: Props): React.ReactElement =>
   return (
     <RadioGroup
       row
-      onChange={(event) => {
+      onChange={event => {
         setChannel(event)
       }}
       name='use-radio-group'

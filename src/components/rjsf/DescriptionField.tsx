@@ -1,7 +1,6 @@
 import React from 'react'
-import { FieldProps } from '@rjsf/core'
 import Typography from '@mui/material/Typography'
-import { makeStyles } from 'common/theme'
+import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()(() => ({
   root: {
@@ -9,7 +8,7 @@ const useStyles = makeStyles()(() => ({
   },
 }))
 
-const DescriptionField = ({ description }: FieldProps) => {
+const DescriptionField = ({ description }: any) => {
   const { classes } = useStyles()
   if (description) {
     return (

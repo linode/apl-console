@@ -30,7 +30,7 @@ export default ({
   // @ts-ignore
   let isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
   if (schema.type === 'string' && schema.enum) isCustomArray = true
-  const hideDescription = isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
+  const hideDescription = isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some(p => p in schema)
 
   return (
     <WrapIfAdditional
@@ -53,13 +53,11 @@ export default ({
         ) : null}
         {rawErrors.length > 0 && (
           <List dense disablePadding>
-            {rawErrors.map((error, i: number) => {
-              return (
-                <ListItem key={`key-${i}`} disableGutters>
-                  <FormHelperText id={id}>{error}</FormHelperText>
-                </ListItem>
-              )
-            })}
+            {rawErrors.map((error, i: number) => (
+              <ListItem key={`key-${i}`} disableGutters>
+                <FormHelperText id={id}>{error}</FormHelperText>
+              </ListItem>
+            ))}
           </List>
         )}
         {rawHelp && <FormHelperText id={id}>{rawHelp}</FormHelperText>}

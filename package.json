@@ -14,14 +14,13 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@material-ui/styles": "^4.11.4",
     "@mui/icons-material": "^5.4.1",
     "@mui/lab": "^5.0.0-alpha.68",
     "@mui/material": "^5.4.1",
     "@mui/styles": "^5.4.1",
     "@redkubes/otomi-api-client-axios": "^0.4.92",
-    "@rjsf/core": "^3.2.1",
-    "@rjsf/material-ui": "^3.2.1",
+    "@rjsf/core": "^4.0.0",
+    "@rjsf/material-ui": "^4.0.0",
     "@uiw/react-textarea-code-editor": "^1.4.15",
     "axios": "^0.21.2",
     "camelcase": "^6.3.0",
@@ -40,6 +39,7 @@
     "openapi-client-axios": "^3.13.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-error-boundary": "^3.1.4",
     "react-helmet": "^5.2.1",
     "react-i18next": "^11.8.11",
     "react-icons": "^3.9.0",
@@ -61,7 +61,6 @@
     "@types/js-yaml": "^4.0.5",
     "@types/json-schema": "^7.0.9",
     "@types/lodash": "^4.14.170",
-    "@types/material-ui": "^0.21.7",
     "@types/react": "^16.14.23",
     "@types/react-dom": "^16.9.14",
     "@types/react-helmet": "^5.0.15",
@@ -82,7 +81,6 @@
     "eslint-plugin-jest": "^23.13.2",
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.23.1",
-    "eslint-plugin-unused-imports": "^0.1.2",
     "git-cz": "^4.7.6",
     "husky": "^7.0.2",
     "jest-enzyme": "^7.1.2",
@@ -97,11 +95,8 @@
     "typescript": "^4.1.2"
   },
   "lint-staged": {
-    "*.{json,md,yml,yaml}": [
+    "*.{js,ts,tsx,json,md,yml,yaml}": [
       "prettier --write"
-    ],
-    "*.{js,ts,tsx}": [
-      "eslint --ext js,ts,tsx --fix"
     ]
   },
   "name": "otomi-console",
@@ -125,12 +120,12 @@
     "lint:es": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "lint": "run-p types lint:es spellcheck",
-    "prepare": "husky install",
     "preinstall": "npx npm-force-resolutions",
+    "prepare": "husky install",
     "release": "standard-version",
     "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
-    "start": "dotenv -e .env react-scripts start --no-cache",
+    "start": "dotenv -e .env react-scripts start",
     "test:enzyme": "react-scripts test",
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w --noEmit"

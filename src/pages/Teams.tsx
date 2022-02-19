@@ -1,6 +1,6 @@
 import React from 'react'
 import Teams from 'components/Teams'
-import { useApi } from 'hooks/useApi'
+import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 export default (): React.ReactElement => {

@@ -51,8 +51,6 @@ const context = React.createContext<SessionContext>({
   versions: undefined,
 })
 
-export const useSession = (): SessionContext => {
-  return useContext(context)
-}
+export const useSession = (): SessionContext => useContext(context)
 
 export default context

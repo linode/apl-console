@@ -17,9 +17,7 @@ const selectValue = (value: any, selected: any, all: any) => {
   return updated.sort((a: any, b: any) => all.indexOf(a) > all.indexOf(b))
 }
 
-const deselectValue = (value: any, selected: any) => {
-  return selected.filter((v: any) => v !== value)
-}
+const deselectValue = (value: any, selected: any) => selected.filter((v: any) => v !== value)
 
 export default ({
   schema,
@@ -66,6 +64,7 @@ export default ({
         {(enumOptions as any).map((option: any, index: number) => {
           const checked = value.indexOf(option.value) !== -1
           const itemDisabled = enumDisabled && (enumDisabled as any).indexOf(option.value) !== -1
+          const indeterminate = schema.default && schema.default === option.value && !checked
           const checkbox = (
             <Checkbox
               id={`${id}_${index}`}
@@ -75,6 +74,7 @@ export default ({
               onChange={_onChange(option)}
               onBlur={_onBlur}
               onFocus={_onFocus}
+              indeterminate={indeterminate}
             />
           )
           return <FormControlLabel control={checkbox} key={option.label} label={option.label} />

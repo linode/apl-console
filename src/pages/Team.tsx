@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Team from 'components/Team'
-import { useApi, useAuthz } from 'hooks/useApi'
+import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 
 interface Params {

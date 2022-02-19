@@ -31,8 +31,8 @@ const cleanDeep = (
     nullValues = true,
     undefinedValues = true,
   } = {},
-) => {
-  return transform(object, (result, value, key) => {
+) =>
+  transform(object, (result, value, key) => {
     // Exclude specific keys.
     if (cleanKeys.includes(key)) {
       return
@@ -96,7 +96,6 @@ const cleanDeep = (
 
     result[key] = value
   })
-}
 
 export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<string, unknown> => {
   const options = {
@@ -113,9 +112,9 @@ export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<
 }
 
 // TODO: https://github.com/redkubes/otomi-api/issues/183
-export const renameKeys = (data) => {
+export const renameKeys = data => {
   if (data === undefined) return data
-  const keyValues = Object.keys(data).map((key) => {
+  const keyValues = Object.keys(data).map(key => {
     const newKey = key.replaceAll('-', '_')
     return { [newKey]: data[key] }
   })
@@ -123,7 +122,7 @@ export const renameKeys = (data) => {
 }
 
 export const getApps = (adminApps, teamApps, teamId) =>
-  (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter((app) => !app.hide)
+  (teamId === 'admin' ? adminApps : adminApps.filter(app => app.isShared).concat(teamApps)).filter(app => !app.hide)
 
 export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
   const {
@@ -149,9 +148,9 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
   let substShortcuts
   if (mergedShortcuts.length)
-    substShortcuts = mergedShortcuts.map(({ path, ...rest }) => ({
+    substShortcuts = mergedShortcuts.map(({ path, ...other }) => ({
       path: path.replace('#NS#', `team-${teamId}`),
-      ...rest,
+      ...other,
     }))
   // compose the derived ingress props
   const { domain, host, ownHost, path } = (ingress && ingress[0]) || {}

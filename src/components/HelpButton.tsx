@@ -1,9 +1,9 @@
 import React from 'react'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
-import { Button, ButtonProps, Theme, Tooltip } from '@mui/material'
-import { makeStyles } from 'common/theme'
+import { Button, ButtonProps, Tooltip } from '@mui/material'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()((theme: Theme) => ({
+const useStyles = makeStyles()(theme => ({
   icon: {
     // float: 'right',
     height: '24px',
