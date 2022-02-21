@@ -58,7 +58,7 @@ const App = () => {
       return <Loader />
     }
 
-    return <GenericErrorComponent code={500} message='The user does not have any team assigned' />
+    return <GenericErrorComponent code={403} message='The user does not have any team assigned' />
   }
   setThemeName(user.isAdmin ? 'admin' : 'team')
   return (
