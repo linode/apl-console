@@ -13,5 +13,8 @@
     "*.tmpl": "nginx"
   },
   "prettier.enable": true,
-  "stylelint.enable": true
+  "stylelint.enable": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

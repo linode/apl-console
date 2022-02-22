@@ -43,6 +43,7 @@ export enum Keys {
   'Git error occured' = 'Git error occured',
   'Invalid values detected' = 'Invalid values detected',
   'The URL is already in use' = 'The URL is already in use',
+  'The user does not have any team assigned' = 'The user does not have any team assigned',
 }
 
 export default Keys
