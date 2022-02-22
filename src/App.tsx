@@ -37,7 +37,6 @@ const App = () => {
   const [globalError, setGlobalError] = useState()
   const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
-
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
   const [themeType, setType] = useLocalStorage('themeType', 'light')
@@ -54,7 +53,7 @@ const App = () => {
   let err
   const { user } = session
   if (!user.isAdmin && !oboTeamId) {
-    if (user.teams[0]) {
+    if (user.teams.length) {
       setOboTeamId(user.teams[0])
       return <Loader />
     }
