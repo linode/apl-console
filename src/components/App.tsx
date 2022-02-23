@@ -87,7 +87,8 @@ export default function ({
     handleChangeValues({ formData: values || {} })
     return null
   }
-  const handleChangeRawValues = (data) => {
+  const handleChangeRawValues = (inData) => {
+    const data = inData || {}
     setRawValues(data)
     setDirty(!isEqual(data, inRawValues))
   }

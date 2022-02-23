@@ -1,5 +1,5 @@
 import CodeEditor, { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
-import { isEqual } from 'lodash'
+import { isEmpty } from 'lodash'
 import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import YAML from 'yaml'
@@ -36,7 +36,7 @@ export default function ({
   disabled,
   ...props
 }: Props): React.ReactElement {
-  const startCode = isEqual(inCode, {}) ? '' : toYaml(inCode)
+  const startCode = isEmpty(inCode) ? '' : toYaml(inCode)
   const [code, setCode] = useState(startCode)
   const [valid, setLocalValid] = useState(true)
   const { classes } = useStyles()
