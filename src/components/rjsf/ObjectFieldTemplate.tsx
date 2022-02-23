@@ -1,59 +1,21 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
 import { Divider, Grid, Paper } from '@mui/material'
-import React from 'react'
 import { ObjectFieldTemplateProps } from '@rjsf/core'
+import { sentenceCase } from 'change-case'
+import React from 'react'
 import { getSchemaType, hasSomeOf, isOneOf } from 'utils/schema'
-import TitleField from './TitleField'
-import { useStyles } from './styles'
 import DescriptionField from './DescriptionField'
+import { useStyles } from './styles'
+import TitleField from './TitleField'
 
 const isHidden = (element: any): boolean =>
   element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
 
-export const renderTitleDescription = (props, skipTitle, classes): React.ReactElement | undefined => {
-  const { idSchema, uiSchema = {}, title, description, name, required, schema } = props
-  const type = getSchemaType(schema)
-  if (type === 'boolean' && !skipTitle) return
-  const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-  // we may get the title from the following:
-  const displayTitle =
-    uiSchema['ui:title'] || title || schema.title || (type === 'object' && !schema.properties && name)
-  const displayDescription = uiSchema['ui:description'] || description || schema.description
-  if (!(displayTitle || displayDescription)) return
-  const isOf = hasSomeOf(schema)
-  const oneOf = isOneOf(schema)
-  // eslint-disable-next-line no-param-reassign
-  if (skipTitle === undefined && oneOf) skipTitle = true
-  // eslint-disable-next-line consistent-return
-  return (
-    <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
-      {displayTitle && !skipTitle && (
-        <TitleField
-          {...props}
-          key={`${idSchema.$id}-title`}
-          id={`${idSchema.$id}-title`}
-          title={displayTitle}
-          required={required}
-          docUrl={skipTitle !== false && docUrl}
-        />
-      )}
-      {displayDescription && skipTitle && <Divider />}
-      {displayDescription && !isOf && (
-        <DescriptionField
-          key={`${idSchema.$id}-description`}
-          id={`${idSchema.$id}-description`}
-          description={displayDescription}
-        />
-      )}
-    </Grid>
-  )
-}
-
-export default (props: ObjectFieldTemplateProps): React.ReactElement => {
-  const { DescriptionField, properties, idSchema, schema } = props
+export default function (props: ObjectFieldTemplateProps): React.ReactElement {
+  const { properties, idSchema, schema } = props
   const { classes } = useStyles()
   const isOf = hasSomeOf(schema)
+  const oneOf = isOneOf(schema)
   let grouped
   const fields = []
   properties.forEach((o) => {
@@ -73,6 +35,46 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   // to catch the last iteration
   if (grouped) fields.push(grouped)
 
+  const renderTitleDescription = (props): React.ReactElement | undefined => {
+    const { idSchema, uiSchema = {}, title, description, name, required, schema } = props
+    const type = getSchemaType(schema)
+    if (type === 'boolean') return
+    const docUrl =
+      schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
+    // we may get the title from the following:
+    const displayTitle = title || (type === 'object' && !schema.properties && sentenceCase(name))
+    // uiSchema['ui:title'] || title || schema.title || (type === 'object' && !schema.properties && sentenceCase(name))
+    const displayDescription = uiSchema['ui:description'] || description || schema.description
+    if (!(displayTitle || displayDescription)) return
+    // const isOf = hasSomeOf(schema)
+    const skipTitle = isOf || oneOf
+    // eslint-disable-next-line consistent-return
+    return (
+      <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
+        {displayTitle && !skipTitle && (
+          <TitleField
+            {...props}
+            schema={schema}
+            uiSchema={uiSchema}
+            key={`${idSchema.$id}-title`}
+            id={`${idSchema.$id}-title`}
+            title={displayTitle}
+            required={required}
+            docUrl={skipTitle !== false && docUrl}
+          />
+        )}
+        {displayDescription && skipTitle && <Divider />}
+        {displayDescription && (
+          <DescriptionField
+            key={`${idSchema.$id}-description`}
+            id={`${idSchema.$id}-description`}
+            description={displayDescription}
+          />
+        )}
+      </Grid>
+    )
+  }
+
   const render = (o, id = o.name) => {
     const schema = o.content?.props?.schema
     const isOf = hasSomeOf(schema)
@@ -82,7 +84,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     if (hidden) {
       if (!schema.properties && !isOf)
         return (
-          <span id={id} key={id}>
+          <span id={`${id}-hidden`} key={id}>
             {o.content}
           </span>
         )
@@ -96,7 +98,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
           <Paper key={id} className={classes.paper}>
             {(isOf || (type === 'object' && !schema.properties) || isCustomArray) && (
               <Grid key={idSchema.$id} item className={classes.gridIsOf}>
-                {renderTitleDescription(o.content?.props, undefined, classes)}
+                {renderTitleDescription(o.content?.props)}
               </Grid>
             )}
             <Grid key={idSchema.$id} item>
@@ -111,7 +113,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         <Grid key={id} className={classes.grid} item xs={12}>
           <Paper key={id} className={classes.paper}>
             <Grid key={idSchema.$id} item>
-              {renderTitleDescription(o.content?.props, undefined, classes)}
+              {renderTitleDescription(o.content?.props)}
             </Grid>
             <Grid key={id} item xs={12} className={classes.grid}>
               {o.content}
@@ -128,7 +130,7 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
-          {renderTitleDescription(o.content?.props, true, classes)}
+          {renderTitleDescription(o.content?.props)}
         </Grid>
       )
     if (schema.type === 'array') {
@@ -149,14 +151,14 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
     <Grid container spacing={2} className={classes.root}>
       {!isOf && (
         <Grid key={idSchema.$id} item>
-          {renderTitleDescription(props, undefined, classes)}
+          {renderTitleDescription(props)}
         </Grid>
       )}
       {fields.map((o: any, idx: number) => {
         if (o.length)
           return (
             <Grid key={idx} container>
-              {o.map((el, idz) => render(el, idz))}
+              {o.map(render)}
             </Grid>
           )
         return render(o)

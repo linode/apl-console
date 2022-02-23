@@ -16,7 +16,7 @@ interface Props {
   teamId: string
 }
 
-export default ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.ReactElement => {
+export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.ReactElement {
   const { user, cluster, dns, oboTeamId } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()

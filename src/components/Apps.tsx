@@ -1,14 +1,14 @@
 import { Grid } from '@mui/material'
+import { useSession } from 'common/session-context'
 import React from 'react'
 import { getAppData, getApps } from 'utils/data'
-import { useSession } from 'common/session-context'
 import AppCard from './AppCard'
 
 interface Props {
   teamId: string
 }
 
-export default ({ teamId }: Props): React.ReactElement => {
+export default function ({ teamId }: Props): React.ReactElement {
   const session = useSession()
   const {
     core: { adminApps, teamApps },
@@ -17,10 +17,10 @@ export default ({ teamId }: Props): React.ReactElement => {
   const isAdminApps = teamId === 'admin'
   const apps = getApps(adminApps, teamApps, teamId)
   const sorter = (a, b) => (a.name > b.name ? 1 : -1)
-  const enabledApps = apps.filter(app => app.enabled !== false).sort(sorter)
-  const disabledApps = apps.filter(app => app.enabled === false).sort(sorter)
-  const out = items =>
-    items.map(item => {
+  const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
+  const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
+  const out = (items) =>
+    items.map((item) => {
       const name = item?.name
       const { id, schema, link, logo, enabled, docUrl } = getAppData(session, teamId, item)
       return (

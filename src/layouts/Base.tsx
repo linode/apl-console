@@ -12,7 +12,7 @@ import User from 'components/User'
 
 const drawerWidth = '240px'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     display: 'flex',
   },
@@ -113,17 +113,17 @@ interface Props {
   children?: any
 }
 
-export default (props: Props): React.ReactElement => {
+export default function (props: Props): React.ReactElement {
   const { children } = props
   const { oboTeamId, themeType, setThemeMode } = useSession()
 
   const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)
-  const handleDrawerOpen = e => {
+  const handleDrawerOpen = (e) => {
     e.preventDefault()
     if (!open) setOpen(true)
   }
-  const handleDrawerClose = e => {
+  const handleDrawerClose = (e) => {
     e.preventDefault()
     setOpen(false)
   }
@@ -209,7 +209,7 @@ export default (props: Props): React.ReactElement => {
       </Box>
       <main className={classes.content}>
         <ToolbarOffset />
-        <>{children}</>
+        {children}
       </main>
     </div>
   )

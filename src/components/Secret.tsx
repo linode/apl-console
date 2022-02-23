@@ -13,7 +13,7 @@ interface Props {
   secret?: Secret
 }
 
-export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
+export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElement {
   const { user, oboTeamId } = useSession()
 
   const schema = getSecretSchema()
@@ -44,7 +44,7 @@ export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
       formData={data}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-secret'>
+        <Button type='submit' disabled={!dirty} data-cy='button-submit-secret'>
           Submit
         </Button>
         &nbsp;

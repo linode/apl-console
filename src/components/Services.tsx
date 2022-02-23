@@ -1,17 +1,16 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Button } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { Box, Button } from '@mui/material'
+import { Service, Team } from '@redkubes/otomi-api-client-axios'
+import { useSession } from 'common/session-context'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
 
-const getServiceLink =
-  (isAdmin, ownerId): CallableFunction =>
-  (row): React.ReactElement => {
+const getServiceLink = (isAdmin, ownerId): CallableFunction =>
+  function (row): React.ReactElement {
     const { teamId, id, name } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
@@ -41,7 +40,7 @@ interface Props {
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default ({ services, team }: Props): React.ReactElement => {
+export default function ({ services, team }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -56,12 +55,12 @@ export default ({ services, team }: Props): React.ReactElement => {
     {
       id: 'ingressType',
       label: 'Ingress',
-      renderer: row => row.ingress?.type ?? '',
+      renderer: (row) => row.ingress?.type ?? '',
     },
     {
       id: 'serviceType',
       label: 'Type',
-      renderer: row => row.ksvc?.serviceType ?? '',
+      renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',
@@ -85,8 +84,6 @@ export default ({ services, team }: Props): React.ReactElement => {
             component={Link}
             to={isAdmin && !oboTeamId ? '/create-service' : `/teams/${oboTeamId}/create-service`}
             startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
             disabled={isAdmin && !oboTeamId}
             data-cy='button-create-service'
           >

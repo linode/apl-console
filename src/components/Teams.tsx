@@ -11,7 +11,7 @@ interface Props {
   teams: Team[]
 }
 
-export default ({ teams }: Props): React.ReactElement => {
+export default function ({ teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
   } = useSession()
@@ -39,8 +39,6 @@ export default ({ teams }: Props): React.ReactElement => {
             component={Link}
             to='/create-team'
             startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
             className='createTeam'
             data-cy='button-create-team'
           >

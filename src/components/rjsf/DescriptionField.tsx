@@ -1,5 +1,5 @@
-import React from 'react'
 import Typography from '@mui/material/Typography'
+import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()(() => ({
@@ -8,7 +8,7 @@ const useStyles = makeStyles()(() => ({
   },
 }))
 
-const DescriptionField = ({ description }: any) => {
+function DescriptionField({ description }: any) {
   const { classes } = useStyles()
   if (description) {
     return (

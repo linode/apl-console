@@ -13,7 +13,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
+export default function ({ onSubmit, onDelete, team }: Props): React.ReactElement {
   const { cluster, user, oboTeamId } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
   const crudMethod = team && team.id ? 'update' : 'create'
@@ -42,7 +42,7 @@ export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
       formData={data}
     >
       <Box display='flex' flexDirection='row-reverse' m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-team'>
+        <Button type='submit' disabled={!dirty} data-cy='button-submit-team'>
           Submit
         </Button>
         &nbsp;

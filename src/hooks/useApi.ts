@@ -1,11 +1,11 @@
 /* eslint-disable no-restricted-globals */
-import { useEffect } from 'react'
 import { DefaultApi } from '@redkubes/otomi-api-client-axios'
-import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
-import snack from 'utils/snack'
 import devTokens from 'common/devtokens'
-import { useSession, SessionContext } from 'common/session-context'
+import { SessionContext, useSession } from 'common/session-context'
+import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
+import { useEffect } from 'react'
 import { ApiError, ApiErrorUnauthorized } from 'utils/error'
+import snack from 'utils/snack'
 
 const baseUrl = `${location.protocol}//${location.hostname}:${location.port}/api/v1`
 let options: any
@@ -27,7 +27,7 @@ if (location.hostname === 'localhost') {
 
 export type ApiHook = LoadingHook<any, ApiError>
 
-const client = new DefaultApi(baseUrl)
+const client = new DefaultApi(undefined, baseUrl)
 
 export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string } => {
   const session: SessionContext = useSession()
@@ -52,7 +52,7 @@ export default (operationId: string, active: boolean | string | undefined = true
   } = useSession()
   const checkDirty = (operationId: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;['create', 'edit', 'update', 'delete'].forEach(prefix => {
+    ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
       if (operationId.indexOf(prefix) === 0) {
         setDirty(true)
       }
@@ -83,7 +83,7 @@ export default (operationId: string, active: boolean | string | undefined = true
         } else {
           if (canceled) return
           value = await client[operationId].call(client, ...args, options)
-          setValue(value.response.body)
+          setValue(value.data)
           checkDirty(operationId)
         }
         if (setGlobalError) setGlobalError()

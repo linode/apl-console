@@ -3,13 +3,13 @@ import { Container } from '@mui/material'
 import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
     padding: theme.spacing(2),
   },
 }))
 
-export default ({ children }: any): React.ReactElement => {
+export default function ({ children }: any): React.ReactElement {
   const { classes } = useStyles()
   return (
     <MainLayout>

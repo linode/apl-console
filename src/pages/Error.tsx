@@ -1,16 +1,15 @@
-import React from 'react'
 import { useSession } from 'common/session-context'
-import { ApiError } from 'utils/error'
 import Error from 'components/Error'
-
 import PaperLayout from 'layouts/Paper'
+import React from 'react'
+import { ApiError } from 'utils/error'
 
 interface Props {
   code: number
   message?: string
 }
 
-export default (props: Props): React.ReactElement => {
+export default function (props: Props): React.ReactElement {
   const { code, message } = props
   const { setGlobalError } = useSession()
   setGlobalError(new ApiError(message, code))

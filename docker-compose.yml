@@ -17,7 +17,7 @@ services:
       TOOLS_HOST: tools
       GIT_LOCAL_PATH: /tmp/otomi-values
     env_file:
-      - .env
+      - compose/.env
 
   tools:
     depends_on:
@@ -35,7 +35,7 @@ services:
     environment:
       ENV_DIR: /tmp/otomi-values
     env_file:
-      - .env
+      - compose/.env
 
 volumes:
   tmp:

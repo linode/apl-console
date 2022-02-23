@@ -1,5 +1,5 @@
+import { OptionsObject, SnackbarProvider, SnackbarProviderProps, useSnackbar, WithSnackbarProps } from 'notistack'
 import React from 'react'
-import { useSnackbar, WithSnackbarProps, OptionsObject, SnackbarProvider, SnackbarProviderProps } from 'notistack'
 import { makeStyles } from 'tss-react/mui'
 
 export const defaultOpts = {
@@ -23,7 +23,7 @@ const useStyles = makeStyles()(({ palette }) => ({
   },
 }))
 
-export const NotistackProvider = ({ children }: SnackbarProviderProps): React.ReactElement => {
+export function NotistackProvider({ children }: SnackbarProviderProps): React.ReactElement {
   const { classes } = useStyles()
   return (
     <SnackbarProvider
@@ -40,7 +40,7 @@ export const NotistackProvider = ({ children }: SnackbarProviderProps): React.Re
 }
 
 let snackbarRef: WithSnackbarProps
-export const SnackbarUtilsConfigurator = (): React.ReactElement => {
+export function SnackbarUtilsConfigurator(): React.ReactElement {
   snackbarRef = useSnackbar()
   return null
 }

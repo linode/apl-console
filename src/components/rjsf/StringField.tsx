@@ -1,9 +1,9 @@
-import React from 'react'
 import StringField from '@rjsf/core/lib/components/fields/StringField'
 import { set } from 'lodash'
+import React from 'react'
 import RadioWidget from './RadioWidget'
 
-export default ({ children, schema, uiSchema, formData, placeholder, ...props }: any): React.ReactElement => {
+export default function ({ children, schema, uiSchema, formData, placeholder, ...props }: any): React.ReactElement {
   const newUiSchema = { ...uiSchema }
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7

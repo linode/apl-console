@@ -10,7 +10,7 @@ const useStyles = makeStyles()({
   },
 })
 
-export default () => {
+export default function () {
   const { classes } = useStyles()
   return (
     <div className={classes.root}>

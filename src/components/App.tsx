@@ -1,13 +1,14 @@
-import { AppBar, Box, Button, List, ListItem, ListSubheader, Tabs, Tab, Typography } from '@mui/material'
-import { isEqual } from 'lodash'
-import React, { useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { dump } from 'js-yaml'
-import { JSONSchema7 } from 'json-schema'
-import { makeStyles } from 'tss-react/mui'
+import { AppBar, Box, Button, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
+import { JSONSchema7 } from 'json-schema'
+import { isEqual } from 'lodash'
+import Markdown from 'markdown-to-jsx'
+import React, { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
+import YAML from 'yaml'
 import AppCard from './AppCard'
 import CodeEditor from './CodeEditor'
 import MuiLink from './MuiLink'
@@ -27,20 +28,21 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export default ({
+export default function ({
   id,
   teamId,
   values: inValues,
   rawValues: inRawValues,
   shortcuts: inShortcuts,
   onSubmit,
-}: any): React.ReactElement => {
+}: any): React.ReactElement {
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
-    shortcuts: 0,
-    values: 1,
-    rawvalues: 2,
+    info: 0,
+    shortcuts: 1,
+    values: 2,
+    rawvalues: 3,
   }
   const { classes } = useStyles()
   const session = useSession()
@@ -49,7 +51,7 @@ export default ({
   const { schema, baseUrl, link, logo, enabled, shortcuts: defaultShortcuts } = getAppData(session, teamId, id)
   const { description, title } = schema
   const disabled = enabled === false
-  const defTab = hashMap[hash] ?? (link ? 0 : 1)
+  const defTab = hashMap[hash] ?? 0
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
     setTab(tab)
@@ -77,7 +79,7 @@ export default ({
     setDirty(d)
     setValuesDirty(d)
     const newAppSchema = getAppSchema(id).properties?.values
-    const newAppUiSchema = getAppUiSchema(id)
+    const newAppUiSchema = getAppUiSchema(id, formData)
     setAppSchema(newAppSchema)
     setAppUiSchema(newAppUiSchema)
   }
@@ -88,7 +90,6 @@ export default ({
   const handleChangeRawValues = (data) => {
     setRawValues(data)
     setDirty(!isEqual(data, inRawValues))
-    setValid(true)
   }
 
   const handleSubmit = () => {
@@ -100,7 +101,7 @@ export default ({
     }
   }
 
-  const yaml = isEqual(rawValues, {}) ? '' : dump(rawValues)
+  const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
 
   const isAdminApps = teamId === 'admin'
 
@@ -156,8 +157,6 @@ export default ({
       </List>
       <Box display='flex' flexDirection='row-reverse' m={1}>
         <Button
-          color='primary'
-          variant='contained'
           data-cy='button-edit-values'
           onClick={() => {
             if (isEdit) handleSubmit()
@@ -189,18 +188,25 @@ export default ({
         <>
           <AppBar position='relative' color='primary'>
             <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
-              <Tab href='#info' label='Info' value={0} disabled={!link} />
-              {isAdminApps && <Tab href='#values' label='Values' value={1} disabled={!appSchema || !inValues} />}
+              <Tab href='#info' label='Info' value={0} />
+              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!link} />
+              {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
               {isAdminApps && (
-                <Tab href='#rawvalues' label='Raw Values' value={2} disabled={!appSchema || !inRawValues} />
+                <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />
               )}
             </Tabs>
           </AppBar>
           <TabPanel value={tab} index={0}>
+            <Box className={classes.panelHeader} component='div'>
+              <Typography variant='h6'>How did Otomi integrate {title}?</Typography>
+              <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+            </Box>
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
             {shortcutsPanel}
           </TabPanel>
           {inValues && (
-            <TabPanel value={tab} index={1}>
+            <TabPanel value={tab} index={2}>
               <Box className={classes.panelHeader} component='div'>
                 <Typography variant='h6'>Values</Typography>
                 <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
@@ -215,13 +221,7 @@ export default ({
                 uiSchema={appUiSchema}
               >
                 <Box display='flex' flexDirection='row-reverse' m={1}>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    type='submit'
-                    disabled={!valuesDirty}
-                    data-cy='button-submit-values'
-                  >
+                  <Button type='submit' disabled={!valuesDirty} data-cy='button-submit-values'>
                     Submit
                   </Button>
                 </Box>
@@ -229,7 +229,7 @@ export default ({
             </TabPanel>
           )}
           {inValues && (
-            <TabPanel value={tab} index={2}>
+            <TabPanel value={tab} index={3}>
               <Box className={classes.panelHeader} component='div'>
                 <Typography component='h6' variant='h6'>
                   Raw Values
@@ -238,7 +238,13 @@ export default ({
                   Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no
                   schema support so edit at your own risk!
                 </Typography>
-                <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} invalid={!valid} />
+                <CodeEditor
+                  code={yaml}
+                  onChange={handleChangeRawValues}
+                  disabled={!isEdit}
+                  valid={valid}
+                  setValid={setValid}
+                />
                 <Box display='flex' flexDirection='row-reverse' m={1}>
                   <Button
                     color='primary'

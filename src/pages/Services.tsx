@@ -1,20 +1,20 @@
 import { Service, Team } from '@redkubes/otomi-api-client-axios'
-import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { ApiError } from 'utils/error'
 import Services from 'components/Services'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
+import { ApiError } from 'utils/error'
 
 interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
   const servicesArgs = teamId ? [teamId] : []
   const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(

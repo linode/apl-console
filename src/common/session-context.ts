@@ -1,5 +1,5 @@
+import { Cluster, Dns, Session, Team, User } from '@redkubes/otomi-api-client-axios'
 import React, { useContext } from 'react'
-import { Cluster, Dns, Session, User } from '@redkubes/otomi-api-client-axios'
 import { ApiError } from 'utils/error'
 
 interface Versions {
@@ -8,6 +8,7 @@ interface Versions {
 }
 
 export interface SessionContext extends Session {
+  ca: string | undefined
   cluster: Cluster | undefined
   clusters: Cluster[] | undefined
   collapseSettings: boolean
@@ -23,22 +24,23 @@ export interface SessionContext extends Session {
   setOboTeamId?: CallableFunction
   setSession: CallableFunction | undefined
   setThemeMode?: CallableFunction
+  teams: Array<Team>
   themeType: string
   user: User | any
   versions: Versions | undefined
+  isMultitenant: boolean
 }
 
 const context = React.createContext<SessionContext>({
-  ca: undefined,
-  cluster: undefined,
+  ca: '',
+  cluster: new Cluster(),
   clusters: undefined,
   collapseSettings: true,
-  core: undefined,
+  core: {},
   dirty: undefined,
   dns: undefined,
   globalError: undefined,
   isAdmin: undefined,
-  namespaces: undefined,
   oboTeamId: undefined,
   setCollapseSettings: undefined,
   setDirty: undefined,
@@ -46,9 +48,11 @@ const context = React.createContext<SessionContext>({
   setOboTeamId: undefined,
   setSession: undefined,
   setThemeMode: undefined,
+  teams: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,
+  isMultitenant: undefined,
 })
 
 export const useSession = (): SessionContext => useContext(context)

@@ -1,13 +1,13 @@
-import { Card, CardContent, CardMedia, IconButton, Link, Typography } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 // import HelpIcon from '@mui/icons-material/Help'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import SettingsIcon from '@mui/icons-material/Settings'
+import { Card, CardContent, CardMedia, IconButton, Link, Typography } from '@mui/material'
 import React from 'react'
 import { Link as RLink } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     display: 'flex',
     height: theme.spacing(20),
@@ -49,7 +49,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }))
 
-export default ({
+export default function ({
   teamId,
   img,
   id,
@@ -61,7 +61,7 @@ export default ({
   disabled,
   hideConfButton = false,
   wide = false,
-}: any): React.ReactElement => {
+}: any): React.ReactElement {
   const { classes } = useStyles()
   return (
     <Card className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}`}>

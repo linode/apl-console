@@ -1,40 +1,39 @@
-import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
-import MenuList from '@mui/material/List'
-import SettingsIcon from '@mui/icons-material/Settings'
-import ListItemIcon from '@mui/material/ListItemIcon'
+import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
-import ShortcutIcon from '@mui/icons-material/Link'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-import LockIcon from '@mui/icons-material/Lock'
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
-import PeopleIcon from '@mui/icons-material/People'
 // import PersonIcon from '@mui/icons-material/Person'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import DnsIcon from '@mui/icons-material/Dns'
+import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import AnnouncementIcon from '@mui/icons-material/Announcement'
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
-import DnsIcon from '@mui/icons-material/Dns'
-import LockOpenIcon from '@mui/icons-material/LockOpen'
 import HomeIcon from '@mui/icons-material/Home'
-import DonutLargeIcon from '@mui/icons-material/DonutLarge'
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
+import ShortcutIcon from '@mui/icons-material/Link'
+import LockIcon from '@mui/icons-material/Lock'
+import LockOpenIcon from '@mui/icons-material/LockOpen'
 import MailIcon from '@mui/icons-material/Mail'
-import { Provider } from '@redkubes/otomi-api-client-axios'
+import PeopleIcon from '@mui/icons-material/People'
 import PolicyIcon from '@mui/icons-material/Policy'
-import { useMainStyles } from 'common/theme'
-import { makeStyles } from 'tss-react/mui'
+import SettingsIcon from '@mui/icons-material/Settings'
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
+import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
+import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
+import MenuList from '@mui/material/List'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import { Provider } from '@redkubes/otomi-api-client-axios'
 import { useSession } from 'common/session-context'
-import snack from 'utils/snack'
+import { useMainStyles } from 'common/theme'
 import useApi from 'hooks/useApi'
-
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import React, { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { makeStyles } from 'tss-react/mui'
+import snack from 'utils/snack'
 import Cluster from './Cluster'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     paddingTop: 0,
     // textTransform: 'capitalize',
@@ -63,7 +62,7 @@ interface Props {
   teamId?: any
 }
 
-export default ({ className, teamId }: Props): React.ReactElement => {
+export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     cluster,
@@ -96,13 +95,17 @@ export default ({ className, teamId }: Props): React.ReactElement => {
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
 
-  const StyledMenuItem = (props: any) => (
-    <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
+  const StyledMenuItem = React.memo(
+    (props: any): React.ReactElement => (
+      <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
+    ),
   )
-  const StyledListSubheader = props => <ListSubheader className={classes.listSubheader} {...props} />
+  const StyledListSubheader = React.memo(
+    (props: any): React.ReactElement => <ListSubheader className={classes.listSubheader} {...props} />,
+  )
 
   const handleCollapse = (): void => {
-    setCollapseSettings(prevCollapse => !prevCollapse)
+    setCollapseSettings((prevCollapse) => !prevCollapse)
   }
 
   const handleClick = (): void => {
@@ -198,7 +201,7 @@ export default ({ className, teamId }: Props): React.ReactElement => {
           </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
-              {Object.keys(settingIds).map(id => {
+              {Object.keys(settingIds).map((id) => {
                 // TODO: fix this hack with a generic x-provider approach?
                 if (cluster.provider !== Provider.azure && id === 'azure') return undefined
                 return (

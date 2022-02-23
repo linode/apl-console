@@ -1,10 +1,10 @@
-import React from 'react'
 import { Cluster } from '@redkubes/otomi-api-client-axios'
 import { useSession } from 'common/session-context'
-import MuiLink from './MuiLink'
+import React from 'react'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import MuiLink from './MuiLink'
 
-export default (): React.ReactElement => {
+export default function (): React.ReactElement {
   const { cluster, clusters } = useSession()
   const allClusters = [...clusters, cluster]
   const headCells: HeadCell[] = [

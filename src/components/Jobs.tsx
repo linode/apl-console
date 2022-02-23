@@ -1,15 +1,14 @@
-import { Box, Button } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { Box, Button } from '@mui/material'
+import { Job, Team } from '@redkubes/otomi-api-client-axios'
+import { useSession } from 'common/session-context'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Team, Job } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
-const getJobLink =
-  (isAdmin, ownerId): CallableFunction =>
-  (row): React.ReactElement => {
+const getJobLink = (isAdmin, ownerId): CallableFunction =>
+  function (row): React.ReactElement {
     const { teamId, id, name } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
@@ -26,7 +25,7 @@ interface Props {
   team?: Team
 }
 
-export default ({ jobs, team }: Props): React.ReactElement => {
+export default function ({ jobs, team }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -66,8 +65,6 @@ export default ({ jobs, team }: Props): React.ReactElement => {
             component={Link}
             to={isAdmin && !oboTeamId ? '/create-job' : `/teams/${oboTeamId}/create-job`}
             startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
             disabled={isAdmin && !oboTeamId}
             data-cy='button-create-job'
           >

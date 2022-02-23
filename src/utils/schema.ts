@@ -1,5 +1,5 @@
 import { JSONSchema7 } from 'json-schema'
-import { find, get, isEqual, set, unset } from 'lodash'
+import { get, isEqual, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -64,11 +64,9 @@ export const extract = (o, f) => {
     if (path && f(o, i, path) && !leafs.includes(path)) leafs.push(path)
   })
   return leafs.map((l) =>
-    schemaKeywords.reduce((memo, k) => {
-      memo = memo.replace(`.${k}`, '')
-      memo = memo.replace(`${k}.`, '')
-      memo = memo.replace(/[0-9]+\./g, '')
-      return memo
-    }, l),
+    l
+      .split('.')
+      .filter((p) => !schemaKeywords.includes(p))
+      .join('.'),
   )
 }

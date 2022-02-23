@@ -1,10 +1,10 @@
-import React from 'react'
-import ArrayField from '@rjsf/core/lib/components/fields/ArrayField'
 import { utils } from '@rjsf/core'
+import ArrayField from '@rjsf/core/lib/components/fields/ArrayField'
 import { set } from 'lodash'
+import React from 'react'
 import RadioWidget from './RadioWidget'
 
-export default ({ uiSchema, schema, formData, ...props }: any): React.ReactElement => {
+export default function ({ uiSchema, schema, formData, ...props }: any): React.ReactElement {
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
   const listTooLong = schema.items?.enum?.length > 7
@@ -15,7 +15,7 @@ export default ({ uiSchema, schema, formData, ...props }: any): React.ReactEleme
     if (utils.isMultiSelect(schema)) {
       newUiSchema['ui:widget'] = 'checkboxes'
       set(newUiSchema, 'ui:options.inline', shortList)
-      set(newUiSchema, 'ui:options.label', undefined)
+      // set(newUiSchema, 'ui:options.label', undefined)
     } else if (schema.enum) {
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)

@@ -10,11 +10,11 @@ interface Params {
   secretId: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId, secretId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const { tid } = useAuthz(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()

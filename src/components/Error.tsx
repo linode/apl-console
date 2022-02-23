@@ -1,14 +1,13 @@
-import Alert from '@mui/lab/Alert'
+import CloseIcon from '@mui/icons-material/Close'
+import { Alert, Collapse, Container, IconButton } from '@mui/material'
+import { useSession } from 'common/session-context'
 import React from 'react'
-import { Container, Collapse, IconButton } from '@mui/material'
 import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
-import CloseIcon from '@mui/icons-material/Close'
-import { makeStyles } from 'tss-react/mui'
-import { useSession } from 'common/session-context'
 import { Keys as k } from 'translations/keys'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     width: '100%',
     padding: 0,
@@ -20,7 +19,7 @@ const useStyles = makeStyles()(theme => ({
   },
 }))
 
-export default (): React.ReactElement => {
+export default function (): React.ReactElement {
   const { classes } = useStyles()
   const { globalError, setGlobalError } = useSession()
   if (!globalError) return null

@@ -1,18 +1,18 @@
-import React, { useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Team from 'components/Team'
 import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React, { useState } from 'react'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 
 interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   useAuthz(teamId)
   const tid = teamId
   const [formData, setFormData] = useState()

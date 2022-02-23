@@ -1,41 +1,43 @@
-import { Box, Button } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Link } from 'react-router-dom'
-import React from 'react'
+import { Box, Button } from '@mui/material'
 import { useSession } from 'common/session-context'
-import RLink from './Link'
+import React from 'react'
+import { Link } from 'react-router-dom'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import RLink from './Link'
 import MuiLink from './MuiLink'
 
-const getSecretLink = (isAdmin, ownerId) => row => {
-  const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+const getSecretLink = (isAdmin, ownerId) =>
+  function (row) {
+    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    if (!(isAdmin || teamId === ownerId)) return name
 
-  const link =
-    isAdmin && !ownerId ? `/secrets/${encodeURIComponent(id)}` : `/teams/${teamId}/secrets/${encodeURIComponent(id)}`
-  return (
-    <RLink to={link} label={name}>
-      {name}
-    </RLink>
-  )
-}
+    const link =
+      isAdmin && !ownerId ? `/secrets/${encodeURIComponent(id)}` : `/teams/${teamId}/secrets/${encodeURIComponent(id)}`
+    return (
+      <RLink to={link} label={name}>
+        {name}
+      </RLink>
+    )
+  }
 
-const getVaultSecretLink = clusterDomain => row => {
-  const { teamId, name } = row
-  const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
-  return (
-    <MuiLink href={`${url}`} target='_blank' rel='noopener'>
-      vault:{name}
-    </MuiLink>
-  )
-}
+const getVaultSecretLink = (clusterDomain) =>
+  function (row) {
+    const { teamId, name } = row
+    const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/$`
+    return (
+      <MuiLink href={`${url}`} target='_blank' rel='noopener'>
+        vault:{name}
+      </MuiLink>
+    )
+  }
 
 interface Props {
   secrets: any[]
   teamId?: string
 }
 
-export default ({ secrets, teamId }: Props): React.ReactElement => {
+export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -50,31 +52,19 @@ export default ({ secrets, teamId }: Props): React.ReactElement => {
     {
       id: 'type',
       label: 'Type',
-      renderer: row => row.secret.type,
+      renderer: (row) => row.secret.type,
     },
     {
       id: 'vaultLink',
       label: 'Vault',
       renderer: getVaultSecretLink(cluster.domainSuffix),
     },
-    // {
-    //   id: 'delete',
-    //   label: 'Delete',
-    //   renderer: row => (
-    //     <DeleteForeverIcon
-    //       onClick={() => setDeleteId(row.id)}
-    //       color='primary'
-    //       // disabled={isAdmin && !oboTeamId}
-    //       data-cy={`button-delete-${row.name}`}
-    //     />
-    //   ),
-    // },
   ]
   if (isAdmin && !teamId)
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',
-      renderer: row => row.namespace || `team-${row.teamId}`,
+      renderer: (row) => row.namespace || `team-${row.teamId}`,
     })
   return (
     <>
@@ -85,8 +75,6 @@ export default ({ secrets, teamId }: Props): React.ReactElement => {
             component={Link}
             to={isAdmin && !oboTeamId ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
             startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
             disabled={!isAdmin && !oboTeamId}
             data-cy='button-create-secret'
           >

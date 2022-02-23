@@ -88,6 +88,10 @@ const getOverrides = (c: any): ThemeOptions => ({
       },
     },
     MuiButton: {
+      defaultProps: {
+        color: 'primary',
+        variant: 'contained',
+      },
       styleOverrides: {
         root: {
           borderRadius: '2em',
@@ -98,6 +102,9 @@ const getOverrides = (c: any): ThemeOptions => ({
         textSecondary: ({ theme }) => ({
           color: theme.palette.primary.contrastText,
           backgroundColor: theme.palette.primary.main,
+          ':hover': {
+            backgroundColor: theme.palette.primary.dark,
+          },
         }),
       },
     },
@@ -199,6 +206,7 @@ const getOverrides = (c: any): ThemeOptions => ({
       styleOverrides: {
         caption: {
           maxWidth: 'fit-content',
+          // paddingLeft: 4,
         },
       },
     },
@@ -282,7 +290,7 @@ export const themes = {
 
 export const getTheme = (): Theme => themes[name][mode]
 
-export const useMainStyles = makeStyles()(theme => ({
+export const useMainStyles = makeStyles()((theme) => ({
   headerlink: {
     // color: theme.palette.primary.main,
     color: theme.palette.common.white,

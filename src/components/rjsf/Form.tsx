@@ -1,20 +1,22 @@
-import React from 'react'
-import { Theme5 } from '@rjsf/material-ui'
 import { FormProps, IChangeEvent, withTheme } from '@rjsf/core'
 import validator from '@rjsf/core/dist/cjs/validate'
+import { Theme5 } from '@rjsf/material-ui'
+import HelpButton from 'components/HelpButton'
 import { get, isEqual } from 'lodash'
+import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { cleanData } from 'utils/data'
-import HelpButton from 'components/HelpButton'
+import ArrayField from './ArrayField'
+import CheckboxesWidget from './CheckboxesWidget'
+import CheckboxWidget from './CheckboxWidget'
+import DescriptionField from './DescriptionField'
+import ArrayFieldTemplate from './FieldTemplate/ArrayFieldTemplate'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
-import TitleField from './TitleField'
-import ArrayField from './ArrayField'
-import DescriptionField from './DescriptionField'
 import OneOfField from './OneOfField'
 import RadioWidget from './RadioWidget'
 import StringField from './StringField'
-import CheckboxesWidget from './CheckboxesWidget'
+import TitleField from './TitleField'
 
 const Form = withTheme(Theme5)
 
@@ -36,7 +38,7 @@ interface Props extends FormProps<any> {
   clean?: boolean
 }
 
-export default ({
+export default function ({
   children,
   title,
   hideHelp = false,
@@ -45,7 +47,7 @@ export default ({
   clean = true,
   liveValidate,
   ...props
-}: Props): React.ReactElement => {
+}: Props): React.ReactElement {
   const { schema }: any = props
   // const rules = schema['x-rules'] ?? undefined
   // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
@@ -65,10 +67,9 @@ export default ({
   const validate = (formData, errors): any => {
     const cleanFormData = clean ? cleanData(formData) : formData
     const e = validator(cleanFormData, schema)
-    e.errors.forEach((err, i) => {
+    e.errors.forEach((err) => {
       const { name, property, message } = err
       const leaf = property.substr(1, property.lastIndexOf('.') - 1)
-      const p = property.substr(property.lastIndexOf('.'))
       const prop = get(cleanFormData, leaf)
       if (name !== 'required' || !isEqual(prop, {})) {
         get(errors, property.substr(1)).addError(message)
@@ -90,11 +91,12 @@ export default ({
         liveValidate={liveValidate ?? false}
         showErrorList={false}
         noHtml5Validate
-        // validate={validate}
+        validate={validate}
+        ArrayFieldTemplate={ArrayFieldTemplate}
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
-        widgets={{ CheckboxesWidget, RadioWidget }}
+        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
         // noValidate

@@ -3,7 +3,7 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { Button, ButtonProps, Tooltip } from '@mui/material'
 import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   icon: {
     // float: 'right',
     height: '24px',
@@ -31,7 +31,7 @@ interface HelpProps extends ButtonProps {
   id?: string
 }
 
-export default ({ icon, id, href, size: inSize }: HelpProps): React.ReactElement => {
+export default function ({ icon, id, href, size: inSize }: HelpProps): React.ReactElement {
   const size = inSize || 'small'
   const { classes } = useStyles()
   return (
@@ -41,7 +41,6 @@ export default ({ icon, id, href, size: inSize }: HelpProps): React.ReactElement
         className={icon ? classes.icon : classes[size]}
         startIcon={<HelpRoundedIcon />}
         variant={icon ? 'text' : 'contained'}
-        color='primary'
         aria-label='Read the documentation'
         data-cy={`button-help-${id}`}
         target='_blank'

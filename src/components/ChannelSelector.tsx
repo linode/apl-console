@@ -1,4 +1,4 @@
-import { useRadioGroup, FormControlLabel, RadioGroup, Radio, FormControlLabelProps } from '@mui/material'
+import { FormControlLabel, FormControlLabelProps, Radio, RadioGroup, useRadioGroup } from '@mui/material'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
@@ -19,7 +19,7 @@ interface LabelProps extends FormControlLabelProps {
   value: any
 }
 
-export const MyFormControlLabel = (props: LabelProps) => {
+export function MyFormControlLabel(props: LabelProps) {
   const { classes } = useStyles()
   const radioGroup = useRadioGroup()
 
@@ -39,12 +39,12 @@ export const MyFormControlLabel = (props: LabelProps) => {
   )
 }
 
-export default ({ channel, setChannel, disabled }: Props): React.ReactElement => {
+export default function ({ channel, setChannel, disabled }: Props): React.ReactElement {
   const { classes } = useStyles()
   return (
     <RadioGroup
       row
-      onChange={event => {
+      onChange={(event) => {
         setChannel(event)
       }}
       name='use-radio-group'

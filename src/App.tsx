@@ -1,54 +1,68 @@
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-globals */
-import { CssBaseline } from '@mui/material'
-import { ThemeProvider } from '@mui/material/styles'
-import React, { Suspense, useState } from 'react'
-import Helmet from 'react-helmet'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
+import { CssBaseline } from '@mui/material'
+import { ThemeProvider } from '@mui/material/styles'
+import { setSpec } from 'common/api-spec'
+import Context from 'common/session-context'
+import { getTheme, setThemeMode, setThemeName } from 'common/theme'
+import ErrorComponent from 'components/Error'
+import Loader from 'components/Loader'
+import useApi from 'hooks/useApi'
+import { useLocalStorage } from 'hooks/useLocalStorage'
+import OtomiApp from 'pages/App'
+import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
 import Clusters from 'pages/Clusters'
 import Dashboard from 'pages/Dashboard'
 import Error from 'pages/Error'
-import OtomiApp from 'pages/App'
-import Apps from 'pages/Apps'
-import Secret from 'pages/Secret'
-import Secrets from 'pages/Secrets'
-import Service from 'pages/Service'
-import Services from 'pages/Services'
-import Team from 'pages/Team'
-import Teams from 'pages/Teams'
-import Setting from 'pages/Setting'
 import Job from 'pages/Job'
 import Jobs from 'pages/Jobs'
 import Policies from 'pages/Policies'
 import Policy from 'pages/Policy'
+import Secret from 'pages/Secret'
+import Secrets from 'pages/Secrets'
+import Service from 'pages/Service'
+import Services from 'pages/Services'
+import Setting from 'pages/Setting'
 import Shortcuts from 'pages/Shortcuts'
-import ErrorComponent from 'components/Error'
-import Loader from 'components/Loader'
-import { useLocalStorage } from 'hooks/useLocalStorage'
-import useApi from 'hooks/useApi'
-import { setSpec } from 'common/api-spec'
-import { NotistackProvider, SnackbarUtilsConfigurator } from 'utils/snack'
-import { getTheme, setThemeName, setThemeMode } from 'common/theme'
-import Context from 'common/session-context'
+import Team from 'pages/Team'
+import Teams from 'pages/Teams'
+import React, { Dispatch, Suspense, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
+import Helmet from 'react-helmet'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { NotistackProvider, SnackbarUtilsConfigurator } from 'utils/snack'
 
 export const muiCache = createCache({
   key: 'mui',
   prepend: true,
 })
 
-const App = () => {
+function App() {
   const [globalError, setGlobalError] = useState()
   const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
-  const [themeType, setType] = useLocalStorage('themeType', 'light')
+  const [themeType, setType]: [string, Dispatch<any>] = useLocalStorage('themeType', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   const [collapseSettings, setCollapseSettings] = useState(true)
+  // eslint-disable-next-line react/jsx-no-constructed-context-values
+  const ctx = {
+    ...(session || {}),
+    collapseSettings,
+    dirty: dirty === undefined ? session?.isDirty : dirty,
+    globalError,
+    oboTeamId,
+    setCollapseSettings,
+    setDirty,
+    setGlobalError,
+    setOboTeamId,
+    setThemeMode: setType,
+    themeType,
+  }
   setThemeMode(themeType)
   if (sessionError || apiDocsError) {
     return <ErrorComponent />
@@ -72,21 +86,7 @@ const App = () => {
               <SnackbarUtilsConfigurator />
               <CssBaseline />
               <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-              <Context.Provider
-                value={{
-                  ...session,
-                  collapseSettings,
-                  dirty: dirty === undefined ? session.isDirty : dirty,
-                  globalError,
-                  oboTeamId,
-                  setCollapseSettings,
-                  setDirty,
-                  setGlobalError,
-                  setOboTeamId,
-                  setThemeMode: setType,
-                  themeType,
-                }}
-              >
+              <Context.Provider value={ctx}>
                 <Router>
                   <Switch>
                     <Route path='/' component={Dashboard} exact />

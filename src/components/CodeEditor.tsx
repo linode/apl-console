@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
 import CodeEditor, { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
+import { isEqual } from 'lodash'
+import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
+import YAML from 'yaml'
 
-const useStyles = makeStyles()(theme => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     backgroundColor: theme.palette.common.white,
     fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
@@ -20,29 +22,50 @@ const useStyles = makeStyles()(theme => ({
 interface Props extends TextareaCodeEditorProps {
   lang?: string
   code?: string
-  invalid?: boolean
+  valid?: boolean
+  setValid?: CallableFunction
 }
 
-export default ({
-  code: inCode = '',
+const toYaml = (obj) => YAML.stringify(obj)
+
+export default function ({
+  code: inCode,
   lang = 'yaml',
   onChange,
-  invalid = false,
+  setValid,
   disabled,
   ...props
-}: Props): React.ReactElement => {
-  const textRef = React.useRef()
-  const [code, setCode] = useState(inCode)
-  const onChangeHandler = e => {
-    setCode(e.target.value)
-    if (onChange) onChange(e.target.value)
-  }
+}: Props): React.ReactElement {
+  const startCode = isEqual(inCode, {}) ? '' : toYaml(inCode)
+  const [code, setCode] = useState(startCode)
+  const [valid, setLocalValid] = useState(true)
   const { classes } = useStyles()
+
+  const fromYaml = (yaml) => {
+    try {
+      const obj = YAML.parse(yaml)
+      setLocalValid(true)
+      if (setValid) setValid(true)
+      return obj
+    } catch (e) {
+      setLocalValid(false)
+      if (setValid) setValid(false)
+      console.error('invalid yaml detected')
+      return undefined
+    }
+  }
+
+  const onChangeHandler = (e) => {
+    const code = e.target.value
+    setCode(code)
+    const obj = fromYaml(code)
+    if (onChange && valid) onChange(obj)
+  }
+
   return (
     <CodeEditor
-      className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}${invalid ? ` ${classes.invalid}` : ''}`}
+      className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}${!valid ? ` ${classes.invalid}` : ''}`}
       value={code}
-      ref={textRef}
       language={lang}
       placeholder={`Please enter ${lang.toUpperCase()} code.`}
       onChange={onChangeHandler}

@@ -10,11 +10,11 @@ interface Params {
   appId: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId, appId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormdata] = useState()
 
   const [app, appLoading, appError]: any = useApi('getApp', true, [teamId, appId])

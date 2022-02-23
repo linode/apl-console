@@ -1,18 +1,18 @@
-import React from 'react'
-import { RouteComponentProps } from 'react-router-dom'
 import Jobs from 'components/Jobs'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React from 'react'
+import { RouteComponentProps } from 'react-router-dom'
 
 interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const jobsMethod = teamId ? 'getTeamJobs' : 'getAllJobs'
   const jobsArgs = teamId ? [teamId] : []
   const [jobs, jobsLoading, jobsError]: any = useApi(jobsMethod, true, jobsArgs)

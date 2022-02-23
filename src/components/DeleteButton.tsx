@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import Button from '@mui/material/Button'
 import DeleteIcon from '@mui/icons-material/Delete'
+import Button from '@mui/material/Button'
+import React, { useState } from 'react'
 import DeleteDialog from './DeleteDialog'
 
 interface DeleteButtonProps {
@@ -9,7 +9,7 @@ interface DeleteButtonProps {
   resourceName: string
   resourceType: string
 }
-export default (props: DeleteButtonProps): React.ReactElement => {
+export default function (props: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { dataCy } = props
   const onButtonClick = () => {
@@ -22,7 +22,7 @@ export default (props: DeleteButtonProps): React.ReactElement => {
   return (
     <>
       {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...props} />}
-      <Button color='primary' startIcon={<DeleteIcon />} variant='contained' onClick={onButtonClick} data-cy={dataCy}>
+      <Button startIcon={<DeleteIcon />} onClick={onButtonClick} data-cy={dataCy}>
         Delete
       </Button>
     </>

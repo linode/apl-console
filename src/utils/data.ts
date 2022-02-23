@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
 import { Session } from '@redkubes/otomi-api-client-axios'
-import camelcase from 'camelcase'
 import { JSONSchema7 } from 'json-schema'
 import { find, isEmpty, isPlainObject, transform } from 'lodash'
 import { getSpec } from 'common/api-spec'
+import { pascalCase } from 'change-case'
 
 export const cleanOptions = {
   cleanKeys: [],
@@ -112,9 +112,9 @@ export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<
 }
 
 // TODO: https://github.com/redkubes/otomi-api/issues/183
-export const renameKeys = data => {
+export const renameKeys = (data) => {
   if (data === undefined) return data
-  const keyValues = Object.keys(data).map(key => {
+  const keyValues = Object.keys(data).map((key) => {
     const newKey = key.replaceAll('-', '_')
     return { [newKey]: data[key] }
   })
@@ -122,7 +122,7 @@ export const renameKeys = data => {
 }
 
 export const getApps = (adminApps, teamApps, teamId) =>
-  (teamId === 'admin' ? adminApps : adminApps.filter(app => app.isShared).concat(teamApps)).filter(app => !app.hide)
+  (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter((app) => !app.hide)
 
 export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
   const {
@@ -167,7 +167,7 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
   else if (ingress) link = `${baseUrl}/${substPath}`
   // also get schema info such as title, desc
   const spec = getSpec()
-  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+  const modelName = `App${pascalCase(appId)}`
   const schema = spec.components.schemas[modelName]
     ? (spec.components.schemas[modelName] as JSONSchema7)
     : { title: appId, description: '' }

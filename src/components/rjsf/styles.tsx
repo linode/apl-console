@@ -8,6 +8,7 @@ export const useStyles = makeStyles()(() => ({
   header: {
     // paddingTop: 4,
     paddingBottom: 4,
+    paddingLeft: 8,
     // padding: 8,
     // margin: 8,
     // marginTop: 4,

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
 import { Settings } from '@redkubes/otomi-api-client-axios'
-import { RouteComponentProps } from 'react-router-dom'
-import { ApiError } from 'utils/error'
-import { renameKeys } from 'utils/data'
 import Policy from 'components/Policy'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React, { useEffect, useState } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
+import { renameKeys } from 'utils/data'
+import { ApiError } from 'utils/error'
 
 interface Params {
   policyId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { policyId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormdata] = useState()
 
   useEffect(() => {

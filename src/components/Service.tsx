@@ -16,7 +16,7 @@ interface Props {
   teamId: string
 }
 
-export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement => {
+export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement {
   const { user, cluster, dns, oboTeamId } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
@@ -76,7 +76,7 @@ export default ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.
       formData={data}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-service'>
+        <Button type='submit' disabled={!dirty} data-cy='button-submit-service'>
           Submit
         </Button>
         &nbsp;

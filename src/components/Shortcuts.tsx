@@ -5,9 +5,8 @@ import MuiLink from './MuiLink'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
-const getAppLink =
-  (teamId: string) =>
-  (app): React.ReactElement => {
+const getAppLink = (teamId: string) =>
+  function (app): React.ReactElement {
     const { id } = app
     const link = `/apps/${teamId}/${id}`
     return (
@@ -17,7 +16,7 @@ const getAppLink =
     )
   }
 
-const getShortcutLink = app => {
+const getShortcutLink = (app) => {
   const {
     baseUrl,
     shortcut: { path, title, description },
@@ -34,7 +33,7 @@ interface Props {
   teamId?: string
 }
 
-export default ({ apps, teamId }: Props): React.ReactElement => {
+export default function ({ apps, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'id',

@@ -6,7 +6,7 @@ import { makeStyles } from 'tss-react/mui'
 
 import { useSession } from 'common/session-context'
 
-const useStyles = makeStyles()(theme => {
+const useStyles = makeStyles()((theme) => {
   const isDark = getThemeMode() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
@@ -27,6 +27,9 @@ const useStyles = makeStyles()(theme => {
       fontSize: '1rem',
       color,
       fontWeight: 'bold',
+      height: 36,
+      borderRadius: 18,
+      borderWidth: 0,
     },
     switchLabel: {
       // minWidth: '6rem !important',
@@ -43,7 +46,7 @@ const useStyles = makeStyles()(theme => {
   }
 })
 
-export default (): React.ReactElement => {
+export default function (): React.ReactElement {
   const { classes: mainClasses } = useMainStyles()
   const { classes } = useStyles()
   const history = useHistory()
@@ -62,10 +65,10 @@ export default (): React.ReactElement => {
       id,
     }))
   else
-    teams = userTeams.map(id => ({
+    teams = userTeams.map((id) => ({
       id,
     }))
-  const handleChange = event => {
+  const handleChange = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`
@@ -89,10 +92,10 @@ export default (): React.ReactElement => {
     history.push(url)
     event.preventDefault()
   }
-  const handleChangeCluster = event => {
+  const handleChangeCluster = (event) => {
     const id = event.target.value
     const [provider, name] = id.split('-')
-    const { domainSuffix } = clusters.find(c => c.name === name && c.provider === provider)
+    const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
   return (
@@ -111,7 +114,7 @@ export default (): React.ReactElement => {
         }}
       >
         {allClusters.map(({ name, provider }) => {
-          const id = `${provider}-${name}`
+          const id = `${provider}-$`
           return (
             <MenuItem key={id} value={id} data-cy={`select-cluster-${id}`}>
               {id}

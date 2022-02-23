@@ -8,11 +8,11 @@ interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const { tid } = useAuthz(teamId)
   const secretsMethod = !teamId ? 'getAllSecrets' : 'getSecrets'
   const [secrets, secretsLoading, secretsError]: any = useApi(secretsMethod, true, [tid])

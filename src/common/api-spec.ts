@@ -1,18 +1,17 @@
-/* eslint-disable no-param-reassign */
-import { isEmpty, cloneDeep } from 'lodash/lang'
 import {
   Cluster,
   Provider,
-  SecretDockerRegistry,
-  SecretTLS,
+  SecretDockerRegistryTypeEnum,
+  SecretTLSTypeEnum,
   Service,
-  SvcPredeployed,
+  SvcPredeployedServiceTypeEnum,
   User,
 } from '@redkubes/otomi-api-client-axios'
-import { get, set, unset } from 'lodash'
-import camelcase from 'camelcase'
-import { extract, getStrict, isOf } from 'utils/schema'
+import { pascalCase } from 'change-case'
 import CodeEditor from 'components/rjsf/FieldTemplate/CodeEditor'
+import { get, set, unset } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash/lang'
+import { extract, getStrict, isOf } from 'utils/schema'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 
@@ -81,7 +80,7 @@ export const getSpec = () => spec
 export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, schemaName: string): void => {
   if (user.isAdmin) return
 
-  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach(path => {
+  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
     set(uiSchema, `${path}.ui:readonly`, true)
   })
 }
@@ -127,7 +126,7 @@ export const getServiceUiSchema = (formData: Service, user: User, teamId: string
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
       certArn: { 'ui:readonly': formData.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployed.ServiceTypeEnum.svcPredeployed },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployedServiceTypeEnum.svcPredeployed },
     },
     ksvc: {
       ...podSpecUiSchema,
@@ -219,7 +218,7 @@ export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array
     } else if (ing) {
       // Give the certName an enum selector with names of existing tls secrets
       if (ing.certSelect) {
-        const tlsSecretNames = secrets.filter(s => s.secret.type === SecretTLS.TypeEnum.tls).map(s => s.name)
+        const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLSTypeEnum.tls).map((s) => s.name)
         set(ingressSchema, `certName.enum`, tlsSecretNames)
         if (secrets.length === 1) ing.certName = tlsSecretNames[0]
       }
@@ -240,8 +239,8 @@ export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array
 export const setSecretsEnum = (schema, secrets) => {
   if (secrets.length) {
     const secretNames = secrets
-      .filter(s => s.secret.type !== SecretDockerRegistry.TypeEnum.docker_registry)
-      .map(s => s.name)
+      .filter((s) => s.secret.type !== SecretDockerRegistryTypeEnum.docker_registry)
+      .map((s) => s.name)
     set(schema, `secrets.items.enum`, secretNames)
     set(schema, `secretMounts.items.properties.name.enum`, secretNames)
   } else {
@@ -260,7 +259,7 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
   const { provider } = cluster
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
 
-  schema.properties.alerts.properties.receivers.items.enum.forEach(receiver => {
+  schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
     if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
       delete schema.properties.alerts.properties[receiver]
     }
@@ -272,7 +271,7 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
 export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamSelfService
 
 export const deleteAlertEndpoints = (schema, formData) => {
-  schema.properties.receivers.items.enum.forEach(receiver => {
+  schema.properties.receivers.items.enum.forEach((receiver) => {
     if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
       delete schema.properties[receiver]
     }
@@ -342,7 +341,7 @@ export const getPolicyUiSchema = (settingId: string, user: User, teamId: string)
 }
 
 export const getAppSchema = (appId): any => {
-  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+  const modelName = `App${pascalCase(appId)}`
   const schema = cloneDeep(spec.components.schemas[modelName])
   switch (appId) {
     default:
@@ -351,19 +350,21 @@ export const getAppSchema = (appId): any => {
   return schema
 }
 
-export const getAppUiSchema = (appId): any => {
-  const modelName = `App${camelcase(appId, { pascalCase: true })}`
+export const getAppUiSchema = (appId, formData): any => {
+  const modelName = `App${pascalCase(appId)}`
   const model = spec.components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {
-    const leafs = extract(model, o => o.type === 'object' && !o.properties && !isOf(o))
-    leafs.forEach(path => {
+    const leafs = extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o))
+    leafs.forEach((path) => {
       set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
     })
   }
   switch (appId) {
     case 'drone':
-      return { ...uiSchema, sourceControl: { provider: { 'ui:widget': 'hidden' } } }
+      const provider = get(formData, 'sourceControl.provider')
+      if (provider !== 'github') set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
+      break
     default:
       break
   }

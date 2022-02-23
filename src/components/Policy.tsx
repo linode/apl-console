@@ -12,7 +12,7 @@ interface Props {
   policyId: string
 }
 
-export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => {
+export default function ({ onSubmit, policies, policyId }: Props): React.ReactElement {
   const [data, setData]: any = useState(policies[policyId])
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
@@ -55,13 +55,7 @@ export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => 
         hideHelp
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button
-            variant='contained'
-            color='primary'
-            type='submit'
-            disabled={!dirty}
-            data-cy={`button-submit-${policyId}`}
-          >
+          <Button type='submit' disabled={!dirty} data-cy={`button-submit-${policyId}`}>
             Submit
           </Button>
         </Box>

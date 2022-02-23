@@ -21,7 +21,6 @@ extends:
   - plugin:import/errors
   - plugin:import/warnings
   - plugin:import/typescript
-  - plugin:chai-friendly/recommended
 
 plugins:
   - react
@@ -50,25 +49,28 @@ rules:
   '@typescript-eslint/member-delimiter-style': off
   '@typescript-eslint/no-debugger': off
   '@typescript-eslint/no-explicit-any': off
-  '@typescript-eslint/no-param-reassign': off
   '@typescript-eslint/no-unsafe-assignment': off
+  '@typescript-eslint/no-unsafe-argument': warn
   '@typescript-eslint/no-unsafe-call': off
   '@typescript-eslint/no-unsafe-member-access': off
   '@typescript-eslint/no-unsafe-return': off
   '@typescript-eslint/no-unused-vars': warn
   '@typescript-eslint/no-use-before-define': off
   '@typescript-eslint/restrict-template-expressions': off
+  comma-dangle: [error, only-multiline]
   eol-last: [error, always]
-  func-style: [warn, expression]
+  func-names: off
   import/default: off
   import/extensions: off
   import/no-extraneous-dependencies: off
+  no-case-declarations: off
   no-debugger: warn
   no-fallthrough: warn
   no-param-reassign:
     - warn
     - props: true
-      ignorePropertyModificationsFor: [memo]
+      ignorePropertyModificationsFor:
+        - memo
   no-shadow: off
   no-unused-vars: warn
   no-use-before-define: off

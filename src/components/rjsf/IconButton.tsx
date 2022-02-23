@@ -1,7 +1,6 @@
-import React from 'react'
-
+import { Add, ArrowDownward, ArrowUpward, Remove } from '@mui/icons-material'
 import { Button, ButtonProps } from '@mui/material'
-import { Add, ArrowUpward, ArrowDownward, Remove } from '@mui/icons-material'
+import React from 'react'
 
 const mappings: any = {
   remove: Remove,
@@ -16,7 +15,7 @@ type IconButtonProps = ButtonProps & {
   href?: any
 }
 
-const IconButton = (props: IconButtonProps) => {
+function IconButton(props: IconButtonProps) {
   const { icon, iconProps, ...otherProps } = props
   const IconComp = mappings[icon]
   return (

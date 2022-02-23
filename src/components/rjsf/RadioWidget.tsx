@@ -1,13 +1,11 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-underscore-dangle */
-import React from 'react'
-
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormLabel from '@mui/material/FormLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
-
 import { WidgetProps } from '@rjsf/core'
+import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()(() => ({
@@ -16,7 +14,7 @@ const useStyles = makeStyles()(() => ({
   },
 }))
 
-const RadioWidget = ({
+function RadioWidget({
   id,
   schema,
   options,
@@ -28,7 +26,7 @@ const RadioWidget = ({
   onChange,
   onBlur,
   onFocus,
-}: WidgetProps) => {
+}: WidgetProps) {
   const { inline, enumOptions, enumDisabled } = options
   const renderOptions = [...((enumOptions as any[]) || [])]
   const { classes } = useStyles()
@@ -67,7 +65,7 @@ const RadioWidget = ({
 
           const radio = (
             <FormControlLabel
-              control={<Radio color='primary' key={option.label} />}
+              control={<Radio key={option.label} />}
               label={`${option.label}`}
               value={`${option.value}`}
               key={option.label}

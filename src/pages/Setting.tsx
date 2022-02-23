@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { renameKeys } from 'utils/data'
 import Setting from 'components/Setting'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React, { useEffect, useState } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
+import { renameKeys } from 'utils/data'
 
 interface Params {
   settingId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { settingId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
+}: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormdata] = useState()
 
   useEffect(() => {
