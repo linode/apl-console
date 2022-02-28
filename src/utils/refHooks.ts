@@ -13,9 +13,7 @@ export const useComparatorRef = <T>(
   useEffect(() => {
     if (!isEqual(value, ref.current)) {
       ref.current = value
-      if (onChange) {
-        onChange()
-      }
+      if (onChange) onChange()
     }
   })
   return ref

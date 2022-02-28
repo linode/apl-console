@@ -26,9 +26,9 @@ export default function ({
     serviceId ? [tid, serviceId, omit(formData, ['id', 'teamId'])] : [tid, formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
+  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError)))
     return <Redirect to={`/teams/${tid}/services`} />
-  }
+
   const loading = serviceLoading || secretsLoading || createLoading || deleteLoading
   const err = serviceError || secretsError || createError || deleteError
   const comp = !loading && (!err || formData || service) && (

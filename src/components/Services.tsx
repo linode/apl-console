@@ -69,11 +69,12 @@ export default function ({ services, team }: Props): React.ReactElement {
       component: MuiLink,
     },
   ]
-  if (showTeam)
+  if (showTeam) {
     headCells.push({
       id: 'teamId',
       label: 'Team',
     })
+  }
 
   return (
     <>

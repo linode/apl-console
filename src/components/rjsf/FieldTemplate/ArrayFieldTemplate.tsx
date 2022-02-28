@@ -11,9 +11,8 @@ const { isMultiSelect, getDefaultRegistry } = utils
 function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
   const { schema, registry = getDefaultRegistry() } = props
 
-  if (isMultiSelect(schema, registry.rootSchema)) {
-    return <DefaultFixedArrayFieldTemplate {...props} />
-  }
+  if (isMultiSelect(schema, registry.rootSchema)) return <DefaultFixedArrayFieldTemplate {...props} />
+
   return <DefaultNormalArrayFieldTemplate {...props} />
 }
 
@@ -25,9 +24,7 @@ type ArrayFieldTitleProps = {
 }
 
 function ArrayFieldTitle({ TitleField, idSchema, title, required }: ArrayFieldTitleProps) {
-  if (!title) {
-    return null
-  }
+  if (!title) return null
 
   const id = `${idSchema.$id}__title`
   return <TitleField id={id} title={title} required={required} />
@@ -40,9 +37,7 @@ type ArrayFieldDescriptionProps = {
 }
 
 function ArrayFieldDescription({ DescriptionField, idSchema, description }: ArrayFieldDescriptionProps) {
-  if (!description) {
-    return null
-  }
+  if (!description) return null
 
   const id = `${idSchema.$id}__description`
   return <DescriptionField id={id} description={description} />

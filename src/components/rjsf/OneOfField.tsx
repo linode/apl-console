@@ -7,7 +7,7 @@ import { useStyles } from './styles'
 export default function (props: any): React.ReactElement {
   const { idSchema, schema, uiSchema, ...rest } = props
   const newUiSchema = { ...uiSchema }
-  if (schema.oneOf.length < 7) newUiSchema['ui:widget'] = RadioWidget
+  if (schema.oneOf.length < 8) newUiSchema['ui:widget'] = RadioWidget
   const { classes } = useStyles()
   return (
     <Grid key={`${idSchema.$id}-outer`} className={classes.gridIsOf} item>

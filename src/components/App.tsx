@@ -26,6 +26,9 @@ const useStyles = makeStyles()((theme) => ({
   panelHeader: {
     padding: theme.spacing(1),
   },
+  buffer: {
+    height: theme.spacing(2),
+  },
 }))
 
 export default function ({
@@ -109,7 +112,7 @@ export default function ({
   const shortcutsPanel = (
     <>
       <Box className={classes.panelHeader} component='div'>
-        <Typography variant='h6'>Shortcuts</Typography>
+        <Typography variant='h5'>Shortcuts</Typography>
       </Box>
       {link && defaultShortcuts?.length && (
         <List
@@ -153,7 +156,9 @@ export default function ({
             hideHelp
             clean={false}
             liveValidate
-          />
+          >
+            <div />
+          </Form>
         )}
       </List>
       <Box display='flex' flexDirection='row-reverse' m={1}>
@@ -199,7 +204,7 @@ export default function ({
           </AppBar>
           <TabPanel value={tab} index={0}>
             <Box className={classes.panelHeader} component='div'>
-              <Typography variant='h6'>How did Otomi integrate {title}?</Typography>
+              <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
               <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
             </Box>
           </TabPanel>
@@ -209,7 +214,7 @@ export default function ({
           {inValues && (
             <TabPanel value={tab} index={2}>
               <Box className={classes.panelHeader} component='div'>
-                <Typography variant='h6'>Values</Typography>
+                <Typography variant='h5'>Values</Typography>
                 <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
               </Box>
               <Form
@@ -232,13 +237,12 @@ export default function ({
           {inValues && (
             <TabPanel value={tab} index={3}>
               <Box className={classes.panelHeader} component='div'>
-                <Typography component='h6' variant='h6'>
-                  Raw Values
-                </Typography>
-                <Typography component='h6' variant='caption'>
+                <Typography variant='h5'>Raw Values</Typography>
+                <Typography variant='caption'>
                   Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no
                   schema support so edit at your own risk!
                 </Typography>
+                <div className={classes.buffer}> </div>
                 <CodeEditor
                   code={yaml}
                   onChange={handleChangeRawValues}

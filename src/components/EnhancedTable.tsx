@@ -26,12 +26,10 @@ import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (get(b, orderBy) < get(a, orderBy)) {
-    return -1
-  }
-  if (get(b, orderBy) > get(a, orderBy)) {
-    return 1
-  }
+  if (get(b, orderBy) < get(a, orderBy)) return -1
+
+  if (get(b, orderBy) > get(a, orderBy)) return 1
+
   return 0
 }
 
@@ -237,15 +235,11 @@ export default function ({ disableSelect, orderByStart, headCells, rows, idKey }
     const selectedIndex = selected.indexOf(name)
     let newSelected: string[] = []
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
-    } else if (selectedIndex > 0) {
+    if (selectedIndex === -1) newSelected = newSelected.concat(selected, name)
+    else if (selectedIndex === 0) newSelected = newSelected.concat(selected.slice(1))
+    else if (selectedIndex === selected.length - 1) newSelected = newSelected.concat(selected.slice(0, -1))
+    else if (selectedIndex > 0)
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
-    }
 
     setSelected(newSelected)
   }

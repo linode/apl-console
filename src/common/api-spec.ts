@@ -179,9 +179,8 @@ export const getJobSchema = (cluster: Cluster, dns: any, formData: any, secrets:
   unset(schema, `${containerSpecPath}.args`)
   unset(schema, `${initcontainerSpecPath}.command`)
   unset(schema, `${initcontainerSpecPath}.args`)
-  if (formData.type === 'Job') {
-    unset(schema, `${jobSpecPath}.schedule`)
-  }
+  if (formData.type === 'Job') unset(schema, `${jobSpecPath}.schedule`)
+
   // set the Secrets enum with items to choose from
   setSecretsEnum(get(schema, initcontainerSpecPath), secrets)
   setSecretsEnum(get(schema, containerSpecPath), secrets)
@@ -208,9 +207,8 @@ export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
-    if (cluster.provider !== Provider.aws) {
-      unset(ingressSchema, `certArn`)
-    }
+    if (cluster.provider !== Provider.aws) unset(ingressSchema, `certArn`)
+
     if (!ing?.hasCert) {
       unset(ingressSchema, `certArn`)
       unset(ingressSchema, `certName`)
@@ -260,9 +258,8 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
 
   schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
-    if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver))) {
+    if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver)))
       delete schema.properties.alerts.properties[receiver]
-    }
   })
   unset(schema, 'properties.alerts.properties.drone')
   return schema
@@ -272,9 +269,8 @@ export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamS
 
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
-    if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver)) {
+    if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver))
       delete schema.properties[receiver]
-    }
   })
 }
 
@@ -293,11 +289,11 @@ export const getSettingSchema = (settingId, cluster: Cluster, formData: any): an
       break
     case 'dns':
       if (formData.provider?.azure?.useManagedIdentityExtension) {
-        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.aadClientId')
-        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.aadClientSecret')
+        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientId')
+        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientSecret')
       } else {
-        unset(schema, 'properties.provider.oneOf[1].properties.azure.properties.userAssignedIdentityID')
-        set(schema, 'properties.provider.oneOf[1].properties.azure.required', ['aadClientId', 'aadClientSecret'])
+        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.userAssignedIdentityID')
+        set(schema, 'properties.provider.oneOf[2].properties.azure.required', ['aadClientId', 'aadClientSecret'])
       }
       break
     case 'oidc':
@@ -355,7 +351,7 @@ export const getAppUiSchema = (appId, formData): any => {
   const model = spec.components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {
-    const leafs = extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o))
+    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
     leafs.forEach((path) => {
       set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
     })

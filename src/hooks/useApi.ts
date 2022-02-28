@@ -17,9 +17,8 @@ if (location.hostname === 'localhost') {
   if (team !== 'admin') {
     window.localStorage.setItem('oboTeamId', `"${team}"`)
     token = devTokens.team
-  } else {
-    token = devTokens.admin
-  }
+  } else token = devTokens.admin
+
   options = {
     headers: { Authorization: `Bearer ${token}` },
   }
@@ -35,9 +34,8 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
     user: { isAdmin },
     oboTeamId,
   } = session
-  if (!isAdmin && teamId && teamId !== oboTeamId) {
-    throw new ApiErrorUnauthorized()
-  }
+  if (!isAdmin && teamId && teamId !== oboTeamId) throw new ApiErrorUnauthorized()
+
   return { sess: session, tid: teamId || oboTeamId }
 }
 
@@ -53,13 +51,9 @@ export default (operationId: string, active: boolean | string | undefined = true
   const checkDirty = (operationId: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
     ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
-      if (operationId.indexOf(prefix) === 0) {
-        setDirty(true)
-      }
+      if (operationId.indexOf(prefix) === 0) setDirty(true)
     })
-    if (operationId.indexOf('deploy') === 0) {
-      setDirty(false)
-    }
+    if (operationId.indexOf('deploy') === 0) setDirty(false)
   }
 
   useEffect(() => {
@@ -74,9 +68,8 @@ export default (operationId: string, active: boolean | string | undefined = true
         if (!client[operationId]) {
           const err = `Api operationId does not exist: ${operationId}`
           setError(new ApiError(err))
-          if (location.host === 'localhost') {
-            snack.error(err)
-          } else {
+          if (location.host === 'localhost') snack.error(err)
+          else {
             // eslint-disable-next-line no-console
             console.error(err)
           }

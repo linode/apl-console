@@ -1,5 +1,5 @@
 import { JSONSchema7 } from 'json-schema'
-import { get, isEqual, set, unset } from 'lodash'
+import { get, isEqual, memoize, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -40,12 +40,12 @@ export const getSchemaType = (schema) => {
   return schema?.type ?? (schema.allOf && schema.allOf.length === 1 ? schema.allOf[0].type ?? 'object' : 'object')
 }
 
-export const traverse = (o, func, path = undefined) =>
+export const traverse = (o, func, path = '') =>
   Object.getOwnPropertyNames(o).forEach((i) => {
     func(o, i, path)
     if (o[i] !== null && typeof o[i] === 'object') {
       // going one step down in the object tree!!
-      traverse(o[i], func, path ? `${path}.${i}` : i)
+      traverse(o[i], func, path !== '' ? `${path}.${i}` : i)
     }
   })
 
@@ -57,16 +57,19 @@ export const nullify = (data) =>
 
 export const isOf = (o): boolean => Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
 
-export const extract = (o, f) => {
-  const schemaKeywords = ['properties', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
-  const leafs = []
+export const extract = memoize((o, f) => {
+  const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
+  const leafs = {}
   traverse(o, (o, i, path) => {
-    if (path && f(o, i, path) && !leafs.includes(path)) leafs.push(path)
-  })
-  return leafs.map((l) =>
-    l
+    const res = f(o, i, path)
+    if (!res) return
+    const p = path
       .split('.')
-      .filter((p) => !schemaKeywords.includes(p))
-      .join('.'),
-  )
-}
+      .filter((p: string) => !schemaKeywords.includes(p) && p !== `${parseInt(p, 10)}`)
+      .join('.')
+    if (!leafs[p]) leafs[p] = res
+  })
+  return leafs
+})
+
+export const propsToAccordion = ['image', 'resources']

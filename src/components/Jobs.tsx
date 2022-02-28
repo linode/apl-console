@@ -50,11 +50,12 @@ export default function ({ jobs, team }: Props): React.ReactElement {
       label: 'Schedule',
     },
   ]
-  if (showTeam)
+  if (showTeam) {
     headCells.push({
       id: 'teamId',
       label: 'Team',
     })
+  }
 
   return (
     <>

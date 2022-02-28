@@ -48,6 +48,9 @@ const useStyles = makeStyles()((theme) => ({
     height: theme.spacing(5),
     color: theme.palette.common.white,
     backgroundColor: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.dark,
+    },
   },
   settingsList: {
     background: 'rgba(0, 0, 0, 0.05)',

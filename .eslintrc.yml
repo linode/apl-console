@@ -58,6 +58,7 @@ rules:
   '@typescript-eslint/no-use-before-define': off
   '@typescript-eslint/restrict-template-expressions': off
   comma-dangle: [error, only-multiline]
+  curly: [error, multi-or-nest]
   eol-last: [error, always]
   func-names: off
   import/default: off

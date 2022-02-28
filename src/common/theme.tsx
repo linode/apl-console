@@ -102,9 +102,6 @@ const getOverrides = (c: any): ThemeOptions => ({
         textSecondary: ({ theme }) => ({
           color: theme.palette.primary.contrastText,
           backgroundColor: theme.palette.primary.main,
-          ':hover': {
-            backgroundColor: theme.palette.primary.dark,
-          },
         }),
       },
     },
@@ -206,7 +203,7 @@ const getOverrides = (c: any): ThemeOptions => ({
       styleOverrides: {
         caption: {
           maxWidth: 'fit-content',
-          // paddingLeft: 4,
+          paddingBottom: 16,
         },
       },
     },

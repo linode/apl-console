@@ -3,12 +3,16 @@ import { makeStyles } from 'tss-react/mui'
 
 export const useStyles = makeStyles()(() => ({
   root: {
-    padding: 8,
+    // paddingTop: 16,
+    width: '100%',
+    marginLeft: 0,
+    // paddingRight: 16,
   },
+  container: {},
   header: {
     // paddingTop: 4,
-    paddingBottom: 4,
-    paddingLeft: 8,
+    // paddingBottom: 4,
+    // paddingLeft: 8,
     // padding: 8,
     // margin: 8,
     // marginTop: 4,
@@ -26,11 +30,12 @@ export const useStyles = makeStyles()(() => ({
     // padding: 4,
   },
   grid: {
-    paddingRight: 4,
-    marginBottom: 4,
-    paddingTop: 8,
-    paddingBottom: 4,
-    paddingLeft: 16,
+    // paddingRight: 4,
+    // marginBottom: 4,
+    // paddingTop: 8,
+    // paddingBottom: 4,
+    // paddingLeft: 16,
+    padding: 16,
   },
   gridIsOf: {
     paddingLeft: 8,

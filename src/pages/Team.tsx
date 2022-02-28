@@ -24,9 +24,9 @@ export default function ({
     teamId ? [tid, formData] : [formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteTeam', !!deleteId, [deleteId])
-  if ((createRes && (!createLoading || createError)) || (deleteRes && !(deleteLoading || deleteError))) {
+  if ((createRes && (!createLoading || createError)) || (deleteRes && !(deleteLoading || deleteError)))
     return <Redirect to='/teams' />
-  }
+
   const loading = teamLoading || createLoading
   const err = teamError || createError || deleteError
   const comp = !loading && (!err || formData || team) && (

@@ -1,4 +1,6 @@
 /* eslint-disable react/no-array-index-key */
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import List from '@mui/material/List'
@@ -6,6 +8,7 @@ import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import { FieldTemplateProps } from '@rjsf/core'
 import React from 'react'
+import { propsToAccordion } from 'utils/schema'
 import WrapIfAdditional from './WrapIfAdditional'
 
 export default function ({
@@ -28,6 +31,21 @@ export default function ({
   if (schema.type === 'string' && schema.enum) isCustomArray = true
   const hideDescription = isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
 
+  const accordionize = propsToAccordion.includes(label)
+  const accordionized = (children) => {
+    return (
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Grid item>
+            <Typography variant='h6'>{label}</Typography>
+            <Divider variant='fullWidth' />
+          </Grid>
+        </AccordionSummary>
+        <AccordionDetails>{children}</AccordionDetails>
+      </Accordion>
+    )
+  }
+
   return (
     <WrapIfAdditional
       disabled={disabled}
@@ -40,7 +58,8 @@ export default function ({
       schema={schema}
     >
       <FormControl fullWidth error={!!rawErrors.length} required={required}>
-        {children}
+        {accordionize && accordionized(children)}
+        {!accordionize && children}
         {!hideDescription && displayLabel && rawDescription ? (
           <Typography variant='caption' color='textSecondary'>
             {rawDescription}

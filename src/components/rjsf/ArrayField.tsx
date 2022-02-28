@@ -7,7 +7,7 @@ import RadioWidget from './RadioWidget'
 export default function ({ uiSchema, schema, formData, ...props }: any): React.ReactElement {
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
-  const listTooLong = schema.items?.enum?.length > 7
+  const listTooLong = schema.items?.enum?.length > 8
   const shortList = schema.items?.enum?.length < 5
   set(newUiSchema, 'ui:options.row', shortList)
 

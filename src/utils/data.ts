@@ -1,10 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
 import { Session } from '@redkubes/otomi-api-client-axios'
-import { JSONSchema7 } from 'json-schema'
-import { find, isEmpty, isPlainObject, transform } from 'lodash'
-import { getSpec } from 'common/api-spec'
 import { pascalCase } from 'change-case'
+import { getSpec } from 'common/api-spec'
+import { JSONSchema7 } from 'json-schema'
+import { each, find, get, isEmpty, isEqual, isPlainObject, set, transform } from 'lodash'
+import { extract } from './schema'
 
 export const cleanOptions = {
   cleanKeys: [],
@@ -34,9 +35,7 @@ const cleanDeep = (
 ) =>
   transform(object, (result, value, key) => {
     // Exclude specific keys.
-    if (cleanKeys.includes(key)) {
-      return
-    }
+    if (cleanKeys.includes(key)) return
 
     // Recurse into arrays and objects.
     if ((Array.isArray(value) && cleanArrays) || isPlainObject(value)) {
@@ -54,39 +53,25 @@ const cleanDeep = (
     }
 
     // Exclude specific values.
-    if (cleanValues.includes(value)) {
-      return
-    }
+    if (cleanValues.includes(value)) return
 
     // Exclude empty objects.
-    if (emptyObjects && isPlainObject(value) && isEmpty(value)) {
-      return
-    }
+    if (emptyObjects && isPlainObject(value) && isEmpty(value)) return
 
     // Exclude empty arrays.
-    if (emptyArrays && Array.isArray(value) && !value.length) {
-      return
-    }
+    if (emptyArrays && Array.isArray(value) && !value.length) return
 
     // Exclude empty strings.
-    if (emptyStrings && value === '') {
-      return
-    }
+    if (emptyStrings && value === '') return
 
     // Exclude NaN values.
-    if (NaNValues && Number.isNaN(value)) {
-      return
-    }
+    if (NaNValues && Number.isNaN(value)) return
 
     // Exclude null values.
-    if (nullValues && value === null) {
-      return
-    }
+    if (nullValues && value === null) return
 
     // Exclude undefined values.
-    if (undefinedValues && value === undefined) {
-      return
-    }
+    if (undefinedValues && value === undefined) return
 
     // Append when recursing arrays.
     if (Array.isArray(result)) {
@@ -97,7 +82,11 @@ const cleanDeep = (
     result[key] = value
   })
 
-export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<string, unknown> => {
+export const cleanData = (
+  obj: Record<string, unknown>,
+  inOptions = {},
+  schema = undefined,
+): Record<string, unknown> => {
   const options = {
     ...cleanOptions,
     cleanArrays: false,
@@ -108,17 +97,28 @@ export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<
     undefinedValues: true,
     ...inOptions,
   }
+  if (schema) {
+    // schema given, filter out defaults
+    const defPaths = extract(schema, (p: JSONSchema7) => p.default ?? p['x-default'])
+    each(defPaths, function (def, p) {
+      if (def === undefined) return
+      const data = get(obj, p)
+      // if same as before set it to undefined to filter with cleanDeep
+      if (isEqual(data, def)) set(obj, p, undefined)
+    })
+  }
   return cleanDeep(obj, options) as Record<string, unknown>
 }
 
 // TODO: https://github.com/redkubes/otomi-api/issues/183
 export const renameKeys = (data) => {
-  if (data === undefined) return data
-  const keyValues = Object.keys(data).map((key) => {
-    const newKey = key.replaceAll('-', '_')
-    return { [newKey]: data[key] }
-  })
-  return Object.assign({}, ...keyValues)
+  return data
+  // if (data === undefined) return data
+  // const keyValues = Object.keys(data).map((key) => {
+  //   const newKey = key.replaceAll('-', '_')
+  //   return { [newKey]: data[key] }
+  // })
+  // return Object.assign({}, ...keyValues)
 }
 
 export const getApps = (adminApps, teamApps, teamId) =>
@@ -136,9 +136,8 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
     // we know we were given an app from values, so we pluck shortcuts from it to merge later
     ownShortcuts = appOrId.shortcuts || []
   }
-  if (typeof appOrId !== 'string') {
-    appId = appOrId.id ?? appOrId.name
-  }
+  if (typeof appOrId !== 'string') appId = appOrId.id ?? appOrId.name
+
   // get the core app
   const apps = getApps(adminApps, teamApps, teamId)
   const coreApp = find(apps, { name: appId })
@@ -147,11 +146,12 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
   let substShortcuts
-  if (mergedShortcuts.length)
+  if (mergedShortcuts.length) {
     substShortcuts = mergedShortcuts.map(({ path, ...other }) => ({
       path: path.replace('#NS#', `team-${teamId}`),
       ...other,
     }))
+  }
   // compose the derived ingress props
   const { domain, host, ownHost, path } = (ingress && ingress[0]) || {}
   const baseUrl = `https://${

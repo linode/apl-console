@@ -25,9 +25,7 @@ export function MyFormControlLabel(props: LabelProps) {
 
   let checked = false
 
-  if (radioGroup) {
-    checked = radioGroup.value === props.value
-  }
+  if (radioGroup) checked = radioGroup.value === props.value
 
   return (
     <FormControlLabel

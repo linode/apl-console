@@ -39,9 +39,7 @@ function WrapIfAdditional({
     fontWeight: 'bold',
   }
 
-  if (!additional) {
-    return children
-  }
+  if (!additional) return children
 
   const handleBlur = ({ target }: React.FocusEvent<HTMLInputElement>) => onKeyChange(target.value)
 

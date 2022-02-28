@@ -60,14 +60,15 @@ export default function (): React.ReactElement {
   } = useSession()
   let teams: any[]
   const allClusters = [...clusters, cluster]
-  if (isAdmin)
+  if (isAdmin) {
     teams = (allTeams as any).map(({ id }) => ({
       id,
     }))
-  else
+  } else {
     teams = userTeams.map((id) => ({
       id,
     }))
+  }
   const handleChange = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
@@ -78,16 +79,11 @@ export default function (): React.ReactElement {
     const hasIDvalue = path.split('/').length === 5
     let url
     if (teamId) {
-      if (hasTeamPart && !hasIDvalue) {
-        url = path.replace(teamPart, newTeamPart)
-      } else if (hasTeamId && !hasIDvalue) {
-        url = path.replace(oboTeamId, teamId)
-      } else {
-        url = `${newTeamPart}/services`
-      }
-    } else {
-      url = hasTeamPart ? path.replace(teamPart, '') : '/teams'
-    }
+      if (hasTeamPart && !hasIDvalue) url = path.replace(teamPart, newTeamPart)
+      else if (hasTeamId && !hasIDvalue) url = path.replace(oboTeamId, teamId)
+      else url = `${newTeamPart}/services`
+    } else url = hasTeamPart ? path.replace(teamPart, '') : '/teams'
+
     setOboTeamId(teamId)
     history.push(url)
     event.preventDefault()

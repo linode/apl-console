@@ -1,14 +1,14 @@
-import React from 'react'
 import { App } from '@redkubes/otomi-api-client-axios'
 import { capitalize } from 'lodash'
-import MuiLink from './MuiLink'
+import React from 'react'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import MuiLink from './MuiLink'
 
 const getAppLink = (teamId: string) =>
   function (app): React.ReactElement {
     const { id } = app
-    const link = `/apps/${teamId}/${id}`
+    const link = `/apps/${teamId}/${id}#shortcuts`
     return (
       <RLink to={link} label={id}>
         {capitalize(id)}

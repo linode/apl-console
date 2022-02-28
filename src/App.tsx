@@ -64,12 +64,10 @@ function App() {
     themeType,
   }
   setThemeMode(themeType)
-  if (sessionError || apiDocsError) {
-    return <ErrorComponent />
-  }
-  if (sessionLoading || apiDocsLoading) {
-    return <Loader />
-  }
+  if (sessionError || apiDocsError) return <ErrorComponent />
+
+  if (sessionLoading || apiDocsLoading) return <Loader />
+
   setSpec(apiDocs)
   const { user } = session
   if (!user.isAdmin && !oboTeamId) {

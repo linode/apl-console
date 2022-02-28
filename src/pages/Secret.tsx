@@ -25,14 +25,13 @@ export default function ({
     secretId ? [tid, secretId, omit(formData, ['id'])] : [tid, omit(formData, ['id', 'teamId'])],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
+  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError)))
     return <Redirect to={`/teams/${tid}/secrets`} />
-  }
+
   const loading = secretLoading || createLoading || deleteLoading
   const err = secretError || createError || deleteError
-  if (createRes && !(createLoading || createError)) {
-    return <Redirect to={`/teams/${tid}/secrets`} />
-  }
+  if (createRes && !(createLoading || createError)) return <Redirect to={`/teams/${tid}/secrets`} />
+
   const comp = !loading && (!err || formData || secret) && (
     <Secret onSubmit={setFormData} secret={formData || secret} onDelete={setDeleteId} />
   )

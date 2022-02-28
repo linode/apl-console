@@ -32,9 +32,8 @@ const registerValidSW = (swUrl: string, config?: Config): void => {
       // eslint-disable-next-line no-param-reassign
       registration.onupdatefound = (): any => {
         const installingWorker = registration.installing
-        if (installingWorker == null) {
-          return
-        }
+        if (installingWorker == null) return
+
         installingWorker.onstatechange = (): any => {
           if (installingWorker.state === 'installed') {
             if (navigator.serviceWorker.controller) {
@@ -47,9 +46,7 @@ const registerValidSW = (swUrl: string, config?: Config): void => {
               )
 
               // Execute callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration)
-              }
+              if (config && config.onUpdate) config.onUpdate(registration)
             } else {
               // At this point, everything has been precached.
               // It's the perfect time to display a
@@ -57,9 +54,7 @@ const registerValidSW = (swUrl: string, config?: Config): void => {
               console.log('Content is cached for offline use.')
 
               // Execute callback
-              if (config && config.onSuccess) {
-                config.onSuccess(registration)
-              }
+              if (config && config.onSuccess) config.onSuccess(registration)
             }
           }
         }

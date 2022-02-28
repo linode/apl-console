@@ -26,9 +26,9 @@ export default function ({
     jobId ? [tid, jobId, omit(formData, ['id', 'teamId'])] : [tid, formData],
   )
   const [deleteRes, deleteLoading, deleteError] = useApi('deleteJob', !!deleteId, [tid, jobId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
+  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError)))
     return <Redirect to={`/teams/${tid}/jobs`} />
-  }
+
   const loading = jobLoading || secretsLoading || createLoading || deleteLoading
   const err = jobError || secretsError || createError || deleteError
   const comp = !loading && (!err || formData || job) && (

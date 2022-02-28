@@ -109,7 +109,7 @@ export default function ({
       {wide && (
         <div className={`${classes.root}`}>
           <CardContent className={classes[`content${wide ?? 'Wide'}`]}>
-            <Typography variant='h5'>
+            <Typography variant='h6'>
               {title}: {shortDescription}
             </Typography>
             <Typography variant='body2'>{description}</Typography>

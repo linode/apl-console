@@ -1,7 +1,7 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-underscore-dangle */
+import { Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import FormLabel from '@mui/material/FormLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import { WidgetProps } from '@rjsf/core'
@@ -37,9 +37,8 @@ function RadioWidget({
   const row = inline || renderOptions.length <= 7
   // if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: undefined }
   if (!required && schema.default === undefined) {
-    if (renderOptions.length && renderOptions[0].value !== '') {
-      renderOptions.unshift({ label: 'Off', value: '' })
-    }
+    if (renderOptions.length && renderOptions[0].value !== '') renderOptions.unshift({ label: 'Off', value: '' })
+
     if (value === undefined) {
       // eslint-disable-next-line no-param-reassign
       value = ''
@@ -47,11 +46,7 @@ function RadioWidget({
   }
   return (
     <>
-      {hasLabel && (
-        <FormLabel required={required} htmlFor={id}>
-          {label || schema.title}
-        </FormLabel>
-      )}
+      {hasLabel && <Typography variant='h6'>{label || schema.title}</Typography>}
       <RadioGroup
         classes={classes}
         value={`${value === undefined || value === null ? '' : value}`}
@@ -66,8 +61,8 @@ function RadioWidget({
           const radio = (
             <FormControlLabel
               control={<Radio key={option.label} />}
-              label={`${option.label}`}
-              value={`${option.value}`}
+              label={option.label}
+              value={option.value}
               key={option.label}
               disabled={disabled || itemDisabled || readonly}
               data-cy={`radio-${id}-${value}`}

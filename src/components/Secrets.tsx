@@ -60,12 +60,13 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
       renderer: getVaultSecretLink(cluster.domainSuffix),
     },
   ]
-  if (isAdmin && !teamId)
+  if (isAdmin && !teamId) {
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',
       renderer: (row) => row.namespace || `team-${row.teamId}`,
     })
+  }
   return (
     <>
       <h1 data-cy='h1-secrets-page'>{`Secrets (team ${teamId})`}</h1>
