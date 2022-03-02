@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.72](https://github.com/redkubes/otomi-stack-web/compare/v0.4.71...v0.4.72) (2022-02-24)
+
+
+### Others
+
+* **deps:** bump follow-redirects from 1.14.5 to 1.14.8 ([#133](https://github.com/redkubes/otomi-stack-web/issues/133)) ([f4f7ae6](https://github.com/redkubes/otomi-stack-web/commit/f4f7ae640c83ae9ce7ce5b55a317f760c4589e1e))
+* **deps:** bump nanoid from 3.1.30 to 3.3.1 ([#141](https://github.com/redkubes/otomi-stack-web/issues/141)) ([768ae0d](https://github.com/redkubes/otomi-stack-web/commit/768ae0d68e97c76429a7b79e18f5a0ce73664882))
+* **deps:** bump shelljs from 0.8.4 to 0.8.5 ([#142](https://github.com/redkubes/otomi-stack-web/issues/142)) ([2ed7bc1](https://github.com/redkubes/otomi-stack-web/commit/2ed7bc1adfd9f522b35f087feb512301c5da08f4))
+* **deps:** bump ssri from 6.0.1 to 6.0.2 ([#136](https://github.com/redkubes/otomi-stack-web/issues/136)) ([87a29e0](https://github.com/redkubes/otomi-stack-web/commit/87a29e0482da285e4d85cb0dcc7c9c98d241d22c))
+* **deps:** bump url-parse from 1.5.1 to 1.5.7 ([#139](https://github.com/redkubes/otomi-stack-web/issues/139)) ([82a5005](https://github.com/redkubes/otomi-stack-web/commit/82a50051029ce82f2d11eda7c93374300698e486))
+* **deps:** bump ws from 5.2.2 to 5.2.3 ([#137](https://github.com/redkubes/otomi-stack-web/issues/137)) ([33cfad2](https://github.com/redkubes/otomi-stack-web/commit/33cfad256fd2a990c8583717847766e8f82f75d8))
+
 ### [0.4.71](https://github.com/redkubes/otomi-stack-web/compare/v0.4.69...v0.4.71) (2022-01-26)
 
 
