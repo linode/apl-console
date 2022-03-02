@@ -2,8 +2,10 @@ import { createTheme, Theme, ThemeOptions } from '@mui/material/styles'
 import { makeStyles } from 'tss-react/mui'
 
 export const c = {
-  light: '#ccc',
-  dark: '#666',
+  textLight: '#aaa',
+  textDark: '#666',
+  backgroundDark: '#121212',
+  paperDark: '#303030',
   grey: '#CFD8DC',
   blueSoft: '#A4D2FF',
   blueLight: '#67B3FF',
@@ -28,8 +30,8 @@ export const c = {
 }
 
 export const commonDark = {
-  black: c.dark,
-  white: c.light,
+  black: c.textDark,
+  white: c.textLight,
 }
 
 export const teamColors = {
@@ -167,9 +169,10 @@ const getOverrides = (c: any): ThemeOptions => ({
     },
     MuiListItemIcon: {
       styleOverrides: {
-        root: {
+        root: ({ theme }) => ({
           minWidth: '38px',
-        },
+          color: theme.palette.mode === 'light' ? c.textDark : theme.palette.common.white,
+        }),
       },
     },
     MuiListItemText: {
@@ -241,9 +244,13 @@ const teamDark = createTheme({
   ...teamOverrides,
   palette: {
     mode: 'dark',
+    background: {
+      default: c.backgroundDark,
+      paper: c.paperDark,
+    },
     common: commonDark,
     text: {
-      primary: c.light,
+      primary: c.textLight,
     },
     primary: {
       // contrastText: c.blueSoft,
@@ -260,9 +267,13 @@ const adminDark = createTheme({
   ...adminOverrides,
   palette: {
     mode: 'dark',
+    background: {
+      default: c.backgroundDark,
+      paper: c.paperDark,
+    },
     common: commonDark,
     text: {
-      primary: c.light,
+      primary: c.textLight,
     },
     primary: {
       // contrastText: c.redSoft,

@@ -1,10 +1,9 @@
 import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/material'
+import { useSession } from 'common/session-context'
+import { getThemeMode, useMainStyles } from 'common/theme'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { useMainStyles, getThemeMode } from 'common/theme'
 import { makeStyles } from 'tss-react/mui'
-
-import { useSession } from 'common/session-context'
 
 const useStyles = makeStyles()((theme) => {
   const isDark = getThemeMode() === 'dark'
@@ -110,7 +109,7 @@ export default function (): React.ReactElement {
         }}
       >
         {allClusters.map(({ name, provider }) => {
-          const id = `${provider}-$`
+          const id = `${provider}-${name}`
           return (
             <MenuItem key={id} value={id} data-cy={`select-cluster-${id}`}>
               {id}

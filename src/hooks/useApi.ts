@@ -4,7 +4,7 @@ import devTokens from 'common/devtokens'
 import { SessionContext, useSession } from 'common/session-context'
 import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
 import { useEffect } from 'react'
-import { ApiError, ApiErrorUnauthorized } from 'utils/error'
+import { ErrorRoute, ErrorUnauthorized } from 'utils/error'
 import snack from 'utils/snack'
 
 const baseUrl = `${location.protocol}//${location.hostname}:${location.port}/api/v1`
@@ -24,7 +24,7 @@ if (location.hostname === 'localhost') {
   }
 }
 
-export type ApiHook = LoadingHook<any, ApiError>
+export type ApiHook = LoadingHook<any, ErrorRoute>
 
 const client = new DefaultApi(undefined, baseUrl)
 
@@ -34,7 +34,7 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
     user: { isAdmin },
     oboTeamId,
   } = session
-  if (!isAdmin && teamId && teamId !== oboTeamId) throw new ApiErrorUnauthorized()
+  if (!isAdmin && teamId && teamId !== oboTeamId) throw new ErrorUnauthorized()
 
   return { sess: session, tid: teamId || oboTeamId }
 }
@@ -42,7 +42,7 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
 export default (operationId: string, active: boolean | string | undefined = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false
-  const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
+  const { error, loading, setError, setValue, value } = useLoadingValue<any, ErrorRoute>()
   const {
     user: { isAdmin },
     setDirty,
@@ -67,7 +67,7 @@ export default (operationId: string, active: boolean | string | undefined = true
         let value
         if (!client[operationId]) {
           const err = `Api operationId does not exist: ${operationId}`
-          setError(new ApiError(err))
+          setError(new ErrorRoute(err))
           if (location.host === 'localhost') snack.error(err)
           else {
             // eslint-disable-next-line no-console
@@ -90,7 +90,7 @@ export default (operationId: string, active: boolean | string | undefined = true
           console.error(e)
         }
         snack.error(msg)
-        const apiError = new ApiError(err, statusCode)
+        const apiError = new ErrorRoute(err, statusCode)
         setError(apiError)
         if (setGlobalError) setGlobalError(apiError)
       }

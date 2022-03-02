@@ -1,6 +1,6 @@
 import { Cluster, Dns, Session, Team, User } from '@redkubes/otomi-api-client-axios'
 import React, { useContext } from 'react'
-import { ApiError } from 'utils/error'
+import { ErrorRoute } from 'utils/error'
 
 interface Versions {
   core: string
@@ -11,14 +11,12 @@ export interface SessionContext extends Session {
   ca: string | undefined
   cluster: Cluster | undefined
   clusters: Cluster[] | undefined
-  collapseSettings: boolean
   core: any
   dirty: boolean
   dns: Dns | undefined
-  globalError?: ApiError
+  globalError?: ErrorRoute
   isAdmin: boolean | undefined
   oboTeamId?: string
-  setCollapseSettings: CallableFunction
   setDirty?: CallableFunction
   setGlobalError?: CallableFunction
   setOboTeamId?: CallableFunction
@@ -35,14 +33,12 @@ const context = React.createContext<SessionContext>({
   ca: '',
   cluster: new Cluster(),
   clusters: undefined,
-  collapseSettings: true,
   core: {},
   dirty: undefined,
   dns: undefined,
   globalError: undefined,
   isAdmin: undefined,
   oboTeamId: undefined,
-  setCollapseSettings: undefined,
   setDirty: undefined,
   setGlobalError: undefined,
   setOboTeamId: undefined,

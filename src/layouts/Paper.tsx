@@ -1,8 +1,8 @@
-import React from 'react'
 import { Box, Container, Paper } from '@mui/material'
-import { makeStyles } from 'tss-react/mui'
 import Error from 'components/Error'
 import Loader from 'components/Loader'
+import React from 'react'
+import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
 const useStyles = makeStyles()((theme) => ({

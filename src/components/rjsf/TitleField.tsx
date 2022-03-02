@@ -11,7 +11,7 @@ interface Props extends FieldProps {
 
 export default function ({ id, title, docUrl, variant = 'h6' }: Props) {
   return (
-    <Grid xs={12}>
+    <Grid>
       <Typography variant={variant}>
         {title} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
       </Typography>

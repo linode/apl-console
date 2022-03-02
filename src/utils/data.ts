@@ -4,8 +4,7 @@ import { Session } from '@redkubes/otomi-api-client-axios'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { each, find, get, isEmpty, isEqual, isPlainObject, set, transform } from 'lodash'
-import { extract } from './schema'
+import { find, isEmpty, isPlainObject, transform } from 'lodash'
 
 export const cleanOptions = {
   cleanKeys: [],
@@ -97,16 +96,16 @@ export const cleanData = (
     undefinedValues: true,
     ...inOptions,
   }
-  if (schema) {
-    // schema given, filter out defaults
-    const defPaths = extract(schema, (p: JSONSchema7) => p.default ?? p['x-default'])
-    each(defPaths, function (def, p) {
-      if (def === undefined) return
-      const data = get(obj, p)
-      // if same as before set it to undefined to filter with cleanDeep
-      if (isEqual(data, def)) set(obj, p, undefined)
-    })
-  }
+  // if (schema) {
+  //   // schema given, filter out defaults
+  //   const defPaths = extract(schema, (p: JSONSchema7) => p.default ?? p['x-default'])
+  //   each(defPaths, function (def, p) {
+  //     if (def === undefined) return
+  //     const data = get(obj, p)
+  //     // if same as before set it to undefined to filter with cleanDeep
+  //     if (isEqual(data, def)) set(obj, p, undefined)
+  //   })
+  // }
   return cleanDeep(obj, options) as Record<string, unknown>
 }
 

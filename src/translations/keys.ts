@@ -42,8 +42,11 @@ export enum Keys {
   // custom otomi errors:
   'Git error occured' = 'Git error occured',
   'Invalid values detected' = 'Invalid values detected',
+  'Service name already exists' = 'Service name already exists',
+  'The api could not be reached' = 'The api could not be reached',
+  'The route does not exist' = 'The route does not exist',
   'The URL is already in use' = 'The URL is already in use',
-  'The user does not have any team assigned' = 'The user does not have any team assigned',
+  'Unauthorized: The user may not be assigned to any team.' = 'Unauthorized. The user may not be assigned to any team.',
 }
 
 export default Keys

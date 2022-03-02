@@ -93,7 +93,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
 
     if (propsToAccordion.includes(uiSchema.title || schema.title || title)) {
       return (
-        <Grid key={id} className={classes.grid} item xs={12}>
+        <Grid key={`${id}-accordion`} className={classes.grid} item xs={12}>
           {o.content}
         </Grid>
       )
@@ -105,11 +105,11 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         <Grid key={id} className={classes.grid} item xs={12}>
           <Paper key={id} className={classes.paper}>
             {(isOf || (type === 'object' && !schema.properties) || isCustomArray) && (
-              <Grid key={idSchema.$id} item className={classes.gridIsOf}>
+              <Grid key={`${idSchema.$id}-title`} item className={classes.gridIsOf}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>
             )}
-            <Grid key={idSchema.$id} item>
+            <Grid key={`${idSchema.$id}-content`} item>
               {o.content}
             </Grid>
           </Paper>

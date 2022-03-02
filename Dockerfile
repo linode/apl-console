@@ -44,10 +44,6 @@ RUN addgroup -S app &&\
 ENV HOME=/app
 WORKDIR /app
 
-RUN luarocks install lua-resty-jwt
-RUN luarocks install lua-resty-http
-RUN luarocks install date
-
 COPY nginx/ ./
 RUN chmod +x /app/run.sh
 

@@ -1,4 +1,4 @@
-import { ErrorSchema, FormProps, IChangeEvent, withTheme } from '@rjsf/core'
+import { FormProps, IChangeEvent, withTheme } from '@rjsf/core'
 import { Theme5 } from '@rjsf/material-ui'
 import HelpButton from 'components/HelpButton'
 import { each, get, isEqual } from 'lodash'
@@ -39,7 +39,6 @@ export default function ({
   hideHelp = false,
   onChange,
   onSubmit,
-  clean = true,
   liveValidate,
   ...props
 }: Props): React.ReactElement {
@@ -48,24 +47,21 @@ export default function ({
   // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const { classes } = useStyles()
-  const onChangeWrapper = ({ formData, ...other }: IChangeEvent<any>, errors: ErrorSchema) => {
-    // const cleanFormData = clean ? cleanData(formData, undefined, schema) : formData
-    const cleanFormData = formData
-    onChange({ formData: cleanFormData, ...other }, errors)
+  const onChangeWrapper = ({ formData, ...other }: IChangeEvent<any>) => {
+    const cleanFormData = cleanData(formData)
+    onChange({ formData: cleanFormData, ...other })
   }
   const onSubmitWrapper = ({ formData, ...other }: IChangeEvent<any>, ev) => {
-    const cleanFormData = clean ? cleanData(formData, undefined, schema) : formData
+    // const cleanFormData = clean ? cleanData(formData, undefined, schema) : formData
     // nullify(cleanFormData)
-    // const cleanFormData = formData
+    const cleanFormData = formData
     onSubmit({ formData: cleanFormData, ...other }, ev)
   }
   const validate = (formData, errors, ajvErrors): any => {
-    const cleanFormData = clean ? cleanData(formData) : formData
-    // const cleanFormData = formData
     each(ajvErrors, (err) => {
       const { name, property, message } = err
       const leaf = property.substr(1, property.lastIndexOf('.') - 1)
-      const prop = get(cleanFormData, leaf)
+      const prop = get(formData, leaf)
       // we exclude the error if it is about required props in a nested child obj
       // when the parent is not requiring the nested prop itself
       if (prop && (name !== 'required' || !isEqual(prop, {}))) {
