@@ -32,7 +32,7 @@ RUN echo "EXTEND_ESLINT=true" >> .env
 
 # ARG CI=true
 RUN npm run lint
-RUN npm run test:enzyme -- --watchAll=false
+RUN npm test -- --watchAll=false
 RUN npm run build
 
 # --------------- production stage

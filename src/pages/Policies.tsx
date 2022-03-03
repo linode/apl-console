@@ -3,14 +3,14 @@ import Policies from 'components/Policies'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { ErrorApi } from 'utils/error'
+import { ApiError } from 'utils/error'
 
 interface IncomingPolicies {
   policies: PoliciesType
 }
 
 export default function (): React.ReactElement {
-  const [policies, policiesLoading, policiesError]: [IncomingPolicies, boolean, ErrorApi] = useApi('getSetting', true, [
+  const [policies, policiesLoading, policiesError]: [IncomingPolicies, boolean, ApiError] = useApi('getSetting', true, [
     'policies',
   ])
 

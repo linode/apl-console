@@ -33,7 +33,7 @@ import React, { Dispatch, Suspense, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { ErrorApiBadGateway, ErrorApiNotExists, ErrorUnauthorized } from './utils/error'
+import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
 export const muiCache = createCache({
@@ -70,8 +70,8 @@ function App() {
   let err
   if (sessionError || apiDocsError) {
     const e = sessionError || apiDocsError
-    if (e.code === 504) err = <ErrorComponent error={new ErrorApiBadGateway()} />
-    err = <ErrorComponent error={err} />
+    if (e.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
+    else err = <ErrorComponent error={e} />
   }
   if (apiDocs) setSpec(apiDocs)
   if (!err) {
@@ -81,7 +81,7 @@ function App() {
         setOboTeamId(user.teams[0])
         return <Loader />
       }
-      err = <ErrorComponent error={new ErrorUnauthorized()} />
+      err = <ErrorComponent error={new ApiErrorUnauthorized()} />
     }
     setThemeName(user.isAdmin ? 'admin' : 'team')
   }
@@ -124,7 +124,7 @@ function App() {
                       <Route path='/teams/:teamId/services' component={Services} exact />
                       <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                       <Route path='*'>
-                        <Error error={new ErrorApiNotExists()} />
+                        <Error error={new HttpErrorBadRequest()} />
                       </Route>
                     </Switch>
                   </Router>

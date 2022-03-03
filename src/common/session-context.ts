@@ -1,6 +1,6 @@
 import { Cluster, Dns, Session, Team, User } from '@redkubes/otomi-api-client-axios'
 import React, { useContext } from 'react'
-import { ErrorApi } from 'utils/error'
+import { ApiError } from 'utils/error'
 
 interface Versions {
   core: string
@@ -14,7 +14,7 @@ export interface SessionContext extends Session {
   core: any
   dirty: boolean
   dns: Dns | undefined
-  globalError?: ErrorApi
+  globalError?: ApiError
   isAdmin: boolean | undefined
   oboTeamId?: string
   setDirty?: CallableFunction

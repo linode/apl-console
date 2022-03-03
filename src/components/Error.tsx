@@ -6,7 +6,7 @@ import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
 import { Keys as k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
-import { ErrorApi } from '../utils/error'
+import { ApiError } from '../utils/error'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles()((theme) => ({
   banner: {
     marginTop: theme.spacing(1),
     color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.light,
-    padding: theme.spacing(2),
+    // padding: theme.spacing(2),
   },
   fullScreen: {
     color: theme.palette.common.white,
@@ -25,7 +25,7 @@ const useStyles = makeStyles()((theme) => ({
 }))
 
 interface Props {
-  error?: ErrorApi
+  error?: ApiError
 }
 
 export default function ({ error }: Props): React.ReactElement {

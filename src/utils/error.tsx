@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import { Keys as k } from 'translations/keys'
 
-export class CustomError extends Error {
+export class HttpError extends Error {
   code?: number
 
   constructor(message: any, code?: number | undefined) {
@@ -10,20 +10,25 @@ export class CustomError extends Error {
     // restore prototype chain
     Object.setPrototypeOf(this, new.target.prototype)
   }
+
+  public static fromCode(code: number): HttpError {
+    return new HttpError(code, k[code])
+  }
 }
 
-export class ErrorApi extends CustomError {}
-export class ErrorApiBadGateway extends CustomError {
+export class HttpErrorBadRequest extends HttpError {
+  constructor() {
+    super(k['The route does not exist'], 400)
+  }
+}
+
+export class ApiError extends HttpError {}
+export class ApiErrorGatewayTimeout extends ApiError {
   constructor() {
     super(k['The api could not be reached'], 504)
   }
 }
-export class ErrorApiNotExists extends CustomError {
-  constructor() {
-    super(k['The route does not exist'], 404)
-  }
-}
-export class ErrorUnauthorized extends CustomError {
+export class ApiErrorUnauthorized extends ApiError {
   constructor() {
     super(k['Unauthorized. The user may not be assigned to any team.'], 403)
   }
