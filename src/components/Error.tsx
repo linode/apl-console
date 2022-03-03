@@ -6,28 +6,26 @@ import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
 import { Keys as k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
-import { ErrorRoute } from '../utils/error'
+import { ErrorApi } from '../utils/error'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
     width: '100%',
     padding: 0,
-    paddingTop: theme.spacing(2),
+    margin: 0,
   },
-  message: {
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.error.light,
+  banner: {
+    marginTop: theme.spacing(1),
+    color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.light,
     padding: theme.spacing(2),
   },
-  messageError: {
-    backgroundColor: theme.palette.primary.main,
+  fullScreen: {
     color: theme.palette.common.white,
-    padding: theme.spacing(2),
   },
 }))
 
 interface Props {
-  error?: ErrorRoute
+  error?: ErrorApi
 }
 
 export default function ({ error }: Props): React.ReactElement {
@@ -36,15 +34,17 @@ export default function ({ error }: Props): React.ReactElement {
   const err = error ?? globalError
   if (!err) return null
   const { code, message } = err
+  const msgKey = k[message] || k.Unknown
   return (
     <Container className={classes.root}>
       <Helmet>
-        <title>{`${code}: ${message}`}</title>
+        <title>Error</title>
         <meta name='description' content={`${code}: ${message}`} />
       </Helmet>
       {globalError && (
         <Collapse in={!!err}>
           <Alert
+            className={classes.banner}
             severity='error'
             variant='outlined'
             onClick={() => {
@@ -63,14 +63,14 @@ export default function ({ error }: Props): React.ReactElement {
               </IconButton>
             }
           >
-            <Trans i18nKey={k.ERROR}>Error</Trans>: <Trans i18nKey={k[message]} />
+            <Trans i18nKey={k.ERROR} />: <Trans i18nKey={msgKey} />
           </Alert>
         </Collapse>
       )}
       {error && (
-        <Grid className={classes.messageError} container direction='row' justifyContent='center' alignItems='center'>
+        <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
           <h1>
-            <Trans i18nKey={k.ERROR} />: <Trans i18nKey={k[message]} />{' '}
+            <Trans>{k.ERROR}</Trans>: <Trans>{msgKey}</Trans>
           </h1>
         </Grid>
       )}

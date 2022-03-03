@@ -5,7 +5,7 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { renameKeys } from 'utils/data'
-import { ErrorRoute } from 'utils/error'
+import { ErrorApi } from 'utils/error'
 
 interface Params {
   policyId?: string
@@ -22,7 +22,7 @@ export default function ({
     setFormdata(undefined)
   }, [policyId])
 
-  const [settings, settingsLoading, settingsError]: [Settings, boolean, ErrorRoute] = useApi('getSetting', !!policyId, [
+  const [settings, settingsLoading, settingsError]: [Settings, boolean, ErrorApi] = useApi('getSetting', !!policyId, [
     'policies',
   ])
 

@@ -19,10 +19,6 @@ const useStyles = makeStyles()((theme) => ({
   noTabs: {
     padding: theme.spacing(3),
   },
-  disabled: {
-    backgroundColor: theme.palette.action.disabledBackground,
-    color: theme.palette.action.disabled,
-  },
   panelHeader: {
     padding: theme.spacing(1),
   },
@@ -176,14 +172,14 @@ export default function ({
     </>
   )
   return (
-    <Box className={disabled ? ` ${classes.disabled}` : ''}>
+    <Box>
       <AppCard
         cluster={cluster}
         teamId={teamId}
         title={title}
         link={link}
         img={`/logos/${logo}`}
-        disabled={disabled}
+        // disabled={disabled}
         wide
         hideSettings
         docUrl={schema['x-externalDocsPath']}
@@ -243,13 +239,7 @@ export default function ({
                   schema support so edit at your own risk!
                 </Typography>
                 <div className={classes.buffer}> </div>
-                <CodeEditor
-                  code={yaml}
-                  onChange={handleChangeRawValues}
-                  disabled={!isEdit}
-                  valid={valid}
-                  setValid={setValid}
-                />
+                <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} setValid={setValid} />
                 <Box display='flex' flexDirection='row-reverse' m={1}>
                   <Button
                     color='primary'

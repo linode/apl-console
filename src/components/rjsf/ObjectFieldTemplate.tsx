@@ -13,7 +13,7 @@ const isHidden = (element: any): boolean =>
 
 export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   const { properties, idSchema, schema } = props
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
   const isOf = hasSomeOf(schema)
   let grouped
   const fields = []
@@ -100,11 +100,11 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     }
 
     // object/*Ofs we want to elevate in their own paper
-    if (type === 'object' || isOf) {
+    if ((type === 'object' || isOf) && !isCustomArray) {
       return (
-        <Grid key={id} className={classes.grid} item xs={12}>
-          <Paper key={id} className={classes.paper}>
-            {(isOf || (type === 'object' && !schema.properties) || isCustomArray) && (
+        <Grid key={id} item xs={12}>
+          <Paper key={id} className={cx(classes.paper, classes.grid)}>
+            {(isOf || (type === 'object' && !schema.properties)) && (
               <Grid key={`${idSchema.$id}-title`} item className={classes.gridIsOf}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>

@@ -4,25 +4,28 @@ import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import YAML from 'yaml'
 
-const useStyles = makeStyles()((theme) => ({
-  root: {
-    backgroundColor: theme.palette.common.white,
-    fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-    fontSize: 12,
-    border: 1,
-  },
-  disabled: {
-    backgroundColor: theme.palette.action.disabled,
-  },
-  invalid: {
-    border: '1px solid red',
-  },
-}))
+const useStyles = makeStyles()((theme) => {
+  const p = theme.palette
+  return {
+    root: {
+      color: p.text.primary,
+      backgroundColor: p.background.default,
+      fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
+      fontSize: 12,
+      border: 1,
+    },
+    disabled: {
+      backgroundColor: p.action.disabled,
+    },
+    invalid: {
+      border: '1px solid red',
+    },
+  }
+})
 
 interface Props extends TextareaCodeEditorProps {
   lang?: string
   code?: string
-  valid?: boolean
   setValid?: CallableFunction
 }
 
@@ -36,20 +39,20 @@ export default function ({
   disabled,
   ...props
 }: Props): React.ReactElement {
-  const startCode = isEmpty(inCode) ? '' : toYaml(inCode)
+  const startCode = isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, '')
   const [code, setCode] = useState(startCode)
   const [valid, setLocalValid] = useState(true)
   const { classes } = useStyles()
-
   const fromYaml = (yaml) => {
     try {
       const obj = YAML.parse(yaml)
+      if (typeof obj !== 'object') throw new Error(`invalid object parsed from yaml: ${obj}`)
       setLocalValid(true)
-      if (setValid) setValid(true)
+      setValid(true)
       return obj
     } catch (e) {
       setLocalValid(false)
-      if (setValid) setValid(false)
+      setValid(false)
       console.error('invalid yaml detected')
       return undefined
     }

@@ -1,10 +1,10 @@
 import Error from 'components/Error'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { ErrorRoute } from 'utils/error'
+import { ErrorApi } from 'utils/error'
 
 interface Props {
-  error: ErrorRoute
+  error: ErrorApi
 }
 
 export default function ({ error }: Props): React.ReactElement {

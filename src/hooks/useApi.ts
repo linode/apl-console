@@ -4,7 +4,7 @@ import devTokens from 'common/devtokens'
 import { SessionContext, useSession } from 'common/session-context'
 import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
 import { useEffect } from 'react'
-import { ErrorRoute, ErrorUnauthorized } from 'utils/error'
+import { ErrorApi, ErrorUnauthorized } from 'utils/error'
 import snack from 'utils/snack'
 
 const baseUrl = `${location.protocol}//${location.hostname}:${location.port}/api/v1`
@@ -24,7 +24,7 @@ if (location.hostname === 'localhost') {
   }
 }
 
-export type ApiHook = LoadingHook<any, ErrorRoute>
+export type ApiHook = LoadingHook<any, ErrorApi>
 
 const client = new DefaultApi(undefined, baseUrl)
 
@@ -42,7 +42,7 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
 export default (operationId: string, active: boolean | string | undefined = true, args: any[] = []): ApiHook => {
   const signature = JSON.stringify(args)
   let canceled = false
-  const { error, loading, setError, setValue, value } = useLoadingValue<any, ErrorRoute>()
+  const { error, loading, setError, setValue, value } = useLoadingValue<any, ErrorApi>()
   const {
     user: { isAdmin },
     setDirty,
@@ -67,7 +67,7 @@ export default (operationId: string, active: boolean | string | undefined = true
         let value
         if (!client[operationId]) {
           const err = `Api operationId does not exist: ${operationId}`
-          setError(new ErrorRoute(err))
+          setError(new ErrorApi(err))
           if (location.host === 'localhost') snack.error(err)
           else {
             // eslint-disable-next-line no-console
@@ -81,16 +81,16 @@ export default (operationId: string, active: boolean | string | undefined = true
         }
         if (setGlobalError) setGlobalError()
       } catch (e) {
-        const err = e.response?.body?.error ?? e.response?.statusMessage ?? e.message
-        const { statusCode } = e
+        const err = e.response?.data?.error ?? e.response?.data ?? e.message
+        const code = e.response?.data?.status ?? e.response?.status ?? e.code
         let msg = err
-        if (location.host === 'localhost') {
-          msg = `Api Error[${statusCode}] calling '${operationId}': ${err}`
+        if (location.hostname === 'localhost') {
+          msg = `Api Error[${code}] calling '${operationId}': ${err}`
           // eslint-disable-next-line no-console
           console.error(e)
         }
         snack.error(msg)
-        const apiError = new ErrorRoute(err, statusCode)
+        const apiError = new ErrorApi(err, code)
         setError(apiError)
         if (setGlobalError) setGlobalError(apiError)
       }

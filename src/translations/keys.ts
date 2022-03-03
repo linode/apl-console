@@ -46,6 +46,7 @@ export enum Keys {
   'The api could not be reached' = 'The api could not be reached',
   'The route does not exist' = 'The route does not exist',
   'The URL is already in use' = 'The URL is already in use',
+  'Unknown' = 'Unknown',
   'Unauthorized: The user may not be assigned to any team.' = 'Unauthorized. The user may not be assigned to any team.',
 }
 

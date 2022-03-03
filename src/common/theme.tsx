@@ -1,11 +1,13 @@
-import { createTheme, Theme, ThemeOptions } from '@mui/material/styles'
+import { PaletteMode } from '@mui/material'
+import { createTheme, Palette, PaletteOptions, Theme, ThemeOptions } from '@mui/material/styles'
+import { cloneDeep } from 'lodash'
 import { makeStyles } from 'tss-react/mui'
 
 export const c = {
-  textLight: '#aaa',
-  textDark: '#666',
+  black: '#111',
+  white: '#eee',
   backgroundDark: '#121212',
-  paperDark: '#303030',
+  paperDark: '#282828',
   grey: '#CFD8DC',
   blueSoft: '#A4D2FF',
   blueLight: '#67B3FF',
@@ -29,14 +31,48 @@ export const c = {
   greenDark: '#228b22',
 }
 
-export const commonDark = {
-  black: c.textDark,
-  white: c.textLight,
+export const textLight = {
+  primary: '#333',
+  secondary: '#777',
+  disabled: '#ccc',
 }
 
-export const teamColors = {
-  background: c.blueDark,
-  paper: c.yellowSoft,
+export const textDark = {
+  primary: '#ddd',
+  secondary: '#bbb',
+  disabled: '#555',
+}
+
+const commonPalette = {
+  mode: 'light' as PaletteMode,
+  common: {
+    black: c.black,
+    white: c.white,
+  },
+  primary: {
+    contrastText: c.white,
+  },
+  text: textLight,
+}
+
+const commonPaletteDark: PaletteOptions = {
+  mode: 'dark' as PaletteMode,
+  background: {
+    default: c.backgroundDark,
+    paper: c.paperDark,
+  },
+  action: {
+    disabledBackground: c.backgroundDark,
+  },
+  text: textDark,
+}
+
+export const teamPalette: PaletteOptions = {
+  ...cloneDeep(commonPalette),
+  background: {
+    default: c.blueDark,
+    paper: c.yellowSoft,
+  },
   primary: {
     light: c.blueLight,
     main: c.blueMain,
@@ -49,9 +85,12 @@ export const teamColors = {
   },
 }
 
-export const adminColors = {
-  background: c.redDark,
-  paper: c.brownSoft,
+export const adminPalette: PaletteOptions = {
+  ...cloneDeep(commonPalette),
+  background: {
+    default: c.redDark,
+    paper: c.brownSoft,
+  },
   primary: {
     light: c.redLight,
     main: c.redMain,
@@ -64,164 +103,161 @@ export const adminColors = {
   },
 }
 
-const getOverrides = (c: any): ThemeOptions => ({
-  typography: {
-    button: {
-      textTransform: 'none',
-    },
-    fontFamily: [
-      '-apple-system',
-      'BlinkMacSystemFont',
-      // '"Comfortaa"',
-      '"Segoe UI"',
-      'Roboto',
-      '"Helvetica Neue"',
-      'Arial',
-      'sans-serif',
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(','),
-  },
-  components: {
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {},
+const getOverrides = (palette: PaletteOptions): ThemeOptions => {
+  const p = palette as Palette
+  const menuItemColor = p.mode === 'light' ? p.text.secondary : p.text.secondary
+  return {
+    typography: {
+      button: {
+        textTransform: 'none',
       },
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        // '"Comfortaa"',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
     },
-    MuiButton: {
-      defaultProps: {
-        color: 'primary',
-        variant: 'contained',
-      },
-      styleOverrides: {
-        root: {
-          borderRadius: '2em',
+    components: {
+      MuiButton: {
+        defaultProps: {
+          color: 'primary',
+          variant: 'contained',
         },
-        iconSizeSmall: {
-          marginRight: '3px',
-        },
-        textSecondary: ({ theme }) => ({
-          color: theme.palette.primary.contrastText,
-          backgroundColor: theme.palette.primary.main,
-        }),
-      },
-    },
-    MuiCheckbox: {
-      defaultProps: {
-        color: 'primary',
-      },
-    },
-    MuiCssBaseline: {
-      styleOverrides: {
-        '.MuiFormControl-root:has(> input)': {
-          display: 'none',
-        },
-        body: {
-          fontSize: '0.875rem',
-        },
-        // h5: {
-        //   fontSize: '1.2rem',
-        //   fontWeight: 'bold',
-        // },
-        'h5:first-letter,h6:first-letter,h7:first-letter': {
-          textTransform: 'capitalize',
+        styleOverrides: {
+          root: {
+            borderRadius: '2em',
+          },
+          iconSizeSmall: {
+            marginRight: '3px',
+          },
         },
       },
-    },
-    MuiFormControl: {
-      styleOverrides: {
-        root: {
-          marginTop: 8,
+      MuiCheckbox: {
+        defaultProps: {
+          color: 'primary',
+        },
+      },
+      MuiCssBaseline: {
+        styleOverrides: {
+          '.MuiFormControl-root:has(> input)': {
+            display: 'none',
+          },
+          a: {
+            color: p.primary.main,
+            textDecoration: 'none',
+          },
+          body: {
+            fontSize: '0.875rem',
+          },
+          'h5:first-letter,h6:first-letter,h7:first-letter': {
+            textTransform: 'capitalize',
+          },
+        },
+      },
+      MuiFormControl: {
+        styleOverrides: {
+          root: {
+            marginTop: 8,
+          },
+        },
+      },
+      MuiFormLabel: {
+        styleOverrides: {
+          root: {
+            textTransform: 'capitalize',
+          },
+        },
+      },
+      MuiIconButton: {
+        styleOverrides: {
+          root: {
+            color: menuItemColor,
+          },
+        },
+      },
+      MuiInput: {
+        styleOverrides: {
+          root: {
+            minWidth: '10rem',
+            paddingLeft: '1rem',
+            paddingRight: '1rem',
+          },
+        },
+      },
+      MuiInputBase: {
+        styleOverrides: {
+          multiline: {
+            minWidth: '30rem',
+          },
+          root: {
+            borderRadius: '6px',
+          },
+        },
+      },
+      MuiLink: {
+        defaultProps: {
+          underline: 'none',
+        },
+        styleOverrides: {
+          root: {
+            color: p.mode === 'light' ? p.primary.main : p.primary.light,
+          },
+        },
+      },
+      MuiListItemIcon: {
+        styleOverrides: {
+          root: {
+            minWidth: '38px',
+            color: menuItemColor,
+          },
+        },
+      },
+      MuiListItemText: {
+        styleOverrides: {
+          root: {
+            marginBottom: 0,
+            marginTop: 0,
+            paddingBottom: 4,
+            paddingTop: 4,
+            color: p.mode === 'light' ? p.text.primary : p.text.secondary,
+          },
+        },
+      },
+      MuiRadio: {
+        defaultProps: {},
+      },
+      MuiSwitch: {
+        defaultProps: {},
+      },
+      MuiTab: {
+        styleOverrides: {
+          textColorSecondary: {
+            color: p.common.white,
+          },
+        },
+      },
+      MuiTypography: {
+        styleOverrides: {
+          caption: {
+            maxWidth: 'fit-content',
+            paddingBottom: 16,
+          },
         },
       },
     },
-    MuiFormLabel: {
-      styleOverrides: {
-        root: {
-          textTransform: 'capitalize',
-        },
-      },
-    },
-    MuiInput: {
-      styleOverrides: {
-        root: {
-          minWidth: '10rem',
-          paddingLeft: '1rem',
-          paddingRight: '1rem',
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        multiline: {
-          minWidth: '30rem',
-        },
-        root: {
-          borderRadius: '6px',
-        },
-      },
-    },
-    MuiLink: {
-      defaultProps: {
-        underline: 'none',
-      },
-    },
-    MuiListItemIcon: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          minWidth: '38px',
-          color: theme.palette.mode === 'light' ? c.textDark : theme.palette.common.white,
-        }),
-      },
-    },
-    MuiListItemText: {
-      styleOverrides: {
-        root: {
-          marginBottom: 0,
-          marginTop: 0,
-          paddingBottom: 4,
-          paddingTop: 4,
-        },
-      },
-    },
-    MuiRadio: {
-      defaultProps: {
-        // color: 'primary',
-      },
-    },
-    MuiSwitch: {
-      defaultProps: {
-        // color: 'primary',
-      },
-    },
-    MuiTab: {
-      styleOverrides: {
-        textColorSecondary: ({ theme }) => ({
-          color: theme.palette.common.white,
-        }),
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        caption: {
-          maxWidth: 'fit-content',
-          paddingBottom: 16,
-        },
-      },
-    },
-  },
-  palette: {
-    background: {
-      default: c.background,
-      paper: c.paper,
-    },
-    primary: c.primary,
-    secondary: c.secondary,
-  },
-})
+    palette: p,
+  }
+}
 
-let name = 'admin'
+let name = 'team'
 let mode = 'light'
 
 export const setThemeName = (inName: string): void => {
@@ -238,52 +274,35 @@ export const toggleThemeMode = (): string => {
   return mode
 }
 
-const teamOverrides = getOverrides(teamColors)
+const teamOverrides = getOverrides(cloneDeep(teamPalette))
+const teamDarkOverrides = getOverrides({
+  ...cloneDeep(teamPalette),
+  ...cloneDeep(commonPaletteDark),
+  primary: {
+    // contrastText: c.blueSoft,
+    main: c.blueDark,
+  },
+  secondary: {
+    main: c.blueMain,
+  },
+})
 const teamLight = createTheme(teamOverrides)
-const teamDark = createTheme({
-  ...teamOverrides,
-  palette: {
-    mode: 'dark',
-    background: {
-      default: c.backgroundDark,
-      paper: c.paperDark,
-    },
-    common: commonDark,
-    text: {
-      primary: c.textLight,
-    },
-    primary: {
-      // contrastText: c.blueSoft,
-      main: c.blueDark,
-    },
-    secondary: {
-      main: c.blueMain,
-    },
+const teamDark = createTheme(teamDarkOverrides)
+
+const adminOverrides = getOverrides(cloneDeep(adminPalette))
+const adminDarkOverrides = getOverrides({
+  ...cloneDeep(adminPalette),
+  ...cloneDeep(commonPaletteDark),
+  primary: {
+    // contrastText: c.redSoft,
+    main: c.redDark,
+  },
+  secondary: {
+    main: c.redMain,
   },
 })
-const adminOverrides = getOverrides(adminColors)
 const adminLight = createTheme(adminOverrides)
-const adminDark = createTheme({
-  ...adminOverrides,
-  palette: {
-    mode: 'dark',
-    background: {
-      default: c.backgroundDark,
-      paper: c.paperDark,
-    },
-    common: commonDark,
-    text: {
-      primary: c.textLight,
-    },
-    primary: {
-      // contrastText: c.redSoft,
-      main: c.redDark,
-    },
-    secondary: {
-      main: c.redMain,
-    },
-  },
-})
+const adminDark = createTheme(adminDarkOverrides)
 
 export const themes = {
   team: {
@@ -296,36 +315,41 @@ export const themes = {
   },
 }
 
-export const getTheme = (): Theme => themes[name][mode]
+export const getTheme = (): Theme => {
+  return themes[name][mode]
+}
 
-export const useMainStyles = makeStyles()((theme) => ({
-  headerlink: {
-    // color: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    fontWeight: 'bold',
-    '&&': {
-      textDecoration: 'none',
-      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
+export const useMainStyles = makeStyles()((theme) => {
+  const p = theme.palette
+  return {
+    headerlink: {
+      // color: p.primary.main,
+      color: p.common.white,
+      fontWeight: 'bold',
+      '&&': {
+        textDecoration: 'none',
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
+      },
+      '&&:hover': {
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
+      },
+      '&&.Mui-selected': {
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.light,
+      },
     },
-    '&&:hover': {
-      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.main,
+    selectable: {
+      // color: p.primary.main,
+      color: p.common.white,
+      '&&': {
+        textDecoration: 'none',
+        color: p.mode === 'dark' ? p.common.white : p.common.black,
+      },
+      '&&:hover': {
+        color: p.mode === 'dark' ? p.primary.light : p.primary.main,
+      },
+      '&&.Mui-selected': {
+        color: p.mode === 'dark' ? p.secondary.light : p.primary.dark,
+      },
     },
-    '&&.Mui-selected': {
-      color: mode === 'dark' ? theme.palette.secondary.contrastText : theme.palette.secondary.light,
-    },
-  },
-  selectable: {
-    // color: theme.palette.primary.main,
-    color: theme.palette.common.white,
-    '&&': {
-      textDecoration: 'none',
-      color: mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    },
-    '&&:hover': {
-      color: mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.main,
-    },
-    '&&.Mui-selected': {
-      color: mode === 'dark' ? theme.palette.secondary.light : theme.palette.primary.dark,
-    },
-  },
-}))
+  }
+})

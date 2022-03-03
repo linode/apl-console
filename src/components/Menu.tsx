@@ -36,7 +36,6 @@ import Cluster from './Cluster'
 const useStyles = makeStyles()((theme) => ({
   root: {
     paddingTop: 0,
-    // textTransform: 'capitalize',
   },
   listSubheader: {
     backgroundColor: theme.palette.divider,

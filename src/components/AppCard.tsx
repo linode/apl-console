@@ -21,7 +21,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   disabled: {
     backgroundColor: theme.palette.action.disabledBackground,
-    color: theme.palette.action.disabled,
+    color: theme.palette.text.secondary,
   },
   content: {
     flex: '1 0 auto',
@@ -75,21 +75,16 @@ export default function ({
         )}
         {!wide && (
           <div className={classes.controls}>
-            <IconButton aria-label='info' component={RLink} to={`/apps/${teamId}/${id}`} disabled={disabled}>
+            <IconButton aria-label='info' component={RLink} to={`/apps/${teamId}/${id}`}>
               <InfoIcon />
             </IconButton>
-            {link && (
-              <IconButton aria-label='start' href={link} target='_blank' rel='noopener' disabled={disabled}>
+            {link && !disabled && (
+              <IconButton aria-label='start' href={link} target='_blank' rel='noopener'>
                 <PlayArrowIcon className={classes.playIcon} />
               </IconButton>
             )}
             {!hideConfButton && (
-              <IconButton
-                aria-label='configure'
-                component={RLink}
-                to={`/apps/${teamId}/${id}#values`}
-                disabled={disabled}
-              >
+              <IconButton aria-label='configure' component={RLink} to={`/apps/${teamId}/${id}#values`}>
                 <SettingsIcon />
               </IconButton>
             )}

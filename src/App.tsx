@@ -33,7 +33,7 @@ import React, { Dispatch, Suspense, useMemo, useState } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { ErrorApiUnreachable, ErrorRouteNotExists, ErrorUnauthorized } from './utils/error'
+import { ErrorApiBadGateway, ErrorApiNotExists, ErrorUnauthorized } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
 export const muiCache = createCache({
@@ -49,7 +49,6 @@ function App() {
   const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
-  if (sessionError || apiDocsError) setGlobalError(sessionError ?? apiDocsError)
   const [themeMode, setMode]: [string, Dispatch<any>] = useLocalStorage('themeMode', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   const ctx = useMemo(
@@ -67,21 +66,25 @@ function App() {
     [session, dirty, globalError, oboTeamId, themeMode],
   )
   setThemeMode(themeMode)
-  if (sessionError || apiDocsError) return <ErrorComponent error={new ErrorApiUnreachable()} />
-
   if (sessionLoading || apiDocsLoading) return <Loader />
-
-  setSpec(apiDocs)
   let err
-  const { user } = session
-  if (!user.isAdmin && !oboTeamId) {
-    if (user.teams.length) {
-      setOboTeamId(user.teams[0])
-      return <Loader />
-    }
-    err = <ErrorComponent error={new ErrorUnauthorized()} />
+  if (sessionError || apiDocsError) {
+    const e = sessionError || apiDocsError
+    if (e.code === 504) err = <ErrorComponent error={new ErrorApiBadGateway()} />
+    err = <ErrorComponent error={err} />
   }
-  setThemeName(user.isAdmin ? 'admin' : 'team')
+  if (apiDocs) setSpec(apiDocs)
+  if (!err) {
+    const { user } = session
+    if (!user.isAdmin && !oboTeamId) {
+      if (user.teams.length) {
+        setOboTeamId(user.teams[0])
+        return <Loader />
+      }
+      err = <ErrorComponent error={new ErrorUnauthorized()} />
+    }
+    setThemeName(user.isAdmin ? 'admin' : 'team')
+  }
   return (
     <Suspense fallback={<Loader />}>
       <ErrorBoundary FallbackComponent={ErrorComponent}>
@@ -121,7 +124,7 @@ function App() {
                       <Route path='/teams/:teamId/services' component={Services} exact />
                       <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                       <Route path='*'>
-                        <Error error={new ErrorRouteNotExists()} />
+                        <Error error={new ErrorApiNotExists()} />
                       </Route>
                     </Switch>
                   </Router>

@@ -9,7 +9,10 @@ const useStyles = makeStyles()((theme) => ({
     color: theme.palette.primary.main,
   },
   indeterminate: {
-    color: theme.palette.grey[600],
+    color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : theme.palette.text.secondary,
+  },
+  disabled: {
+    color: theme.palette.text.disabled,
   },
 }))
 
@@ -22,7 +25,7 @@ export default function ({ checked, disabled, indeterminate, ...other }: any) {
     <CheckboxIcon className={classes.indeterminate} />
   )
 
-  const className = disabled ? '' : classes[indeterminate ? 'indeterminate' : 'determinate']
+  const className = disabled ? classes.disabled : classes[indeterminate ? 'indeterminate' : 'determinate']
 
   return (
     <Checkbox

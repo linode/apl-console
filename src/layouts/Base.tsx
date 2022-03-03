@@ -1,111 +1,119 @@
-import { Box, Typography, Toolbar, IconButton, AppBar, Drawer, Divider } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import React, { useState } from 'react'
-import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
 import Brightness3Icon from '@mui/icons-material/Brightness3'
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
-import { toggleThemeMode } from 'common/theme'
-import { makeStyles } from 'tss-react/mui'
+import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import { useSession } from 'common/session-context'
+import { toggleThemeMode } from 'common/theme'
 import Menu from 'components/Menu'
 import User from 'components/User'
+import React, { useState } from 'react'
+import { makeStyles } from 'tss-react/mui'
 
 const drawerWidth = '240px'
 
-const useStyles = makeStyles()((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  title: {
-    fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
-  },
-  subTitle: {
-    fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
-    fontSize: '14px',
-    marginTop: '3px',
-    marginLeft: '6px',
-    fontStyle: 'italic',
-    fontWeight: 'bolder',
-  },
-  logo: {
-    flexGrow: 1,
-    marginRight: '1vw',
-    justifyContent: 'left',
-  },
-  toolbar: {
-    paddingRight: theme.spacing(3),
-  },
-  toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: theme.palette.primary.main,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    // minHeight: theme.spacing(8),
-    // maxHeight: theme.spacing(8),
-    // [theme.breakpoints.down('sm')]: {
-    //   minHeight: theme.spacing(7),
-    //   maxHeight: theme.spacing(7),
-    // },
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
+const useStyles = makeStyles()((theme) => {
+  const p = theme.palette
+  const appBarColor = p.mode === 'dark' ? p.text.primary : p.common.white
+  const appBarIconColor = p.common.white
+  return {
+    root: {
+      display: 'flex',
+    },
+    title: {
+      fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
+      fontSize: theme.spacing(2.5),
+    },
+    subTitle: {
+      fontFamily: '"Comfortaa", "Roboto", "Helvetica", "Arial", sans-serif;',
+      fontSize: '14px',
+      marginTop: '3px',
+      marginLeft: '6px',
+      fontStyle: 'italic',
+      fontWeight: 'bolder',
+    },
+    logo: {
+      flexGrow: 1,
+      marginRight: '1vw',
+      justifyContent: 'left',
+    },
+    toolbar: {
+      paddingRight: theme.spacing(3),
+    },
+    toolbarIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+      padding: '0 8px',
+    },
+    appBar: {
+      zIndex: theme.zIndex.drawer + 1,
+      backgroundColor: p.mode === 'dark' ? p.primary.dark : p.primary.main,
+      color: appBarColor,
+      '.MuiTypography-root': {
+        color: appBarColor,
+        textTransform: 'none',
+      },
+      '.MuiIconButton-root': {
+        color: appBarIconColor,
+      },
+      transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    appBarShift: {
+      marginLeft: drawerWidth,
+      width: `calc(100% - ${drawerWidth}px)`,
+      transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+    menuButton: {
+      marginRight: theme.spacing(2),
+      [theme.breakpoints.up('sm')]: {
+        display: 'none',
+      },
+    },
+    menuButtonHidden: {
       display: 'none',
     },
-  },
-  menuButtonHidden: {
-    display: 'none',
-  },
-  drawer: {
-    // backgroundColor: theme.palette.secondary.main,
-    zIndex: 1300,
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
+    drawer: {
+      // backgroundColor: p.secondary.main,
+      zIndex: 1300,
+      [theme.breakpoints.up('sm')]: {
+        width: drawerWidth,
+        flexShrink: 0,
+      },
     },
-  },
-  drawerContainer: {
-    // overflow: 'auto',
-  },
-  drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    height: '100vh',
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  content: {
-    flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
-  },
-}))
+    drawerContainer: {
+      // overflow: 'auto',
+    },
+    drawerPaper: {
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      height: '100vh',
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+    drawerPaperClose: {
+      overflowX: 'hidden',
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+    content: {
+      flexGrow: 1,
+      height: '100vh',
+      overflow: 'auto',
+    },
+  }
+})
 
 const ToolbarOffset = styled('div')(({ theme }) => theme.mixins.toolbar)
 
@@ -154,11 +162,9 @@ export default function (props: Props): React.ReactElement {
         <Toolbar className={classes.toolbar}>
           <div className={classes.logo}>
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <IconButton color='inherit'>
+              <IconButton>
                 {img}
-                <Typography className={classes.title} variant='h6'>
-                  otomi console
-                </Typography>
+                <Typography className={classes.title}>otomi console</Typography>
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>
@@ -166,7 +172,7 @@ export default function (props: Props): React.ReactElement {
             </Box>
           </div>
           <User />
-          <IconButton color='inherit' title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
+          <IconButton title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
             {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
           </IconButton>
         </Toolbar>
