@@ -47,9 +47,18 @@ export default function ({
   const session = useSession()
   const { cluster } = session
 
-  const { schema, baseUrl, link, logo, enabled, shortcuts: defaultShortcuts } = getAppData(session, teamId, id)
+  const {
+    baseUrl,
+    enabled,
+    externalUrl,
+    hasShortcuts,
+    ingress,
+    logo,
+    schema,
+    shortcuts: defaultShortcuts,
+    useHost,
+  } = getAppData(session, teamId, id)
   const { description, title } = schema
-  const disabled = enabled === false
   const defTab = hashMap[hash] ?? 0
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
@@ -110,11 +119,11 @@ export default function ({
       <Box className={classes.panelHeader} component='div'>
         <Typography variant='h5'>Shortcuts</Typography>
       </Box>
-      {link && defaultShortcuts?.length && (
+      {hasShortcuts && defaultShortcuts?.length && (
         <List
           subheader={
             <ListSubheader component='div'>
-              <u>Provided by Otomi:</u>
+              <Typography variant='caption'>Provided by Otomi:</Typography>
             </ListSubheader>
           }
         >
@@ -129,7 +138,7 @@ export default function ({
       )}
       <List
         subheader={
-          link && defaultShortcuts?.length && shortcuts?.length ? (
+          hasShortcuts && defaultShortcuts?.length && shortcuts?.length ? (
             <ListSubheader component='div'>
               <u>User created:</u>
             </ListSubheader>
@@ -143,7 +152,7 @@ export default function ({
             </MuiLink>
           </ListItem>
         ))}
-        {link && isEdit && (
+        {hasShortcuts && isEdit && (
           <Form
             key='editShortcuts'
             schema={schema.properties.shortcuts}
@@ -175,23 +184,22 @@ export default function ({
     <Box>
       <AppCard
         cluster={cluster}
+        description={description}
+        docUrl={schema['x-externalDocsPath']}
+        externalUrl={externalUrl}
+        hideSettings
+        img={`/logos/${logo}`}
+        shortDescription={schema['x-short']}
         teamId={teamId}
         title={title}
-        link={link}
-        img={`/logos/${logo}`}
-        // disabled={disabled}
         wide
-        hideSettings
-        docUrl={schema['x-externalDocsPath']}
-        shortDescription={schema['x-short']}
-        description={description}
       />
       {isAdminApps && (
         <>
           <AppBar position='relative' color='primary'>
             <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
               <Tab href='#info' label='Info' value={0} />
-              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!link} />
+              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!ingress} />
               {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
               {isAdminApps && (
                 <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />
@@ -219,6 +227,7 @@ export default function ({
                 onChange={handleChangeValues}
                 onSubmit={handleSubmit}
                 formData={values}
+                clean={false}
                 hideHelp
                 uiSchema={appUiSchema}
               >

@@ -8,9 +8,9 @@ import MuiLink from './MuiLink'
 const getAppLink = (teamId: string) =>
   function (app): React.ReactElement {
     const { id } = app
-    const link = `/apps/${teamId}/${id}#shortcuts`
+    const path = `/apps/${teamId}/${id}#shortcuts`
     return (
-      <RLink to={link} label={id}>
+      <RLink to={path} label={id}>
         {capitalize(id)}
       </RLink>
     )

@@ -12,10 +12,10 @@ interface RowProps {
 
 const getPolicyLink = (): CallableFunction =>
   function ({ policyId }: RowProps): React.ReactElement {
-    const link = `/policies/${policyId}`
+    const path = `/policies/${policyId}`
     const { title } = getPolicySchema(policyId)
     return (
-      <RLink to={link} label={policyId}>
+      <RLink to={path} label={policyId}>
         {title}
       </RLink>
     )

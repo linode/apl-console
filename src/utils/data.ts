@@ -123,6 +123,8 @@ export const renameKeys = (data) => {
 export const getApps = (adminApps, teamApps, teamId) =>
   (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter((app) => !app.hide)
 
+const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
+
 export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
   const {
     core: { adminApps, teamApps },
@@ -140,30 +142,23 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
   // get the core app
   const apps = getApps(adminApps, teamApps, teamId)
   const coreApp = find(apps, { name: appId })
-  const { logo, ingress, isShared } = coreApp
+  const { useHost, logo, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
   let substShortcuts
   if (mergedShortcuts.length) {
     substShortcuts = mergedShortcuts.map(({ path, ...other }) => ({
-      path: path.replace('#NS#', `team-${teamId}`),
+      path: rePlace(path, teamId),
       ...other,
     }))
   }
   // compose the derived ingress props
-  const { domain, host, ownHost, path } = (ingress && ingress[0]) || {}
-  const baseUrl = `https://${
-    domain ||
-    `${isShared || ownHost ? host || appId : 'apps'}${
-      !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
-    }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${host || appId}`}`
-  }`
-  const substPath = `${(path || '').replace('#NS#', `team-${teamId}`)}`
-  // create a default link if we have ingress or shortcuts
-  let link
-  if (substShortcuts?.length) link = `${baseUrl}/${substShortcuts[0].path}`
-  else if (ingress) link = `${baseUrl}/${substPath}`
+  const baseUrl = useHost
+    ? getAppData(session, teamId, useHost).baseUrl
+    : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
+        !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+      }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = `App${pascalCase(appId)}`
@@ -177,8 +172,8 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
     docUrl: schema['x-externalDocsPath'],
     logo: logo ?? `${appId}_logo.svg`,
     schema,
-    link,
-    path: substPath,
+    externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
+    hasShortcuts: !!ingress || useHost,
   }
 }

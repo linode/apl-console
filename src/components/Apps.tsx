@@ -22,7 +22,7 @@ export default function ({ teamId }: Props): React.ReactElement {
   const out = (items) =>
     items.map((item) => {
       const name = item?.name
-      const { id, schema, link, logo, enabled, docUrl } = getAppData(session, teamId, item)
+      const { docUrl, enabled, externalUrl, hasShortcuts, id, logo, schema } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={6} lg={3} md={4} key={name}>
           <AppCard
@@ -30,7 +30,7 @@ export default function ({ teamId }: Props): React.ReactElement {
             teamId={teamId}
             id={id}
             title={schema.title}
-            link={link}
+            externalUrl={externalUrl}
             docUrl={docUrl}
             img={`/logos/${logo}`}
             disabled={enabled === false}

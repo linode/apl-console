@@ -50,19 +50,27 @@ const useStyles = makeStyles()((theme) => ({
 }))
 
 export default function ({
-  teamId,
-  img,
-  id,
   description,
-  shortDescription,
-  title,
-  link,
-  docUrl,
   disabled,
+  docUrl,
   hideConfButton = false,
+  id,
+  img,
+  externalUrl,
+  shortDescription,
+  teamId,
+  title,
   wide = false,
 }: any): React.ReactElement {
   const { classes } = useStyles()
+  const cardProps = externalUrl
+    ? {
+        component: Link,
+        href: externalUrl,
+        target: '_blank',
+        rel: 'noopener',
+      }
+    : {}
   return (
     <Card className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}`}>
       <div className={classes.details}>
@@ -78,8 +86,8 @@ export default function ({
             <IconButton aria-label='info' component={RLink} to={`/apps/${teamId}/${id}`}>
               <InfoIcon />
             </IconButton>
-            {link && !disabled && (
-              <IconButton aria-label='start' href={link} target='_blank' rel='noopener'>
+            {externalUrl && !disabled && (
+              <IconButton aria-label='start' href={externalUrl} target='_blank' rel='noopener'>
                 <PlayArrowIcon className={classes.playIcon} />
               </IconButton>
             )}
@@ -91,14 +99,7 @@ export default function ({
           </div>
         )}
       </div>
-      <CardMedia
-        component={Link}
-        href={link}
-        target='_blank'
-        rel='noopener'
-        className={`${classes.cover}${wide ? ` ${classes.coverWide}` : ''}`}
-        title={title}
-      >
+      <CardMedia className={`${classes.cover}${wide ? ` ${classes.coverWide}` : ''}`} title={title} {...cardProps}>
         <img src={img} alt={`Logo for ${title} app`} className={classes.cover} />
       </CardMedia>
       {wide && (

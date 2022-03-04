@@ -12,10 +12,10 @@ const getSecretLink = (isAdmin, ownerId) =>
     const { teamId, id, name }: { teamId: string; id: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
-    const link =
+    const path =
       isAdmin && !ownerId ? `/secrets/${encodeURIComponent(id)}` : `/teams/${teamId}/secrets/${encodeURIComponent(id)}`
     return (
-      <RLink to={link} label={name}>
+      <RLink to={path} label={name}>
         {name}
       </RLink>
     )

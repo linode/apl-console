@@ -227,7 +227,7 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
             marginTop: 0,
             paddingBottom: 4,
             paddingTop: 4,
-            color: p.mode === 'light' ? p.text.primary : p.text.secondary,
+            // color: p.mode === 'light' ? p.text.primary : p.text.secondary,
           },
         },
       },

@@ -35,6 +35,7 @@ interface Props extends FormProps<any> {
 
 export default function ({
   children,
+  clean = true,
   title,
   hideHelp = false,
   onChange,
@@ -48,7 +49,7 @@ export default function ({
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const { classes } = useStyles()
   const onChangeWrapper = ({ formData, ...other }: IChangeEvent<any>) => {
-    const cleanFormData = cleanData(formData)
+    const cleanFormData = clean ? cleanData(formData) : formData
     onChange({ formData: cleanFormData, ...other })
   }
   const onSubmitWrapper = ({ formData, ...other }: IChangeEvent<any>, ev) => {

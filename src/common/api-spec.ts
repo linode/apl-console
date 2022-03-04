@@ -269,7 +269,7 @@ export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamS
 
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
-    if (!(formData.receivers || []).includes(receiver) && !(formData.drone === receiver))
+    if (!(formData.receivers || []).includes(receiver) && !formData.drone.includes(receiver))
       delete schema.properties[receiver]
   })
 }
