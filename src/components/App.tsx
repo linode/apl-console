@@ -52,7 +52,6 @@ export default function ({
     enabled,
     externalUrl,
     hasShortcuts,
-    ingress,
     logo,
     schema,
     shortcuts: defaultShortcuts,
@@ -199,7 +198,7 @@ export default function ({
           <AppBar position='relative' color='primary'>
             <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
               <Tab href='#info' label='Info' value={0} />
-              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!ingress} />
+              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!hasShortcuts} />
               {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
               {isAdminApps && (
                 <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />
