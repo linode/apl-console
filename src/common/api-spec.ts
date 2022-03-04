@@ -258,8 +258,7 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
 
   schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
-    if (team && (!team.alerts || !(team.alerts.receivers || []).includes(receiver)))
-      delete schema.properties.alerts.properties[receiver]
+    if ((team?.alerts?.receivers || []).includes(receiver)) delete schema.properties.alerts.properties[receiver]
   })
   unset(schema, 'properties.alerts.properties.drone')
   return schema
@@ -269,7 +268,7 @@ export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamS
 
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
-    if (!(formData.receivers || []).includes(receiver) && !formData.drone.includes(receiver))
+    if (!(formData?.receivers || []).includes(receiver) && !(formData?.drone || []).includes(receiver))
       delete schema.properties[receiver]
   })
 }
