@@ -257,7 +257,7 @@ export const getTeamSchema = (team, cluster: Cluster): any => {
   const { provider } = cluster
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
-  deleteAlertEndpoints(schema.properties.alerts, team)
+  deleteAlertEndpoints(schema.properties.alerts, team.alerts)
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
   return schema
 }

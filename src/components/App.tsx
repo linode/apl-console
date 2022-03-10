@@ -78,7 +78,6 @@ export default function ({
     logo,
     schema,
     shortcuts: defaultShortcuts,
-    useHost,
   } = getAppData(session, teamId, id)
   const { description, title } = schema
   const defTab = hashMap[hash] ?? 0
@@ -206,7 +205,7 @@ export default function ({
     <Box>
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
-          <Link href={externalUrl}>
+          <Link href={externalUrl} target='_blank' rel='noopener'>
             <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
           </Link>
         </Box>

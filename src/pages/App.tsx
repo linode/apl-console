@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-import { renameKeys } from 'utils/data'
 import App from 'components/App'
 import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import React, { useState } from 'react'
+import { RouteComponentProps } from 'react-router-dom'
+import { renameKeys } from 'utils/data'
 
 interface Params {
   teamId: string
@@ -24,7 +24,7 @@ export default function ({
   const loading = appLoading || editLoading
   const err = appError || editError
   const comp = !loading && (!err || formData || app) && (
-    <App onSubmit={setFormdata} {...(formData || app)} teamId={teamId} />
+    <App onSubmit={setFormdata} id={appId} {...(formData || app)} teamId={teamId} />
   )
   return <PaperLayout comp={comp} loading={loading} />
 }
