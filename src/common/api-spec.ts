@@ -255,12 +255,10 @@ export const getSecretSchema = (): any => {
 export const getTeamSchema = (team, cluster: Cluster): any => {
   const schema = cloneDeep(spec.components.schemas.Team)
   const { provider } = cluster
-  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
-
-  schema.properties.alerts.properties.receivers.items.enum.forEach((receiver) => {
-    if ((team?.alerts?.receivers || []).includes(receiver)) delete schema.properties.alerts.properties[receiver]
-  })
+  // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
+  deleteAlertEndpoints(schema.properties.alerts, team)
+  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
   return schema
 }
 

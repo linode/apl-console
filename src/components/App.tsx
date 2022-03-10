@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
+import { AppBar, Box, Button, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
 import { JSONSchema7 } from 'json-schema'
@@ -9,13 +9,36 @@ import { useLocation } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import YAML from 'yaml'
-import AppCard from './AppCard'
 import CodeEditor from './CodeEditor'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
 
 const useStyles = makeStyles()((theme) => ({
+  header: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerText: {
+    display: 'inline-flex',
+  },
+  imgHolder: {
+    paddingTop: theme.spacing(1),
+    paddingRight: theme.spacing(2),
+    display: 'inline-flex',
+    // width: theme.spacing(8),
+  },
+  img: {
+    height: theme.spacing(6),
+  },
+  content: {
+    paddingBottom: theme.spacing(2),
+  },
+  paragraph: {
+    paddingBottom: theme.spacing(1),
+    paddingTop: theme.spacing(1),
+  },
   noTabs: {
     padding: theme.spacing(3),
   },
@@ -115,13 +138,13 @@ export default function ({
 
   const shortcutsPanel = (
     <>
-      <Box className={classes.panelHeader} component='div'>
+      <Box className={classes.panelHeader}>
         <Typography variant='h5'>Shortcuts</Typography>
       </Box>
       {hasShortcuts && defaultShortcuts?.length && (
         <List
           subheader={
-            <ListSubheader component='div'>
+            <ListSubheader>
               <Typography variant='caption'>Provided by Otomi:</Typography>
             </ListSubheader>
           }
@@ -138,7 +161,7 @@ export default function ({
       <List
         subheader={
           hasShortcuts && defaultShortcuts?.length && shortcuts?.length ? (
-            <ListSubheader component='div'>
+            <ListSubheader>
               <u>User created:</u>
             </ListSubheader>
           ) : undefined
@@ -181,18 +204,18 @@ export default function ({
   )
   return (
     <Box>
-      <AppCard
-        cluster={cluster}
-        description={description}
-        docUrl={schema['x-externalDocsPath']}
-        externalUrl={externalUrl}
-        hideSettings
-        img={`/logos/${logo}`}
-        shortDescription={schema['x-short']}
-        teamId={teamId}
-        title={title}
-        wide
-      />
+      <Box className={classes.header}>
+        <Box className={classes.imgHolder}>
+          <Link href={externalUrl}>
+            <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
+          </Link>
+        </Box>
+        {/* <Box className={classes.headerText}> */}
+        <Typography className={classes.headerText} variant='h6'>
+          {title}: {schema['x-short']}
+        </Typography>
+        {/* </Box> */}
+      </Box>
       {isAdminApps && (
         <>
           <AppBar position='relative' color='primary'>
@@ -206,9 +229,18 @@ export default function ({
             </Tabs>
           </AppBar>
           <TabPanel value={tab} index={0}>
-            <Box className={classes.panelHeader} component='div'>
-              <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
-              <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+            <Box className={classes.panelHeader}>
+              <Box className={classes.content}>
+                <Typography variant='h5'>About {title}</Typography>
+                <Typography className={classes.paragraph} component='p' variant='body2'>
+                  {description}
+                </Typography>
+                <Link href={schema['x-externalDocsPath']}>[...more]</Link>
+              </Box>
+              <Box className={classes.content}>
+                <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
+                <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+              </Box>
             </Box>
           </TabPanel>
           <TabPanel value={tab} index={1}>
@@ -216,7 +248,7 @@ export default function ({
           </TabPanel>
           {inValues && (
             <TabPanel value={tab} index={2}>
-              <Box className={classes.panelHeader} component='div'>
+              <Box className={classes.panelHeader}>
                 <Typography variant='h5'>Values</Typography>
                 <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
               </Box>
@@ -240,7 +272,7 @@ export default function ({
           )}
           {inValues && (
             <TabPanel value={tab} index={3}>
-              <Box className={classes.panelHeader} component='div'>
+              <Box className={classes.panelHeader}>
                 <Typography variant='h5'>Raw Values</Typography>
                 <Typography variant='caption'>
                   Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no

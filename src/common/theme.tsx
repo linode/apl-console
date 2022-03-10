@@ -105,7 +105,7 @@ export const adminPalette: PaletteOptions = {
 
 const getOverrides = (palette: PaletteOptions): ThemeOptions => {
   const p = palette as Palette
-  const menuItemColor = p.mode === 'light' ? p.text.secondary : p.text.secondary
+  const menuItemColor = p.text.secondary
   return {
     typography: {
       button: {
@@ -241,6 +241,9 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
         styleOverrides: {
           textColorSecondary: {
             color: p.common.white,
+          },
+          root: {
+            '&.Mui-disabled': { color: p.primary.light },
           },
         },
       },
