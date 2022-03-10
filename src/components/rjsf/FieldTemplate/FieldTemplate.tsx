@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Divider } from '@mui/material'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
 import List from '@mui/material/List'
@@ -36,10 +36,10 @@ export default function ({
     return (
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Grid item>
-            <Typography variant='h6'>{label}</Typography>
-            <Divider variant='fullWidth' />
-          </Grid>
+          {/* <Box> */}
+          <Typography variant='h6'>{label}</Typography>
+          <Divider variant='fullWidth' />
+          {/* </Box> */}
         </AccordionSummary>
         <AccordionDetails>{children}</AccordionDetails>
       </Accordion>

@@ -76,7 +76,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   }
 
   const render = (o, id = o.name) => {
-    const { idSchema = {}, title, schema, uiSchema } = o.content?.props ?? {}
+    const { idSchema = {}, schema } = o.content?.props ?? {}
     const type = getSchemaType(schema)
     const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
     const hidden = isHidden(o)
@@ -91,13 +91,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
       return undefined
     }
 
-    if (propsToAccordion.includes(uiSchema.title || schema.title || title)) {
-      return (
-        <Grid key={`${id}-accordion`} className={classes.grid} item xs={12}>
-          {o.content}
-        </Grid>
-      )
-    }
+    if (propsToAccordion.includes(id)) return o.content
 
     // object/*Ofs we want to elevate in their own paper
     if ((type === 'object' || isOf) && !isCustomArray) {
