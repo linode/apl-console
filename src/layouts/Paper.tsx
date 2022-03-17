@@ -21,9 +21,9 @@ const useStyles = makeStyles()((theme) => ({
     overflow: 'auto',
     flexDirection: 'column',
     paddingTop: '1px',
-    paddingLeft: theme.spacing(1.5),
-    paddingRight: theme.spacing(1.5),
-    paddingBottom: theme.spacing(1.5),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   // paper: {
   //   padding: theme.spacing(2),

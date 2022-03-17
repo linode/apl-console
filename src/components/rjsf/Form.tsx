@@ -23,6 +23,9 @@ const useStyles = makeStyles()(() => ({
   root: {
     display: 'flex',
     justifyContent: 'space-between',
+    '& .MuiGrid-item': {
+      padding: '16px !important',
+    },
   },
 }))
 

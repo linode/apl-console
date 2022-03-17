@@ -16,15 +16,20 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormdata] = useState()
-
-  const [app, appLoading, appError]: any = useApi('getApp', true, [teamId, appId])
-
+  const [appState, setAppState] = useState([])
+  const [appIds, appEnabled] = appState
+  const [app, appLoading, appError]: any = useApi('getApp', !appIds, [teamId, appId])
   const [, editLoading, editError] = useApi('editApp', !!formData, [teamId, appId, renameKeys(formData)])
-
+  const [toggleRes, toggling, toggleError]: any = useApi('toggleApps', !!appIds, [
+    teamId,
+    { ids: appIds, enabled: appEnabled },
+  ])
+  // END HOOKS
+  if (appIds && !toggling) setTimeout(() => setAppState([]))
   const loading = appLoading || editLoading
   const err = appError || editError
   const comp = !loading && (!err || formData || app) && (
-    <App onSubmit={setFormdata} id={appId} {...(formData || app)} teamId={teamId} />
+    <App onSubmit={setFormdata} id={appId} {...(formData || app)} teamId={teamId} setAppState={setAppState} />
   )
   return <PaperLayout comp={comp} loading={loading} />
 }

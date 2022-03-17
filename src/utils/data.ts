@@ -120,8 +120,14 @@ export const renameKeys = (data) => {
   // return Object.assign({}, ...keyValues)
 }
 
-export const getApps = (adminApps, teamApps, teamId) =>
-  (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter((app) => !app.hide)
+export const getApps = (session, teamId) => {
+  const {
+    core: { adminApps, teamApps },
+  }: any = session
+  return (teamId === 'admin' ? adminApps : adminApps.filter((app) => app.isShared).concat(teamApps)).filter(
+    (app) => !app.hide,
+  )
+}
 
 const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
 
@@ -137,10 +143,14 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
     // we know we were given an app from values, so we pluck shortcuts from it to merge later
     ownShortcuts = appOrId.shortcuts || []
   }
-  if (typeof appOrId !== 'string') appId = appOrId.id ?? appOrId.name
+  let app = {}
+  if (typeof appOrId !== 'string') {
+    appId = appOrId.id ?? appOrId.name
+    app = appOrId
+  }
 
   // get the core app
-  const apps = getApps(adminApps, teamApps, teamId)
+  const apps = getApps(session, teamId)
   const coreApp = find(apps, { name: appId })
   const { useHost, logo, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
@@ -167,6 +177,7 @@ export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = f
     : { title: appId, description: '' }
   return {
     ...coreApp,
+    ...app,
     id: appId,
     baseUrl,
     docUrl: schema['x-externalDocsPath'],

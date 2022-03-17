@@ -8,8 +8,7 @@ import DescriptionField from './DescriptionField'
 import { useStyles } from './styles'
 import TitleField from './TitleField'
 
-const isHidden = (element: any): boolean =>
-  element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
+const isHidden = (element: any): boolean => element.content?.props?.uiSchema?.['ui:widget'] === 'hidden'
 
 export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   const { properties, idSchema, schema } = props
@@ -44,13 +43,10 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     // uiSchema['ui:title'] || title || schema.title || (type === 'object' && !schema.properties && sentenceCase(name))
     const displayDescription = uiSchema['ui:description'] || description || schema.description
     if (!(displayTitle || displayDescription)) return
-    // const isOf = hasSomeOf(schema)
-    // const isOf = hasSomeOf(schema)
-    // const oneOf = isOneOf(schema)
     if (skipTitle === undefined) skipTitle = propsToAccordion.includes(uiSchema.title || schema.title || title)
     // eslint-disable-next-line consistent-return
     return (
-      <Grid key={`${idSchema.$id}-header`} item className={skipTitle ? classes.headerSkip : classes.header}>
+      <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
         {displayTitle && !skipTitle && (
           <TitleField
             {...props}
@@ -80,6 +76,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const type = getSchemaType(schema)
     const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
     const hidden = isHidden(o)
+    const isOf = hasSomeOf(schema)
     if (hidden) {
       if (!schema.properties && !isOf) {
         return (
@@ -99,22 +96,20 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         <Grid key={id} item xs={12}>
           <Paper key={id} className={cx(classes.paper, classes.grid)}>
             {(isOf || (type === 'object' && !schema.properties)) && (
-              <Grid key={`${idSchema.$id}-title`} item className={classes.gridIsOf}>
+              <Grid item key={`${idSchema.$id}-title`}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>
             )}
-            <Grid key={`${idSchema.$id}-content`} item>
-              {o.content}
-            </Grid>
+            <Grid key={`${idSchema.$id}-content`}>{o.content}</Grid>
           </Paper>
         </Grid>
       )
     }
 
-    if (isCustomArray || schema.type === 'boolean' || (schema.type === 'string' && schema.enum)) {
+    if (isCustomArray || schema.type === 'boolean') {
       // arays, booleans and enums items will get their own grid row
       return (
-        <Grid key={id} className={classes.grid} item xs={12}>
+        <Grid key={id} className={classes.grid} container>
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
@@ -146,6 +141,9 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
       {fields.map((o: any, idx: number) => {
         if (o.length) {
           return (
+            //   <FormControl fullWidth key={idx} className={classes.container}>
+            //     {o.map(render)}
+            //   </FormControl>
             <Grid key={idx} container className={classes.container}>
               {o.map(render)}
             </Grid>

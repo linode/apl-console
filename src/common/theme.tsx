@@ -34,7 +34,7 @@ export const c = {
 export const textLight = {
   primary: '#333',
   secondary: '#777',
-  disabled: '#ccc',
+  disabled: '#bbb',
 }
 
 export const textDark = {
@@ -165,7 +165,8 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
       MuiFormControl: {
         styleOverrides: {
           root: {
-            marginTop: 8,
+            marginTop: 16,
+            // paddingRight: 8,
           },
         },
       },
@@ -173,6 +174,17 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
         styleOverrides: {
           root: {
             textTransform: 'capitalize',
+          },
+        },
+      },
+      MuiGrid: {
+        styleOverrides: {
+          root: {
+            '&>.MuiGrid-item': {
+              padding: 0,
+              paddingLeft: 0,
+              paddingTop: 0,
+            },
           },
         },
       },
@@ -244,6 +256,13 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
           },
           root: {
             '&.Mui-disabled': { color: p.primary.light },
+          },
+        },
+      },
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            marginRight: 16,
           },
         },
       },

@@ -1,14 +1,29 @@
-import { AppBar, Box, Button, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
+import { PlayCircleOutline } from '@mui/icons-material'
+import {
+  AppBar,
+  Box,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Link,
+  List,
+  ListItem,
+  ListSubheader,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
 import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import Markdown from 'markdown-to-jsx'
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import YAML from 'yaml'
+import Checkbox from './Checkbox'
 import CodeEditor from './CodeEditor'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
@@ -16,12 +31,13 @@ import TabPanel from './TabPanel'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
+    display: 'flex',
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
   },
-  headerText: {
-    display: 'inline-flex',
+  headerText: {},
+  headerButtons: {
+    marginLeft: 'auto',
   },
   imgHolder: {
     paddingTop: theme.spacing(1),
@@ -53,9 +69,11 @@ const useStyles = makeStyles()((theme) => ({
 export default function ({
   id,
   teamId,
+  enabled,
   values: inValues,
   rawValues: inRawValues,
   shortcuts: inShortcuts,
+  setAppState,
   onSubmit,
 }: any): React.ReactElement {
   const location = useLocation()
@@ -68,11 +86,8 @@ export default function ({
   }
   const { classes } = useStyles()
   const session = useSession()
-  const { cluster } = session
-
   const {
     baseUrl,
-    enabled,
     externalUrl,
     hasShortcuts,
     logo,
@@ -96,6 +111,12 @@ export default function ({
 
   const [appSchema, setAppSchema]: [JSONSchema7, CallableFunction] = useState()
   const [appUiSchema, setAppUiSchema] = useState()
+  // END HOOKS
+  const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
+    const enabled = event.target.checked
+    const { deps } = getAppData(session, teamId, id)
+    setAppState([(deps || []).concat([id]), enabled])
+  }
 
   const handleChangeShortcuts = ({ formData, errors }) => {
     setShortcuts(formData)
@@ -209,11 +230,23 @@ export default function ({
             <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
           </Link>
         </Box>
-        {/* <Box className={classes.headerText}> */}
-        <Typography className={classes.headerText} variant='h6'>
-          {title}: {schema['x-short']}
-        </Typography>
-        {/* </Box> */}
+        <Box className={classes.headerText}>
+          <Typography className={classes.headerText} variant='h6'>
+            {title}: {schema['x-short']}
+          </Typography>
+        </Box>
+        <Box className={classes.headerButtons}>
+          <ButtonGroup variant='outlined' color='primary' size='large'>
+            {enabled !== undefined && <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} />}
+            {externalUrl && (
+              <Link href={externalUrl} target='_blank' rel='noopener'>
+                <IconButton color='primary' size='large'>
+                  <PlayCircleOutline color='primary' />
+                </IconButton>
+              </Link>
+            )}
+          </ButtonGroup>
+        </Box>
       </Box>
       {isAdminApps && (
         <>

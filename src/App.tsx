@@ -30,6 +30,8 @@ import Shortcuts from 'pages/Shortcuts'
 import Team from 'pages/Team'
 import Teams from 'pages/Teams'
 import React, { Dispatch, Suspense, useMemo, useState } from 'react'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
@@ -96,39 +98,41 @@ function App() {
               <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
               {err}
               {!err && session && (
-                <Context.Provider value={ctx}>
-                  <Router basename={contextPath}>
-                    <Switch>
-                      {/* ! user && <Route path='/' component={Home} exact /> */}
-                      <Route path='/' component={Dashboard} exact />
-                      <Route path='/apps/:teamId' component={Apps} exact />
-                      <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                      <Route path='/cluster/:clusterId' component={Cluster} exact />
-                      <Route path='/clusters' component={Clusters} exact />
-                      <Route path='/create-team' component={Team} exact />
-                      <Route path='/jobs' component={Jobs} exact />
-                      <Route path='/policies' component={Policies} exact />
-                      <Route path='/policies/:policyId' component={Policy} exact />
-                      <Route path='/services' component={Services} exact />
-                      <Route path='/settings/:settingId' component={Setting} exact />
-                      <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
-                      <Route path='/teams' component={Teams} exact />
-                      <Route path='/teams/:teamId' component={Team} exact />
-                      <Route path='/teams/:teamId/create-job' component={Job} exact />
-                      <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-                      <Route path='/teams/:teamId/create-service' component={Service} exact />
-                      <Route path='/teams/:teamId/jobs' component={Jobs} exact />
-                      <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
-                      <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-                      <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-                      <Route path='/teams/:teamId/services' component={Services} exact />
-                      <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                      <Route path='*'>
-                        <Error error={new HttpErrorBadRequest()} />
-                      </Route>
-                    </Switch>
-                  </Router>
-                </Context.Provider>
+                <DndProvider backend={HTML5Backend}>
+                  <Context.Provider value={ctx}>
+                    <Router basename={contextPath}>
+                      <Switch>
+                        {/* ! user && <Route path='/' component={Home} exact /> */}
+                        <Route path='/' component={Dashboard} exact />
+                        <Route path='/apps/:teamId' component={Apps} exact />
+                        <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
+                        <Route path='/cluster/:clusterId' component={Cluster} exact />
+                        <Route path='/clusters' component={Clusters} exact />
+                        <Route path='/create-team' component={Team} exact />
+                        <Route path='/jobs' component={Jobs} exact />
+                        <Route path='/policies' component={Policies} exact />
+                        <Route path='/policies/:policyId' component={Policy} exact />
+                        <Route path='/services' component={Services} exact />
+                        <Route path='/settings/:settingId' component={Setting} exact />
+                        <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
+                        <Route path='/teams' component={Teams} exact />
+                        <Route path='/teams/:teamId' component={Team} exact />
+                        <Route path='/teams/:teamId/create-job' component={Job} exact />
+                        <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                        <Route path='/teams/:teamId/create-service' component={Service} exact />
+                        <Route path='/teams/:teamId/jobs' component={Jobs} exact />
+                        <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
+                        <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                        <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                        <Route path='/teams/:teamId/services' component={Services} exact />
+                        <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                        <Route path='*'>
+                          <Error error={new HttpErrorBadRequest()} />
+                        </Route>
+                      </Switch>
+                    </Router>
+                  </Context.Provider>
+                </DndProvider>
               )}
             </NotistackProvider>
           </ThemeProvider>

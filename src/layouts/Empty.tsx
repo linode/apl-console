@@ -1,11 +1,11 @@
-import React from 'react'
 import { Container } from '@mui/material'
+import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
 const useStyles = makeStyles()((theme) => ({
   container: {
-    padding: theme.spacing(2),
+    padding: 0,
   },
 }))
 

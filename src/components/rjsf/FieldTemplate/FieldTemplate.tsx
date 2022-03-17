@@ -28,7 +28,7 @@ export default function ({
 }: FieldTemplateProps) {
   // @ts-ignore
   let isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
-  if (schema.type === 'string' && schema.enum) isCustomArray = true
+  if (schema.type === 'string' && schema.enum && schema.default) isCustomArray = true
   const hideDescription = isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
 
   const accordionize = propsToAccordion.includes(label)
