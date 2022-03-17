@@ -50,7 +50,7 @@ export default (operationId: string, active: boolean | string | undefined = true
   } = useSession()
   const checkDirty = (operationId: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;['create', 'edit', 'update', 'delete'].forEach((prefix) => {
+    ;['create', 'edit', 'update', 'delete', 'toggle', 'set'].forEach((prefix) => {
       if (operationId.indexOf(prefix) === 0) setDirty(true)
     })
     if (operationId.indexOf('deploy') === 0) setDirty(false)
