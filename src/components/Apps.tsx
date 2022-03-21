@@ -1,6 +1,6 @@
 import { Grid, Typography } from '@mui/material'
+import { App } from '@redkubes/otomi-api-client-axios'
 import { useSession } from 'common/session-context'
-import useApi from 'hooks/useApi'
 import React, { useState } from 'react'
 import { useDrop } from 'react-dnd'
 import { makeStyles } from 'tss-react/mui'
@@ -35,18 +35,14 @@ const useStyles = makeStyles()((theme) => {
 
 interface Props {
   teamId: string
+  apps: Array<App>
+  loading: boolean
+  setAppState: CallableFunction
 }
 
-export default function ({ teamId }: Props): React.ReactElement {
+export default function ({ teamId, apps, loading, setAppState }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
-  const [appState, setAppState] = useState([])
-  const [appIds, appEnabled] = appState
-  const [apps, loading, appsError]: any = useApi('getApps', !appIds, [teamId])
-  const [editRes, editing, editError]: any = useApi('toggleApps', !!appIds, [
-    teamId,
-    { ids: appIds, enabled: appEnabled },
-  ])
   const [deps, setDeps] = useState(undefined)
   const doDrop =
     (inOut) =>
@@ -77,9 +73,8 @@ export default function ({ teamId }: Props): React.ReactElement {
     [],
   )
   // END HOOKS
-  if (!apps) return <Loader />
+  if (!apps || loading) return <Loader />
   // we visualize drag state for all app dependencies
-  if (appIds && !editing) setTimeout(() => setAppState([]))
   const { cluster }: any = session
   const isAdminApps = teamId === 'admin'
   const sorter = (a, b) => (a.id > b.id ? 1 : -1)

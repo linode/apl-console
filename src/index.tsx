@@ -1,11 +1,11 @@
 import '@fortawesome/fontawesome-free/css/all.css'
+import 'common/i18n'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import 'typeface-comfortaa'
 import 'typeface-roboto'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
-import 'common/i18n'
 
 ReactDOM.render(<App />, document.getElementById('root'))
 

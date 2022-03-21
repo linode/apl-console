@@ -248,90 +248,83 @@ export default function ({
           </ButtonGroup>
         </Box>
       </Box>
-      {isAdminApps && (
-        <>
-          <AppBar position='relative' color='primary'>
-            <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
-              <Tab href='#info' label='Info' value={0} />
-              <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!hasShortcuts} />
-              {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
-              {isAdminApps && (
-                <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />
-              )}
-            </Tabs>
-          </AppBar>
-          <TabPanel value={tab} index={0}>
-            <Box className={classes.panelHeader}>
-              <Box className={classes.content}>
-                <Typography variant='h5'>About {title}</Typography>
-                <Typography className={classes.paragraph} component='p' variant='body2'>
-                  {description}
-                </Typography>
-                <Link href={schema['x-externalDocsPath']}>[...more]</Link>
-              </Box>
-              <Box className={classes.content}>
-                <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
-                <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
-              </Box>
+      <AppBar position='relative' color='primary'>
+        <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
+          <Tab href='#info' label='Info' value={0} />
+          <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!hasShortcuts} />
+          {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
+          {isAdminApps && <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />}
+        </Tabs>
+      </AppBar>
+      <TabPanel value={tab} index={0}>
+        <Box className={classes.panelHeader}>
+          <Box className={classes.content}>
+            <Typography variant='h5'>About {title}</Typography>
+            <Typography className={classes.paragraph} component='p' variant='body2'>
+              {description}
+            </Typography>
+            <Link href={schema['x-externalDocsPath']}>[...more]</Link>
+          </Box>
+          <Box className={classes.content}>
+            <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
+            <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+          </Box>
+        </Box>
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        {shortcutsPanel}
+      </TabPanel>
+      {inValues && (
+        <TabPanel value={tab} index={2}>
+          <Box className={classes.panelHeader}>
+            <Typography variant='h5'>Values</Typography>
+            <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
+          </Box>
+          <Form
+            key='editValues'
+            schema={appSchema}
+            onChange={handleChangeValues}
+            onSubmit={handleSubmit}
+            formData={values}
+            clean={false}
+            hideHelp
+            uiSchema={appUiSchema}
+          >
+            <Box display='flex' flexDirection='row-reverse' m={1}>
+              <Button type='submit' disabled={!valuesDirty} data-cy='button-submit-values'>
+                Submit
+              </Button>
             </Box>
-          </TabPanel>
-          <TabPanel value={tab} index={1}>
-            {shortcutsPanel}
-          </TabPanel>
-          {inValues && (
-            <TabPanel value={tab} index={2}>
-              <Box className={classes.panelHeader}>
-                <Typography variant='h5'>Values</Typography>
-                <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
-              </Box>
-              <Form
-                key='editValues'
-                schema={appSchema}
-                onChange={handleChangeValues}
-                onSubmit={handleSubmit}
-                formData={values}
-                clean={false}
-                hideHelp
-                uiSchema={appUiSchema}
-              >
-                <Box display='flex' flexDirection='row-reverse' m={1}>
-                  <Button type='submit' disabled={!valuesDirty} data-cy='button-submit-values'>
-                    Submit
-                  </Button>
-                </Box>
-              </Form>
-            </TabPanel>
-          )}
-          {inValues && (
-            <TabPanel value={tab} index={3}>
-              <Box className={classes.panelHeader}>
-                <Typography variant='h5'>Raw Values</Typography>
-                <Typography variant='caption'>
-                  Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no
-                  schema support so edit at your own risk!
-                </Typography>
-                <div className={classes.buffer}> </div>
-                <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} setValid={setValid} />
-                <Box display='flex' flexDirection='row-reverse' m={1}>
-                  <Button
-                    color='primary'
-                    variant='contained'
-                    data-cy='button-edit-rawvalues'
-                    onClick={() => {
-                      if (isEdit) handleSubmit()
-                      setIsEdit(!isEdit)
-                    }}
-                    disabled={!valid}
-                  >
-                    {isEdit ? 'Submit' : 'Edit'}
-                  </Button>
-                </Box>
-              </Box>
-            </TabPanel>
-          )}
-        </>
+          </Form>
+        </TabPanel>
       )}
-      {!isAdminApps && <div className={classes.noTabs}>{shortcutsPanel}</div>}
+      {inValues && (
+        <TabPanel value={tab} index={3}>
+          <Box className={classes.panelHeader}>
+            <Typography variant='h5'>Raw Values</Typography>
+            <Typography variant='caption'>
+              Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no schema
+              support so edit at your own risk!
+            </Typography>
+            <div className={classes.buffer}> </div>
+            <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} setValid={setValid} />
+            <Box display='flex' flexDirection='row-reverse' m={1}>
+              <Button
+                color='primary'
+                variant='contained'
+                data-cy='button-edit-rawvalues'
+                onClick={() => {
+                  if (isEdit) handleSubmit()
+                  setIsEdit(!isEdit)
+                }}
+                disabled={!valid}
+              >
+                {isEdit ? 'Submit' : 'Edit'}
+              </Button>
+            </Box>
+          </Box>
+        </TabPanel>
+      )}
     </Box>
   )
 }

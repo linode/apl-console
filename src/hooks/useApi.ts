@@ -39,9 +39,11 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
   return { sess: session, tid: teamId || oboTeamId }
 }
 
+const dirtyBunch = ['create', 'edit', 'update', 'delete', 'toggle', 'set']
+
 export default (operationId: string, active: boolean | string | undefined = true, args: any[] = []): ApiHook => {
-  const signature = JSON.stringify(args)
   let canceled = false
+  const signature = `${operationId}(${args.map((a) => JSON.stringify(a)).join(',')})`
   const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
     user: { isAdmin },
@@ -49,13 +51,11 @@ export default (operationId: string, active: boolean | string | undefined = true
     setGlobalError,
   } = useSession()
   const checkDirty = (operationId: any): void => {
-    // eslint-disable-next-line @typescript-eslint/no-extra-semi
-    ;['create', 'edit', 'update', 'delete', 'toggle', 'set'].forEach((prefix) => {
+    dirtyBunch.forEach((prefix) => {
       if (operationId.indexOf(prefix) === 0) setDirty(true)
     })
     if (operationId.indexOf('deploy') === 0) setDirty(false)
   }
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-extra-semi, @typescript-eslint/no-floating-promises
     ;(async (): Promise<any> => {
@@ -63,6 +63,7 @@ export default (operationId: string, active: boolean | string | undefined = true
         setValue(undefined)
         return
       }
+      console.log('useApi: ', signature)
       try {
         let value
         if (!client[operationId]) {
@@ -101,5 +102,5 @@ export default (operationId: string, active: boolean | string | undefined = true
     }
   }, [operationId, signature, active, isAdmin])
 
-  return [value, loading, error]
+  return [active ? value : undefined, loading, error]
 }
