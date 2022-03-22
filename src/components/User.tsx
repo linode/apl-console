@@ -50,21 +50,23 @@ export default function (): React.ReactElement {
   const { classes } = useStyles()
   const history = useHistory()
   const {
-    cluster,
-    clusters,
+    settings: {
+      cluster,
+      otomi: { additionalClusters = [] },
+    },
     user: { email, teams: userTeams, isAdmin },
     teams: allTeams,
     oboTeamId,
     setOboTeamId,
   } = useSession()
   let teams: any[]
-  const allClusters = [...clusters, cluster]
+  const allClusters = [...additionalClusters, cluster]
   if (isAdmin) {
     teams = (allTeams as any).map(({ id }) => ({
       id,
     }))
   } else {
-    teams = userTeams.map((id) => ({
+    teams = (userTeams as any).map((id) => ({
       id,
     }))
   }
@@ -90,7 +92,7 @@ export default function (): React.ReactElement {
   const handleChangeCluster = (event) => {
     const id = event.target.value
     const [provider, name] = id.split('-')
-    const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
+    const { domainSuffix } = additionalClusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
   return (

@@ -2,7 +2,6 @@ import { useSession } from 'common/session-context'
 import Shortcuts from 'components/Shortcuts'
 import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
-import { find } from 'lodash'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { getAppData } from 'utils/data'
@@ -20,16 +19,7 @@ export default function ({
   useAuthz(teamId)
   const [adminApps, adminAppsloading, adminAppsErr]: any = useApi('getApps', true, ['admin'])
   const [teamApps, teamAppsLoading, teamAppsErr]: any = useApi('getApps', teamId !== 'admin', [teamId])
-  const apps =
-    (teamId !== 'admin' &&
-      !teamAppsLoading &&
-      teamApps &&
-      adminApps &&
-      teamApps.map((a) => {
-        a.enabled = find(adminApps, (t) => t.id === a.id).enabled
-        return a
-      })) ||
-    (teamId === 'admin' && !adminAppsloading && adminApps)
+  const apps = (teamId !== 'admin' && teamApps) || (teamId === 'admin' && adminApps)
   const loading = adminAppsloading || teamAppsLoading
   const err = adminAppsErr || teamAppsErr
   const appsWithShortcuts = (apps || [])

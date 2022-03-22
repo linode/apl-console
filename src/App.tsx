@@ -50,27 +50,43 @@ function App() {
   const [globalError, setGlobalError] = useState()
   const [dirty, setDirty] = useState()
   const [session, sessionLoading, sessionError]: any = useApi('getSession')
+  // by setting refresh props to a random string we trigger refetching of settings and apps:
+  const [refreshSettings, setRefreshSettings] = useState<string>('start')
+  const [refreshApps, setRefreshApps] = useState<string>('start')
+  const [settings, settingsLoading, settingsError]: any = useApi('getSettings', refreshSettings, [
+    ['cluster', 'dns', 'otomi'],
+  ])
+  const [apps, appsLoading, appsError]: any = useApi('getApps', refreshApps, ['admin', ['id', 'enabled']])
+  const appRegistry = (apps || []).reduce((memo, a) => {
+    memo[a.id] = !!a.enabled
+    return memo
+  }, {})
   const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
   const [themeMode, setMode]: [string, Dispatch<any>] = useLocalStorage('themeMode', 'light')
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   const ctx = useMemo(
     () => ({
       ...(session || {}),
+      appRegistry,
       dirty: dirty === undefined ? session?.isDirty : dirty,
       globalError,
       oboTeamId,
+      setRefreshApps,
+      setRefreshSettings,
       setDirty,
       setGlobalError,
       setOboTeamId,
       setThemeMode: setMode,
+      settings,
       themeMode,
     }),
-    [session, dirty, globalError, oboTeamId, themeMode],
+    [appRegistry, dirty, globalError, oboTeamId, session, settings, themeMode],
   )
+  // END HOOKS
   setThemeMode(themeMode)
-  if (sessionLoading || apiDocsLoading) return <Loader />
+  if (appsLoading || sessionLoading || apiDocsLoading || settingsLoading) return <Loader />
   let err
-  if (sessionError || apiDocsError) {
+  if (sessionError || apiDocsError || settingsError) {
     const e = sessionError || apiDocsError
     if (e.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
     else err = <ErrorComponent error={e} />

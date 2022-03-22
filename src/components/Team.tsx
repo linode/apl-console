@@ -1,9 +1,9 @@
 import { Box, Button } from '@mui/material'
-import { isEqual } from 'lodash/lang'
-import React, { useState } from 'react'
 import { Team } from '@redkubes/otomi-api-client-axios'
 import { getTeamSchema, getTeamUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
+import { isEqual } from 'lodash/lang'
+import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 
@@ -14,15 +14,15 @@ interface Props {
 }
 
 export default function ({ onSubmit, onDelete, team }: Props): React.ReactElement {
-  const { cluster, user, oboTeamId } = useSession()
+  const { appRegistry, settings, user, oboTeamId } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
   const crudMethod = team && team.id ? 'update' : 'create'
 
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
 
-  const schema = getTeamSchema(data, cluster)
-  const uiSchema = getTeamUiSchema(user, oboTeamId, crudMethod)
+  const schema = getTeamSchema(data, settings)
+  const uiSchema = getTeamUiSchema(appRegistry, settings, user, oboTeamId, crudMethod)
 
   const handleChange = ({ formData }) => {
     setData(formData)

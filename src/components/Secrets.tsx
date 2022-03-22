@@ -41,7 +41,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
-    cluster,
+    settings: { cluster },
   } = useSession()
   const headCells: HeadCell[] = [
     {

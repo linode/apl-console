@@ -134,8 +134,10 @@ const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).repl
 export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
   const {
     core: { adminApps, teamApps },
-    cluster,
-    isMultitenant,
+    settings: {
+      cluster,
+      otomi: { isMultitenant },
+    },
   }: any = session
   let appId = appOrId
   let ownShortcuts = []

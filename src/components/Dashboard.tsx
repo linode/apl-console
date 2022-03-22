@@ -129,8 +129,10 @@ function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.Rea
 export default function ({ team, services, teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
-    cluster,
-    clusters,
+    settings: {
+      cluster,
+      otomi: { additionalClusters = [] },
+    },
   } = useSession()
   const { classes } = useStyles()
   const isServiceDisabled = isAdmin && !team
@@ -138,7 +140,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
   const panels = [
     {
       name: 'cluster',
-      data: [cluster, ...clusters],
+      data: [cluster, ...additionalClusters],
       icon: <CloudIcon />,
       canCreate: false,
       disabled: false,

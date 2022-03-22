@@ -1,9 +1,9 @@
 import {
-  Cluster,
   Provider,
   SecretDockerRegistryTypeEnum,
   SecretTLSTypeEnum,
   Service,
+  Settings,
   SvcPredeployedServiceTypeEnum,
   User,
 } from '@redkubes/otomi-api-client-axios'
@@ -85,8 +85,14 @@ export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, sc
   })
 }
 
-export const getTeamUiSchema = (user: User, teamId: string, action: string): any => {
-  const uiSchema = {
+export const getTeamUiSchema = (
+  appRegistry: Record<string, any>,
+  settings: Settings,
+  user: User,
+  teamId: string,
+  action: string,
+): any => {
+  const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:readonly': action !== 'create' },
     password: { 'ui:widget': 'hidden' },
@@ -96,6 +102,7 @@ export const getTeamUiSchema = (user: User, teamId: string, action: string): any
       },
     },
   }
+  if (!appRegistry.alertmanager) uiSchema.alerts = { 'ui:widget': 'hidden' }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Team')
   return uiSchema
@@ -153,7 +160,8 @@ export const setSpec = (inSpec): void => {
   spec = inSpec
 }
 
-const addDomainEnumField = (schema: Schema, cluster, dns, formData): void => {
+const addDomainEnumField = (schema: Schema, settings, formData): void => {
+  const { cluster, dns } = settings
   if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
@@ -170,7 +178,7 @@ const addDomainEnumField = (schema: Schema, cluster, dns, formData): void => {
   set(ingressSchema, 'domain.enum', zones)
 }
 
-export const getJobSchema = (cluster: Cluster, dns: any, formData: any, secrets: Array<any>): any => {
+export const getJobSchema = (settings: Settings, formData: any, secrets: Array<any>): any => {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   const jobSpecPath = 'allOf[1].properties'
   const containerSpecPath = 'allOf[2].allOf[2].allOf[1].properties'
@@ -188,10 +196,11 @@ export const getJobSchema = (cluster: Cluster, dns: any, formData: any, secrets:
   return schema
 }
 
-export const getServiceSchema = (cluster: Cluster, dns, formData, secrets: Array<any>): any => {
+export const getServiceSchema = (settings: Settings, formData, secrets: Array<any>): any => {
+  const { cluster, dns } = settings
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
-  addDomainEnumField(schema, cluster, dns, formData)
+  addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress
   const idx = idxMap[formData?.ingress?.type]
   if (idx) {
@@ -252,7 +261,8 @@ export const getSecretSchema = (): any => {
   return schema
 }
 
-export const getTeamSchema = (team, cluster: Cluster): any => {
+export const getTeamSchema = (team, settings: Settings): any => {
+  const { cluster } = settings
   const schema = cloneDeep(spec.components.schemas.Team)
   const { provider } = cluster
   // no drone alerts for teams (yet)
@@ -271,9 +281,11 @@ export const deleteAlertEndpoints = (schema, formData) => {
   })
 }
 
-export const getSettingSchema = (settingId, cluster: Cluster, formData: any): any => {
+export const getSettingSchema = (settingId, settings: Settings, formData: any): any => {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
-  const { provider } = cluster
+  const {
+    cluster: { provider },
+  } = settings
   switch (settingId) {
     case 'home':
       deleteAlertEndpoints(schema, formData)
@@ -301,7 +313,7 @@ export const getSettingSchema = (settingId, cluster: Cluster, formData: any): an
   return schema
 }
 
-export const getSettingUiSchema = (settingId: string, user: User, teamId: string): any => {
+export const getSettingUiSchema = (settings: Settings, settingId: string, user: User, teamId: string): any => {
   const uiSchema = {
     kms: {
       sops: {

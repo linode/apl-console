@@ -1,12 +1,12 @@
 import { Box, Button } from '@mui/material'
-import isEqual from 'lodash/isEqual'
-import React, { useState } from 'react'
-import { Service, Secret } from '@redkubes/otomi-api-client-axios'
-import { unset } from 'lodash'
+import { Secret, Service } from '@redkubes/otomi-api-client-axios'
 import { getServiceSchema, getServiceUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
-import Form from './rjsf/Form'
+import { unset } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
+import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement {
-  const { user, cluster, dns, oboTeamId } = useSession()
+  const { user, settings, oboTeamId } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
@@ -47,7 +47,7 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
         formData.ingress = { type: 'cluster' }
       }
     }
-    const newSchema = getServiceSchema(cluster, dns, formData, secrets)
+    const newSchema = getServiceSchema(settings, formData, secrets)
     setSchema(newSchema)
     setUiSchema(getServiceUiSchema(formData, user, oboTeamId))
     setData(formData)

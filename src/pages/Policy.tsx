@@ -22,12 +22,11 @@ export default function ({
     setFormdata(undefined)
   }, [policyId])
 
-  const [settings, settingsLoading, settingsError]: [Settings, boolean, ApiError] = useApi('getSetting', !!policyId, [
-    'policies',
+  const [settings, settingsLoading, settingsError]: [Settings, boolean, ApiError] = useApi('getSettings', !!policyId, [
+    ['policies'],
   ])
 
-  const [, editLoading, editError] = useApi('editSetting', !!formData, [
-    'policies',
+  const [, editLoading, editError] = useApi('editSettings', !!formData, [
     { policies: renameKeys({ [policyId]: formData }) },
   ])
 
@@ -35,7 +34,7 @@ export default function ({
   const err = settingsError || editError
   let formSettings = settings?.policies
   if (formData) formSettings = { ...formSettings, [policyId]: formData }
-  const comp = !loading && (!err || formData || settings) && (
+  const comp = !loading && (!err || formData || settings?.policies) && (
     <Policy onSubmit={setFormdata} policies={formSettings} policyId={policyId} />
   )
   return <PaperLayout comp={comp} loading={loading} />

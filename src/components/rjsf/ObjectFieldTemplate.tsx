@@ -3,7 +3,7 @@ import { Divider, Grid, Paper } from '@mui/material'
 import { ObjectFieldTemplateProps } from '@rjsf/core'
 import { sentenceCase } from 'change-case'
 import React from 'react'
-import { getSchemaType, hasSomeOf, propsToAccordion } from 'utils/schema'
+import { getSchemaType, hasSomeOf, isOneOf, propsToAccordion } from 'utils/schema'
 import DescriptionField from './DescriptionField'
 import { useStyles } from './styles'
 import TitleField from './TitleField'
@@ -43,7 +43,8 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     // uiSchema['ui:title'] || title || schema.title || (type === 'object' && !schema.properties && sentenceCase(name))
     const displayDescription = uiSchema['ui:description'] || description || schema.description
     if (!(displayTitle || displayDescription)) return
-    if (skipTitle === undefined) skipTitle = propsToAccordion.includes(uiSchema.title || schema.title || title)
+    const isOne = isOneOf(schema)
+    if (skipTitle === undefined) skipTitle = propsToAccordion.includes(uiSchema.title || schema.title || title) || isOne
     // eslint-disable-next-line consistent-return
     return (
       <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
@@ -93,7 +94,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     // object/*Ofs we want to elevate in their own paper
     if ((type === 'object' || isOf) && !isCustomArray) {
       return (
-        <Grid key={id} item xs={12}>
+        <Grid key={id} container>
           <Paper key={id} className={cx(classes.paper, classes.grid)}>
             {(isOf || (type === 'object' && !schema.properties)) && (
               <Grid item key={`${idSchema.$id}-title`}>

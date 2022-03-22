@@ -8,7 +8,7 @@ const useStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
     root: {
-      color: p.text.primary,
+      color: p.mode === 'dark' ? p.text.primary : p.common.white,
       backgroundColor: p.background.default,
       fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
       fontSize: 12,

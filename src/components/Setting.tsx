@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
 import { Box, Button } from '@mui/material'
-import { isEmpty, isEqual } from 'lodash'
 import { getSettingSchema, getSettingUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
+import { isEmpty, isEqual } from 'lodash'
+import React, { useEffect, useState } from 'react'
 import Form from './rjsf/Form'
 
 interface Props {
@@ -11,19 +11,19 @@ interface Props {
   settingId: string
 }
 
-export default function ({ onSubmit, settings, settingId }: Props): React.ReactElement {
-  const [data, setData]: any = useState(settings[settingId])
+export default function ({ onSubmit, settings: formSettings, settingId }: Props): React.ReactElement {
+  const [data, setData]: any = useState(formSettings[settingId])
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
-  const { cluster, oboTeamId, user } = useSession()
+  const { settings, oboTeamId, user } = useSession()
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    const newSchema = getSettingSchema(settingId, cluster, formData)
+    const newSchema = getSettingSchema(settingId, settings, formData)
     setSchema(newSchema)
-    const newUiSchema = getSettingUiSchema(settingId, user, oboTeamId)
+    const newUiSchema = getSettingUiSchema(settings, settingId, user, oboTeamId)
     setUiSchema(newUiSchema)
     setData(formData)
-    const isDirty = !isEqual(formData, settings[settingId] || {})
+    const isDirty = !isEqual(formData, formSettings[settingId] || {})
     setDirty(isDirty)
   }
   const handleSubmit = ({ formData }) => {
@@ -31,9 +31,9 @@ export default function ({ onSubmit, settings, settingId }: Props): React.ReactE
     setDirty(false)
   }
   useEffect(() => {
-    setData(settings[settingId])
+    setData(formSettings[settingId])
     setSchema({})
-  }, [settingId, settings])
+  }, [settingId, formSettings])
 
   if (isEmpty(schema) || !uiSchema) {
     handleChange({ formData: data || {} })

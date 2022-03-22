@@ -15,12 +15,14 @@ export const useStyles = makeStyles()(() => ({
   headerIsOf: {},
   headerSkip: {
     paddingTop: 2,
-    paddingLeft: 4,
+    // paddingLeft: 4,
   },
   box: {},
   grid: {},
   gridIsOf: {},
   paper: {
     padding: 16,
+    marginTop: 16,
+    width: '100%',
   },
 }))

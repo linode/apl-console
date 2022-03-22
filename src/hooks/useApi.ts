@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { DefaultApi } from '@redkubes/otomi-api-client-axios'
+import { Configuration, ConfigurationParameters, DefaultApi } from '@redkubes/otomi-api-client-axios'
 import devTokens from 'common/devtokens'
 import { SessionContext, useSession } from 'common/session-context'
 import useLoadingValue, { LoadingHook } from 'hooks/useLoadingValue'
@@ -8,7 +8,7 @@ import { ApiError, ApiErrorUnauthorized } from 'utils/error'
 import snack from 'utils/snack'
 
 const baseUrl = `${location.protocol}//${location.hostname}:${location.port}/api/v1`
-let options: any
+const options: ConfigurationParameters = {}
 if (location.hostname === 'localhost') {
   // eslint-disable-next-line no-console
   console.info('running in development mode')
@@ -19,14 +19,13 @@ if (location.hostname === 'localhost') {
     token = devTokens.team
   } else token = devTokens.admin
 
-  options = {
-    headers: { Authorization: `Bearer ${token}` },
-  }
+  options.baseOptions = { headers: { Authorization: `Bearer ${token}` } }
 }
 
 export type ApiHook = LoadingHook<any, ApiError>
 
-const client = new DefaultApi(undefined, baseUrl)
+const conf: Configuration = new Configuration(options)
+const client = new DefaultApi(conf, baseUrl)
 
 export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string } => {
   const session: SessionContext = useSession()
@@ -76,7 +75,7 @@ export default (operationId: string, active: any | string | undefined = true, ar
           }
         } else {
           if (canceled) return
-          value = await client[operationId].call(client, ...args, options)
+          value = await client[operationId].call(client, ...args)
           setValue(value.data)
           checkDirty(operationId)
         }
@@ -102,5 +101,5 @@ export default (operationId: string, active: any | string | undefined = true, ar
     }
   }, [operationId, signature, active, isAdmin])
 
-  return [active ? value : undefined, loading, error]
+  return [value, loading, error]
 }

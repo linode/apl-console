@@ -18,10 +18,7 @@ export default function ({
   const [formData, setFormdata] = useState()
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
-  const [adminApp, adminApploading, adminAppErr]: any = useApi('getApp', !appIds, ['admin', appId])
-  const [teamApp, teamAppLoading, teamAppErr]: any = useApi('getApp', !appIds, [teamId, appId])
-  if (teamApp && adminApp) teamApp.enabled = adminApp.enabled
-  const app = teamApp || adminApp
+  const [app, appLoading, appErr]: any = useApi('getApp', !appIds, [teamId, appId])
   const [, editLoading, editError] = useApi('editApp', !!formData, [teamId, appId, renameKeys(formData)])
   const [toggleRes, toggling, toggleError]: any = useApi('toggleApps', !!appIds, [
     teamId,
@@ -29,8 +26,8 @@ export default function ({
   ])
   // END HOOKS
   if (appIds && !toggling) setTimeout(() => setAppState([]))
-  const loading = adminApploading || teamAppLoading || editLoading
-  const err = adminAppErr || teamAppErr || editError
+  const loading = appLoading || editLoading
+  const err = appErr || editError
   const comp = !loading && (!err || formData || app) && (
     <App onSubmit={setFormdata} id={appId} {...(formData || app)} teamId={teamId} setAppState={setAppState} />
   )

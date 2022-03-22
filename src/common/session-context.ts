@@ -1,4 +1,4 @@
-import { Cluster, Dns, Session, Team, User } from '@redkubes/otomi-api-client-axios'
+import { Cluster, Session, Settings, Team, User } from '@redkubes/otomi-api-client-axios'
 import React, { useContext } from 'react'
 import { ApiError } from 'utils/error'
 
@@ -8,30 +8,33 @@ interface Versions {
 }
 
 export interface SessionContext extends Session {
-  ca: string | undefined
-  cluster: Cluster | undefined
-  clusters: Cluster[] | undefined
+  appRegistry?: Record<string, any>
+  ca?: string
+  cluster?: Cluster
+  clusters?: Cluster[]
   core: any
   dirty: boolean
-  dns: Dns | undefined
   globalError?: ApiError
-  isAdmin: boolean | undefined
+  isAdmin: boolean
   oboTeamId?: string
   setDirty?: CallableFunction
   setGlobalError?: CallableFunction
   setOboTeamId?: CallableFunction
-  setSession: CallableFunction | undefined
+  setRefreshApps?: CallableFunction
+  setRefreshSettings?: CallableFunction
+  setSession?: CallableFunction
   setThemeMode?: CallableFunction
-  teams: Array<Team>
-  themeType: string
-  user: User | any
-  versions: Versions | undefined
-  isMultitenant: boolean
+  settings?: Settings
+  teams?: Array<Team>
+  themeType?: string
+  user?: User
+  versions?: Versions
 }
 
 const context = React.createContext<SessionContext>({
+  appRegistry: undefined,
   ca: '',
-  cluster: new Cluster(),
+  cluster: undefined,
   clusters: undefined,
   core: {},
   dirty: undefined,
@@ -42,13 +45,15 @@ const context = React.createContext<SessionContext>({
   setDirty: undefined,
   setGlobalError: undefined,
   setOboTeamId: undefined,
+  setRefreshApps: undefined,
+  setRefreshSettings: undefined,
   setSession: undefined,
   setThemeMode: undefined,
+  settings: undefined,
   teams: undefined,
   themeType: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,
-  isMultitenant: undefined,
 })
 
 export const useSession = (): SessionContext => useContext(context)

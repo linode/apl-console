@@ -21,7 +21,13 @@ const useStyles = makeStyles()((theme) => ({
 }))
 
 export default function (): React.ReactElement {
-  const { ca, cluster, versions, oboTeamId, user } = useSession()
+  const {
+    ca,
+    settings: { cluster },
+    versions,
+    oboTeamId,
+    user,
+  } = useSession()
   const { classes } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const StyledListItem = React.memo(({ className, ...props }: any) => (

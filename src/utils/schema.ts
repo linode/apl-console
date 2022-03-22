@@ -26,7 +26,8 @@ export function unsetStrict(obj: any, path: string) {
 export const isOneOf = (schema: JSONSchema7): boolean =>
   // we must be a oneOf option when one prop exists that has an enum of length 1
   schema.properties &&
-  !!Object.keys(schema.properties).find((prop) => (schema.properties[prop] as JSONSchema7).enum?.length === 1)
+  (!!Object.keys(schema.properties).find((prop) => (schema.properties[prop] as JSONSchema7).enum?.length === 1) ||
+    (schema.properties?.[schema.title] && schema.required?.includes(schema.title)))
 
 export const hasSomeOf = (schema) => {
   // we have to wrap items in allOf with one item passed, to be able to add

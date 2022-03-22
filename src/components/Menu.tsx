@@ -67,7 +67,8 @@ interface Props {
 export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
-    cluster,
+    appRegistry,
+    settings: { cluster, otomi },
     dirty,
     user: { isAdmin },
   } = useSession()
@@ -205,7 +206,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {
                 // TODO: fix this hack with a generic x-provider approach?
-                if (cluster.provider !== Provider.azure && id === 'azure') return undefined
+                if (
+                  (cluster.provider !== Provider.azure && id === 'azure') ||
+                  (['alerts', 'home', 'smtp'].includes(id) && !appRegistry.alertmanager) ||
+                  (id === 'dns' && !otomi.hasExternalDNS)
+                )
+                  return undefined
                 return (
                   <StyledMenuItem
                     key={id}

@@ -178,7 +178,7 @@ export default function ({
               <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} disabled={!isAdminApps} />
             )}
             {enabled !== false && externalUrl && (
-              <IconButton color='primary' size='large' {...playButtonProps} disabled={!isAdminApps}>
+              <IconButton color='primary' size='large' {...playButtonProps}>
                 <PlayIcon color={enabled !== false ? 'primary' : 'disabled'} />
               </IconButton>
             )}

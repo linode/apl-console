@@ -1,12 +1,12 @@
 import { Box, Button } from '@mui/material'
-import isEqual from 'lodash/isEqual'
-import React, { useState } from 'react'
 import { Job, Secret } from '@redkubes/otomi-api-client-axios'
-import { cloneDeep } from 'lodash'
 import { getJobSchema, getJobUiSchema } from 'common/api-spec'
 import { useSession } from 'common/session-context'
-import Form from './rjsf/Form'
+import { cloneDeep } from 'lodash'
+import isEqual from 'lodash/isEqual'
+import React, { useState } from 'react'
 import DeleteButton from './DeleteButton'
+import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
@@ -17,14 +17,14 @@ interface Props {
 }
 
 export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): React.ReactElement {
-  const { user, cluster, dns, oboTeamId } = useSession()
+  const { user, oboTeamId, settings } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(job)
   const [dirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
     const formData = cloneDeep(inData)
-    const newSchema = getJobSchema(cluster, dns, formData, secrets)
+    const newSchema = getJobSchema(settings, formData, secrets)
     setSchema(newSchema)
     setUiSchema(getJobUiSchema(formData, user, oboTeamId))
     setData(formData)

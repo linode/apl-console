@@ -20,12 +20,9 @@ export default function ({
     setFormdata(undefined)
   }, [settingId])
 
-  const [settings, settingsLoading, settingsError]: any = useApi('getAllSettings', settingId)
+  const [settings, settingsLoading, settingsError]: any = useApi('getSettings')
 
-  const [, editLoading, editError] = useApi('editSetting', !!formData, [
-    settingId,
-    { [settingId]: renameKeys(formData) },
-  ])
+  const [, editLoading, editError] = useApi('editSettings', !!formData, [{ [settingId]: renameKeys(formData) }])
 
   const loading = settingsLoading || editLoading
   const err = settingsError || editError

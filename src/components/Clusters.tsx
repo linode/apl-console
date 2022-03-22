@@ -5,8 +5,13 @@ import EnhancedTable, { HeadCell } from './EnhancedTable'
 import MuiLink from './MuiLink'
 
 export default function (): React.ReactElement {
-  const { cluster, clusters } = useSession()
-  const allClusters = [...clusters, cluster]
+  const {
+    settings: {
+      cluster,
+      otomi: { additionalClusters = [] },
+    },
+  } = useSession()
+  const allClusters = [...additionalClusters, cluster]
   const headCells: HeadCell[] = [
     {
       id: 'provider',
