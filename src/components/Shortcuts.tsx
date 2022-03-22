@@ -23,12 +23,13 @@ const getShortcutLink = (app) => {
     shortcut: { path, title, description },
     enabled,
   } = app
+  const href = `${baseUrl}${path}`
   return enabled !== false ? (
-    <MuiLink href={`${baseUrl}${path}`} target='_blank' rel='noopener' label={title} about={description}>
+    <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
       <b>{title}</b>: {description}
     </MuiLink>
   ) : (
-    <Typography variant='body2' color='action.disabled'>
+    <Typography key={href} variant='body2' color='action.disabled'>
       <b>{title}</b>: {description}
     </Typography>
   )

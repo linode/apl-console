@@ -179,7 +179,7 @@ export default function ({
             )}
             {enabled !== false && externalUrl && (
               <IconButton color='primary' size='large' {...playButtonProps} disabled={!isAdminApps}>
-                <PlayIcon />
+                <PlayIcon color={enabled !== false ? 'primary' : 'disabled'} />
               </IconButton>
             )}
           </ButtonGroup>
@@ -238,13 +238,22 @@ export default function ({
             ) : undefined
           }
         >
-          {(shortcuts || []).map((s) => (
-            <ListItem key={s.title}>
-              <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
-                <b>{s.title}</b>: {s.description}
-              </MuiLink>
-            </ListItem>
-          ))}
+          {(shortcuts || []).map((s) => {
+            const href = `${s.baseUrl}${s.path}`
+            return (
+              <ListItem key={s.title}>
+                {enabled !== false ? (
+                  <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
+                    <b>{s.title}</b>: {s.description}
+                  </MuiLink>
+                ) : (
+                  <Typography key={href} variant='body2' color='action.disabled'>
+                    <b>{s.title}</b>: {s.description}
+                  </Typography>
+                )}
+              </ListItem>
+            )
+          })}
           {hasShortcuts && isEdit && (
             <Form
               key='editShortcuts'
@@ -254,7 +263,7 @@ export default function ({
               hideHelp
               clean={false}
               liveValidate
-              disabled={enabled !== false}
+              disabled={enabled === false}
             >
               <div />
             </Form>
