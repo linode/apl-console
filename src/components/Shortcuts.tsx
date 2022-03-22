@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material'
 import { App } from '@redkubes/otomi-api-client-axios'
 import { capitalize } from 'lodash'
 import React from 'react'
@@ -20,11 +21,16 @@ const getShortcutLink = (app) => {
   const {
     baseUrl,
     shortcut: { path, title, description },
+    enabled,
   } = app
-  return (
+  return enabled !== false ? (
     <MuiLink href={`${baseUrl}${path}`} target='_blank' rel='noopener' label={title} about={description}>
       <b>{title}</b>: {description}
     </MuiLink>
+  ) : (
+    <Typography variant='body2' color='action.disabled'>
+      <b>{title}</b>: {description}
+    </Typography>
   )
 }
 

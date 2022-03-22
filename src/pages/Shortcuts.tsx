@@ -2,6 +2,7 @@ import { useSession } from 'common/session-context'
 import Shortcuts from 'components/Shortcuts'
 import useApi, { useAuthz } from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import { find } from 'lodash'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { getAppData } from 'utils/data'
@@ -16,8 +17,21 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const session = useSession()
-  const { tid } = useAuthz(teamId)
-  const [apps, loading, err]: any = useApi('getApps', true, [tid])
+  useAuthz(teamId)
+  const [adminApps, adminAppsloading, adminAppsErr]: any = useApi('getApps', true, ['admin'])
+  const [teamApps, teamAppsLoading, teamAppsErr]: any = useApi('getApps', teamId !== 'admin', [teamId])
+  const apps =
+    (teamId !== 'admin' &&
+      !teamAppsLoading &&
+      teamApps &&
+      adminApps &&
+      teamApps.map((a) => {
+        a.enabled = find(adminApps, (t) => t.id === a.id).enabled
+        return a
+      })) ||
+    (teamId === 'admin' && !adminAppsloading && adminApps)
+  const loading = adminAppsloading || teamAppsLoading
+  const err = adminAppsErr || teamAppsErr
   const appsWithShortcuts = (apps || [])
     .map((app) => getAppData(session, teamId, app, true))
     .filter((a) => a.shortcuts?.length)

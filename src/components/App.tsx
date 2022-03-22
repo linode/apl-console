@@ -178,8 +178,8 @@ export default function ({
               <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} disabled={!isAdminApps} />
             )}
             {enabled !== false && externalUrl && (
-              <IconButton color='primary' size='large' {...playButtonProps}>
-                <PlayIcon color='primary' />
+              <IconButton color='primary' size='large' {...playButtonProps} disabled={!isAdminApps}>
+                <PlayIcon />
               </IconButton>
             )}
           </ButtonGroup>
@@ -254,6 +254,7 @@ export default function ({
               hideHelp
               clean={false}
               liveValidate
+              disabled={enabled !== false}
             >
               <div />
             </Form>

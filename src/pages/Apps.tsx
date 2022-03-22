@@ -24,6 +24,7 @@ export default function ({
     (teamId !== 'admin' &&
       !teamAppsLoading &&
       teamApps &&
+      adminApps &&
       teamApps.map((a) => {
         a.enabled = find(adminApps, (t) => t.id === a.id).enabled
         return a
