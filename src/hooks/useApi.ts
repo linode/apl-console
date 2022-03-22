@@ -41,10 +41,10 @@ export const useAuthz = (teamId?: string): { sess: SessionContext; tid: string }
 
 const dirtyBunch = ['create', 'edit', 'update', 'delete', 'toggle', 'set']
 
-export default (operationId: string, active: boolean | string | undefined = true, args: any[] = []): ApiHook => {
+export default (operationId: string, active: any | string | undefined = true, args: any[] = []): ApiHook => {
   let canceled = false
+  const { error, loading, reset, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const signature = `${operationId}(${args.map((a) => JSON.stringify(a)).join(',')})`
-  const { error, loading, setError, setValue, value } = useLoadingValue<any, ApiError>()
   const {
     user: { isAdmin },
     setDirty,

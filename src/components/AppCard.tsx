@@ -33,7 +33,7 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 
-export default function ({ id, img, teamId, title, enabled, isDragging, deps, setDeps }: any): React.ReactElement {
+export default function ({ deps, enabled, id, img, isDragging, setDeps, teamId, title }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const canDrag = enabled !== undefined
   const [_, dragRef] = useDrag(

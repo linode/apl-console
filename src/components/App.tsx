@@ -1,4 +1,4 @@
-import { PlayCircleOutline } from '@mui/icons-material'
+import { PlayCircleFilled as PlayIcon } from '@mui/icons-material'
 import {
   AppBar,
   Box,
@@ -40,6 +40,7 @@ const useStyles = makeStyles()((theme) => ({
     marginLeft: 'auto',
   },
   imgHolder: {
+    paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
     display: 'inline-flex',
@@ -156,79 +157,15 @@ export default function ({
 
   const isAdminApps = teamId === 'admin'
 
-  const shortcutsPanel = (
-    <>
-      <Box className={classes.panelHeader}>
-        <Typography variant='h5'>Shortcuts</Typography>
-      </Box>
-      {hasShortcuts && defaultShortcuts?.length && (
-        <List
-          subheader={
-            <ListSubheader>
-              <Typography variant='caption'>Provided by Otomi:</Typography>
-            </ListSubheader>
-          }
-        >
-          {(defaultShortcuts || []).map((s) => (
-            <ListItem key={s.title}>
-              <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
-                <b>{s.title}</b>: {s.description}
-              </MuiLink>
-            </ListItem>
-          ))}
-        </List>
-      )}
-      <List
-        subheader={
-          hasShortcuts && defaultShortcuts?.length && shortcuts?.length ? (
-            <ListSubheader>
-              <u>User created:</u>
-            </ListSubheader>
-          ) : undefined
-        }
-      >
-        {(shortcuts || []).map((s) => (
-          <ListItem key={s.title}>
-            <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
-              <b>{s.title}</b>: {s.description}
-            </MuiLink>
-          </ListItem>
-        ))}
-        {hasShortcuts && isEdit && (
-          <Form
-            key='editShortcuts'
-            schema={schema.properties.shortcuts}
-            onChange={handleChangeShortcuts}
-            formData={shortcuts}
-            hideHelp
-            clean={false}
-            liveValidate
-          >
-            <div />
-          </Form>
-        )}
-      </List>
-      <Box display='flex' flexDirection='row-reverse' m={1}>
-        <Button
-          data-cy='button-edit-values'
-          onClick={() => {
-            if (isEdit) handleSubmit()
-            setIsEdit(!isEdit)
-          }}
-          disabled={isEdit && !shortcutsValid}
-        >
-          {isEdit ? 'Submit' : 'Edit'}
-        </Button>
-      </Box>
-    </>
-  )
+  const playButtonProps =
+    enabled !== false && externalUrl
+      ? { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
+      : {}
   return (
     <Box>
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
-          <Link href={externalUrl} target='_blank' rel='noopener'>
-            <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
-          </Link>
+          <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
@@ -237,13 +174,13 @@ export default function ({
         </Box>
         <Box className={classes.headerButtons}>
           <ButtonGroup variant='outlined' color='primary' size='large'>
-            {enabled !== undefined && <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} />}
-            {externalUrl && (
-              <Link href={externalUrl} target='_blank' rel='noopener'>
-                <IconButton color='primary' size='large'>
-                  <PlayCircleOutline color='primary' />
-                </IconButton>
-              </Link>
+            {enabled !== undefined && (
+              <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} disabled={!isAdminApps} />
+            )}
+            {enabled !== false && externalUrl && (
+              <IconButton color='primary' size='large' {...playButtonProps}>
+                <PlayIcon color='primary' />
+              </IconButton>
             )}
           </ButtonGroup>
         </Box>
@@ -272,7 +209,68 @@ export default function ({
         </Box>
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        {shortcutsPanel}
+        <Box className={classes.panelHeader}>
+          <Typography variant='h5'>Shortcuts</Typography>
+        </Box>
+        {hasShortcuts && defaultShortcuts?.length && (
+          <List
+            subheader={
+              <ListSubheader>
+                <Typography variant='caption'>Provided by Otomi:</Typography>
+              </ListSubheader>
+            }
+          >
+            {(defaultShortcuts || []).map((s) => (
+              <ListItem key={s.title}>
+                <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
+                  <b>{s.title}</b>: {s.description}
+                </MuiLink>
+              </ListItem>
+            ))}
+          </List>
+        )}
+        <List
+          subheader={
+            hasShortcuts && defaultShortcuts?.length && shortcuts?.length ? (
+              <ListSubheader>
+                <u>User created:</u>
+              </ListSubheader>
+            ) : undefined
+          }
+        >
+          {(shortcuts || []).map((s) => (
+            <ListItem key={s.title}>
+              <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
+                <b>{s.title}</b>: {s.description}
+              </MuiLink>
+            </ListItem>
+          ))}
+          {hasShortcuts && isEdit && (
+            <Form
+              key='editShortcuts'
+              schema={schema.properties.shortcuts}
+              onChange={handleChangeShortcuts}
+              formData={shortcuts}
+              hideHelp
+              clean={false}
+              liveValidate
+            >
+              <div />
+            </Form>
+          )}
+        </List>
+        <Box display='flex' flexDirection='row-reverse' m={1}>
+          <Button
+            data-cy='button-edit-values'
+            onClick={() => {
+              if (isEdit) handleSubmit()
+              setIsEdit(!isEdit)
+            }}
+            disabled={isEdit && !shortcutsValid}
+          >
+            {isEdit ? 'Submit' : 'Edit'}
+          </Button>
+        </Box>
       </TabPanel>
       {inValues && (
         <TabPanel value={tab} index={2}>

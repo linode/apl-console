@@ -42,7 +42,7 @@ const reducer =
     switch (action.type) {
       case 'error':
         return {
-          // ...state,
+          ...state,
           error: action.error,
           loading: false,
           value: undefined,
@@ -51,13 +51,13 @@ const reducer =
         return defaultState(action.defaultValue)
       case 'value':
         return {
-          // ...state,
+          ...state,
           error: undefined,
           loading: false,
           value: action.value,
         }
       default:
-        return undefined
+        return state
     }
   }
 

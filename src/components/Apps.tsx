@@ -75,7 +75,6 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
   // END HOOKS
   if (!apps || loading) return <Loader />
   // we visualize drag state for all app dependencies
-  const { cluster }: any = session
   const isAdminApps = teamId === 'admin'
   const sorter = (a, b) => (a.id > b.id ? 1 : -1)
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
@@ -83,28 +82,25 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
     items.map((item) => {
-      const { docUrl, enabled, externalUrl, id, logo, schema, deps: coreDeps } = getAppData(session, teamId, item)
+      const { enabled, externalUrl, id, logo, schema, deps: coreDeps } = getAppData(session, teamId, item)
       const isDragging = deps === undefined ? deps : deps.includes(id)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
           <AppCard
-            cluster={cluster}
-            teamId={teamId}
-            id={id}
-            title={schema.title}
-            externalUrl={externalUrl}
-            docUrl={docUrl}
-            img={`/logos/${logo}`}
-            enabled={enabled}
-            hideConfButton={!isAdminApps || !schema.properties?.values}
             deps={coreDeps}
-            setDeps={setDeps}
+            enabled={enabled}
+            externalUrl={externalUrl}
+            id={id}
+            img={`/logos/${logo}`}
             isDragging={isDragging}
+            setDeps={setDeps}
+            teamId={teamId}
+            title={schema.title}
           />
         </Grid>
       )
     })
-  return (
+  return isAdminApps ? (
     <>
       <div className={cx(classes.root, classes.disabled, isOut && classes.out)} ref={dropOut}>
         <Typography sx={{ padding: 2 }}>Disabled apps (drop below to enable)</Typography>
@@ -121,5 +117,11 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
         </div>
       </div>
     </>
+  ) : (
+    <div className={cx(classes.root, classes.enabled, isIn && classes.in)}>
+      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+        {out(enabledApps)}
+      </Grid>
+    </div>
   )
 }

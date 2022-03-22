@@ -27,6 +27,11 @@ interface Props {
 }
 
 const useStyles = makeStyles()((theme) => ({
+  grid: {
+    '&>.MuiGrid-item': {
+      padding: theme.spacing(1),
+    },
+  },
   card: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
@@ -81,7 +86,7 @@ interface DashboardCardProps {
 function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
   const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={6} md={4} className={classes.grid}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
           data-cy={`card-${item.name}`}
@@ -160,7 +165,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
   ]
   const teamName = isAdmin ? 'admin' : team.name
   return (
-    <Grid container spacing={3}>
+    <Grid container className={classes.grid}>
       <Grid item xs={12}>
         <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
           <Trans i18nKey={k.WELCOME_DASHBOARD}>
