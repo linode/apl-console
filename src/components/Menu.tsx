@@ -67,7 +67,7 @@ interface Props {
 export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
-    appRegistry,
+    appsEnabled,
     settings: { cluster, otomi },
     dirty,
     user: { isAdmin },
@@ -164,7 +164,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemText primary='Clusters' />
       </StyledMenuItem>
       {isAdmin && (
-        <StyledMenuItem to='/policies' selected={pathname.indexOf(`/policies`) === 0} data-cy='menu-item-policies'>
+        <StyledMenuItem
+          to='/policies'
+          selected={pathname.indexOf(`/policies`) === 0}
+          data-cy='menu-item-policies'
+          disabled={!appsEnabled.gatekeeper}
+        >
           <ListItemIcon>
             <PolicyIcon />
           </ListItemIcon>
@@ -205,19 +210,20 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {
-                // TODO: fix this hack with a generic x-provider approach?
+                if (cluster.provider !== Provider.azure && id === 'azure') return undefined
+                let disabled = false
                 if (
-                  (cluster.provider !== Provider.azure && id === 'azure') ||
-                  (['alerts', 'home', 'smtp'].includes(id) && !appRegistry.alertmanager) ||
+                  (['alerts', 'home', 'smtp'].includes(id) && !appsEnabled.alertmanager) ||
                   (id === 'dns' && !otomi.hasExternalDNS)
                 )
-                  return undefined
+                  disabled = true
                 return (
                   <StyledMenuItem
                     key={id}
                     to={`/settings/${id}`}
                     selected={pathname === `/settings/${id}`}
                     data-cy={`menu-item-${id}`}
+                    disabled={disabled}
                   >
                     <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
                     <ListItemText primary={settingIds[id][0]} />
@@ -283,6 +289,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             to={`/teams/${teamId}/secrets`}
             selected={pathname.indexOf(`/teams/${teamId}/secrets`) === 0}
             data-cy='menu-item-team-secrets'
+            disabled={!appsEnabled.vault}
           >
             <ListItemIcon>
               <LockIcon />

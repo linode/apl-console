@@ -1,8 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react'
+import { Typography } from '@mui/material'
 import { Policies } from '@redkubes/otomi-api-client-axios'
-import { map } from 'lodash'
 import { getPolicySchema } from 'common/api-spec'
+import { useSession } from 'common/session-context'
+import { map } from 'lodash'
+import React from 'react'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
@@ -21,11 +23,26 @@ const getPolicyLink = (): CallableFunction =>
     )
   }
 
+interface EnabledProps {
+  enabled: boolean
+}
+const getEnabled = (gatekeeperEnabled) =>
+  function ({ enabled }: EnabledProps) {
+    const str = enabled ? 'yes' : 'no'
+    return gatekeeperEnabled ? (
+      str
+    ) : (
+      <Typography variant='body2' color='action.disabled'>
+        {str}
+      </Typography>
+    )
+  }
 interface Props {
   policies: Policies
 }
 
 export default function ({ policies }: Props): React.ReactElement {
+  const { appsEnabled } = useSession()
   const policyEntries = map(policies, (pol, policyId) => ({ policyId, ...pol }))
   const headCells: HeadCell[] = [
     {
@@ -36,7 +53,7 @@ export default function ({ policies }: Props): React.ReactElement {
     {
       id: 'enabled',
       label: 'Enabled',
-      renderer: (pol) => (pol.enabled ? 'yes' : 'no'),
+      renderer: getEnabled(appsEnabled.gatekeeper),
     },
   ]
   return (

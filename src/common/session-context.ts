@@ -8,7 +8,7 @@ interface Versions {
 }
 
 export interface SessionContext extends Session {
-  appRegistry?: Record<string, any>
+  appsEnabled?: Record<string, any>
   ca?: string
   cluster?: Cluster
   clusters?: Cluster[]
@@ -32,7 +32,7 @@ export interface SessionContext extends Session {
 }
 
 const context = React.createContext<SessionContext>({
-  appRegistry: undefined,
+  appsEnabled: undefined,
   ca: '',
   cluster: undefined,
   clusters: undefined,

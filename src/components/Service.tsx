@@ -17,7 +17,7 @@ interface Props {
 }
 
 export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement {
-  const { user, settings, oboTeamId } = useSession()
+  const { appsEnabled, oboTeamId, settings, user } = useSession()
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
@@ -47,9 +47,9 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
         formData.ingress = { type: 'cluster' }
       }
     }
-    const newSchema = getServiceSchema(settings, formData, secrets)
+    const newSchema = getServiceSchema(appsEnabled, settings, formData, secrets)
     setSchema(newSchema)
-    setUiSchema(getServiceUiSchema(formData, user, oboTeamId))
+    setUiSchema(getServiceUiSchema(appsEnabled, settings, formData, user, oboTeamId))
     setData(formData)
     setDirty(!isEqual(formData, service))
   }

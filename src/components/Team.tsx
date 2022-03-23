@@ -14,15 +14,15 @@ interface Props {
 }
 
 export default function ({ onSubmit, onDelete, team }: Props): React.ReactElement {
-  const { appRegistry, settings, user, oboTeamId } = useSession()
+  const { appsEnabled, settings, user, oboTeamId } = useSession()
   // / we need to set an empty dummy if no team was given, so that we can do a dirty check
   const crudMethod = team && team.id ? 'update' : 'create'
 
   const [data, setData]: any = useState(team)
   const [dirty, setDirty] = useState(false)
 
-  const schema = getTeamSchema(data, settings)
-  const uiSchema = getTeamUiSchema(appRegistry, settings, user, oboTeamId, crudMethod)
+  const schema = getTeamSchema(appsEnabled, settings, data)
+  const uiSchema = getTeamUiSchema(appsEnabled, settings, user, oboTeamId, crudMethod)
 
   const handleChange = ({ formData }) => {
     setData(formData)

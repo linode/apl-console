@@ -39,9 +39,10 @@ interface Props {
 
 export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
-    user: { isAdmin },
+    appsEnabled,
     oboTeamId,
     settings: { cluster },
+    user: { isAdmin },
   } = useSession()
   const headCells: HeadCell[] = [
     {
@@ -76,7 +77,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
             component={Link}
             to={isAdmin && !oboTeamId ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
             startIcon={<AddCircleIcon />}
-            disabled={!isAdmin && !oboTeamId}
+            disabled={(!isAdmin && !oboTeamId) || !appsEnabled.vault}
             data-cy='button-create-secret'
           >
             Create secret

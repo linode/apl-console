@@ -57,7 +57,7 @@ function App() {
     ['cluster', 'dns', 'otomi'],
   ])
   const [apps, appsLoading, appsError]: any = useApi('getApps', refreshApps, ['admin', ['id', 'enabled']])
-  const appRegistry = (apps || []).reduce((memo, a) => {
+  const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
   }, {})
@@ -67,7 +67,7 @@ function App() {
   const ctx = useMemo(
     () => ({
       ...(session || {}),
-      appRegistry,
+      appsEnabled,
       dirty: dirty === undefined ? session?.isDirty : dirty,
       globalError,
       oboTeamId,
@@ -80,7 +80,7 @@ function App() {
       settings,
       themeMode,
     }),
-    [appRegistry, dirty, globalError, oboTeamId, session, settings, themeMode],
+    [appsEnabled, dirty, globalError, oboTeamId, session, settings, themeMode],
   )
   // END HOOKS
   setThemeMode(themeMode)

@@ -5,6 +5,7 @@ import {
   Service,
   Settings,
   SvcPredeployedServiceTypeEnum,
+  Team,
   User,
 } from '@redkubes/otomi-api-client-axios'
 import { pascalCase } from 'change-case'
@@ -85,77 +86,6 @@ export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, sc
   })
 }
 
-export const getTeamUiSchema = (
-  appRegistry: Record<string, any>,
-  settings: Settings,
-  user: User,
-  teamId: string,
-  action: string,
-): any => {
-  const uiSchema: any = {
-    id: { 'ui:widget': 'hidden' },
-    name: { 'ui:readonly': action !== 'create' },
-    password: { 'ui:widget': 'hidden' },
-    alerts: {
-      receivers: {
-        type: { 'ui:widget': 'hidden' },
-      },
-    },
-  }
-  if (!appRegistry.alertmanager) uiSchema.alerts = { 'ui:widget': 'hidden' }
-
-  applyAclToUiSchema(uiSchema, user, teamId, 'Team')
-  return uiSchema
-}
-
-export const getJobUiSchema = (formData, user: User, teamId: string): any => {
-  const uiSchema = {
-    ...jobSpecUiSchema,
-    id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
-    teamId: { 'ui:widget': 'hidden' },
-    init: { 'ui:field': 'collapse', ...jobSpecUiSchema },
-  }
-
-  applyAclToUiSchema(uiSchema, user, teamId, 'Job')
-
-  return uiSchema
-}
-
-export const getServiceUiSchema = (formData: Service, user: User, teamId: string): any => {
-  const ing = formData?.ingress as any
-  const uiSchema = {
-    id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
-    teamId: { 'ui:widget': 'hidden' },
-    ingress: {
-      domain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      // @ts-ignore
-      certArn: { 'ui:readonly': formData.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployedServiceTypeEnum.svcPredeployed },
-    },
-    ksvc: {
-      ...podSpecUiSchema,
-    },
-  }
-
-  applyAclToUiSchema(uiSchema, user, teamId, 'Service')
-
-  return uiSchema
-}
-
-export const getSecretUiSchema = (user: User, teamId: string): any => {
-  const uiSchema = {
-    id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
-  }
-
-  applyAclToUiSchema(uiSchema, user, teamId, 'Secret')
-
-  return uiSchema
-}
-
 export const setSpec = (inSpec): void => {
   spec = inSpec
 }
@@ -196,8 +126,27 @@ export const getJobSchema = (settings: Settings, formData: any, secrets: Array<a
   return schema
 }
 
-export const getServiceSchema = (settings: Settings, formData, secrets: Array<any>): any => {
-  const { cluster, dns } = settings
+export const getJobUiSchema = (formData, user: User, teamId: string): any => {
+  const uiSchema = {
+    ...jobSpecUiSchema,
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
+    teamId: { 'ui:widget': 'hidden' },
+    init: { 'ui:field': 'collapse', ...jobSpecUiSchema },
+  }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Job')
+
+  return uiSchema
+}
+
+export const getServiceSchema = (
+  appsEnabled: Record<string, any>,
+  settings: Settings,
+  formData,
+  secrets: Array<any>,
+): any => {
+  const { cluster, otomi } = settings
   const schema: Schema = cloneDeep(spec.components.schemas.Service)
   const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   addDomainEnumField(schema, settings, formData)
@@ -237,34 +186,51 @@ export const getServiceSchema = (settings: Settings, formData, secrets: Array<an
       unset(ingressSchema, 'hasCert')
     }
   }
+  if (!appsEnabled.knative) schema.properties.ksvc.oneOf.splice(2)
   // set the Secrets enum with items to choose from
-  setSecretsEnum(get(schema, ksvcSchemaPath), secrets)
+  else setSecretsEnum(get(schema, ksvcSchemaPath), secrets)
 
   return schema
 }
 
-export const setSecretsEnum = (schema, secrets) => {
-  if (secrets.length) {
-    const secretNames = secrets
-      .filter((s) => s.secret.type !== SecretDockerRegistryTypeEnum.docker_registry)
-      .map((s) => s.name)
-    set(schema, `secrets.items.enum`, secretNames)
-    set(schema, `secretMounts.items.properties.name.enum`, secretNames)
-  } else {
-    set(schema, `secrets.items.readOnly`, true)
-    set(schema, `secretMounts.items.readOnly`, true)
+export const getServiceUiSchema = (
+  appsEnabled: Record<string, any>,
+  { otomi }: Settings,
+  formData: Service,
+  user: User,
+  teamId: string,
+): any => {
+  const ing = formData?.ingress as any
+  const uiSchema: any = {
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
+    teamId: { 'ui:widget': 'hidden' },
+    ingress: {
+      domain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      // @ts-ignore
+      certArn: { 'ui:readonly': formData.ingress?.certSelect },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployedServiceTypeEnum.svcPredeployed },
+    },
+    ksvc: {
+      ...podSpecUiSchema,
+    },
   }
+  // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
+  // So we remove the item from the schema instead (see getServiceSchema above)
+  // if (!appsEnabled.alertmanager || !otomi.isMultitenant) uiSchema.ksvc = { 'ui:enumDisabled': [2] }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Service')
+
+  return uiSchema
 }
 
-export const getSecretSchema = (): any => {
-  const schema = cloneDeep(spec.components.schemas.Secret)
-  return schema
-}
-
-export const getTeamSchema = (team, settings: Settings): any => {
-  const { cluster } = settings
+export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settings, team: Team): any => {
+  const {
+    cluster: { provider },
+    otomi,
+  } = settings
   const schema = cloneDeep(spec.components.schemas.Team)
-  const { provider } = cluster
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
@@ -272,7 +238,32 @@ export const getTeamSchema = (team, settings: Settings): any => {
   return schema
 }
 
-export const getTeamSelfServiceSchema = (): any => spec.components.schemas.TeamSelfService
+export const getTeamUiSchema = (
+  appsEnabled: Record<string, any>,
+  { otomi }: Settings,
+  user: User,
+  teamId: string,
+  action: string,
+): any => {
+  const uiSchema: any = {
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': action !== 'create' },
+    password: { 'ui:widget': 'hidden' },
+    alerts: {
+      receivers: {
+        type: { 'ui:widget': 'hidden' },
+      },
+    },
+  }
+  if (!appsEnabled.alertmanager || !otomi.isMultitenant) {
+    uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
+    uiSchema.alerts['ui:disabled'] = true
+    uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
+  }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Team')
+  return uiSchema
+}
 
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
@@ -327,6 +318,35 @@ export const getSettingUiSchema = (settings: Settings, settingId: string, user: 
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}
+}
+
+export const setSecretsEnum = (schema, secrets) => {
+  if (secrets.length) {
+    const secretNames = secrets
+      .filter((s) => s.secret.type !== SecretDockerRegistryTypeEnum.docker_registry)
+      .map((s) => s.name)
+    set(schema, `secrets.items.enum`, secretNames)
+    set(schema, `secretMounts.items.properties.name.enum`, secretNames)
+  } else {
+    set(schema, `secrets.items.readOnly`, true)
+    set(schema, `secretMounts.items.readOnly`, true)
+  }
+}
+
+export const getSecretSchema = (): any => {
+  const schema = cloneDeep(spec.components.schemas.Secret)
+  return schema
+}
+
+export const getSecretUiSchema = (user: User, teamId: string): any => {
+  const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
+    name: { 'ui:autofocus': true },
+  }
+
+  applyAclToUiSchema(uiSchema, user, teamId, 'Secret')
+
+  return uiSchema
 }
 
 export const getPolicySchema = (policyId): any => {
