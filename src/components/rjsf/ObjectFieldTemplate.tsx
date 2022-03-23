@@ -38,10 +38,15 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const docUrl =
       schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
     // we may get the title from the following:
+    // const displayTitle = title
     const displayTitle =
-      uiSchema.title || schema.title || title || (type === 'object' && !schema.properties && sentenceCase(name))
-    // uiSchema['ui:title'] || title || schema.title || (type === 'object' && !schema.properties && sentenceCase(name))
-    const displayDescription = uiSchema['ui:description'] || description || schema.description
+      uiSchema['ui:title'] ||
+      uiSchema['ui:options']?.title ||
+      schema.title ||
+      title ||
+      (type === 'object' && !schema.properties && sentenceCase(name))
+    const displayDescription =
+      uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
     const isOne = isOneOf(schema)
     if (skipTitle === undefined) skipTitle = propsToAccordion.includes(uiSchema.title || schema.title || title) || isOne

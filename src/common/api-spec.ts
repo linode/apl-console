@@ -232,12 +232,15 @@ export const getServiceUiSchema = (
 export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settings, team: Team): any => {
   const {
     cluster: { provider },
+    otomi,
   } = settings
   const schema = cloneDeep(spec.components.schemas.Team)
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
-  if (provider !== Provider.azure || !appsEnabled.grafana) unset(schema, 'properties.azureMonitor')
+  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
+  if (!appsEnabled.grafana || !otomi.isMultitenant)
+    set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   return schema
 }
 
@@ -263,6 +266,7 @@ export const getTeamUiSchema = (
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
+  if (!appsEnabled.grafana || !otomi.isMultitenant) uiSchema.azureMonitor = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'Team')
   return uiSchema
