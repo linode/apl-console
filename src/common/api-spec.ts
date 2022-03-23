@@ -239,7 +239,7 @@ export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settin
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
-  if (!appsEnabled.grafana || !otomi.isMultitenant)
+  else if (!appsEnabled.grafana || !otomi.isMultitenant)
     set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   return schema
 }
