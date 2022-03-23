@@ -232,13 +232,12 @@ export const getServiceUiSchema = (
 export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settings, team: Team): any => {
   const {
     cluster: { provider },
-    otomi,
   } = settings
   const schema = cloneDeep(spec.components.schemas.Team)
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
-  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
+  if (provider !== Provider.azure || !appsEnabled.grafana) unset(schema, 'properties.azureMonitor')
   return schema
 }
 
