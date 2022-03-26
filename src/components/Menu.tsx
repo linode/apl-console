@@ -70,6 +70,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     appsEnabled,
     settings: { cluster, otomi },
     isDirty,
+    setDirty,
     user: { isAdmin },
   } = useSession()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
@@ -95,6 +96,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       if (errorDeploy) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
+      setDirty(false)
     }
   }
 

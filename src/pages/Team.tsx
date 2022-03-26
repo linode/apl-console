@@ -14,7 +14,7 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const { setDirty } = useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const { data, isLoading, error } = useGetTeamQuery({ teamId }, { skip: !teamId })
@@ -26,10 +26,12 @@ export default function ({
     if (teamId) update({ teamId, body: formData })
     else create({ body: formData })
     setFormData(undefined)
+    setDirty(true)
   }
   if (deleteId) {
     del({ teamId })
     setDeleteId()
+    setDirty(true)
   }
   if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to='/teams' />
   const team = formData || data

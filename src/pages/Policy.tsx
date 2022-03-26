@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Policy from 'components/Policy'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'store/otomi'
@@ -14,16 +15,19 @@ export default function ({
     params: { policyId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const { setDirty } = useSession()
   const [formData, setFormData] = useState()
-
   useEffect(() => {
     setFormData(undefined)
   }, [policyId])
-
   const { data: settings, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })
   const [editSettings] = useEditSettingsMutation()
   // END HOOKS
-  if (formData) editSettings({ body: { policies: { [policyId]: formData as any } } })
+  if (formData) {
+    editSettings({ body: { policies: { [policyId]: formData as any } } })
+    setFormData(undefined)
+    setDirty(true)
+  }
   let policies = settings?.policies
   if (formData) policies = { ...policies, [policyId]: formData }
   const comp = !(isLoading || error) && policies && (

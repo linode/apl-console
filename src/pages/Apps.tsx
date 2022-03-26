@@ -15,7 +15,7 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchAppsEnabled } = useAuthzSession(teamId)
+  const { refetchAppsEnabled, setDirty } = useAuthzSession(teamId)
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
@@ -24,6 +24,7 @@ export default function ({
   if (appIds) {
     toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     setAppState([])
+    setDirty(true)
   }
   if (toggleLoading) {
     // we wish to refetch settings kept in the session for the UI state

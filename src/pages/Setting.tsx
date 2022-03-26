@@ -15,7 +15,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormData] = useState()
-  const { settings: sessSettings, refetchSettings } = useSession()
+  const { settings: sessSettings, refetchSettings, setDirty } = useSession()
   useEffect(() => {
     setFormData(undefined)
   }, [settingId])
@@ -25,6 +25,7 @@ export default function ({
   if (formData) {
     edit({ body: { [settingId]: formData as any } })
     setFormData(undefined)
+    setDirty(true)
   }
   if (editLoading) {
     refetch()

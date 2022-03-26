@@ -22,7 +22,7 @@ export default function ({
     params: { teamId, jobId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const { setDirty } = useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const { data, isLoading, error } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
@@ -35,6 +35,7 @@ export default function ({
     if (jobId) update({ teamId, jobId, body: formData })
     else create({ teamId, body: formData })
     setFormData(undefined)
+    setDirty(true)
   }
   if (deleteId) {
     del({ teamId, jobId })

@@ -21,7 +21,7 @@ export default function ({
     params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const { setDirty } = useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
   const { data, isLoading, error } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
@@ -34,10 +34,12 @@ export default function ({
     if (serviceId) update({ teamId, serviceId, body: formData })
     else create({ teamId, body: formData })
     setFormData(undefined)
+    setDirty(true)
   }
   if (deleteId) {
     del({ teamId, serviceId })
     setDeleteId()
+    setDirty(true)
   }
   if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/services`} />
   const loading = isLoading || isLoadingSecrets
