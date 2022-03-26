@@ -20,13 +20,13 @@ export default function ({
     setFormData(undefined)
   }, [settingId])
   const { data, isLoading, error, refetch } = useGetSettingsQuery({ ids: [settingId] })
-  const [edit, { isSuccess: editOk }] = useEditSettingsMutation()
+  const [edit, { isLoading: editLoading, isSuccess: editOk }] = useEditSettingsMutation()
   // END HOOKS
   if (formData) {
     edit({ body: { [settingId]: formData as any } })
     setFormData(undefined)
   }
-  if (editOk) {
+  if (editLoading) {
     refetch()
     // we wish to refetch settings kept in the session for the UI state, but only if we have edited one of them
     if (Object.keys(sessSettings).includes(settingId)) setTimeout(refetchSettings)
