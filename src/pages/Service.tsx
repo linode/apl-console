@@ -34,12 +34,10 @@ export default function ({
     if (serviceId) update({ teamId, serviceId, body: formData })
     else create({ teamId, body: formData })
     setFormData(undefined)
-    setDirty(true)
   }
   if (deleteId) {
     del({ teamId, serviceId })
     setDeleteId()
-    setDirty(true)
   }
   if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/services`} />
   const loading = isLoading || isLoadingSecrets

@@ -49,6 +49,8 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
     ({ name }) => {
       console.log(`drop ${inOut ? 'in' : 'out'} app: ${name}`)
       const { deps } = getAppData(session, teamId, name)
+      // we only allow turning on
+      if (!inOut || session.appsEnabled[name]) return
       setAppState([(deps || []).concat([name]), inOut])
       setDeps(undefined)
     }
@@ -102,19 +104,17 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
     })
   return isAdminApps ? (
     <>
-      <div className={cx(classes.root, classes.disabled, isOut && classes.out)} ref={dropOut}>
+      <div className={cx(classes.root, classes.disabled, isOut && classes.out)}>
         <Typography sx={{ padding: 2 }}>Disabled apps (drop below to enable)</Typography>
         <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
           {out(disabledApps)}
         </Grid>
       </div>
-      <div ref={dropIn}>
-        <div className={cx(classes.root, classes.enabled, isIn && classes.in)}>
-          <Typography sx={{ padding: 2 }}>Enabled apps (drop above to disable)</Typography>
-          <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-            {out(enabledApps)}
-          </Grid>
-        </div>
+      <div className={cx(classes.root, classes.enabled, isIn && classes.in)} ref={dropIn}>
+        <Typography sx={{ padding: 2 }}>Enabled apps</Typography>
+        <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+          {out(enabledApps)}
+        </Grid>
       </div>
     </>
   ) : (

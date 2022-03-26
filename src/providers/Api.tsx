@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { configureStore, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
+import { AnyAction, configureStore, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
 import React, { useContext, useMemo, useState } from 'react'
 import { Provider } from 'react-redux'
 import { otomiApi } from 'store/otomi'
@@ -23,17 +23,28 @@ interface Props {
 }
 
 export const getErrorMiddleware =
-  (setGlobalError): Middleware =>
+  (setGlobalError, setDirty): Middleware =>
   (api: MiddlewareAPI) =>
   (next) =>
-  (action: any) => {
-    const { error, payload } = action
-    if (error && payload) {
+  (action: AnyAction) => {
+    const { error, payload, meta } = action
+    if (!error) {
+      if (meta) {
+        const {
+          arg: { type, endpointName },
+          requestStatus,
+        } = meta
+        // dirty logic: every MUTATION we deem to make state dirty
+        if (type === 'mutation' && requestStatus === 'fulfilled') setDirty(true)
+        // after we processed a successful deploy QUERY we reset dirty state
+        if (endpointName === 'deploy' && requestStatus === 'fulfilled') setDirty(false)
+      }
+    } else if (payload) {
       const {
         data: { message: err },
         status,
       } = payload
-      console.error('We got a rejected action: ', payload)
+      console.error('We got a rejected action with payload: ', payload)
       if (location.hostname === 'localhost')
         snack.error(`Api Error[${status}] calling '${action.meta?.arg?.endpointName}': ${err}`)
       setGlobalError(err)
@@ -43,10 +54,11 @@ export const getErrorMiddleware =
 
 export default function ApiProvider({ children, ...other }: Props): React.ReactElement {
   const [globalError, setGlobalError] = useState()
+  const [isDirty, setDirty] = useState()
   const store = configureStore({
     reducer: { [otomiApi.reducerPath]: otomiApi.reducer },
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware().concat(otomiApi.middleware, getErrorMiddleware(setGlobalError)),
+      getDefaultMiddleware().concat(otomiApi.middleware, getErrorMiddleware(setGlobalError, setDirty)),
   })
   const ctx = useMemo(
     () => ({

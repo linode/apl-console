@@ -17,7 +17,7 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchAppsEnabled, setDirty } = useSession()
+  const { refetchAppsEnabled } = useSession()
   const [formData, setFormData] = useState()
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
@@ -28,12 +28,10 @@ export default function ({
   if (formData) {
     edit({ teamId, appId, body: renameKeys(formData) })
     setFormData(undefined)
-    setDirty(true)
   }
   if (appIds) {
     toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     setAppState([])
-    setDirty(true)
   }
   if (editLoading || toggleLoading) {
     setTimeout(refetch)
