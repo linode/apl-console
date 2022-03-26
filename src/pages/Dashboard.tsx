@@ -1,27 +1,32 @@
 /* eslint-disable no-prototype-builtins */
-import { Team } from '@redkubes/otomi-api-client-axios'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Dashboard from 'components/Dashboard'
-import useApi, { useAuthz } from 'hooks/useApi'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import find from 'lodash/find'
 import React from 'react'
+import { useGetAllServicesQuery, useGetTeamServicesQuery, useGetTeamsQuery } from 'store/otomi'
 
 export default function (): React.ReactElement {
   const {
-    sess: {
-      user: { isAdmin },
-    },
-    tid,
-  } = useAuthz()
-  const [services, servicesLoading, servicesError]: any = useApi(
-    isAdmin ? 'getAllServices' : 'getTeamServices',
-    true,
-    isAdmin ? undefined : [tid],
-  )
-  const [teams, teamsLoading, teamsError]: any = useApi('getTeams')
-  const team: Team = !(teamsLoading || teamsError) && find(teams, { id: tid })
-  const err = servicesError || teamsError
-  const loading = servicesLoading || teamsLoading
-  const comp = !(err || loading) && <Dashboard services={services} team={team} teams={teams} />
+    user: { isAdmin },
+    oboTeamId: tid,
+  } = useAuthzSession()
+  const {
+    data: allServices,
+    error: errorAllServices,
+    isFetching: isFetchingAllServices,
+  } = useGetAllServicesQuery(!isAdmin ? skipToken : undefined)
+  const {
+    data: teamServices,
+    error: errorTeamServices,
+    isFetching: isFetchingTeamServices,
+  } = useGetTeamServicesQuery(isAdmin ? skipToken : undefined)
+  const { data: teams, error: errorTeams, isLoading: isLoadingTeams } = useGetTeamsQuery()
+  const team = !(isLoadingTeams || errorTeams) && find(teams, { id: tid })
+  const err = errorAllServices || errorTeamServices || errorTeams
+  const loading = isFetchingAllServices || isFetchingTeamServices || isLoadingTeams
+  const services = isAdmin ? allServices : teamServices
+  const comp = !(err || loading) && services && <Dashboard services={services} team={team} teams={teams} />
   return <PaperLayout loading={loading} comp={comp} />
 }

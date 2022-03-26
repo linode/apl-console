@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Box, Button } from '@mui/material'
-import { Service, Team } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { GetAllServicesApiResponse, GetTeamApiResponse, GetTeamServicesApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
@@ -35,17 +35,16 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
 }
 
 interface Props {
-  services: Service[]
-  team?: Team
+  services: GetAllServicesApiResponse | GetTeamServicesApiResponse
+  teamId?: string
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default function ({ services, team }: Props): React.ReactElement {
+export default function ({ services, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const showTeam = !team
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -69,16 +68,15 @@ export default function ({ services, team }: Props): React.ReactElement {
       component: MuiLink,
     },
   ]
-  if (showTeam) {
+  if (!teamId) {
     headCells.push({
       id: 'teamId',
       label: 'Team',
     })
   }
-
   return (
     <>
-      <h1 data-cy='h1-services-page'>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
+      <h1 data-cy='h1-services-page'>{!teamId ? 'Services' : `Services (team ${teamId})`}</h1>
       <Box mb={1}>
         {(isAdmin || oboTeamId) && (
           <Button

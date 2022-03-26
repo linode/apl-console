@@ -14,10 +14,10 @@ import {
   Typography,
 } from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import Markdown from 'markdown-to-jsx'
+import { useSession } from 'providers/Session'
 import React, { ChangeEvent, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -106,12 +106,12 @@ export default function ({
   const [shortcutsValid, setShortcutsValid] = useState(inShortcuts)
   const [values, setValues] = useState(inValues)
   const [rawValues, setRawValues] = useState(inRawValues)
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
   const [valuesDirty, setValuesDirty] = useState(false)
   const [valid, setValid] = useState(true)
 
-  const [appSchema, setAppSchema]: [JSONSchema7, CallableFunction] = useState()
-  const [appUiSchema, setAppUiSchema] = useState()
+  const [appSchema, setAppSchema] = useState<JSONSchema7>()
+  const [appUiSchema, setAppUiSchema] = useState<any>()
   // END HOOKS
   const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
@@ -146,7 +146,7 @@ export default function ({
 
   const handleSubmit = () => {
     const data = { id, teamId, values, rawValues, shortcuts }
-    if (dirty) {
+    if (isDirty) {
       onSubmit(data)
       setDirty(false)
       setValuesDirty(false)

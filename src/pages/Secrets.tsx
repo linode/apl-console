@@ -1,11 +1,12 @@
+import Secrets from 'components/Secrets'
+import useAuthzSession from 'hooks/useAuthzSession'
+import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import Secrets from 'components/Secrets'
-import useApi, { useAuthz } from 'hooks/useApi'
-import PaperLayout from 'layouts/Paper'
+import { useGetSecretsQuery } from 'store/otomi'
 
 interface Params {
-  teamId?: string
+  teamId: string
 }
 
 export default function ({
@@ -13,9 +14,8 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { tid } = useAuthz(teamId)
-  const secretsMethod = !teamId ? 'getAllSecrets' : 'getSecrets'
-  const [secrets, secretsLoading, secretsError]: any = useApi(secretsMethod, true, [tid])
-  const comp = !(secretsError || secretsLoading) && <Secrets teamId={teamId} secrets={secrets} />
-  return <PaperLayout loading={secretsLoading} comp={comp} />
+  useAuthzSession(teamId)
+  const { data, isLoading, error } = useGetSecretsQuery({ teamId })
+  const comp = !(isLoading || error) && data && <Secrets teamId={teamId} secrets={data} />
+  return <PaperLayout loading={isLoading} comp={comp} />
 }

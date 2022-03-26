@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { Box, Button } from '@mui/material'
 import { getPolicySchema, getPolicyUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { isEmpty, isEqual } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import Form from './rjsf/Form'
 
@@ -17,7 +17,7 @@ export default function ({ onSubmit, policies, policyId }: Props): React.ReactEl
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
   const { appsEnabled, oboTeamId, user } = useSession()
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
     const newSchema = getPolicySchema(policyId)
     setSchema(newSchema)
@@ -56,7 +56,7 @@ export default function ({ onSubmit, policies, policyId }: Props): React.ReactEl
         disabled={!appsEnabled.gatekeeper}
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button type='submit' disabled={!dirty} data-cy={`button-submit-${policyId}`}>
+          <Button type='submit' disabled={!isDirty} data-cy={`button-submit-${policyId}`}>
             Submit
           </Button>
         </Box>

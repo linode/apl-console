@@ -8,6 +8,5 @@ interface Props {
 }
 
 export default function ({ error }: Props): React.ReactElement {
-  const err = <Error error={error} />
-  return <PaperLayout comp={err} />
+  return <PaperLayout comp={<Error error={error} />} />
 }

@@ -1,18 +1,18 @@
 import { Box, Button } from '@mui/material'
-import { Secret, Service } from '@redkubes/otomi-api-client-axios'
 import { getServiceSchema, getServiceUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { unset } from 'lodash'
 import isEqual from 'lodash/isEqual'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
+import { GetSecretsApiResponse, GetServiceApiResponse } from 'store/otomi'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  service?: Service
-  secrets: Secret[]
+  service?: GetServiceApiResponse
+  secrets: GetSecretsApiResponse
   teamId: string
 }
 
@@ -21,7 +21,7 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(service)
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
     const formData = { ...inData }
     const teamSubdomain = formData && formData.name ? `${formData.name}.team-${teamId}` : ''
@@ -76,7 +76,7 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
       formData={data}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button type='submit' disabled={!dirty} data-cy='button-submit-service'>
+        <Button type='submit' disabled={!isDirty} data-cy='button-submit-service'>
           Submit
         </Button>
         &nbsp;

@@ -1,9 +1,9 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Box, Button } from '@mui/material'
-import { Job, Team } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { GetAllJobsApiResponse, GetTeamApiResponse, GetTeamJobsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
@@ -21,16 +21,15 @@ const getJobLink = (isAdmin, ownerId): CallableFunction =>
   }
 
 interface Props {
-  jobs: Job[]
-  team?: Team
+  jobs: GetAllJobsApiResponse | GetTeamJobsApiResponse
+  teamId?: string
 }
 
-export default function ({ jobs, team }: Props): React.ReactElement {
+export default function ({ jobs, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const showTeam = !team
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -50,7 +49,7 @@ export default function ({ jobs, team }: Props): React.ReactElement {
       label: 'Schedule',
     },
   ]
-  if (showTeam) {
+  if (!teamId) {
     headCells.push({
       id: 'teamId',
       label: 'Team',
@@ -59,7 +58,7 @@ export default function ({ jobs, team }: Props): React.ReactElement {
 
   return (
     <>
-      <h1 data-cy='h1-jobs-page'>{!team ? 'Jobs' : `Jobs (team ${team.id})`}</h1>
+      <h1 data-cy='h1-jobs-page'>{!teamId ? 'Jobs' : `Jobs (team ${teamId})`}</h1>
       <Box mb={1}>
         {(isAdmin || oboTeamId) && (
           <Button

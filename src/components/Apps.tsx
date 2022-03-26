@@ -1,8 +1,8 @@
 import { Grid, Typography } from '@mui/material'
-import { App } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { useDrop } from 'react-dnd'
+import { GetAppsApiResponse } from 'store/otomi'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
@@ -35,7 +35,7 @@ const useStyles = makeStyles()((theme) => {
 
 interface Props {
   teamId: string
-  apps: Array<App>
+  apps: GetAppsApiResponse
   loading: boolean
   setAppState: CallableFunction
 }

@@ -3,14 +3,8 @@
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
-import { ThemeProvider } from '@mui/material/styles'
-import { setSpec } from 'common/api-spec'
-import Context from 'common/session-context'
-import { getTheme, setThemeMode, setThemeName } from 'common/theme'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
-import useApi from 'hooks/useApi'
-import { useLocalStorage } from 'hooks/useLocalStorage'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
@@ -29,13 +23,16 @@ import Setting from 'pages/Setting'
 import Shortcuts from 'pages/Shortcuts'
 import Team from 'pages/Team'
 import Teams from 'pages/Teams'
-import React, { Dispatch, Suspense, useMemo, useState } from 'react'
+import ApiProvider from 'providers/Api'
+import SessionProvider from 'providers/Session'
+import ThemeProvider from 'providers/Theme'
+import React, { Suspense } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, HttpErrorBadRequest } from './utils/error'
+import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
 export const muiCache = createCache({
@@ -47,75 +44,18 @@ let contextPath = '##CONTEXT_PATH##'
 if (location.hostname === 'localhost') contextPath = ''
 
 function App() {
-  const [globalError, setGlobalError] = useState()
-  const [dirty, setDirty] = useState()
-  const [session, sessionLoading, sessionError]: any = useApi('getSession')
-  // by setting refresh props to a random string we trigger refetching of settings and apps:
-  const [refreshSettings, setRefreshSettings] = useState<string>('start')
-  const [refreshApps, setRefreshApps] = useState<string>('start')
-  const [settings, settingsLoading, settingsError]: any = useApi('getSettings', refreshSettings, [
-    ['cluster', 'dns', 'otomi'],
-  ])
-  const [apps, appsLoading, appsError]: any = useApi('getApps', refreshApps, ['admin', ['id', 'enabled']])
-  const appsEnabled = (apps || []).reduce((memo, a) => {
-    memo[a.id] = !!a.enabled
-    return memo
-  }, {})
-  const [apiDocs, apiDocsLoading, apiDocsError]: any = useApi('apiDocs')
-  const [themeMode, setMode]: [string, Dispatch<any>] = useLocalStorage('themeMode', 'light')
-  const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const ctx = useMemo(
-    () => ({
-      ...(session || {}),
-      appsEnabled,
-      dirty: dirty === undefined ? session?.isDirty : dirty,
-      globalError,
-      oboTeamId,
-      setRefreshApps,
-      setRefreshSettings,
-      setDirty,
-      setGlobalError,
-      setOboTeamId,
-      setThemeMode: setMode,
-      settings,
-      themeMode,
-    }),
-    [appsEnabled, dirty, globalError, oboTeamId, session, settings, themeMode],
-  )
-  // END HOOKS
-  setThemeMode(themeMode)
-  if (appsLoading || sessionLoading || apiDocsLoading || settingsLoading) return <Loader />
-  let err
-  if (sessionError || apiDocsError || settingsError) {
-    const e = sessionError || apiDocsError
-    if (e.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
-    else err = <ErrorComponent error={e} />
-  }
-  if (apiDocs) setSpec(apiDocs)
-  if (!err) {
-    const { user } = session
-    if (!user.isAdmin && !oboTeamId) {
-      if (user.teams.length) {
-        setOboTeamId(user.teams[0])
-        return <Loader />
-      }
-      err = <ErrorComponent error={new ApiErrorUnauthorized()} />
-    }
-    setThemeName(user.isAdmin ? 'admin' : 'team')
-  }
   return (
     <Suspense fallback={<Loader />}>
       <ErrorBoundary FallbackComponent={ErrorComponent}>
         <CacheProvider value={muiCache}>
-          <ThemeProvider theme={getTheme()}>
-            <NotistackProvider>
-              <SnackbarUtilsConfigurator />
-              <CssBaseline />
-              <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-              {err}
-              {!err && session && (
-                <DndProvider backend={HTML5Backend}>
-                  <Context.Provider value={ctx}>
+          <NotistackProvider>
+            <SnackbarUtilsConfigurator />
+            <ApiProvider>
+              <DndProvider backend={HTML5Backend}>
+                <SessionProvider>
+                  <ThemeProvider>
+                    <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
+                    <CssBaseline />
                     <Router basename={contextPath}>
                       <Switch>
                         {/* ! user && <Route path='/' component={Home} exact /> */}
@@ -147,11 +87,11 @@ function App() {
                         </Route>
                       </Switch>
                     </Router>
-                  </Context.Provider>
-                </DndProvider>
-              )}
-            </NotistackProvider>
-          </ThemeProvider>
+                  </ThemeProvider>
+                </SessionProvider>
+              </DndProvider>
+            </ApiProvider>
+          </NotistackProvider>
         </CacheProvider>
       </ErrorBoundary>
     </Suspense>

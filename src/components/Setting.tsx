@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { getSettingSchema, getSettingUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { isEmpty, isEqual } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import Form from './rjsf/Form'
 
@@ -15,12 +15,12 @@ export default function ({ onSubmit, settings: formSettings, settingId }: Props)
   const [data, setData]: any = useState(formSettings[settingId])
   const [schema, setSchema] = useState({})
   const [uiSchema, setUiSchema] = useState()
-  const { settings, oboTeamId, user } = useSession()
-  const [dirty, setDirty] = useState(false)
+  const { appsEnabled, settings, oboTeamId, user } = useSession()
+  const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
-    const newSchema = getSettingSchema(settingId, settings, formData)
+    const newSchema = getSettingSchema(appsEnabled, settings, settingId, formData)
     setSchema(newSchema)
-    const newUiSchema = getSettingUiSchema(settings, settingId, user, oboTeamId)
+    const newUiSchema = getSettingUiSchema(appsEnabled, settings, settingId, user, oboTeamId)
     setUiSchema(newUiSchema)
     setData(formData)
     const isDirty = !isEqual(formData, formSettings[settingId] || {})
@@ -54,7 +54,7 @@ export default function ({ onSubmit, settings: formSettings, settingId }: Props)
         hideHelp
       >
         <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button type='submit' disabled={!dirty} data-cy={`button-submit-${settingId}`}>
+          <Button type='submit' disabled={!isDirty} data-cy={`button-submit-${settingId}`}>
             Submit
           </Button>
         </Box>

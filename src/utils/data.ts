@@ -1,10 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
-import { Session } from '@redkubes/otomi-api-client-axios'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
 import { find, isEmpty, isPlainObject, transform } from 'lodash'
+import { GetSessionApiResponse } from 'store/otomi'
 
 export const cleanOptions = {
   cleanKeys: [],
@@ -131,7 +131,7 @@ export const getApps = (session, teamId) => {
 
 const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
 
-export const getAppData = (session: Session, teamId, appOrId, mergeShortcuts = false) => {
+export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, mergeShortcuts = false) => {
   const {
     core: { adminApps, teamApps },
     settings: {

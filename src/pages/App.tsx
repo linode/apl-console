@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import App from 'components/App'
-import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'store/otomi'
 import { renameKeys } from 'utils/data'
 
 interface Params {
@@ -15,21 +17,24 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const [formData, setFormdata] = useState()
+  const { refetchAppsEnabled } = useSession()
+  const [formData, setFormData] = useState()
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
-  const [app, appLoading, appErr]: any = useApi('getApp', !appIds, [teamId, appId])
-  const [, editLoading, editError] = useApi('editApp', !!formData, [teamId, appId, renameKeys(formData)])
-  const [toggleRes, toggling, toggleError]: any = useApi('toggleApps', !!appIds, [
-    teamId,
-    { ids: appIds, enabled: appEnabled },
-  ])
+  const { data, isLoading, error, refetch } = useGetAppQuery({ teamId, appId })
+  const [edit] = useEditAppMutation()
+  const [toggle] = useToggleAppsMutation()
   // END HOOKS
-  if (appIds && !toggling) setTimeout(() => setAppState([]))
-  const loading = appLoading || editLoading
-  const err = appErr || editError
-  const comp = !loading && (!err || formData || app) && (
-    <App onSubmit={setFormdata} id={appId} {...(formData || app)} teamId={teamId} setAppState={setAppState} />
+  if (formData) edit({ teamId, appId, body: renameKeys(formData) })
+  if (appIds) {
+    toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
+      .then(refetch)
+      .then(refetchAppsEnabled)
+    setAppState([])
+  }
+  const useData = formData || data
+  const comp = !(isLoading || error) && useData && (
+    <App onSubmit={setFormData} id={appId} {...useData} teamId={teamId} setAppState={setAppState} />
   )
-  return <PaperLayout comp={comp} loading={loading} />
+  return <PaperLayout comp={comp} loading={isLoading} />
 }

@@ -1,7 +1,7 @@
 # --------------- dev stage for developers to override sources
 FROM node:13.10.1-alpine as dev
-ARG NPM_TOKEN
-RUN test -n "$NPM_TOKEN"
+# ARG NPM_TOKEN
+# RUN test -n "$NPM_TOKEN"
 
 RUN apk --no-cache add make gcc g++ python
 ENV NODE_ENV=development
@@ -11,7 +11,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY .npmrc ./
-RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
+# RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env

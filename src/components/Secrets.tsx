@@ -1,8 +1,9 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Box, Button } from '@mui/material'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { GetSecretsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
@@ -33,7 +34,7 @@ const getVaultSecretLink = (clusterDomain) =>
   }
 
 interface Props {
-  secrets: any[]
+  secrets: GetSecretsApiResponse
   teamId?: string
 }
 
@@ -61,7 +62,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
       renderer: getVaultSecretLink(cluster.domainSuffix),
     },
   ]
-  if (isAdmin && !teamId) {
+  if (!teamId) {
     headCells.splice(2, 0, {
       id: 'namespace',
       label: 'namespace',

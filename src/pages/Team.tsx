@@ -1,8 +1,9 @@
 import Team from 'components/Team'
-import useApi, { useAuthz } from 'hooks/useApi'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useCreateTeamMutation, useDeleteTeamMutation, useEditTeamMutation, useGetTeamQuery } from 'store/otomi'
 
 interface Params {
   teamId?: string
@@ -13,24 +14,25 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthz(teamId)
-  const tid = teamId
+  useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [team, teamLoading, teamError]: any = useApi('getTeam', !!tid, [tid])
-  const [createRes, createLoading, createError] = useApi(
-    teamId ? 'editTeam' : 'createTeam',
-    !!formData,
-    teamId ? [tid, formData] : [formData],
-  )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteTeam', !!deleteId, [deleteId])
-  if ((createRes && (!createLoading || createError)) || (deleteRes && !(deleteLoading || deleteError)))
-    return <Redirect to='/teams' />
-
-  const loading = teamLoading || createLoading
-  const err = teamError || createError || deleteError
-  const comp = !loading && (!err || formData || team) && (
-    <Team team={formData || team} onSubmit={setFormData} onDelete={setDeleteId} />
-  )
-  return <PaperLayout loading={loading} comp={comp} />
+  const { data, isLoading, error } = useGetTeamQuery({ teamId }, { skip: !teamId })
+  const [create, { isSuccess: createOk }] = useCreateTeamMutation()
+  const [update, { isSuccess: updateOk }] = useEditTeamMutation()
+  const [del, { isSuccess: deleteOk }] = useDeleteTeamMutation()
+  // END HOOKS
+  if (formData) {
+    if (teamId) update({ teamId, body: formData })
+    else create({ body: formData })
+    setFormData(undefined)
+  }
+  if (deleteId) {
+    del({ teamId })
+    setDeleteId()
+  }
+  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to='/teams' />
+  const team = formData || data
+  const comp = !(isLoading || error) && <Team team={team} onSubmit={setFormData} onDelete={setDeleteId} />
+  return <PaperLayout loading={isLoading} comp={comp} />
 }

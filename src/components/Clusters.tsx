@@ -1,6 +1,6 @@
-import { Cluster } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import React from 'react'
+import { GetSettingsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import MuiLink from './MuiLink'
 
@@ -24,7 +24,7 @@ export default function (): React.ReactElement {
     {
       id: 'url',
       label: 'URL',
-      renderer: (c: Cluster) => {
+      renderer: (c: GetSettingsApiResponse['cluster']) => {
         const { domainSuffix } = c
         const domain = `otomi.${domainSuffix}`
         if (domainSuffix === cluster.domainSuffix) return domain

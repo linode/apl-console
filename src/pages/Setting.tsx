@@ -1,9 +1,9 @@
 import Setting from 'components/Setting'
-import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { renameKeys } from 'utils/data'
+import { useEditSettingsMutation, useGetSettingsQuery } from 'store/otomi'
 
 interface Params {
   settingId?: string
@@ -14,22 +14,28 @@ export default function ({
     params: { settingId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const [formData, setFormdata] = useState()
-
+  const [formData, setFormData] = useState()
+  const { settings: sessSettings, refetchSettings } = useSession()
   useEffect(() => {
-    setFormdata(undefined)
+    setFormData(undefined)
   }, [settingId])
+  const { data, isLoading, error, refetch } = useGetSettingsQuery({ ids: [settingId] })
+  const [edit, { isSuccess: editOk }] = useEditSettingsMutation()
+  // END HOOKS
+  if (formData) {
+    edit({ body: { [settingId]: formData as any } })
+    setFormData(undefined)
+  }
+  if (editOk) {
+    refetch()
+    // we wish to refetch settings kept in the session for the UI state, but only if we have edited one of them
+    if (Object.keys(sessSettings).includes(settingId)) setTimeout(refetchSettings)
+  }
 
-  const [settings, settingsLoading, settingsError]: any = useApi('getSettings')
-
-  const [, editLoading, editError] = useApi('editSettings', !!formData, [{ [settingId]: renameKeys(formData) }])
-
-  const loading = settingsLoading || editLoading
-  const err = settingsError || editError
-  let formSettings = settings
-  if (formData) formSettings = { ...formSettings, [settingId]: formData }
-  const comp = !loading && (!err || formData || settings) && (
-    <Setting onSubmit={setFormdata} settings={formSettings} settingId={settingId} />
+  let settings = data
+  if (formData) settings = { ...settings, [settingId]: formData }
+  const comp = !(isLoading || error) && settings && (
+    <Setting onSubmit={setFormData} settings={settings} settingId={settingId} />
   )
-  return <PaperLayout comp={comp} loading={loading} />
+  return <PaperLayout comp={comp} loading={isLoading} />
 }

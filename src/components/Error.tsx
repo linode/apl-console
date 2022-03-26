@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close'
 import { Alert, Collapse, Container, Grid, IconButton } from '@mui/material'
-import { useSession } from 'common/session-context'
+import { useApi } from 'providers/Api'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
@@ -30,7 +31,7 @@ interface Props {
 
 export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
-  const { globalError, setGlobalError } = useSession()
+  const { globalError, setGlobalError } = useApi()
   const err = error ?? globalError
   if (!err) return null
   const { code, message } = err

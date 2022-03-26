@@ -1,17 +1,8 @@
-import {
-  Provider,
-  SecretDockerRegistryTypeEnum,
-  SecretTLSTypeEnum,
-  Service,
-  Settings,
-  SvcPredeployedServiceTypeEnum,
-  Team,
-  User,
-} from '@redkubes/otomi-api-client-axios'
 import { pascalCase } from 'change-case'
 import CodeEditor from 'components/rjsf/FieldTemplate/CodeEditor'
 import { get, set, unset } from 'lodash'
 import { cloneDeep, isEmpty } from 'lodash/lang'
+import { GetServiceApiResponse, GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'store/otomi'
 import { extract, getStrict, isOf } from 'utils/schema'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
@@ -78,7 +69,12 @@ let spec: OpenApi
 
 export const getSpec = () => spec
 
-export const applyAclToUiSchema = (uiSchema: any, user: User, teamId: string, schemaName: string): void => {
+export const applyAclToUiSchema = (
+  uiSchema: any,
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  schemaName: string,
+): void => {
   if (user.isAdmin) return
 
   get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
@@ -108,7 +104,7 @@ const addDomainEnumField = (schema: Schema, settings, formData): void => {
   set(ingressSchema, 'domain.enum', zones)
 }
 
-export const getJobSchema = (settings: Settings, formData: any, secrets: Array<any>): any => {
+export const getJobSchema = (settings: GetSettingsApiResponse, formData: any, secrets: Array<any>): any => {
   const schema: Schema = cloneDeep(spec.components.schemas.Job)
   const jobSpecPath = 'allOf[1].properties'
   const containerSpecPath = 'allOf[2].allOf[2].allOf[1].properties'
@@ -126,7 +122,7 @@ export const getJobSchema = (settings: Settings, formData: any, secrets: Array<a
   return schema
 }
 
-export const getJobUiSchema = (formData, user: User, teamId: string): any => {
+export const getJobUiSchema = (formData, user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     ...jobSpecUiSchema,
     id: { 'ui:widget': 'hidden' },
@@ -142,7 +138,7 @@ export const getJobUiSchema = (formData, user: User, teamId: string): any => {
 
 export const getServiceSchema = (
   appsEnabled: Record<string, any>,
-  settings: Settings,
+  settings: GetSettingsApiResponse,
   formData,
   secrets: Array<any>,
 ): any => {
@@ -165,7 +161,7 @@ export const getServiceSchema = (
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
-    if (cluster.provider !== Provider.aws) unset(ingressSchema, `certArn`)
+    if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
     if (!ing?.hasCert) {
       unset(ingressSchema, `certArn`)
@@ -174,7 +170,7 @@ export const getServiceSchema = (
     } else if (ing) {
       // Give the certName an enum selector with names of existing tls secrets
       if (ing.certSelect) {
-        const tlsSecretNames = secrets.filter((s) => s.secret.type === SecretTLSTypeEnum.tls).map((s) => s.name)
+        const tlsSecretNames = secrets.filter((s) => s.secret.type === 'tls').map((s) => s.name)
         set(ingressSchema, `certName.enum`, tlsSecretNames)
         if (secrets.length === 1) ing.certName = tlsSecretNames[0]
       }
@@ -199,9 +195,9 @@ export const getServiceSchema = (
 
 export const getServiceUiSchema = (
   appsEnabled: Record<string, any>,
-  { otomi }: Settings,
-  formData: Service,
-  user: User,
+  { otomi }: GetSettingsApiResponse,
+  formData: GetServiceApiResponse,
+  user: GetSessionApiResponse['user'],
   teamId: string,
 ): any => {
   const ing = formData?.ingress as any
@@ -214,7 +210,7 @@ export const getServiceUiSchema = (
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
       certArn: { 'ui:readonly': formData.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== SvcPredeployedServiceTypeEnum.svcPredeployed },
+      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== 'svcPredeployed' },
     },
     ksvc: {
       ...podSpecUiSchema,
@@ -229,7 +225,11 @@ export const getServiceUiSchema = (
   return uiSchema
 }
 
-export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settings, team: Team): any => {
+export const getTeamSchema = (
+  appsEnabled: Record<string, any>,
+  settings: GetSettingsApiResponse,
+  team: GetTeamApiResponse,
+): any => {
   const {
     cluster: { provider },
     otomi,
@@ -238,7 +238,7 @@ export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settin
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
-  if (provider !== Provider.azure) unset(schema, 'properties.azureMonitor')
+  if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
   else if (!appsEnabled.grafana || !otomi.isMultitenant)
     set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   return schema
@@ -246,8 +246,8 @@ export const getTeamSchema = (appsEnabled: Record<string, any>, settings: Settin
 
 export const getTeamUiSchema = (
   appsEnabled: Record<string, any>,
-  { otomi }: Settings,
-  user: User,
+  { otomi }: GetSettingsApiResponse,
+  user: GetSessionApiResponse['user'],
   teamId: string,
   action: string,
 ): any => {
@@ -279,7 +279,12 @@ export const deleteAlertEndpoints = (schema, formData) => {
   })
 }
 
-export const getSettingSchema = (settingId, settings: Settings, formData: any): any => {
+export const getSettingSchema = (
+  appsEnabled: Record<string, any>,
+  settings: GetSettingsApiResponse,
+  settingId,
+  formData: any,
+): any => {
   const schema = cloneDeep(spec.components.schemas.Settings.properties[settingId])
   const {
     cluster: { provider },
@@ -292,7 +297,8 @@ export const getSettingSchema = (settingId, settings: Settings, formData: any): 
       deleteAlertEndpoints(schema, formData)
       break
     case 'azure':
-      if (provider !== Provider.azure) unset(schema, 'properties.azure')
+      if (provider !== 'azure') unset(schema, 'properties.azure')
+      if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
       if (formData.provider?.azure?.useManagedIdentityExtension) {
@@ -311,8 +317,14 @@ export const getSettingSchema = (settingId, settings: Settings, formData: any): 
   return schema
 }
 
-export const getSettingUiSchema = (settings: Settings, settingId: string, user: User, teamId: string): any => {
-  const uiSchema = {
+export const getSettingUiSchema = (
+  appsEnabled: Record<string, any>,
+  settings: GetSettingsApiResponse,
+  settingId: string,
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+): any => {
+  const uiSchema: any = {
     kms: {
       sops: {
         provider: { 'ui:widget': 'hidden' },
@@ -322,6 +334,8 @@ export const getSettingUiSchema = (settings: Settings, settingId: string, user: 
       },
     },
   }
+  if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
+
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 
   return uiSchema[settingId] || {}
@@ -329,9 +343,7 @@ export const getSettingUiSchema = (settings: Settings, settingId: string, user: 
 
 export const setSecretsEnum = (schema, secrets) => {
   if (secrets.length) {
-    const secretNames = secrets
-      .filter((s) => s.secret.type !== SecretDockerRegistryTypeEnum.docker_registry)
-      .map((s) => s.name)
+    const secretNames = secrets.filter((s) => s.secret.type !== 'docker_registry').map((s) => s.name)
     set(schema, `secrets.items.enum`, secretNames)
     set(schema, `secretMounts.items.properties.name.enum`, secretNames)
   } else {
@@ -345,7 +357,7 @@ export const getSecretSchema = (): any => {
   return schema
 }
 
-export const getSecretUiSchema = (user: User, teamId: string): any => {
+export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
@@ -365,7 +377,7 @@ export const getPolicySchema = (policyId): any => {
   return schema
 }
 
-export const getPolicyUiSchema = (settingId: string, user: User, teamId: string): any => {
+export const getPolicyUiSchema = (settingId: string, user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {}
   applyAclToUiSchema(uiSchema, user, teamId, 'Settings')
 

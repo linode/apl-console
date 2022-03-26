@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import Job from 'components/Job'
-import useApi, { useAuthz } from 'hooks/useApi'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import {
+  useCreateJobMutation,
+  useDeleteJobMutation,
+  useEditJobMutation,
+  useGetJobQuery,
+  useGetSecretsQuery,
+} from 'store/otomi'
 
 interface Params {
   teamId?: string
@@ -15,31 +22,30 @@ export default function ({
     params: { teamId, jobId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { tid } = useAuthz(teamId)
+  useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [job, jobLoading, jobError]: any = useApi('getJob', !!jobId, [tid, jobId])
-  const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
-  const [createRes, createLoading, createError] = useApi(
-    jobId ? 'editJob' : 'createJob',
-    !!formData,
-    jobId ? [tid, jobId, omit(formData, ['id', 'teamId'])] : [tid, formData],
-  )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteJob', !!deleteId, [tid, jobId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError)))
-    return <Redirect to={`/teams/${tid}/jobs`} />
-
-  const loading = jobLoading || secretsLoading || createLoading || deleteLoading
-  const err = jobError || secretsError || createError || deleteError
-  const comp = !loading && (!err || formData || job) && (
-    <Job
-      teamId={tid}
-      // job={formData || convertDataFromServer(job)}
-      job={formData || job}
-      secrets={secrets}
-      onSubmit={setFormData}
-      onDelete={setDeleteId}
-    />
+  const { data, isLoading, error } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
+  const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
+  const [create, { isSuccess: createOk }] = useCreateJobMutation()
+  const [update, { isSuccess: updateOk }] = useEditJobMutation()
+  const [del, { isSuccess: deleteOk }] = useDeleteJobMutation()
+  // END HOOKS
+  if (formData) {
+    if (jobId) update({ teamId, jobId, body: formData })
+    else create({ teamId, body: formData })
+    setFormData(undefined)
+  }
+  if (deleteId) {
+    del({ teamId, jobId })
+    setDeleteId()
+  }
+  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/jobs`} />
+  const loading = isLoading || isLoadingSecrets
+  const err = error || errorSecrets
+  const job = formData || data
+  const comp = !(loading || err) && (
+    <Job teamId={teamId} job={job} secrets={secrets} onSubmit={setFormData} onDelete={setDeleteId} />
   )
   return <PaperLayout loading={loading} comp={comp} />
 }

@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
-import { App } from '@redkubes/otomi-api-client-axios'
 import { capitalize } from 'lodash'
 import React from 'react'
+import { GetAppsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'
@@ -36,7 +36,7 @@ const getShortcutLink = (app) => {
 }
 
 interface Props {
-  apps: App[]
+  apps: GetAppsApiResponse
   teamId?: string
 }
 
@@ -55,7 +55,7 @@ export default function ({ apps, teamId }: Props): React.ReactElement {
   ]
   return (
     <>
-      <h1 data-cy='h1-shortcuts-page'>{`Shortcuts${teamId !== 'admin' ? ` (team ${teamId})` : ''}`}</h1>
+      <h1 data-cy='h1-shortcuts-page'>{`Shortcuts${teamId !== 'admin' ? ` (team ${teamId})` : ' (admin)'}`}</h1>
       <EnhancedTable disableSelect headCells={headCells} orderByStart='id' rows={apps} idKey='description' />
     </>
   )

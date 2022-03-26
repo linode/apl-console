@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import { Typography } from '@mui/material'
-import { Policies } from '@redkubes/otomi-api-client-axios'
 import { getPolicySchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { map } from 'lodash'
+import { useSession } from 'providers/Session'
 import React from 'react'
+import { GetSettingsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 
@@ -38,7 +38,7 @@ const getEnabled = (gatekeeperEnabled) =>
     )
   }
 interface Props {
-  policies: Policies
+  policies: GetSettingsApiResponse['policies']
 }
 
 export default function ({ policies }: Props): React.ReactElement {

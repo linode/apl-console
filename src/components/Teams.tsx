@@ -1,14 +1,14 @@
-import { Box, Button } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Team } from '@redkubes/otomi-api-client-axios'
+import { Box, Button } from '@mui/material'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useSession } from 'common/session-context'
-import RLink from './Link'
+import { GetTeamsApiResponse } from 'store/otomi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
+import RLink from './Link'
 
 interface Props {
-  teams: Team[]
+  teams: GetTeamsApiResponse
 }
 
 export default function ({ teams }: Props): React.ReactElement {

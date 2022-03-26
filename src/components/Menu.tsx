@@ -22,13 +22,13 @@ import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
 import MenuList from '@mui/material/List'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import { Provider } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
-import useApi from 'hooks/useApi'
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useDeployQuery } from 'store/otomi'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import Cluster from './Cluster'
@@ -69,13 +69,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const {
     appsEnabled,
     settings: { cluster, otomi },
-    dirty,
+    isDirty,
     user: { isAdmin },
   } = useSession()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [deployRes, deploying, deployError]: any = useApi('deploy', !!deploy)
+  const {
+    data: deployRes,
+    isLoading: deploying,
+    error: errorDeploy,
+  }: any = useDeployQuery(!deploy ? skipToken : undefined)
   let key
   if (deploy) {
     if (!deploying) {
@@ -85,11 +88,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         })
       }
     }
-    if (deployRes || deployError) {
+    if (deployRes || errorDeploy) {
       setTimeout(() => {
         snack.close(key)
       })
-      if (deployError) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
+      if (errorDeploy) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
     }
@@ -210,10 +213,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List className={classes.settingsList} disablePadding>
               {Object.keys(settingIds).map((id) => {
-                if (cluster.provider !== Provider.azure && id === 'azure') return undefined
+                if (cluster.provider !== 'azure' && id === 'azure') return undefined
                 let disabled = false
                 if (
                   (['alerts', 'home', 'smtp'].includes(id) && !appsEnabled.alertmanager) ||
+                  (['oidc'].includes(id) && !otomi.hasExternalIDP) ||
                   (id === 'dns' && !otomi.hasExternalDNS)
                 )
                   disabled = true
@@ -234,7 +238,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </Collapse>
         </>
       )}
-      <MenuItem className={classes.deploy} disabled={!dirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>

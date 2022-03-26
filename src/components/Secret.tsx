@@ -1,16 +1,16 @@
 import { Box, Button } from '@mui/material'
-import { Secret } from '@redkubes/otomi-api-client-axios'
 import { getSecretSchema, getSecretUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { isEqual } from 'lodash/lang'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
+import { GetSecretApiResponse } from 'store/otomi'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  secret?: Secret
+  secret?: GetSecretApiResponse
 }
 
 export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElement {
@@ -19,7 +19,7 @@ export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElem
   const schema = getSecretSchema()
   const uiSchema = getSecretUiSchema(user, oboTeamId)
   const [data, setData]: any = useState(secret)
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData }) => {
     setData(formData)
     setDirty(!isEqual(formData, secret))
@@ -45,7 +45,7 @@ export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElem
       disabled={!appsEnabled.vault}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button type='submit' disabled={!dirty} data-cy='button-submit-secret'>
+        <Button type='submit' disabled={!isDirty} data-cy='button-submit-secret'>
           Submit
         </Button>
         &nbsp;

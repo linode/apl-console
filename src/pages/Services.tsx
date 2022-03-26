@@ -1,10 +1,9 @@
-import { Service, Team } from '@redkubes/otomi-api-client-axios'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Services from 'components/Services'
-import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { ApiError } from 'utils/error'
+import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'store/otomi'
 
 interface Params {
   teamId?: string
@@ -15,16 +14,20 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
-  const servicesArgs = teamId ? [teamId] : []
-  const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(
-    servicesMethod,
-    true,
-    servicesArgs,
-  )
-  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !!teamId, [teamId])
-  const loading = servicesLoading || teamLoading
-  const err = servicesError || teamError
-  const comp = !(err || loading) && <Services services={services} team={team} />
+  const {
+    data: allServices,
+    isLoading: isLoadingAllServices,
+    error: errorAllServices,
+  } = useGetAllServicesQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamServices,
+    isLoading: isLoadingTeamServices,
+    error: errorTeamServices,
+  } = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
+  // END HOOKS
+  const loading = isLoadingAllServices || isLoadingTeamServices
+  const err = errorAllServices || errorTeamServices
+  const services = teamId ? teamServices : allServices
+  const comp = !(err || loading) && services && <Services services={services} teamId={teamId} />
   return <PaperLayout loading={loading} comp={comp} />
 }

@@ -1,10 +1,10 @@
 import Teams from 'components/Teams'
-import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
+import { useGetTeamsQuery } from 'store/otomi'
 
 export default function (): React.ReactElement {
-  const [teams, loading, err]: any = useApi('getTeams')
-  const comp = !(err || loading) && <Teams teams={teams} />
-  return <PaperLayout loading={loading} comp={comp} />
+  const { data, isLoading, error } = useGetTeamsQuery()
+  const comp = !(isLoading || error) && data && <Teams teams={data} />
+  return <PaperLayout loading={isLoading} comp={comp} />
 }

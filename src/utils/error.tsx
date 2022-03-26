@@ -12,7 +12,7 @@ export class HttpError extends Error {
   }
 
   public static fromCode(code: number): HttpError {
-    return new HttpError(code, k[code])
+    return new HttpError(k[code], code)
   }
 }
 

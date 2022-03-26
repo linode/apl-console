@@ -3,10 +3,11 @@ import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { useSession } from 'common/session-context'
-import { toggleThemeMode } from 'common/theme'
+import { getThemeMode, toggleThemeMode } from 'common/theme'
 import Menu from 'components/Menu'
 import User from 'components/User'
+import { useSession } from 'providers/Session'
+import { useTheme } from 'providers/Theme'
 import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 
@@ -123,7 +124,9 @@ interface Props {
 
 export default function (props: Props): React.ReactElement {
   const { children } = props
-  const { oboTeamId, themeType, setThemeMode } = useSession()
+  const { oboTeamId } = useSession()
+  const { setThemeMode } = useTheme()
+  const themeType = getThemeMode()
 
   const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)

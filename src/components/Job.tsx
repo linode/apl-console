@@ -1,18 +1,18 @@
 import { Box, Button } from '@mui/material'
-import { Job, Secret } from '@redkubes/otomi-api-client-axios'
 import { getJobSchema, getJobUiSchema } from 'common/api-spec'
-import { useSession } from 'common/session-context'
 import { cloneDeep } from 'lodash'
 import isEqual from 'lodash/isEqual'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
+import { GetJobApiResponse, GetSecretsApiResponse } from 'store/otomi'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  job?: Job
-  secrets: Secret[]
+  job?: GetJobApiResponse
+  secrets: GetSecretsApiResponse
   teamId: string
 }
 
@@ -21,7 +21,7 @@ export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): R
   const [schema, setSchema] = useState()
   const [uiSchema, setUiSchema] = useState()
   const [data, setData]: any = useState(job)
-  const [dirty, setDirty] = useState(false)
+  const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
     const formData = cloneDeep(inData)
     const newSchema = getJobSchema(settings, formData, secrets)
@@ -53,7 +53,7 @@ export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): R
       formData={data}
     >
       <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-job'>
+        <Button variant='contained' color='primary' type='submit' disabled={!isDirty} data-cy='button-submit-job'>
           Submit
         </Button>
         &nbsp;

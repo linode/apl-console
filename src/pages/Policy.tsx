@@ -1,11 +1,9 @@
-import { Settings } from '@redkubes/otomi-api-client-axios'
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import Policy from 'components/Policy'
-import useApi from 'hooks/useApi'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { renameKeys } from 'utils/data'
-import { ApiError } from 'utils/error'
+import { useEditSettingsMutation, useGetSettingsQuery } from 'store/otomi'
 
 interface Params {
   policyId?: string
@@ -16,26 +14,20 @@ export default function ({
     params: { policyId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const [formData, setFormdata] = useState()
+  const [formData, setFormData] = useState()
 
   useEffect(() => {
-    setFormdata(undefined)
+    setFormData(undefined)
   }, [policyId])
 
-  const [settings, settingsLoading, settingsError]: [Settings, boolean, ApiError] = useApi('getSettings', !!policyId, [
-    ['policies'],
-  ])
-
-  const [, editLoading, editError] = useApi('editSettings', !!formData, [
-    { policies: renameKeys({ [policyId]: formData }) },
-  ])
-
-  const loading = settingsLoading || editLoading
-  const err = settingsError || editError
-  let formSettings = settings?.policies
-  if (formData) formSettings = { ...formSettings, [policyId]: formData }
-  const comp = !loading && (!err || formData || settings?.policies) && (
-    <Policy onSubmit={setFormdata} policies={formSettings} policyId={policyId} />
+  const { data: settings, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })
+  const [editSettings] = useEditSettingsMutation()
+  // END HOOKS
+  if (formData) editSettings({ body: { policies: { [policyId]: formData as any } } })
+  let policies = settings?.policies
+  if (formData) policies = { ...policies, [policyId]: formData }
+  const comp = !(isLoading || error) && policies && (
+    <Policy onSubmit={setFormData} policies={policies} policyId={policyId} />
   )
-  return <PaperLayout comp={comp} loading={loading} />
+  return <PaperLayout comp={comp} loading={isLoading} />
 }

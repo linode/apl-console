@@ -1,12 +1,18 @@
 import Service from 'components/Service'
-import useApi, { useAuthz } from 'hooks/useApi'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import {
+  useCreateServiceMutation,
+  useDeleteServiceMutation,
+  useEditServiceMutation,
+  useGetSecretsQuery,
+  useGetServiceQuery,
+} from 'store/otomi'
 
 interface Params {
-  teamId?: string
+  teamId: string
   serviceId?: string
 }
 
@@ -15,31 +21,30 @@ export default function ({
     params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { tid } = useAuthz(teamId)
+  useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [service, serviceLoading, serviceError]: any = useApi('getService', !!serviceId, [tid, serviceId])
-  const [secrets, secretsLoading, secretsError]: any = useApi('getSecrets', true, [tid])
-  const [createRes, createLoading, createError] = useApi(
-    serviceId ? 'editService' : 'createService',
-    !!formData,
-    serviceId ? [tid, serviceId, omit(formData, ['id', 'teamId'])] : [tid, formData],
-  )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteService', !!deleteId, [tid, serviceId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError)))
-    return <Redirect to={`/teams/${tid}/services`} />
-
-  const loading = serviceLoading || secretsLoading || createLoading || deleteLoading
-  const err = serviceError || secretsError || createError || deleteError
-  const comp = !loading && (!err || formData || service) && (
-    <Service
-      teamId={tid}
-      // service={formData || convertDataFromServer(service)}
-      service={formData || service}
-      secrets={secrets}
-      onSubmit={setFormData}
-      onDelete={setDeleteId}
-    />
+  const { data, isLoading, error } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
+  const [create, { isSuccess: createOk }] = useCreateServiceMutation()
+  const [update, { isSuccess: updateOk }] = useEditServiceMutation()
+  const [del, { isSuccess: deleteOk }] = useDeleteServiceMutation()
+  // END HOOKS
+  if (formData) {
+    if (serviceId) update({ teamId, serviceId, body: formData })
+    else create({ teamId, body: formData })
+    setFormData(undefined)
+  }
+  if (deleteId) {
+    del({ teamId, serviceId })
+    setDeleteId()
+  }
+  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/services`} />
+  const loading = isLoading || isLoadingSecrets
+  const err = error || errorSecrets
+  const service = formData || data
+  const comp = !(loading || err) && (
+    <Service teamId={teamId} service={service} secrets={secrets} onSubmit={setFormData} onDelete={setDeleteId} />
   )
   return <PaperLayout loading={loading} comp={comp} />
 }

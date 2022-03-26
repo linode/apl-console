@@ -1,8 +1,9 @@
 import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/material'
-import { useSession } from 'common/session-context'
 import { getThemeMode, useMainStyles } from 'common/theme'
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import { GetTeamsApiResponse, useGetTeamsQuery } from 'store/otomi'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()((theme) => {
@@ -55,14 +56,14 @@ export default function (): React.ReactElement {
       otomi: { additionalClusters = [] },
     },
     user: { email, teams: userTeams, isAdmin },
-    teams: allTeams,
     oboTeamId,
     setOboTeamId,
   } = useSession()
-  let teams: any[]
+  const { data: allTeams } = useGetTeamsQuery()
+  let teams: GetTeamsApiResponse
   const allClusters = [...additionalClusters, cluster]
   if (isAdmin) {
-    teams = (allTeams as any).map(({ id }) => ({
+    teams = ((allTeams as any) || []).map(({ id }) => ({
       id,
     }))
   } else {
@@ -123,7 +124,7 @@ export default function (): React.ReactElement {
       <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'
-        value={oboTeamId || ''}
+        value={(teams.length && oboTeamId) || ''}
         onChange={handleChange}
         className={classes.select}
         data-cy='select-oboteam'

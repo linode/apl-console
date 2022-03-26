@@ -4,11 +4,16 @@ import PeopleIcon from '@mui/icons-material/People'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import Link from '@mui/material/Link'
-import { Service, Team } from '@redkubes/otomi-api-client-axios'
-import { useSession } from 'common/session-context'
+import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
+import {
+  GetAllServicesApiResponse,
+  GetTeamApiResponse,
+  GetTeamsApiResponse,
+  GetTeamServicesApiResponse
+} from 'store/otomi'
 import { Keys as k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 
@@ -21,9 +26,9 @@ type Panel = {
   tooltip: string
 }
 interface Props {
-  team?: Team
-  services: Array<Service>
-  teams: Array<Team>
+  team?: GetTeamApiResponse
+  services: GetTeamServicesApiResponse | GetAllServicesApiResponse
+  teams: GetTeamsApiResponse
 }
 
 const useStyles = makeStyles()((theme) => ({

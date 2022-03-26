@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
-import useApi, { useAuthz } from 'hooks/useApi'
+import useAuthzSession from 'hooks/useAuthzSession'
 import MainLayout from 'layouts/Empty'
 import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { useGetAppsQuery, useToggleAppsMutation } from 'store/otomi'
 
 interface Params {
   teamId?: string
@@ -13,29 +15,22 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthz(teamId)
+  const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
-  const [adminApps, adminAppsloading, x]: any = useApi('getApps', !appIds, ['admin'])
-  const [teamApps, teamAppsLoading, y]: any = useApi('getApps', teamId !== 'admin', [teamId])
-  const [editRes, editing, editError]: any = useApi('toggleApps', !!appIds, [
-    teamId,
-    { ids: appIds, enabled: appEnabled },
-  ])
+  const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
+  const [toggle] = useToggleAppsMutation()
   // END HOOKS
-  if (appIds && !editing) {
-    setTimeout(() => {
-      setAppState([])
-    })
+  if (appIds) {
+    toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
+    setAppState([])
+    // IMPORTANT: we have to use setTimeout to avoid concurrent state update
+    setTimeout(refetch)
+    setTimeout(refetchAppsEnabled)
   }
   return (
     <MainLayout>
-      <Apps
-        teamId={teamId}
-        apps={(teamId === 'admin' && adminApps) || teamApps}
-        setAppState={setAppState}
-        loading={adminAppsloading || teamAppsLoading}
-      />
+      <Apps teamId={teamId} apps={isFetching ? undefined : apps} setAppState={setAppState} loading={isLoading} />
     </MainLayout>
   )
 }
