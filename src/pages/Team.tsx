@@ -17,10 +17,10 @@ export default function ({
   useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
+  const [create, { isSuccess: okCreate }] = useCreateTeamMutation()
+  const [update, { isSuccess: okUpdate }] = useEditTeamMutation()
+  const [del, { isSuccess: okDelete }] = useDeleteTeamMutation()
   const { data, isLoading, error } = useGetTeamQuery({ teamId }, { skip: !teamId })
-  const [create, { isSuccess: createOk }] = useCreateTeamMutation()
-  const [update, { isSuccess: updateOk }] = useEditTeamMutation()
-  const [del, { isSuccess: deleteOk }] = useDeleteTeamMutation()
   // END HOOKS
   if (formData) {
     if (teamId) update({ teamId, body: formData })
@@ -31,7 +31,7 @@ export default function ({
     del({ teamId })
     setDeleteId()
   }
-  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to='/teams' />
+  if (okDelete || okCreate || okUpdate) return <Redirect to='/teams' />
   const team = formData || data
   const comp = !(isLoading || error) && <Team team={team} onSubmit={setFormData} onDelete={setDeleteId} />
   return <PaperLayout loading={isLoading} comp={comp} />

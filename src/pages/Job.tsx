@@ -25,11 +25,11 @@ export default function ({
   useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
+  const [create, { isSuccess: okCreate }] = useCreateJobMutation()
+  const [update, { isSuccess: okUpdate }] = useEditJobMutation()
+  const [del, { isSuccess: okDelete }] = useDeleteJobMutation()
   const { data, isLoading, error } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
   const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
-  const [create, { isSuccess: createOk }] = useCreateJobMutation()
-  const [update, { isSuccess: updateOk }] = useEditJobMutation()
-  const [del, { isSuccess: deleteOk }] = useDeleteJobMutation()
   // END HOOKS
   if (formData) {
     if (jobId) update({ teamId, jobId, body: formData })
@@ -40,7 +40,7 @@ export default function ({
     del({ teamId, jobId })
     setDeleteId()
   }
-  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/jobs`} />
+  if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/jobs`} />
   const loading = isLoading || isLoadingSecrets
   const err = error || errorSecrets
   const job = formData || data

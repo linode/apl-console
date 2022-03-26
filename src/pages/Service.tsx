@@ -21,14 +21,14 @@ export default function ({
     params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { setDirty } = useAuthzSession(teamId)
+  useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
+  const [create, { isSuccess: okCreate }] = useCreateServiceMutation()
+  const [update, { isSuccess: okUpdate }] = useEditServiceMutation()
+  const [del, { isSuccess: okDelete }] = useDeleteServiceMutation()
   const { data, isLoading, error } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
-  const [create, { isSuccess: createOk }] = useCreateServiceMutation()
-  const [update, { isSuccess: updateOk }] = useEditServiceMutation()
-  const [del, { isSuccess: deleteOk }] = useDeleteServiceMutation()
   // END HOOKS
   if (formData) {
     if (serviceId) update({ teamId, serviceId, body: formData })
@@ -39,7 +39,7 @@ export default function ({
     del({ teamId, serviceId })
     setDeleteId()
   }
-  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/services`} />
+  if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/services`} />
   const loading = isLoading || isLoadingSecrets
   const err = error || errorSecrets
   const service = formData || data

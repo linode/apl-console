@@ -20,10 +20,10 @@ export default function ({
   useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
+  const [create, { isSuccess: okCreate }] = useCreateSecretMutation()
+  const [update, { isSuccess: okUpdate }] = useEditSecretMutation()
+  const [del, { isSuccess: okDelete }] = useDeleteSecretMutation()
   const { data, isLoading, error } = useGetSecretQuery({ teamId, secretId })
-  const [create, { isSuccess: createOk }] = useCreateSecretMutation()
-  const [update, { isSuccess: updateOk }] = useEditSecretMutation()
-  const [del, { isSuccess: deleteOk }] = useDeleteSecretMutation()
   // END HOOKS
   if (formData) {
     if (secretId) update({ teamId, secretId, body: omit(formData, ['id']) as any })
@@ -34,7 +34,7 @@ export default function ({
     del({ teamId, secretId })
     setDeleteId()
   }
-  if ([createOk, updateOk, deleteOk].some((c) => c)) return <Redirect to={`/teams/${teamId}/secrets`} />
+  if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/secrets`} />
   const secret = formData || data
   const comp = !(isLoading || error) && <Secret onSubmit={setFormData} secret={secret} onDelete={setDeleteId} />
   return <PaperLayout loading={isLoading} comp={comp} />
