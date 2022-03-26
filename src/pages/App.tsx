@@ -22,15 +22,20 @@ export default function ({
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const { data, isLoading, error, refetch } = useGetAppQuery({ teamId, appId })
-  const [edit] = useEditAppMutation()
-  const [toggle] = useToggleAppsMutation()
+  const [edit, { isLoading: editLoading }] = useEditAppMutation()
+  const [toggle, { isLoading: toggleLoading }] = useToggleAppsMutation()
   // END HOOKS
-  if (formData) edit({ teamId, appId, body: renameKeys(formData) })
+  if (formData) {
+    edit({ teamId, appId, body: renameKeys(formData) })
+    setFormData(undefined)
+  }
   if (appIds) {
     toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
-      .then(refetch)
-      .then(refetchAppsEnabled)
     setAppState([])
+  }
+  if (editLoading || toggleLoading) {
+    setTimeout(refetch)
+    setTimeout(refetchAppsEnabled)
   }
   const useData = formData || data
   const comp = !(isLoading || error) && useData && (

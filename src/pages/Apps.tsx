@@ -19,13 +19,16 @@ export default function ({
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
-  const [toggle] = useToggleAppsMutation()
+  const [toggle, { isLoading: toggleLoading }] = useToggleAppsMutation()
   // END HOOKS
   if (appIds) {
     toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     setAppState([])
+  }
+  if (toggleLoading) {
+    // we wish to refetch settings kept in the session for the UI state
     // IMPORTANT: we have to use setTimeout to avoid concurrent state update
-    setTimeout(refetch)
+    refetch()
     setTimeout(refetchAppsEnabled)
   }
   return (
