@@ -26,8 +26,8 @@ export default function ({
   const { data, isLoading, error } = useGetSecretQuery({ teamId, secretId })
   // END HOOKS
   if (formData) {
-    if (secretId) update({ teamId, secretId, body: omit(formData, ['id']) as any })
-    else create({ teamId, body: omit(formData, ['id', 'teamId']) as any })
+    if (secretId) update({ teamId, secretId, body: omit(formData, ['id', 'teamId']) as any })
+    else create({ teamId, body: formData as any })
     setFormData(undefined)
   }
   if (deleteId) {

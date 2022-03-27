@@ -25,6 +25,7 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import { useApi } from 'providers/Api'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
@@ -69,10 +70,9 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const {
     appsEnabled,
     settings: { cluster, otomi },
-    isDirty,
-    setDirty,
     user: { isAdmin },
   } = useSession()
+  const { isDirty } = useApi()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const {
@@ -96,7 +96,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       if (errorDeploy) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
-      setDirty(false)
     }
   }
 

@@ -9,11 +9,13 @@ import snack from 'utils/snack'
 export interface ApiContext {
   globalError: ApiError
   setGlobalError: CallableFunction
+  isDirty: boolean
 }
 
 const Context = React.createContext<ApiContext>({
   globalError: undefined,
   setGlobalError: undefined,
+  isDirty: undefined,
 })
 
 export const useApi = (): ApiContext => useContext(Context)
@@ -64,8 +66,9 @@ export default function ApiProvider({ children, ...other }: Props): React.ReactE
     () => ({
       globalError,
       setGlobalError,
+      isDirty,
     }),
-    [globalError],
+    [globalError, isDirty],
   )
   return (
     <Context.Provider value={ctx}>

@@ -16,7 +16,6 @@ import { ApiErrorGatewayTimeout, ApiErrorUnauthorized } from 'utils/error'
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
   oboTeamId?: string
-  setDirty?: CallableFunction
   setOboTeamId?: CallableFunction
   refetchAppsEnabled?: () => void
   refetchSettings?: () => void
@@ -27,9 +26,7 @@ const Context = React.createContext<SessionContext>({
   appsEnabled: undefined,
   ca: undefined,
   core: undefined,
-  isDirty: undefined,
   oboTeamId: undefined,
-  setDirty: undefined,
   setOboTeamId: undefined,
   settings: undefined,
   user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
@@ -68,11 +65,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     () => ({
       ...(session || {}),
       appsEnabled,
-      isDirty: isDirty === undefined ? session?.isDirty : isDirty,
       oboTeamId,
       refetchAppsEnabled,
       refetchSettings,
-      setDirty,
       setOboTeamId,
       settings,
     }),

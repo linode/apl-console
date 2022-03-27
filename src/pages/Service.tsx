@@ -1,6 +1,7 @@
 import Service from 'components/Service'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
+import { omit } from 'lodash'
 import React, { useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -31,7 +32,7 @@ export default function ({
   const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
   // END HOOKS
   if (formData) {
-    if (serviceId) update({ teamId, serviceId, body: formData })
+    if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
     setFormData(undefined)
   }
