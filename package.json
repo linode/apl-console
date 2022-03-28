@@ -116,7 +116,7 @@
     "eject": "react-scripts eject",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
-    "gen:store": "npx @rtk-query/codegen-openapi src/store/openapi-config.ts",
+    "gen:store": "npx @rtk-query/codegen-openapi src/redux/openapi-config.ts",
     "lint-staged": "lint-staged",
     "lint:es": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",

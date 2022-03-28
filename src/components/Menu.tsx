@@ -30,7 +30,6 @@ import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useDeployQuery } from 'redux/otomiApi'
-import { store } from 'redux/store'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import Cluster from './Cluster'
@@ -74,7 +73,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     user: { isAdmin },
   } = useSession()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
-  const a = store.getState()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
@@ -82,15 +80,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { classes: mainClasses } = useMainStyles()
   const [key, setKey] = useState<any>()
   if (deploy) {
-    if (!key) {
-      setTimeout(() => {
-        setKey(snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 }))
-      })
-    }
+    if (!key) setKey(snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 }))
+
     if (okDeploy || errorDeploy) {
-      setTimeout(() => {
-        snack.close(key)
-      })
+      snack.close(key)
       if (errorDeploy) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
       else setTimeout(() => snack.success('Scheduled for deployment'))
       setDeploy(false)
@@ -128,7 +121,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   return (
     <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
-        <ListItemText primary='Enterprise' />
+        <ListItemText primary='Platform' />
       </StyledListSubheader>
       <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
