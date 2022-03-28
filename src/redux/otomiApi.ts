@@ -1,5 +1,4 @@
 import { emptySplitApi as api } from './emptyApi'
-
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({

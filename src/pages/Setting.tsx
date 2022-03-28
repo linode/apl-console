@@ -1,3 +1,4 @@
+import Loader from 'components/Loader'
 import Setting from 'components/Setting'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
@@ -16,8 +17,8 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormData] = useState()
   const { settings: sessSettings, refetchSettings } = useSession()
+  const [edit, { isSuccess: okEdit, isLoading: isLoadingEdit }] = useEditSettingsMutation()
   const { data, isLoading, error, refetch } = useGetSettingsQuery({ ids: [settingId] })
-  const [edit, { isSuccess: okEdit }] = useEditSettingsMutation()
   useEffect(() => {
     setFormData(undefined)
   }, [settingId])
@@ -36,8 +37,11 @@ export default function ({
   // END HOOKS
   let settings = data
   if (formData) settings = { ...settings, [settingId]: formData }
-  const comp = !(isLoading || error) && settings && (
-    <Setting onSubmit={setFormData} settings={settings} settingId={settingId} />
-  )
+  const comp =
+    isLoading || isLoadingEdit || error ? (
+      <Loader />
+    ) : (
+      <Setting onSubmit={setFormData} settings={settings} settingId={settingId} />
+    )
   return <PaperLayout comp={comp} loading={isLoading} />
 }
