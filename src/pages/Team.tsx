@@ -36,15 +36,6 @@ export default function ({
     }
   }, [formData, deleteId])
   // END HOOKS
-  // console.log('statusCreate: ', statusCreate)
-  // console.log('isLoadingCreate: ', isLoadingCreate)
-  // console.log('okCreate: ', okCreate)
-  // console.log('statusUpdate: ', statusUpdate)
-  // console.log('isLoadingUpdate: ', isLoadingUpdate)
-  // console.log('okUpdate: ', okUpdate)
-  console.log('statusDelete: ', statusDelete)
-  console.log('isLoadingDelete: ', isLoadingDelete)
-  console.log('okDelete: ', okDelete)
   if (okDelete || okCreate || okUpdate) return <Redirect to='/teams' />
   const team = formData || data
   const comp = !(isLoading || error) && <Team team={team} onSubmit={setFormData} onDelete={setDeleteId} />
