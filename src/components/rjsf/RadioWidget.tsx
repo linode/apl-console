@@ -1,6 +1,6 @@
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-underscore-dangle */
-import { capitalize, Typography } from '@mui/material'
+import { Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
@@ -62,7 +62,7 @@ function RadioWidget({
           const radio = (
             <FormControlLabel
               control={<Radio key={option.label} />}
-              label={capitalize(option.label)}
+              label={option.label}
               value={option.value}
               key={option.label}
               disabled={disabled || itemDisabled || readonly}

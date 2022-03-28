@@ -2,7 +2,7 @@ import Service from 'components/Service'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateServiceMutation,
@@ -25,21 +25,26 @@ export default function ({
   useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [create, { isSuccess: okCreate }] = useCreateServiceMutation()
-  const [update, { isSuccess: okUpdate }] = useEditServiceMutation()
-  const [del, { isSuccess: okDelete }] = useDeleteServiceMutation()
-  const { data, isLoading, error } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  const [create, { isLoading: isLoadingCreate, isSuccess: okCreate, status: statusCreate }] = useCreateServiceMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: okUpdate, status: statusUpdate }] = useEditServiceMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: okDelete, status: statusDelete }] = useDeleteServiceMutation()
+  const { data, isLoading, error } = useGetServiceQuery(
+    { teamId, serviceId },
+    { skip: !serviceId || isLoadingCreate || isLoadingUpdate || isLoadingDelete || okCreate || okUpdate || okDelete },
+  )
   const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
+  useEffect(() => {
+    if (formData) {
+      setFormData(undefined)
+      if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
+      else create({ teamId, body: formData })
+    }
+    if (deleteId) {
+      setDeleteId()
+      del({ teamId, serviceId })
+    }
+  }, [formData, deleteId])
   // END HOOKS
-  if (formData) {
-    if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
-    else create({ teamId, body: formData })
-    setFormData(undefined)
-  }
-  if (deleteId) {
-    del({ teamId, serviceId })
-    setDeleteId()
-  }
   if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/services`} />
   const loading = isLoading || isLoadingSecrets
   const err = error || errorSecrets

@@ -96,28 +96,7 @@ export const cleanData = (
     undefinedValues: true,
     ...inOptions,
   }
-  // if (schema) {
-  //   // schema given, filter out defaults
-  //   const defPaths = extract(schema, (p: JSONSchema7) => p.default ?? p['x-default'])
-  //   each(defPaths, function (def, p) {
-  //     if (def === undefined) return
-  //     const data = get(obj, p)
-  //     // if same as before set it to undefined to filter with cleanDeep
-  //     if (isEqual(data, def)) set(obj, p, undefined)
-  //   })
-  // }
   return cleanDeep(obj, options) as Record<string, unknown>
-}
-
-// TODO: https://github.com/redkubes/otomi-api/issues/183
-export const renameKeys = (data) => {
-  return data
-  // if (data === undefined) return data
-  // const keyValues = Object.keys(data).map((key) => {
-  //   const newKey = key.replaceAll('-', '_')
-  //   return { [newKey]: data[key] }
-  // })
-  // return Object.assign({}, ...keyValues)
 }
 
 export const getApps = (session, teamId) => {

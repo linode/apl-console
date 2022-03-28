@@ -8,7 +8,7 @@ export default function ({ uiSchema, schema, formData, ...props }: any): React.R
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
   const listTooLong = schema.items?.enum?.length > 8
-  const shortList = schema.items?.enum?.length < 5
+  const shortList = schema.items?.enum?.length < 4
   set(newUiSchema, 'ui:options.row', shortList)
 
   if (!listTooLong) {

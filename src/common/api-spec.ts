@@ -95,13 +95,15 @@ const addDomainEnumField = (schema: Schema, settings, formData): void => {
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = getStrict(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns?.zones || [])]
-  if (zones.length === 1 || ing.useDefaultSubdomain) ing.domain = zones[0]
   if (!ingressSchema) return
   if (formData.ingress.domain) {
     const { length } = formData.ingress.domain
-    set(ingressSchema, 'subdomain.maxLength', 64 - length)
+    ingressSchema.subdomain.maxLength = 64 - length
   }
-  set(ingressSchema, 'domain.enum', zones)
+  // we only need to create an enum if we have more than one option
+  if (zones.length > 1) ingressSchema.domain.enum = zones
+  if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
+  if (zones.length === 1) ingressSchema.domain.readOnly = true
 }
 
 export const getJobSchema = (settings: GetSettingsApiResponse, formData: any, secrets: Array<any>): any => {

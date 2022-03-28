@@ -3,7 +3,7 @@ import Job from 'components/Job'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateJobMutation,
@@ -26,21 +26,29 @@ export default function ({
   useAuthzSession(teamId)
   const [formData, setFormData] = useState()
   const [deleteId, setDeleteId]: any = useState()
-  const [create, { isSuccess: okCreate }] = useCreateJobMutation()
-  const [update, { isSuccess: okUpdate }] = useEditJobMutation()
-  const [del, { isSuccess: okDelete }] = useDeleteJobMutation()
-  const { data, isLoading, error } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
+  const [create, { isLoading: isLoadingCreate, isSuccess: okCreate, status: statusCreate }] = useCreateJobMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: okUpdate, status: statusUpdate }] = useEditJobMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: okDelete, status: statusDelete }] = useDeleteJobMutation()
+  const { data, isLoading, error } = useGetJobQuery(
+    { teamId, jobId },
+    {
+      skip:
+        !teamId || !jobId || isLoadingCreate || isLoadingUpdate || isLoadingDelete || okCreate || okUpdate || okDelete,
+    },
+  )
   const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
+  useEffect(() => {
+    if (formData) {
+      setFormData(undefined)
+      if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
+      else create({ teamId, body: formData })
+    }
+    if (deleteId) {
+      setDeleteId()
+      del({ teamId, jobId })
+    }
+  }, [formData, deleteId])
   // END HOOKS
-  if (formData) {
-    if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
-    else create({ teamId, body: formData })
-    setFormData(undefined)
-  }
-  if (deleteId) {
-    del({ teamId, jobId })
-    setDeleteId()
-  }
   if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/jobs`} />
   const loading = isLoading || isLoadingSecrets
   const err = error || errorSecrets

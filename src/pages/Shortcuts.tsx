@@ -17,6 +17,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   const session = useAuthzSession(teamId)
   const { data: apps, isLoading, error } = useGetAppsQuery({ teamId })
+  // END HOOKS
   const appsWithShortcuts = (apps || [])
     .map((app) => getAppData(session, teamId, app, true))
     .filter((a) => a.shortcuts?.length)

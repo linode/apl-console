@@ -2,7 +2,7 @@ import { setSpec } from 'common/api-spec'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useMemo } from 'react'
 import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
@@ -12,6 +12,7 @@ import {
   useGetSettingsQuery,
 } from 'store/otomi'
 import { ApiErrorGatewayTimeout, ApiErrorUnauthorized } from 'utils/error'
+import { useApi } from './Api'
 
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
@@ -41,7 +42,7 @@ interface Props {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const [isDirty, setDirty] = useState()
+  const { isDirty, setDirty } = useApi()
   const { data: session, isLoading: isLoadingSession, error: errorSession } = useGetSessionQuery()
   const {
     data: settings,
@@ -56,7 +57,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
-  // END HOOKS
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -73,6 +73,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }),
     [appsEnabled, isDirty, oboTeamId, session, settings],
   )
+  // END HOOKS
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   const error = errorApps || errorSession || errorApiDocs || errorSettings
   let err = error && <ErrorComponent error={new ApiErrorGatewayTimeout()} />

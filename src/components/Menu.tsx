@@ -69,10 +69,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     appsEnabled,
+    isDirty: isSessionDirty,
     settings: { cluster, otomi },
     user: { isAdmin },
   } = useSession()
   const { isDirty } = useApi()
+  const useDirty = isDirty ?? isSessionDirty
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const {
@@ -239,7 +241,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </Collapse>
         </>
       )}
-      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <MenuItem
+        className={classes.deploy}
+        disabled={!useDirty}
+        onClick={handleClick}
+        data-cy='menu-item-deploy-changes'
+      >
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>

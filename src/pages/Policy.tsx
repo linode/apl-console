@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Policy from 'components/Policy'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -16,16 +15,18 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [formData, setFormData] = useState()
+  const { data: settings, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })
+  const [editSettings] = useEditSettingsMutation()
   useEffect(() => {
     setFormData(undefined)
   }, [policyId])
-  const { data: settings, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })
-  const [editSettings] = useEditSettingsMutation()
+  useEffect(() => {
+    if (formData) {
+      editSettings({ body: { policies: { [policyId]: formData as any } } })
+      setFormData(undefined)
+    }
+  }, [formData])
   // END HOOKS
-  if (formData) {
-    editSettings({ body: { policies: { [policyId]: formData as any } } })
-    setFormData(undefined)
-  }
   let policies = settings?.policies
   if (formData) policies = { ...policies, [policyId]: formData }
   const comp = !(isLoading || error) && policies && (

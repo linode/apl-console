@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material'
 import { getServiceSchema, getServiceUiSchema } from 'common/api-spec'
-import { unset } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import isEqual from 'lodash/isEqual'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
@@ -23,7 +23,7 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
   const [data, setData]: any = useState(service)
   const [isDirty, setDirty] = useState(false)
   const handleChange = ({ formData: inData }) => {
-    const formData = { ...inData }
+    const formData = cloneDeep(inData)
     const teamSubdomain = formData && formData.name ? `${formData.name}.team-${teamId}` : ''
     const defaultSubdomain = teamSubdomain
     if (formData.ingress) {

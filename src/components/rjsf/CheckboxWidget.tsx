@@ -12,14 +12,13 @@ export default function (props: WidgetProps) {
   // Because an unchecked checkbox will cause html5 validation to fail, only add
   // the "required" attribute if the field value must be "true", due to the
   // "const" or "enum" keywords
-  const checked =
-    typeof value === 'undefined' ? schema['x-default'] !== undefined && schema['x-default'] : Boolean(value)
+  const checked = typeof value === 'undefined' ? schema.default !== undefined && schema.default : Boolean(value)
   const required = schemaRequiresTrueValue(schema)
 
   const _onChange = (_, checked: boolean) => onChange(checked)
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onFocus(id, value)
-  const indeterminate = schema['x-default'] !== undefined && schema['x-default'] === !!checked
+  const indeterminate = schema.default !== undefined && schema.default === !!checked
   const labelText = uiSchema.title || schema.title ? label : sentenceCase(label || '')
 
   return (

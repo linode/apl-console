@@ -23,6 +23,7 @@ export default function (): React.ReactElement {
     isFetching: isFetchingTeamServices,
   } = useGetTeamServicesQuery(isAdmin ? skipToken : undefined)
   const { data: teams, error: errorTeams, isLoading: isLoadingTeams } = useGetTeamsQuery()
+  // END HOOKS
   const team = !(isLoadingTeams || errorTeams) && find(teams, { id: tid })
   const err = errorAllServices || errorTeamServices || errorTeams
   const loading = isFetchingAllServices || isFetchingTeamServices || isLoadingTeams

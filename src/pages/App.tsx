@@ -2,10 +2,9 @@
 import App from 'components/App'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'store/otomi'
-import { renameKeys } from 'utils/data'
 
 interface Params {
   teamId: string
@@ -22,21 +21,23 @@ export default function ({
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const { data, isLoading, error, refetch } = useGetAppQuery({ teamId, appId })
-  const [edit, { isLoading: editLoading }] = useEditAppMutation()
-  const [toggle, { isLoading: toggleLoading }] = useToggleAppsMutation()
+  const [edit, { isSuccess: okEdit }] = useEditAppMutation()
+  const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
+  useEffect(() => {
+    if (formData) {
+      setFormData(undefined)
+      edit({ teamId, appId, body: formData })
+    }
+    if (appIds) {
+      setAppState([])
+      toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
+    }
+    if (okEdit || okToggle) {
+      refetch()
+      refetchAppsEnabled()
+    }
+  }, [formData, appIds, okEdit, okToggle])
   // END HOOKS
-  if (formData) {
-    edit({ teamId, appId, body: renameKeys(formData) })
-    setFormData(undefined)
-  }
-  if (appIds) {
-    toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
-    setAppState([])
-  }
-  if (editLoading || toggleLoading) {
-    setTimeout(refetch)
-    setTimeout(refetchAppsEnabled)
-  }
   const useData = formData || data
   const comp = !(isLoading || error) && useData && (
     <App onSubmit={setFormData} id={appId} {...useData} teamId={teamId} setAppState={setAppState} />

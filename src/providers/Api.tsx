@@ -8,14 +8,16 @@ import snack from 'utils/snack'
 
 export interface ApiContext {
   globalError: ApiError
-  setGlobalError: CallableFunction
   isDirty: boolean
+  setDirty: CallableFunction
+  setGlobalError: CallableFunction
 }
 
 const Context = React.createContext<ApiContext>({
   globalError: undefined,
-  setGlobalError: undefined,
   isDirty: undefined,
+  setDirty: undefined,
+  setGlobalError: undefined,
 })
 
 export const useApi = (): ApiContext => useContext(Context)
@@ -37,9 +39,9 @@ export const getErrorMiddleware =
           requestStatus,
         } = meta
         // dirty logic: every MUTATION we deem to make state dirty
-        if (type === 'mutation' && requestStatus === 'fulfilled') setDirty(true)
+        if (type === 'mutation' && requestStatus === 'fulfilled') setTimeout(() => setDirty(true), 1000)
         // after we processed a successful deploy QUERY we reset dirty state
-        if (endpointName === 'deploy' && requestStatus === 'fulfilled') setDirty(false)
+        if (endpointName === 'deploy' && requestStatus === 'fulfilled') setTimeout(() => setDirty(false), 1000)
       }
     } else if (payload) {
       const {
@@ -65,8 +67,9 @@ export default function ApiProvider({ children, ...other }: Props): React.ReactE
   const ctx = useMemo(
     () => ({
       globalError,
-      setGlobalError,
       isDirty,
+      setDirty,
+      setGlobalError,
     }),
     [globalError, isDirty],
   )
