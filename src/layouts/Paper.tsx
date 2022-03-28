@@ -14,6 +14,14 @@ const useStyles = makeStyles()((theme) => ({
       paddingRight: 0,
     },
   },
+  root: {
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
   paper: {
     borderTopLeftRadius: 0,
     borderTopRightRadius: 0,
@@ -39,11 +47,11 @@ interface Props {
 }
 
 export default function ({ loading, comp }: Props): React.ReactElement {
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
   return (
     <MainLayout>
       <Container maxWidth='lg' className={classes.container}>
-        <Box component={Paper} className={classes.paper}>
+        <Box component={Paper} className={cx(classes.paper, classes.root)}>
           <Error />
           {loading && <Loader />}
           {!loading && comp}
