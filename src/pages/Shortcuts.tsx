@@ -3,7 +3,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAppsQuery } from 'store/otomi'
+import { useGetAppsQuery } from 'redux/otomiApi'
 import { getAppData } from 'utils/data'
 
 interface Params {

@@ -1,7 +1,7 @@
 import Policies from 'components/Policies'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { useGetSettingsQuery } from 'store/otomi'
+import { useGetSettingsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const { data, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })

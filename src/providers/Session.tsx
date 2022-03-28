@@ -2,7 +2,9 @@ import { setSpec } from 'common/api-spec'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
+import { useAppDispatch } from 'redux/hooks'
 import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
@@ -10,9 +12,10 @@ import {
   useGetAppsQuery,
   useGetSessionQuery,
   useGetSettingsQuery,
-} from 'store/otomi'
+} from 'redux/otomiApi'
+import { setDirty } from 'redux/reducers'
+import { ReducerState } from 'redux/store'
 import { ApiErrorGatewayTimeout, ApiErrorUnauthorized } from 'utils/error'
-import { useApi } from './Api'
 
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
@@ -42,8 +45,8 @@ interface Props {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const { isDirty, setDirty } = useApi()
-  const { data: session, isLoading: isLoadingSession, error: errorSession } = useGetSessionQuery()
+  const dispatch = useAppDispatch()
+  const { data: session, isLoading: isLoadingSession, error: errorSession, isSuccess: okSession } = useGetSessionQuery()
   const {
     data: settings,
     isLoading: isLoadingSettings,
@@ -71,8 +74,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       setOboTeamId,
       settings,
     }),
-    [appsEnabled, isDirty, oboTeamId, session, settings],
+    [appsEnabled, oboTeamId, session, settings],
   )
+  const oldDirty = useSelector(({ global }: ReducerState) => global.isDirty)
+  useEffect(() => {
+    // when the UI dirty flag changes on the server, and it has changed from local state, will we dispatch
+    if (session && oldDirty !== session.isDirty) dispatch(setDirty(session.isDirty))
+  }, [session])
   // END HOOKS
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   const error = errorApps || errorSession || errorApiDocs || errorSettings
@@ -90,5 +98,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       err = <ErrorComponent error={new ApiErrorUnauthorized()} />
     }
   }
-  return err || (session && <Context.Provider value={ctx}>{children}</Context.Provider>)
+  if (err) return err
+  return <Context.Provider value={ctx}>{children}</Context.Provider>
 }

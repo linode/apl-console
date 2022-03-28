@@ -5,7 +5,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import find from 'lodash/find'
 import React from 'react'
-import { useGetAllServicesQuery, useGetTeamServicesQuery, useGetTeamsQuery } from 'store/otomi'
+import { useGetAllServicesQuery, useGetTeamServicesQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const {

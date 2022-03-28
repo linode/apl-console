@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material'
 import { capitalize } from 'lodash'
 import React from 'react'
-import { GetAppsApiResponse } from 'store/otomi'
+import { GetAppsApiResponse } from 'redux/otomiApi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import MuiLink from './MuiLink'

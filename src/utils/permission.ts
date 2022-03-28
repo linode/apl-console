@@ -1,5 +1,5 @@
 import get from 'lodash/get'
-import { GetSessionApiResponse } from 'store/otomi'
+import { GetSessionApiResponse } from 'redux/otomiApi'
 
 export default (user: GetSessionApiResponse['user'], teamId: string | undefined, action): boolean => {
   if (!teamId) return false

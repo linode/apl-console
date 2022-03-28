@@ -4,7 +4,7 @@ import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'store/otomi'
+import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId: string

@@ -1,5 +1,5 @@
 import { set } from 'lodash'
-import { GetSessionApiResponse } from 'store/otomi'
+import { GetSessionApiResponse } from 'redux/otomiApi'
 import canDo from 'utils/permission'
 
 const userTpl: GetSessionApiResponse['user'] = {

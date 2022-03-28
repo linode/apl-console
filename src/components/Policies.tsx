@@ -4,7 +4,7 @@ import { getPolicySchema } from 'common/api-spec'
 import { map } from 'lodash'
 import { useSession } from 'providers/Session'
 import React from 'react'
-import { GetSettingsApiResponse } from 'store/otomi'
+import { GetSettingsApiResponse } from 'redux/otomiApi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 

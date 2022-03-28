@@ -4,7 +4,7 @@ import { cloneDeep, unset } from 'lodash'
 import isEqual from 'lodash/isEqual'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { GetSecretsApiResponse, GetServiceApiResponse } from 'store/otomi'
+import { GetSecretsApiResponse, GetServiceApiResponse } from 'redux/otomiApi'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 

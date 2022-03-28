@@ -10,8 +10,8 @@ import {
   useDeleteJobMutation,
   useEditJobMutation,
   useGetJobQuery,
-  useGetSecretsQuery,
-} from 'store/otomi'
+  useGetSecretsQuery
+} from 'redux/otomiApi'
 
 interface Params {
   teamId?: string

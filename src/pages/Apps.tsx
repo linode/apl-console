@@ -4,7 +4,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import MainLayout from 'layouts/Empty'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAppsQuery, useToggleAppsMutation } from 'store/otomi'
+import { useGetAppsQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string

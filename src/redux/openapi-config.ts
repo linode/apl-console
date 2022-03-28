@@ -4,7 +4,7 @@ const config: ConfigFile = {
   schemaFile: 'http://localhost:3000/api/v1/apiDocs',
   apiFile: './emptyApi.ts',
   apiImport: 'emptySplitApi',
-  outputFile: './otomi.ts',
+  outputFile: './otomiApi.ts',
   exportName: 'otomiApi',
   hooks: true,
 }

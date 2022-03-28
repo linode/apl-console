@@ -9,8 +9,8 @@ import {
   useDeleteServiceMutation,
   useEditServiceMutation,
   useGetSecretsQuery,
-  useGetServiceQuery,
-} from 'store/otomi'
+  useGetServiceQuery
+} from 'redux/otomiApi'
 
 interface Params {
   teamId: string

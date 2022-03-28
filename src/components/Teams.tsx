@@ -3,7 +3,7 @@ import { Box, Button } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { GetTeamsApiResponse } from 'store/otomi'
+import { GetTeamsApiResponse } from 'redux/otomiApi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 

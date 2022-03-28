@@ -3,7 +3,7 @@ import Jobs from 'components/Jobs'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAllJobsQuery, useGetTeamJobsQuery } from 'store/otomi'
+import { useGetAllJobsQuery, useGetTeamJobsQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string

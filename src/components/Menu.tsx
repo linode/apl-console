@@ -25,11 +25,12 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { useApi } from 'providers/Api'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useDeployQuery } from 'store/otomi'
+import { useAppSelector } from 'redux/hooks'
+import { useDeployQuery } from 'redux/otomiApi'
+import { store } from 'redux/store'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import Cluster from './Cluster'
@@ -69,29 +70,24 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     appsEnabled,
-    isDirty: isSessionDirty,
     settings: { cluster, otomi },
     user: { isAdmin },
   } = useSession()
-  const { isDirty } = useApi()
-  const useDirty = isDirty ?? isSessionDirty
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  const a = store.getState()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
-  const {
-    data: deployRes,
-    isLoading: deploying,
-    error: errorDeploy,
-  }: any = useDeployQuery(!deploy ? skipToken : undefined)
-  let key
+  const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
+  const { classes, cx } = useStyles()
+  const { classes: mainClasses } = useMainStyles()
+  const [key, setKey] = useState<any>()
   if (deploy) {
-    if (!deploying) {
-      if (!key) {
-        setTimeout(() => {
-          key = snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 })
-        })
-      }
+    if (!key) {
+      setTimeout(() => {
+        setKey(snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 }))
+      })
     }
-    if (deployRes || errorDeploy) {
+    if (okDeploy || errorDeploy) {
       setTimeout(() => {
         snack.close(key)
       })
@@ -100,9 +96,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       setDeploy(false)
     }
   }
-
-  const { classes, cx } = useStyles()
-  const { classes: mainClasses } = useMainStyles()
 
   const StyledMenuItem = React.memo(
     (props: any): React.ReactElement => (
@@ -241,12 +234,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </Collapse>
         </>
       )}
-      <MenuItem
-        className={classes.deploy}
-        disabled={!useDirty}
-        onClick={handleClick}
-        data-cy='menu-item-deploy-changes'
-      >
+      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>

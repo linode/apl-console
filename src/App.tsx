@@ -23,7 +23,6 @@ import Setting from 'pages/Setting'
 import Shortcuts from 'pages/Shortcuts'
 import Team from 'pages/Team'
 import Teams from 'pages/Teams'
-import ApiProvider from 'providers/Api'
 import SessionProvider from 'providers/Session'
 import ThemeProvider from 'providers/Theme'
 import React, { Suspense } from 'react'
@@ -31,7 +30,9 @@ import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
+import { Provider } from 'react-redux'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { store } from 'redux/store'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -50,12 +51,12 @@ function App() {
         <CacheProvider value={muiCache}>
           <NotistackProvider>
             <SnackbarUtilsConfigurator />
-            <ApiProvider>
+            <Provider store={store}>
               <DndProvider backend={HTML5Backend}>
                 <SessionProvider>
                   <ThemeProvider>
-                    <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
                     <CssBaseline />
+                    <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
                     <Router basename={contextPath}>
                       <Switch>
                         {/* ! user && <Route path='/' component={Home} exact /> */}
@@ -90,7 +91,7 @@ function App() {
                   </ThemeProvider>
                 </SessionProvider>
               </DndProvider>
-            </ApiProvider>
+            </Provider>
           </NotistackProvider>
         </CacheProvider>
       </ErrorBoundary>

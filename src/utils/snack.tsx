@@ -62,9 +62,6 @@ export default {
   toast(msg: string, options: OptionsObject = {}): React.ReactElement | any {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
-  comingSoon(options: OptionsObject = {}): React.ReactElement {
-    return this.toast('Coming soon!', { ...options, variant: 'warning' })
-  },
   // eslint-disable-next-line consistent-return
   close(id: number): React.ReactElement | any {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)

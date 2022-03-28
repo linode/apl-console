@@ -3,7 +3,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetSecretsQuery } from 'store/otomi'
+import { useGetSecretsQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId: string

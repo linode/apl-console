@@ -3,7 +3,7 @@ import { getThemeMode, useMainStyles } from 'common/theme'
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { GetTeamsApiResponse, useGetTeamsQuery } from 'store/otomi'
+import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()((theme) => {

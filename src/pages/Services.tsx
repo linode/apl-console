@@ -3,7 +3,7 @@ import Services from 'components/Services'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'store/otomi'
+import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string

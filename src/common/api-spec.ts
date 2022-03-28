@@ -2,7 +2,12 @@ import { pascalCase } from 'change-case'
 import CodeEditor from 'components/rjsf/FieldTemplate/CodeEditor'
 import { get, set, unset } from 'lodash'
 import { cloneDeep, isEmpty } from 'lodash/lang'
-import { GetServiceApiResponse, GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'store/otomi'
+import {
+  GetServiceApiResponse,
+  GetSessionApiResponse,
+  GetSettingsApiResponse,
+  GetTeamApiResponse,
+} from 'redux/otomiApi'
 import { extract, getStrict, isOf } from 'utils/schema'
 
 const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`

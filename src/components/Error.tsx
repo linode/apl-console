@@ -1,10 +1,11 @@
 import CloseIcon from '@mui/icons-material/Close'
 import { Alert, Collapse, Container, Grid, IconButton } from '@mui/material'
-import { useApi } from 'providers/Api'
-import { useSession } from 'providers/Session'
 import React from 'react'
 import Helmet from 'react-helmet'
 import { Trans } from 'react-i18next'
+import { useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { setError } from 'redux/reducers'
 import { Keys as k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import { ApiError } from '../utils/error'
@@ -31,11 +32,15 @@ interface Props {
 
 export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
-  const { globalError, setGlobalError } = useApi()
+  const dispatch = useAppDispatch()
+  const globalError = useAppSelector(({ global: { error } }) => error)
   const err = error ?? globalError
   if (!err) return null
   const { code, message } = err
   const msgKey = k[message] || k.Unknown
+  const clearError = () => {
+    dispatch(setError(undefined))
+  }
   return (
     <Container className={classes.root}>
       <Helmet>
@@ -48,16 +53,14 @@ export default function ({ error }: Props): React.ReactElement {
             className={classes.banner}
             severity='error'
             variant='outlined'
-            onClick={() => {
-              setGlobalError()
-            }}
+            onClick={clearError}
             action={
               <IconButton
                 aria-label='close'
                 color='inherit'
                 size='small'
                 onClick={() => {
-                  setGlobalError()
+                  setError(undefined)
                 }}
               >
                 <CloseIcon fontSize='inherit' />

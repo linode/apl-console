@@ -3,7 +3,7 @@ import Policy from 'components/Policy'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useEditSettingsMutation, useGetSettingsQuery } from 'store/otomi'
+import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 
 interface Params {
   policyId?: string

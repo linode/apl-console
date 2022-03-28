@@ -3,7 +3,7 @@ import { getTeamSchema, getTeamUiSchema } from 'common/api-spec'
 import { isEqual } from 'lodash/lang'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { GetTeamApiResponse } from 'store/otomi'
+import { GetTeamApiResponse } from 'redux/otomiApi'
 import DeleteButton from './DeleteButton'
 import Form from './rjsf/Form'
 

@@ -4,7 +4,7 @@ import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
 import { find, isEmpty, isPlainObject, transform } from 'lodash'
-import { GetSessionApiResponse } from 'store/otomi'
+import { GetSessionApiResponse } from 'redux/otomiApi'
 
 export const cleanOptions = {
   cleanKeys: [],
