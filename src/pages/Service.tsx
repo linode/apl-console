@@ -9,7 +9,7 @@ import {
   useDeleteServiceMutation,
   useEditServiceMutation,
   useGetSecretsQuery,
-  useGetServiceQuery
+  useGetServiceQuery,
 } from 'redux/otomiApi'
 
 interface Params {

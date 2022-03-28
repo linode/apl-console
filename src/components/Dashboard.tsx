@@ -12,7 +12,7 @@ import {
   GetAllServicesApiResponse,
   GetTeamApiResponse,
   GetTeamsApiResponse,
-  GetTeamServicesApiResponse
+  GetTeamServicesApiResponse,
 } from 'redux/otomiApi'
 import { Keys as k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'

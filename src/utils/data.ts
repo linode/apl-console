@@ -81,11 +81,7 @@ const cleanDeep = (
     result[key] = value
   })
 
-export const cleanData = (
-  obj: Record<string, unknown>,
-  inOptions = {},
-  schema = undefined,
-): Record<string, unknown> => {
+export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<string, unknown> => {
   const options = {
     ...cleanOptions,
     cleanArrays: false,
@@ -112,7 +108,6 @@ const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).repl
 
 export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, mergeShortcuts = false) => {
   const {
-    core: { adminApps, teamApps },
     settings: {
       cluster,
       otomi: { isMultitenant },
@@ -152,7 +147,7 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
-  const modelName = `App${pascalCase(appId)}`
+  const modelName = `App${pascalCase(appId as string)}`
   const schema = spec.components.schemas[modelName]
     ? (spec.components.schemas[modelName] as JSONSchema7)
     : { title: appId, description: '' }

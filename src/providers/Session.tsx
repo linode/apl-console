@@ -88,16 +88,15 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // else err = <ErrorComponent error={error} />
   if (apiDocs) setSpec(apiDocs)
-  if (!err) {
-    const { user } = session
-    if (!user.isAdmin && !oboTeamId) {
-      if (user.teams.length) {
-        setOboTeamId(user.teams[0])
-        return <Loader />
-      }
-      err = <ErrorComponent error={new ApiErrorUnauthorized()} />
-    }
-  }
   if (err) return err
+  // set obo to first team if not set
+  const { user } = session
+  if (!user.isAdmin && !oboTeamId) {
+    if (user.teams.length) {
+      setOboTeamId(user.teams[0])
+      return <Loader />
+    }
+    err = <ErrorComponent error={new ApiErrorUnauthorized()} />
+  }
   return <Context.Provider value={ctx}>{children}</Context.Provider>
 }

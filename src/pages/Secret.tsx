@@ -5,7 +5,12 @@ import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { useCreateSecretMutation, useDeleteSecretMutation, useEditSecretMutation, useGetSecretQuery } from 'redux/otomiApi'
+import {
+  useCreateSecretMutation,
+  useDeleteSecretMutation,
+  useEditSecretMutation,
+  useGetSecretQuery,
+} from 'redux/otomiApi'
 
 interface Params {
   teamId: string

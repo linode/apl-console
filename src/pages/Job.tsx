@@ -10,7 +10,7 @@ import {
   useDeleteJobMutation,
   useEditJobMutation,
   useGetJobQuery,
-  useGetSecretsQuery
+  useGetSecretsQuery,
 } from 'redux/otomiApi'
 
 interface Params {
