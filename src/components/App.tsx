@@ -14,14 +14,15 @@ import {
   Typography,
 } from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
+import useAuthzSession from 'hooks/useAuthzSession'
 import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import Markdown from 'markdown-to-jsx'
-import { useSession } from 'providers/Session'
 import React, { ChangeEvent, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
+import { nullify } from 'utils/schema'
 import YAML from 'yaml'
 import Checkbox from './Checkbox'
 import CodeEditor from './CodeEditor'
@@ -86,7 +87,8 @@ export default function ({
     rawvalues: 3,
   }
   const { classes } = useStyles()
-  const session = useSession()
+  const session = useAuthzSession()
+  const { appsEnabled, settings } = session
   const {
     baseUrl,
     externalUrl,
@@ -126,11 +128,12 @@ export default function ({
   }
   const handleChangeValues = ({ formData }) => {
     setValues(formData)
+    // const nullCleanedFormData = cleanData(formData, { nullValues: true })
     const d = !isEqual(formData, inValues)
     setDirty(d)
     setValuesDirty(d)
     const newAppSchema = getAppSchema(id).properties?.values
-    const newAppUiSchema = getAppUiSchema(id, formData)
+    const newAppUiSchema = getAppUiSchema(appsEnabled, settings, id, formData)
     setAppSchema(newAppSchema)
     setAppUiSchema(newAppUiSchema)
   }
@@ -145,7 +148,7 @@ export default function ({
   }
 
   const handleSubmit = () => {
-    const data = { id, teamId, values, rawValues, shortcuts }
+    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
     if (isDirty) {
       onSubmit(data)
       setDirty(false)
@@ -161,6 +164,24 @@ export default function ({
     enabled !== false && externalUrl
       ? { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
       : {}
+
+  const renderShortcuts = (s) => {
+    const href = `${baseUrl}${s.path}`
+    return (
+      <ListItem key={s.title}>
+        {enabled !== false ? (
+          <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
+            <b>{s.title}</b>: {s.description}
+          </MuiLink>
+        ) : (
+          <Typography key={href} variant='body2' color='action.disabled'>
+            <b>{s.title}</b>: {s.description}
+          </Typography>
+        )}
+      </ListItem>
+    )
+  }
+
   return (
     <Box>
       <Box className={classes.header}>
@@ -220,13 +241,7 @@ export default function ({
               </ListSubheader>
             }
           >
-            {(defaultShortcuts || []).map((s) => (
-              <ListItem key={s.title}>
-                <MuiLink href={`${baseUrl}${s.path}`} target='_blank' rel='noopener'>
-                  <b>{s.title}</b>: {s.description}
-                </MuiLink>
-              </ListItem>
-            ))}
+            {(defaultShortcuts || []).map((s) => renderShortcuts(s))}
           </List>
         )}
         <List
@@ -238,22 +253,7 @@ export default function ({
             ) : undefined
           }
         >
-          {(shortcuts || []).map((s) => {
-            const href = `${s.baseUrl}${s.path}`
-            return (
-              <ListItem key={s.title}>
-                {enabled !== false ? (
-                  <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
-                    <b>{s.title}</b>: {s.description}
-                  </MuiLink>
-                ) : (
-                  <Typography key={href} variant='body2' color='action.disabled'>
-                    <b>{s.title}</b>: {s.description}
-                  </Typography>
-                )}
-              </ListItem>
-            )
-          })}
+          {(shortcuts || []).map((s) => renderShortcuts(s))}
           {hasShortcuts && isEdit && (
             <Form
               key='editShortcuts'
@@ -294,7 +294,6 @@ export default function ({
             onChange={handleChangeValues}
             onSubmit={handleSubmit}
             formData={values}
-            clean={false}
             hideHelp
             uiSchema={appUiSchema}
           >

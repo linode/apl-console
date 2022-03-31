@@ -3,96 +3,73 @@
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { find, isEmpty, isPlainObject, transform } from 'lodash'
+import { cloneDeep, find, isEmpty, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
+
+export type CleanOptions = {
+  cleanKeys?: any[]
+  cleanValues?: any[]
+  cleanArrays?: boolean
+  emptyArrays?: boolean
+  emptyObjects?: boolean
+  emptyStrings?: boolean
+  NaNValues?: boolean
+  nullValues?: boolean
+  undefinedValues?: boolean
+}
 
 export const cleanOptions = {
   cleanKeys: [],
   cleanValues: [],
-  cleanArrays: true,
-  emptyArrays: true,
+  cleanArrays: false,
+  emptyArrays: false,
   emptyObjects: true,
   emptyStrings: true,
-  NaNValues: false,
   nullValues: true,
-  undefinedValues: true,
+  undefinedValues: false,
 }
 
-const cleanDeep = (
-  object: any,
-  {
-    cleanKeys = [],
-    cleanValues = [],
-    cleanArrays = true,
-    emptyArrays = true,
-    emptyObjects = true,
-    emptyStrings = true,
-    NaNValues = false,
-    nullValues = true,
-    undefinedValues = true,
-  } = {},
-) =>
-  transform(object, (result, value, key) => {
+export const cleanDeep = (object, opts: CleanOptions = {}) => {
+  const o = { ...cleanOptions, ...opts }
+  return transform(object, (result, value, key) => {
     // Exclude specific keys.
-    if (cleanKeys.includes(key)) return
+    if (o.cleanKeys.includes(key)) return
 
     // Recurse into arrays and objects.
-    if ((Array.isArray(value) && cleanArrays) || isPlainObject(value)) {
-      value = cleanDeep(value, {
-        NaNValues,
-        cleanKeys,
-        cleanValues,
-        cleanArrays,
-        emptyArrays,
-        emptyObjects,
-        emptyStrings,
-        nullValues,
-        undefinedValues,
-      })
-    }
+    if (Array.isArray(value) || isPlainObject(value)) value = cleanDeep(value, o)
 
     // Exclude specific values.
-    if (cleanValues.includes(value)) return
+    if (o.cleanValues.includes(value)) return
 
     // Exclude empty objects.
-    if (emptyObjects && isPlainObject(value) && isEmpty(value)) return
+    if (o.emptyObjects && isPlainObject(value) && isEmpty(value)) return
 
     // Exclude empty arrays.
-    if (emptyArrays && Array.isArray(value) && !value.length) return
+    if (o.emptyArrays && Array.isArray(value) && !value.length) return
 
     // Exclude empty strings.
-    if (emptyStrings && value === '') return
+    if (o.emptyStrings && value === '') return
 
     // Exclude NaN values.
-    if (NaNValues && Number.isNaN(value)) return
+    if (o.NaNValues && Number.isNaN(value)) return
 
     // Exclude null values.
-    if (nullValues && value === null) return
+    if (o.nullValues && value === null) return
 
     // Exclude undefined values.
-    if (undefinedValues && value === undefined) return
+    if (o.undefinedValues && value === undefined) return
 
     // Append when recursing arrays.
-    if (Array.isArray(result)) {
-      // eslint-disable-next-line consistent-return
-      return result.push(value)
-    }
+    // eslint-disable-next-line consistent-return
+    if (Array.isArray(result)) return result.push(value)
 
     result[key] = value
   })
+}
 
-export const cleanData = (obj: Record<string, unknown>, inOptions = {}): Record<string, unknown> => {
-  const options = {
-    ...cleanOptions,
-    cleanArrays: false,
-    emptyArrays: false,
-    emptyObjects: true,
-    emptyStrings: true,
-    nullValues: true,
-    undefinedValues: true,
-    ...inOptions,
-  }
-  return cleanDeep(obj, options) as Record<string, unknown>
+export const cleanData = (obj: Record<string, unknown>, options?: CleanOptions): Record<string, unknown> => {
+  const ret = cleanDeep(cloneDeep(obj), options) as Record<string, any> | undefined
+  return ret || {}
 }
 
 export const getApps = (session, teamId) => {

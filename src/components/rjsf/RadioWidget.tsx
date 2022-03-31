@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import { WidgetProps } from '@rjsf/core'
+import { sentenceCase } from 'change-case'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
@@ -34,7 +35,7 @@ function RadioWidget({
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onFocus(id, value)
   const hasLabel = !!options.hasLabel
-  const row = inline || renderOptions.length <= 7
+  const row = inline || renderOptions.length <= 5
   const useValue = value === undefined || value === null ? schema.default || '' : value
   // if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: undefined }
   if (!required && schema.default === undefined) {
@@ -62,7 +63,7 @@ function RadioWidget({
           const radio = (
             <FormControlLabel
               control={<Radio key={option.label} />}
-              label={option.label}
+              label={schema.enum ? option.label : sentenceCase(option.label)}
               value={option.value}
               key={option.label}
               disabled={disabled || itemDisabled || readonly}

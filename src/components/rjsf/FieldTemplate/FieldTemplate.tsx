@@ -25,11 +25,15 @@ export default function ({
   rawHelp,
   rawDescription,
   schema,
+  uiSchema,
 }: FieldTemplateProps) {
   // @ts-ignore
   let isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
   if (schema.type === 'string' && schema.enum && schema.default) isCustomArray = true
-  const hideDescription = isCustomArray || ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
+  const hideDescription =
+    uiSchema['ui:widget'] === 'hidden' ||
+    isCustomArray ||
+    ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
 
   const accordionize = propsToAccordion.includes(label)
   const accordionized = (children) => {

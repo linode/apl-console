@@ -3,7 +3,7 @@ import { Divider, Grid, Paper } from '@mui/material'
 import { ObjectFieldTemplateProps } from '@rjsf/core'
 import { sentenceCase } from 'change-case'
 import React from 'react'
-import { getSchemaType, hasSomeOf, isOneOf, propsToAccordion } from 'utils/schema'
+import { getSchemaType, hasSomeOf, propsToAccordion } from 'utils/schema'
 import DescriptionField from './DescriptionField'
 import { useStyles } from './styles'
 import TitleField from './TitleField'
@@ -48,8 +48,8 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const displayDescription =
       uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
-    const isOne = isOneOf(schema)
-    if (skipTitle === undefined) skipTitle = propsToAccordion.includes(uiSchema.title || schema.title || title) || isOne
+    if (skipTitle === undefined)
+      skipTitle = schema['x-hideTitle'] || propsToAccordion.includes(uiSchema.title || schema.title || title)
     // eslint-disable-next-line consistent-return
     return (
       <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
@@ -101,7 +101,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
       return (
         <Grid key={id} container>
           <Paper key={id} className={cx(classes.paper, classes.grid)}>
-            {(isOf || (type === 'object' && !schema.properties)) && (
+            {(isOf || (!isOf && type === 'object' && !schema.properties)) && (
               <Grid item key={`${idSchema.$id}-title`}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>
@@ -123,7 +123,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         </Grid>
       )
     }
-    if (schema.type === 'array') {
+    if (schema.type === 'array' || schema.enum?.length < 8) {
       return (
         <Grid key={id} item xs={12} className={classes.grid}>
           {o.content}

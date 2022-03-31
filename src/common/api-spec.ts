@@ -401,7 +401,12 @@ export const getAppSchema = (appId): any => {
   return schema
 }
 
-export const getAppUiSchema = (appId, formData): any => {
+export const getAppUiSchema = (
+  appsEnabled: Record<string, any>,
+  settings: GetSettingsApiResponse,
+  appId,
+  formData,
+): any => {
   const modelName = `App${pascalCase(appId)}`
   const model = spec.components.schemas[modelName].properties.values
   const uiSchema = {}
@@ -412,9 +417,22 @@ export const getAppUiSchema = (appId, formData): any => {
     })
   }
   switch (appId) {
+    case 'cert-manager':
+      if (formData.issuer === 'custom-ca') set(uiSchema, 'stage.ui:widget', 'hidden')
+      break
     case 'drone':
       const provider = get(formData, 'sourceControl.provider')
-      if (provider !== 'github') set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
+      if (!provider) {
+        set(uiSchema, 'adminUser.ui:widget', 'hidden')
+        set(uiSchema, 'adminToken.ui:widget', 'hidden')
+        set(uiSchema, 'orgsFilter.ui:widget', 'hidden')
+        set(uiSchema, 'repo.ui:widget', 'hidden')
+        set(uiSchema, 'repoFilter.ui:widget', 'hidden')
+      }
+      if (provider !== 'github') {
+        set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
+        set(uiSchema, 'sharedSecret.ui:widget', 'hidden')
+      }
       break
     default:
       break

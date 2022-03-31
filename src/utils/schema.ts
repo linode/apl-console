@@ -1,5 +1,4 @@
-import { JSONSchema7 } from 'json-schema'
-import { get, isEqual, memoize, set, unset } from 'lodash'
+import { cloneDeep, get, memoize, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -23,12 +22,6 @@ export function unsetStrict(obj: any, path: string) {
   unset(obj, path)
 }
 
-export const isOneOf = (schema: JSONSchema7): boolean =>
-  // we must be a oneOf option when one prop exists that has an enum of length 1
-  schema.properties &&
-  (!!Object.keys(schema.properties).find((prop) => (schema.properties[prop] as JSONSchema7).enum?.length === 1) ||
-    (schema.properties?.[schema.title] && schema.required?.includes(schema.title)))
-
 export const hasSomeOf = (schema) => {
   // we have to wrap items in allOf with one item passed, to be able to add
   // schema props such as 'title' so we exclude that scenario
@@ -41,22 +34,24 @@ export const getSchemaType = (schema) => {
   return schema?.type ?? (schema.allOf && schema.allOf.length === 1 ? schema.allOf[0].type ?? 'object' : 'object')
 }
 
+export const isOf = (o): boolean => Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
+
 export const traverse = (o, func, path = '') =>
   Object.getOwnPropertyNames(o).forEach((i) => {
     func(o, i, path)
-    if (o[i] !== null && typeof o[i] === 'object') {
+    if (o[i] !== undefined && o[i] !== null && typeof o[i] === 'object') {
       // going one step down in the object tree!!
       traverse(o[i], func, path !== '' ? `${path}.${i}` : i)
     }
   })
 
-export const nullify = (data) =>
-  traverse(data, (o, i) => {
-    // eslint-disable-next-line no-param-reassign
-    if (typeof o[i] === 'object' && isEqual(o[i], {})) o[i] = null
+export const nullify = (data) => {
+  const d = cloneDeep(data || {})
+  traverse(d, (o, i) => {
+    if (o && o[i] === undefined) o[i] = null
   })
-
-export const isOf = (o): boolean => Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
+  return d
+}
 
 export const extract = memoize((o, f) => {
   const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']

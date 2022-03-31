@@ -23,6 +23,7 @@ export const useStyles = makeStyles()(() => ({
   paper: {
     padding: 16,
     marginTop: 16,
+    marginBottom: 16,
     width: '100%',
   },
 }))

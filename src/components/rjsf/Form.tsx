@@ -5,6 +5,7 @@ import { each, get, isEqual } from 'lodash'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { cleanData } from 'utils/data'
+import { nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
@@ -56,10 +57,9 @@ export default function ({
     onChange({ formData: cleanFormData, ...other })
   }
   const onSubmitWrapper = ({ formData, ...other }: IChangeEvent<any>, ev) => {
-    // const cleanFormData = clean ? cleanData(formData, undefined, schema) : formData
-    // nullify(cleanFormData)
-    const cleanFormData = formData
-    onSubmit({ formData: cleanFormData, ...other }, ev)
+    const cleanFormData = clean ? cleanData(formData) : formData
+    const nulledCleanFormData = nullify(cleanFormData)
+    onSubmit({ ...other, formData: nulledCleanFormData }, ev)
   }
   const validate = (formData, errors, ajvErrors): any => {
     each(ajvErrors, (err) => {

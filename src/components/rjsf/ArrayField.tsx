@@ -8,10 +8,10 @@ export default function ({ uiSchema, schema, formData, ...props }: any): React.R
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
   const listTooLong = schema.items?.enum?.length > 8
-  const shortList = schema.items?.enum?.length < 4
+  const shortList = schema.items?.enum?.length < 5
   set(newUiSchema, 'ui:options.row', shortList)
 
-  if (!listTooLong) {
+  if (!listTooLong && uiSchema['ui:widget'] !== 'hidden') {
     if (utils.isMultiSelect(schema)) {
       newUiSchema['ui:widget'] = 'checkboxes'
       set(newUiSchema, 'ui:options.inline', shortList)
