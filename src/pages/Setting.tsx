@@ -1,3 +1,4 @@
+import { getSpec } from 'common/api-spec'
 import Loader from 'components/Loader'
 import Setting from 'components/Setting'
 import PaperLayout from 'layouts/Paper'
@@ -5,6 +6,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { cleanReadOnly } from 'utils/schema'
 
 interface Params {
   settingId?: string
@@ -25,7 +27,9 @@ export default function ({
   useEffect(() => {
     if (formData) {
       setFormData(undefined)
-      edit({ body: { [settingId]: formData as any } })
+      const schema = getSpec().components.schemas.Settings
+      const cleanData = cleanReadOnly(schema.properties[settingId], formData)
+      edit({ body: { [settingId]: cleanData } })
     }
     if (okEdit) {
       refetch()

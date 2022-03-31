@@ -53,6 +53,15 @@ export const nullify = (data) => {
   return d
 }
 
+export const cleanReadOnly = (schema, formData) => {
+  const ret = cloneDeep(formData)
+  const leafs = Object.keys(extract(schema, (o) => o.readOnly))
+  leafs.forEach((path) => {
+    unset(ret, path)
+  })
+  return ret
+}
+
 export const extract = memoize((o, f) => {
   const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
   const leafs = {}
