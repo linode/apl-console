@@ -128,7 +128,6 @@ export default function ({
   }
   const handleChangeValues = ({ formData }) => {
     setValues(formData)
-    // const nullCleanedFormData = cleanData(formData, { nullValues: true })
     const d = !isEqual(formData, inValues)
     setDirty(d)
     setValuesDirty(d)
@@ -196,7 +195,12 @@ export default function ({
         <Box className={classes.headerButtons}>
           <ButtonGroup variant='outlined' color='primary' size='large'>
             {enabled !== undefined && (
-              <Checkbox onChange={handleChangeEnabled} checked={enabled !== false} disabled={!isAdminApps} />
+              <Checkbox
+                title={enabled ? 'This app is enabled' : 'This app is disabled. Check to enable.'}
+                onChange={handleChangeEnabled}
+                checked={enabled !== false}
+                disabled={!isAdminApps || enabled}
+              />
             )}
             {enabled !== false && externalUrl && (
               <IconButton color='primary' size='large' {...playButtonProps}>

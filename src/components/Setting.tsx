@@ -23,7 +23,7 @@ export default function ({ onSubmit, settings: formSettings, settingId }: Props)
     const newUiSchema = getSettingUiSchema(appsEnabled, settings, settingId, user, oboTeamId)
     setUiSchema(newUiSchema)
     setData(formData)
-    const isDirty = !isEqual(formData, formSettings[settingId] || {})
+    const isDirty = !isEqual(formData, formSettings[settingId])
     setDirty(isDirty)
   }
   const handleSubmit = ({ formData }) => {
