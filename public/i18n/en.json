@@ -14,7 +14,7 @@
   "TITLE_SECRETS": "Secrets",
   "TITLE_SERVICE": "Service details",
   "TITLE_SERVICES": "Services - {{scope}}",
-  "TITLE_SETTING": "Setting - {{settingId}}",
+  "TITLE_SETTINGS": "Settings - {{settingId}}",
   "TITLE_SHORTCUTS": "Shortcuts - {{role}}",
   "TITLE_TEAM": "Team details",
   "TITLE_TEAMS": "Teams",

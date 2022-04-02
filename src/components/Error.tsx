@@ -5,7 +5,7 @@ import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
-import { e, k } from 'translations/keys'
+import { e, h, k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import { ApiError } from '../utils/error'
 
@@ -37,45 +37,38 @@ export default function ({ error }: Props): React.ReactElement {
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
-  const { code, message } = err
-  const msgKey = e[message] || e.Unknown
+  const code = error ? err.code : err.status
+  const message = error ? err.message : err.data.error
+  const msgKey = e[message] || h[code] || e.Unknown
   const clearError = () => {
     dispatch(setError(undefined))
   }
-  const tErr = `${t(k.ERROR)} ${code}: ${t(msgKey)}`
+  const tErr = `${t(k.ERROR, { code, msg: t(msgKey) })}`
   return (
-    <Helmet title={tErr}>
-      <Container className={classes.root}>
-        {globalError && (
-          <Collapse in={!!err}>
-            <Alert
-              className={classes.banner}
-              severity='error'
-              variant='outlined'
-              onClick={clearError}
-              action={
-                <IconButton
-                  aria-label='close'
-                  color='inherit'
-                  size='small'
-                  onClick={() => {
-                    setError(undefined)
-                  }}
-                >
-                  <CloseIcon fontSize='inherit' />
-                </IconButton>
-              }
-            >
-              {tErr}
-            </Alert>
-          </Collapse>
-        )}
-        {error && (
-          <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
-            <h1>{tErr}</h1>
-          </Grid>
-        )}
-      </Container>
-    </Helmet>
+    <Container className={classes.root}>
+      <Helmet title={tErr} />
+      {globalError && (
+        <Collapse in={!!err}>
+          <Alert
+            className={classes.banner}
+            severity='error'
+            variant='outlined'
+            onClick={clearError}
+            action={
+              <IconButton aria-label='close' color='inherit' size='small' onClick={clearError}>
+                <CloseIcon fontSize='inherit' />
+              </IconButton>
+            }
+          >
+            {tErr}
+          </Alert>
+        </Collapse>
+      )}
+      {error && (
+        <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
+          <h1>{tErr}</h1>
+        </Grid>
+      )}
+    </Container>
   )
 }

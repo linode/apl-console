@@ -50,5 +50,5 @@ export default function ({
     ) : (
       <Setting onSubmit={setFormData} settings={settings} settingId={settingId} />
     )
-  return <PaperLayout comp={comp} loading={isLoading} title={t(k.TITLE_SETTING, { settingId })} />
+  return <PaperLayout comp={comp} loading={isLoading} title={t(k.TITLE_SETTINGS, { settingId })} />
 }

@@ -82,13 +82,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (session && oldDirty !== session.isDirty) dispatch(setDirty(session.isDirty))
   }, [session])
   // END HOOKS
-  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   const error = errorApps || errorSession || errorApiDocs || errorSettings
   let err = error && <ErrorComponent error={new ApiErrorGatewayTimeout()} />
+  if (err) return err
+  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // else err = <ErrorComponent error={error} />
   if (apiDocs) setSpec(apiDocs)
-  if (err) return err
   // set obo to first team if not set
   const { user } = session
   if (!user.isAdmin && !oboTeamId) {
