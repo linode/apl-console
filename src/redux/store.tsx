@@ -20,7 +20,7 @@ export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (ac
     }
   } else if (payload) {
     const {
-      data: { message: err },
+      data: { error: err },
       status,
     } = payload
     console.error('We got a rejected action with payload: ', payload)

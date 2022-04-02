@@ -83,11 +83,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   }, [session])
   // END HOOKS
   const error = errorApps || errorSession || errorApiDocs || errorSettings
-  let err = error && <ErrorComponent error={new ApiErrorGatewayTimeout()} />
-  if (err) return err
-  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
+  if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // else err = <ErrorComponent error={error} />
+  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
   const { user } = session
@@ -96,7 +95,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       setOboTeamId(user.teams[0])
       return <Loader />
     }
-    err = <ErrorComponent error={new ApiErrorUnauthorized()} />
+    return <ErrorComponent error={new ApiErrorUnauthorized()} />
   }
   return <Context.Provider value={ctx}>{children}</Context.Provider>
 }

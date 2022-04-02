@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { e, h, k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
+import snack from 'utils/snack'
 import { ApiError } from '../utils/error'
 
 const useStyles = makeStyles()((theme) => ({
@@ -44,6 +45,7 @@ export default function ({ error }: Props): React.ReactElement {
     dispatch(setError(undefined))
   }
   const tErr = `${t(k.ERROR, { code, msg: t(msgKey) })}`
+  snack.error(tErr)
   return (
     <Container className={classes.root}>
       <Helmet title={tErr} />
