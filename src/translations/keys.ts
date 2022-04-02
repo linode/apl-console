@@ -1,9 +1,4 @@
-export const Keys = {
-  ERROR: 'ERROR',
-  CREATE_MODEL: 'CREATE_MODEL',
-  WELCOME_DASHBOARD: 'WELCOME_DASHBOARD',
-  SELECT_TEAM: 'SELECT_TEAM',
-  CREATE_MODEL_FOR_TEAM: 'CREATE_MODEL_FOR_TEAM',
+export const h = {
   // http errors:
   400: 'Bad Request',
   401: 'Unauthorized', // RFC 7235
@@ -39,15 +34,39 @@ export const Keys = {
   506: 'Variant Also Negotiates', // RFC 2295
   510: 'Not Extended', // RFC 2774
   511: 'Network Authentication Required', // RFC 6585
-  // custom otomi errors:
+}
+
+export const k = {
+  CREATE_MODEL_FOR_TEAM: 'CREATE_MODEL_FOR_TEAM',
+  CREATE_MODEL: 'CREATE_MODEL',
+  ERROR: 'ERROR',
+  POLICY: 'POLICY',
+  SELECT_TEAM: 'SELECT_TEAM',
+  TITLE_APP: 'TITLE_APP',
+  TITLE_APPS: 'TITLE_APPS',
+  TITLE_DASHBOARD: 'TITLE_DASHBOARD',
+  TITLE_JOBS: 'TITLE_JOBS',
+  TITLE_JOB: 'TITLE_JOB',
+  TITLE_POLICIES: 'TITLE_POLICIES',
+  TITLE_SECRET: 'TITLE_SECRET',
+  TITLE_SECRETS: 'TITLE_SECRETS',
+  TITLE_SERVICE: 'TITLE_SERVICE',
+  TITLE_SERVICES: 'TITLE_SERVICES',
+  TITLE_SETTING: 'TITLE_SETTING',
+  TITLE_SHORTCUTS: 'TITLE_SHORTCUTS',
+  TITLE_TEAM: 'TITLE_TEAM',
+  TITLE_TEAMS: 'TITLE_TEAMS',
+  WELCOME_DASHBOARD: 'WELCOME_DASHBOARD',
+}
+
+// custom otomi errors:
+export const e = {
   'Git error occured': 'Git error occured',
   'Invalid values detected': 'Invalid values detected',
   'Service name already exists': 'Service name already exists',
   'The api could not be reached': 'The api could not be reached',
   'The route does not exist': 'The route does not exist',
   'The URL is already in use': 'The URL is already in use',
-  Unknown: 'Unknown',
   'Unauthorized: The user may not be assigned to any team.': 'Unauthorized. The user may not be assigned to any team.',
+  Unknown: 'Unknown',
 }
-
-export default Keys

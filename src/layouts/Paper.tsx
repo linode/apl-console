@@ -44,12 +44,13 @@ const useStyles = makeStyles()((theme) => ({
 interface Props {
   loading?: boolean
   comp: React.ReactElement
+  title?: string
 }
 
-export default function ({ loading, comp }: Props): React.ReactElement {
+export default function ({ loading, comp, title }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   return (
-    <MainLayout>
+    <MainLayout title={title}>
       <Container maxWidth='lg' className={classes.container}>
         <Box component={Paper} className={cx(classes.paper, classes.root)}>
           <Error />

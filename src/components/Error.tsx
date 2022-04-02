@@ -2,11 +2,10 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Alert, Collapse, Container, Grid, IconButton } from '@mui/material'
 import React from 'react'
 import Helmet from 'react-helmet'
-import { Trans } from 'react-i18next'
-import { useSelector } from 'react-redux'
+import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
-import { Keys as k } from 'translations/keys'
+import { e, k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import { ApiError } from '../utils/error'
 
@@ -34,50 +33,49 @@ export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
+  const { t } = useTranslation()
+  // END HOOKS
   const err = error ?? globalError
   if (!err) return null
   const { code, message } = err
-  const msgKey = k[message] || k.Unknown
+  const msgKey = e[message] || e.Unknown
   const clearError = () => {
     dispatch(setError(undefined))
   }
+  const tErr = `${t(k.ERROR)} ${code}: ${t(msgKey)}`
   return (
-    <Container className={classes.root}>
-      <Helmet>
-        <title>Error</title>
-        <meta name='description' content={`${code}: ${message}`} />
-      </Helmet>
-      {globalError && (
-        <Collapse in={!!err}>
-          <Alert
-            className={classes.banner}
-            severity='error'
-            variant='outlined'
-            onClick={clearError}
-            action={
-              <IconButton
-                aria-label='close'
-                color='inherit'
-                size='small'
-                onClick={() => {
-                  setError(undefined)
-                }}
-              >
-                <CloseIcon fontSize='inherit' />
-              </IconButton>
-            }
-          >
-            <Trans i18nKey={k.ERROR} />: <Trans i18nKey={msgKey} />
-          </Alert>
-        </Collapse>
-      )}
-      {error && (
-        <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
-          <h1>
-            <Trans>{k.ERROR}</Trans>: <Trans>{msgKey}</Trans>
-          </h1>
-        </Grid>
-      )}
-    </Container>
+    <Helmet title={tErr}>
+      <Container className={classes.root}>
+        {globalError && (
+          <Collapse in={!!err}>
+            <Alert
+              className={classes.banner}
+              severity='error'
+              variant='outlined'
+              onClick={clearError}
+              action={
+                <IconButton
+                  aria-label='close'
+                  color='inherit'
+                  size='small'
+                  onClick={() => {
+                    setError(undefined)
+                  }}
+                >
+                  <CloseIcon fontSize='inherit' />
+                </IconButton>
+              }
+            >
+              {tErr}
+            </Alert>
+          </Collapse>
+        )}
+        {error && (
+          <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
+            <h1>{tErr}</h1>
+          </Grid>
+        )}
+      </Container>
+    </Helmet>
   )
 }

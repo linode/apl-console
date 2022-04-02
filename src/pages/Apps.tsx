@@ -34,7 +34,7 @@ export default function ({
   }, [appIds, okToggle])
   // END HOOKS
   return (
-    <MainLayout>
+    <MainLayout title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`}>
       <Apps teamId={teamId} apps={isFetching ? undefined : apps} setAppState={setAppState} loading={isLoading} />
     </MainLayout>
   )

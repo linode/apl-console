@@ -3,6 +3,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateServiceMutation,
@@ -11,6 +12,8 @@ import {
   useGetSecretsQuery,
   useGetServiceQuery,
 } from 'redux/otomiApi'
+import { k } from 'translations/keys'
+import { getRole } from 'utils/data'
 
 interface Params {
   teamId: string
@@ -44,6 +47,7 @@ export default function ({
       del({ teamId, serviceId })
     }
   }, [formData, deleteId])
+  const { t } = useTranslation()
   // END HOOKS
   if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/services`} />
   const loading = isLoading || isLoadingSecrets
@@ -52,5 +56,5 @@ export default function ({
   const comp = !(loading || err) && (
     <Service teamId={teamId} service={service} secrets={secrets} onSubmit={setFormData} onDelete={setDeleteId} />
   )
-  return <PaperLayout loading={loading} comp={comp} />
+  return <PaperLayout loading={loading} comp={comp} title={t(k.TITLE_SERVICE, { role: getRole(teamId) })} />
 }

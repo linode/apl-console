@@ -3,6 +3,7 @@ import App from 'components/App'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
@@ -42,5 +43,6 @@ export default function ({
   const comp = !(isLoading || error) && useData && (
     <App onSubmit={setFormData} id={appId} {...useData} teamId={teamId} setAppState={setAppState} />
   )
+  // title is set in component as it knows more to put in the url (like tab chosen)
   return <PaperLayout comp={comp} loading={isLoading} />
 }

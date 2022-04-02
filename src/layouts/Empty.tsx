@@ -9,10 +9,15 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export default function ({ children }: any): React.ReactElement {
+interface Props {
+  children?: any
+  title?: string
+}
+
+export default function ({ children, title }: any): React.ReactElement {
   const { classes } = useStyles()
   return (
-    <MainLayout>
+    <MainLayout title={title}>
       <Container className={classes.container}>{children}</Container>
     </MainLayout>
   )

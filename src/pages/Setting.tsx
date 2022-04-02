@@ -2,11 +2,12 @@ import { getSpec } from 'common/api-spec'
 import Loader from 'components/Loader'
 import Setting from 'components/Setting'
 import PaperLayout from 'layouts/Paper'
-import { isEqual } from 'lodash'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { k } from 'translations/keys'
 import { cleanReadOnly } from 'utils/schema'
 
 interface Params {
@@ -39,6 +40,7 @@ export default function ({
       if (Object.keys(sessSettings).includes(settingId)) setTimeout(refetchSettings)
     }
   }, [formData, okEdit])
+  const { t } = useTranslation()
   // END HOOKS
   let settings = data
   if (formData) settings = { ...settings, [settingId]: formData }
@@ -48,5 +50,5 @@ export default function ({
     ) : (
       <Setting onSubmit={setFormData} settings={settings} settingId={settingId} />
     )
-  return <PaperLayout comp={comp} loading={isLoading} />
+  return <PaperLayout comp={comp} loading={isLoading} title={t(k.TITLE_SETTING, { settingId })} />
 }

@@ -141,3 +141,6 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
     hasShortcuts: !!ingress || useHost,
   }
 }
+
+// eslint-disable-next-line no-nested-ternary
+export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')

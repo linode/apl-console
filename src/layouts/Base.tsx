@@ -9,6 +9,7 @@ import User from 'components/User'
 import { useSession } from 'providers/Session'
 import { useTheme } from 'providers/Theme'
 import React, { useState } from 'react'
+import Helmet from 'react-helmet'
 import { makeStyles } from 'tss-react/mui'
 
 const drawerWidth = '240px'
@@ -120,10 +121,10 @@ const ToolbarOffset = styled('div')(({ theme }) => theme.mixins.toolbar)
 
 interface Props {
   children?: any
+  title: string
 }
 
-export default function (props: Props): React.ReactElement {
-  const { children } = props
+export default function ({ children, title }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
   const { setThemeMode } = useTheme()
   const themeType = getThemeMode()
@@ -161,6 +162,7 @@ export default function (props: Props): React.ReactElement {
 
   return (
     <div className={classes.root}>
+      {title && <Helmet title={title} />}
       <AppBar position='fixed' className={cx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
           <div className={classes.logo}>

@@ -19,7 +19,10 @@ import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import React, { ChangeEvent, useState } from 'react'
+import Helmet from 'react-helmet'
+import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
+import { k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import { nullify } from 'utils/schema'
@@ -114,6 +117,7 @@ export default function ({
 
   const [appSchema, setAppSchema] = useState<JSONSchema7>()
   const [appUiSchema, setAppUiSchema] = useState<any>()
+  const { t } = useTranslation()
   // END HOOKS
   const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
@@ -183,6 +187,7 @@ export default function ({
 
   return (
     <Box>
+      <Helmet title={t(k.TITLE_APP, { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
           <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />

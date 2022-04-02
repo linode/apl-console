@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { Keys as k } from 'translations/keys'
+import { e } from 'translations/keys'
 
 export class HttpError extends Error {
   code?: number
@@ -12,24 +12,24 @@ export class HttpError extends Error {
   }
 
   public static fromCode(code: number): HttpError {
-    return new HttpError(k[code], code)
+    return new HttpError(e[code], code)
   }
 }
 
 export class HttpErrorBadRequest extends HttpError {
   constructor() {
-    super(k['The route does not exist'], 400)
+    super(e['The route does not exist'], 400)
   }
 }
 
 export class ApiError extends HttpError {}
 export class ApiErrorGatewayTimeout extends ApiError {
   constructor() {
-    super(k['The api could not be reached'], 504)
+    super(e['The api could not be reached'], 504)
   }
 }
 export class ApiErrorUnauthorized extends ApiError {
   constructor() {
-    super(k['Unauthorized. The user may not be assigned to any team.'], 403)
+    super(e['Unauthorized. The user may not be assigned to any team.'], 403)
   }
 }

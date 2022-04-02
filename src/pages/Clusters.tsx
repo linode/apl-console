@@ -3,5 +3,5 @@ import PaperLayout from 'layouts/Paper'
 import React from 'react'
 
 export default function (): React.ReactElement {
-  return <PaperLayout comp={<Clusters />} />
+  return <PaperLayout title='Clusters' comp={<Clusters />} />
 }

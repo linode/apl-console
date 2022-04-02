@@ -4,6 +4,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateSecretMutation,
@@ -11,6 +12,7 @@ import {
   useEditSecretMutation,
   useGetSecretQuery,
 } from 'redux/otomiApi'
+import { k } from 'translations/keys'
 
 interface Params {
   teamId: string
@@ -43,9 +45,10 @@ export default function ({
       del({ teamId, secretId })
     }
   }, [formData, deleteId])
+  const { t } = useTranslation()
   // END HOOKS
   if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/secrets`} />
   const secret = formData || data
   const comp = !(isLoading || error) && <Secret onSubmit={setFormData} secret={secret} onDelete={setDeleteId} />
-  return <PaperLayout loading={isLoading} comp={comp} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t(k.TITLE_SECRET, { secretId, role: 'team' })} />
 }
