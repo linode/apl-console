@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.73](https://github.com/redkubes/otomi-stack-web/compare/v0.4.72...v0.4.73) (2022-04-05)
+
+
+### Bug Fixes
+
+* BlankScreen ([#135](https://github.com/redkubes/otomi-stack-web/issues/135)) ([b0125f3](https://github.com/redkubes/otomi-stack-web/commit/b0125f3a3ff1a49980cc99e1f39996ba63ce9be5))
+
+
+### Others
+
+* **deps:** bump trim-off-newlines from 1.0.1 to 1.0.3 ([#144](https://github.com/redkubes/otomi-stack-web/issues/144)) ([e5f5ecf](https://github.com/redkubes/otomi-stack-web/commit/e5f5ecfc86115026ef77263d0c93e4fbf31f8a5c))
+* **deps:** bump url-parse from 1.5.7 to 1.5.10 ([#143](https://github.com/redkubes/otomi-stack-web/issues/143)) ([7aa7059](https://github.com/redkubes/otomi-stack-web/commit/7aa7059c7e02b023f0b5b6c264f62b6a6c3079a5))
+
 ### [0.4.72](https://github.com/redkubes/otomi-stack-web/compare/v0.4.71...v0.4.72) (2022-02-24)
 
 
