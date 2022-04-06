@@ -68,6 +68,7 @@ export default function ({ policies }: Props): React.ReactElement {
       idKey='policyId'
       resourceType='Policy'
       hasTeamScope={false}
+      noCrud
     />
   )
 }
