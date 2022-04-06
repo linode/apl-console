@@ -34,11 +34,11 @@ export default function ({
   // END HOOKS
   return (
     <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-      <ButtonGroup disabled={disabled} {...other}>
+      <ButtonGroup {...other}>
         <SubmitButton disabled={disabled} data-cy={`button-submit-${resourceType}`} />
         {id && (
           <DeleteButton
-            disabled={disabled}
+            disabled={!id}
             onDelete={() => onDelete(id)}
             resourceName={resourceName}
             resourceType={resourceType}
