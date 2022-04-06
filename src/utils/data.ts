@@ -4,16 +4,16 @@
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, find, isEmpty, isPlainObject, transform } from 'lodash'
+import { cloneDeep, find, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 
 export type CleanOptions = {
   cleanKeys?: any[]
   cleanValues?: any[]
-  cleanArrays?: boolean
   emptyArrays?: boolean
   emptyObjects?: boolean
   emptyStrings?: boolean
+  keepValues?: any[]
   NaNValues?: boolean
   nullValues?: boolean
   undefinedValues?: boolean
@@ -22,12 +22,13 @@ export type CleanOptions = {
 export const cleanOptions = {
   cleanKeys: [],
   cleanValues: [],
-  cleanArrays: false,
-  emptyArrays: false,
+  emptyArrays: true,
   emptyObjects: true,
   emptyStrings: true,
+  keepValues: [],
+  NaNValues: true,
   nullValues: true,
-  undefinedValues: false,
+  undefinedValues: true,
 }
 
 export const cleanDeep = (object, opts: CleanOptions = {}) => {
@@ -35,6 +36,13 @@ export const cleanDeep = (object, opts: CleanOptions = {}) => {
   return transform(object, (result, value, key) => {
     // Exclude specific keys.
     if (o.cleanKeys.includes(key)) return
+
+    // Keep specific values before recursing into objects or arrays
+    // eslint-disable-next-line consistent-return
+    if (o.keepValues.some((v) => isEqual(value, v))) {
+      result[key] = value
+      return
+    }
 
     // Recurse into arrays and objects.
     if (Array.isArray(value) || isPlainObject(value)) value = cleanDeep(value, o)

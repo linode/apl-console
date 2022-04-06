@@ -5,11 +5,12 @@ import { useTranslation } from 'react-i18next'
 import DeleteDialog from './DeleteDialog'
 
 interface DeleteButtonProps {
+  disabled?: boolean
   onDelete: () => void
   resourceName: string
   resourceType: string
 }
-export default function ({ ...other }: DeleteButtonProps): React.ReactElement {
+export default function ({ disabled, ...other }: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
@@ -24,7 +25,7 @@ export default function ({ ...other }: DeleteButtonProps): React.ReactElement {
   return (
     <>
       {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...other} />}
-      <Button startIcon={<DeleteIcon />} onClick={onButtonClick}>
+      <Button disabled={disabled} startIcon={<DeleteIcon />} onClick={onButtonClick}>
         {t('delete')}
       </Button>
     </>

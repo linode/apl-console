@@ -1,14 +1,13 @@
 import { IChangeEvent, UiSchema, withTheme } from '@rjsf/core'
 import { Theme5 } from '@rjsf/material-ui'
 import ButtonGroup from 'components/ButtonGroup'
-import HelpButton from 'components/HelpButton'
+import Header from 'components/Header'
 import { JSONSchema7 } from 'json-schema'
-import { isEqual, some } from 'lodash'
+import { isEqual } from 'lodash'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { makeStyles } from 'tss-react/mui'
-import { cleanData, deepDiff } from 'utils/data'
+import { cleanData } from 'utils/data'
 import { nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
@@ -24,18 +23,9 @@ import TitleField from './TitleField'
 
 const Form = withTheme(Theme5)
 
-const useStyles = makeStyles()(() => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    '& .MuiGrid-item': {
-      padding: '16px !important',
-    },
-  },
-}))
-
 interface Props {
   idProp?: string
+  description?: string
   data: Record<string, any>
   resourceType?: string
   resourceName?: string
@@ -46,10 +36,9 @@ interface Props {
   title?: any
   hideHelp?: boolean
   clean?: boolean
-  setData?: CallableFunction
   setDirty?: CallableFunction
+  onChange?: CallableFunction
   onDelete?: CallableFunction
-  onError?: CallableFunction
   onSubmit?: CallableFunction
   schema: JSONSchema7
   uiSchema?: UiSchema
@@ -58,50 +47,49 @@ interface Props {
 export default function ({
   idProp = 'id',
   adminOnly = false,
+  description,
   disabled,
   resourceName,
   resourceType,
   liveValidate,
   clean = true,
-  title,
+  title: inTitle,
   hideHelp = false,
+  onChange,
   onDelete,
-  onError,
   onSubmit,
   data,
-  setData,
   schema,
   children,
   ...other
 }: Props): React.ReactElement {
-  const { user: isAdmin, oboTeamId } = useSession()
-  const { classes } = useStyles()
-  // const [state, setState] = useState(data)
+  const { oboTeamId } = useSession()
+  const [state, setState] = useState<Record<string, any>>()
+  useEffect(() => {
+    if (state?.id !== data?.id) setState(data)
+  }, [data?.[idProp]])
   const [isDirty, setDirty] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
   const id = data?.[idProp]
-  const key = `${resourceType}-${resourceName}`
-  const action = !idProp || id ? 'edit' : 'new'
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-
-  const onChangeWrapper = ({ formData: changedFormData, errors }: IChangeEvent<any>) => {
-    const cleanFormData = clean ? cleanData(changedFormData, { emptyArrays: false }) : changedFormData
-    const diff = data && deepDiff(cleanFormData, data)
-    const d = !isEqual(cleanFormData, data)
-    if (d) {
-      // we got *potentially* dirty data, strip out rjsf constructs that trigger new array forms
-      if (diff && some(diff, (val) => !(isEqual(val, '[{}]') || isEqual(val, '[undefined]')))) setDirty(true)
-    } else setDirty(false)
-    if (onError && errors.length && liveValidate) onError(errors, cleanFormData)
-    setData(cleanFormData)
-    // setState(cleanFormData)
+  const keepValues = [[{}], [undefined]] // rjsf structs that open parts of the form, may not be stripped
+  const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
+    // lets check if form data is dirty (has meaningful changes)
+    const cleanFormDataStripped = cleanData(formData) // strip all empty structs
+    const d = state && !isEqual(cleanFormDataStripped, state)
+    setDirty(d) // compare with initial data
+    // finally we send the fully stripped version to subscribers
+    const cleanFormData = clean ? cleanData(formData, { keepValues }) : formData
+    if (onChange) onChange(cleanFormData, errors)
+    // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
+    if (!state) setState(data || {})
   }
-  const onSubmitWrapper = ({ formData, errors }: IChangeEvent<any>, ev) => {
-    const cleanFormData = clean ? cleanData(formData) : formData
+  const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
+    // keep undefineds to nullify below, allowing api to unset paths in nested structures
+    const cleanFormData = clean ? cleanData(formData, { undefinedValues: false }) : formData
     const nulledCleanFormData = nullify(cleanFormData)
-    if (onError && errors.length && !liveValidate) onError(errors, nulledCleanFormData)
-    else onSubmit(nulledCleanFormData)
+    onSubmit(nulledCleanFormData)
   }
   // const validate = (formData, errors, ajvErrors): any => {
   //   each(ajvErrors, (err) => {
@@ -118,18 +106,16 @@ export default function ({
   //   })
   //   return errors
   // }
+  let title: string
+  if (adminOnly && !id) title = t('FORM_TITLE_NEW', { model: resourceType })
+  if (adminOnly && id && resourceName) title = t('FORM_TITLE_NAMED', { model: resourceType, name: resourceName })
+  if (adminOnly && id && !resourceName) title = t('FORM_TITLE', { model: resourceType })
+  if (!adminOnly && id) title = t('FORM_TITLE_TEAM', { model: resourceType, name: resourceName, teamId: oboTeamId })
+  if (!adminOnly && !id) title = t('FORM_TITLE_TEAM_NEW', { model: resourceType, teamId: oboTeamId })
+
   return (
     <>
-      {!hideHelp && (
-        <div className={classes.root}>
-          <h1 data-cy={`h1-${action}-${key}`}>
-            {adminOnly && t('FORM_TITLE', { model: resourceType, name: resourceName })}
-            {!adminOnly && id && t('FORM_TITLE_TEAM', { model: resourceType, name: resourceName, teamId: oboTeamId })}
-            {!adminOnly && !id && t('FORM_TITLE_TEAM_NEW', { model: resourceType, teamId: oboTeamId })}
-          </h1>
-          {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
-        </div>
-      )}
+      {!hideHelp && <Header title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
         formData={data}
         key={`${resourceType}-${resourceName}`}

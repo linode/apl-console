@@ -14,15 +14,12 @@ const useStyles = makeStyles()((theme) => ({
     paddingBottom: '3px',
   },
   small: {
-    marginTop: theme.spacing(3),
     height: '36px',
   },
   medium: {
-    marginTop: theme.spacing(3),
     height: '48px',
   },
   large: {
-    marginTop: theme.spacing(3),
     height: '56px',
   },
 }))

@@ -4,38 +4,36 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { makeStyles } from 'tss-react/mui'
 import EnhancedTable, { EnhancedTableProps } from './EnhancedTable'
-
-const useStyles = makeStyles()(() => ({
-  root: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    '& .MuiGrid-item': {
-      padding: '16px !important',
-    },
-  },
-}))
+import Header from './Header'
 
 interface ListTableProps extends EnhancedTableProps {
   teamId?: string
+  title?: string
+  hasTeamScope?: boolean
   resourceType: string
   adminOnly?: boolean
 }
-export default function ({ teamId, resourceType, adminOnly = false, ...other }: ListTableProps): React.ReactElement {
+export default function ({
+  teamId,
+  hasTeamScope = true,
+  title: inTitle,
+  resourceType,
+  adminOnly = false,
+  ...other
+}: ListTableProps): React.ReactElement {
   const { user: isAdmin, oboTeamId } = useSession()
-  const { classes } = useStyles()
   const { t } = useTranslation()
   // END HOOKS
+  const resourceTypePlural = `${resourceType}_plural`
+  let title
+  if ((adminOnly || !teamId) && !hasTeamScope) title = t('LIST_TITLE_NOSCOPE', { model: t(resourceTypePlural) })
+  if ((adminOnly || !teamId) && hasTeamScope) title = t('LIST_TITLE', { model: t(resourceTypePlural) })
+  if (!adminOnly && teamId) title = t('LIST_TITLE_TEAM', { model: t(resourceTypePlural), teamId })
   const resourceTypeLow = resourceType.toLowerCase()
   return (
     <>
-      <div className={classes.root}>
-        <h1 data-cy={`h1-list-${resourceTypeLow}`}>
-          {(adminOnly || !teamId) && t('LIST_TITLE', { model: t(`${resourceType}_plural`) })}
-          {!adminOnly && teamId && t('LIST_TITLE_TEAM', { model: t(`${resourceType}_plural`), teamId })}
-        </h1>
-      </div>
+      <Header title={inTitle || title} resourceType={resourceType} />
       <Box mb={1}>
         {(isAdmin || oboTeamId) && (
           <Button

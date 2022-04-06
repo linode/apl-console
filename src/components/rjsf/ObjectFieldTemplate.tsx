@@ -100,7 +100,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     if ((type === 'object' || isOf) && !isCustomArray) {
       return (
         <Grid key={id} container>
-          <Paper key={id} className={cx(classes.paper, classes.grid)}>
+          <Paper key={`${id}-paper`} className={cx(classes.paper, classes.grid)}>
             {(isOf || (!isOf && type === 'object' && !schema.properties)) && (
               <Grid item key={`${idSchema.$id}-title`}>
                 {renderTitleDescription(o.content?.props)}
@@ -150,7 +150,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
             //   <FormControl fullWidth key={idx} className={classes.container}>
             //     {o.map(render)}
             //   </FormControl>
-            <Grid key={idx} container className={classes.container}>
+            <Grid key={`fields-${idx}`} container className={classes.container}>
               {o.map(render)}
             </Grid>
           )

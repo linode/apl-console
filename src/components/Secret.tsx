@@ -24,7 +24,7 @@ export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElem
       onSubmit={onSubmit}
       onDelete={onDelete}
       data={formData}
-      setData={setData}
+      onChange={setData}
       disabled={!appsEnabled.vault}
       resourceName={secret?.name}
       resourceType='Secret'

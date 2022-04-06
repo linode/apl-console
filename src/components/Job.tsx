@@ -26,7 +26,7 @@ export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): R
       uiSchema={uiSchema}
       onSubmit={onSubmit}
       onDelete={onDelete}
-      setData={setData}
+      onChange={setData}
       data={formData}
       resourceName={job?.name}
       resourceType='Job'

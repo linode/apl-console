@@ -23,7 +23,7 @@ export default function ({ onSubmit, settings: formSettings, settingId }: Props)
       schema={schema}
       uiSchema={uiSchema}
       onSubmit={onSubmit}
-      setData={setData}
+      onChange={setData}
       data={formData}
       resourceName={settingId}
       resourceType='Setting'

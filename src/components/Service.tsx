@@ -50,7 +50,7 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
       onSubmit={onSubmit}
       onDelete={onDelete}
       data={formData}
-      setData={setData}
+      onChange={setData}
       resourceName={service?.name}
       resourceType='Service'
     />

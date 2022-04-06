@@ -27,6 +27,7 @@ import { nullify } from 'utils/schema'
 import YAML from 'yaml'
 import Checkbox from './Checkbox'
 import CodeEditor from './CodeEditor'
+import Header from './Header'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
@@ -60,9 +61,6 @@ const useStyles = makeStyles()((theme) => ({
   },
   noTabs: {
     padding: theme.spacing(3),
-  },
-  panelHeader: {
-    padding: theme.spacing(1),
   },
   buffer: {
     height: theme.spacing(2),
@@ -128,7 +126,8 @@ export default function ({
     const { deps } = getAppData(session, teamId, id)
     setAppState([(deps || []).concat([id]), enabled])
   }
-  const onError = (errors) => {
+  const handleShortcutsChange = (shortcuts, errors) => {
+    setShortcuts(shortcuts)
     setShortcutsValid(errors.length === 0)
   }
   const handleSubmit = () => {
@@ -193,24 +192,16 @@ export default function ({
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={0}>
-        <Box className={classes.panelHeader}>
-          <Box className={classes.content}>
-            <Typography variant='h5'>About {title}</Typography>
-            <Typography className={classes.paragraph} component='p' variant='body2'>
-              {description}
-            </Typography>
-            <Link href={schema['x-externalDocsPath']}>[...more]</Link>
-          </Box>
-          <Box className={classes.content}>
-            <Typography variant='h5'>{t('FORM_HEAD_ABOUT', { title })}</Typography>
-            <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
-          </Box>
+        <Header title={t('FORM_ABOUT', { title })} description={description} resourceType='App' />
+        <Link href={schema['x-externalDocsPath']}>[...more]</Link>
+        <div className={classes.buffer}> </div>
+        <Box className={classes.content}>
+          <Typography variant='h5'>{t('FORM_HEAD_ABOUT', { title })}</Typography>
+          <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
         </Box>
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <Box className={classes.panelHeader}>
-          <Typography variant='h5'>Shortcuts</Typography>
-        </Box>
+        <Header title={t('Shortcuts')} description={t('FORM_SHORTCUTS_DESC', { title })} resourceType='Shortcut' />
         {hasShortcuts && defaultShortcuts?.length && (
           <List
             subheader={
@@ -234,15 +225,15 @@ export default function ({
           {(shortcuts || []).map((s) => renderShortcuts(s))}
           {hasShortcuts && isEdit && (
             <Form
-              key='editShortcuts'
               schema={schema.properties.shortcuts}
-              setData={setShortcuts}
-              onError={onError}
+              onChange={handleShortcutsChange}
               data={shortcuts}
               hideHelp
               clean={false}
               liveValidate
               disabled={enabled === false}
+              resourceType='Shortcut'
+              resourceName={id}
             >
               <div />
             </Form>
@@ -263,52 +254,41 @@ export default function ({
       </TabPanel>
       {inValues && (
         <TabPanel value={tab} index={2}>
-          <Box className={classes.panelHeader}>
-            <Typography variant='h5'>Values</Typography>
-            <Typography variant='caption'>{t('FORM_HEAD_APP_EDIT', { title })}</Typography>
-          </Box>
           <Form
-            schema={appSchema}
-            setData={setValues}
-            onSubmit={handleSubmit}
+            adminOnly
+            description={t('FORM_HEAD_APP_EDIT', { title })}
             data={values}
-            hideHelp
+            schema={appSchema}
             uiSchema={appUiSchema}
-          >
-            <Box display='flex' flexDirection='row-reverse' m={1}>
-              <Button type='submit' disabled={!valuesDirty} data-cy='button-submit-values'>
-                Submit
-              </Button>
-            </Box>
-          </Form>
+            onChange={setValues}
+            onSubmit={handleSubmit}
+            resourceType='Values'
+          />
         </TabPanel>
       )}
       {inValues && (
         <TabPanel value={tab} index={3}>
-          <Box className={classes.panelHeader}>
-            <Typography variant='h5'>{t('Raw values')}</Typography>
-            <Typography variant='caption'>{t('FORM_WARNING_RAW_VALUES', { id })}</Typography>
-            <div className={classes.buffer}> </div>
-            <CodeEditor
-              code={yaml}
-              onChange={(data) => setRawValues(data || {})}
-              disabled={!isEdit}
-              setValid={setValid}
-            />
-            <Box display='flex' flexDirection='row-reverse' m={1}>
-              <Button
-                color='primary'
-                variant='contained'
-                data-cy='button-edit-rawvalues'
-                onClick={() => {
-                  if (isEdit) handleSubmit()
-                  setIsEdit(!isEdit)
-                }}
-                disabled={!valid}
-              >
-                {isEdit ? t('Submit') : t('Edit')}
-              </Button>
-            </Box>
+          <Header title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
+          <div className={classes.buffer}> </div>
+          <CodeEditor
+            code={yaml}
+            onChange={(data) => setRawValues(data || {})}
+            disabled={!isEdit}
+            setValid={setValid}
+          />
+          <Box display='flex' flexDirection='row-reverse' m={1}>
+            <Button
+              color='primary'
+              variant='contained'
+              data-cy='button-edit-rawvalues'
+              onClick={() => {
+                if (isEdit) handleSubmit()
+                setIsEdit(!isEdit)
+              }}
+              disabled={!valid}
+            >
+              {isEdit ? t('Submit') : t('Edit')}
+            </Button>
           </Box>
         </TabPanel>
       )}

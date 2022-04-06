@@ -25,7 +25,7 @@ export default function ({ onSubmit, onDelete, team }: Props): React.ReactElemen
       schema={schema}
       uiSchema={uiSchema}
       onSubmit={onSubmit}
-      setData={setData}
+      onChange={setData}
       data={formData}
       resourceName={team?.name}
       resourceType='Team'

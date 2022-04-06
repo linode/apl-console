@@ -27,7 +27,7 @@ export default function ({ onSubmit, policies, policyId }: Props): React.ReactEl
       uiSchema={uiSchema}
       onSubmit={onSubmit}
       data={formData}
-      setData={setData}
+      onChange={setData}
       disabled={!appsEnabled.gatekeeper}
       resourceName={policyId}
       resourceType='Policy'
