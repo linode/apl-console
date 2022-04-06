@@ -2,7 +2,6 @@ import { getSettingSchema, getSettingUiSchema } from 'common/api-spec'
 import { cloneDeep } from 'lodash'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import Form from './rjsf/Form'
 
 interface Props {

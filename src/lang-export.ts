@@ -1,4 +1,5 @@
 #!/usr/bin/env node --nolazy --loader ts-node/esm
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
@@ -23,7 +24,7 @@ const main = function () {
         const obj = JSON.parse(readFileSync(file, 'utf8'))
         if (process.env.IMPORT) {
           await Promise.all(
-            langs.map(async (l) => {
+            langs.map((l) => {
               // const url = `https://translate.google.com/?sl=en&tl=${l}&text=${encodeURIComponent(content)}&op=translate`
               // console.log(url)
               // const response = await fetch(url, {
@@ -54,14 +55,16 @@ const main = function () {
               console.log(`writing to final destination: ${finalLoc}`)
               const cnt = JSON.stringify(imp, undefined, 2)
               writeFileSync(finalLoc, cnt)
+              return undefined
             }),
           )
-          return
+          return undefined
         }
         // export
         const values = Object.values(obj)
         const content = values.join('\n')
         writeFileSync(file.replace('i18n/trans', 'i18n/dump').replace('.json', '.txt'), content)
+        return undefined
       }),
     )
   })
