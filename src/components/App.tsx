@@ -263,6 +263,7 @@ export default function ({
             onChange={setValues}
             onSubmit={handleSubmit}
             resourceType='Values'
+            idProp={null}
           />
         </TabPanel>
       )}
