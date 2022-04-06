@@ -67,6 +67,7 @@ export default function ({ policies }: Props): React.ReactElement {
       rows={policyEntries}
       idKey='policyId'
       resourceType='Policy'
+      hasTeamScope={false}
     />
   )
 }

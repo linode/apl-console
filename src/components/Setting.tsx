@@ -25,9 +25,9 @@ export default function ({ onSubmit, settings: formSettings, settingId }: Props)
       onSubmit={onSubmit}
       onChange={setData}
       data={formData}
-      resourceName={settingId}
+      // resourceName={settingId}
       resourceType='Setting'
-      idProp={undefined}
+      idProp={null}
       adminOnly
     />
   )

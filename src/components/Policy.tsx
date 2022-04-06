@@ -29,9 +29,9 @@ export default function ({ onSubmit, policies, policyId }: Props): React.ReactEl
       data={formData}
       onChange={setData}
       disabled={!appsEnabled.gatekeeper}
-      resourceName={policyId}
+      // resourceName={policyId}
       resourceType='Policy'
-      idProp={undefined}
+      idProp={null}
       adminOnly
     />
   )

@@ -107,9 +107,10 @@ export default function ({
   //   return errors
   // }
   let title: string
-  if (adminOnly && !id) title = t('FORM_TITLE_NEW', { model: resourceType })
-  if (adminOnly && id && resourceName) title = t('FORM_TITLE_NAMED', { model: resourceType, name: resourceName })
-  if (adminOnly && id && !resourceName) title = t('FORM_TITLE', { model: resourceType })
+  if (adminOnly && idProp && !id) title = t('FORM_TITLE_NEW', { model: resourceType })
+  if (adminOnly && ((idProp && id) || !idProp) && resourceName)
+    title = t('FORM_TITLE_NAMED', { model: resourceType, name: resourceName })
+  if (adminOnly && !idProp && !resourceName) title = t('FORM_TITLE', { model: resourceType })
   if (!adminOnly && id) title = t('FORM_TITLE_TEAM', { model: resourceType, name: resourceName, teamId: oboTeamId })
   if (!adminOnly && !id) title = t('FORM_TITLE_TEAM_NEW', { model: resourceType, teamId: oboTeamId })
 

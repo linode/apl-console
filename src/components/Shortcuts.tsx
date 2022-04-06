@@ -57,5 +57,5 @@ export default function ({ apps, teamId }: Props): React.ReactElement {
       renderer: getShortcutLink,
     },
   ]
-  return <ListTable teamId={teamId} headCells={headCells} rows={apps} resourceType='Shortcut' />
+  return <ListTable teamId={teamId} headCells={headCells} rows={apps} resourceType='Shortcut' noCrud />
 }

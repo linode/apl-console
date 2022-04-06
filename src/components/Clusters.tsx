@@ -40,5 +40,5 @@ export default function (): React.ReactElement {
       },
     },
   ]
-  return <ListTable headCells={headCells} rows={allClusters} resourceType='Cluster' />
+  return <ListTable headCells={headCells} rows={allClusters} resourceType='Cluster' hasTeamScope={false} />
 }

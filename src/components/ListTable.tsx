@@ -13,6 +13,7 @@ interface ListTableProps extends EnhancedTableProps {
   hasTeamScope?: boolean
   resourceType: string
   adminOnly?: boolean
+  noCrud?: boolean
 }
 export default function ({
   teamId,
@@ -20,6 +21,7 @@ export default function ({
   title: inTitle,
   resourceType,
   adminOnly = false,
+  noCrud = false,
   ...other
 }: ListTableProps): React.ReactElement {
   const { user: isAdmin, oboTeamId } = useSession()
@@ -34,8 +36,8 @@ export default function ({
   return (
     <>
       <Header title={inTitle || title} resourceType={resourceType} />
-      <Box mb={1}>
-        {(isAdmin || oboTeamId) && (
+      {(isAdmin || oboTeamId) && !noCrud && (
+        <Box mb={1}>
           <Button
             component={Link}
             to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
@@ -45,8 +47,8 @@ export default function ({
           >
             {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
           </Button>
-        )}
-      </Box>
+        </Box>
+      )}
       <EnhancedTable disableSelect {...other} />
     </>
   )
