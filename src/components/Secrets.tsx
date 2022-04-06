@@ -1,11 +1,10 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Box, Button } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { GetSecretsApiResponse } from 'redux/otomiApi'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 const getSecretLink = (isAdmin, ownerId) =>
@@ -40,20 +39,21 @@ interface Props {
 
 export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
-    appsEnabled,
     oboTeamId,
     settings: { cluster },
     user: { isAdmin },
   } = useSession()
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: 'Name',
+      label: t('Name'),
       renderer: getSecretLink(isAdmin, oboTeamId),
     },
     {
       id: 'type',
-      label: 'Type',
+      label: t('Type'),
       renderer: (row) => row.secret.type,
     },
     {
@@ -65,27 +65,9 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   if (!teamId) {
     headCells.splice(2, 0, {
       id: 'namespace',
-      label: 'namespace',
+      label: t('Namespace'),
       renderer: (row) => row.namespace || `team-${row.teamId}`,
     })
   }
-  return (
-    <>
-      <h1 data-cy='h1-secrets-page'>{`Secrets (team ${teamId})`}</h1>
-      <Box mb={1}>
-        {(isAdmin || oboTeamId) && (
-          <Button
-            component={Link}
-            to={isAdmin && !oboTeamId ? '/create-secret' : `/teams/${oboTeamId}/create-secret`}
-            startIcon={<AddCircleIcon />}
-            disabled={(!isAdmin && !oboTeamId) || !appsEnabled.vault}
-            data-cy='button-create-secret'
-          >
-            Create secret
-          </Button>
-        )}
-      </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={secrets} idKey='id' />
-    </>
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
 }

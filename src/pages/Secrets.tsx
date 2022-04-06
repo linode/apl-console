@@ -5,7 +5,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useGetSecretsQuery } from 'redux/otomiApi'
-import { k } from 'translations/keys'
 import { getRole } from 'utils/data'
 
 interface Params {
@@ -22,5 +21,5 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const comp = !(isLoading || error) && data && <Secrets teamId={teamId} secrets={data} />
-  return <PaperLayout loading={isLoading} comp={comp} title={t(k.TITLE_SECRETS, { role: getRole(teamId) })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRETS', { role: getRole(teamId) })} />
 }

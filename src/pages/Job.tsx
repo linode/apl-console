@@ -3,7 +3,7 @@ import Job from 'components/Job'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -13,7 +13,6 @@ import {
   useGetJobQuery,
   useGetSecretsQuery,
 } from 'redux/otomiApi'
-import { k } from 'translations/keys'
 
 interface Params {
   teamId?: string
@@ -26,38 +25,20 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [formData, setFormData] = useState()
-  const [deleteId, setDeleteId]: any = useState()
-  const [create, { isLoading: isLoadingCreate, isSuccess: okCreate, status: statusCreate }] = useCreateJobMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: okUpdate, status: statusUpdate }] = useEditJobMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: okDelete, status: statusDelete }] = useDeleteJobMutation()
-  const { data, isLoading, error } = useGetJobQuery(
-    { teamId, jobId },
-    {
-      skip:
-        !teamId || !jobId || isLoadingCreate || isLoadingUpdate || isLoadingDelete || okCreate || okUpdate || okDelete,
-    },
-  )
-  const { data: secrets, isLoading: isLoadingSecrets, error: errorSecrets } = useGetSecretsQuery({ teamId })
-  useEffect(() => {
-    if (formData) {
-      setFormData(undefined)
-      if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
-      else create({ teamId, body: formData })
-    }
-    if (deleteId) {
-      setDeleteId()
-      del({ teamId, jobId })
-    }
-  }, [formData, deleteId])
+  const [create, { isSuccess: okCreate }] = useCreateJobMutation()
+  const [update, { isSuccess: okUpdate }] = useEditJobMutation()
+  const [del, { isSuccess: okDelete }] = useDeleteJobMutation()
+  const { data, isLoading } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
+  const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
+  const handleSubmit = (formData) => {
+    if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
+    else create({ teamId, body: formData })
+  }
+  const handleDelete = (deleteId) => del({ teamId, jobId: deleteId })
   if (okDelete || okCreate || okUpdate) return <Redirect to={`/teams/${teamId}/jobs`} />
   const loading = isLoading || isLoadingSecrets
-  const err = error || errorSecrets
-  const job = formData || data
-  const comp = !(loading || err) && (
-    <Job teamId={teamId} job={job} secrets={secrets} onSubmit={setFormData} onDelete={setDeleteId} />
-  )
-  return <PaperLayout loading={loading} comp={comp} title={t(k.TITLE_JOB)} />
+  const comp = <Job teamId={teamId} job={data} secrets={secrets} onSubmit={handleSubmit} onDelete={handleDelete} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_JOB')} />
 }

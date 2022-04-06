@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
 import { pascalCase } from 'change-case'
@@ -144,3 +145,30 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
 
 // eslint-disable-next-line no-nested-ternary
 export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')
+
+export const deepDiff = (base, object): Record<string, any> => {
+  const changes = {}
+
+  function walkObject(base, object, path = '') {
+    for (const key of Object.keys(base)) {
+      const currentPath = path === '' ? key : `${path}.${key}`
+
+      if (object[key] === undefined) changes[currentPath] = '-'
+    }
+
+    for (const [key, value] of Object.entries(object)) {
+      // eslint-disable-next-line no-nested-ternary
+      const currentPath = Array.isArray(object) ? `${path}[${key}]` : path === '' ? key : `${path}.${key}`
+
+      if (base[key] === undefined) changes[currentPath] = '+'
+      else if (value !== base[key]) {
+        if (typeof value === 'object' && typeof base[key] === 'object') walkObject(base[key], value, currentPath)
+        else changes[currentPath] = object[key]
+      }
+    }
+  }
+
+  walkObject(base, object)
+
+  return changes
+}

@@ -7,6 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface DeleteDialogProps {
   onCancel: () => void
@@ -18,19 +19,19 @@ interface DeleteDialogProps {
 export default function (props: DeleteDialogProps): React.ReactElement {
   const { onCancel, onDelete, resourceName, resourceType } = props
   const [buttonDisabled, setButtonDisabled] = useState(true)
-
+  const { t } = useTranslation()
+  // END HOOKS
   const onTextFieldChange = (event) => {
     if (event.target.value === resourceName) setButtonDisabled(false)
     else setButtonDisabled(true)
   }
-
   return (
     <Dialog open>
-      <DialogTitle>
-        Delete {resourceName} {resourceType}{' '}
-      </DialogTitle>
+      <DialogTitle>{t('DELETE_RESOURCE', { model: resourceType, name: resourceName })} </DialogTitle>
       <DialogContent>
-        <DialogContentText>{`Type the name of the ${resourceType} ("${resourceName}") to confirm.`}</DialogContentText>
+        <DialogContentText>
+          {t('DELETE_RESOURCE_CONFIRMATION', { model: resourceType, name: resourceName })}
+        </DialogContentText>
         <TextField
           autoComplete='off'
           margin='dense'

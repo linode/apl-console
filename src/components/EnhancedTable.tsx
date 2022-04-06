@@ -20,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { sentenceCase } from 'change-case'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
@@ -87,7 +88,7 @@ const useEnhancedStyles = makeStyles()((theme) => ({
   },
 }))
 
-interface EnhancedTableProps {
+interface EnhancedTableHeadProps {
   classes?: any // ReturnType<typeof useEnhancedStyles>
   numSelected: number
   onRequestSort: (event: MouseEvent<unknown>, property: string) => void
@@ -101,7 +102,7 @@ interface EnhancedTableProps {
   disableSelect?: boolean
 }
 
-export function EnhancedTableHead(props: EnhancedTableProps) {
+export function EnhancedTableHead(props: EnhancedTableHeadProps) {
   const { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
     props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
@@ -117,7 +118,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
-              inputProps={{ 'aria-label': 'select all desserts' }}
+              inputProps={{ 'aria-label': 'select all' }}
             />
           </TableCell>
         )}
@@ -133,7 +134,7 @@ export function EnhancedTableHead(props: EnhancedTableProps) {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.label}
+              {sentenceCase(headCell.label)}
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -197,16 +198,22 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   )
 }
 
-interface Props {
+export interface EnhancedTableProps {
   disableSelect?: boolean
-  orderByStart: string
+  orderByStart?: string
   headCells: any[]
   rows: any[]
-  idKey: string
+  idKey?: string
 }
 
 // eslint-disable-next-line react/prop-types
-export default function ({ disableSelect, orderByStart, headCells, rows, idKey }: Props): React.ReactElement {
+export default function ({
+  disableSelect,
+  orderByStart = 'name',
+  headCells,
+  rows,
+  idKey = 'id',
+}: EnhancedTableProps): React.ReactElement {
   const { classes } = useEnhancedStyles()
   const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
   const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)

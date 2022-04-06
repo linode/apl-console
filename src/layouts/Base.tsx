@@ -4,12 +4,14 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { getThemeMode, toggleThemeMode } from 'common/theme'
+import LangSwitcher from 'components/LangSwitcher'
 import Menu from 'components/Menu'
 import User from 'components/User'
 import { useSession } from 'providers/Session'
 import { useTheme } from 'providers/Theme'
 import React, { useState } from 'react'
 import Helmet from 'react-helmet'
+import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 
 const drawerWidth = '240px'
@@ -131,6 +133,8 @@ export default function ({ children, title }: Props): React.ReactElement {
 
   const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)
+  const { t, i18n } = useTranslation()
+  // END HOOKS
   const handleDrawerOpen = (e) => {
     e.preventDefault()
     if (!open) setOpen(true)
@@ -180,6 +184,7 @@ export default function ({ children, title }: Props): React.ReactElement {
           <IconButton title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
             {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
           </IconButton>
+          <LangSwitcher />
         </Toolbar>
       </AppBar>
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>

@@ -2,8 +2,7 @@
 import App from 'components/App'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
@@ -18,31 +17,16 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchAppsEnabled } = useSession()
-  const [formData, setFormData] = useState()
-  const [appState, setAppState] = useState([])
-  const [appIds, appEnabled] = appState
-  const { data, isLoading, error, refetch } = useGetAppQuery({ teamId, appId })
-  const [edit, { isSuccess: okEdit }] = useEditAppMutation()
-  const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
-  useEffect(() => {
-    if (formData) {
-      setFormData(undefined)
-      edit({ teamId, appId, body: formData })
-    }
-    if (appIds) {
-      setAppState([])
-      toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
-    }
-    if (okEdit || okToggle) {
-      refetch()
-      refetchAppsEnabled()
-    }
-  }, [formData, appIds, okEdit, okToggle])
+  const { data, isLoading, refetch } = useGetAppQuery({ teamId, appId })
+  const [edit] = useEditAppMutation()
+  const [toggle] = useToggleAppsMutation()
   // END HOOKS
-  const useData = formData || data
-  const comp = !(isLoading || error) && useData && (
-    <App onSubmit={setFormData} id={appId} {...useData} teamId={teamId} setAppState={setAppState} />
-  )
+  const handleSubmit = (formData) => edit({ teamId, appId, body: formData }).then(refetch)
+  const handleAppState = (appState) => {
+    const [appIds, appEnabled] = appState
+    toggle({ teamId, body: { ids: appIds, enabled: appEnabled } }).then(refetchAppsEnabled)
+  }
+  const comp = <App onSubmit={handleSubmit} id={appId} {...data} teamId={teamId} setAppState={handleAppState} />
   // title is set in component as it knows more to put in the url (like tab chosen)
   return <PaperLayout comp={comp} loading={isLoading} />
 }

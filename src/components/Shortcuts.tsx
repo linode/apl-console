@@ -1,9 +1,11 @@
 import { Typography } from '@mui/material'
 import { capitalize } from 'lodash'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { GetAppsApiResponse } from 'redux/otomiApi'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 const getAppLink = (teamId: string) =>
@@ -41,22 +43,19 @@ interface Props {
 }
 
 export default function ({ apps, teamId }: Props): React.ReactElement {
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'id',
-      label: 'App',
+      label: t('App'),
       renderer: getAppLink(teamId),
     },
     {
       id: 'shortcut.title',
-      label: 'Link',
+      label: t('Link'),
       renderer: getShortcutLink,
     },
   ]
-  return (
-    <>
-      <h1 data-cy='h1-shortcuts-page'>{`Shortcuts${teamId !== 'admin' ? ` (team ${teamId})` : ' (admin)'}`}</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='id' rows={apps} idKey='description' />
-    </>
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={apps} resourceType='Shortcut' />
 }

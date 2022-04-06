@@ -5,7 +5,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
-import { k } from 'translations/keys'
 import { getRole } from 'utils/data'
 
 interface Params {
@@ -17,21 +16,15 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const {
-    data: allServices,
-    isLoading: isLoadingAllServices,
-    error: errorAllServices,
-  } = useGetAllServicesQuery(teamId ? skipToken : undefined)
-  const {
-    data: teamServices,
-    isLoading: isLoadingTeamServices,
-    error: errorTeamServices,
-  } = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
+  const { data: allServices, isLoading: isLoadingAllServices } = useGetAllServicesQuery(teamId ? skipToken : undefined)
+  const { data: teamServices, isLoading: isLoadingTeamServices } = useGetTeamServicesQuery(
+    { teamId },
+    { skip: !teamId },
+  )
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllServices || isLoadingTeamServices
-  const err = errorAllServices || errorTeamServices
   const services = teamId ? teamServices : allServices
-  const comp = !(err || loading) && services && <Services services={services} teamId={teamId} />
-  return <PaperLayout loading={loading} comp={comp} title={t(k.TITLE_SERVICES, { scope: getRole(teamId) })} />
+  const comp = services && <Services services={services} teamId={teamId} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICES', { scope: getRole(teamId) })} />
 }

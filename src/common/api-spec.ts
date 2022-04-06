@@ -106,9 +106,10 @@ const addDomainEnumField = (schema: Schema, settings, formData): void => {
     ingressSchema.subdomain.maxLength = 64 - length
   }
   // we only need to create an enum if we have more than one option
-  if (zones.length > 1) ingressSchema.domain.enum = zones
   if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
-  if (zones.length === 1) ingressSchema.domain.readOnly = true
+  if (zones.length > 1) ingressSchema.domain.enum = zones
+  else if (!ing.domain) ing.domain = zones[0]
+  ingressSchema.domain.readOnly = true
 }
 
 export const getJobSchema = (settings: GetSettingsApiResponse, formData: any, secrets: Array<any>): any => {
@@ -120,7 +121,7 @@ export const getJobSchema = (settings: GetSettingsApiResponse, formData: any, se
   unset(schema, `${containerSpecPath}.args`)
   unset(schema, `${initcontainerSpecPath}.command`)
   unset(schema, `${initcontainerSpecPath}.args`)
-  if (formData.type === 'Job') unset(schema, `${jobSpecPath}.schedule`)
+  if (formData?.type === 'Job') unset(schema, `${jobSpecPath}.schedule`)
 
   // set the Secrets enum with items to choose from
   setSecretsEnum(get(schema, initcontainerSpecPath), secrets)
@@ -216,8 +217,8 @@ export const getServiceUiSchema = (
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
-      certArn: { 'ui:readonly': formData.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData.ksvc?.serviceType !== 'svcPredeployed' },
+      certArn: { 'ui:readonly': formData?.ingress?.certSelect },
+      tlsPass: { 'ui:readonly': formData?.ksvc?.serviceType !== 'svcPredeployed' },
     },
     ksvc: {
       ...podSpecUiSchema,

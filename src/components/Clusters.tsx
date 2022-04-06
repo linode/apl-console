@@ -1,7 +1,9 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { HeadCell } from './EnhancedTable'
+import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 export default function (): React.ReactElement {
@@ -11,6 +13,8 @@ export default function (): React.ReactElement {
       otomi: { additionalClusters = [] },
     },
   } = useSession()
+  const { t } = useTranslation()
+  // END HOOKS
   const allClusters = [...additionalClusters, cluster]
   const headCells: HeadCell[] = [
     {
@@ -36,10 +40,5 @@ export default function (): React.ReactElement {
       },
     },
   ]
-  return (
-    <>
-      <h1 data-cy='h1-clusters-page'>Clusters</h1>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={allClusters} idKey='id' />
-    </>
-  )
+  return <ListTable headCells={headCells} rows={allClusters} resourceType='Service' />
 }

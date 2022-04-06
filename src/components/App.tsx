@@ -15,14 +15,12 @@ import {
 } from '@mui/material'
 import { getAppSchema, getAppUiSchema } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
-import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import React, { ChangeEvent, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import { k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import { nullify } from 'utils/schema'
@@ -110,64 +108,33 @@ export default function ({
   const [shortcuts, setShortcuts] = useState(inShortcuts)
   const [shortcutsValid, setShortcutsValid] = useState(inShortcuts)
   const [values, setValues] = useState(inValues)
+  const isDirty = !isEqual(values, inValues)
   const [rawValues, setRawValues] = useState(inRawValues)
-  const [isDirty, setDirty] = useState(false)
-  const [valuesDirty, setValuesDirty] = useState(false)
+  const valuesDirty = !isEqual(values, inValues)
   const [valid, setValid] = useState(true)
-
-  const [appSchema, setAppSchema] = useState<JSONSchema7>()
-  const [appUiSchema, setAppUiSchema] = useState<any>()
   const { t } = useTranslation()
   // END HOOKS
-  const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
-    const enabled = event.target.checked
-    const { deps } = getAppData(session, teamId, id)
-    setAppState([(deps || []).concat([id]), enabled])
-  }
-
-  const handleChangeShortcuts = ({ formData, errors }) => {
-    setShortcuts(formData)
-    setShortcutsValid(errors.length === 0)
-    setDirty(!isEqual(formData, inShortcuts))
-  }
-  const handleChangeValues = ({ formData }) => {
-    setValues(formData)
-    const d = !isEqual(formData, inValues)
-    setDirty(d)
-    setValuesDirty(d)
-    const newAppSchema = getAppSchema(id).properties?.values
-    const newAppUiSchema = getAppUiSchema(appsEnabled, settings, id, formData)
-    setAppSchema(newAppSchema)
-    setAppUiSchema(newAppUiSchema)
-  }
-  if (!(appSchema || appUiSchema)) {
-    handleChangeValues({ formData: values || {} })
-    return null
-  }
-  const handleChangeRawValues = (inData) => {
-    const data = inData || {}
-    setRawValues(data)
-    setDirty(!isEqual(data, inRawValues))
-  }
-
-  const handleSubmit = () => {
-    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
-    if (isDirty) {
-      onSubmit(data)
-      setDirty(false)
-      setValuesDirty(false)
-    }
-  }
-
+  const appSchema = getAppSchema(id).properties?.values
+  const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
   const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
-
   const isAdminApps = teamId === 'admin'
-
   const playButtonProps =
     enabled !== false && externalUrl
       ? { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
       : {}
 
+  const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
+    const enabled = event.target.checked
+    const { deps } = getAppData(session, teamId, id)
+    setAppState([(deps || []).concat([id]), enabled])
+  }
+  const onError = (errors) => {
+    setShortcutsValid(errors.length === 0)
+  }
+  const handleSubmit = () => {
+    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
+    if (isDirty) onSubmit(data)
+  }
   const renderShortcuts = (s) => {
     const href = `${baseUrl}${s.path}`
     return (
@@ -187,7 +154,7 @@ export default function ({
 
   return (
     <Box>
-      <Helmet title={t(k.TITLE_APP, { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
+      <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
           <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
@@ -218,9 +185,11 @@ export default function ({
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
           <Tab href='#info' label='Info' value={0} />
-          <Tab href='#shortcuts' label='Shortcuts' value={1} disabled={!hasShortcuts} />
-          {isAdminApps && <Tab href='#values' label='Values' value={2} disabled={!appSchema || !inValues} />}
-          {isAdminApps && <Tab href='#rawvalues' label='Raw Values' value={3} disabled={!appSchema || !inRawValues} />}
+          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={!hasShortcuts} />
+          {isAdminApps && <Tab href='#values' label={t('Values')} value={2} disabled={!appSchema || !inValues} />}
+          {isAdminApps && (
+            <Tab href='#rawvalues' label={t('Raw values')} value={3} disabled={!appSchema || !inRawValues} />
+          )}
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={0}>
@@ -233,7 +202,7 @@ export default function ({
             <Link href={schema['x-externalDocsPath']}>[...more]</Link>
           </Box>
           <Box className={classes.content}>
-            <Typography variant='h5'>How did Otomi integrate {title}?</Typography>
+            <Typography variant='h5'>{t('FORM_HEAD_ABOUT', { title })}</Typography>
             <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
           </Box>
         </Box>
@@ -267,8 +236,9 @@ export default function ({
             <Form
               key='editShortcuts'
               schema={schema.properties.shortcuts}
-              onChange={handleChangeShortcuts}
-              formData={shortcuts}
+              setData={setShortcuts}
+              onError={onError}
+              data={shortcuts}
               hideHelp
               clean={false}
               liveValidate
@@ -287,7 +257,7 @@ export default function ({
             }}
             disabled={isEdit && !shortcutsValid}
           >
-            {isEdit ? 'Submit' : 'Edit'}
+            {isEdit ? t('submit') : t('edit')}
           </Button>
         </Box>
       </TabPanel>
@@ -295,14 +265,13 @@ export default function ({
         <TabPanel value={tab} index={2}>
           <Box className={classes.panelHeader}>
             <Typography variant='h5'>Values</Typography>
-            <Typography variant='caption'>Edit the configuration values of {title}.</Typography>
+            <Typography variant='caption'>{t('FORM_HEAD_APP_EDIT', { title })}</Typography>
           </Box>
           <Form
-            key='editValues'
             schema={appSchema}
-            onChange={handleChangeValues}
+            setData={setValues}
             onSubmit={handleSubmit}
-            formData={values}
+            data={values}
             hideHelp
             uiSchema={appUiSchema}
           >
@@ -317,13 +286,15 @@ export default function ({
       {inValues && (
         <TabPanel value={tab} index={3}>
           <Box className={classes.panelHeader}>
-            <Typography variant='h5'>Raw Values</Typography>
-            <Typography variant='caption'>
-              Allows direct editing of otomi-core/charts/{id} values. Implies knowledge of its structure. Has no schema
-              support so edit at your own risk!
-            </Typography>
+            <Typography variant='h5'>{t('Raw values')}</Typography>
+            <Typography variant='caption'>{t('FORM_WARNING_RAW_VALUES', { id })}</Typography>
             <div className={classes.buffer}> </div>
-            <CodeEditor code={yaml} onChange={handleChangeRawValues} disabled={!isEdit} setValid={setValid} />
+            <CodeEditor
+              code={yaml}
+              onChange={(data) => setRawValues(data || {})}
+              disabled={!isEdit}
+              setValid={setValid}
+            />
             <Box display='flex' flexDirection='row-reverse' m={1}>
               <Button
                 color='primary'
@@ -335,7 +306,7 @@ export default function ({
                 }}
                 disabled={!valid}
               >
-                {isEdit ? 'Submit' : 'Edit'}
+                {isEdit ? t('Submit') : t('Edit')}
               </Button>
             </Box>
           </Box>

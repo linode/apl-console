@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { e } from 'translations/keys'
+import { e } from 'i18n/i18n'
 
 export class HttpError extends Error {
   code?: number

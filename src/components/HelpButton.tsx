@@ -1,6 +1,7 @@
-import React from 'react'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import { Button, ButtonProps, Tooltip } from '@mui/material'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()((theme) => ({
@@ -34,6 +35,8 @@ interface HelpProps extends ButtonProps {
 export default function ({ icon, id, href, size: inSize }: HelpProps): React.ReactElement {
   const size = inSize || 'small'
   const { classes } = useStyles()
+  const { t } = useTranslation()
+  // END HOOKS
   return (
     <Tooltip title='Click to visit docs on otomi.io!' enterDelay={1000} enterNextDelay={1000}>
       <Button
@@ -41,12 +44,12 @@ export default function ({ icon, id, href, size: inSize }: HelpProps): React.Rea
         className={icon ? classes.icon : classes[size]}
         startIcon={<HelpRoundedIcon />}
         variant={icon ? 'text' : 'contained'}
-        aria-label='Read the documentation'
+        aria-label={t('Read the documentation')}
         data-cy={`button-help-${id}`}
         target='_blank'
         href={`${href}`}
       >
-        {!icon && 'Help'}
+        {!icon && t('help')}
       </Button>
     </Tooltip>
   )

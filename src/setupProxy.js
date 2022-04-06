@@ -6,5 +6,8 @@ module.exports = function (app) {
       target: 'http://localhost:8080',
       pathRewrite: { '^/api/': '/' },
     }),
+    proxy('/trans', {
+      target: 'http://localhost:3333',
+    }),
   )
 }

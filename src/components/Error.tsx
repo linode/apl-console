@@ -5,7 +5,6 @@ import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
-import { e, h, k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import { ApiError } from '../utils/error'
@@ -34,22 +33,22 @@ export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
-  const { t } = useTranslation()
+  const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
   const code = error ? err.code : err.status
   const message = error ? err.message : err.data.error
-  const msgKey = e[message] || h[code] || e.Unknown
+  const msgKey = message || code || 'Unknown'
   const clearError = () => {
     dispatch(setError(undefined))
   }
-  const tErr = `${t(k.ERROR, { code, msg: t(msgKey) })}`
+  const tErr = `${t('ERROR', { ns: 'error', code, msg: t(msgKey) })}`
   snack.error(tErr)
   return (
     <Container className={classes.root}>
       <Helmet title={tErr} />
-      {globalError && (
+      {!error && globalError && (
         <Collapse in={!!err}>
           <Alert
             className={classes.banner}

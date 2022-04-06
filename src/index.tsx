@@ -1,5 +1,5 @@
 import '@fortawesome/fontawesome-free/css/all.css'
-import 'common/i18n'
+import 'i18n/i18n'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import 'typeface-comfortaa'

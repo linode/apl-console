@@ -5,6 +5,7 @@ import { useMainStyles } from 'common/theme'
 import generateDownloadLink from 'generate-download-link'
 import { useSession } from 'providers/Session'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 
@@ -23,13 +24,17 @@ const useStyles = makeStyles()((theme) => ({
 export default function (): React.ReactElement {
   const {
     ca,
-    settings: { cluster },
+    settings: {
+      cluster: { name, provider, region, k8sVersion },
+    },
     versions,
     oboTeamId,
     user,
   } = useSession()
   const { classes } = useStyles()
   const { classes: mainClasses } = useMainStyles()
+  const { t } = useTranslation()
+  // END HOOKS
   const StyledListItem = React.memo(({ className, ...props }: any) => (
     <ListItem className={`${classes.listItem}, ${className}`} {...props} />
   ))
@@ -45,37 +50,46 @@ export default function (): React.ReactElement {
   return (
     <List dense>
       <StyledListItem>
-        <ListItemText primary={`Name: ${cluster.name}`} data-cy='list-item-text-clustername' />
+        <ListItemText primary={t('NOTE_INFO', { title: t('Name'), desc: name })} data-cy='list-item-text-clustername' />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`Cloud: ${cluster.provider}`} data-cy='list-item-text-cloud' />
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('Provider'), desc: provider })}
+          data-cy='list-item-text-cloud'
+        />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`Region: ${cluster.region}`} data-cy='list-item-text-region' />
+        <ListItemText primary={t('NOTE_INFO', { title: t('Region'), desc: region })} data-cy='list-item-text-region' />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`K8S Version: ${cluster.k8sVersion}`} data-cy='list-item-text-k8v' />
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('K8S version'), desc: k8sVersion })}
+          data-cy='list-item-text-k8v'
+        />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('Otomi version'), desc: versions.core })}
+          data-cy='list-item-text-core'
+        />
       </StyledListItem>
       <StyledMenuItem
         className={mainClasses.selectable}
         component={Link}
-        aria-label='download kubecfg'
+        aria-label={t('Download KUBECFG')}
         href={`/api/v1/kubecfg/${oboTeamId}`}
         disabled={isButtonDisabled}
       >
         <ListItemIcon>
           <CloudDownloadIcon />
         </ListItemIcon>
-        <ListItemText primary='Download KUBECFG' />
+        <ListItemText primary={t('Download KUBECFG')} />
       </StyledMenuItem>
       {ca && (
         <StyledMenuItem
           className={mainClasses.selectable}
           component={Link}
-          aria-label='download certificate authority'
+          aria-label={t('Download CA')}
           href={anchor}
           download={downloadOpts.filename}
           title={downloadOpts.title}
@@ -83,7 +97,7 @@ export default function (): React.ReactElement {
           <ListItemIcon>
             <VerifiedUserIcon />
           </ListItemIcon>
-          <ListItemText primary='Download CA' />
+          <ListItemText primary={t('Download CA')} />
         </StyledMenuItem>
       )}
     </List>

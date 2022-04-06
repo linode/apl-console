@@ -140,6 +140,17 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
           },
         },
       },
+      MuiButtonGroup: {
+        defaultProps: {
+          color: 'primary',
+          variant: 'contained',
+        },
+        styleOverrides: {
+          root: {
+            borderRadius: '2em',
+          },
+        },
+      },
       MuiCheckbox: {
         defaultProps: {
           color: 'primary',
@@ -157,9 +168,10 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
           body: {
             fontSize: '0.875rem',
           },
-          'h5:first-letter,h6:first-letter,h7:first-letter': {
-            textTransform: 'capitalize',
-          },
+          'h1:first-letter,h2:first-letter,h3:first-letter,h4:first-letter,h5:first-letter,h6:first-letter,h7:first-letter':
+            {
+              textTransform: 'capitalize',
+            },
         },
       },
       MuiFormControl: {

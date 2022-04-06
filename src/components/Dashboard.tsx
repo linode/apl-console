@@ -14,7 +14,6 @@ import {
   GetTeamsApiResponse,
   GetTeamServicesApiResponse,
 } from 'redux/otomiApi'
-import { k } from 'translations/keys'
 import { makeStyles } from 'tss-react/mui'
 
 type Panel = {
@@ -157,7 +156,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
       icon: <PeopleIcon />,
       canCreate: isAdmin,
       disabled: false,
-      tooltip: t(k.CREATE_MODEL, { model: 'team' }),
+      tooltip: t('CREATE_MODEL', { model: 'team' }),
     },
     {
       name: 'service',
@@ -166,8 +165,8 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
       canCreate: true,
       disabled: isServiceDisabled,
       tooltip: isServiceDisabled
-        ? t(k.SELECT_TEAM, { model: 'service' })
-        : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
+        ? t('SELECT_TEAM', { model: 'service' })
+        : t('CREATE_MODEL_FOR_TEAM', { model: 'service', teamName: team.name }),
     },
   ]
   const teamName = isAdmin ? 'admin' : team.name
@@ -175,7 +174,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
     <Grid container className={classes.grid}>
       <Grid item xs={12}>
         <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
-          <Trans i18nKey={k.WELCOME_DASHBOARD}>
+          <Trans i18nKey='WELCOME_DASHBOARD'>
             Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
           </Trans>
         </Typography>

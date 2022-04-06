@@ -27,6 +27,7 @@ import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useDeployQuery } from 'redux/otomiApi'
@@ -79,13 +80,15 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const [key, setKey] = useState<any>()
+  const { t } = useTranslation()
+  // END HOOKS
   if (deploy) {
-    if (!key) setKey(snack.info('Scheduling... Hold on!', { autoHideDuration: 8000 }))
+    if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
 
     if (okDeploy || errorDeploy) {
       snack.close(key)
-      if (errorDeploy) setTimeout(() => snack.error('Deployment failed. Please contact support@redkubes.com.'))
-      else setTimeout(() => snack.success('Scheduled for deployment'))
+      if (errorDeploy) setTimeout(() => snack.error(t('Deployment failed. Please contact support@redkubes.com.')))
+      else setTimeout(() => snack.success(t('Scheduled for deployment')))
       setDeploy(false)
     }
   }
@@ -108,33 +111,33 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }
 
   const settingIds = {
-    alerts: ['Alerts', <AnnouncementIcon />],
+    alerts: [t('Alerts'), <AnnouncementIcon />],
     home: ['Home alerts', <HomeIcon />],
-    azure: ['Azure', <CloudIcon />],
-    dns: ['DNS', <DnsIcon />],
-    kms: ['KMS', <LockOpenIcon />],
-    oidc: ['OIDC', <SettingsEthernetIcon />],
-    otomi: ['Otomi', <DonutLargeIcon />],
-    smtp: ['SMTP', <MailIcon />],
+    azure: [t('Azure'), <CloudIcon />],
+    dns: [t('DNS'), <DnsIcon />],
+    kms: [t('KMS'), <LockOpenIcon />],
+    oidc: [t('OIDC'), <SettingsEthernetIcon />],
+    otomi: [t('Otomi'), <DonutLargeIcon />],
+    smtp: [t('SMTP'), <MailIcon />],
   }
 
   return (
     <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-platform'>
-        <ListItemText primary='Platform' />
+        <ListItemText primary={t('Platform')} />
       </StyledListSubheader>
       <StyledMenuItem to='/' selected={pathname === `/`}>
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary='Dashboard' data-cy='menu-item-dashboard' />
+        <ListItemText primary={t('Dashboard')} data-cy='menu-item-dashboard' />
       </StyledMenuItem>
       {isAdmin && (
         <StyledMenuItem to='/apps/admin' selected={pathname.indexOf(`/apps/admin`) === 0} data-cy='menu-item-otomiapps'>
           <ListItemIcon>
             <AppsIcon />
           </ListItemIcon>
-          <ListItemText primary='Apps' />
+          <ListItemText primary={t('Apps')} />
         </StyledMenuItem>
       )}
       {isAdmin && (
@@ -146,14 +149,14 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <ListItemIcon>
             <ShortcutIcon />
           </ListItemIcon>
-          <ListItemText primary='Shortcuts' />
+          <ListItemText primary={t('Shortcuts')} />
         </StyledMenuItem>
       )}
       <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
         <ListItemIcon>
           <CloudIcon />
         </ListItemIcon>
-        <ListItemText primary='Clusters' />
+        <ListItemText primary={t('Clusters')} />
       </StyledMenuItem>
       {isAdmin && (
         <StyledMenuItem
@@ -165,7 +168,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <ListItemIcon>
             <PolicyIcon />
           </ListItemIcon>
-          <ListItemText primary='Policies' />
+          <ListItemText primary={t('Policies')} />
         </StyledMenuItem>
       )}
       <StyledMenuItem
@@ -176,19 +179,19 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
-        <ListItemText primary='Teams' />
+        <ListItemText primary={t('Teams')} />
       </StyledMenuItem>
       <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
         <ListItemIcon>
           <SwapVerticalCircleIcon />
         </ListItemIcon>
-        <ListItemText primary='Services' />
+        <ListItemText primary={t('Services')} />
       </StyledMenuItem>
       <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
         <ListItemIcon>
           <HourglassEmptyIcon />
         </ListItemIcon>
-        <ListItemText primary='Jobs' />
+        <ListItemText primary={t('Jobs')} />
       </StyledMenuItem>
       {isAdmin && (
         <>
@@ -196,7 +199,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary='Settings' />
+            <ListItemText primary={t('Settings')} />
             {collapseSettings ? <ExpandLess /> : <ExpandMore />}
           </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
@@ -231,12 +234,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
-        <ListItemText primary='Deploy Changes' />
+        <ListItemText primary={t('Deploy changes')} />
       </MenuItem>
       {teamId && (
         <>
           <StyledListSubheader component='div'>
-            <ListItemText primary={`Team ${teamId}`} data-cy='list-subheader-team' />
+            <ListItemText primary={t('TITLE_TEAM', { teamId })} data-cy='list-subheader-team' />
           </StyledListSubheader>
           <StyledMenuItem
             to={`/apps/${teamId}`}
@@ -246,7 +249,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <AppsIcon />
             </ListItemIcon>
-            <ListItemText primary='Apps' />
+            <ListItemText primary={t('Apps')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/shortcuts/${teamId}`}
@@ -256,7 +259,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <ShortcutIcon />
             </ListItemIcon>
-            <ListItemText primary='Shortcuts' />
+            <ListItemText primary={t('Shortcuts')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/services`}
@@ -266,7 +269,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <SwapVerticalCircleIcon />
             </ListItemIcon>
-            <ListItemText primary='Services' />
+            <ListItemText primary={t('Services')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/jobs`}
@@ -276,7 +279,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <HourglassEmptyIcon />
             </ListItemIcon>
-            <ListItemText primary='Jobs' />
+            <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}
@@ -287,7 +290,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <LockIcon />
             </ListItemIcon>
-            <ListItemText primary='Secrets' />
+            <ListItemText primary={t('Secrets')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}`}
@@ -297,12 +300,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary='Settings' />
+            <ListItemText primary={t('Settings')} />
           </StyledMenuItem>
         </>
       )}
       <StyledListSubheader component='div' data-cy='list-subheader-current-context'>
-        <ListItemText primary='Cluster' />
+        <ListItemText primary={t('Cluster')} />
       </StyledListSubheader>
       <Cluster />
     </MenuList>

@@ -1,12 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Box, Button } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
@@ -45,25 +44,27 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     user: { isAdmin },
     oboTeamId,
   } = useSession()
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: 'Service Name',
+      label: t('Service name'),
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
       id: 'ingressType',
-      label: 'Ingress',
+      label: t('Ingress type'),
       renderer: (row) => row.ingress?.type ?? '',
     },
     {
       id: 'serviceType',
-      label: 'Type',
+      label: t('Service type'),
       renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',
-      label: 'Host Name',
+      label: t('Host'),
       renderer: renderHost,
       component: MuiLink,
     },
@@ -71,26 +72,8 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   if (!teamId) {
     headCells.push({
       id: 'teamId',
-      label: 'Team',
+      label: t('Team'),
     })
   }
-  return (
-    <>
-      <h1 data-cy='h1-services-page'>{!teamId ? 'Services' : `Services (team ${teamId})`}</h1>
-      <Box mb={1}>
-        {(isAdmin || oboTeamId) && (
-          <Button
-            component={Link}
-            to={isAdmin && !oboTeamId ? '/create-service' : `/teams/${oboTeamId}/create-service`}
-            startIcon={<AddCircleIcon />}
-            disabled={isAdmin && !oboTeamId}
-            data-cy='button-create-service'
-          >
-            Create service
-          </Button>
-        )}
-      </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
-    </>
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
 }

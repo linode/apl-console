@@ -22,6 +22,9 @@
   "files.associations": {
     "*.tmpl": "nginx"
   },
+  "search.exclude": {
+    "**/public/i18n": true
+  },
   "prettier.enable": true,
   "stylelint.enable": true
 }

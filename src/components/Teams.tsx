@@ -2,6 +2,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Box, Button } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetTeamsApiResponse } from 'redux/otomiApi'
 import EnhancedTable, { HeadCell } from './EnhancedTable'
@@ -15,6 +16,8 @@ export default function ({ teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
   } = useSession()
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -32,7 +35,7 @@ export default function ({ teams }: Props): React.ReactElement {
 
   return (
     <>
-      <h1 data-cy='h1-teams-page'>Teams</h1>
+      <h1 data-cy='h1-teams-page'>{t('Teams')}</h1>
       {isAdmin && (
         <Box mb={1}>
           <Button
@@ -42,7 +45,7 @@ export default function ({ teams }: Props): React.ReactElement {
             className='createTeam'
             data-cy='button-create-team'
           >
-            Create team
+            {t('Create team')}
           </Button>
         </Box>
       )}

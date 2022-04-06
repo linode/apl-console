@@ -5,7 +5,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useGetAppsQuery } from 'redux/otomiApi'
-import { k } from 'translations/keys'
 import { getAppData, getRole } from 'utils/data'
 
 interface Params {
@@ -18,7 +17,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const session = useAuthzSession(teamId)
-  const { data: apps, isLoading, error } = useGetAppsQuery({ teamId })
+  const { data: apps, isLoading } = useGetAppsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const appsWithShortcuts = (apps || [])
@@ -29,6 +28,6 @@ export default function ({
       app.shortcuts.forEach((s) => memo.push({ ...app, shortcut: s, description: s.description }))
       return memo
     }, [])
-  const comp = !(isLoading || error) && apps && <Shortcuts teamId={teamId} apps={appsWithShortcuts} />
-  return <PaperLayout loading={isLoading} comp={comp} title={t(k.TITLE_SHORTCUTS, { role: getRole(teamId) })} />
+  const comp = apps && <Shortcuts teamId={teamId} apps={appsWithShortcuts} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SHORTCUTS', { role: getRole(teamId) })} />
 }
