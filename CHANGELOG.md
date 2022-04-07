@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/redkubes/otomi-console/compare/v0.4.73...v0.5.0) (2022-04-07)
+
+
+### Features
+
+* app shortcuts ([#131](https://github.com/redkubes/otomi-console/issues/131)) ([5b53806](https://github.com/redkubes/otomi-console/commit/5b5380600a67594c9252eb1e165bad42623d698a))
+
 ### [0.4.73](https://github.com/redkubes/otomi-stack-web/compare/v0.4.72...v0.4.73) (2022-04-05)
 
 
