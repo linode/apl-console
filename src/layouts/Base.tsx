@@ -4,7 +4,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { getThemeMode, toggleThemeMode } from 'common/theme'
-import LangSwitcher from 'components/LangSwitcher'
 import Menu from 'components/Menu'
 import User from 'components/User'
 import { useSession } from 'providers/Session'
@@ -184,7 +183,7 @@ export default function ({ children, title }: Props): React.ReactElement {
           <IconButton title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
             {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
           </IconButton>
-          <LangSwitcher />
+          {/* <LangSwitcher /> */}
         </Toolbar>
       </AppBar>
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>
