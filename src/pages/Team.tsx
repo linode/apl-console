@@ -4,7 +4,7 @@ import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import { useCreateTeamMutation, useDeleteTeamMutation, useEditTeamMutation, useGetTeamQuery } from 'redux/otomiApi'
 
 interface Params {
@@ -17,9 +17,9 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isSuccess: okCreate }] = useCreateTeamMutation()
-  const [update, { isSuccess: okUpdate }] = useEditTeamMutation()
-  const [del, { isSuccess: okDelete }] = useDeleteTeamMutation()
+  const [create] = useCreateTeamMutation()
+  const [update] = useEditTeamMutation()
+  const [del] = useDeleteTeamMutation()
   const { data, isLoading } = useGetTeamQuery({ teamId }, { skip: !teamId })
   const handleSubmit = (formData) => {
     if (teamId) update({ teamId, body: omit(formData, ['id']) as typeof formData })
@@ -28,7 +28,6 @@ export default function ({
   const handleDelete = (deleteId) => del({ teamId: deleteId })
   const { t } = useTranslation()
   // END HOOKS
-  if (okDelete || okCreate || okUpdate) return <Redirect to='/teams' />
   const comp = <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} />
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_TEAM')} />
 }

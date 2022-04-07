@@ -100,6 +100,7 @@ export default function ({
     onSubmit(nulledCleanFormData)
     // setState(undefined)
     setOriginalState(undefined)
+    setDirty(false)
     setLoading(true)
   }
   // const validate = (formData, errors, ajvErrors): any => {
