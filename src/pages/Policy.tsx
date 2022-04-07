@@ -1,42 +1,26 @@
-import React, { useEffect, useState } from 'react'
-import { Settings } from '@redkubes/otomi-api-client-axios'
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import Policy from 'components/Policy'
+import PaperLayout from 'layouts/Paper'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { ApiError } from '../utils/error'
-import Policy from '../components/Policy'
-import { renameKeys } from '../utils/data'
+import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 
 interface Params {
   policyId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { policyId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  const [formData, setFormdata] = useState()
-
-  useEffect(() => {
-    setFormdata(undefined)
-  }, [policyId])
-
-  const [settings, settingsLoading, settingsError]: [Settings, boolean, ApiError] = useApi('getSetting', !!policyId, [
-    'policies',
-  ])
-
-  const [, editLoading, editError] = useApi('editSetting', !!formData, [
-    'policies',
-    { policies: renameKeys({ [policyId]: formData }) },
-  ])
-
-  const loading = settingsLoading || editLoading
-  const err = settingsError || editError
-  let formSettings = settings?.policies
-  if (formData) formSettings = { ...formSettings, [policyId]: formData }
-  const comp = !loading && (!err || formData || settings) && (
-    <Policy onSubmit={setFormdata} policies={formSettings} policyId={policyId} />
-  )
-  return <PaperLayout comp={comp} loading={loading} />
+}: RouteComponentProps<Params>): React.ReactElement {
+  const { data: settings, refetch, isLoading, error } = useGetSettingsQuery({ ids: ['policies'] })
+  const [editSettings] = useEditSettingsMutation()
+  const { t } = useTranslation()
+  // END HOOKS
+  const handleSubmit = (formData) => editSettings({ body: { policies: { [policyId]: formData } } }).then(refetch)
+  const policies = settings?.policies
+  const comp = <Policy onSubmit={handleSubmit} policies={policies} policyId={policyId} />
+  return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_POLICY', { policyId })} />
 }

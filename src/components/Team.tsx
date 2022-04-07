@@ -1,60 +1,33 @@
-import { Box, Button } from '@material-ui/core'
-import { isEqual } from 'lodash/lang'
+import { getTeamSchema, getTeamUiSchema } from 'common/api-spec'
+import { cloneDeep } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { Team } from '@redkubes/otomi-api-client-axios'
-import DeleteButton from './DeleteButton'
-import { useSession } from '../session-context'
-import { getTeamSchema, getTeamUiSchema } from '../api-spec'
+import { GetTeamApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: any
-  team?: Team
+  team?: GetTeamApiResponse
 }
 
-export default ({ onSubmit, onDelete, team }: Props): React.ReactElement => {
-  const { cluster, user, oboTeamId } = useSession()
-  // / we need to set an empty dummy if no team was given, so that we can do a dirty check
+export default function ({ onSubmit, onDelete, team }: Props): React.ReactElement {
+  const { appsEnabled, settings, user, oboTeamId } = useSession()
+  // / we need to set an empty dummy if no team was given, so that we can do a isDirty check
   const crudMethod = team && team.id ? 'update' : 'create'
-
   const [data, setData]: any = useState(team)
-  const [dirty, setDirty] = useState(false)
-
-  const schema = getTeamSchema(data, cluster)
-  const uiSchema = getTeamUiSchema(user, oboTeamId, crudMethod)
-
-  const handleChange = ({ formData }) => {
-    setData(formData)
-    setDirty(!isEqual(formData, team))
-  }
-  const handleSubmit = ({ formData }) => {
-    onSubmit(formData)
-  }
+  const formData = cloneDeep(data)
+  const schema = getTeamSchema(appsEnabled, settings, formData)
+  const uiSchema = getTeamUiSchema(appsEnabled, settings, user, oboTeamId, crudMethod)
   return (
     <Form
-      title={<h1 data-cy='h1-newteam-page'>{data && data.id ? `Team: ${data.id}` : 'New Team'}</h1>}
-      key='createTeam'
+      adminOnly
       schema={schema}
       uiSchema={uiSchema}
-      onSubmit={handleSubmit}
-      onChange={handleChange}
-      formData={data}
-    >
-      <Box display='flex' flexDirection='row-reverse' m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-team'>
-          Submit
-        </Button>
-        &nbsp;
-        {team && team.id && (
-          <DeleteButton
-            onDelete={() => onDelete(team.id)}
-            resourceName={team.name}
-            resourceType='team'
-            dataCy='button-delete-team'
-          />
-        )}
-      </Box>
-    </Form>
+      onSubmit={onSubmit}
+      onChange={setData}
+      data={formData}
+      resourceType='Team'
+    />
   )
 }

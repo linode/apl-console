@@ -381,7 +381,7 @@ All notable changes to this project will be documented in this file. See [standa
 * add section about development with otomi-api-client-axios package ([1e914ce](https://github.com/redkubes/otomi-console/commit/1e914cee1c2a524eb7ad1db65b30d434f41e996b))
 * api upgrade ([c795e20](https://github.com/redkubes/otomi-console/commit/c795e20cc5dee13cfa616ba148b2c14bb252d178))
 * api upgrade ([267a74c](https://github.com/redkubes/otomi-console/commit/267a74c94c3db6e151c529493adcf4643df2fbd9))
-* change version of @material-ui/lab ([4b771fc](https://github.com/redkubes/otomi-console/commit/4b771fcc4192f6b6844a841e30d826ec75884545))
+* change version of @mui/lab ([4b771fc](https://github.com/redkubes/otomi-console/commit/4b771fcc4192f6b6844a841e30d826ec75884545))
 * set default formater ([f77c866](https://github.com/redkubes/otomi-console/commit/f77c8663c163c5e8fa01a0fce83b3cd0ff39c029))
 
 ### [0.4.45](https://github.com/redkubes/otomi-console/compare/v0.4.44...v0.4.45) (2021-06-15)
@@ -435,7 +435,7 @@ All notable changes to this project will be documented in this file. See [standa
 - add section about development with otomi-api-client-axios package ([1e914ce](https://github.com/redkubes/otomi-console/commit/1e914cee1c2a524eb7ad1db65b30d434f41e996b))
 - api upgrade ([c795e20](https://github.com/redkubes/otomi-console/commit/c795e20cc5dee13cfa616ba148b2c14bb252d178))
 - api upgrade ([267a74c](https://github.com/redkubes/otomi-console/commit/267a74c94c3db6e151c529493adcf4643df2fbd9))
-- change version of @material-ui/lab ([4b771fc](https://github.com/redkubes/otomi-console/commit/4b771fcc4192f6b6844a841e30d826ec75884545))
+- change version of @mui/lab ([4b771fc](https://github.com/redkubes/otomi-console/commit/4b771fcc4192f6b6844a841e30d826ec75884545))
 - set default formater ([f77c866](https://github.com/redkubes/otomi-console/commit/f77c8663c163c5e8fa01a0fce83b3cd0ff39c029))
 
 ### [0.4.44](https://github.com/redkubes/otomi-console/compare/v0.4.43...v0.4.44) (2021-05-04)

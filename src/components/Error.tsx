@@ -1,80 +1,73 @@
-import Alert from '@material-ui/lab/Alert'
+import CloseIcon from '@mui/icons-material/Close'
+import { Alert, Collapse, Container, Grid, IconButton } from '@mui/material'
 import React from 'react'
-import { Container, makeStyles, Theme, createStyles, Collapse, IconButton, Grid } from '@material-ui/core'
 import Helmet from 'react-helmet'
-import { Trans } from 'react-i18next'
-import CloseIcon from '@material-ui/icons/Close'
-import { Keys as k } from '../translations/keys'
-import { useSession } from '../session-context'
+import { useTranslation } from 'react-i18next'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { setError } from 'redux/reducers'
+import { makeStyles } from 'tss-react/mui'
+import snack from 'utils/snack'
 import { ApiError } from '../utils/error'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      padding: 0,
-      paddingTop: theme.spacing(2),
-    },
-    message: {
-      color: theme.palette.common.white,
-      backgroundColor: theme.palette.error.light,
-      padding: theme.spacing(2),
-    },
-    messageError: {
-      color: theme.palette.common.white,
-      padding: theme.spacing(2),
-    },
-  }),
-)
+const useStyles = makeStyles()((theme) => ({
+  root: {
+    width: '100%',
+    padding: 0,
+    margin: 0,
+  },
+  banner: {
+    marginTop: theme.spacing(1),
+    color: theme.palette.error.main,
+    // padding: theme.spacing(2),
+  },
+  fullScreen: {
+    color: theme.palette.common.white,
+  },
+}))
 
 interface Props {
   error?: ApiError
 }
 
-export default ({ error }: Props): React.ReactElement => {
-  const classes = useStyles()
-  const { globalError, setGlobalError } = useSession()
+export default function ({ error }: Props): React.ReactElement {
+  const { classes } = useStyles()
+  const dispatch = useAppDispatch()
+  const globalError = useAppSelector(({ global: { error } }) => error)
+  const { t } = useTranslation('error')
+  // END HOOKS
   const err = error ?? globalError
-
   if (!err) return null
-  const code = err.code
-  const message = err.message
+  const code = error ? err.code : err.status
+  const message = error ? err.message : err.data.error
+  const msgKey = message || code || 'Unknown'
+  const clearError = () => {
+    dispatch(setError(undefined))
+  }
+  const tErr = `${t('ERROR', { ns: 'error', code, msg: t(msgKey) })}`
+  snack.error(tErr)
   return (
     <Container className={classes.root}>
-      <Helmet>
-        <title>{`${code}: ${message}`}</title>
-        <meta name='description' content={`${code}: ${message}`} />
-      </Helmet>
-      {globalError && (
+      <Helmet title={tErr} />
+      {!error && globalError && (
         <Collapse in={!!err}>
           <Alert
+            className={classes.banner}
             severity='error'
             variant='outlined'
-            onClick={() => {
-              setGlobalError()
-            }}
+            onClick={clearError}
             action={
-              <IconButton
-                aria-label='close'
-                color='inherit'
-                size='small'
-                onClick={() => {
-                  setGlobalError()
-                }}
-              >
-                <CloseIcon fontSize='inherit' />
+              <IconButton aria-label='close' size='small' onClick={clearError} color='primary'>
+                <CloseIcon fontSize='inherit' color='primary' />
               </IconButton>
             }
           >
-            <Trans i18nKey={k.ERROR}>Error</Trans>: <Trans i18nKey={k[message]} />
+            {tErr}
           </Alert>
         </Collapse>
       )}
       {error && (
-        <Grid className={classes.messageError} container direction='row' justify='center' alignItems='center'>
-          <h1>
-            <Trans i18nKey={k.ERROR}>Error</Trans>: <Trans i18nKey={k[message]} />{' '}
-          </h1>
+        <Grid className={classes.fullScreen} container direction='row' justifyContent='center' alignItems='center'>
+          <h1>{tErr}</h1>
         </Grid>
       )}
     </Container>

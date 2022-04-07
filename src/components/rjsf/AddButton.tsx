@@ -1,14 +1,14 @@
+import AddIcon from '@mui/icons-material/Add'
+import Button from '@mui/material/Button'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
-import { AddButtonProps } from '@rjsf/core'
-
-import Button from '@material-ui/core/Button'
-import AddIcon from '@material-ui/icons/Add'
-
-const AddButton: React.FC<AddButtonProps> = (props) => (
-  <Button {...props} color='secondary'>
-    <AddIcon /> Add Item
-  </Button>
-)
-
-export default AddButton
+export default function (props): React.ReactElement {
+  const { t } = useTranslation()
+  // END HOOKS
+  return (
+    <Button {...props}>
+      <AddIcon /> {t('add item')}
+    </Button>
+  )
+}

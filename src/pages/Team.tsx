@@ -1,36 +1,33 @@
-import React, { useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Team from '../components/Team'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import Team from 'components/Team'
+import useAuthzSession from 'hooks/useAuthzSession'
+import PaperLayout from 'layouts/Paper'
+import { omit } from 'lodash'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { RouteComponentProps } from 'react-router-dom'
+import { useCreateTeamMutation, useDeleteTeamMutation, useEditTeamMutation, useGetTeamQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  useAuthz(teamId)
-  const tid = teamId
-  const [formData, setFormData] = useState()
-  const [deleteId, setDeleteId]: any = useState()
-  const [team, teamLoading, teamError]: any = useApi('getTeam', !!tid, [tid])
-  const [createRes, createLoading, createError] = useApi(
-    teamId ? 'editTeam' : 'createTeam',
-    !!formData,
-    teamId ? [tid, formData] : [formData],
-  )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteTeam', !!deleteId, [deleteId])
-  if ((createRes && (!createLoading || createError)) || (deleteRes && !(deleteLoading || deleteError))) {
-    return <Redirect to='/teams' />
+}: RouteComponentProps<Params>): React.ReactElement {
+  useAuthzSession(teamId)
+  const [create] = useCreateTeamMutation()
+  const [update] = useEditTeamMutation()
+  const [del] = useDeleteTeamMutation()
+  const { data, isLoading } = useGetTeamQuery({ teamId }, { skip: !teamId })
+  const handleSubmit = (formData) => {
+    if (teamId) update({ teamId, body: omit(formData, ['id']) as typeof formData })
+    else create({ body: formData })
   }
-  const loading = teamLoading || createLoading
-  const err = teamError || createError || deleteError
-  const comp = !loading && (!err || formData || team) && (
-    <Team team={formData || team} onSubmit={setFormData} onDelete={setDeleteId} />
-  )
-  return <PaperLayout loading={loading} comp={comp} />
+  const handleDelete = (deleteId) => del({ teamId: deleteId })
+  const { t } = useTranslation()
+  // END HOOKS
+  const comp = <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_TEAM')} />
 }

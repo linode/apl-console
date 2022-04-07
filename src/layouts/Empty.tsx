@@ -1,17 +1,23 @@
+import { Container } from '@mui/material'
 import React from 'react'
-import { Container, makeStyles } from '@material-ui/core'
+import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
-    padding: theme.spacing(2),
+    padding: 0,
   },
 }))
 
-export default ({ children }: any): React.ReactElement => {
-  const classes = useStyles()
+interface Props {
+  children?: any
+  title?: string
+}
+
+export default function ({ children, title }: any): React.ReactElement {
+  const { classes } = useStyles()
   return (
-    <MainLayout>
+    <MainLayout title={title}>
       <Container className={classes.container}>{children}</Container>
     </MainLayout>
   )

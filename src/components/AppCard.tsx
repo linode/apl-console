@@ -1,78 +1,87 @@
-import { Card, CardContent, CardMedia, IconButton, Typography } from '@material-ui/core'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import HelpIcon from '@material-ui/icons/Help'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import SettingsIcon from '@material-ui/icons/Settings'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { useDrag } from 'react-dnd'
+import { Link as RLink } from 'react-router-dom'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
+const useStyles = makeStyles()((theme) => {
+  const p = theme.palette
+  const m = p.mode
+  return {
     root: {
-      display: 'flex',
-      height: theme.spacing(20),
-      textTransform: 'capitalize',
+      textAlign: 'center',
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
+      paddingBottom: theme.spacing(2),
+      paddingTop: theme.spacing(4),
     },
-    details: {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    disabled: {
-      backgroundColor: theme.palette.action.disabledBackground,
-      color: theme.palette.action.disabled,
-    },
-    content: {
-      flex: '1 0 auto',
-    },
-    cover: {
-      width: 90,
+    img: {
+      height: theme.spacing(8),
+      maxWidth: theme.spacing(8),
       margin: 'auto',
     },
-    controls: {
-      display: 'flex',
-      alignItems: 'center',
-      paddingLeft: theme.spacing(1),
-      paddingBottom: theme.spacing(1),
+    title: {
+      textAlign: 'center',
+      verticalAlign: 'bottom',
     },
-    playIcon: {
-      height: 38,
-      width: 38,
+    notDragging: {
+      opacity: 0.2,
     },
-  }),
-)
+    core: {
+      color: `${p.common.white} !important`,
+    },
+  }
+})
 
-export default ({ img, title, link, disabled }: any): React.ReactElement => {
-  const classes = useStyles()
-
+export default function ({
+  deps,
+  enabled,
+  id,
+  img,
+  imgAlt,
+  isDragging,
+  setDeps,
+  teamId,
+  title,
+}: any): React.ReactElement {
+  const { classes, cx } = useStyles()
+  const canDrag = enabled !== undefined
+  const [_, dragRef] = useDrag(
+    () => ({
+      type: 'card',
+      item: { name: id },
+      canDrag,
+      collect: (monitor) => {
+        const d = monitor.isDragging()
+        if (d) setDeps(deps)
+        return {
+          localDrag: d,
+        }
+      },
+      end: () => setTimeout(() => setDeps(undefined)),
+    }),
+    [],
+  )
   return (
-    <Card className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}`}>
-      <div className={classes.details}>
-        <CardContent className={classes.content}>
-          <Typography component='h6' variant='h6'>
-            {title}
-          </Typography>
-        </CardContent>
-        <div className={classes.controls}>
-          <IconButton
-            aria-label='app settings'
-            component={Link}
-            to={`/appsettings/${title}`}
-            disabled={disabled}
-            onClick={(event) => event.preventDefault()}
-          >
-            <SettingsIcon />
-          </IconButton>
-          <IconButton aria-label='start' href={link} target='_blank' rel='noopener' disabled={disabled}>
-            <PlayArrowIcon className={classes.playIcon} />
-          </IconButton>
-          <IconButton aria-label='help' disabled={disabled}>
-            <HelpIcon />
-          </IconButton>
-        </div>
-      </div>
-      <CardMedia className={classes.cover} title={title}>
-        <img src={img} alt={`Logo for ${title} app`} className={classes.cover} />
-      </CardMedia>
-    </Card>
+    <RLink to={`/apps/${teamId}/${id}`}>
+      <Box
+        className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}
+        ref={dragRef}
+      >
+        <img
+          draggable={false}
+          className={cx(classes.img)}
+          src={img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null // prevents looping
+            currentTarget.src = imgAlt
+          }}
+          alt={`Logo for ${title} app`}
+        />
+        <Typography className={cx(classes.title, enabled === undefined && classes.core)} variant='h6'>
+          {title}
+        </Typography>
+      </Box>
+    </RLink>
   )
 }

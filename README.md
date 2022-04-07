@@ -16,16 +16,23 @@ The frontend of the Otomi Container Platform that communicates with [otomi-api](
 source .env && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
 ```
 
-### Running in docker-compose with all deps
+### Start the dependencies
+
+It is expected to have `$ENV_DIR` pointing to a valid values repo. Please follow the instructions in [otomi-core's readme]() if you need to create one.
+
+#### Locally
+
+Just clone `otomi-core` somewhere, run `npm install` and start the tools server with `npm run server`.
+
+#### In docker-compose
 
 ```
-bin/dc.sh up-all
+bin/dc.sh up-deps
 ```
 
-### Running with only deps in docker-compose
+### Run the api server
 
 ```
-bin/dc.sh up-deps &
 npm run dev
 ```
 
@@ -47,8 +54,4 @@ In vscode: open `Run and Debug` window, select `Attach to Chrome and run debuggi
 
 ### Api client
 
-The otomi-console uses `@redkubes/otomi-api-client-axios` package that is released whenever OpenApi schema is changed. For development purpose you can link local npm package:
-
-```
-npm link @redkubes/otomi-api-client-axios
-```
+The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:client` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).

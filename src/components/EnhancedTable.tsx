@@ -1,13 +1,11 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
+import DeleteIcon from '@mui/icons-material/Delete'
 import {
   Checkbox,
-  createStyles,
   FormControlLabel,
   IconButton,
   lighten,
-  makeStyles,
   Paper,
   Switch,
   Table,
@@ -18,23 +16,21 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Theme,
   Toolbar,
   Tooltip,
   Typography,
-} from '@material-ui/core'
-import DeleteIcon from '@material-ui/icons/Delete'
-import clsx from 'clsx'
+} from '@mui/material'
+import { sentenceCase } from 'change-case'
+import { useLocalStorage } from 'hooks/useLocalStorage'
+import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { makeStyles } from 'tss-react/mui'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1
-  }
+  if (get(b, orderBy) < get(a, orderBy)) return -1
+
+  if (get(b, orderBy) > get(a, orderBy)) return 1
+
   return 0
 }
 
@@ -68,34 +64,32 @@ export interface HeadCell {
   component?: any
 }
 
-const useEnhancedStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-    },
-    paper: {
-      width: '100%',
-      marginBottom: theme.spacing(2),
-    },
-    table: {
-      minWidth: 750,
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: 'rect(0 0 0 0)',
-      height: 1,
-      margin: -1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      top: 20,
-      width: 1,
-    },
-  }),
-)
+const useEnhancedStyles = makeStyles()((theme) => ({
+  root: {
+    width: '100%',
+  },
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+  },
+  table: {
+    minWidth: 750,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
+}))
 
-interface EnhancedTableProps {
-  classes?: ReturnType<typeof useEnhancedStyles>
+interface EnhancedTableHeadProps {
+  classes?: any // ReturnType<typeof useEnhancedStyles>
   numSelected: number
   onRequestSort: (event: MouseEvent<unknown>, property: string) => void
   onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void
@@ -108,18 +102,9 @@ interface EnhancedTableProps {
   disableSelect?: boolean
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const {
-    disableSelect,
-    classes,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
-    onSelectAllClick,
-    onRequestSort,
-    headCells,
-  } = props
+export function EnhancedTableHead(props: EnhancedTableHeadProps) {
+  const { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
+    props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)
   }
@@ -133,7 +118,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               indeterminate={numSelected > 0 && numSelected < rowCount}
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
-              inputProps={{ 'aria-label': 'select all desserts' }}
+              inputProps={{ 'aria-label': 'select all' }}
             />
           </TableCell>
         )}
@@ -141,7 +126,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'default'}
+            padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -149,7 +134,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              {headCell.label}
+              {sentenceCase(headCell.label)}
               {orderBy === headCell.id ? (
                 <span className={classes.visuallyHidden}>
                   {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
@@ -163,39 +148,37 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   )
 }
 
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    title: {
-      flex: '1 1 100%',
-    },
-  }),
-)
+const useToolbarStyles = makeStyles()((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.mode === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
+  title: {
+    flex: '1 1 100%',
+  },
+}))
 
 interface EnhancedTableToolbarProps {
   numSelected: number
 }
 
-const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const classes = useToolbarStyles()
+function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
+  const { classes, cx } = useToolbarStyles()
   const { numSelected } = props
 
   return (
     <Toolbar
-      className={clsx(classes.root, {
+      className={cx(classes.root, {
         [classes.highlight]: numSelected > 0,
       })}
     >
@@ -215,17 +198,23 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   )
 }
 
-interface Props {
+export interface EnhancedTableProps {
   disableSelect?: boolean
-  orderByStart: string
+  orderByStart?: string
   headCells: any[]
   rows: any[]
-  idKey: string
+  idKey?: string
 }
 
 // eslint-disable-next-line react/prop-types
-export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props): React.ReactElement => {
-  const classes = useEnhancedStyles()
+export default function ({
+  disableSelect,
+  orderByStart = 'name',
+  headCells,
+  rows,
+  idKey = 'id',
+}: EnhancedTableProps): React.ReactElement {
+  const { classes } = useEnhancedStyles()
   const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
   const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)
   const [selected, setSelected] = useState<string[]>([])
@@ -253,15 +242,11 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
     const selectedIndex = selected.indexOf(name)
     let newSelected: string[] = []
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1))
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1))
-    } else if (selectedIndex > 0) {
+    if (selectedIndex === -1) newSelected = newSelected.concat(selected, name)
+    else if (selectedIndex === 0) newSelected = newSelected.concat(selected.slice(1))
+    else if (selectedIndex === selected.length - 1) newSelected = newSelected.concat(selected.slice(0, -1))
+    else if (selectedIndex > 0)
       newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1))
-    }
 
     setSelected(newSelected)
   }
@@ -335,7 +320,7 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
                         <TableCell
                           key={`cell-${c.id}`}
                           align={c.numeric ? 'right' : 'left'}
-                          padding={c.disablePadding ? 'none' : 'default'}
+                          padding={c.disablePadding ? 'none' : 'normal'}
                           sortDirection={orderBy === c.id ? order : false}
                         >
                           {c.renderer ? c.renderer(row) : row[c.id]}
@@ -358,8 +343,8 @@ export default ({ disableSelect, orderByStart, headCells, rows, idKey }: Props):
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
       <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label='Dense padding' />

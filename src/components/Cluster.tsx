@@ -1,15 +1,15 @@
-import React from 'react'
-import { Link, ListItem, List, ListItemText, makeStyles, ListItemIcon, MenuItem } from '@material-ui/core'
-import VerifiedUserIcon from '@material-ui/icons/VerifiedUser'
-import CloudDownloadIcon from '@material-ui/icons/CloudDownload'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import { Link, List, ListItem, ListItemIcon, ListItemText, MenuItem } from '@mui/material'
+import { useMainStyles } from 'common/theme'
 import generateDownloadLink from 'generate-download-link'
-import { useSession } from '../session-context'
-import { mainStyles } from '../theme'
-import canDo from '../utils/permission'
+import { useSession } from 'providers/Session'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { makeStyles } from 'tss-react/mui'
+import canDo from 'utils/permission'
 
-const baseUrl = process.env.CONTEXT_PATH || ''
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   listSubheader: {
     backgroundColor: theme.palette.divider,
   },
@@ -21,16 +21,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default (): React.ReactElement => {
-  const { ca, cluster, versions, oboTeamId, user } = useSession()
-  const classes = useStyles()
-  const mainClasses = mainStyles()
-  const StyledListItem = ({ className, ...props }: any) => {
-    return <ListItem className={`${classes.listItem}, ${className}`} {...props} />
-  }
-  const StyledMenuItem = (props: any) => {
-    return <MenuItem className={mainClasses.selectable} {...props} />
-  }
+export default function (): React.ReactElement {
+  const {
+    ca,
+    settings: {
+      cluster: { name, provider, region, k8sVersion },
+    },
+    versions,
+    oboTeamId,
+    user,
+  } = useSession()
+  const { classes } = useStyles()
+  const { classes: mainClasses } = useMainStyles()
+  const { t } = useTranslation()
+  // END HOOKS
+  const StyledListItem = React.memo(({ className, ...props }: any) => (
+    <ListItem className={`${classes.listItem}, ${className}`} {...props} />
+  ))
+  const StyledMenuItem = React.memo((props: any) => <MenuItem className={mainClasses.selectable} {...props} />)
 
   const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   const downloadOpts = {
@@ -40,51 +48,58 @@ export default (): React.ReactElement => {
   }
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
   return (
-    <>
-      <List dense>
-        <StyledListItem>
-          <ListItemText primary={`Name: ${cluster.name}`} data-cy='list-item-text-clustername' />
-        </StyledListItem>
-        <StyledListItem>
-          <ListItemText primary={`Cloud: ${cluster.provider}`} data-cy='list-item-text-cloud' />
-        </StyledListItem>
-        <StyledListItem>
-          <ListItemText primary={`Region: ${cluster.region}`} data-cy='list-item-text-region' />
-        </StyledListItem>
-        <StyledListItem>
-          <ListItemText primary={`K8S Version: ${cluster.k8sVersion}`} data-cy='list-item-text-k8v' />
-        </StyledListItem>
-        <StyledListItem>
-          <ListItemText primary={`Otomi Version: ${versions.core}`} data-cy='list-item-text-k8v' />
-        </StyledListItem>
+    <List dense>
+      <StyledListItem>
+        <ListItemText primary={t('NOTE_INFO', { title: t('Name'), desc: name })} data-cy='list-item-text-clustername' />
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('Provider'), desc: provider })}
+          data-cy='list-item-text-cloud'
+        />
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText primary={t('NOTE_INFO', { title: t('Region'), desc: region })} data-cy='list-item-text-region' />
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('K8S version'), desc: k8sVersion })}
+          data-cy='list-item-text-k8v'
+        />
+      </StyledListItem>
+      <StyledListItem>
+        <ListItemText
+          primary={t('NOTE_INFO', { title: t('Otomi version'), desc: versions.core })}
+          data-cy='list-item-text-core'
+        />
+      </StyledListItem>
+      <StyledMenuItem
+        className={mainClasses.selectable}
+        component={Link}
+        aria-label={t('Download KUBECFG')}
+        href={`/api/v1/kubecfg/${oboTeamId}`}
+        disabled={isButtonDisabled}
+      >
+        <ListItemIcon>
+          <CloudDownloadIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('Download KUBECFG')} />
+      </StyledMenuItem>
+      {ca && (
         <StyledMenuItem
           className={mainClasses.selectable}
           component={Link}
-          aria-label='download kubecfg'
-          href={`${baseUrl}/api/v1/kubecfg/${oboTeamId}`}
-          disabled={isButtonDisabled}
+          aria-label={t('Download CA')}
+          href={anchor}
+          download={downloadOpts.filename}
+          title={downloadOpts.title}
         >
           <ListItemIcon>
-            <CloudDownloadIcon />
+            <VerifiedUserIcon />
           </ListItemIcon>
-          <ListItemText primary='Download KUBECFG' />
+          <ListItemText primary={t('Download CA')} />
         </StyledMenuItem>
-        {ca && (
-          <StyledMenuItem
-            className={mainClasses.selectable}
-            component={Link}
-            aria-label='download certificate authority'
-            href={anchor}
-            download={downloadOpts.filename}
-            title={downloadOpts.title}
-          >
-            <ListItemIcon>
-              <VerifiedUserIcon />
-            </ListItemIcon>
-            <ListItemText primary='Download CA' />
-          </StyledMenuItem>
-        )}
-      </List>
-    </>
+      )}
+    </List>
   )
 }

@@ -1,15 +1,20 @@
-import { Typography, Grid, Card, CardHeader, Avatar, IconButton, makeStyles, Divider, Tooltip } from '@material-ui/core'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import CloudIcon from '@mui/icons-material/Cloud'
+import PeopleIcon from '@mui/icons-material/People'
+import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
+import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
+import Link from '@mui/material/Link'
+import { useSession } from 'providers/Session'
 import * as React from 'react'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
-import SwapVerticalCircleIcon from '@material-ui/icons/SwapVerticalCircle'
-import PeopleIcon from '@material-ui/icons/People'
-import CloudIcon from '@material-ui/icons/Cloud'
-import Link from '@material-ui/core/Link'
+import { Trans, useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
-import { useTranslation, Trans } from 'react-i18next'
-import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import { Keys as k } from '../translations/keys'
-import { useSession } from '../session-context'
+import {
+  GetAllServicesApiResponse,
+  GetTeamApiResponse,
+  GetTeamsApiResponse,
+  GetTeamServicesApiResponse,
+} from 'redux/otomiApi'
+import { makeStyles } from 'tss-react/mui'
 
 type Panel = {
   name: string
@@ -20,12 +25,17 @@ type Panel = {
   tooltip: string
 }
 interface Props {
-  team?: Team
-  services: Array<Service>
-  teams: Array<Team>
+  team?: GetTeamApiResponse
+  services: GetTeamServicesApiResponse | GetAllServicesApiResponse
+  teams: GetTeamsApiResponse
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
+  grid: {
+    '&>.MuiGrid-item': {
+      padding: theme.spacing(1),
+    },
+  },
   card: {
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
@@ -77,10 +87,10 @@ interface DashboardCardProps {
   classes: any
 }
 
-const DashboardCard = ({ classes, teamId, item }: DashboardCardProps): React.ReactElement => {
+function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
   const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid item xs={12} sm={6} md={4} className={classes.grid}>
       <Card classes={{ root: classes.card }}>
         <CardHeader
           data-cy={`card-${item.name}`}
@@ -120,19 +130,21 @@ const DashboardCard = ({ classes, teamId, item }: DashboardCardProps): React.Rea
   )
 }
 
-export default ({ team, services, teams }: Props): React.ReactElement => {
+export default function ({ team, services, teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
-    cluster,
-    clusters,
+    settings: {
+      cluster,
+      otomi: { additionalClusters = [] },
+    },
   } = useSession()
-  const classes = useStyles()
+  const { classes } = useStyles()
   const isServiceDisabled = isAdmin && !team
   const { t } = useTranslation()
   const panels = [
     {
       name: 'cluster',
-      data: [cluster, ...clusters],
+      data: [cluster, ...additionalClusters],
       icon: <CloudIcon />,
       canCreate: false,
       disabled: false,
@@ -144,7 +156,7 @@ export default ({ team, services, teams }: Props): React.ReactElement => {
       icon: <PeopleIcon />,
       canCreate: isAdmin,
       disabled: false,
-      tooltip: t(k.CREATE_MODEL, { model: 'team' }),
+      tooltip: t('CREATE_MODEL', { model: 'team' }),
     },
     {
       name: 'service',
@@ -153,26 +165,24 @@ export default ({ team, services, teams }: Props): React.ReactElement => {
       canCreate: true,
       disabled: isServiceDisabled,
       tooltip: isServiceDisabled
-        ? t(k.SELECT_TEAM, { model: 'service' })
-        : t(k.CREATE_MODEL_FOR_TEAM, { model: 'service', teamName: team.name }),
+        ? t('SELECT_TEAM', { model: 'service' })
+        : t('CREATE_MODEL_FOR_TEAM', { model: 'service', teamName: team.name }),
     },
   ]
   const teamName = isAdmin ? 'admin' : team.name
   return (
-    <>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
-            <Trans i18nKey={k.WELCOME_DASHBOARD}>
-              Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
-            </Trans>
-          </Typography>
-          <Divider />
-        </Grid>
-        {panels.map((panel) => (
-          <DashboardCard classes={classes} teamId={team && team.id} item={panel} key={panel.name} />
-        ))}
+    <Grid container className={classes.grid}>
+      <Grid item xs={12}>
+        <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
+          <Trans i18nKey='WELCOME_DASHBOARD'>
+            Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
+          </Trans>
+        </Typography>
+        <Divider />
       </Grid>
-    </>
+      {panels.map((panel) => (
+        <DashboardCard classes={classes} teamId={team && team.id} item={panel} key={panel.name} />
+      ))}
+    </Grid>
   )
 }

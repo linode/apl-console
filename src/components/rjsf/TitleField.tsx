@@ -1,25 +1,24 @@
-import React from 'react'
-
+import { Grid } from '@mui/material'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 import { FieldProps } from '@rjsf/core'
-
-import Box from '@material-ui/core/Box'
-import Divider from '@material-ui/core/Divider'
-import Typography from '@material-ui/core/Typography'
-import HelpButton from '../HelpButton'
+import { sentenceCase } from 'change-case'
+import HelpButton from 'components/HelpButton'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface Props extends FieldProps {
   docUrl?: string
 }
 
-const TitleField = ({ id, title, docUrl, variant = 'h5' }: Props) => {
+export default function ({ id, title, docUrl, variant = 'h6' }: Props) {
+  const { t } = useTranslation()
   return (
-    <Box mb={1} mt={1}>
+    <Grid>
       <Typography variant={variant}>
-        {title} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
+        {sentenceCase(t(title))} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
       </Typography>
       <Divider />
-    </Box>
+    </Grid>
   )
 }
-
-export default TitleField

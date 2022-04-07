@@ -1,12 +1,36 @@
+import { Box, Container, Paper } from '@mui/material'
+import Error from 'components/Error'
+import Loader from 'components/Loader'
 import React from 'react'
-import { Container, Grid, Paper, makeStyles } from '@material-ui/core'
+import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
-import Error from '../components/Error'
-import Loader from '../components/Loader'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   container: {
-    // paddingTop: theme.spacing(4),
+    paddingTop: 0,
+    paddingBottom: theme.spacing(2),
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
+  root: {
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(2),
+    },
+  },
+  paper: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+    paddingTop: '1px',
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   // paper: {
@@ -20,19 +44,19 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   loading?: boolean
   comp: React.ReactElement
+  title?: string
 }
-export default ({ loading, comp }: Props): React.ReactElement => {
-  const classes = useStyles()
+
+export default function ({ loading, comp, title }: Props): React.ReactElement {
+  const { classes, cx } = useStyles()
   return (
-    <MainLayout>
+    <MainLayout title={title}>
       <Container maxWidth='lg' className={classes.container}>
-        <Grid container spacing={3}>
-          <Grid item xs={12} component={Paper}>
-            <Error />
-            {loading && <Loader />}
-            {!loading && comp}
-          </Grid>
-        </Grid>
+        <Box component={Paper} className={cx(classes.paper, classes.root)}>
+          <Error />
+          {loading && <Loader />}
+          {!loading && comp}
+        </Box>
       </Container>
     </MainLayout>
   )

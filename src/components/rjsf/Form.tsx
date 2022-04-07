@@ -1,71 +1,163 @@
-import React from 'react'
-import { makeStyles, createStyles } from '@material-ui/core'
-import Form from '@rjsf/material-ui'
-import { FormProps, IChangeEvent } from '@rjsf/core'
-// import applyRules from 'rjsf-conditionals'
-// import { Engine } from 'json-rules-engine-simplified'
-import HelpButton from '../HelpButton'
+import { IChangeEvent, UiSchema, withTheme } from '@rjsf/core'
+import { Theme5 } from '@rjsf/material-ui'
+import ButtonGroup from 'components/ButtonGroup'
+import Header from 'components/Header'
+import { JSONSchema7 } from 'json-schema'
+import { isEqual } from 'lodash'
+import { useSession } from 'providers/Session'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { cleanData } from 'utils/data'
+import { nullify } from 'utils/schema'
+import ArrayField from './ArrayField'
+import CheckboxesWidget from './CheckboxesWidget'
+import CheckboxWidget from './CheckboxWidget'
+import DescriptionField from './DescriptionField'
+import ArrayFieldTemplate from './FieldTemplate/ArrayFieldTemplate'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
 import ObjectFieldTemplate from './ObjectFieldTemplate'
-import TitleField from './TitleField'
-import ArrayField from './ArrayField'
-import DescriptionField from './DescriptionField'
 import OneOfField from './OneOfField'
 import RadioWidget from './RadioWidget'
 import StringField from './StringField'
-import { cleanData } from '../../utils/data'
-import CheckboxesWidget from './CheckboxesWidget'
+import TitleField from './TitleField'
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
-  }),
-)
+const Form = withTheme(Theme5)
 
-interface Props extends FormProps<any> {
+interface Props {
+  idProp?: string
+  nameProp?: string
+  description?: string
+  data: Record<string, any>
+  resourceType?: string
+  resourceName?: string
+  adminOnly?: boolean
+  disabled?: boolean
+  liveValidate?: boolean
+  children?: any
   title?: any
-  key: string
   hideHelp?: boolean
+  clean?: boolean
+  setDirty?: CallableFunction
+  onChange?: CallableFunction
+  onDelete?: CallableFunction
+  onSubmit?: CallableFunction
+  schema: JSONSchema7
+  uiSchema?: UiSchema
 }
 
-export default ({ children, title, hideHelp = false, onChange, onSubmit, ...props }: Props): React.ReactElement => {
-  const { schema }: any = props
-  // const rules = schema['x-rules'] ?? undefined
-  // const MoForm = rules ? applyRules(schema, uiSchema, rules, Engine)(Form) : Form
+export default function ({
+  idProp = 'id',
+  nameProp = 'name',
+  adminOnly = false,
+  description,
+  disabled,
+  resourceType,
+  liveValidate,
+  clean = true,
+  title: inTitle,
+  hideHelp = false,
+  onChange,
+  onDelete,
+  onSubmit,
+  data,
+  schema,
+  children,
+  ...other
+}: Props): React.ReactElement {
+  const { oboTeamId } = useSession()
+  const [originalState, setOriginalState] = useState<Record<string, any>>()
+  const [state, setState] = useState<Record<string, any>>(data) // initial state set to first time data, must rely on setData from here on
+  const [loading, setLoading] = useState(false)
+  const resourceName = other.resourceName || data?.[nameProp]
+  useEffect(() => {
+    // turn of loading state upon new data
+    if (data !== state) setLoading(false)
+    if (!loading) setState(data)
+  }, [data])
+  const [isDirty, setDirty] = useState(false)
+  const { t } = useTranslation()
+  // END HOOKS
+  const id = data?.[idProp]
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-  const classes = useStyles()
-  const onChangeWrapper = ({ formData, ...rest }: IChangeEvent<any>, errors) => {
-    const cleanFormData = cleanData(formData)
-    onChange({ formData: cleanFormData, ...rest }, errors)
+  const keepValues = [[{}], [undefined]] // rjsf structs that open parts of the form, may not be stripped
+  const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
+    // lets check if form data is dirty (has meaningful changes)
+    const cleanFormDataStripped = cleanData(formData) // strip all empty structs
+    const d = state && !isEqual(cleanFormDataStripped, originalState)
+    setDirty(d) // compare with initial data
+    // finally we send the fully stripped version to subscribers
+    const cleanFormData = clean ? cleanData(formData, { keepValues, emptyObjects: false }) : formData
+    if (onChange) onChange(cleanFormData, errors)
+    // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
+    if (!originalState) setOriginalState(data)
+    // keep local state for form sync
+    setState(cleanFormData)
   }
-  const onSubmitWrapper = ({ formData, ...rest }: IChangeEvent<any>, ev) => {
-    const cleanFormData = cleanData(formData)
-    onSubmit({ formData: cleanFormData, ...rest }, ev)
+  const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
+    // keep undefineds to nullify below, allowing api to unset paths in nested structures
+    const cleanFormData = clean ? cleanData(formData, { undefinedValues: false }) : formData
+    const nulledCleanFormData = nullify(cleanFormData)
+    onSubmit(nulledCleanFormData)
+    // setState(undefined)
+    setOriginalState(undefined)
+    setDirty(false)
+    setLoading(true)
   }
+  // const validate = (formData, errors, ajvErrors): any => {
+  //   each(ajvErrors, (err) => {
+  //     const { name, property, message } = err
+  //     const leaf = property.substr(1, property.lastIndexOf('.') - 1)
+  //     const prop = get(formData, leaf)
+  //     // we exclude the error if it is about required props in a nested child obj
+  //     // when the parent is not requiring the nested prop itself
+  //     if (prop && (name !== 'required' || !isEqual(prop, {}))) {
+  //       const errObj = get(errors, property.substr(1))
+  //       // eslint-disable-next-line no-underscore-dangle
+  //       if (errObj && !errObj.__errors.includes(err.message)) errObj.addError(err.message)
+  //     }
+  //   })
+  //   return errors
+  // }
+  let title: string
+  if (adminOnly && idProp && !id) title = t('FORM_TITLE_NEW', { model: resourceType })
+  if (adminOnly && ((idProp && id) || !idProp) && resourceName)
+    title = t('FORM_TITLE_NAMED', { model: resourceType, name: resourceName })
+  if (adminOnly && !idProp && !resourceName) title = t('FORM_TITLE', { model: resourceType })
+  if (!adminOnly && id) title = t('FORM_TITLE_TEAM', { model: resourceType, name: resourceName, teamId: oboTeamId })
+  if (!adminOnly && !id) title = t('FORM_TITLE_TEAM_NEW', { model: resourceType, teamId: oboTeamId })
+
   return (
     <>
-      {!hideHelp && (
-        <div className={classes.root}>
-          {title}
-          {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}
-        </div>
-      )}
+      {!hideHelp && <Header title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        liveValidate={false}
+        formData={state}
+        key={`${resourceType}-${resourceName}`}
+        schema={schema}
+        liveValidate={liveValidate || false}
         showErrorList={false}
         noHtml5Validate
+        // validate={validate}
+        // customValidateOnly
+        ArrayFieldTemplate={ArrayFieldTemplate}
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
-        widgets={{ CheckboxesWidget, RadioWidget }}
+        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
-        {...props}
+        disabled={disabled || loading}
+        // noValidate
+        {...other}
       >
-        {children}
+        {children || (
+          <ButtonGroup
+            id={id}
+            resourceName={resourceName}
+            resourceType={resourceName}
+            disabled={disabled || !isDirty || loading}
+            onDelete={onDelete}
+          />
+        )}
       </Form>
     </>
   )

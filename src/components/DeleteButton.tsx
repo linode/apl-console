@@ -1,17 +1,20 @@
+import DeleteIcon from '@mui/icons-material/Delete'
+import Button from '@mui/material/Button'
 import React, { useState } from 'react'
-import Button from '@material-ui/core/Button'
-import DeleteIcon from '@material-ui/icons/Delete'
+import { useTranslation } from 'react-i18next'
 import DeleteDialog from './DeleteDialog'
 
 interface DeleteButtonProps {
-  dataCy?: string
+  disabled?: boolean
   onDelete: () => void
   resourceName: string
   resourceType: string
 }
-export default (props: DeleteButtonProps): React.ReactElement => {
+export default function ({ disabled, ...other }: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { dataCy } = props
+  const { t } = useTranslation()
+  // END HOOKS
+
   const onButtonClick = () => {
     setDialogOpen(true)
   }
@@ -21,9 +24,9 @@ export default (props: DeleteButtonProps): React.ReactElement => {
   }
   return (
     <>
-      {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...props} />}
-      <Button color='primary' startIcon={<DeleteIcon />} variant='contained' onClick={onButtonClick} data-cy={dataCy}>
-        Delete
+      {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...other} />}
+      <Button disabled={disabled} startIcon={<DeleteIcon />} onClick={onButtonClick}>
+        {t('delete')}
       </Button>
     </>
   )

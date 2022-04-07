@@ -1,7 +1,7 @@
 # --------------- dev stage for developers to override sources
 FROM node:13.10.1-alpine as dev
-ARG NPM_TOKEN
-RUN test -n "$NPM_TOKEN"
+# ARG NPM_TOKEN
+# RUN test -n "$NPM_TOKEN"
 
 RUN apk --no-cache add make gcc g++ python
 ENV NODE_ENV=development
@@ -11,7 +11,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY .npmrc ./
-RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
+# RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
@@ -32,7 +32,7 @@ RUN echo "EXTEND_ESLINT=true" >> .env
 
 # ARG CI=true
 RUN npm run lint
-RUN npm run test:enzyme -- --watchAll=false
+RUN npm test -- --watchAll=false
 RUN npm run build
 
 # --------------- production stage
@@ -43,10 +43,6 @@ RUN addgroup -S app &&\
   adduser -S app -G app -h /app -s /sbin/nologin
 ENV HOME=/app
 WORKDIR /app
-
-RUN luarocks install lua-resty-jwt
-RUN luarocks install lua-resty-http
-RUN luarocks install date
 
 COPY nginx/ ./
 RUN chmod +x /app/run.sh

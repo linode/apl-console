@@ -1,19 +1,12 @@
+import Policies from 'components/Policies'
+import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { Policies as PoliciesType } from '@redkubes/otomi-api-client-axios'
-import Policies from '../components/Policies'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { ApiError } from '../utils/error'
+import { useTranslation } from 'react-i18next'
+import { useGetSettingsQuery } from 'redux/otomiApi'
 
-interface IncomingPolicies {
-  policies: PoliciesType
-}
-
-export default (): React.ReactElement => {
-  const [policies, policiesLoading, policiesError]: [IncomingPolicies, boolean, ApiError] = useApi('getSetting', true, [
-    'policies',
-  ])
-
-  const comp = !policiesLoading && (!policiesError || policies) && <Policies policies={policies.policies} />
-  return <PaperLayout comp={comp} loading={policiesLoading} />
+export default function (): React.ReactElement {
+  const { data, isLoading } = useGetSettingsQuery({ ids: ['policies'] })
+  const { t } = useTranslation()
+  const comp = data && <Policies policies={data?.policies} />
+  return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_POLICIES')} />
 }

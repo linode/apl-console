@@ -1,12 +1,10 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
-import React from 'react'
-
-import FormLabel from '@material-ui/core/FormLabel'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-
+import { FormControlLabel, FormGroup, Typography } from '@mui/material'
 import { WidgetProps } from '@rjsf/core'
+import { sentenceCase } from 'change-case'
+import Checkbox from 'components/Checkbox'
+import React from 'react'
 
 const selectValue = (value: any, selected: any, all: any) => {
   const at = all.indexOf(value)
@@ -21,7 +19,7 @@ const deselectValue = (value: any, selected: any) => {
   return selected.filter((v: any) => v !== value)
 }
 
-const CheckboxesWidget = ({
+export default function ({
   schema,
   label,
   id,
@@ -34,36 +32,33 @@ const CheckboxesWidget = ({
   onChange,
   onBlur,
   onFocus,
-}: WidgetProps) => {
+}: WidgetProps) {
   const { enumOptions, enumDisabled, inline } = options
-  const renderOptions = [...(enumOptions as any[])]
 
-  const _onChange = (option: any) => ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
-    const all = (enumOptions as any).map(({ value }: any) => value)
+  const _onChange =
+    (option: any) =>
+    ({ target: { checked } }: React.ChangeEvent<HTMLInputElement>) => {
+      const all = (enumOptions as any).map(({ value }: any) => value)
 
-    if (checked) {
-      onChange(selectValue(option.value, value, all))
-    } else {
-      onChange(deselectValue(option.value, value))
+      if (checked) onChange(selectValue(option.value, value, all))
+      else onChange(deselectValue(option.value, value))
     }
-  }
 
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onFocus(id, value)
-  const hasLabel = !!options.hasLabel
-  const row = inline !== undefined ? inline : renderOptions.length <= 7
 
   return (
     <>
-      {hasLabel && (
-        <FormLabel required={required} htmlFor={id}>
-          {label || schema.title}
-        </FormLabel>
-      )}
-      <FormGroup row={!!row}>
+      <Typography variant='h6'>{label || schema.title}</Typography>
+      <FormGroup row={!!inline}>
         {(enumOptions as any).map((option: any, index: number) => {
-          const checked = value.indexOf(option.value) !== -1
+          const checked = value.includes(option.value)
           const itemDisabled = enumDisabled && (enumDisabled as any).indexOf(option.value) !== -1
+          const def = schema.default as string[]
+          const indeterminate =
+            (schema.default === undefined && !checked) ||
+            (schema.default !== undefined &&
+              ((checked && def.includes(option.value)) || (!checked && !def.includes(option.value))))
           const checkbox = (
             <Checkbox
               id={`${id}_${index}`}
@@ -73,13 +68,12 @@ const CheckboxesWidget = ({
               onChange={_onChange(option)}
               onBlur={_onBlur}
               onFocus={_onFocus}
+              indeterminate={indeterminate}
             />
           )
-          return <FormControlLabel control={checkbox} key={option.label} label={option.label} />
+          return <FormControlLabel control={checkbox} key={index} label={sentenceCase(option.label)} />
         })}
       </FormGroup>
     </>
   )
 }
-
-export default CheckboxesWidget

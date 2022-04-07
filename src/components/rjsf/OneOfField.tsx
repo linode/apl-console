@@ -1,15 +1,19 @@
-import React from 'react'
+import { Grid } from '@mui/material'
 import MultiSchemaField from '@rjsf/core/lib/components/fields/MultiSchemaField'
-import RadioWidget from './RadioWidget'
+import React from 'react'
+import { useStyles } from './styles'
 
-export default (props: any): React.ReactElement => {
-  const { children, schema, uiSchema } = props
-  const newSchema = { ...uiSchema }
-  if (schema.oneOf.length < 7) newSchema['ui:widget'] = RadioWidget
+export default function (props: any): React.ReactElement {
+  const { idSchema, schema, uiSchema, ...rest } = props
+  const newUiSchema = { ...uiSchema }
+  if (uiSchema['ui:widget'] !== 'hidden' && schema.oneOf.length < 8) newUiSchema['ui:widget'] = 'radio'
 
+  const { classes } = useStyles()
   return (
-    <MultiSchemaField {...props} uiSchema={newSchema}>
-      {children}
-    </MultiSchemaField>
+    <Grid key={`${idSchema.$id}-outer`} className={classes.gridIsOf} item>
+      <Grid key={`${idSchema.$id}-field`} item>
+        <MultiSchemaField {...rest} idSchema={idSchema} schema={schema} uiSchema={newUiSchema} />
+      </Grid>
+    </Grid>
   )
 }

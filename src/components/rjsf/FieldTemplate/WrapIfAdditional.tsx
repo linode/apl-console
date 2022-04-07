@@ -1,15 +1,9 @@
 /* eslint-disable no-prototype-builtins */
-import React from 'react'
-
+import { FormControl, Grid, Input, InputLabel } from '@mui/material'
 import { utils } from '@rjsf/core'
+import IconButton from 'components/rjsf/IconButton'
 import { JSONSchema7 } from 'json-schema'
-
-import Grid from '@material-ui/core/Grid'
-import FormControl from '@material-ui/core/FormControl'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
-
-import IconButton from '../IconButton'
+import React from 'react'
 
 const { ADDITIONAL_PROPERTY_FLAG } = utils
 
@@ -25,7 +19,7 @@ type WrapIfAdditionalProps = {
   schema: JSONSchema7
 }
 
-const WrapIfAdditional = ({
+function WrapIfAdditional({
   children,
   disabled,
   id,
@@ -35,7 +29,7 @@ const WrapIfAdditional = ({
   readonly,
   required,
   schema,
-}: WrapIfAdditionalProps) => {
+}: WrapIfAdditionalProps) {
   const keyLabel = `${label} Key` // i18n ?
   const additional = schema.hasOwnProperty(ADDITIONAL_PROPERTY_FLAG)
   const btnStyle = {
@@ -45,9 +39,7 @@ const WrapIfAdditional = ({
     fontWeight: 'bold',
   }
 
-  if (!additional) {
-    return <>{children}</>
-  }
+  if (!additional) return children
 
   const handleBlur = ({ target }: React.FocusEvent<HTMLInputElement>) => onKeyChange(target.value)
 

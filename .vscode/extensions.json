@@ -5,11 +5,10 @@
     "dbaeumer.vscode-eslint",
     "donjayamanne.githistory",
     "eamodio.gitlens",
-    "keyring.lua",
+    "esbenp.prettier-vscode",
     "redhat.vscode-yaml",
     "stylelint.vscode-stylelint",
     "william-voyek.vscode-nginx",
-    "xyz.local-history",
-    "yinfei.luahelper"
+    "xyz.local-history"
   ]
 }

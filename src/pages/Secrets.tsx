@@ -1,24 +1,25 @@
+import Secrets from 'components/Secrets'
+import useAuthzSession from 'hooks/useAuthzSession'
+import PaperLayout from 'layouts/Paper'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
-import Secrets from '../components/Secrets'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import { useGetSecretsQuery } from 'redux/otomiApi'
+import { getRole } from 'utils/data'
 
 interface Params {
-  teamId?: string
+  teamId: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  const { tid } = useAuthz(teamId)
-  const secretsMethod = !teamId ? 'getAllSecrets' : 'getSecrets'
-  const [secrets, secretsLoading, secretsError]: any = useApi(secretsMethod, true, [tid])
-  const [team, teamLoading, teamError]: any = useApi('getTeam', !!teamId, [teamId])
-  const loading = secretsLoading || teamLoading
-  const err = secretsError || teamError
-  const comp = !(err || loading) && <Secrets team={team} secrets={secrets} />
-  return <PaperLayout loading={loading} comp={comp} />
+}: RouteComponentProps<Params>): React.ReactElement {
+  useAuthzSession(teamId)
+  const { data, isLoading } = useGetSecretsQuery({ teamId })
+  const { t } = useTranslation()
+  // END HOOKS
+  const comp = data && <Secrets teamId={teamId} secrets={data} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRETS', { role: getRole(teamId) })} />
 }

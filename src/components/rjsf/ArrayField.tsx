@@ -1,30 +1,26 @@
-import React from 'react'
-import ArrayField from '@rjsf/core/lib/components/fields/ArrayField'
 import { utils } from '@rjsf/core'
+import ArrayField from '@rjsf/core/lib/components/fields/ArrayField'
 import { set } from 'lodash'
+import React from 'react'
 import RadioWidget from './RadioWidget'
 
-export default ({ children, uiSchema, schema, formData, ...props }: any): React.ReactElement => {
+export default function ({ uiSchema, schema, formData, ...props }: any): React.ReactElement {
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
-  const listTooLong = schema.items?.enum?.length > 7
+  const listTooLong = schema.items?.enum?.length > 8
   const shortList = schema.items?.enum?.length < 5
   set(newUiSchema, 'ui:options.row', shortList)
 
-  if (!listTooLong) {
+  if (!listTooLong && uiSchema['ui:widget'] !== 'hidden') {
     if (utils.isMultiSelect(schema)) {
       newUiSchema['ui:widget'] = 'checkboxes'
       set(newUiSchema, 'ui:options.inline', shortList)
-      set(newUiSchema, 'ui:options.label', undefined)
-    } else {
+      // set(newUiSchema, 'ui:options.label', undefined)
+    } else if (schema.enum) {
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
     }
   }
   set(newUiSchema, 'ui:options.orderable', false)
-  return (
-    <ArrayField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema}>
-      {children}
-    </ArrayField>
-  )
+  return <ArrayField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema} />
 }

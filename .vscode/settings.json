@@ -1,16 +1,29 @@
 {
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "cSpell.diagnosticLevel": "Hint",
+  "cSpell.enabled": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.addMissingImports": true,
+    "source.fixAll": true,
+    "source.organizeImports": true
   },
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "[lua]": {
-    "editor.defaultFormatter": "yinfei.luahelper"
-  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "eslint.format.enable": true,
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.validate": ["javascript", "typescript", "typescriptreact"],
   "files.associations": {
     "*.tmpl": "nginx"
+  },
+  "search.exclude": {
+    "**/public/i18n": true
   },
   "prettier.enable": true,
   "stylelint.enable": true

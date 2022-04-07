@@ -1,62 +1,68 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable react/no-array-index-key */
-import { Box, Divider, Grid, Paper } from '@material-ui/core'
+import { Divider, Grid, Paper } from '@mui/material'
+import { ObjectFieldTemplateProps } from '@rjsf/core'
+import { sentenceCase } from 'change-case'
 import React from 'react'
-import { ObjectFieldTemplateProps, utils } from '@rjsf/core'
-import TitleField from './TitleField'
-import AddButton from './AddButton'
+import { getSchemaType, hasSomeOf, propsToAccordion } from 'utils/schema'
+import DescriptionField from './DescriptionField'
 import { useStyles } from './styles'
-import { isSomeOf } from '../../utils'
+import TitleField from './TitleField'
 
-const { canExpand } = utils
+const isHidden = (element: any): boolean => element.content?.props?.uiSchema?.['ui:widget'] === 'hidden'
 
-const isHidden = (element: any): boolean => {
-  return element.content?.props?.uiSchema && element.content.props.uiSchema['ui:widget'] === 'hidden'
-}
-
-export default (props: ObjectFieldTemplateProps): React.ReactElement => {
-  const { DescriptionField, disabled, formData, onAddClick, properties, readonly, idSchema, schema, uiSchema } = props
-  const classes = useStyles()
-  const isOf = isSomeOf(schema)
+export default function (props: ObjectFieldTemplateProps): React.ReactElement {
+  const { properties, idSchema, schema } = props
+  const { classes, cx } = useStyles()
+  const isOf = hasSomeOf(schema)
   let grouped
   const fields = []
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
-    const schema = o.content.props.schema
-    const type = schema.type
+    let { schema } = o.content.props
+    if (schema === 'object') schema = {}
+    const type = getSchemaType(schema)
     // we group props together that we want to render in their own row
-    if (isHidden(o) || ['allOf', 'anyOf', 'oneOf'].some((p) => p in schema) || ['boolean', 'object'].includes(type)) {
+    if (isHidden(o) || isOf || ['boolean', 'object'].includes(type)) {
       if (grouped.length) fields.push(grouped)
       fields.push(o)
       grouped = undefined
-    } else {
-      grouped.push(o)
-    }
+    } else grouped.push(o)
   })
   // to catch the last iteration
   if (grouped) fields.push(grouped)
 
-  const renderTitleDescription = (props, skipTitle = false): React.ReactElement | undefined => {
-    const { idSchema, uiSchema = {}, title, description, required, schema } = props
-    if (schema.type === 'boolean' && !skipTitle) return
+  const renderTitleDescription = (props, skipTitle = undefined): React.ReactElement | undefined => {
+    const { idSchema = {}, title, description, name, required, schema, uiSchema } = props
+    const type = getSchemaType(schema)
+    if (type === 'boolean' && !skipTitle) return
     const docUrl =
       schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-    const displayTitle = uiSchema['ui:title'] || title || schema.title
-    const displayDescription = uiSchema['ui:description'] || description || schema.description
+    // we may get the title from the following:
+    // const displayTitle = title
+    const displayTitle =
+      uiSchema['ui:title'] ||
+      uiSchema['ui:options']?.title ||
+      schema.title ||
+      title ||
+      (type === 'object' && !schema.properties && sentenceCase(name))
+    const displayDescription =
+      uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
-    // eslint-disable-next-line no-param-reassign
-    if (isOf) skipTitle = true
+    if (skipTitle === undefined)
+      skipTitle = schema['x-hideTitle'] || propsToAccordion.includes(uiSchema.title || schema.title || title)
     // eslint-disable-next-line consistent-return
     return (
       <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
         {displayTitle && !skipTitle && (
           <TitleField
             {...props}
+            schema={schema}
+            uiSchema={uiSchema}
             key={`${idSchema.$id}-title`}
             id={`${idSchema.$id}-title`}
             title={displayTitle}
             required={required}
-            docUrl={docUrl}
+            docUrl={skipTitle !== false && docUrl}
           />
         )}
         {displayDescription && skipTitle && <Divider />}
@@ -72,64 +78,54 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
   }
 
   const render = (o, id = o.name) => {
-    const schema = o.content?.props?.schema
-    const isOf = isSomeOf(schema)
-    const isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
+    const { idSchema = {}, schema } = o.content?.props ?? {}
+    const type = getSchemaType(schema)
+    const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
     const hidden = isHidden(o)
+    const isOf = hasSomeOf(schema)
     if (hidden) {
-      if (!schema.properties && !isOf)
+      if (!schema.properties && !isOf) {
         return (
-          <span id={id} key={id}>
+          <span id={`${id}-hidden`} key={id}>
             {o.content}
           </span>
         )
+      }
       return undefined
     }
 
+    if (propsToAccordion.includes(id)) return o.content
+
     // object/*Ofs we want to elevate in their own paper
-    if (!schema.type || schema.type === 'object' || isOf)
+    if ((type === 'object' || isOf) && !isCustomArray) {
       return (
-        <Grid key={id} className={classes.grid} item xs={12}>
-          <Paper key={id} className={classes.paper}>
-            {(isOf || isCustomArray) && (
-              <Grid key={idSchema.$id} item className={classes.isOfHeader}>
+        <Grid key={id} container>
+          <Paper key={`${id}-paper`} className={cx(classes.paper, classes.grid)}>
+            {(isOf || (!isOf && type === 'object' && !schema.properties)) && (
+              <Grid item key={`${idSchema.$id}-title`}>
                 {renderTitleDescription(o.content?.props)}
               </Grid>
             )}
-            {o.content}
-          </Paper>
-        </Grid>
-      )
-
-    if (isCustomArray) {
-      return (
-        <Grid key={id} className={classes.gridIsOf} item xs={12}>
-          <Paper key={id} className={classes.paper}>
-            <Grid key={idSchema.$id} item className={classes.isOfHeader}>
-              {renderTitleDescription(o.content?.props)}
-            </Grid>
-            <Grid key={id} item xs={12} className={classes.gridIsOf}>
-              {o.content}
-            </Grid>
+            <Grid key={`${idSchema.$id}-content`}>{o.content}</Grid>
           </Paper>
         </Grid>
       )
     }
 
-    if (schema.type === 'boolean' || (schema.type === 'string' && schema.enum))
-      // array items will get their own grid row
+    if (isCustomArray || schema.type === 'boolean') {
+      // arays, booleans and enums items will get their own grid row
       return (
-        <Grid key={id} className={classes.grid} item xs={12}>
+        <Grid key={id} className={classes.grid} container>
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
           {renderTitleDescription(o.content?.props, true)}
         </Grid>
       )
-    // array items will get their own grid row
-    if (schema.type === 'array') {
+    }
+    if (schema.type === 'array' || schema.enum?.length < 8) {
       return (
-        <Grid key={id} item xs={12} className={classes.gridIsOf}>
+        <Grid key={id} item xs={12} className={classes.grid}>
           {o.content}
         </Grid>
       )
@@ -149,27 +145,18 @@ export default (props: ObjectFieldTemplateProps): React.ReactElement => {
         </Grid>
       )}
       {fields.map((o: any, idx: number) => {
-        if (o.length)
+        if (o.length) {
           return (
-            <Grid key={idx} container>
-              {o.map((el, idz) => render(el, idz))}
+            //   <FormControl fullWidth key={idx} className={classes.container}>
+            //     {o.map(render)}
+            //   </FormControl>
+            <Grid key={`fields-${idx}`} container className={classes.container}>
+              {o.map(render)}
             </Grid>
           )
+        }
         return render(o)
       })}
-      {canExpand(schema, uiSchema, formData) && (
-        <Grid container justify='flex-end' className={classes.grid}>
-          <Grid item>
-            <Box mt={2}>
-              <AddButton
-                className='object-property-expand'
-                onClick={onAddClick(schema)}
-                disabled={disabled || readonly}
-              />
-            </Box>
-          </Grid>
-        </Grid>
-      )}
     </Grid>
   )
 }

@@ -1,79 +1,61 @@
-import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { useSession } from 'providers/Session'
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Team, Job } from '@redkubes/otomi-api-client-axios'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { useTranslation } from 'react-i18next'
+import { GetAllJobsApiResponse, GetTeamJobsApiResponse } from 'redux/otomiApi'
+import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
-import { useSession } from '../session-context'
+import ListTable from './ListTable'
 
-const getJobLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
-  const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+const getJobLink = (isAdmin, ownerId): CallableFunction =>
+  function (row): React.ReactElement {
+    const { teamId, id, name } = row
+    if (!(isAdmin || teamId === ownerId)) return name
 
-  const link = `/teams/${teamId}/jobs/${encodeURIComponent(id)}`
-  return (
-    <RLink to={link} label={name}>
-      {name}
-    </RLink>
-  )
-}
+    const path = `/teams/${teamId}/jobs/${encodeURIComponent(id)}`
+    return (
+      <RLink to={path} label={name}>
+        {name}
+      </RLink>
+    )
+  }
 
 interface Props {
-  jobs: Job[]
-  team?: Team
+  jobs: GetAllJobsApiResponse | GetTeamJobsApiResponse
+  teamId?: string
 }
 
-export default ({ jobs, team }: Props): React.ReactElement => {
+export default function ({ jobs, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const showTeam = !team
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: 'Job Name',
+      label: t('Job name'),
       renderer: getJobLink(isAdmin, oboTeamId),
     },
     {
       id: 'type',
-      label: 'Type',
+      label: t('Type'),
     },
     {
       id: 'runPolicy',
-      label: 'Run Policy',
+      label: t('Run policy'),
     },
     {
       id: 'schedule',
-      label: 'Schedule',
+      label: t('Schedule'),
     },
   ]
-  if (showTeam)
+  if (!teamId) {
     headCells.push({
       id: 'teamId',
-      label: 'Team',
+      label: t('Team'),
     })
+  }
 
-  return (
-    <>
-      <h1 data-cy='h1-jobs-page'>{!team ? 'Jobs' : `Jobs (team ${team.id})`}</h1>
-      <Box mb={1}>
-        {(isAdmin || oboTeamId) && (
-          <Button
-            component={Link}
-            to={isAdmin && !oboTeamId ? '/create-job' : `/teams/${oboTeamId}/create-job`}
-            startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
-            disabled={isAdmin && !oboTeamId}
-            data-cy='button-create-job'
-          >
-            Create job
-          </Button>
-        )}
-      </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={jobs} idKey='id' />
-    </>
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={jobs} idKey='id' resourceType='Job' />
 }

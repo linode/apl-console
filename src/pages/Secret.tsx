@@ -1,40 +1,40 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import Secret from 'components/Secret'
+import useAuthzSession from 'hooks/useAuthzSession'
+import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React, { useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Secret from '../components/Secret'
-import { useApi, useAuthz } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { RouteComponentProps } from 'react-router-dom'
+import {
+  useCreateSecretMutation,
+  useDeleteSecretMutation,
+  useEditSecretMutation,
+  useGetSecretQuery,
+} from 'redux/otomiApi'
 
 interface Params {
-  teamId?: string
-  secretId: string
+  teamId: string
+  secretId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId, secretId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  const { tid } = useAuthz(teamId)
-  const [formData, setFormData] = useState()
-  const [deleteId, setDeleteId]: any = useState()
-  const [secret, secretLoading, secretError]: any = useApi('getSecret', !!secretId, [tid, secretId])
-  const [createRes, createLoading, createError] = useApi(
-    secretId ? 'editSecret' : 'createSecret',
-    !!formData,
-    secretId ? [tid, secretId, omit(formData, ['id'])] : [tid, omit(formData, ['id', 'teamId'])],
-  )
-  const [deleteRes, deleteLoading, deleteError] = useApi('deleteSecret', !!deleteId, [tid, secretId])
-  if ((deleteRes && !(deleteLoading || deleteError)) || (createRes && !(createLoading || createError))) {
-    return <Redirect to={`/teams/${tid}/secrets`} />
+}: RouteComponentProps<Params>): React.ReactElement {
+  useAuthzSession(teamId)
+  const [create] = useCreateSecretMutation()
+  const [update] = useEditSecretMutation()
+  const [del] = useDeleteSecretMutation()
+  const { data, isLoading } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
+  const { t } = useTranslation()
+  // END HOOKS
+  const handleSubmit = (formData) => {
+    if (secretId) update({ teamId, secretId, body: omit(formData, ['id', 'teamId']) as any })
+    else create({ teamId, body: formData })
   }
-  const loading = secretLoading || createLoading || deleteLoading
-  const err = secretError || createError || deleteError
-  if (createRes && !(createLoading || createError)) {
-    return <Redirect to={`/teams/${tid}/secrets`} />
-  }
-  const comp = !loading && (!err || formData || secret) && (
-    <Secret onSubmit={setFormData} secret={formData || secret} onDelete={setDeleteId} />
-  )
-  return <PaperLayout loading={loading} comp={comp} />
+  const handleDelete = (deleteId) => del({ teamId, secretId: deleteId })
+  const comp = <Secret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />
 }

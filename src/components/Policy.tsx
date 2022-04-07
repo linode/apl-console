@@ -1,9 +1,8 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Button } from '@material-ui/core'
-import { isEqual, isEmpty } from 'lodash'
+import { getPolicySchema, getPolicyUiSchema } from 'common/api-spec'
+import { cloneDeep } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { getPolicySchema, getPolicyUiSchema } from '../api-spec'
-import { useSession } from '../session-context'
 import Form from './rjsf/Form'
 
 interface Props {
@@ -12,60 +11,27 @@ interface Props {
   policyId: string
 }
 
-export default ({ onSubmit, policies, policyId }: Props): React.ReactElement => {
+export default function ({ onSubmit, policies, policyId }: Props): React.ReactElement {
+  const { appsEnabled, oboTeamId, user } = useSession()
   const [data, setData]: any = useState(policies[policyId])
-  const [schema, setSchema] = useState({})
-  const [uiSchema, setUiSchema] = useState()
-  const { oboTeamId, user } = useSession()
-  const [dirty, setDirty] = useState(false)
-  const handleChange = ({ formData }) => {
-    const newSchema = getPolicySchema(policyId)
-    setSchema(newSchema)
-    const newUiSchema = getPolicyUiSchema(policyId, user, oboTeamId)
-    setUiSchema(newUiSchema)
-    setData(formData)
-    const isDirty = !isEqual(formData, policies[policyId] || {})
-    setDirty(isDirty)
-  }
-  const handleSubmit = ({ formData }) => {
-    onSubmit(formData)
-    setDirty(false)
-  }
+  const formData = cloneDeep(data)
+  const schema = getPolicySchema(policyId)
+  const uiSchema = getPolicyUiSchema(policyId, user, oboTeamId)
   useEffect(() => {
     setData(policies[policyId])
-    setSchema({})
   }, [policyId, policies])
-
-  if (isEmpty(schema) || !uiSchema) {
-    handleChange({ formData: data || {} })
-    return null
-  }
-
   return (
-    <>
-      <h1 data-cy='h1-edit-policy-page'>Policy:</h1>
-      <Form
-        key={policyId}
-        id={policyId}
-        schema={schema}
-        uiSchema={uiSchema}
-        onSubmit={handleSubmit}
-        onChange={handleChange}
-        formData={data}
-        hideHelp
-      >
-        <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-          <Button
-            variant='contained'
-            color='primary'
-            type='submit'
-            disabled={!dirty}
-            data-cy={`button-submit-${policyId}`}
-          >
-            Submit
-          </Button>
-        </Box>
-      </Form>
-    </>
+    <Form
+      key={policyId}
+      schema={schema}
+      uiSchema={uiSchema}
+      onSubmit={onSubmit}
+      data={formData}
+      onChange={setData}
+      disabled={!appsEnabled.gatekeeper}
+      resourceType='Policy'
+      idProp={null}
+      adminOnly
+    />
   )
 }

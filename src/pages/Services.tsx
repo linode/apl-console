@@ -1,30 +1,30 @@
-import { Service, Team } from '@redkubes/otomi-api-client-axios'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
+import Services from 'components/Services'
+import PaperLayout from 'layouts/Paper'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
-import Services from '../components/Services'
-import { useApi } from '../hooks/api'
-import PaperLayout from '../layouts/Paper'
-import { ApiError } from '../utils/error'
+import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
+import { getRole } from 'utils/data'
 
 interface Params {
   teamId?: string
 }
 
-export default ({
+export default function ({
   match: {
     params: { teamId },
   },
-}: RouteComponentProps<Params>): React.ReactElement => {
-  const servicesMethod = teamId ? 'getTeamServices' : 'getAllServices'
-  const servicesArgs = teamId ? [teamId] : []
-  const [services, servicesLoading, servicesError]: [Array<Service>, boolean, ApiError] = useApi(
-    servicesMethod,
-    true,
-    servicesArgs,
+}: RouteComponentProps<Params>): React.ReactElement {
+  const { data: allServices, isLoading: isLoadingAllServices } = useGetAllServicesQuery(teamId ? skipToken : undefined)
+  const { data: teamServices, isLoading: isLoadingTeamServices } = useGetTeamServicesQuery(
+    { teamId },
+    { skip: !teamId },
   )
-  const [team, teamLoading, teamError]: [Team, boolean, ApiError] = useApi('getTeam', !!teamId, [teamId])
-  const loading = servicesLoading || teamLoading
-  const err = servicesError || teamError
-  const comp = !(err || loading) && <Services services={services} team={team} />
-  return <PaperLayout loading={loading} comp={comp} />
+  const { t } = useTranslation()
+  // END HOOKS
+  const loading = isLoadingAllServices || isLoadingTeamServices
+  const services = teamId ? teamServices : allServices
+  const comp = services && <Services services={services} teamId={teamId} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICES', { scope: getRole(teamId) })} />
 }

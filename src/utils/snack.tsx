@@ -1,6 +1,6 @@
+import { OptionsObject, SnackbarProvider, SnackbarProviderProps, useSnackbar, WithSnackbarProps } from 'notistack'
 import React from 'react'
-import { useSnackbar, WithSnackbarProps, OptionsObject, SnackbarProvider, SnackbarProviderProps } from 'notistack'
-import { makeStyles } from '@material-ui/core'
+import { makeStyles } from 'tss-react/mui'
 
 export const defaultOpts = {
   maxSnack: 3,
@@ -8,7 +8,7 @@ export const defaultOpts = {
   preventDuplicate: true,
 }
 
-const useStyles = makeStyles(({ palette }) => ({
+const useStyles = makeStyles()(({ palette }) => ({
   variantSuccess: {
     backgroundColor: palette.success.main,
   },
@@ -23,8 +23,8 @@ const useStyles = makeStyles(({ palette }) => ({
   },
 }))
 
-export const NotistackProvider = ({ children }: SnackbarProviderProps): React.ReactElement => {
-  const classes = useStyles()
+export function NotistackProvider({ children }: SnackbarProviderProps): React.ReactElement {
+  const { classes } = useStyles()
   return (
     <SnackbarProvider
       classes={classes}
@@ -40,7 +40,7 @@ export const NotistackProvider = ({ children }: SnackbarProviderProps): React.Re
 }
 
 let snackbarRef: WithSnackbarProps
-export const SnackbarUtilsConfigurator = (): React.ReactElement => {
+export function SnackbarUtilsConfigurator(): React.ReactElement {
   snackbarRef = useSnackbar()
   return null
 }
@@ -61,9 +61,6 @@ export default {
   // eslint-disable-next-line consistent-return
   toast(msg: string, options: OptionsObject = {}): React.ReactElement | any {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
-  },
-  comingSoon(options: OptionsObject = {}): React.ReactElement {
-    return this.toast('Coming soon!', { ...options, variant: 'warning' })
   },
   // eslint-disable-next-line consistent-return
   close(id: number): React.ReactElement | any {

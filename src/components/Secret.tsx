@@ -1,62 +1,32 @@
-import { Box, Button } from '@material-ui/core'
-import { isEqual } from 'lodash/lang'
+import { getSecretSchema, getSecretUiSchema } from 'common/api-spec'
+import { cloneDeep } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { Secret } from '@redkubes/otomi-api-client-axios'
-import { getSecretSchema, getSecretUiSchema } from '../api-spec'
-import { useSession } from '../session-context'
+import { GetSecretApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
-import DeleteButton from './DeleteButton'
 
 interface Props {
   onSubmit: CallableFunction
   onDelete?: CallableFunction
-  secret?: Secret
+  secret?: GetSecretApiResponse
 }
 
-export default ({ onSubmit, onDelete, secret }: Props): React.ReactElement => {
-  const { user, oboTeamId } = useSession()
-
+export default function ({ onSubmit, onDelete, secret }: Props): React.ReactElement {
+  const { appsEnabled, user, oboTeamId } = useSession()
+  const [data, setData]: any = useState(secret)
+  const formData = cloneDeep(data)
   const schema = getSecretSchema()
   const uiSchema = getSecretUiSchema(user, oboTeamId)
-  const [data, setData]: any = useState(secret)
-  const [dirty, setDirty] = useState(false)
-  const handleChange = ({ formData }) => {
-    setData(formData)
-    setDirty(!isEqual(formData, secret))
-  }
-  const handleSubmit = ({ formData }) => {
-    onSubmit(formData)
-  }
-
   return (
     <Form
-      title={
-        <h1>
-          {data && data.id ? `Secret: ${data.name}` : 'New Secret'}
-          {!user.isAdmin || oboTeamId ? ` (team ${oboTeamId})` : ''}
-        </h1>
-      }
-      key='createSecret'
       schema={schema}
       uiSchema={uiSchema}
-      onSubmit={handleSubmit}
-      onChange={handleChange}
-      formData={data}
-    >
-      <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
-        <Button variant='contained' color='primary' type='submit' disabled={!dirty} data-cy='button-submit-secret'>
-          Submit
-        </Button>
-        &nbsp;
-        {data && data.id && (
-          <DeleteButton
-            onDelete={() => onDelete(data.id)}
-            resourceName={data.name}
-            resourceType='secret'
-            dataCy='button-delete-secret'
-          />
-        )}
-      </Box>
-    </Form>
+      onSubmit={onSubmit}
+      onDelete={onDelete}
+      data={formData}
+      onChange={setData}
+      disabled={!appsEnabled.vault}
+      resourceType='Secret'
+    />
   )
 }

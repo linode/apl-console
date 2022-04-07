@@ -1,42 +1,29 @@
 /* eslint-disable import/prefer-default-export */
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from 'tss-react/mui'
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles()(() => ({
   root: {
-    padding: 8,
+    width: '100%',
+    marginLeft: 0,
   },
+  container: {},
   header: {
-    // paddingTop: 4,
-    paddingBottom: 4,
-    // padding: 8,
-    // margin: 8,
-    // marginTop: 4,
-  },
-  isOfHeader: {
+    // paddingLeft: 16,
     paddingTop: 8,
-    paddingLeft: 8,
-  },
-  headerSkip: {
-    paddingTop: 2,
-    paddingLeft: 4,
-  },
-  box: {
-    // margin: 4,
-    padding: 4,
-  },
-  grid: {
-    paddingLeft: 8,
-    paddingRight: 4,
-    marginBottom: 4,
-    paddingBottom: 4,
-  },
-  gridIsOf: {
-    paddingLeft: 8,
-    // paddingTop: 4,
-    paddingRight: 8,
     paddingBottom: 8,
   },
-  paper: {
-    // marginTop: 4,
+  headerIsOf: {},
+  headerSkip: {
+    paddingTop: 2,
+    // paddingLeft: 4,
   },
-})
+  box: {},
+  grid: {},
+  gridIsOf: {},
+  paper: {
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 16,
+    width: '100%',
+  },
+}))

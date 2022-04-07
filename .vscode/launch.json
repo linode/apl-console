@@ -5,6 +5,29 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/app.js",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "npm lang:export",
+      "request": "launch",
+      "runtimeArgs": ["run", "lang:export"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
+      "name": "npm lang:import",
+      "request": "launch",
+      "runtimeArgs": ["run", "lang:import"],
+      "runtimeExecutable": "npm",
+      "skipFiles": ["<node_internals>/**"],
+      "type": "node"
+    },
+    {
       "name": "Reconnect to a Chrome instance with remote debugger plugin enabled",
       "port": 9222,
       "request": "attach",

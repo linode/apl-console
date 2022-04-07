@@ -1,16 +1,15 @@
+import Typography from '@mui/material/Typography'
 import React from 'react'
-import { FieldProps } from '@rjsf/core'
-import { makeStyles } from '@material-ui/styles'
-import Typography from '@material-ui/core/Typography'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()(() => ({
   root: {
     marginTop: 5,
   },
-})
+}))
 
-const DescriptionField = ({ description }: FieldProps) => {
-  const classes = useStyles()
+function DescriptionField({ description }: any) {
+  const { classes } = useStyles()
   if (description) {
     return (
       <Typography variant='caption' color='textSecondary' className={classes.root}>

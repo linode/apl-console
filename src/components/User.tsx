@@ -1,12 +1,13 @@
-import { MenuItem, Select, Typography, Hidden, Link, Tooltip, Avatar } from '@material-ui/core'
+import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/material'
+import { getThemeMode, useMainStyles } from 'common/theme'
+import { useSession } from 'providers/Session'
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import { useHistory } from 'react-router-dom'
-import { mainStyles, getThemeType } from '../theme'
-import { useSession } from '../session-context'
+import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
+import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles((theme) => {
-  const isDark = getThemeType() === 'dark'
+const useStyles = makeStyles()((theme) => {
+  const isDark = getThemeMode() === 'dark'
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
   return {
@@ -26,6 +27,9 @@ const useStyles = makeStyles((theme) => {
       fontSize: '1rem',
       color,
       fontWeight: 'bold',
+      height: 36,
+      borderRadius: 18,
+      borderWidth: 0,
     },
     switchLabel: {
       // minWidth: '6rem !important',
@@ -42,28 +46,31 @@ const useStyles = makeStyles((theme) => {
   }
 })
 
-export default (): React.ReactElement => {
-  const mainClasses = mainStyles()
-  const classes = useStyles()
+export default function (): React.ReactElement {
+  const { classes: mainClasses } = useMainStyles()
+  const { classes } = useStyles()
   const history = useHistory()
   const {
-    cluster,
-    clusters,
+    settings: {
+      cluster,
+      otomi: { additionalClusters = [] },
+    },
     user: { email, teams: userTeams, isAdmin },
-    teams: allTeams,
     oboTeamId,
     setOboTeamId,
   } = useSession()
-  let teams: any[]
-  const allClusters = [...clusters, cluster]
-  if (isAdmin)
-    teams = (allTeams as any).map(({ id }) => ({
+  const { data: allTeams } = useGetTeamsQuery()
+  let teams: GetTeamsApiResponse
+  const allClusters = [...additionalClusters, cluster]
+  if (isAdmin) {
+    teams = ((allTeams as any) || []).map(({ id }) => ({
       id,
     }))
-  else
-    teams = userTeams.map((id) => ({
+  } else {
+    teams = (userTeams as any).map((id) => ({
       id,
     }))
+  }
   const handleChange = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
@@ -74,16 +81,11 @@ export default (): React.ReactElement => {
     const hasIDvalue = path.split('/').length === 5
     let url
     if (teamId) {
-      if (hasTeamPart && !hasIDvalue) {
-        url = path.replace(teamPart, newTeamPart)
-      } else if (hasTeamId && !hasIDvalue) {
-        url = path.replace(oboTeamId, teamId)
-      } else {
-        url = `${newTeamPart}/services`
-      }
-    } else {
-      url = hasTeamPart ? path.replace(teamPart, '') : '/teams'
-    }
+      if (hasTeamPart && !hasIDvalue) url = path.replace(teamPart, newTeamPart)
+      else if (hasTeamId && !hasIDvalue) url = path.replace(oboTeamId, teamId)
+      else url = `${newTeamPart}/services`
+    } else url = hasTeamPart ? path.replace(teamPart, '') : '/teams'
+
     setOboTeamId(teamId)
     history.push(url)
     event.preventDefault()
@@ -91,7 +93,7 @@ export default (): React.ReactElement => {
   const handleChangeCluster = (event) => {
     const id = event.target.value
     const [provider, name] = id.split('-')
-    const { domainSuffix } = clusters.find((c) => c.name === name && c.provider === provider)
+    const { domainSuffix } = additionalClusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
   return (
@@ -99,7 +101,6 @@ export default (): React.ReactElement => {
       <Typography variant='body1'>cluster:</Typography>
       <Select
         color='secondary'
-        disableUnderline
         value={`${cluster.provider}-${cluster.name}`}
         onChange={handleChangeCluster}
         className={classes.select}
@@ -123,8 +124,7 @@ export default (): React.ReactElement => {
       <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'
-        disableUnderline
-        value={oboTeamId || ''}
+        value={(teams.length && oboTeamId) || ''}
         onChange={handleChange}
         className={classes.select}
         data-cy='select-oboteam'
@@ -147,7 +147,7 @@ export default (): React.ReactElement => {
       </Select>
       &nbsp;
       <Avatar className={classes.avatar} />
-      <Hidden xsDown>
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <Typography variant='body1' data-cy='text-user-team'>
           <Tooltip title='logout' aria-label='logout'>
             <Link className={mainClasses.headerlink} href='/logout-otomi'>
@@ -156,7 +156,7 @@ export default (): React.ReactElement => {
           </Tooltip>{' '}
           <strong>{isAdmin && '(admin)'}</strong>
         </Typography>
-      </Hidden>
+      </Box>
     </>
   )
 }

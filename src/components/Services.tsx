@@ -1,25 +1,25 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Button } from '@material-ui/core'
-import AddCircleIcon from '@material-ui/icons/AddCircle'
+import { useSession } from 'providers/Session'
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { Team, Service } from '@redkubes/otomi-api-client-axios'
-import EnhancedTable, { HeadCell } from './EnhancedTable'
+import { useTranslation } from 'react-i18next'
+import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
+import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
+import ListTable from './ListTable'
 import MuiLink from './MuiLink'
-import { useSession } from '../session-context'
 
-const getServiceLink = (isAdmin, ownerId): CallableFunction => (row): React.ReactElement => {
-  const { teamId, id, name } = row
-  if (!(isAdmin || teamId === ownerId)) return name
+const getServiceLink = (isAdmin, ownerId): CallableFunction =>
+  function (row): React.ReactElement {
+    const { teamId, id, name } = row
+    if (!(isAdmin || teamId === ownerId)) return name
 
-  const link = `/teams/${teamId}/services/${encodeURIComponent(id)}`
-  return (
-    <RLink to={link} label={name}>
-      {name}
-    </RLink>
-  )
-}
+    const path = `/teams/${teamId}/services/${encodeURIComponent(id)}`
+    return (
+      <RLink to={path} label={name}>
+        {name}
+      </RLink>
+    )
+  }
 
 const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
   if (!ingress) return ''
@@ -34,65 +34,46 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
 }
 
 interface Props {
-  services: Service[]
-  team?: Team
+  services: GetAllServicesApiResponse | GetTeamServicesApiResponse
+  teamId?: string
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default ({ services, team }: Props): React.ReactElement => {
+export default function ({ services, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
   } = useSession()
-  const showTeam = !team
+  const { t } = useTranslation()
+  // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: 'Service Name',
+      label: t('Service name'),
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
       id: 'ingressType',
-      label: 'Ingress',
+      label: t('Ingress type'),
       renderer: (row) => row.ingress?.type ?? '',
     },
     {
       id: 'serviceType',
-      label: 'Type',
+      label: t('Service type'),
       renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
       id: 'host',
-      label: 'Host Name',
+      label: t('Host'),
       renderer: renderHost,
       component: MuiLink,
     },
   ]
-  if (showTeam)
+  if (!teamId) {
     headCells.push({
       id: 'teamId',
-      label: 'Team',
+      label: t('Team'),
     })
-
-  return (
-    <>
-      <h1 data-cy='h1-services-page'>{!team ? 'Services' : `Services (team ${team.id})`}</h1>
-      <Box mb={1}>
-        {(isAdmin || oboTeamId) && (
-          <Button
-            component={Link}
-            to={isAdmin && !oboTeamId ? '/create-service' : `/teams/${oboTeamId}/create-service`}
-            startIcon={<AddCircleIcon />}
-            variant='contained'
-            color='primary'
-            disabled={isAdmin && !oboTeamId}
-            data-cy='button-create-service'
-          >
-            Create service
-          </Button>
-        )}
-      </Box>
-      <EnhancedTable disableSelect headCells={headCells} orderByStart='name' rows={services} idKey='id' />
-    </>
-  )
+  }
+  return <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
 }
