@@ -89,7 +89,7 @@ export default function ({
     const cleanFormData = clean ? cleanData(formData, { keepValues, emptyObjects: false }) : formData
     if (onChange) onChange(cleanFormData, errors)
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
-    if (!originalState) setOriginalState(cleanFormData)
+    if (!originalState) setOriginalState(data)
     // keep local state for form sync
     setState(cleanFormData)
   }
