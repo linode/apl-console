@@ -33,7 +33,17 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 
-export default function ({ deps, enabled, id, img, isDragging, setDeps, teamId, title }: any): React.ReactElement {
+export default function ({
+  deps,
+  enabled,
+  id,
+  img,
+  imgAlt,
+  isDragging,
+  setDeps,
+  teamId,
+  title,
+}: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const canDrag = enabled !== undefined
   const [_, dragRef] = useDrag(
@@ -58,7 +68,16 @@ export default function ({ deps, enabled, id, img, isDragging, setDeps, teamId, 
         className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}
         ref={dragRef}
       >
-        <img draggable={false} className={cx(classes.img)} src={img} alt={`Logo for ${title} app`} />
+        <img
+          draggable={false}
+          className={cx(classes.img)}
+          src={img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null // prevents looping
+            currentTarget.src = imgAlt
+          }}
+          alt={`Logo for ${title} app`}
+        />
         <Typography className={cx(classes.title, enabled === undefined && classes.core)} variant='h6'>
           {title}
         </Typography>

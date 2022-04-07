@@ -3,6 +3,7 @@
 /* eslint-disable no-param-reassign */
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
+import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
@@ -114,7 +115,7 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
   // get the core app
   const apps = getApps(session, teamId)
   const coreApp = find(apps, { name: appId })
-  const { useHost, logo, ingress, isShared, ownHost, path } = coreApp
+  const { useHost, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
@@ -137,13 +138,17 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
   const schema = spec.components.schemas[modelName]
     ? (spec.components.schemas[modelName] as JSONSchema7)
     : { title: appId, description: '' }
+  const mode = getThemeMode()
+  const logoSuffix = mode === 'light' ? '' : '-dark'
+  const logoAltSuffix = mode === 'light' ? '-dark' : ''
   return {
     ...coreApp,
     ...app,
     id: appId,
     baseUrl,
     docUrl: schema['x-externalDocsPath'],
-    logo: logo ?? `${appId}_logo.svg`,
+    logo: `${appId}_logo${logoSuffix}.svg`,
+    logoAlt: `${appId}_logo${logoAltSuffix}.svg`,
     schema,
     externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
