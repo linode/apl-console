@@ -1,7 +1,7 @@
 import { getServiceSchema, getServiceUiSchema } from 'common/api-spec'
 import { cloneDeep, unset } from 'lodash'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { GetSecretsApiResponse, GetServiceApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
@@ -16,6 +16,9 @@ interface Props {
 export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props): React.ReactElement {
   const { appsEnabled, oboTeamId, settings, user } = useSession()
   const [data, setData]: any = useState(service)
+  useEffect(() => {
+    setData(service)
+  }, [service])
   // END HOOKS
   const formData = cloneDeep(data)
   const teamSubdomain = formData?.name ? `${formData.name}.team-${teamId}` : ''
@@ -51,7 +54,6 @@ export default function ({ onSubmit, onDelete, service, secrets, teamId }: Props
       onDelete={onDelete}
       data={formData}
       onChange={setData}
-      resourceName={service?.name}
       resourceType='Service'
     />
   )

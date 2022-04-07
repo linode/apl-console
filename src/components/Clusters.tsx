@@ -6,16 +6,15 @@ import { HeadCell } from './EnhancedTable'
 import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
-export default function (): React.ReactElement {
-  const {
-    settings: {
-      cluster,
-      otomi: { additionalClusters = [] },
-    },
-  } = useSession()
+interface ClustersProps {
+  clusters: Record<string, any>[]
+}
+export default function ({ clusters }: ClustersProps): React.ReactElement {
   const { t } = useTranslation()
   // END HOOKS
-  const allClusters = [...additionalClusters, cluster]
+  const {
+    settings: { cluster },
+  } = useSession()
   const headCells: HeadCell[] = [
     {
       id: 'provider',
@@ -40,5 +39,5 @@ export default function (): React.ReactElement {
       },
     },
   ]
-  return <ListTable headCells={headCells} rows={allClusters} resourceType='Cluster' hasTeamScope={false} noCrud />
+  return <ListTable headCells={headCells} rows={clusters} resourceType='Cluster' hasTeamScope={false} noCrud />
 }

@@ -29,7 +29,7 @@ export default function ({
       .then(refetch)
       .then(refetchSettings)
   }
-  const settings = data ? { [settingId]: data[settingId] } : {}
+  const settings = data?.[settingId]
   const comp = settings && <Setting onSubmit={handleSubmit} settings={settings} settingId={settingId} />
   return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_SETTINGS', { settingId })} />
 }

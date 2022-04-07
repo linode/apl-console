@@ -17,9 +17,9 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const { data, isLoading, error } = useGetSecretsQuery({ teamId })
+  const { data, isLoading } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
-  const comp = !(isLoading || error) && data && <Secrets teamId={teamId} secrets={data} />
+  const comp = data && <Secrets teamId={teamId} secrets={data} />
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRETS', { role: getRole(teamId) })} />
 }

@@ -32,4 +32,5 @@ export const emptySplitApi = createApi({
   baseQuery,
   endpoints: () => ({}),
   refetchOnMountOrArgChange: true,
+  keepUnusedDataFor: 0,
 })

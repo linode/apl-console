@@ -354,17 +354,17 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
   networkPolicy?: {
     ingressPrivate?:
       | {
-          mode?: 'DenyAll'
+          mode: 'DenyAll'
         }
       | {
-          mode?: 'AllowOnly'
-          allow?: {
+          mode: 'AllowOnly'
+          allow: {
             team: string
             service?: string
           }[]
         }
       | {
-          mode?: 'AllowAll'
+          mode: 'AllowAll'
         }
     egressPublic?: {
       domain?: string
@@ -1289,17 +1289,17 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
   networkPolicy?: {
     ingressPrivate?:
       | {
-          mode?: 'DenyAll'
+          mode: 'DenyAll'
         }
       | {
-          mode?: 'AllowOnly'
-          allow?: {
+          mode: 'AllowOnly'
+          allow: {
             team: string
             service?: string
           }[]
         }
       | {
-          mode?: 'AllowAll'
+          mode: 'AllowAll'
         }
     egressPublic?: {
       domain?: string
@@ -1420,17 +1420,17 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
   networkPolicy?: {
     ingressPrivate?:
       | {
-          mode?: 'DenyAll'
+          mode: 'DenyAll'
         }
       | {
-          mode?: 'AllowOnly'
-          allow?: {
+          mode: 'AllowOnly'
+          allow: {
             team: string
             service?: string
           }[]
         }
       | {
-          mode?: 'AllowAll'
+          mode: 'AllowAll'
         }
     egressPublic?: {
       domain?: string
@@ -1551,17 +1551,17 @@ export type CreateServiceApiArg = {
     networkPolicy?: {
       ingressPrivate?:
         | {
-            mode?: 'DenyAll'
+            mode: 'DenyAll'
           }
         | {
-            mode?: 'AllowOnly'
-            allow?: {
+            mode: 'AllowOnly'
+            allow: {
               team: string
               service?: string
             }[]
           }
         | {
-            mode?: 'AllowAll'
+            mode: 'AllowAll'
           }
       egressPublic?: {
         domain?: string
@@ -2035,17 +2035,17 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
   networkPolicy?: {
     ingressPrivate?:
       | {
-          mode?: 'DenyAll'
+          mode: 'DenyAll'
         }
       | {
-          mode?: 'AllowOnly'
-          allow?: {
+          mode: 'AllowOnly'
+          allow: {
             team: string
             service?: string
           }[]
         }
       | {
-          mode?: 'AllowAll'
+          mode: 'AllowAll'
         }
     egressPublic?: {
       domain?: string
@@ -2168,17 +2168,17 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
   networkPolicy?: {
     ingressPrivate?:
       | {
-          mode?: 'DenyAll'
+          mode: 'DenyAll'
         }
       | {
-          mode?: 'AllowOnly'
-          allow?: {
+          mode: 'AllowOnly'
+          allow: {
             team: string
             service?: string
           }[]
         }
       | {
-          mode?: 'AllowAll'
+          mode: 'AllowAll'
         }
     egressPublic?: {
       domain?: string
@@ -2301,17 +2301,17 @@ export type EditServiceApiArg = {
     networkPolicy?: {
       ingressPrivate?:
         | {
-            mode?: 'DenyAll'
+            mode: 'DenyAll'
           }
         | {
-            mode?: 'AllowOnly'
-            allow?: {
+            mode: 'AllowOnly'
+            allow: {
               team: string
               service?: string
             }[]
           }
         | {
-            mode?: 'AllowAll'
+            mode: 'AllowAll'
           }
       egressPublic?: {
         domain?: string

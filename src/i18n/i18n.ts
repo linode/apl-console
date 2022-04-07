@@ -45,6 +45,9 @@ i18next
     backend: {
       loadPath: '/i18n/{{lng}}/{{ns}}.json',
       addPath: '/trans/{{lng}}/{{ns}}.missing.json',
+      requestOptions: {
+        cache: isDev ? 'no-store' : 'default',
+      },
     },
     // debug: isDev,
     ns: 'common',

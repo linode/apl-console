@@ -28,7 +28,6 @@ export default function ({ onSubmit, onDelete, job, secrets, teamId }: Props): R
       onDelete={onDelete}
       onChange={setData}
       data={formData}
-      resourceName={job?.name}
       resourceType='Job'
     />
   )

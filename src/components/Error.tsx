@@ -17,7 +17,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   banner: {
     marginTop: theme.spacing(1),
-    color: theme.palette.mode === 'dark' ? theme.palette.primary.light : theme.palette.primary.light,
+    color: theme.palette.error.main,
     // padding: theme.spacing(2),
   },
   fullScreen: {
@@ -56,8 +56,8 @@ export default function ({ error }: Props): React.ReactElement {
             variant='outlined'
             onClick={clearError}
             action={
-              <IconButton aria-label='close' color='inherit' size='small' onClick={clearError}>
-                <CloseIcon fontSize='inherit' />
+              <IconButton aria-label='close' size='small' onClick={clearError} color='primary'>
+                <CloseIcon fontSize='inherit' color='primary' />
               </IconButton>
             }
           >

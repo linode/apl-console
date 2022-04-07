@@ -25,6 +25,7 @@ const Form = withTheme(Theme5)
 
 interface Props {
   idProp?: string
+  nameProp?: string
   description?: string
   data: Record<string, any>
   resourceType?: string
@@ -46,10 +47,10 @@ interface Props {
 
 export default function ({
   idProp = 'id',
+  nameProp = 'name',
   adminOnly = false,
   description,
   disabled,
-  resourceName,
   resourceType,
   liveValidate,
   clean = true,
@@ -64,10 +65,15 @@ export default function ({
   ...other
 }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
-  const [state, setState] = useState<Record<string, any>>()
+  const [originalState, setOriginalState] = useState<Record<string, any>>()
+  const [state, setState] = useState<Record<string, any>>(data) // initial state set to first time data, must rely on setData from here on
+  const [loading, setLoading] = useState(false)
+  const resourceName = other.resourceName || data?.[nameProp]
   useEffect(() => {
-    if (state?.id !== data?.id) setState(data)
-  }, [data?.[idProp]])
+    // turn of loading state upon new data
+    if (data !== state) setLoading(false)
+    if (!loading) setState(data)
+  }, [data])
   const [isDirty, setDirty] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
@@ -77,19 +83,24 @@ export default function ({
   const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
     // lets check if form data is dirty (has meaningful changes)
     const cleanFormDataStripped = cleanData(formData) // strip all empty structs
-    const d = state && !isEqual(cleanFormDataStripped, state)
+    const d = state && !isEqual(cleanFormDataStripped, originalState)
     setDirty(d) // compare with initial data
     // finally we send the fully stripped version to subscribers
-    const cleanFormData = clean ? cleanData(formData, { keepValues }) : formData
+    const cleanFormData = clean ? cleanData(formData, { keepValues, emptyObjects: false }) : formData
     if (onChange) onChange(cleanFormData, errors)
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
-    if (!state) setState(data || {})
+    if (!originalState) setOriginalState(cleanFormData)
+    // keep local state for form sync
+    setState(cleanFormData)
   }
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
     const cleanFormData = clean ? cleanData(formData, { undefinedValues: false }) : formData
     const nulledCleanFormData = nullify(cleanFormData)
     onSubmit(nulledCleanFormData)
+    // setState(undefined)
+    setOriginalState(undefined)
+    setLoading(true)
   }
   // const validate = (formData, errors, ajvErrors): any => {
   //   each(ajvErrors, (err) => {
@@ -118,7 +129,7 @@ export default function ({
     <>
       {!hideHelp && <Header title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        formData={data}
+        formData={state}
         key={`${resourceType}-${resourceName}`}
         schema={schema}
         liveValidate={liveValidate || false}
@@ -133,7 +144,7 @@ export default function ({
         widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
-        disabled={disabled}
+        disabled={disabled || loading}
         // noValidate
         {...other}
       >
@@ -142,7 +153,7 @@ export default function ({
             id={id}
             resourceName={resourceName}
             resourceType={resourceName}
-            disabled={disabled || !isDirty}
+            disabled={disabled || !isDirty || loading}
             onDelete={onDelete}
           />
         )}
