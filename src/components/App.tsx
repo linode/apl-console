@@ -93,6 +93,7 @@ export default function ({
     externalUrl,
     hasShortcuts,
     logo,
+    logoAlt,
     schema,
     shortcuts: defaultShortcuts,
   } = getAppData(session, teamId, id)
@@ -156,7 +157,15 @@ export default function ({
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
-          <img className={classes.img} src={`/logos/${logo}`} alt={`Logo for ${title} app`} />
+          <img
+            className={classes.img}
+            src={`/logos/${logo}`}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null // prevents looping
+              currentTarget.src = `/logos/${logoAlt}`
+            }}
+            alt={`Logo for ${title} app`}
+          />
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
