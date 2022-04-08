@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.1](https://github.com/redkubes/otomi-console/compare/v0.5.0...v0.5.1) (2022-04-08)
+
+
+### Bug Fixes
+
+* form logic, app buttons ([4a27463](https://github.com/redkubes/otomi-console/commit/4a27463adbff040d67fd1e3708dc3f09b5db591a))
+
 ## [0.5.0](https://github.com/redkubes/otomi-console/compare/v0.4.73...v0.5.0) (2022-04-07)
 
 
