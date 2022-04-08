@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { Typography } from '@mui/material'
-import { getPolicySchema } from 'common/api-spec'
-import { map } from 'lodash'
+import { getSpec } from 'common/api-spec'
+import { get, map } from 'lodash'
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ interface RowProps {
 const getPolicyLink = (): CallableFunction =>
   function ({ policyId }: RowProps): React.ReactElement {
     const path = `/policies/${policyId}`
-    const { title } = getPolicySchema(policyId)
+    const { title } = get(getSpec(), `components.schemas.Settings.properties.policies.properties[${policyId}]`)
     return (
       <RLink to={path} label={policyId}>
         {title}

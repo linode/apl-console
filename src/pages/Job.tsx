@@ -25,19 +25,29 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create] = useCreateJobMutation()
-  const [update] = useEditJobMutation()
-  const [del] = useDeleteJobMutation()
+  const [create, { isLoading: isLoadingCreate }] = useCreateJobMutation()
+  const [update, { isLoading: isLoadingUpdate }] = useEditJobMutation()
+  const [del, { isLoading: isLoadingDelete }] = useDeleteJobMutation()
   const { data, isLoading } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
   const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   const handleSubmit = (formData) => {
     if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, jobId: deleteId })
   const loading = isLoading || isLoadingSecrets
-  const comp = <Job teamId={teamId} job={data} secrets={secrets} onSubmit={handleSubmit} onDelete={handleDelete} />
+  const comp = (
+    <Job
+      teamId={teamId}
+      job={data}
+      secrets={secrets}
+      onSubmit={handleSubmit}
+      onDelete={handleDelete}
+      mutating={mutating}
+    />
+  )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_JOB')} />
 }

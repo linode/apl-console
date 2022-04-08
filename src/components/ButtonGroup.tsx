@@ -18,6 +18,7 @@ const useStyles = makeStyles()((theme) => ({
 
 interface ButtonGroupProps {
   id?: string
+  loading: boolean
   disabled: boolean
   resourceName: string
   resourceType: string
@@ -25,6 +26,7 @@ interface ButtonGroupProps {
 }
 export default function ({
   id,
+  loading,
   resourceName,
   resourceType,
   onDelete,
@@ -35,10 +37,11 @@ export default function ({
   return (
     <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
       <ButtonGroup {...other}>
-        <SubmitButton disabled={disabled} data-cy={`button-submit-${resourceType}`} />
+        <SubmitButton disabled={disabled} data-cy={`button-submit-${resourceType}`} loading={loading} />
         {id && (
           <DeleteButton
             disabled={!id}
+            loading={loading}
             onDelete={() => onDelete(id)}
             resourceName={resourceName}
             resourceType={resourceType}

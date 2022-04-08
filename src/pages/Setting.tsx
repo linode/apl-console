@@ -18,10 +18,11 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchSettings } = useSession()
-  const [edit] = useEditSettingsMutation()
+  const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
   const { data, isLoading, refetch } = useGetSettingsQuery({ ids: [settingId] })
   const { t } = useTranslation()
   // END HOOKS
+  const mutating = isLoadingUpdate
   const handleSubmit = (formData) => {
     const schema = getSpec().components.schemas.Settings
     const cleanData = cleanReadOnly(schema.properties[settingId], formData)
@@ -30,6 +31,8 @@ export default function ({
       .then(refetchSettings)
   }
   const settings = data?.[settingId]
-  const comp = settings && <Setting onSubmit={handleSubmit} settings={settings} settingId={settingId} />
+  const comp = settings && (
+    <Setting onSubmit={handleSubmit} settings={settings} settingId={settingId} mutating={mutating} />
+  )
   return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_SETTINGS', { settingId })} />
 }

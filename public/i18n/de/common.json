@@ -16,7 +16,7 @@
   "FORM_HEAD_APP_EDIT": "Bearbeite die Konfigurationswerte von {{title}}.",
   "FORM_SHORTCUTS": "Verknüpfungen ({{teamId}})",
   "FORM_SHORTCUTS_DESC": "Verwalten Sie Verknüpfungen zum Öffnen von {{title}} in einem Zielpfad.",
-  "FORM_TITLE": "{{Modellname}}",
+  "FORM_TITLE": "{{model}}",
   "FORM_TITLE_NAMED": "{{model}}: {{name}}",
   "FORM_TITLE_NEW": "Neue {{model}}",
   "FORM_TITLE_TEAM": "{{model}}: {{name}} (Team {{teamId}})",

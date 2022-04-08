@@ -25,13 +25,14 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create] = useCreateServiceMutation()
-  const [update] = useEditServiceMutation()
-  const [del] = useDeleteServiceMutation()
+  const [create, { isLoading: isLoadingCreate }] = useCreateServiceMutation()
+  const [update, { isLoading: isLoadingUpdate }] = useEditServiceMutation()
+  const [del, { isLoading: isLoadingDelete }] = useDeleteServiceMutation()
   const { data, isLoading } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   const handleSubmit = (formData) => {
     if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
@@ -39,7 +40,14 @@ export default function ({
   const handleDelete = (serviceId) => del({ teamId, serviceId })
   const loading = isLoading || isLoadingSecrets
   const comp = (
-    <Service teamId={teamId} service={data} secrets={secrets} onSubmit={handleSubmit} onDelete={handleDelete} />
+    <Service
+      teamId={teamId}
+      service={data}
+      secrets={secrets}
+      onSubmit={handleSubmit}
+      onDelete={handleDelete}
+      mutating={mutating}
+    />
   )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICE', { role: getRole(teamId) })} />
 }

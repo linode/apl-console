@@ -63,7 +63,7 @@
   "TITLE_SERVICES": "Services - {{scope}}",
   "TITLE_SETTINGS": "Settings - {{settingId}}",
   "TITLE_SHORTCUTS": "Shortcuts - {{role}}",
-  "TITLE_TEAM": "Team details",
+  "TITLE_TEAM": "Team {{teamId}}",
   "TITLE_TEAMS": "Teams",
   "Team": "Team",
   "Team_plural": "Teams",

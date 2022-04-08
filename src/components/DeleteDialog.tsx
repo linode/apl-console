@@ -16,8 +16,7 @@ interface DeleteDialogProps {
   resourceType: string
 }
 
-export default function (props: DeleteDialogProps): React.ReactElement {
-  const { onCancel, onDelete, resourceName, resourceType } = props
+export default function ({ onCancel, onDelete, resourceName, resourceType }: DeleteDialogProps): React.ReactElement {
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const { t } = useTranslation()
   // END HOOKS
@@ -25,13 +24,13 @@ export default function (props: DeleteDialogProps): React.ReactElement {
     if (event.target.value === resourceName) setButtonDisabled(false)
     else setButtonDisabled(true)
   }
+  const dialogTitle = t('DELETE_RESOURCE', { resourceType, resourceName })
+  const dialogContent = t('DELETE_RESOURCE_CONFIRMATION', { resourceType, resourceName })
   return (
     <Dialog open>
-      <DialogTitle>{t('DELETE_RESOURCE', { model: resourceType, name: resourceName })} </DialogTitle>
+      <DialogTitle>{dialogTitle} </DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {t('DELETE_RESOURCE_CONFIRMATION', { model: resourceType, name: resourceName })}
-        </DialogContentText>
+        <DialogContentText>{dialogContent}</DialogContentText>
         <TextField
           autoComplete='off'
           margin='dense'

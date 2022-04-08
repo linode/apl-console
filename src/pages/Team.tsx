@@ -17,9 +17,9 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create] = useCreateTeamMutation()
-  const [update] = useEditTeamMutation()
-  const [del] = useDeleteTeamMutation()
+  const [create, { isLoading: isLoadingCreate }] = useCreateTeamMutation()
+  const [update, { isLoading: isLoadingUpdate }] = useEditTeamMutation()
+  const [del, { isLoading: isLoadingDelete }] = useDeleteTeamMutation()
   const { data, isLoading } = useGetTeamQuery({ teamId }, { skip: !teamId })
   const handleSubmit = (formData) => {
     if (teamId) update({ teamId, body: omit(formData, ['id']) as typeof formData })
@@ -28,6 +28,7 @@ export default function ({
   const handleDelete = (deleteId) => del({ teamId: deleteId })
   const { t } = useTranslation()
   // END HOOKS
-  const comp = <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} />
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_TEAM')} />
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  const comp = <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} mutating={mutating} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('Team details')} />
 }

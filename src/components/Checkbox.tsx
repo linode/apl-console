@@ -1,6 +1,6 @@
 import CheckboxIconChecked from '@mui/icons-material/CheckBox'
 import CheckboxIcon from '@mui/icons-material/CheckBoxOutlineBlank'
-import { Checkbox } from '@mui/material'
+import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
@@ -16,7 +16,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export default function ({ checked, disabled, indeterminate, ...other }: any) {
+export default function ({ checked, disabled, indeterminate, ...other }: CheckboxProps) {
   const { classes } = useStyles()
 
   const indeterminateIcon = checked ? (

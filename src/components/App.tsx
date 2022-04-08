@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Checkbox,
   IconButton,
   Link,
   List,
@@ -13,19 +14,21 @@ import {
   Tabs,
   Typography,
 } from '@mui/material'
-import { getAppSchema, getAppUiSchema } from 'common/api-spec'
+import { pascalCase } from 'change-case'
+import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
-import { isEqual } from 'lodash'
+import { cloneDeep, get, isEqual, set } from 'lodash'
 import Markdown from 'markdown-to-jsx'
-import React, { ChangeEvent, useState } from 'react'
+import { CrudProps } from 'pages/types'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
+import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
-import { nullify } from 'utils/schema'
+import { extract, isOf, nullify } from 'utils/schema'
 import YAML from 'yaml'
-import Checkbox from './Checkbox'
 import CodeEditor from './CodeEditor'
 import Header from './Header'
 import MuiLink from './MuiLink'
@@ -67,6 +70,59 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
+export const getAppSchema = (appId): any => {
+  const modelName = `App${pascalCase(appId)}`
+  const schema = cloneDeep(getSpec().components.schemas[modelName])
+  switch (appId) {
+    default:
+      break
+  }
+  return schema
+}
+
+export const getAppUiSchema = (
+  appsEnabled: Record<string, any>,
+  settings: GetSettingsApiResponse,
+  appId,
+  formData,
+): any => {
+  const modelName = `App${pascalCase(appId)}`
+  const model = getSpec().components.schemas[modelName].properties.values
+  const uiSchema = {}
+  if (model) {
+    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    leafs.forEach((path) => {
+      set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
+    })
+  }
+  switch (appId) {
+    case 'cert-manager':
+      if (formData.issuer === 'custom-ca') set(uiSchema, 'stage.ui:widget', 'hidden')
+      break
+    case 'drone':
+      const provider = get(formData, 'sourceControl.provider')
+      if (!provider) {
+        set(uiSchema, 'adminUser.ui:widget', 'hidden')
+        set(uiSchema, 'adminToken.ui:widget', 'hidden')
+        set(uiSchema, 'orgsFilter.ui:widget', 'hidden')
+        set(uiSchema, 'repo.ui:widget', 'hidden')
+        set(uiSchema, 'repoFilter.ui:widget', 'hidden')
+      }
+      if (provider !== 'github') {
+        set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
+        set(uiSchema, 'sharedSecret.ui:widget', 'hidden')
+      }
+      break
+    default:
+      break
+  }
+  return uiSchema
+}
+
+interface Props extends CrudProps, GetAppApiResponse {
+  teamId: string
+  setAppState: CallableFunction
+}
 export default function ({
   id,
   teamId,
@@ -75,8 +131,9 @@ export default function ({
   rawValues: inRawValues,
   shortcuts: inShortcuts,
   setAppState,
+  mutating,
   onSubmit,
-}: any): React.ReactElement {
+}: Props): React.ReactElement {
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
@@ -105,29 +162,30 @@ export default function ({
   }
   const [isEdit, setIsEdit] = useState(false)
   const [shortcuts, setShortcuts] = useState(inShortcuts)
-  const [shortcutsValid, setShortcutsValid] = useState(inShortcuts)
+  const [shortcutsValid, setShortcutsValid] = useState(true)
   const [values, setValues] = useState(inValues)
   const isDirty = !isEqual(values, inValues)
   const [rawValues, setRawValues] = useState(inRawValues)
-  const valuesDirty = !isEqual(values, inValues)
   const [valid, setValid] = useState(true)
   const { t } = useTranslation()
+  useEffect(() => {
+    if (inValues !== values) setValues(inValues)
+    if (inRawValues !== rawValues) setValues(inRawValues)
+    if (inShortcuts !== shortcuts) setValues(inShortcuts)
+  }, [inValues, inRawValues, inShortcuts])
   // END HOOKS
   const appSchema = getAppSchema(id).properties?.values
   const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
   const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
   const isAdminApps = teamId === 'admin'
-  const playButtonProps =
-    enabled !== false && externalUrl
-      ? { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
-      : {}
+  const playButtonProps = { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
 
   const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
     const { deps } = getAppData(session, teamId, id)
     setAppState([(deps || []).concat([id]), enabled])
   }
-  const handleShortcutsChange = (shortcuts, errors) => {
+  const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
     setShortcuts(shortcuts)
     setShortcutsValid(errors.length === 0)
   }
@@ -173,20 +231,32 @@ export default function ({
           </Typography>
         </Box>
         <Box className={classes.headerButtons}>
-          <ButtonGroup variant='outlined' color='primary' size='large'>
-            {enabled !== undefined && (
-              <Checkbox
-                title={enabled ? 'This app is enabled' : 'This app is disabled. Check to enable.'}
-                onChange={handleChangeEnabled}
-                checked={enabled !== false}
-                disabled={!isAdminApps || enabled}
+          <ButtonGroup
+            variant='contained'
+            color='primary'
+            size='large'
+            disableElevation
+            sx={{
+              backgroundColor: 'primary.main',
+            }}
+          >
+            <Checkbox
+              title={enabled ? 'This app is enabled' : 'This app is disabled. Check to enable.'}
+              onChange={handleChangeEnabled}
+              checked={enabled !== false}
+              disabled={!isAdminApps || enabled !== false}
+              size='medium'
+              sx={{
+                color: !isAdminApps || enabled ? 'action.disabled' : 'white',
+              }}
+            />
+            <IconButton size='large' {...playButtonProps} disabled={enabled === false}>
+              <PlayIcon
+                sx={{
+                  color: enabled === false ? 'action.disabled' : 'white',
+                }}
               />
-            )}
-            {enabled !== false && externalUrl && (
-              <IconButton color='primary' size='large' {...playButtonProps}>
-                <PlayIcon color={enabled !== false ? 'primary' : 'disabled'} />
-              </IconButton>
-            )}
+            </IconButton>
           </ButtonGroup>
         </Box>
       </Box>
@@ -243,6 +313,7 @@ export default function ({
               disabled={enabled === false}
               resourceType='Shortcut'
               resourceName={id}
+              mutating={mutating}
             >
               <div />
             </Form>
@@ -273,6 +344,7 @@ export default function ({
             onSubmit={handleSubmit}
             resourceType='Values'
             idProp={null}
+            mutating={mutating}
           />
         </TabPanel>
       )}

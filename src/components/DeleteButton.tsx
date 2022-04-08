@@ -1,16 +1,17 @@
 import DeleteIcon from '@mui/icons-material/Delete'
-import Button from '@mui/material/Button'
+import { LoadingButton } from '@mui/lab'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import DeleteDialog from './DeleteDialog'
 
 interface DeleteButtonProps {
   disabled?: boolean
+  loading?: boolean
   onDelete: () => void
   resourceName: string
   resourceType: string
 }
-export default function ({ disabled, ...other }: DeleteButtonProps): React.ReactElement {
+export default function ({ loading, disabled, ...other }: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
@@ -25,9 +26,15 @@ export default function ({ disabled, ...other }: DeleteButtonProps): React.React
   return (
     <>
       {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...other} />}
-      <Button disabled={disabled} startIcon={<DeleteIcon />} onClick={onButtonClick}>
+      <LoadingButton
+        disabled={disabled}
+        startIcon={<DeleteIcon />}
+        onClick={onButtonClick}
+        loading={loading}
+        variant='contained'
+      >
         {t('delete')}
-      </Button>
+      </LoadingButton>
     </>
   )
 }

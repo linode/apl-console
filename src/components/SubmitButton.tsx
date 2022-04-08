@@ -1,13 +1,13 @@
-import Button, { ButtonProps } from '@mui/material/Button'
+import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export default function ({ ...other }: ButtonProps): React.ReactElement {
+export default function ({ loading, ...other }: LoadingButtonProps): React.ReactElement {
   const { t } = useTranslation()
   // END HOOKS
   return (
-    <Button type='submit' {...other}>
+    <LoadingButton type='submit' {...other} loading={loading} variant='contained'>
       {t('submit')}
-    </Button>
+    </LoadingButton>
   )
 }

@@ -234,7 +234,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
-        <ListItemText primary={t('Deploy changes')} />
+        <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
       {teamId && (
         <>

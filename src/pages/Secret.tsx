@@ -24,17 +24,20 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create] = useCreateSecretMutation()
-  const [update] = useEditSecretMutation()
-  const [del] = useDeleteSecretMutation()
+  const [create, { isLoading: isLoadingCreate }] = useCreateSecretMutation()
+  const [update, { isLoading: isLoadingUpdate }] = useEditSecretMutation()
+  const [del, { isLoading: isLoadingDelete }] = useDeleteSecretMutation()
   const { data, isLoading } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
   const { t } = useTranslation()
   // END HOOKS
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   const handleSubmit = (formData) => {
     if (secretId) update({ teamId, secretId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, secretId: deleteId })
-  const comp = <Secret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} />
+  const comp = (
+    <Secret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
+  )
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />
 }
