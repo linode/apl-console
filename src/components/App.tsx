@@ -326,7 +326,7 @@ export default function ({
               if (isEdit) handleSubmit()
               setIsEdit(!isEdit)
             }}
-            disabled={isEdit && !shortcutsValid}
+            disabled={enabled === false || (isEdit && !shortcutsValid)}
           >
             {isEdit ? t('submit') : t('edit')}
           </Button>

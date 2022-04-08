@@ -23,16 +23,16 @@ interface Props extends CrudProps {
 export default function ({ policies, policyId, ...other }: Props): React.ReactElement {
   const { appsEnabled } = useSession()
   const [data, setData]: any = useState(policies[policyId])
-  const formData = cloneDeep(data)
-  const schema = getPolicySchema(policyId)
   useEffect(() => {
     setData(policies[policyId])
   }, [policyId, policies])
+  // END HOOKS
+  const schema = getPolicySchema(policyId)
   return (
     <Form
       key={policyId}
       schema={schema}
-      data={formData}
+      data={data}
       onChange={setData}
       disabled={!appsEnabled.gatekeeper}
       resourceType='Policy'

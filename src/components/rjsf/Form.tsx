@@ -64,7 +64,7 @@ export default function ({
   ...other
 }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
-  const [originalState, setOriginalState] = useState<Record<string, any>>(cleanData(data))
+  const [originalState, setOriginalState] = useState<Record<string, any>>(cleanData(data) || {})
   const [state, setState] = useState<Record<string, any>>(data) // initial state set to first time data, must rely on setData from here on
   const resourceName = other.resourceName ?? data?.[nameProp]
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function ({
   const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
     // lets check if form data is dirty (has meaningful changes)
     const cleanFormDataStripped = cleanData(formData) // strip all empty structs
-    const d = state && !isEqual(cleanFormDataStripped, originalState)
+    const d = originalState && !isEqual(cleanFormDataStripped, originalState)
     setDirty(d) // compare with initial data
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
     // finally we send the fully stripped version to subscribers
@@ -94,7 +94,7 @@ export default function ({
     const nulledCleanFormData = nullify(cleanFormData)
     onSubmit(nulledCleanFormData)
     // setState(undefined)
-    setOriginalState(cleanData(formData))
+    setOriginalState(cleanData(formData) || {})
     setDirty(false)
   }
   // const validate = (formData, errors, ajvErrors): any => {

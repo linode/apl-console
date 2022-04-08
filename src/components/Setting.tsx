@@ -3,7 +3,7 @@ import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
@@ -72,8 +72,12 @@ interface Props extends CrudProps {
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
+  const [setting, setSetting]: any = useState(data[settingId])
+  useEffect(() => {
+    setSetting(data[settingId])
+  }, [data, settingId])
   // END HOOKS
-  const schema = getSettingSchema(appsEnabled, settings, settingId, data)
+  const schema = getSettingSchema(appsEnabled, settings, settingId, setting)
   // we provide oboTeamId (not teamId) when a resource is only allowed edits by admin:
   const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
   return (
@@ -81,8 +85,9 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       key={settingId}
       schema={schema}
       uiSchema={uiSchema}
-      data={data}
+      data={setting}
       resourceType='Settings'
+      onChange={setSetting}
       idProp={null}
       adminOnly
       {...other}
