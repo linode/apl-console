@@ -17,7 +17,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchAppsEnabled } = useSession()
-  const { data, isLoading, refetch } = useGetAppQuery({ teamId, appId })
+  const { data, isLoading, refetch, isError } = useGetAppQuery({ teamId, appId })
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
   const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
   // END HOOKS
@@ -29,7 +29,7 @@ export default function ({
       .then(refetch)
       .then(refetchAppsEnabled)
   }
-  const comp = (
+  const comp = !isError && (
     <App
       onSubmit={handleSubmit}
       id={appId}

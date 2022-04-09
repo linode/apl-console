@@ -29,7 +29,7 @@ export default function ({
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditJobMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteJobMutation()
   const { data, isLoading } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
-  const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
+  const { data: secrets, isLoading: isLoadingSecrets, isError } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -41,7 +41,7 @@ export default function ({
   }
   const handleDelete = (deleteId) => del({ teamId, jobId: deleteId })
   const loading = isLoading || isLoadingSecrets
-  const comp = (
+  const comp = !isError && (
     <Job
       teamId={teamId}
       job={data}

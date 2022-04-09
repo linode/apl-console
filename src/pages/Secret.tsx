@@ -27,7 +27,7 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSecretMutation()
-  const { data, isLoading } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
+  const { data, isLoading, isError } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -38,7 +38,7 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, secretId: deleteId })
-  const comp = (
+  const comp = !isError && (
     <Secret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />

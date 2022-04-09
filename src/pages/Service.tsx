@@ -28,8 +28,8 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditServiceMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteServiceMutation()
-  const { data, isLoading } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
-  const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
+  const { data, isLoading, isError: isErrorService } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  const { data: secrets, isLoading: isLoadingSecrets, isError: isErrorSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -41,7 +41,8 @@ export default function ({
   }
   const handleDelete = (serviceId) => del({ teamId, serviceId })
   const loading = isLoading || isLoadingSecrets
-  const comp = (
+  const error = isErrorService || isErrorSecrets
+  const comp = !error && (
     <Service
       teamId={teamId}
       service={data}

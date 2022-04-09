@@ -20,7 +20,7 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
-  const { data, isLoading } = useGetTeamQuery({ teamId }, { skip: !teamId })
+  const { data, isLoading, isError } = useGetTeamQuery({ teamId }, { skip: !teamId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -30,6 +30,6 @@ export default function ({
     else create({ body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId: deleteId })
-  const comp = <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} mutating={mutating} />
+  const comp = !isError && <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} mutating={mutating} />
   return <PaperLayout loading={isLoading} comp={comp} title={t('Team details')} />
 }
