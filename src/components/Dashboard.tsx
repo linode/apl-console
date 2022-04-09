@@ -181,7 +181,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
         <Divider />
       </Grid>
       {panels.map((panel) => (
-        <DashboardCard classes={classes} teamId={team && team.id} item={panel} key={panel.name} />
+        <DashboardCard classes={classes} teamId={team?.id} item={panel} key={panel.name} />
       ))}
     </Grid>
   )

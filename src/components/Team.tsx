@@ -67,7 +67,7 @@ export default function ({ team, ...other }: Props): React.ReactElement {
   const action = team && team.id ? 'update' : 'create'
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
-  const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team.id, action)
+  const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
   return (
     <Form
       adminOnly
