@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.4](https://github.com/redkubes/otomi-console/compare/v0.5.3...v0.5.4) (2022-04-09)
+
+
+### Bug Fixes
+
+* reverting to redirects to simplify and support deletes ([d70de7e](https://github.com/redkubes/otomi-console/commit/d70de7ee82713fbff1be45486c0c28d6391f2e0f))
+
 ### [0.5.3](https://github.com/redkubes/otomi-console/compare/v0.5.2...v0.5.3) (2022-04-09)
 
 
