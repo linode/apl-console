@@ -5,7 +5,7 @@ import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateJobMutation,
   useDeleteJobMutation,
@@ -25,14 +25,16 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isLoading: isLoadingCreate }] = useCreateJobMutation()
-  const [update, { isLoading: isLoadingUpdate }] = useEditJobMutation()
-  const [del, { isLoading: isLoadingDelete }] = useDeleteJobMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateJobMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditJobMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteJobMutation()
   const { data, isLoading } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
   const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
+    return <Redirect to={`/teams/${teamId}/jobs`} />
   const handleSubmit = (formData) => {
     if (jobId) update({ teamId, jobId, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })

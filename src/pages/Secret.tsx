@@ -5,7 +5,7 @@ import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateSecretMutation,
   useDeleteSecretMutation,
@@ -24,13 +24,15 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isLoading: isLoadingCreate }] = useCreateSecretMutation()
-  const [update, { isLoading: isLoadingUpdate }] = useEditSecretMutation()
-  const [del, { isLoading: isLoadingDelete }] = useDeleteSecretMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSecretMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSecretMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSecretMutation()
   const { data, isLoading } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
+    return <Redirect to={`/teams/${teamId}/secrets`} />
   const handleSubmit = (formData) => {
     if (secretId) update({ teamId, secretId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })

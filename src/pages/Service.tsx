@@ -4,7 +4,7 @@ import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   useCreateServiceMutation,
   useDeleteServiceMutation,
@@ -25,14 +25,16 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isLoading: isLoadingCreate }] = useCreateServiceMutation()
-  const [update, { isLoading: isLoadingUpdate }] = useEditServiceMutation()
-  const [del, { isLoading: isLoadingDelete }] = useDeleteServiceMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditServiceMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteServiceMutation()
   const { data, isLoading } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const { data: secrets, isLoading: isLoadingSecrets } = useGetSecretsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
+    return <Redirect to={`/teams/${teamId}/services`} />
   const handleSubmit = (formData) => {
     if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
