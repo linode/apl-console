@@ -119,6 +119,7 @@ export { injectedRtkApi as otomiApi }
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
+  namespace?: string
   secret:
     | {
         type: 'generic'
@@ -2340,6 +2341,7 @@ export type DeleteServiceApiArg = {
 export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
   id?: string
   name: string
+  namespace?: string
   secret:
     | {
         type: 'generic'
@@ -2362,6 +2364,7 @@ export type GetSecretsApiArg = {
 export type CreateSecretApiResponse = /** status 200 Successfully stored secret configuration */ {
   id?: string
   name: string
+  namespace?: string
   secret:
     | {
         type: 'generic'
@@ -2384,6 +2387,7 @@ export type CreateSecretApiArg = {
   body: {
     id?: string
     name: string
+    namespace?: string
     secret:
       | {
           type: 'generic'
@@ -2403,6 +2407,7 @@ export type CreateSecretApiArg = {
 export type GetSecretApiResponse = /** status 200 Successfully obtained secret configuration */ {
   id?: string
   name: string
+  namespace?: string
   secret:
     | {
         type: 'generic'
@@ -2427,6 +2432,7 @@ export type GetSecretApiArg = {
 export type EditSecretApiResponse = /** status 200 Successfully edited a team secret */ {
   id?: string
   name: string
+  namespace?: string
   secret:
     | {
         type: 'generic'
@@ -2451,6 +2457,7 @@ export type EditSecretApiArg = {
   body: {
     id?: string
     name: string
+    namespace?: string
     secret:
       | {
           type: 'generic'
@@ -2552,7 +2559,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sVersion: '1.19' | '1.20' | '1.21'
     name: string
     owner?: string
-    provider: 'aws' | 'azure' | 'google' | 'onprem'
+    provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
     region: string
     vpcID?: string
   }
@@ -2699,7 +2706,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'google' | 'onprem'
+      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
     }[]
     globalPullSecret?: {
       username?: string
@@ -2866,7 +2873,7 @@ export type EditSettingsApiArg = {
       k8sVersion: '1.19' | '1.20' | '1.21'
       name: string
       owner?: string
-      provider: 'aws' | 'azure' | 'google' | 'onprem'
+      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
       region: string
       vpcID?: string
     }
@@ -3013,7 +3020,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'google' | 'onprem'
+        provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
       }[]
       globalPullSecret?: {
         username?: string
