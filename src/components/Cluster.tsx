@@ -6,7 +6,6 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
-import canDo from 'utils/permission'
 
 const useStyles = makeStyles()((theme) => ({
   listSubheader: {

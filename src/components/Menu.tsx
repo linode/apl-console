@@ -20,7 +20,7 @@ import PolicyIcon from '@mui/icons-material/Policy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
+import { Collapse, Link as MuiLink, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
 import MenuList from '@mui/material/List'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
@@ -76,13 +76,13 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     settings: { cluster, otomi },
     user,
   } = useSession()
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const [key, setKey] = useState<any>()
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const { t } = useTranslation()
   // END HOOKS
   const { isAdmin } = user
@@ -308,7 +308,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </StyledMenuItem>
           <StyledMenuItem
             className={mainClasses.selectable}
-            component={Link}
+            component={MuiLink}
             aria-label={t('Download KUBECFG')}
             href={`/api/v1/kubecfg/${oboTeamId}`}
             disabled={!canDo(user, oboTeamId, 'downloadKubeConfig')}
