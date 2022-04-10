@@ -72,10 +72,10 @@ interface Props extends CrudProps {
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
-  const [setting, setSetting]: any = useState(data[settingId])
+  const [setting, setSetting]: any = useState(data)
   useEffect(() => {
-    setSetting(data[settingId])
-  }, [data, settingId])
+    setSetting(data)
+  }, [data])
   // END HOOKS
   const schema = getSettingSchema(appsEnabled, settings, settingId, setting)
   // we provide oboTeamId (not teamId) when a resource is only allowed edits by admin:

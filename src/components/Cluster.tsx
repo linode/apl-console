@@ -1,4 +1,3 @@
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import { Link, List, ListItem, ListItemIcon, ListItemText, MenuItem } from '@mui/material'
 import { useMainStyles } from 'common/theme'
@@ -7,7 +6,6 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
-import canDo from 'utils/permission'
 
 const useStyles = makeStyles()((theme) => ({
   listSubheader: {
@@ -40,7 +38,6 @@ export default function (): React.ReactElement {
   ))
   const StyledMenuItem = React.memo((props: any) => <MenuItem className={mainClasses.selectable} {...props} />)
 
-  const isButtonDisabled = !canDo(user, oboTeamId, 'downloadKubeConfig')
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -73,18 +70,6 @@ export default function (): React.ReactElement {
           data-cy='list-item-text-core'
         />
       </StyledListItem>
-      <StyledMenuItem
-        className={mainClasses.selectable}
-        component={Link}
-        aria-label={t('Download KUBECFG')}
-        href={`/api/v1/kubecfg/${oboTeamId}`}
-        disabled={isButtonDisabled}
-      >
-        <ListItemIcon>
-          <CloudDownloadIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Download KUBECFG')} />
-      </StyledMenuItem>
       {ca && (
         <StyledMenuItem
           className={mainClasses.selectable}

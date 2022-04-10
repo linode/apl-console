@@ -1,3 +1,5 @@
+import canDo from 'utils/permission'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
@@ -19,7 +21,7 @@ import PolicyIcon from '@mui/icons-material/Policy'
 import SettingsIcon from '@mui/icons-material/Settings'
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Collapse, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
+import { Collapse, Link as MuiLink, List, ListItemText, ListSubheader, MenuItem } from '@mui/material'
 import MenuList from '@mui/material/List'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
@@ -71,8 +73,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const {
     appsEnabled,
     settings: { cluster, otomi },
-    user: { isAdmin },
+    user,
+    oboTeamId,
   } = useSession()
+  const { isAdmin } = user
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
@@ -301,6 +305,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary={t('Settings')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            className={mainClasses.selectable}
+            component={MuiLink}
+            aria-label={t('Download KUBECFG')}
+            href={`/api/v1/kubecfg/${oboTeamId}`}
+            disabled={!canDo(user, oboTeamId, 'downloadKubeConfig')}
+          >
+            <ListItemIcon>
+              <CloudDownloadIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
         </>
       )}
