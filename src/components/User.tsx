@@ -2,6 +2,7 @@ import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/m
 import { getThemeMode, useMainStyles } from 'common/theme'
 import { useSession } from 'providers/Session'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
@@ -60,6 +61,8 @@ export default function (): React.ReactElement {
     setOboTeamId,
   } = useSession()
   const { data: allTeams } = useGetTeamsQuery()
+  const { t } = useTranslation()
+  // END HOOKs
   let teams: GetTeamsApiResponse
   const allClusters = [...additionalClusters, cluster]
   if (isAdmin) {
@@ -135,8 +138,8 @@ export default function (): React.ReactElement {
         }}
       >
         {isAdmin && (
-          <MenuItem value={undefined} data-cy='select-oboteam-undefined'>
-            -
+          <MenuItem value='admin' data-cy='select-oboteam-undefined'>
+            {t('admin')}
           </MenuItem>
         )}
         {teams.map(({ id }) => (

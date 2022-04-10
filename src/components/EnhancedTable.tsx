@@ -203,7 +203,7 @@ export interface EnhancedTableProps {
   orderByStart?: string
   headCells: any[]
   rows: any[]
-  idKey?: string
+  idKey?: string | CallableFunction
 }
 
 // eslint-disable-next-line react/prop-types
@@ -308,7 +308,7 @@ export default function ({
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={`row-${row[idKey]}`}
+                      key={`row-${row[typeof idKey === 'function' ? idKey(row) : idKey]}`}
                       selected={isItemSelected}
                     >
                       {!disableSelect && (

@@ -44,6 +44,7 @@ export const getServiceSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   formData,
+  user,
   secrets: Array<any>,
 ): any => {
   const { cluster, otomi } = settings
@@ -86,6 +87,7 @@ export const getServiceSchema = (
       unset(ingressSchema, 'hasCert')
     }
   }
+  if (!user.isAdmin) delete schema.properties.namespace
   if (!appsEnabled.knative) schema.properties.ksvc.oneOf.splice(1, 2)
   // if (!appsEnabled.knative) {
   //   schema.properties.ksvc.oneOf[1].disabled = true
@@ -144,7 +146,7 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
   // END HOOKS
   // manipulate form data and set derived stuff:
   const formData = cloneDeep(data)
-  const teamSubdomain = formData?.name ? `${formData.name}.team-${teamId}` : ''
+  const teamSubdomain = formData?.name ? `${formData.name}.${user.isAdmin ? '' : `team-${teamId}`}` : ''
   const defaultSubdomain = teamSubdomain
   if (formData?.ingress) {
     let ing = formData.ingress
@@ -168,7 +170,7 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
     }
   }
   // pass to the schema getters that manipulate the schemas based on form data
-  const schema = getServiceSchema(appsEnabled, settings, formData, secrets)
+  const schema = getServiceSchema(appsEnabled, settings, formData, user, secrets)
   const uiSchema = getServiceUiSchema(appsEnabled, settings, formData, user, teamId)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />

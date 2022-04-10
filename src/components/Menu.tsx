@@ -1,6 +1,7 @@
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 // import PersonIcon from '@mui/icons-material/Person'
 import DashboardIcon from '@mui/icons-material/Dashboard'
@@ -32,6 +33,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useDeployQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
+import canDo from 'utils/permission'
 import snack from 'utils/snack'
 import Cluster from './Cluster'
 
@@ -70,18 +72,20 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     appsEnabled,
+    oboTeamId,
     settings: { cluster, otomi },
-    user: { isAdmin },
+    user,
   } = useSession()
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const [key, setKey] = useState<any>()
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const { t } = useTranslation()
   // END HOOKS
+  const { isAdmin } = user
   if (deploy) {
     if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
 
@@ -301,6 +305,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SettingsIcon />
             </ListItemIcon>
             <ListItemText primary={t('Settings')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            className={mainClasses.selectable}
+            component={Link}
+            aria-label={t('Download KUBECFG')}
+            href={`/api/v1/kubecfg/${oboTeamId}`}
+            disabled={!canDo(user, oboTeamId, 'downloadKubeConfig')}
+          >
+            <ListItemIcon>
+              <CloudDownloadIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
         </>
       )}

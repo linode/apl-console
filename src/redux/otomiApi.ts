@@ -252,6 +252,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
   id?: string
   teamId?: string
   name: string
+  namespace?: string
   port?: number
   ksvc?:
     | {
@@ -1187,6 +1188,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
   id?: string
   teamId?: string
   name: string
+  namespace?: string
   port?: number
   ksvc?:
     | {
@@ -1318,6 +1320,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
   id?: string
   teamId?: string
   name: string
+  namespace?: string
   port?: number
   ksvc?:
     | {
@@ -1449,6 +1452,7 @@ export type CreateServiceApiArg = {
     id?: string
     teamId?: string
     name: string
+    namespace?: string
     port?: number
     ksvc?:
       | {
@@ -1933,6 +1937,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
   id?: string
   teamId?: string
   name: string
+  namespace?: string
   port?: number
   ksvc?:
     | {
@@ -2066,6 +2071,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
   id?: string
   teamId?: string
   name: string
+  namespace?: string
   port?: number
   ksvc?:
     | {
@@ -2199,6 +2205,7 @@ export type EditServiceApiArg = {
     id?: string
     teamId?: string
     name: string
+    namespace?: string
     port?: number
     ksvc?:
       | {
