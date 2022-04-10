@@ -24,7 +24,10 @@ export default function ({
   noCrud = false,
   ...other
 }: ListTableProps): React.ReactElement {
-  const { user: isAdmin, oboTeamId } = useSession()
+  const {
+    user: { isAdmin },
+    oboTeamId,
+  } = useSession()
   const { t } = useTranslation()
   // END HOOKS
   const resourceTypePlural = `${resourceType}_plural`
@@ -42,14 +45,14 @@ export default function ({
             component={Link}
             to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
             startIcon={<AddCircleIcon />}
-            disabled={!adminOnly && isAdmin && !oboTeamId}
+            // disabled={!adminOnly && isAdmin && !oboTeamId}
             data-cy={`button-create-${resourceType}`}
           >
             {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect {...other} />
+      <EnhancedTable disableSelect {...other} idKey={teamId ? (o) => `${o.id}-${o.teamId}-${o.title}` : 'id'} />
     </>
   )
 }

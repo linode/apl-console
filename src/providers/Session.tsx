@@ -89,13 +89,18 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
-  const { user } = session
-  if (!user.isAdmin && !oboTeamId) {
-    if (user.teams.length) {
-      setOboTeamId(user.teams[0])
-      return <Loader />
+  const {
+    user: { isAdmin, teams },
+  } = session
+  if (!oboTeamId) {
+    if (isAdmin) setOboTeamId('admin')
+    else if (!isAdmin) {
+      if (teams.length) {
+        setOboTeamId(teams[0])
+        return <Loader />
+      }
+      return <ErrorComponent error={new ApiErrorUnauthorized()} />
     }
-    return <ErrorComponent error={new ApiErrorUnauthorized()} />
   }
   return <Context.Provider value={ctx}>{children}</Context.Provider>
 }

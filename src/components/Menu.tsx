@@ -1,8 +1,7 @@
-import canDo from 'utils/permission'
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 // import PersonIcon from '@mui/icons-material/Person'
 import DashboardIcon from '@mui/icons-material/Dashboard'
@@ -34,6 +33,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useDeployQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
+import canDo from 'utils/permission'
 import snack from 'utils/snack'
 import Cluster from './Cluster'
 
@@ -72,11 +72,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     appsEnabled,
+    oboTeamId,
     settings: { cluster, otomi },
     user,
-    oboTeamId,
   } = useSession()
-  const { isAdmin } = user
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
@@ -86,6 +85,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const [key, setKey] = useState<any>()
   const { t } = useTranslation()
   // END HOOKS
+  const { isAdmin } = user
   if (deploy) {
     if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
 
