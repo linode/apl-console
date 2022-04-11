@@ -57,5 +57,5 @@ export default function ({ jobs, teamId }: Props): React.ReactElement {
     })
   }
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={jobs} idKey='id' resourceType='Job' />
+  return <ListTable teamId={teamId} headCells={headCells} rows={jobs} resourceType='Job' />
 }

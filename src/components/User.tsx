@@ -138,7 +138,7 @@ export default function (): React.ReactElement {
         }}
       >
         {isAdmin && (
-          <MenuItem value='admin' data-cy='select-oboteam-undefined'>
+          <MenuItem value='admin' data-cy='select-oboteam-admin'>
             {t('admin')}
           </MenuItem>
         )}

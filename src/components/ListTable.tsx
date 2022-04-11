@@ -14,6 +14,7 @@ interface ListTableProps extends EnhancedTableProps {
   resourceType: string
   adminOnly?: boolean
   noCrud?: boolean
+  idKey?: string
 }
 export default function ({
   teamId,
@@ -22,6 +23,7 @@ export default function ({
   resourceType,
   adminOnly = false,
   noCrud = false,
+  idKey = 'id',
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -52,7 +54,7 @@ export default function ({
           </Button>
         </Box>
       )}
-      <EnhancedTable disableSelect {...other} idKey={teamId ? (o) => `${o.id}-${o.teamId}-${o.title}` : 'id'} />
+      <EnhancedTable disableSelect {...other} idKey={(o) => `${o[idKey]}-${o.teamId}-${o.title}`} />
     </>
   )
 }

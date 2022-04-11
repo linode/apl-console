@@ -299,7 +299,7 @@ export default function ({
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.name)
                   const labelId = `enhanced-table-checkbox-${index}`
-
+                  const key = `row-${typeof idKey === 'function' ? idKey(row) : row[idKey]}`
                   return (
                     <TableRow
                       hover
@@ -308,7 +308,7 @@ export default function ({
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={`row-${row[typeof idKey === 'function' ? idKey(row) : idKey]}`}
+                      key={key}
                       selected={isItemSelected}
                     >
                       {!disableSelect && (
