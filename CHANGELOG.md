@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.6](https://github.com/redkubes/otomi-stack-web/compare/v0.5.5...v0.5.6) (2022-04-11)
+
+
+### Bug Fixes
+
+* app shortcuts/values/rawvalues handling ([c0cfb1c](https://github.com/redkubes/otomi-stack-web/commit/c0cfb1cf445d4e189b648a40fd796f8605b8bec1))
+* editable namespace for team admin ([#149](https://github.com/redkubes/otomi-stack-web/issues/149)) ([11c90f6](https://github.com/redkubes/otomi-stack-web/commit/11c90f6b805120bb855aa09772b9c21920ebcd06))
+
 ### [0.5.5](https://github.com/redkubes/otomi-stack-web/compare/v0.5.4...v0.5.5) (2022-04-11)
 
 
