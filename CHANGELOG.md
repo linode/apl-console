@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.5](https://github.com/redkubes/otomi-stack-web/compare/v0.5.4...v0.5.5) (2022-04-11)
+
+
+### Features
+
+* admin services ([#147](https://github.com/redkubes/otomi-stack-web/issues/147)) ([71201c6](https://github.com/redkubes/otomi-stack-web/commit/71201c6b4bb51c4fd968e75acf76d82aa729c67d))
+
+
+### Bug Fixes
+
+* default subdomain for team admin ([c670e6c](https://github.com/redkubes/otomi-stack-web/commit/c670e6c55897b2cd63d9e8f4f0e958de762fe3e7))
+* duplicate teams, table row unique keys ([6096a14](https://github.com/redkubes/otomi-stack-web/commit/6096a148618f0d8debe1d58de40ef49418699d53))
+* resource not found error must block render form ([5c2fbb3](https://github.com/redkubes/otomi-stack-web/commit/5c2fbb3575ee99b67056abe4197345c1e6d95df8))
+* settings component data scope, download kubecfg in team menu ([a30826e](https://github.com/redkubes/otomi-stack-web/commit/a30826e15bb9a31d3bdfd58aefc72c9ad5874d06))
+
+
+### Others
+
+* **deps:** api gen ([7fb5d34](https://github.com/redkubes/otomi-stack-web/commit/7fb5d340a304033063106a6e35e7289766c4a12b))
+
 ### [0.5.4](https://github.com/redkubes/otomi-console/compare/v0.5.3...v0.5.4) (2022-04-09)
 
 

@@ -146,7 +146,7 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
   // END HOOKS
   // manipulate form data and set derived stuff:
   const formData = cloneDeep(data)
-  const teamSubdomain = formData?.name ? `${formData.name}.${user.isAdmin ? '' : `team-${teamId}`}` : ''
+  const teamSubdomain = formData?.name ? `${formData.name}${user.isAdmin ? '' : `.team-${teamId}`}` : ''
   const defaultSubdomain = teamSubdomain
   if (formData?.ingress) {
     let ing = formData.ingress
