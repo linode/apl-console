@@ -161,17 +161,28 @@ export default function ({
     setTab(tab)
   }
   const [isEdit, setIsEdit] = useState(false)
+  // setters for the tab forms
   const [shortcuts, setShortcuts] = useState(inShortcuts)
-  const [shortcutsValid, setShortcutsValid] = useState(true)
   const [values, setValues] = useState(inValues)
-  const isDirty = !isEqual(values, inValues)
   const [rawValues, setRawValues] = useState(inRawValues)
-  const [valid, setValid] = useState(true)
+  // validation state
+  const [validShortcuts, setValidShortcuts] = useState(true)
+  const [validValues, setValidValues] = useState(true)
+  const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   useEffect(() => {
-    if (inValues !== values) setValues(inValues)
-    if (inRawValues !== rawValues) setValues(inRawValues)
-    if (inShortcuts !== shortcuts) setValues(inShortcuts)
+    if (inValues !== values) {
+      setValues(inValues)
+      setValidValues(true)
+    }
+    if (inRawValues !== rawValues) {
+      setValues(inRawValues)
+      setValidRaw(true)
+    }
+    if (inShortcuts !== shortcuts) {
+      setValues(inShortcuts)
+      setValidShortcuts(true)
+    }
   }, [inValues, inRawValues, inShortcuts])
   // END HOOKS
   const appSchema = getAppSchema(id).properties?.values
@@ -180,23 +191,27 @@ export default function ({
   const isAdminApps = teamId === 'admin'
   const playButtonProps = { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
 
-  const handleChangeEnabled = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = () => {
+    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
+    if (validValues && validRaw && validShortcuts) onSubmit(data)
+  }
+  const handleAppsToggle = (event: ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
     const { deps } = getAppData(session, teamId, id)
     setAppState([(deps || []).concat([id]), enabled])
   }
   const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
     setShortcuts(shortcuts)
-    setShortcutsValid(errors.length === 0)
+    setValidShortcuts(errors.length === 0)
   }
-  const handleSubmit = () => {
-    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
-    if (isDirty) onSubmit(data)
+  const handleValuesChange = (values: Props['values'], errors: any[]) => {
+    setValues(values)
+    setValidValues(errors.length === 0)
   }
   const renderShortcuts = (s) => {
     const href = `${baseUrl}${s.path}`
     return (
-      <ListItem key={s.title}>
+      <ListItem key={`${s.teamId}-${s.title}`}>
         {enabled !== false ? (
           <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
             <b>{s.title}</b>: {s.description}
@@ -242,7 +257,7 @@ export default function ({
           >
             <Checkbox
               title={enabled ? 'This app is enabled' : 'This app is disabled. Check to enable.'}
-              onChange={handleChangeEnabled}
+              onChange={handleAppsToggle}
               checked={enabled !== false}
               disabled={!isAdminApps || enabled !== false}
               size='medium'
@@ -326,7 +341,7 @@ export default function ({
               if (isEdit) handleSubmit()
               setIsEdit(!isEdit)
             }}
-            disabled={enabled === false || (isEdit && !shortcutsValid)}
+            disabled={enabled === false || (isEdit && !validShortcuts)}
           >
             {isEdit ? t('submit') : t('edit')}
           </Button>
@@ -340,7 +355,7 @@ export default function ({
             data={values}
             schema={appSchema}
             uiSchema={appUiSchema}
-            onChange={setValues}
+            onChange={handleValuesChange}
             onSubmit={handleSubmit}
             resourceType='Values'
             idProp={null}
@@ -356,7 +371,7 @@ export default function ({
             code={yaml}
             onChange={(data) => setRawValues(data || {})}
             disabled={!isEdit}
-            setValid={setValid}
+            setValid={setValidRaw}
           />
           <Box display='flex' flexDirection='row-reverse' m={1}>
             <Button
@@ -367,7 +382,7 @@ export default function ({
                 if (isEdit) handleSubmit()
                 setIsEdit(!isEdit)
               }}
-              disabled={!valid}
+              disabled={!validRaw}
             >
               {isEdit ? t('Submit') : t('Edit')}
             </Button>
