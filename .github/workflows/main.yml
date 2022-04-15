@@ -27,7 +27,7 @@ env:
 
 jobs:
   build-test-push-release:
-    if: "((contains(github.event.head_commit.message, 'chore(release)') && github.ref == 'refs/heads/master') || !contains(github.event.head_commit.message, 'chore(release)')) && !contains(github.event.head_commit.message, 'ci skip') && !startsWith(github.ref, 'refs/tags/')"
+    if: "((contains(github.event.head_commit.message, 'chore(release)') && github.ref == 'refs/heads/main') || !contains(github.event.head_commit.message, 'chore(release)')) && !contains(github.event.head_commit.message, 'ci skip') && !startsWith(github.ref, 'refs/tags/')"
     runs-on: ubuntu-latest
     steps:
       - name: Set env
@@ -37,7 +37,7 @@ jobs:
           echo "TAG=$tag" >> $GITHUB_ENV
       - name: Checkout
         uses: actions/checkout@v2
-      - name: CI tests, image build and push tag for master or branch
+      - name: CI tests, image build and push tag for main or branch
         uses: whoan/docker-build-with-cache-action@v5
         with:
           username: redkubesbot
@@ -52,7 +52,7 @@ jobs:
           docker tag $CACHE_REGISTRY/$CACHE_REPO:$TAG $REPO:$TAG
           docker push $REPO:$TAG
       - name: Run e2e
-        if: "github.ref == 'refs/heads/master'"
+        if: "github.ref == 'refs/heads/main'"
         env:
           WEB_TAG: ${{ env.TAG }}
         run: |
@@ -82,7 +82,7 @@ jobs:
           git config --global user.email $GIT_USER@users.noreply.github.com
           git config --global user.name $GIT_USER
           echo "machine github.com login $GIT_USER password $GIT_PASSWORD" > ~/.netrc
-          git tag -am "$COMMIT_MSG" $release_tag && git push --follow-tags origin master
+          git tag -am "$COMMIT_MSG" $release_tag && git push --follow-tags origin main
           changelog=$(cat CHANGELOG.md | awk -v n=2 '/### \[[0-9]*/&&!--n{exit}{print}')
           # now do some escaping because github does not help us here:
           changelog="${changelog//'%'/'%25'}"

@@ -31,7 +31,6 @@ export const e: Record<string, string> = Object.keys(error).reduce(keyMapper, me
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 i18next
-  // load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
   // learn more: https://github.com/i18next/i18next-http-backend
   .use(new Backend())
   // detect user language

@@ -3,7 +3,7 @@ version: '3.4'
 services:
   api:
     container_name: api
-    image: eu.gcr.io/otomi-cloud/otomi-api:${API_TAG:-master}
+    image: eu.gcr.io/otomi-cloud/otomi-api:${API_TAG:-main}
     command: sh -c 'node dist/app.js'
     user: ${USER_ID}:${GROUP_ID}
     expose:
@@ -23,7 +23,7 @@ services:
     depends_on:
       - api
     container_name: tools
-    image: otomi/core:${TOOLS_TAG:-master}
+    image: otomi/core:${TOOLS_TAG:-main}
     user: ${USER_ID}:${GROUP_ID}
     command: sh -c 'binzx/otomi server -vv'
     expose:
