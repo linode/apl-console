@@ -109,7 +109,7 @@
   "private": true,
   "resolutions": {},
   "run-if-changed": {
-    "package-lock.json": "npm ci --prefer-offline --no-audit"
+    "package-lock.json": "npm install --prefer-offline --no-audit"
   },
   "scripts": {
     "build": "PUBLIC_URL='##CONTEXT_PATH##' react-scripts build",
