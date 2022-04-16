@@ -1,5 +1,5 @@
 # --------------- dev stage for developers to override sources
-FROM node:13.10.1-alpine as dev
+FROM node:13.14.0-alpine as dev
 # ARG NPM_TOKEN
 # RUN test -n "$NPM_TOKEN"
 
@@ -34,7 +34,7 @@ RUN npm test -- --watchAll=false
 RUN npm run build
 
 # --------------- production stage
-FROM openresty/openresty:1.17.8.2-5-alpine-fat as prod
+FROM openresty/openresty:1.19.9.1-5-alpine-fat as prod
 
 RUN mkdir /app
 RUN addgroup -S app &&\
