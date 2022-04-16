@@ -1,5 +1,5 @@
 # --------------- dev stage for developers to override sources
-FROM node:13.14.0-alpine as dev
+FROM node:17.9.0-alpine as dev
 # ARG NPM_TOKEN
 # RUN test -n "$NPM_TOKEN"
 
