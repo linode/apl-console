@@ -8,13 +8,7 @@ The frontend of the Otomi Container Platform that communicates with [otomi-api](
 
 ### Setting up environment
 
-1. Copy `.env.sample` to `.env` and edit accordingly.
-
-2. Setup access to GitHub packages:
-
-```
-source .env && echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ~/.npmrc
-```
+Copy `.env.sample` to `.env` and edit accordingly.
 
 ### Start the dependencies
 

@@ -10,8 +10,6 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY package*.json ./
-COPY .npmrc ./
-# RUN echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> .npmrc
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
