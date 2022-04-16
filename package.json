@@ -64,7 +64,7 @@
     "@types/jest": "24.9.1",
     "@types/js-yaml": "4.0.5",
     "@types/json-schema": "7.0.9",
-    "@types/lodash": "4.14.178",
+    "@types/lodash": "4.14.181",
     "@types/react": "16.14.25",
     "@types/react-dom": "16.9.14",
     "@types/react-helmet": "5.0.20",
