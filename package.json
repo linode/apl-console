@@ -60,7 +60,7 @@
     "@hkdobrev/run-if-changed": "0.3.1",
     "@mui/types": "7.1.2",
     "@rtk-query/codegen-openapi": "1.0.0-alpha.1",
-    "@types/enzyme": "3.10.11",
+    "@types/enzyme": "3.10.12",
     "@types/jest": "24.9.1",
     "@types/js-yaml": "4.0.5",
     "@types/json-schema": "7.0.9",
