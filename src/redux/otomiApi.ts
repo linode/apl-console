@@ -448,8 +448,9 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    app?: 'argocd'[]
   }
 }[]
 export type GetTeamsApiArg = void
@@ -523,8 +524,9 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    app?: 'argocd'[]
   }
 }
 export type CreateTeamApiArg = {
@@ -599,8 +601,9 @@ export type CreateTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      Service?: ('ingress' | 'networkPolicy')[]
-      Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      service?: ('ingress' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      app?: 'argocd'[]
     }
   }
 }
@@ -674,8 +677,9 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    app?: 'argocd'[]
   }
 }
 export type GetTeamApiArg = {
@@ -752,8 +756,9 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    app?: 'argocd'[]
   }
 }
 export type EditTeamApiArg = {
@@ -830,8 +835,9 @@ export type EditTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      Service?: ('ingress' | 'networkPolicy')[]
-      Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      service?: ('ingress' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      app?: 'argocd'[]
     }
   }
 }
@@ -2559,7 +2565,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sVersion: '1.19' | '1.20' | '1.21'
     name: string
     owner?: string
-    provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+    provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
     region: string
     vpcID?: string
   }
@@ -2706,7 +2712,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -2873,7 +2879,7 @@ export type EditSettingsApiArg = {
       k8sVersion: '1.19' | '1.20' | '1.21'
       name: string
       owner?: string
-      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
       region: string
       vpcID?: string
     }
@@ -3020,7 +3026,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string

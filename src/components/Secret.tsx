@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react'
 import { GetSecretApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getSecretSchema = (): any => {
+export const getSecretSchema = (teamId): any => {
   const schema = cloneDeep(getSpec().components.schemas.Secret)
+  if (teamId !== 'admin') delete schema.properties.namespace
   return schema
 }
 
@@ -35,7 +36,7 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   }, [secret])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getSecretSchema()
+  const schema = getSecretSchema(teamId)
   const uiSchema = getSecretUiSchema(user, teamId)
   return (
     <Form

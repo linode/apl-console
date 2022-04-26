@@ -24,8 +24,8 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction =>
 const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
   if (!ingress) return ''
   if (ingress.type === 'cluster') return `${name}.team-${teamId}`
-  const { subdomain, domain, path } = ingress
-  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${path || ''}`
+  const { subdomain, domain, paths } = ingress
+  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0] || ''}`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
@@ -63,8 +63,8 @@ export default function ({ services, teamId }: Props): React.ReactElement {
       renderer: (row) => row.ksvc?.serviceType ?? '',
     },
     {
-      id: 'host',
-      label: t('Host'),
+      id: 'url',
+      label: t('URL'),
       renderer: renderHost,
       component: MuiLink,
     },

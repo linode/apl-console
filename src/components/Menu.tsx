@@ -245,7 +245,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <StyledListSubheader component='div'>
             <ListItemText primary={t('TITLE_TEAM', { teamId })} data-cy='list-subheader-team' />
           </StyledListSubheader>
-          {!isAdmin && (
+          {oboTeamId !== 'admin' && (
             <StyledMenuItem
               to={`/apps/${teamId}`}
               selected={pathname.indexOf(`/apps/${teamId}`) === 0}
@@ -257,7 +257,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <ListItemText primary={t('Apps')} />
             </StyledMenuItem>
           )}
-          {!isAdmin && (
+          {oboTeamId !== 'admin' && (
             <StyledMenuItem
               to={`/shortcuts/${teamId}`}
               selected={pathname === `/shortcuts/${teamId}`}
@@ -300,7 +300,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Secrets')} />
           </StyledMenuItem>
-          {!isAdmin && (
+          {oboTeamId !== 'admin' && (
             <StyledMenuItem
               to={`/teams/${teamId}`}
               selected={pathname === `/teams/${teamId}`}
