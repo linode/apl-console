@@ -450,7 +450,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-    apps?: 'argocd'[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }[]
 export type GetTeamsApiArg = void
@@ -526,7 +526,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-    apps?: 'argocd'[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type CreateTeamApiArg = {
@@ -603,7 +603,7 @@ export type CreateTeamApiArg = {
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
       team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-      apps?: 'argocd'[]
+      apps?: ('argocd' | 'gitea')[]
     }
   }
 }
@@ -679,7 +679,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-    apps?: 'argocd'[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type GetTeamApiArg = {
@@ -758,7 +758,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-    apps?: 'argocd'[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type EditTeamApiArg = {
@@ -837,7 +837,7 @@ export type EditTeamApiArg = {
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
       team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
-      apps?: 'argocd'[]
+      apps?: ('argocd' | 'gitea')[]
     }
   }
 }
