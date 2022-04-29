@@ -3,7 +3,6 @@ import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-// import PersonIcon from '@mui/icons-material/Person'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import DnsIcon from '@mui/icons-material/Dns'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
@@ -11,6 +10,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import HomeIcon from '@mui/icons-material/Home'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
+import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
@@ -115,6 +115,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }
 
   const settingIds = {
+    cluster: [t('Cluster'), <HubIcon />],
     alerts: [t('Alerts'), <AnnouncementIcon />],
     home: ['Home alerts', <HomeIcon />],
     azure: [t('Azure'), <CloudIcon />],

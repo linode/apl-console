@@ -63,7 +63,7 @@ function App() {
                         <Route path='/' component={Dashboard} exact />
                         <Route path='/apps/:teamId' component={Apps} exact />
                         <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                        <Route path='/cluster/:clusterId' component={Cluster} exact />
+                        <Route path='/clusters/:clusterId' component={Cluster} exact />
                         <Route path='/clusters' component={Clusters} exact />
                         <Route path='/create-team' component={Team} exact />
                         <Route path='/jobs' component={Jobs} exact />

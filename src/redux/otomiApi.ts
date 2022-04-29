@@ -2558,16 +2558,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   cluster?: {
+    name?: string
+    domainSuffix?: string
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+    k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
     apiName?: string
-    apiServer: string
-    domainSuffix: string
-    entrypoint?: string
-    k8sVersion: '1.19' | '1.20' | '1.21'
-    name: string
+    apiServer?: string
     owner?: string
-    provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
-    region: string
-    vpcID?: string
+    region?: string
+    k8sContext?: string
   }
   home?: {
     repeatInterval?: string
@@ -2638,6 +2637,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       | (object | null)
       | {
           aws: {
+            accessKeyID?: string
+            secretAccessKey?: string
+            role?: string
             region: string
           }
         }
@@ -2660,6 +2662,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             project: string
           }
         }
+    entrypoint?: string
   }
   kms?: {
     sops?:
@@ -2872,16 +2875,15 @@ export type EditSettingsApiArg = {
       }
     }
     cluster?: {
+      name?: string
+      domainSuffix?: string
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
       apiName?: string
-      apiServer: string
-      domainSuffix: string
-      entrypoint?: string
-      k8sVersion: '1.19' | '1.20' | '1.21'
-      name: string
+      apiServer?: string
       owner?: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
-      region: string
-      vpcID?: string
+      region?: string
+      k8sContext?: string
     }
     home?: {
       repeatInterval?: string
@@ -2952,6 +2954,9 @@ export type EditSettingsApiArg = {
         | (object | null)
         | {
             aws: {
+              accessKeyID?: string
+              secretAccessKey?: string
+              role?: string
               region: string
             }
           }
@@ -2974,6 +2979,7 @@ export type EditSettingsApiArg = {
               project: string
             }
           }
+      entrypoint?: string
     }
     kms?: {
       sops?:

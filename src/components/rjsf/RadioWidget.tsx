@@ -37,8 +37,7 @@ function RadioWidget({
   const hasLabel = !!options.hasLabel
   const row = inline || renderOptions.length <= 5
   const useValue = value === undefined || value === null ? schema.default || '' : value
-  // if (renderOptions[0].label === '') renderOptions[0] = { label: 'Off', value: undefined }
-  if (!required && schema.default === undefined) {
+  if (!required && schema.default === undefined && !schema.readOnly) {
     if (renderOptions.length && renderOptions[0].value !== '') renderOptions.unshift({ label: 'Off', value: '' })
 
     if (value === undefined) {

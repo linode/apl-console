@@ -1,6 +1,7 @@
 import StringField from '@rjsf/core/lib/components/fields/StringField'
 import { set } from 'lodash'
 import React from 'react'
+import { isHidden } from './ObjectFieldTemplate'
 import RadioWidget from './RadioWidget'
 
 export default function ({ children, schema, uiSchema, formData, placeholder, ...props }: any): React.ReactElement {
@@ -9,6 +10,7 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7
   const shortList = schema.enum?.length < 5
+  if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
     if (schema.enum && schema.enum.length === 1) {
       // hide one item enum that was set to its default value, as those are used for selectors
@@ -19,9 +21,10 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
       set(newUiSchema, 'ui:options.hasLabel', true)
-    } else if (uiSchema['ui:widget'] !== 'hidden' && schema['x-secret'] !== undefined)
+    } else if (uiSchema['ui:widget'] !== 'hidden' && schema['x-secret'] !== undefined) {
       newUiSchema['ui:widget'] = 'password'
-
+      set(newUiSchema, 'ui:options.autocomplete', 'off')
+    }
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
   }
   return (
