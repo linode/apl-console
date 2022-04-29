@@ -2702,9 +2702,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
   }
   oidc?: {
-    issuer?: string
-    clientID?: string
-    clientSecret?: string
+    issuer: string
+    clientID: string
+    clientSecret: string
     adminGroupID?: string
     teamAdminGroupID?: string
     usernameClaimMapper?: string
@@ -2729,7 +2729,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     isHomeMonitored?: boolean
     isManaged?: boolean
     isMultitenant?: boolean
-    version?: string
+    version: string
   }
   policies?: {
     'banned-image-tags'?: {
@@ -3019,9 +3019,9 @@ export type EditSettingsApiArg = {
           }
     }
     oidc?: {
-      issuer?: string
-      clientID?: string
-      clientSecret?: string
+      issuer: string
+      clientID: string
+      clientSecret: string
       adminGroupID?: string
       teamAdminGroupID?: string
       usernameClaimMapper?: string
@@ -3046,7 +3046,7 @@ export type EditSettingsApiArg = {
       isHomeMonitored?: boolean
       isManaged?: boolean
       isMultitenant?: boolean
-      version?: string
+      version: string
     }
     policies?: {
       'banned-image-tags'?: {
