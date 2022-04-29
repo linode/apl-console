@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.8](https://github.com/redkubes/otomi-stack-web/compare/v0.5.7...v0.5.8) (2022-04-29)
+
+
+### Bug Fixes
+
+* file permissions ([#166](https://github.com/redkubes/otomi-stack-web/issues/166)) ([5127427](https://github.com/redkubes/otomi-stack-web/commit/5127427705cd3a75aebd831e200253556b60fd2f))
+
 ### [0.5.7](https://github.com/redkubes/otomi-stack-web/compare/v0.5.6...v0.5.7) (2022-04-29)
 
 
