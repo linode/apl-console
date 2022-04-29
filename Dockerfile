@@ -34,22 +34,21 @@ RUN npm test -- --watchAll=false
 RUN npm run build
 
 # --------------- production stage
-FROM openresty/openresty:1.19.9.1-5-alpine-fat as prod
+FROM nginx:1.21.6-alpine as prod
 
 RUN mkdir /app
-RUN addgroup -S app &&\
-  adduser -S app -G app -h /app -s /sbin/nologin
+RUN addgroup -S app && adduser -S app -G app -h /app -s /sbin/nologin
+RUN mkdir -p /var/run/nginx /var/tmp/nginx && chown -R app:app /etc/nginx /usr/share/nginx /var/run/nginx /var/tmp/nginx
 ENV HOME=/app
 WORKDIR /app
 
 COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
-COPY --from=ci --chown=app /app/build build
-COPY --chown=app keycloak /app/keycloak
+COPY --from=ci /app/build build
+COPY keycloak /app/keycloak
 
 RUN chown -R app:app /app
-RUN chown -R app:app /usr/local
 
 USER app
 
