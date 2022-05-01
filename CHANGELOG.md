@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.8](https://github.com/redkubes/otomi-stack-web/compare/v0.5.7...v0.5.8) (2022-04-29)
+
+
+### Bug Fixes
+
+* file permissions ([#166](https://github.com/redkubes/otomi-stack-web/issues/166)) ([5127427](https://github.com/redkubes/otomi-stack-web/commit/5127427705cd3a75aebd831e200253556b60fd2f))
+
+### [0.5.7](https://github.com/redkubes/otomi-stack-web/compare/v0.5.6...v0.5.7) (2022-04-29)
+
+
+### Bug Fixes
+
+* **deps:** update all-deps ([#159](https://github.com/redkubes/otomi-stack-web/issues/159)) ([e19d811](https://github.com/redkubes/otomi-stack-web/commit/e19d811cb1c070534c076806ceca5cf90c594680))
+* dockerfile ref to npmrc [ci skip] ([cd65923](https://github.com/redkubes/otomi-stack-web/commit/cd65923d102a91e3e0a5c32b70dde03fe3ef2543))
+* hide namespace if not team-admin ([#164](https://github.com/redkubes/otomi-stack-web/issues/164)) ([76b60e9](https://github.com/redkubes/otomi-stack-web/commit/76b60e97b4e3136817d9d7de0774e22aae85d611))
+* texteditor background color (closes [#150](https://github.com/redkubes/otomi-stack-web/issues/150)) ([0c7eb32](https://github.com/redkubes/otomi-stack-web/commit/0c7eb32222a3d93c8b769d5b1d6e5cd0b5ab85fa))
+
+
+### Code Refactoring
+
+* master refs to main ([7358c09](https://github.com/redkubes/otomi-stack-web/commit/7358c096b670e40f2a7ef9ace4b761bae8dbdce3))
+* remove npmrc as we dont use [@redkubes](https://github.com/redkubes) packages anymore ([dbc89e9](https://github.com/redkubes/otomi-stack-web/commit/dbc89e92ee099362909ee96cb961dac0aba6f92d))
+
+
+### Others
+
+* **deps:** pin dependencies ([#153](https://github.com/redkubes/otomi-stack-web/issues/153)) ([2e18a3b](https://github.com/redkubes/otomi-stack-web/commit/2e18a3bf0c6874c5c5209e5441d387bd0f9af849))
+* **deps:** pin dependencies ([#161](https://github.com/redkubes/otomi-stack-web/issues/161)) ([a3ad9e9](https://github.com/redkubes/otomi-stack-web/commit/a3ad9e998c0ddaaa5244f63ac34d16d806979ee3))
+* **deps:** update dependency @types/lodash to v4.14.181 ([#158](https://github.com/redkubes/otomi-stack-web/issues/158)) [ci skip] ([24be968](https://github.com/redkubes/otomi-stack-web/commit/24be968f76953c1c87fc138e2fd9d797d2d6c0d5))
+* **deps:** update dependency @types/react to v16.14.25 ([#157](https://github.com/redkubes/otomi-stack-web/issues/157)) [ci skip] ([3311bc9](https://github.com/redkubes/otomi-stack-web/commit/3311bc91298bb035d46e6ff8088c902af81c0e12))
+* **deps:** update dependency @wojtekmaj/enzyme-adapter-react-17 to v0.6.7 ([#156](https://github.com/redkubes/otomi-stack-web/issues/156)) [ci skip] ([6ce843d](https://github.com/redkubes/otomi-stack-web/commit/6ce843de31291a8b34c73ba05fd7a3cc94738878))
+
+
+### Build System
+
+* adding renovate schema [ci skip] ([a5ea569](https://github.com/redkubes/otomi-stack-web/commit/a5ea569207af84427668a63e13916403b620daf9))
+* **npm:** run-if-changed may use npm install instead of ci [ci skip] ([9dba717](https://github.com/redkubes/otomi-stack-web/commit/9dba7177c90a46a5e93b65bc4bf0716ce731e74b))
+
+
+### CI
+
+* **codeowners:** put back [ci skip] ([5347e01](https://github.com/redkubes/otomi-stack-web/commit/5347e01721c8a928c612f0f5ed95654c74f17256))
+* **renovate:** added app/renovate-approve to codeowners for packages [ci skip] ([94415bf](https://github.com/redkubes/otomi-stack-web/commit/94415bf0891e4e8613acde514d6a28219edddfbe))
+* **renovate:** removed codeowners to autoapprove by renovate, grouped all [ci skip] ([065e06f](https://github.com/redkubes/otomi-stack-web/commit/065e06ff96b26e67f5d485b77c238ef848ba67e9))
+
 ### [0.5.6](https://github.com/redkubes/otomi-stack-web/compare/v0.5.5...v0.5.6) (2022-04-11)
 
 
