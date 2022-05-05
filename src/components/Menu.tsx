@@ -3,7 +3,6 @@ import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
-// import PersonIcon from '@mui/icons-material/Person'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import DnsIcon from '@mui/icons-material/Dns'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
@@ -11,6 +10,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import HomeIcon from '@mui/icons-material/Home'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
+import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
@@ -115,6 +115,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }
 
   const settingIds = {
+    cluster: [t('Cluster'), <HubIcon />],
     alerts: [t('Alerts'), <AnnouncementIcon />],
     home: ['Home alerts', <HomeIcon />],
     azure: [t('Azure'), <CloudIcon />],
@@ -245,26 +246,30 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           <StyledListSubheader component='div'>
             <ListItemText primary={t('TITLE_TEAM', { teamId })} data-cy='list-subheader-team' />
           </StyledListSubheader>
-          <StyledMenuItem
-            to={`/apps/${teamId}`}
-            selected={pathname.indexOf(`/apps/${teamId}`) === 0}
-            data-cy='menu-item-team-otomiapps'
-          >
-            <ListItemIcon>
-              <AppsIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Apps')} />
-          </StyledMenuItem>
-          <StyledMenuItem
-            to={`/shortcuts/${teamId}`}
-            selected={pathname === `/shortcuts/${teamId}`}
-            data-cy='menu-item-otomishortcuts'
-          >
-            <ListItemIcon>
-              <ShortcutIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Shortcuts')} />
-          </StyledMenuItem>
+          {oboTeamId !== 'admin' && (
+            <StyledMenuItem
+              to={`/apps/${teamId}`}
+              selected={pathname.indexOf(`/apps/${teamId}`) === 0}
+              data-cy='menu-item-team-otomiapps'
+            >
+              <ListItemIcon>
+                <AppsIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('Apps')} />
+            </StyledMenuItem>
+          )}
+          {oboTeamId !== 'admin' && (
+            <StyledMenuItem
+              to={`/shortcuts/${teamId}`}
+              selected={pathname === `/shortcuts/${teamId}`}
+              data-cy='menu-item-otomishortcuts'
+            >
+              <ListItemIcon>
+                <ShortcutIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('Shortcuts')} />
+            </StyledMenuItem>
+          )}
           <StyledMenuItem
             to={`/teams/${teamId}/services`}
             selected={pathname.indexOf(`/teams/${teamId}/services`) === 0}
@@ -296,16 +301,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Secrets')} />
           </StyledMenuItem>
-          <StyledMenuItem
-            to={`/teams/${teamId}`}
-            selected={pathname === `/teams/${teamId}`}
-            data-cy='menu-item-team-settings'
-          >
-            <ListItemIcon>
-              <SettingsIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Settings')} />
-          </StyledMenuItem>
+          {oboTeamId !== 'admin' && (
+            <StyledMenuItem
+              to={`/teams/${teamId}`}
+              selected={pathname === `/teams/${teamId}`}
+              data-cy='menu-item-team-settings'
+            >
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('Settings')} />
+            </StyledMenuItem>
+          )}
           <StyledMenuItem
             className={mainClasses.selectable}
             component={MuiLink}

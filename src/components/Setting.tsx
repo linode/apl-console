@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, get, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -18,6 +18,12 @@ export const getSettingSchema = (
     cluster: { provider },
   } = settings
   switch (settingId) {
+    case 'cluster':
+      if (provider === 'aws')
+        // make region required
+        set(schema, 'required', get(schema, 'required', []).concat(['region']))
+      else unset(schema, 'properties.region')
+      break
     case 'home':
       deleteAlertEndpoints(schema, formData)
       break
@@ -51,6 +57,9 @@ export const getSettingUiSchema = (
   settingId: string,
 ): any => {
   const uiSchema: any = {
+    cluster: {
+      k8sContext: { 'ui:widget': 'hidden' },
+    },
     kms: {
       sops: {
         provider: { 'ui:widget': 'hidden' },

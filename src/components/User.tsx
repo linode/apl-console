@@ -127,7 +127,7 @@ export default function (): React.ReactElement {
       <Typography variant='body1'>team:</Typography>
       <Select
         color='secondary'
-        value={oboTeamId || ''}
+        value={(teams.length && oboTeamId) || ''}
         onChange={handleChange}
         className={classes.select}
         data-cy='select-oboteam'

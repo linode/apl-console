@@ -448,8 +448,9 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }[]
 export type GetTeamsApiArg = void
@@ -523,8 +524,9 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type CreateTeamApiArg = {
@@ -599,8 +601,9 @@ export type CreateTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      Service?: ('ingress' | 'networkPolicy')[]
-      Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      service?: ('ingress' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      apps?: ('argocd' | 'gitea')[]
     }
   }
 }
@@ -674,8 +677,9 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type GetTeamApiArg = {
@@ -752,8 +756,9 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    Service?: ('ingress' | 'networkPolicy')[]
-    Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    service?: ('ingress' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    apps?: ('argocd' | 'gitea')[]
   }
 }
 export type EditTeamApiArg = {
@@ -830,8 +835,9 @@ export type EditTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      Service?: ('ingress' | 'networkPolicy')[]
-      Team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      service?: ('ingress' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      apps?: ('argocd' | 'gitea')[]
     }
   }
 }
@@ -2552,16 +2558,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   cluster?: {
+    name?: string
+    domainSuffix?: string
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+    k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
     apiName?: string
-    apiServer: string
-    domainSuffix: string
-    entrypoint?: string
-    k8sVersion: '1.19' | '1.20' | '1.21'
-    name: string
+    apiServer?: string
     owner?: string
-    provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
-    region: string
-    vpcID?: string
+    region?: string
+    k8sContext?: string
   }
   home?: {
     repeatInterval?: string
@@ -2632,6 +2637,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       | (object | null)
       | {
           aws: {
+            accessKeyID?: string
+            secretAccessKey?: string
+            role?: string
             region: string
           }
         }
@@ -2654,6 +2662,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             project: string
           }
         }
+    entrypoint?: string
   }
   kms?: {
     sops?:
@@ -2693,9 +2702,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
   }
   oidc?: {
-    issuer?: string
-    clientID?: string
-    clientSecret?: string
+    issuer: string
+    clientID: string
+    clientSecret: string
     adminGroupID?: string
     teamAdminGroupID?: string
     usernameClaimMapper?: string
@@ -2706,7 +2715,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -2720,7 +2729,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     isHomeMonitored?: boolean
     isManaged?: boolean
     isMultitenant?: boolean
-    version?: string
+    version: string
   }
   policies?: {
     'banned-image-tags'?: {
@@ -2866,16 +2875,15 @@ export type EditSettingsApiArg = {
       }
     }
     cluster?: {
+      name?: string
+      domainSuffix?: string
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
       apiName?: string
-      apiServer: string
-      domainSuffix: string
-      entrypoint?: string
-      k8sVersion: '1.19' | '1.20' | '1.21'
-      name: string
+      apiServer?: string
       owner?: string
-      provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
-      region: string
-      vpcID?: string
+      region?: string
+      k8sContext?: string
     }
     home?: {
       repeatInterval?: string
@@ -2946,6 +2954,9 @@ export type EditSettingsApiArg = {
         | (object | null)
         | {
             aws: {
+              accessKeyID?: string
+              secretAccessKey?: string
+              role?: string
               region: string
             }
           }
@@ -2968,6 +2979,7 @@ export type EditSettingsApiArg = {
               project: string
             }
           }
+      entrypoint?: string
     }
     kms?: {
       sops?:
@@ -3007,9 +3019,9 @@ export type EditSettingsApiArg = {
           }
     }
     oidc?: {
-      issuer?: string
-      clientID?: string
-      clientSecret?: string
+      issuer: string
+      clientID: string
+      clientSecret: string
       adminGroupID?: string
       teamAdminGroupID?: string
       usernameClaimMapper?: string
@@ -3020,7 +3032,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'google' | 'custom' | 'local'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -3034,7 +3046,7 @@ export type EditSettingsApiArg = {
       isHomeMonitored?: boolean
       isManaged?: boolean
       isMultitenant?: boolean
-      version?: string
+      version: string
     }
     policies?: {
       'banned-image-tags'?: {

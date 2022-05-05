@@ -8,7 +8,8 @@ import DescriptionField from './DescriptionField'
 import { useStyles } from './styles'
 import TitleField from './TitleField'
 
-const isHidden = (element: any): boolean => element.content?.props?.uiSchema?.['ui:widget'] === 'hidden'
+export const isHidden = (props?: any): boolean =>
+  props?.uiSchema?.['ui:widget'] === 'hidden' || props?.schema?.['x-hidden'] === true
 
 export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   const { properties, idSchema, schema } = props
@@ -44,7 +45,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
       uiSchema['ui:options']?.title ||
       schema.title ||
       title ||
-      (type === 'object' && !schema.properties && sentenceCase(name))
+      (name && type === 'object' && !schema.properties && sentenceCase(name))
     const displayDescription =
       uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
@@ -81,7 +82,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const { idSchema = {}, schema } = o.content?.props ?? {}
     const type = getSchemaType(schema)
     const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
-    const hidden = isHidden(o)
+    const hidden = isHidden(o.content?.props)
     const isOf = hasSomeOf(schema)
     if (hidden) {
       if (!schema.properties && !isOf) {

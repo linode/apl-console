@@ -30,7 +30,7 @@ function WrapIfAdditional({
   required,
   schema,
 }: WrapIfAdditionalProps) {
-  const keyLabel = `${label} Key` // i18n ?
+  const keyLabel = `${label} Key` // TODO: i18n ?
   const additional = schema.hasOwnProperty(ADDITIONAL_PROPERTY_FLAG)
   const btnStyle = {
     flex: 1,

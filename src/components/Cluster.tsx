@@ -56,9 +56,6 @@ export default function (): React.ReactElement {
         />
       </StyledListItem>
       <StyledListItem>
-        <ListItemText primary={t('NOTE_INFO', { title: t('Region'), desc: region })} data-cy='list-item-text-region' />
-      </StyledListItem>
-      <StyledListItem>
         <ListItemText
           primary={t('NOTE_INFO', { title: t('K8S version'), desc: k8sVersion })}
           data-cy='list-item-text-k8v'

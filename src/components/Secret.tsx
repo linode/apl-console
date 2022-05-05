@@ -9,7 +9,6 @@ import Form from './rjsf/Form'
 export const getSecretSchema = (teamId: string): any => {
   const schema = cloneDeep(getSpec().components.schemas.Secret)
   if (teamId !== 'admin') delete schema.properties.namespace
-
   return schema
 }
 
