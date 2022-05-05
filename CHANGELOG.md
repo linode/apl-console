@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.9](https://github.com/redkubes/otomi-console/compare/v0.5.8...v0.5.9) (2022-05-05)
+
+
+### Features
+
+* argocd ([#168](https://github.com/redkubes/otomi-console/issues/168)) ([891c418](https://github.com/redkubes/otomi-console/commit/891c4183762da1684904c52447fae660df4dc22f))
+* pr lint action [ci skip] ([9c24586](https://github.com/redkubes/otomi-console/commit/9c24586dbd2fffb23bce9ca90d3ce975275fd797))
+
+
+### Bug Fixes
+
+* **deps:** update all-npm ([#163](https://github.com/redkubes/otomi-console/issues/163)) ([85b0380](https://github.com/redkubes/otomi-console/commit/85b0380c33daad375800c2b6dca71201e1942380))
+* **deps:** update all-npm ([#167](https://github.com/redkubes/otomi-console/issues/167)) ([561e212](https://github.com/redkubes/otomi-console/commit/561e212580c6259669356afe8948164ae903ed58))
+
+
+### Others
+
+* **deps:** update dependency react-i18next to v11.16.8 ([#169](https://github.com/redkubes/otomi-console/issues/169)) ([1bcdc4c](https://github.com/redkubes/otomi-console/commit/1bcdc4c1d50e146fbfbdffb1b102226f91113f3c))
+
 ### [0.5.8](https://github.com/redkubes/otomi-stack-web/compare/v0.5.7...v0.5.8) (2022-04-29)
 
 
