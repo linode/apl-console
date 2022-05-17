@@ -205,6 +205,16 @@ adminApps:
         namespace: kubeapps
         type: public
         # auth: true
+  - name: kubeclarity
+    tags: [security]
+    ownHost: true
+    ingress:
+      - svc: kubeclarity-kubeclarity
+        namespace: kubeclarity
+        # namespace: security
+        port: 8080
+        type: public
+        auth: true
   - name: loki
     tags: [logging, telemetry, observability]
     deps: [grafana, prometheus]
