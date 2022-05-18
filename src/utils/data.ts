@@ -5,7 +5,7 @@ import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, find, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
+import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 
 export type CleanOptions = {
@@ -18,6 +18,7 @@ export type CleanOptions = {
   NaNValues?: boolean
   nullValues?: boolean
   undefinedValues?: boolean
+  undefinedArrayValues?: boolean
 }
 
 export const cleanOptions = {
@@ -30,6 +31,7 @@ export const cleanOptions = {
   NaNValues: true,
   nullValues: true,
   undefinedValues: true,
+  undefinedArrayValues: true,
 }
 
 export const cleanDeep = (object, opts: CleanOptions = {}) => {
@@ -66,8 +68,9 @@ export const cleanDeep = (object, opts: CleanOptions = {}) => {
     // Exclude null values.
     if (o.nullValues && value === null) return
 
-    // Exclude undefined values.
-    if (o.undefinedValues && value === undefined) return
+    // Exclude undefined values, but not in arrays if we said so
+    if (o.undefinedValues && value === undefined && (!isArray(result) || (isArray(result) && o.undefinedArrayValues)))
+      return
 
     // Append when recursing arrays.
     // eslint-disable-next-line consistent-return

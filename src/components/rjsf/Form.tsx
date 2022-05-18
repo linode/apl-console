@@ -52,7 +52,6 @@ export default function ({
   disabled,
   resourceType,
   liveValidate,
-  clean = true,
   title: inTitle,
   hideHelp = false,
   onChange,
@@ -75,22 +74,22 @@ export default function ({
   // END HOOKS
   const id = data?.[idProp]
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
-  const keepValues = [[{}], [undefined]] // rjsf structs that open parts of the form, may not be stripped
+  const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
   const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
     // lets check if form data is dirty (has meaningful changes)
-    const cleanFormDataStripped = cleanData(formData) // strip all empty structs
+    const cleanFormDataStripped = cleanData(formData) // strip all empty structs except empty arrays
     const d = originalState && !isEqual(cleanFormDataStripped, originalState)
     setDirty(d) // compare with initial data
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
     // finally we send the fully stripped version to subscribers
-    const cleanFormData = clean ? cleanData(formData, { keepValues, emptyObjects: false }) : formData
+    const cleanFormData = cleanData(formData, { keepValues, emptyObjects: false, undefinedArrayValues: false })
     if (onChange) onChange(cleanFormData, errors)
     // keep local state for form sync
     setState(cleanFormData)
   }
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
-    const cleanFormData = clean ? cleanData(formData, { undefinedValues: false }) : formData
+    const cleanFormData = cleanData(formData, { undefinedValues: false })
     const nulledCleanFormData = nullify(cleanFormData)
     onSubmit(nulledCleanFormData)
     // setState(undefined)
