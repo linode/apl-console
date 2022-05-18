@@ -21,10 +21,11 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
       set(newUiSchema, 'ui:options.hasLabel', true)
-    } else if (uiSchema['ui:widget'] !== 'hidden' && schema['x-secret'] !== undefined) {
+    } else if (uiSchema['ui:widget'] !== 'hidden' && !!schema['x-secret'] && !schema['x-decrypt']) {
       newUiSchema['ui:widget'] = 'password'
       set(newUiSchema, 'ui:options.autocomplete', 'off')
-    }
+    } else if (schema['x-formtype']) newUiSchema['ui:widget'] = schema['x-formtype']
+
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
   }
   return (

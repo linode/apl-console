@@ -265,13 +265,15 @@ export default function ({
                 color: !isAdminApps || enabled ? 'action.disabled' : 'white',
               }}
             />
-            <IconButton size='large' {...playButtonProps} disabled={enabled === false}>
-              <PlayIcon
-                sx={{
-                  color: enabled === false ? 'action.disabled' : 'white',
-                }}
-              />
-            </IconButton>
+            {externalUrl && (
+              <IconButton size='large' {...playButtonProps} disabled={enabled === false}>
+                <PlayIcon
+                  sx={{
+                    color: enabled === false ? 'action.disabled' : 'white',
+                  }}
+                />
+              </IconButton>
+            )}
           </ButtonGroup>
         </Box>
       </Box>
