@@ -134,7 +134,7 @@
     "lang:server": "DEBUG='*' node --no-warnings --experimental-json-modules --loader ts-node/esm src/lang-server",
     "lang:export": "node --nolazy --loader ts-node/esm src/lang-export",
     "lang:import": "IMPORT=1 node --nolazy --loader ts-node/esm src/lang-export",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w --noEmit"
   },
