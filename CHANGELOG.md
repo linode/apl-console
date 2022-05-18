@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.10](https://github.com/redkubes/otomi-console/compare/v0.5.9...v0.5.10) (2022-05-18)
+
+
+### Bug Fixes
+
+* form array handling ([#182](https://github.com/redkubes/otomi-console/issues/182)) ([62d847c](https://github.com/redkubes/otomi-console/commit/62d847cc0d0044bc2203a04ded1f34519bf08760))
+* url play button ([fc862f5](https://github.com/redkubes/otomi-console/commit/fc862f5caaf45afa0cf86efc76dbf97cc6908a45))
+
+
+### Others
+
+* **deps:** update all-npm ([b061e86](https://github.com/redkubes/otomi-console/commit/b061e86e326c58ecfcee1bcc1dec6ef372a1f06f))
+* **deps:** update all-npm ([2266382](https://github.com/redkubes/otomi-console/commit/226638275ccac6b5cf639246cafeda70baa45977))
+* **deps:** update all-npm ([cded0ba](https://github.com/redkubes/otomi-console/commit/cded0bab6c436ab318d296d59aab6d27d3ab7853))
+* **deps:** update all-npm to v5.23.0 ([33368b3](https://github.com/redkubes/otomi-console/commit/33368b39f45b7ddb7cbce862135cdb4ad72f206b))
+* **deps:** update all-npm to v5.24.0 ([7a7e609](https://github.com/redkubes/otomi-console/commit/7a7e609a8bd081a3ab938a3f89579b004d878b85))
+* **deps:** update all-npm to v5.25.0 ([4c8ae45](https://github.com/redkubes/otomi-console/commit/4c8ae4525b62c7bf8a816310da4809c5afe78ce7))
+* **deps:** update dependency @types/react-dom to v17.0.17 ([1956932](https://github.com/redkubes/otomi-console/commit/1956932ffb162dc5b01e3a00e041347283d1c322))
+* **deps:** update dependency git-cz to v4.9.0 ([f5b46e7](https://github.com/redkubes/otomi-console/commit/f5b46e7bbfc76a422b55e467c1740d167abf2915))
+* **deps:** update dependency notistack to v2.0.5 ([9915f0a](https://github.com/redkubes/otomi-console/commit/9915f0a1582a2df98145497ef0519ac857710c66))
+* **deps:** update dependency standard-version to v9.5.0 ([4bbf323](https://github.com/redkubes/otomi-console/commit/4bbf323b36ca53cf6df4b408b9b71d299319e598))
+
 ### [0.5.9](https://github.com/redkubes/otomi-console/compare/v0.5.8...v0.5.9) (2022-05-05)
 
 
