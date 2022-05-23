@@ -19,24 +19,27 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
+function StyledListItem({ className, ...props }: any): React.ReactElement {
+  const { classes } = useStyles()
+  return <ListItem className={`${classes.listItem}, ${className}`} {...props} />
+}
+
+function StyledMenuItem(props: any) {
+  const { classes: mainClasses } = useMainStyles()
+  return <MenuItem className={mainClasses.selectable} {...props} />
+}
+
 export default function (): React.ReactElement {
   const {
     ca,
     settings: {
-      cluster: { name, provider, region, k8sVersion },
+      cluster: { name, provider, k8sVersion },
     },
     versions,
-    oboTeamId,
-    user,
   } = useSession()
-  const { classes } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
   // END HOOKS
-  const StyledListItem = React.memo(({ className, ...props }: any) => (
-    <ListItem className={`${classes.listItem}, ${className}`} {...props} />
-  ))
-  const StyledMenuItem = React.memo((props: any) => <MenuItem className={mainClasses.selectable} {...props} />)
 
   const downloadOpts = {
     data: ca ?? '',

@@ -63,6 +63,17 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
+function StyledMenuItem(props: any): React.ReactElement {
+  const { classes: mainClasses } = useMainStyles()
+  const { classes, cx } = useStyles()
+  return <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
+}
+
+function StyledListSubheader(props: any): React.ReactElement {
+  const { classes } = useStyles()
+  return <ListSubheader className={classes.listSubheader} {...props} />
+}
+
 interface Props {
   className?: string
   teamId?: any
@@ -96,15 +107,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       setDeploy(false)
     }
   }
-
-  const StyledMenuItem = React.memo(
-    (props: any): React.ReactElement => (
-      <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
-    ),
-  )
-  const StyledListSubheader = React.memo(
-    (props: any): React.ReactElement => <ListSubheader className={classes.listSubheader} {...props} />,
-  )
 
   const handleCollapse = (): void => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
