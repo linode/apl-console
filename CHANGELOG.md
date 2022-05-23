@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.11](https://github.com/redkubes/otomi-stack-web/compare/v0.5.10...v0.5.11) (2022-05-23)
+
+
+### Bug Fixes
+
+* react deprecation errors for renovate to continue ([bb6d0f6](https://github.com/redkubes/otomi-stack-web/commit/bb6d0f6767fddb359c57c13accb2f1478413fcc5))
+
 ### [0.5.10](https://github.com/redkubes/otomi-console/compare/v0.5.9...v0.5.10) (2022-05-18)
 
 
