@@ -332,25 +332,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             certName?: string
             certArn?: string
           } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
             type?: 'public'
           })
         | null
@@ -1276,25 +1257,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             certName?: string
             certArn?: string
           } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
             type?: 'public'
           })
         | null
@@ -1410,25 +1372,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             certName?: string
             certArn?: string
           } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
             type?: 'public'
           })
         | null
@@ -1529,25 +1472,6 @@ export type CreateServiceApiArg = {
       | ({
           type?: 'cluster'
         } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultSubdomain?: boolean
-              subdomain: string
-              domain: string
-              paths?: string[]
-              forwardPath?: boolean
-              auth?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              certArn?: string
-            } & {
-              type?: 'private'
-            })
-          | null
-        )
       | (
           | ({
               ingressClassName?: string
@@ -2031,25 +1955,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             certName?: string
             certArn?: string
           } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
             type?: 'public'
           })
         | null
@@ -2167,25 +2072,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             certName?: string
             certArn?: string
           } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
             type?: 'public'
           })
         | null
@@ -2288,25 +2174,6 @@ export type EditServiceApiArg = {
       | ({
           type?: 'cluster'
         } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultSubdomain?: boolean
-              subdomain: string
-              domain: string
-              paths?: string[]
-              forwardPath?: boolean
-              auth?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              certArn?: string
-            } & {
-              type?: 'private'
-            })
-          | null
-        )
       | (
           | ({
               ingressClassName?: string
@@ -2679,9 +2546,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     entrypoint?: string
   }
   ingress?: {
-    keycloakClassName?: string
     platformClass?: {
-      className: 'platform'
+      className: string
       network?: 'public' | 'private'
       loadBalancerIP?: string
       loadBalancerRG?: string
@@ -3013,9 +2879,8 @@ export type EditSettingsApiArg = {
       entrypoint?: string
     }
     ingress?: {
-      keycloakClassName?: string
       platformClass?: {
-        className: 'platform'
+        className: string
         network?: 'public' | 'private'
         loadBalancerIP?: string
         loadBalancerRG?: string
