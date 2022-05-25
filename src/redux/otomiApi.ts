@@ -319,6 +319,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
       } | null)
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -337,6 +338,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
       )
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1261,6 +1263,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
       } | null)
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1279,6 +1282,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
       )
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1393,6 +1397,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
       } | null)
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1411,6 +1416,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
       )
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1525,6 +1531,7 @@ export type CreateServiceApiArg = {
         } | null)
       | (
           | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -1543,6 +1550,7 @@ export type CreateServiceApiArg = {
         )
       | (
           | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -2010,6 +2018,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
       } | null)
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2028,6 +2037,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
       )
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2144,6 +2154,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
       } | null)
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2162,6 +2173,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
       )
     | (
         | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2278,6 +2290,7 @@ export type EditServiceApiArg = {
         } | null)
       | (
           | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -2296,6 +2309,7 @@ export type EditServiceApiArg = {
         )
       | (
           | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -2664,6 +2678,23 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
     entrypoint?: string
   }
+  ingress?: {
+    keycloakClassName?: string
+    platformClass?: {
+      className: 'platform'
+      network?: 'public' | 'private'
+      loadBalancerIP?: string
+      loadBalancerRG?: string
+      loadBalancerSubnet?: string
+    }
+    classes?: {
+      className: string
+      network?: 'public' | 'private'
+      loadBalancerIP?: string
+      loadBalancerRG?: string
+      loadBalancerSubnet?: string
+    }[]
+  }
   kms?: {
     sops?:
       | (object | null)
@@ -2980,6 +3011,23 @@ export type EditSettingsApiArg = {
             }
           }
       entrypoint?: string
+    }
+    ingress?: {
+      keycloakClassName?: string
+      platformClass?: {
+        className: 'platform'
+        network?: 'public' | 'private'
+        loadBalancerIP?: string
+        loadBalancerRG?: string
+        loadBalancerSubnet?: string
+      }
+      classes?: {
+        className: string
+        network?: 'public' | 'private'
+        loadBalancerIP?: string
+        loadBalancerRG?: string
+        loadBalancerSubnet?: string
+      }[]
     }
     kms?: {
       sops?:
