@@ -58,6 +58,11 @@ export default function ({ services, teamId }: Props): React.ReactElement {
       renderer: (row) => row.ingress?.type ?? '',
     },
     {
+      id: 'ingressClass',
+      label: t('Ingress class'),
+      renderer: (row) => row.ingress?.ingressClassName ?? '-',
+    },
+    {
       id: 'serviceType',
       label: t('Service type'),
       renderer: (row) => row.ksvc?.serviceType ?? '',
