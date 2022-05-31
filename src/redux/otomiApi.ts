@@ -2547,19 +2547,23 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   ingress?: {
     platformClass?: {
-      className: string
+      className?: string
+    } & {
       network?: 'public' | 'private'
       loadBalancerIP?: string
       loadBalancerRG?: string
       loadBalancerSubnet?: string
+      sourceIpAddressFiltering?: string
     }
-    classes?: {
-      className: string
+    classes?: ({
+      className?: string
+    } & {
       network?: 'public' | 'private'
       loadBalancerIP?: string
       loadBalancerRG?: string
       loadBalancerSubnet?: string
-    }[]
+      sourceIpAddressFiltering?: string
+    })[]
   }
   kms?: {
     sops?:
@@ -2880,19 +2884,23 @@ export type EditSettingsApiArg = {
     }
     ingress?: {
       platformClass?: {
-        className: string
+        className?: string
+      } & {
         network?: 'public' | 'private'
         loadBalancerIP?: string
         loadBalancerRG?: string
         loadBalancerSubnet?: string
+        sourceIpAddressFiltering?: string
       }
-      classes?: {
-        className: string
+      classes?: ({
+        className?: string
+      } & {
         network?: 'public' | 'private'
         loadBalancerIP?: string
         loadBalancerRG?: string
         loadBalancerSubnet?: string
-      }[]
+        sourceIpAddressFiltering?: string
+      })[]
     }
     kms?: {
       sops?:
