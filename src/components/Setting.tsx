@@ -71,6 +71,15 @@ export const getSettingUiSchema = (
   }
   if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
 
+  if (!settings.otomi.hasExternalDNS) {
+    uiSchema.ingress = {
+      classes: {
+        'ui:disabled': true,
+        'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
+      },
+    }
+  }
+
   return uiSchema[settingId] || {}
 }
 
