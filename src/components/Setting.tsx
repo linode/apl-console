@@ -53,7 +53,6 @@ export const getSettingSchema = (
         unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerRG')
         unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
       }
-
       break
     default:
       break
