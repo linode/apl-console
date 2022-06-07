@@ -47,9 +47,10 @@ export const getSettingSchema = (
       break
     case 'ingress':
       if (provider !== 'azure') {
-        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
+        unset(schema, 'properties.platformClass.allOf[1].properties.network')
         unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
         unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerSubnet')
+        unset(schema, 'properties.classes.items.allOf[1].properties.network')
         unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerRG')
         unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
       }
@@ -85,17 +86,6 @@ export const getSettingUiSchema = (
       classes: {
         'ui:disabled': true,
         'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
-      },
-    }
-  }
-
-  if (!['google', 'azure', 'aws', 'custom'].includes(settings.cluster.provider)) {
-    uiSchema.ingress = {
-      platformClass: {
-        network: {
-          'ui:disabled': true,
-          'ui:help': 'Hint: This feature is available only for cluster providers that support private Load Blancers',
-        },
       },
     }
   }
