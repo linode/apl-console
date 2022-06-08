@@ -46,6 +46,7 @@ export const getSettingSchema = (
     case 'oidc':
       break
     case 'ingress':
+      unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
       if (provider !== 'azure') {
         unset(schema, 'properties.platformClass.allOf[1].properties.network')
         unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
