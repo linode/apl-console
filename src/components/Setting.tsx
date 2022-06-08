@@ -79,15 +79,15 @@ export const getSettingUiSchema = (
         },
       },
     },
+    ingress: { platformClass: { name: { 'ui:widget': 'hidden' } } },
   }
+
   if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
 
   if (!settings.otomi.hasExternalDNS) {
-    uiSchema.ingress = {
-      classes: {
-        'ui:disabled': true,
-        'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
-      },
+    uiSchema.ingress.classes = {
+      'ui:disabled': true,
+      'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
     }
   }
 
