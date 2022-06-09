@@ -1,3 +1,4 @@
+import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import CloudIcon from '@mui/icons-material/Cloud'
@@ -122,6 +123,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     home: ['Home alerts', <HomeIcon />],
     azure: [t('Azure'), <CloudIcon />],
     dns: [t('DNS'), <DnsIcon />],
+    ingress: [t('Ingress'), <AltRoute />],
     kms: [t('KMS'), <LockOpenIcon />],
     oidc: [t('OIDC'), <SettingsEthernetIcon />],
     otomi: [t('Otomi'), <DonutLargeIcon />],

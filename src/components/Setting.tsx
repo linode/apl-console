@@ -45,6 +45,17 @@ export const getSettingSchema = (
       break
     case 'oidc':
       break
+    case 'ingress':
+      unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
+      if (provider !== 'azure') {
+        unset(schema, 'properties.platformClass.allOf[1].properties.network')
+        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
+        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerSubnet')
+        unset(schema, 'properties.classes.items.allOf[1].properties.network')
+        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerRG')
+        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
+      }
+      break
     default:
       break
   }
@@ -68,8 +79,17 @@ export const getSettingUiSchema = (
         },
       },
     },
+    ingress: { platformClass: { name: { 'ui:widget': 'hidden' } } },
   }
+
   if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
+
+  if (!settings.otomi.hasExternalDNS) {
+    uiSchema.ingress.classes = {
+      'ui:disabled': true,
+      'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
+    }
+  }
 
   return uiSchema[settingId] || {}
 }

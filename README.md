@@ -48,4 +48,4 @@ In vscode: open `Run and Debug` window, select `Attach to Chrome and run debuggi
 
 ### Api client
 
-The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:client` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).
+The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:store` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).

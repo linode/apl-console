@@ -53,9 +53,9 @@ export default function ({ services, teamId }: Props): React.ReactElement {
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
-      id: 'ingressType',
-      label: t('Ingress type'),
-      renderer: (row) => row.ingress?.type ?? '',
+      id: 'ingressClass',
+      label: t('Ingress class'),
+      renderer: (row) => (row.ingress?.type === 'cluster' ? '-' : row.ingress?.ingressClassName ?? 'platform'),
     },
     {
       id: 'serviceType',

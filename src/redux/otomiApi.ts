@@ -319,24 +319,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
       } | null)
     | (
         | ({
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1261,24 +1244,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
       } | null)
     | (
         | ({
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1393,24 +1359,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
       } | null)
     | (
         | ({
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -1525,24 +1474,7 @@ export type CreateServiceApiArg = {
         } | null)
       | (
           | ({
-              tlsPass?: boolean
-              useDefaultSubdomain?: boolean
-              subdomain: string
-              domain: string
-              paths?: string[]
-              forwardPath?: boolean
-              auth?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              certArn?: string
-            } & {
-              type?: 'private'
-            })
-          | null
-        )
-      | (
-          | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -2010,24 +1942,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
       } | null)
     | (
         | ({
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2144,24 +2059,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
       } | null)
     | (
         | ({
-            tlsPass?: boolean
-            useDefaultSubdomain?: boolean
-            subdomain: string
-            domain: string
-            paths?: string[]
-            forwardPath?: boolean
-            auth?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-          } & {
-            type?: 'private'
-          })
-        | null
-      )
-    | (
-        | ({
+            ingressClassName?: string
             tlsPass?: boolean
             useDefaultSubdomain?: boolean
             subdomain: string
@@ -2278,24 +2176,7 @@ export type EditServiceApiArg = {
         } | null)
       | (
           | ({
-              tlsPass?: boolean
-              useDefaultSubdomain?: boolean
-              subdomain: string
-              domain: string
-              paths?: string[]
-              forwardPath?: boolean
-              auth?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              certArn?: string
-            } & {
-              type?: 'private'
-            })
-          | null
-        )
-      | (
-          | ({
+              ingressClassName?: string
               tlsPass?: boolean
               useDefaultSubdomain?: boolean
               subdomain: string
@@ -2664,6 +2545,26 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
     entrypoint?: string
   }
+  ingress?: {
+    platformClass?: {
+      className?: string
+    } & {
+      network?: 'public' | 'private'
+      loadBalancerIP?: string
+      loadBalancerRG?: string
+      loadBalancerSubnet?: string
+      sourceIpAddressFiltering?: string
+    }
+    classes?: ({
+      className?: string
+    } & {
+      network?: 'public' | 'private'
+      loadBalancerIP?: string
+      loadBalancerRG?: string
+      loadBalancerSubnet?: string
+      sourceIpAddressFiltering?: string
+    })[]
+  }
   kms?: {
     sops?:
       | (object | null)
@@ -2980,6 +2881,26 @@ export type EditSettingsApiArg = {
             }
           }
       entrypoint?: string
+    }
+    ingress?: {
+      platformClass?: {
+        className?: string
+      } & {
+        network?: 'public' | 'private'
+        loadBalancerIP?: string
+        loadBalancerRG?: string
+        loadBalancerSubnet?: string
+        sourceIpAddressFiltering?: string
+      }
+      classes?: ({
+        className?: string
+      } & {
+        network?: 'public' | 'private'
+        loadBalancerIP?: string
+        loadBalancerRG?: string
+        loadBalancerSubnet?: string
+        sourceIpAddressFiltering?: string
+      })[]
     }
     kms?: {
       sops?:

@@ -14,9 +14,8 @@ import { getStrict } from 'utils/schema'
 import Form from './rjsf/Form'
 
 const idxMap = {
-  private: 1,
-  public: 2,
-  tlsPass: 3,
+  public: 1,
+  tlsPass: 2,
 }
 
 export const addDomainEnumField = (schema: JSONSchema7Definition, settings, formData): void => {
