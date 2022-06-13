@@ -326,7 +326,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             domain: string
             paths?: string[]
             forwardPath?: boolean
-            auth?: boolean
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
@@ -1251,7 +1250,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             domain: string
             paths?: string[]
             forwardPath?: boolean
-            auth?: boolean
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
@@ -1366,7 +1364,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             domain: string
             paths?: string[]
             forwardPath?: boolean
-            auth?: boolean
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
@@ -1481,7 +1478,6 @@ export type CreateServiceApiArg = {
               domain: string
               paths?: string[]
               forwardPath?: boolean
-              auth?: boolean
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
@@ -1949,7 +1945,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             domain: string
             paths?: string[]
             forwardPath?: boolean
-            auth?: boolean
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
@@ -2066,7 +2061,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             domain: string
             paths?: string[]
             forwardPath?: boolean
-            auth?: boolean
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
@@ -2183,7 +2177,6 @@ export type EditServiceApiArg = {
               domain: string
               paths?: string[]
               forwardPath?: boolean
-              auth?: boolean
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
