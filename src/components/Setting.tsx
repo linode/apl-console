@@ -79,7 +79,7 @@ export const getSettingUiSchema = (
         },
       },
     },
-    ingress: { platformClass: { name: { 'ui:widget': 'hidden' } } },
+    ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
   }
 
   if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
