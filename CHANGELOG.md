@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.12](https://github.com/redkubes/otomi-console/compare/v0.5.11...v0.5.12) (2022-06-13)
+
+
+### Features
+
+* ingress class ([#191](https://github.com/redkubes/otomi-console/issues/191)) ([a2b5db3](https://github.com/redkubes/otomi-console/commit/a2b5db3b247a7722cd376790dd6cc20034769f88))
+* kubeclarity ([#184](https://github.com/redkubes/otomi-console/issues/184)) ([256d341](https://github.com/redkubes/otomi-console/commit/256d3412699f458270571ab4bf6a39dd3f05f943)), closes [#409](https://github.com/redkubes/otomi-console/issues/409)
+
+
+### Bug Fixes
+
+* gen store ([84cff89](https://github.com/redkubes/otomi-console/commit/84cff897f990ce5a5502fcac69f6e31506acb00e))
+* hide platform class name property ([e668973](https://github.com/redkubes/otomi-console/commit/e668973a3d60534be099c0c1948cc5944a5439f9))
+
+
+### Others
+
+* **deps:** update all-npm ([15122cd](https://github.com/redkubes/otomi-console/commit/15122cd4177c3e017e7417febdfd9e339e3489e5))
+* **deps:** update all-npm ([f9377a7](https://github.com/redkubes/otomi-console/commit/f9377a789f15ef7852402094cd551d50e9c4e9c2))
+* **deps:** update all-npm ([c5b6535](https://github.com/redkubes/otomi-console/commit/c5b6535cdceb53fd83270c7393016e380f8f276e))
+* **deps:** update all-npm ([eeef8f9](https://github.com/redkubes/otomi-console/commit/eeef8f929f701d16dc817d05dc093d28e3060d3d))
+* **deps:** update all-npm ([ed34056](https://github.com/redkubes/otomi-console/commit/ed34056073666bbab46357013f51de23081cb486))
+* **deps:** update all-npm ([5b08466](https://github.com/redkubes/otomi-console/commit/5b0846622e3924ea1490dc9d458d24e12bb76a02))
+* **deps:** update all-npm to v11.9.3 ([7fb9479](https://github.com/redkubes/otomi-console/commit/7fb94799a4cd80f506afd7fadc0bc1fee816612e))
+* **deps:** update all-npm to v5.27.0 ([5fd1fd8](https://github.com/redkubes/otomi-console/commit/5fd1fd850c825505a36383f0e255be5b991a892e))
+* **deps:** update all-npm to v5.27.1 ([cb68d28](https://github.com/redkubes/otomi-console/commit/cb68d284fcc65b47b6cc2d1c8f025a7d839144cb))
+* **deps:** update dependency @reduxjs/toolkit to v1.8.2 ([375e2b3](https://github.com/redkubes/otomi-console/commit/375e2b3e6fa97bf443d7b27269ddfdb41ceaf6ba))
+* **deps:** update dependency i18next-http-backend to v1.4.1 ([c5ab47f](https://github.com/redkubes/otomi-console/commit/c5ab47fc231b88d4a0feb2c363ecf31b01743540))
+* **deps:** update dependency nginx to v1.22.0 ([c9fbc0e](https://github.com/redkubes/otomi-console/commit/c9fbc0e0a7633e6909dc15e4576438b42d57d047))
+* **deps:** update dependency node-fetch to v3.2.5 ([0927796](https://github.com/redkubes/otomi-console/commit/0927796fcbf80cbbefbef23ac5400d4d57761bd3))
+* **deps:** update dependency node-fetch to v3.2.6 ([0a69afe](https://github.com/redkubes/otomi-console/commit/0a69afe54e680e7df64dc5361c41c2a2d97f6beb))
+* **deps:** update dependency react-i18next to v11.17.1 ([12b6624](https://github.com/redkubes/otomi-console/commit/12b6624f1d0127ddfaba3981382e426c6f6dac48))
+
 ### [0.5.11](https://github.com/redkubes/otomi-stack-web/compare/v0.5.10...v0.5.11) (2022-05-23)
 
 
