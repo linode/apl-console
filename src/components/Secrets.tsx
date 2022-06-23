@@ -24,7 +24,7 @@ const getSecretLink = (isAdmin, ownerId) =>
 const getVaultSecretLink = (clusterDomain) =>
   function (row) {
     const { teamId, name } = row
-    const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/$`
+    const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
     return (
       <MuiLink href={`${url}`} target='_blank' rel='noopener'>
         vault:{name}
