@@ -82,14 +82,19 @@ export default function ({
     setDirty(d) // compare with initial data
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
     // finally we send the fully stripped version to subscribers
-    const cleanFormData = cleanData(formData, { keepValues, emptyObjects: false, undefinedArrayValues: false })
+    const cleanFormData = cleanData(formData, {
+      keepValues,
+      emptyArrays: false,
+      emptyObjects: false,
+      undefinedArrayValues: false,
+    })
     if (onChange) onChange(cleanFormData, errors)
     // keep local state for form sync
     setState(cleanFormData)
   }
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
-    const cleanFormData = cleanData(formData, { undefinedValues: false })
+    const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
     const nulledCleanFormData = nullify(cleanFormData)
     onSubmit(nulledCleanFormData)
     // setState(undefined)

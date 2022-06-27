@@ -1,7 +1,6 @@
 import CheckboxIconChecked from '@mui/icons-material/CheckBox'
 import CheckboxIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
-import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()((theme) => ({
