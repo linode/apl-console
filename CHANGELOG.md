@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.13](https://github.com/redkubes/otomi-console/compare/v0.5.12...v0.5.13) (2022-06-27)
+
+
+### Bug Fixes
+
+* formdata onchange handling ([de76ba3](https://github.com/redkubes/otomi-console/commit/de76ba37cfe682607420b9c6ba53f178ff8d90ab))
+* if no externalIDP remove team oidc ([a1a7a8b](https://github.com/redkubes/otomi-console/commit/a1a7a8b8f82f2146f9195289d15a774f707cc187))
+* password hiding ([e3a7e2e](https://github.com/redkubes/otomi-console/commit/e3a7e2e69ce756ba147d8840bc28844d70a803a6))
+* password hiding [ci skip] ([35fe443](https://github.com/redkubes/otomi-console/commit/35fe4434c35074304240452caf2282da07154533))
+* secret vault link ([5ccac09](https://github.com/redkubes/otomi-console/commit/5ccac09cde761e97998dde40a56adf57d5442a31))
+
+
+### Others
+
+* **deps:** update all-npm ([aa0caa2](https://github.com/redkubes/otomi-console/commit/aa0caa24bd6312585a27117169717d542361d31a))
+* **deps:** update all-npm to v5.28.0 ([859965d](https://github.com/redkubes/otomi-console/commit/859965dc775cf4680526057d307257ef878f4f30))
+* **deps:** update dependency react-i18next to v11.17.2 ([48e9feb](https://github.com/redkubes/otomi-console/commit/48e9feb114ec1f8a840e6ad359decfd0c76b1c5a))
+
 ### [0.5.12](https://github.com/redkubes/otomi-console/compare/v0.5.11...v0.5.12) (2022-06-13)
 
 
