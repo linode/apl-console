@@ -11,8 +11,6 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const listTooLong = schema.enum?.length > 7
   const shortList = schema.enum?.length < 5
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
-  console.log('schema: ', schema)
-  console.log('uiSchema: ', uiSchema)
   if (uiSchema['ui:widget'] !== 'hidden') {
     if (schema.enum && schema.enum.length === 1) {
       // hide one item enum that was set to its default value, as those are used for selectors
@@ -30,8 +28,6 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
 
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
   }
-  console.log('newSchema: ', newSchema)
-  console.log('newUiSchema: ', newUiSchema)
   return (
     <StringField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema}>
       {children}
