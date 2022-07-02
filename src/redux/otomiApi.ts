@@ -2623,6 +2623,10 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     isHomeMonitored?: boolean
     isManaged?: boolean
     isMultitenant?: boolean
+    nodeSelector?: {
+      name?: string
+      value?: string
+    }[]
     version: string
   }
   policies?: {
@@ -2960,6 +2964,10 @@ export type EditSettingsApiArg = {
       isHomeMonitored?: boolean
       isManaged?: boolean
       isMultitenant?: boolean
+      nodeSelector?: {
+        name?: string
+        value?: string
+      }[]
       version: string
     }
     policies?: {

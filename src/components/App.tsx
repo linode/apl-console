@@ -70,10 +70,14 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export const getAppSchema = (appId): any => {
+export const getAppSchema = (appId, formData): any => {
   const modelName = `App${pascalCase(appId)}`
-  const schema = cloneDeep(getSpec().components.schemas[modelName])
+  const schema = cloneDeep(getSpec().components.schemas[modelName]) as Record<string, any>
   switch (appId) {
+    case 'cert-manager':
+      if (formData.issuer === 'letsencrypt') schema.properties.values.required = ['email']
+      else delete schema.properties.values.required
+      break
     default:
       break
   }
@@ -185,7 +189,7 @@ export default function ({
     }
   }, [inValues, inRawValues, inShortcuts])
   // END HOOKS
-  const appSchema = getAppSchema(id).properties?.values
+  const appSchema = getAppSchema(id, values).properties?.values
   const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
   const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
   const isAdminApps = teamId === 'admin'
