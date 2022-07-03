@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.14](https://github.com/redkubes/otomi-console/compare/v0.5.13...v0.5.14) (2022-07-03)
+
+
+### Bug Fixes
+
+* cert-manager email required, apigen ([ccb69d2](https://github.com/redkubes/otomi-console/commit/ccb69d22990e60ad5df6ad6cb49d2be01e510b72))
+
 ### [0.5.13](https://github.com/redkubes/otomi-console/compare/v0.5.12...v0.5.13) (2022-06-27)
 
 
