@@ -63,11 +63,8 @@ export default function ({
     [],
   )
   return (
-    <RLink to={`/apps/${teamId}/${id}`}>
-      <Box
-        className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}
-        ref={dragRef}
-      >
+    <RLink to={`/apps/${teamId}/${id}`} ref={dragRef}>
+      <Box className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}>
         <img
           draggable={false}
           className={cx(classes.img)}

@@ -35,12 +35,22 @@ export const getSettingSchema = (
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
+      const requiredProps: string[] = get(schema, 'properties.provider.oneOf[2].properties.azure.required')
       if (formData.provider?.azure?.useManagedIdentityExtension) {
         unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientId')
         unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientSecret')
+        set(
+          schema,
+          'properties.provider.oneOf[2].properties.azure.required',
+          requiredProps.filter((p) => !['aadClientId', 'aadClientSecret'].includes(p)).concat('userAssignedIdentityID'),
+        )
       } else {
         unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.userAssignedIdentityID')
-        set(schema, 'properties.provider.oneOf[2].properties.azure.required', ['aadClientId', 'aadClientSecret'])
+        set(
+          schema,
+          'properties.provider.oneOf[2].properties.azure.required',
+          requiredProps.concat(['aadClientId', 'aadClientSecret']),
+        )
       }
       break
     case 'oidc':

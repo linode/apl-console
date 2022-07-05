@@ -2519,11 +2519,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
       | {
           azure: {
-            cloud?: string
-            resourceGroup?: string
+            environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
+            resourceGroup: string
             hostedZoneName?: string
-            tenantId?: string
-            subscriptionId?: string
+            tenantId: string
+            subscriptionId: string
             useManagedIdentityExtension?: boolean
             userAssignedIdentityID?: string
             aadClientId?: string
@@ -2860,11 +2860,11 @@ export type EditSettingsApiArg = {
           }
         | {
             azure: {
-              cloud?: string
-              resourceGroup?: string
+              environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
+              resourceGroup: string
               hostedZoneName?: string
-              tenantId?: string
-              subscriptionId?: string
+              tenantId: string
+              subscriptionId: string
               useManagedIdentityExtension?: boolean
               userAssignedIdentityID?: string
               aadClientId?: string
