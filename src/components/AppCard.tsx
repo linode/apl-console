@@ -63,8 +63,11 @@ export default function ({
     [],
   )
   return (
-    <RLink to={`/apps/${teamId}/${id}`} ref={dragRef}>
-      <Box className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}>
+    <Box
+      className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}
+      ref={dragRef}
+    >
+      <RLink to={`/apps/${teamId}/${id}`}>
         <img
           draggable={false}
           className={cx(classes.img)}
@@ -78,7 +81,7 @@ export default function ({
         <Typography className={cx(classes.title, enabled === undefined && classes.core)} variant='h6'>
           {title}
         </Typography>
-      </Box>
-    </RLink>
+      </RLink>
+    </Box>
   )
 }
