@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.15](https://github.com/redkubes/otomi-console/compare/v0.5.14...v0.5.15) (2022-07-05)
+
+
+### Bug Fixes
+
+* dns logic, radio description, apigen [ci skip] ([54ebf70](https://github.com/redkubes/otomi-console/commit/54ebf70fab72e7679ed6c3527db945a6aefbc4e2))
+
 ### [0.5.14](https://github.com/redkubes/otomi-console/compare/v0.5.13...v0.5.14) (2022-07-03)
 
 
