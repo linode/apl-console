@@ -16,9 +16,12 @@ export const getSettingSchema = (
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId]) as JSONSchema7
   const {
     cluster: { provider },
+    otomi: { hasCloudLB },
   } = settings
   switch (settingId) {
     case 'cluster':
+      unset(schema, 'properties.provider.description')
+      unset(schema, 'properties.k8sVersion.description')
       if (provider === 'aws')
         // make region required
         set(schema, 'required', get(schema, 'required', []).concat(['region']))
@@ -32,6 +35,7 @@ export const getSettingSchema = (
       break
     case 'azure':
       if (provider !== 'azure') unset(schema, 'properties.azure')
+      if (!hasCloudLB) set(schema, 'properties.appgw.readOnly', true)
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
