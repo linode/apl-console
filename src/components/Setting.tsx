@@ -19,6 +19,9 @@ export const getSettingSchema = (
     otomi: { hasCloudLB },
   } = settings
   switch (settingId) {
+    case 'otomi':
+      unset(schema, 'properties.additionalClusters.items.properties.provider.description')
+      break
     case 'cluster':
       unset(schema, 'properties.provider.description')
       unset(schema, 'properties.k8sVersion.description')
