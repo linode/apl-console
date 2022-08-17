@@ -117,6 +117,33 @@ export const getAppUiSchema = (
         set(uiSchema, 'sharedSecret.ui:widget', 'hidden')
       }
       break
+    case 'gitea':
+      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
+      break
+    case 'harbor':
+      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      set(uiSchema, 'core.ui:widget', 'hidden')
+      set(uiSchema, 'registry.ui:widget', 'hidden')
+      set(uiSchema, 'jobservice.ui:widget', 'hidden')
+      set(uiSchema, 'secretKey.ui:widget', 'hidden')
+      break
+    case 'grafana':
+      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      break
+    case 'keycloak':
+      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
+      break
+    case 'kubeapps':
+      set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
+      break
+    case 'kubeclarity':
+      set(uiSchema, 'databasePassword.ui:widget', 'hidden')
+      break
+    case 'loki':
+      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      break
     default:
       break
   }
