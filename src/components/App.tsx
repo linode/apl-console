@@ -1,26 +1,11 @@
-import { PlayCircleFilled as PlayIcon } from '@mui/icons-material'
-import {
-  AppBar,
-  Box,
-  Button,
-  ButtonGroup,
-  Checkbox,
-  IconButton,
-  Link,
-  List,
-  ListItem,
-  ListSubheader,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material'
+import { AppBar, Box, Button, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
 import { cloneDeep, get, isEqual, set } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import { CrudProps } from 'pages/types'
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -29,6 +14,7 @@ import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import { extract, isOf, nullify } from 'utils/schema'
 import YAML from 'yaml'
+import AppButtons from './AppButtons'
 import CodeEditor from './CodeEditor'
 import Header from './Header'
 import MuiLink from './MuiLink'
@@ -193,16 +179,10 @@ export default function ({
   const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
   const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
   const isAdminApps = teamId === 'admin'
-  const playButtonProps = { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
 
   const handleSubmit = () => {
     const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
     if (validValues && validRaw && validShortcuts) onSubmit(data)
-  }
-  const handleAppsToggle = (event: ChangeEvent<HTMLInputElement>) => {
-    const enabled = event.target.checked
-    const { deps } = getAppData(session, teamId, id)
-    setAppState([(deps || []).concat([id]), enabled])
   }
   const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
     setShortcuts(shortcuts)
@@ -250,44 +230,30 @@ export default function ({
           </Typography>
         </Box>
         <Box className={classes.headerButtons}>
-          <ButtonGroup
-            variant='contained'
-            color='primary'
-            size='large'
-            disableElevation
-            sx={{
-              backgroundColor: 'primary.main',
-            }}
-          >
-            <Checkbox
-              title={enabled ? 'This app is enabled' : 'This app is disabled. Check to enable.'}
-              onChange={handleAppsToggle}
-              checked={enabled !== false}
-              disabled={!isAdminApps || enabled !== false}
-              size='medium'
-              sx={{
-                color: !isAdminApps || enabled ? 'action.disabled' : 'white',
-              }}
-            />
-            {externalUrl && (
-              <IconButton size='large' {...playButtonProps} disabled={enabled === false}>
-                <PlayIcon
-                  sx={{
-                    color: enabled === false ? 'action.disabled' : 'white',
-                  }}
-                />
-              </IconButton>
-            )}
-          </ButtonGroup>
+          <AppButtons
+            setAppState={setAppState}
+            id={id}
+            teamId={teamId}
+            enabled={enabled !== false}
+            hideSettings
+            hideEnabled={false}
+          />
         </Box>
       </Box>
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
           <Tab href='#info' label='Info' value={0} />
-          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={!hasShortcuts} />
-          {isAdminApps && <Tab href='#values' label={t('Values')} value={2} disabled={!appSchema || !inValues} />}
+          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled !== true || !hasShortcuts} />
           {isAdminApps && (
-            <Tab href='#rawvalues' label={t('Raw values')} value={3} disabled={!appSchema || !inRawValues} />
+            <Tab href='#values' label={t('Values')} value={2} disabled={enabled !== true || !appSchema || !inValues} />
+          )}
+          {isAdminApps && (
+            <Tab
+              href='#rawvalues'
+              label={t('Raw values')}
+              value={3}
+              disabled={enabled !== true || !appSchema || !inRawValues}
+            />
           )}
         </Tabs>
       </AppBar>

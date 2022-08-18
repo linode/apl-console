@@ -3,6 +3,7 @@ import React from 'react'
 import { useDrag } from 'react-dnd'
 import { Link as RLink } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
+import AppButtons from './AppButtons'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
@@ -14,6 +15,12 @@ const useStyles = makeStyles()((theme) => {
       paddingRight: theme.spacing(1),
       paddingBottom: theme.spacing(2),
       paddingTop: theme.spacing(4),
+      '& .hidden-button': {
+        visibility: 'hidden',
+      },
+      '&:hover .hidden-button': {
+        visibility: 'visible',
+      },
     },
     img: {
       height: theme.spacing(8),
@@ -43,6 +50,7 @@ export default function ({
   setDeps,
   teamId,
   title,
+  setAppState,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const canDrag = enabled !== undefined
@@ -82,6 +90,11 @@ export default function ({
           {title}
         </Typography>
       </RLink>
+      {enabled !== false && (
+        <Box className='hidden-button'>
+          <AppButtons id={id} teamId={teamId} setAppState={setAppState} enabled={enabled !== false} hideEnabled />
+        </Box>
+      )}
     </Box>
   )
 }
