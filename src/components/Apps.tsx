@@ -90,7 +90,7 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
           <AppCard
             deps={coreDeps}
-            enabled={enabled}
+            enabled={enabled !== false}
             externalUrl={externalUrl}
             id={id}
             img={`/logos/${logo}`}
@@ -99,6 +99,7 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
             setDeps={setDeps}
             teamId={teamId}
             title={schema.title}
+            setAppState={setAppState}
           />
         </Grid>
       )
