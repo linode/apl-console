@@ -1,4 +1,4 @@
-import { OptionsObject, SnackbarProvider, SnackbarProviderProps, useSnackbar, WithSnackbarProps } from 'notistack'
+import { OptionsObject, SnackbarProvider, SnackbarProviderProps, WithSnackbarProps, useSnackbar } from 'notistack'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 

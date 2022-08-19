@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
+import { AppBar, Box, Button, Grid, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
@@ -42,6 +42,7 @@ const useStyles = makeStyles()((theme) => ({
     height: theme.spacing(6),
   },
   content: {
+    paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   paragraph: {
@@ -270,28 +271,35 @@ export default function ({
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
           <Tab href='#info' label='Info' value={0} />
-          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled !== true || !hasShortcuts} />
+          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled === false || !hasShortcuts} />
           {isAdminApps && (
-            <Tab href='#values' label={t('Values')} value={2} disabled={enabled !== true || !appSchema || !inValues} />
+            <Tab href='#values' label={t('Values')} value={2} disabled={enabled === false || !appSchema || !inValues} />
           )}
           {isAdminApps && (
             <Tab
               href='#rawvalues'
               label={t('Raw values')}
               value={3}
-              disabled={enabled !== true || !appSchema || !inRawValues}
+              disabled={enabled === false || !appSchema || !inRawValues}
             />
           )}
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={0}>
-        <Header title={t('FORM_ABOUT', { title })} description={description} resourceType='App' />
-        <Link href={schema['x-externalDocsPath']}>[...more]</Link>
-        <div className={classes.buffer}> </div>
-        <Box className={classes.content}>
-          <Typography variant='h5'>{t('FORM_HEAD_ABOUT', { title })}</Typography>
-          <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
-        </Box>
+        <Grid container direction='row'>
+          <Grid item xs={12} md={6}>
+            <Box className={classes.content}>
+              <Header title={t('FORM_ABOUT', { title })} description={description} resourceType='App' />
+              <Link href={schema['x-externalDocsPath']}>[...more]</Link>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box className={classes.content}>
+              <Header title={t('FORM_HEAD_ABOUT', { title })} resourceType='App' />
+              <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+            </Box>
+          </Grid>
+        </Grid>
       </TabPanel>
       <TabPanel value={tab} index={1}>
         <Header title={t('Shortcuts')} description={t('FORM_SHORTCUTS_DESC', { title })} resourceType='Shortcut' />

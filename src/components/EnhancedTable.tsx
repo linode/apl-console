@@ -5,7 +5,6 @@ import {
   Checkbox,
   FormControlLabel,
   IconButton,
-  lighten,
   Paper,
   Switch,
   Table,
@@ -19,6 +18,7 @@ import {
   Toolbar,
   Tooltip,
   Typography,
+  lighten,
 } from '@mui/material'
 import { sentenceCase } from 'change-case'
 import { useLocalStorage } from 'hooks/useLocalStorage'

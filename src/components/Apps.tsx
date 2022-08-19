@@ -91,6 +91,7 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
           <AppCard
             deps={coreDeps}
             enabled={enabled !== false}
+            isCore={enabled === undefined}
             externalUrl={externalUrl}
             id={id}
             img={`/logos/${logo}`}

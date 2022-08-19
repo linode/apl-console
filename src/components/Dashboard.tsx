@@ -11,8 +11,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import {
   GetAllServicesApiResponse,
   GetTeamApiResponse,
-  GetTeamsApiResponse,
   GetTeamServicesApiResponse,
+  GetTeamsApiResponse,
 } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 
