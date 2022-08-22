@@ -1,4 +1,22 @@
-import { AppBar, Box, Button, Grid, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  List,
+  ListItem,
+  ListSubheader,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
@@ -11,7 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
-import { getAppData } from 'utils/data'
+import { cleanLink, getAppData } from 'utils/data'
 import { extract, isOf, nullify } from 'utils/schema'
 import YAML from 'yaml'
 import AppButtons from './AppButtons'
@@ -30,6 +48,9 @@ const useStyles = makeStyles()((theme) => ({
   headerText: {},
   headerButtons: {
     marginLeft: 'auto',
+  },
+  legend: {
+    paddingTop: theme.spacing(3),
   },
   imgHolder: {
     paddingBottom: theme.spacing(1),
@@ -54,6 +75,12 @@ const useStyles = makeStyles()((theme) => ({
   },
   buffer: {
     height: theme.spacing(2),
+  },
+  tableRow: {
+    '&:last-child td, &:last-child th': { border: 0 },
+  },
+  tableHead: {
+    // minWidth: theme.spacing(12),
   },
 }))
 
@@ -165,8 +192,8 @@ export default function ({
   const { appsEnabled, settings } = session
   const {
     baseUrl,
-    externalUrl,
     hasShortcuts,
+    info,
     logo,
     logoAlt,
     schema,
@@ -225,7 +252,7 @@ export default function ({
     return (
       <ListItem key={`${s.teamId}-${s.title}`}>
         {enabled !== false ? (
-          <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
+          <MuiLink key={href} href={href} target='_blank' rel='noopener' title={s.title} about={s.description}>
             <b>{s.title}</b>: {s.description}
           </MuiLink>
         ) : (
@@ -254,7 +281,7 @@ export default function ({
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
-            {title}: {schema['x-short']}
+            {title}
           </Typography>
         </Box>
         <Box className={classes.headerButtons}>
@@ -289,14 +316,62 @@ export default function ({
         <Grid container direction='row'>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
-              <Header title={t('FORM_ABOUT', { title })} description={description} resourceType='App' />
-              <Link href={schema['x-externalDocsPath']}>[...more]</Link>
+              <TableContainer className={classes.legend}>
+                <Table size='small' aria-label='simple table'>
+                  <TableBody>
+                    <TableRow key='version' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Version:')} />
+                      </TableCell>
+                      <TableCell align='left'>{info.appVersion}</TableCell>
+                    </TableRow>
+                    <TableRow key='repo' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Repo:')} />
+                      </TableCell>
+                      <TableCell align='left'>
+                        <Link href={info.repo} target='_blank' rel='noopener' title={id}>
+                          {cleanLink(info.repo)}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key='maintainers' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Maintainers:')} />
+                      </TableCell>
+                      <TableCell align='left'>{info.maintainers}</TableCell>
+                    </TableRow>
+                    <TableRow key='links' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Related links:')} />
+                      </TableCell>
+                      <TableCell align='left'>
+                        {info.relatedLinks.map((l: string) => (
+                          <>
+                            <Link href={l} target='_blank' rel='noopener'>
+                              {cleanLink(l)}
+                            </Link>
+                            <br />
+                          </>
+                        ))}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key='license' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('License:')} />
+                      </TableCell>
+                      <TableCell align='left'>{info.license}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
+              <Header title={t('FORM_ABOUT', { title })} description={info.about} resourceType='App' />
               <Header title={t('FORM_HEAD_ABOUT', { title })} resourceType='App' />
-              <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
+              <Markdown>{info.integration || `No info defined yet for ${title}`}</Markdown>
             </Box>
           </Grid>
         </Grid>

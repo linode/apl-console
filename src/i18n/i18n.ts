@@ -54,7 +54,7 @@ i18next
     fallbackLng: 'en',
     load: 'languageOnly',
     keySeparator: false, // we do not use keys in form messages.welcome
-
+    nsSeparator: false,
     interpolation: {
       escapeValue: false, // react already saves us from xss
     },

@@ -149,7 +149,6 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
     ...app,
     id: appId,
     baseUrl,
-    docUrl: schema['x-externalDocsPath'],
     logo: `${appId}_logo${logoSuffix}.svg`,
     logoAlt: `${appId}_logo${logoAltSuffix}.svg`,
     schema,
@@ -188,3 +187,5 @@ export const deepDiff = (base, object): Record<string, any> => {
 
   return changes
 }
+
+export const cleanLink = (l: string) => l.replace('https://', '').replace(/\/$/g, '')
