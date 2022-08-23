@@ -98,6 +98,7 @@ const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).repl
 
 export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, mergeShortcuts = false) => {
   const {
+    core: { appsInfo },
     settings: {
       cluster,
       otomi: { isMultitenant },
@@ -138,9 +139,7 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = `App${pascalCase(appId as string)}`
-  const schema = spec.components.schemas[modelName]
-    ? (spec.components.schemas[modelName] as JSONSchema7)
-    : { title: appId, description: '' }
+  const schema = spec.components.schemas[modelName] ? (spec.components.schemas[modelName] as JSONSchema7) : {}
   const mode = getThemeMode()
   const logoSuffix = mode === 'light' ? '' : '-dark'
   const logoAltSuffix = mode === 'light' ? '-dark' : ''
@@ -151,6 +150,7 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
     baseUrl,
     logo: `${appId}_logo${logoSuffix}.svg`,
     logoAlt: `${appId}_logo${logoAltSuffix}.svg`,
+    appInfo: appsInfo[appId],
     schema,
     externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,

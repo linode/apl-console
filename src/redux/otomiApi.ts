@@ -2536,6 +2536,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             project: string
           }
         }
+      | {
+          other: object
+        }
     entrypoint?: string
   }
   ingress?: {
@@ -2876,6 +2879,9 @@ export type EditSettingsApiArg = {
               serviceAccountKey: string
               project: string
             }
+          }
+        | {
+            other: object
           }
       entrypoint?: string
     }

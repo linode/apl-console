@@ -191,15 +191,14 @@ export default function ({
   const session = useAuthzSession()
   const { appsEnabled, settings } = session
   const {
+    appInfo,
     baseUrl,
     hasShortcuts,
-    info,
     logo,
     logoAlt,
     schema,
     shortcuts: defaultShortcuts,
   } = getAppData(session, teamId, id)
-  const { description, title } = schema
   const defTab = hashMap[hash] ?? 0
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
@@ -276,12 +275,12 @@ export default function ({
               currentTarget.onerror = null // prevents looping
               currentTarget.src = `/logos/${logoAlt}`
             }}
-            alt={`Logo for ${title} app`}
+            alt={`Logo for ${appInfo.title} app`}
           />
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
-            {title}
+            {appInfo.title}
           </Typography>
         </Box>
         <Box className={classes.headerButtons}>
@@ -323,15 +322,15 @@ export default function ({
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Version:')} />
                       </TableCell>
-                      <TableCell align='left'>{info.appVersion}</TableCell>
+                      <TableCell align='left'>{appInfo.appVersion}</TableCell>
                     </TableRow>
                     <TableRow key='repo' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Repo:')} />
                       </TableCell>
                       <TableCell align='left'>
-                        <Link href={info.repo} target='_blank' rel='noopener' title={id}>
-                          {cleanLink(info.repo)}
+                        <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
+                          {cleanLink(appInfo.repo)}
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -339,14 +338,14 @@ export default function ({
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Maintainers:')} />
                       </TableCell>
-                      <TableCell align='left'>{info.maintainers}</TableCell>
+                      <TableCell align='left'>{appInfo.maintainers}</TableCell>
                     </TableRow>
                     <TableRow key='links' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Related links:')} />
                       </TableCell>
                       <TableCell align='left'>
-                        {info.relatedLinks.map((l: string) => (
+                        {appInfo.relatedLinks.map((l: string) => (
                           <>
                             <Link href={l} target='_blank' rel='noopener'>
                               {cleanLink(l)}
@@ -360,7 +359,7 @@ export default function ({
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('License:')} />
                       </TableCell>
-                      <TableCell align='left'>{info.license}</TableCell>
+                      <TableCell align='left'>{appInfo.license}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -369,15 +368,23 @@ export default function ({
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
-              <Header title={t('FORM_ABOUT', { title })} description={info.about} resourceType='App' />
-              <Header title={t('FORM_HEAD_ABOUT', { title })} resourceType='App' />
-              <Markdown>{info.integration || `No info defined yet for ${title}`}</Markdown>
+              <Header
+                title={t('FORM_ABOUT', { title: appInfo.title })}
+                description={appInfo.about}
+                resourceType='App'
+              />
+              <Header title={t('FORM_HEAD_ABOUT', { title: appInfo.title })} resourceType='App' />
+              <Markdown>{appInfo.integration || `No info defined yet for ${appInfo.title}`}</Markdown>
             </Box>
           </Grid>
         </Grid>
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <Header title={t('Shortcuts')} description={t('FORM_SHORTCUTS_DESC', { title })} resourceType='Shortcut' />
+        <Header
+          title={t('Shortcuts')}
+          description={t('FORM_SHORTCUTS_DESC', { title: appInfo.title })}
+          resourceType='Shortcut'
+        />
         {hasShortcuts && defaultShortcuts?.length && (
           <List
             subheader={
@@ -433,7 +440,7 @@ export default function ({
         <TabPanel value={tab} index={2}>
           <Form
             adminOnly
-            description={t('FORM_HEAD_APP_EDIT', { title })}
+            description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
             data={values}
             schema={appSchema}
             uiSchema={appUiSchema}

@@ -84,7 +84,7 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
     items.map((item) => {
-      const { enabled, externalUrl, id, logo, logoAlt, schema, deps: coreDeps } = getAppData(session, teamId, item)
+      const { enabled, externalUrl, id, logo, logoAlt, appInfo, deps: coreDeps } = getAppData(session, teamId, item)
       const isDragging = deps === undefined ? deps : deps.includes(id)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
@@ -99,7 +99,7 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
             isDragging={isDragging}
             setDeps={setDeps}
             teamId={teamId}
-            title={schema.title}
+            title={appInfo.title}
             setAppState={setAppState}
           />
         </Grid>
