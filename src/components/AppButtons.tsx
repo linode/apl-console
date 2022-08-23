@@ -35,12 +35,13 @@ export default function ({
 
   return (
     <ButtonGroup
-      variant='contained'
+      variant={hideSettings ? 'outlined' : 'contained'}
       color='primary'
       size='large'
       disableElevation
       sx={{
-        backgroundColor: 'primary.main',
+        borderColor: 'primary.main',
+        backgroundColor: hideSettings ? 'inherit' : 'primary.main',
       }}
     >
       {!hideEnabled && (

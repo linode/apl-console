@@ -51,6 +51,7 @@ export default function ({
   teamId,
   title,
   setAppState,
+  isCore = false,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const canDrag = enabled !== undefined
@@ -86,7 +87,7 @@ export default function ({
           }}
           alt={`Logo for ${title} app`}
         />
-        <Typography className={cx(classes.title, enabled === undefined && classes.core)} variant='h6'>
+        <Typography className={cx(classes.title, isCore && classes.core)} variant='h6'>
           {title}
         </Typography>
       </RLink>

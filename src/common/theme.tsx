@@ -1,5 +1,5 @@
 import { PaletteMode } from '@mui/material'
-import { createTheme, Palette, PaletteOptions, Theme, ThemeOptions } from '@mui/material/styles'
+import { Palette, PaletteOptions, Theme, ThemeOptions, createTheme } from '@mui/material/styles'
 import { cloneDeep } from 'lodash'
 import { makeStyles } from 'tss-react/mui'
 

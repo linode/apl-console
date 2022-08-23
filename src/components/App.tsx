@@ -1,4 +1,22 @@
-import { AppBar, Box, Button, Link, List, ListItem, ListSubheader, Tab, Tabs, Typography } from '@mui/material'
+import {
+  AppBar,
+  Box,
+  Button,
+  Chip,
+  Grid,
+  Link,
+  List,
+  ListItem,
+  ListSubheader,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
@@ -11,7 +29,7 @@ import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
-import { getAppData } from 'utils/data'
+import { cleanLink, getAppData } from 'utils/data'
 import { extract, isOf, nullify } from 'utils/schema'
 import YAML from 'yaml'
 import AppButtons from './AppButtons'
@@ -31,6 +49,9 @@ const useStyles = makeStyles()((theme) => ({
   headerButtons: {
     marginLeft: 'auto',
   },
+  legend: {
+    paddingTop: theme.spacing(3),
+  },
   imgHolder: {
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -42,6 +63,7 @@ const useStyles = makeStyles()((theme) => ({
     height: theme.spacing(6),
   },
   content: {
+    paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   paragraph: {
@@ -53,6 +75,12 @@ const useStyles = makeStyles()((theme) => ({
   },
   buffer: {
     height: theme.spacing(2),
+  },
+  tableRow: {
+    '&:last-child td, &:last-child th': { border: 0 },
+  },
+  tableHead: {
+    // minWidth: theme.spacing(12),
   },
 }))
 
@@ -163,15 +191,14 @@ export default function ({
   const session = useAuthzSession()
   const { appsEnabled, settings } = session
   const {
+    appInfo,
     baseUrl,
-    externalUrl,
     hasShortcuts,
     logo,
     logoAlt,
     schema,
     shortcuts: defaultShortcuts,
   } = getAppData(session, teamId, id)
-  const { description, title } = schema
   const defTab = hashMap[hash] ?? 0
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
@@ -224,7 +251,7 @@ export default function ({
     return (
       <ListItem key={`${s.teamId}-${s.title}`}>
         {enabled !== false ? (
-          <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
+          <MuiLink key={href} href={href} target='_blank' rel='noopener' title={s.title} about={s.description}>
             <b>{s.title}</b>: {s.description}
           </MuiLink>
         ) : (
@@ -248,12 +275,12 @@ export default function ({
               currentTarget.onerror = null // prevents looping
               currentTarget.src = `/logos/${logoAlt}`
             }}
-            alt={`Logo for ${title} app`}
+            alt={`Logo for ${appInfo.title} app`}
           />
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
-            {title}: {schema['x-short']}
+            {appInfo.title}
           </Typography>
         </Box>
         <Box className={classes.headerButtons}>
@@ -270,31 +297,94 @@ export default function ({
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
           <Tab href='#info' label='Info' value={0} />
-          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled !== true || !hasShortcuts} />
+          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled === false || !hasShortcuts} />
           {isAdminApps && (
-            <Tab href='#values' label={t('Values')} value={2} disabled={enabled !== true || !appSchema || !inValues} />
+            <Tab href='#values' label={t('Values')} value={2} disabled={enabled === false || !appSchema || !inValues} />
           )}
           {isAdminApps && (
             <Tab
               href='#rawvalues'
               label={t('Raw values')}
               value={3}
-              disabled={enabled !== true || !appSchema || !inRawValues}
+              disabled={enabled === false || !appSchema || !inRawValues}
             />
           )}
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={0}>
-        <Header title={t('FORM_ABOUT', { title })} description={description} resourceType='App' />
-        <Link href={schema['x-externalDocsPath']}>[...more]</Link>
-        <div className={classes.buffer}> </div>
-        <Box className={classes.content}>
-          <Typography variant='h5'>{t('FORM_HEAD_ABOUT', { title })}</Typography>
-          <Markdown>{schema['x-info'] || `No info defined yet for ${title}`}</Markdown>
-        </Box>
+        <Grid container direction='row'>
+          <Grid item xs={12} md={6}>
+            <Box className={classes.content}>
+              <TableContainer className={classes.legend}>
+                <Table size='small' aria-label='simple table'>
+                  <TableBody>
+                    <TableRow key='version' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Version:')} />
+                      </TableCell>
+                      <TableCell align='left'>{appInfo.appVersion}</TableCell>
+                    </TableRow>
+                    <TableRow key='repo' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Repo:')} />
+                      </TableCell>
+                      <TableCell align='left'>
+                        <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
+                          {cleanLink(appInfo.repo)}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key='maintainers' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Maintainers:')} />
+                      </TableCell>
+                      <TableCell align='left'>{appInfo.maintainers}</TableCell>
+                    </TableRow>
+                    <TableRow key='links' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Related links:')} />
+                      </TableCell>
+                      <TableCell align='left'>
+                        {appInfo.relatedLinks.map((l: string) => (
+                          <>
+                            <Link href={l} target='_blank' rel='noopener'>
+                              {cleanLink(l)}
+                            </Link>
+                            <br />
+                          </>
+                        ))}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow key='license' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('License:')} />
+                      </TableCell>
+                      <TableCell align='left'>{appInfo.license}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Box className={classes.content}>
+              <Header
+                title={t('FORM_ABOUT', { title: appInfo.title })}
+                description={appInfo.about}
+                resourceType='App'
+              />
+              <Header title={t('FORM_HEAD_ABOUT', { title: appInfo.title })} resourceType='App' />
+              <Markdown>{appInfo.integration || `No info defined yet for ${appInfo.title}`}</Markdown>
+            </Box>
+          </Grid>
+        </Grid>
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <Header title={t('Shortcuts')} description={t('FORM_SHORTCUTS_DESC', { title })} resourceType='Shortcut' />
+        <Header
+          title={t('Shortcuts')}
+          description={t('FORM_SHORTCUTS_DESC', { title: appInfo.title })}
+          resourceType='Shortcut'
+        />
         {hasShortcuts && defaultShortcuts?.length && (
           <List
             subheader={
@@ -350,7 +440,7 @@ export default function ({
         <TabPanel value={tab} index={2}>
           <Form
             adminOnly
-            description={t('FORM_HEAD_APP_EDIT', { title })}
+            description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
             data={values}
             schema={appSchema}
             uiSchema={appUiSchema}

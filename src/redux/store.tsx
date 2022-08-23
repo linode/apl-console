@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import { AnyAction, configureStore, Middleware, MiddlewareAPI } from '@reduxjs/toolkit'
+import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/toolkit'
 import logger from 'redux-logger'
 import { otomiApi } from 'redux/otomiApi'
 import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'

@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel } from '@mui/material'
-import { utils, WidgetProps } from '@rjsf/core'
+import { WidgetProps, utils } from '@rjsf/core'
 import { sentenceCase } from 'change-case'
 import Checkbox from 'components/Checkbox'
 import React from 'react'

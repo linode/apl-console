@@ -27,7 +27,7 @@ const getShortcutLink = (app) => {
   } = app
   const href = `${baseUrl}${path}`
   return enabled !== false ? (
-    <MuiLink key={href} href={href} target='_blank' rel='noopener' label={title} about={description}>
+    <MuiLink key={href} href={href} target='_blank' rel='noopener' about={description}>
       <b>{title}</b>: {description}
     </MuiLink>
   ) : (
