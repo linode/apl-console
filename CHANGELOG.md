@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.16](https://github.com/redkubes/otomi-stack-web/compare/v0.5.15...v0.5.16) (2022-08-24)
+
+
+### Features
+
+* app buttons under icons ([#211](https://github.com/redkubes/otomi-stack-web/issues/211)) ([2b23c1d](https://github.com/redkubes/otomi-stack-web/commit/2b23c1d105c4fa91258a65dbe6615efba01d8045))
+* schema and related logic grooming ([#210](https://github.com/redkubes/otomi-stack-web/issues/210)) ([a37ab9c](https://github.com/redkubes/otomi-stack-web/commit/a37ab9c69997a7247df304aeb1972d7a2b9be864)), closes [redkubes/unassigned-issues#442](https://github.com/redkubes/unassigned-issues/issues/442)
+
+
+### Bug Fixes
+
+* app buttons ([#212](https://github.com/redkubes/otomi-stack-web/issues/212)) ([d5d6c8b](https://github.com/redkubes/otomi-stack-web/commit/d5d6c8b6b564002a449246c3531cc6529962a015))
+* dragdrop firefox ([#207](https://github.com/redkubes/otomi-stack-web/issues/207)) ([5cbd0bc](https://github.com/redkubes/otomi-stack-web/commit/5cbd0bc0593b526354797a10716772b1d17c1bb6))
+
 ### [0.5.15](https://github.com/redkubes/otomi-console/compare/v0.5.14...v0.5.15) (2022-07-05)
 
 
