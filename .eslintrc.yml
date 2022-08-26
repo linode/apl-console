@@ -18,16 +18,16 @@ extends:
   - plugin:prettier/recommended
   - prettier/react
   # - prettier/@typescript-eslint
-  - plugin:import/errors
-  - plugin:import/warnings
+  - plugin:import/recommended
   - plugin:import/typescript
 
 plugins:
   - react
   - react-hooks
-  - import
+  # - import
   - jest
   - '@typescript-eslint'
+  - unused-imports
 
 settings:
   import/resolver:
@@ -93,3 +93,4 @@ rules:
   sort-imports:
     - 'error'
     - ignoreDeclarationSort: true
+  unused-imports/no-unused-imports-ts: error

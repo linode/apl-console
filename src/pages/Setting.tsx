@@ -26,7 +26,7 @@ export default function ({
   const handleSubmit = (formData) => {
     const schema = getSpec().components.schemas.Settings
     const cleanData = cleanReadOnly(schema.properties[settingId], formData)
-    edit({ body: { [settingId]: cleanData } })
+    edit({ settingId, body: { [settingId]: cleanData } })
       .then(refetch)
       .then(refetchSettings)
   }

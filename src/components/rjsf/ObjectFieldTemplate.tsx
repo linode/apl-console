@@ -130,7 +130,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
           <Grid key={id} item xs={12} className={classes.grid}>
             {o.content}
           </Grid>
-          {renderTitleDescription(o.content?.props, true)}
+          {schema.type !== 'string' && renderTitleDescription(o.content?.props, true)}
         </Grid>
       )
     }

@@ -1,10 +1,12 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, set, unset } from 'lodash'
+import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
+import { extract, isOf } from 'utils/schema'
+import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
 export const getSettingSchema = (
@@ -42,23 +44,85 @@ export const getSettingSchema = (
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
-      const requiredProps: string[] = get(schema, 'properties.provider.oneOf[2].properties.azure.required')
-      if (formData.provider?.azure?.useManagedIdentityExtension) {
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientId')
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientSecret')
-        set(
-          schema,
-          'properties.provider.oneOf[2].properties.azure.required',
-          requiredProps.filter((p) => !['aadClientId', 'aadClientSecret'].includes(p)).concat('userAssignedIdentityID'),
-        )
-      } else {
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.userAssignedIdentityID')
-        set(
-          schema,
-          'properties.provider.oneOf[2].properties.azure.required',
-          requiredProps.concat(['aadClientId', 'aadClientSecret']),
-        )
+      if (formData.provider?.aws) {
+        const path = 'properties.provider.oneOf[1]'
+        const providerPath = `${path}.properties.aws.properties`
+        if (!isEmpty(formData.provider?.aws?.credentials?.secretName)) {
+          set(schema, `${providerPath}.credentials.properties.accessKey.readOnly`, true)
+          set(schema, `${providerPath}.credentials.properties.secretKey.readOnly`, true)
+        } else {
+          set(schema, `${providerPath}.credentials.properties.accessKey.readOnly`, false)
+          set(schema, `${providerPath}.credentials.properties.secretKey.readOnly`, false)
+        }
       }
+      if (formData.provider?.azure || formData.provider?.['azure-private-dns']) {
+        const data = formData.provider?.azure || formData.provider?.['azure-private-dns']
+        const path = formData.provider?.azure ? 'properties.provider.oneOf[2]' : 'properties.provider.oneOf[3]'
+        const providerPath = formData.provider?.azure
+          ? `${path}.properties.azure.properties`
+          : `${path}.properties.azure-private-dns.properties`
+        const requiredProps: string[] = get(
+          schema,
+          formData.provider?.azure
+            ? `${path}.properties.azure.required`
+            : `${path}.properties.azure-private-dns.required`,
+        )
+        if (data?.useManagedIdentityExtension) {
+          unset(schema, `${providerPath}.aadClientId`)
+          unset(schema, `${providerPath}.aadClientSecret`)
+          set(
+            schema,
+            `${path}.properties.azure.required`,
+            requiredProps
+              .filter((p) => !['aadClientId', 'aadClientSecret'].includes(p))
+              .concat('userAssignedIdentityID'),
+          )
+        } else {
+          unset(schema, `${providerPath}.userAssignedIdentityID`)
+          set(schema, `${path}.properties.azure.required`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
+        }
+        if (!isEmpty(data.secretName)) {
+          set(schema, `${providerPath}.aadClientId.readOnly`, true)
+          set(schema, `${providerPath}.aadClientSecret.readOnly`, true)
+        } else {
+          set(schema, `${providerPath}.aadClientId.readOnly`, false)
+          set(schema, `${providerPath}.aadClientSecret.readOnly`, false)
+        }
+      }
+      if (formData.provider?.cloudflare) {
+        const path = 'properties.provider.oneOf[4]'
+        const providerPath = `${path}.properties.cloudflare.properties`
+        const requiredProps: string[] = get(schema, `${path}.properties.cloudflare.required`, [])
+        const newRequiredProps =
+          !isEmpty(formData.provider?.cloudflare?.apiSecret) || !isEmpty(formData.provider?.cloudflare?.email)
+            ? requiredProps.concat(['apiSecret', 'email'])
+            : requiredProps.filter((p) => !['apiSecret', 'email'].includes(p))
+        set(schema, `${path}.properties.cloudflare.required`, newRequiredProps)
+        if (!isEmpty(formData.provider?.cloudflare?.secretName)) {
+          set(schema, `${providerPath}.apiToken.readOnly`, true)
+          set(schema, `${providerPath}.apiSecret.readOnly`, true)
+          set(schema, `${providerPath}.email.readOnly`, true)
+        } else {
+          set(schema, `${providerPath}.apiToken.readOnly`, false)
+          set(schema, `${providerPath}.apiSecret.readOnly`, false)
+          set(schema, `${providerPath}.email.readOnly`, false)
+        }
+      }
+      if (formData.provider?.digitalocean) {
+        const path = 'properties.provider.oneOf[5]'
+        const providerPath = `${path}.properties.digitalocean.properties`
+        if (!isEmpty(formData.provider?.digitalocean?.secretName))
+          set(schema, `${providerPath}.apiToken.readOnly`, true)
+        else set(schema, `${providerPath}.apiToken.readOnly`, false)
+      }
+      if (formData.provider?.google) {
+        const path = 'properties.provider.oneOf[6]'
+        const providerPath = `${path}.properties.google.properties`
+        if (!isEmpty(formData.provider?.google?.secretName))
+          set(schema, `${providerPath}.serviceAccountKey.readOnly`, true)
+        else set(schema, `${providerPath}.serviceAccountKey.readOnly`, false)
+      }
+
       break
     case 'oidc':
       break
@@ -83,6 +147,7 @@ export const getSettingUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   settingId: string,
+  formData: any,
 ): any => {
   const uiSchema: any = {
     cluster: {
@@ -108,24 +173,40 @@ export const getSettingUiSchema = (
     }
   }
 
+  const settingsModel = getSpec().components.schemas.Settings
+  const model = settingsModel.properties[settingId]
+  if (model) {
+    // turn on code editor for fields of type object that don't have any properties
+    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    leafs.forEach((path) => {
+      set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
+    })
+  }
   return uiSchema[settingId] || {}
 }
 
 interface Props extends CrudProps {
-  settings: any
+  settings: GetSettingsApiResponse
   settingId: string
 }
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
   const [setting, setSetting]: any = useState(data)
+  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
+  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId, data))
   useEffect(() => {
     setSetting(data)
+    onChangeHandler(data)
   }, [data])
   // END HOOKS
-  const schema = getSettingSchema(appsEnabled, settings, settingId, setting)
-  // we provide oboTeamId (not teamId) when a resource is only allowed edits by admin:
-  const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
+  const onChangeHandler = (data) => {
+    setSetting(data)
+    const schema = getSettingSchema(appsEnabled, settings, settingId, data)
+    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId, data)
+    setSchema(schema)
+    setUiSchema(uiSchema)
+  }
   return (
     <Form
       key={settingId}
@@ -133,7 +214,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       uiSchema={uiSchema}
       data={setting}
       resourceType='Settings'
-      onChange={setSetting}
+      onChange={onChangeHandler}
       idProp={null}
       adminOnly
       {...other}

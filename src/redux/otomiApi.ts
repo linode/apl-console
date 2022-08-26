@@ -98,7 +98,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
     }),
     editSettings: build.mutation<EditSettingsApiResponse, EditSettingsApiArg>({
-      query: (queryArg) => ({ url: `/settings`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/settings/${queryArg.settingId}`, method: 'PUT', body: queryArg.body }),
     }),
     getApps: build.query<GetAppsApiResponse, GetAppsApiArg>({
       query: (queryArg) => ({ url: `/apps/${queryArg.teamId}`, params: { picks: queryArg.picks } }),
@@ -2507,14 +2507,19 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   dns?: {
     zones?: string[]
+    domainFilters?: string[]
+    zoneIdFilters?: string[]
     provider?:
       | (object | null)
       | {
           aws: {
-            accessKeyID?: string
-            secretAccessKey?: string
-            role?: string
+            credentials?: {
+              secretKey?: string
+              accessKey?: string
+              secretName?: string
+            }
             region: string
+            role?: string
           }
         }
       | {
@@ -2524,20 +2529,55 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             hostedZoneName?: string
             tenantId: string
             subscriptionId: string
-            useManagedIdentityExtension?: boolean
-            userAssignedIdentityID?: string
             aadClientId?: string
             aadClientSecret?: string
+            secretName?: string
+            useManagedIdentityExtension?: boolean
+            userAssignedIdentityID?: string
+          }
+        }
+      | {
+          'azure-private-dns': {
+            environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
+            resourceGroup: string
+            hostedZoneName?: string
+            tenantId: string
+            subscriptionId: string
+            aadClientId?: string
+            aadClientSecret?: string
+            secretName?: string
+            useManagedIdentityExtension?: boolean
+            userAssignedIdentityID?: string
+          }
+        }
+      | {
+          cloudflare: {
+            apiToken?: string
+            apiSecret?: string
+            email?: string
+            secretName?: string
+            proxied?: boolean
+          }
+        }
+      | {
+          digitalocean: {
+            apiToken?: string
+            secretName?: string
           }
         }
       | {
           google: {
-            serviceAccountKey: string
+            serviceAccountKey?: string
             project: string
+            secretName?: string
           }
         }
       | {
-          other: object
+          other: {
+            name: string
+            'external-dns': object
+            'cert-manager': object
+          }
         }
     entrypoint?: string
   }
@@ -2737,6 +2777,8 @@ export type GetSettingsApiArg = {
 }
 export type EditSettingsApiResponse = /** status 200 Successfully edited settings. */ undefined
 export type EditSettingsApiArg = {
+  /** ID of the setting */
+  settingId: string
   /** Put new settings. */
   body: {
     alerts?: {
@@ -2851,14 +2893,19 @@ export type EditSettingsApiArg = {
     }
     dns?: {
       zones?: string[]
+      domainFilters?: string[]
+      zoneIdFilters?: string[]
       provider?:
         | (object | null)
         | {
             aws: {
-              accessKeyID?: string
-              secretAccessKey?: string
-              role?: string
+              credentials?: {
+                secretKey?: string
+                accessKey?: string
+                secretName?: string
+              }
               region: string
+              role?: string
             }
           }
         | {
@@ -2868,20 +2915,55 @@ export type EditSettingsApiArg = {
               hostedZoneName?: string
               tenantId: string
               subscriptionId: string
-              useManagedIdentityExtension?: boolean
-              userAssignedIdentityID?: string
               aadClientId?: string
               aadClientSecret?: string
+              secretName?: string
+              useManagedIdentityExtension?: boolean
+              userAssignedIdentityID?: string
+            }
+          }
+        | {
+            'azure-private-dns': {
+              environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
+              resourceGroup: string
+              hostedZoneName?: string
+              tenantId: string
+              subscriptionId: string
+              aadClientId?: string
+              aadClientSecret?: string
+              secretName?: string
+              useManagedIdentityExtension?: boolean
+              userAssignedIdentityID?: string
+            }
+          }
+        | {
+            cloudflare: {
+              apiToken?: string
+              apiSecret?: string
+              email?: string
+              secretName?: string
+              proxied?: boolean
+            }
+          }
+        | {
+            digitalocean: {
+              apiToken?: string
+              secretName?: string
             }
           }
         | {
             google: {
-              serviceAccountKey: string
+              serviceAccountKey?: string
               project: string
+              secretName?: string
             }
           }
         | {
-            other: object
+            other: {
+              name: string
+              'external-dns': object
+              'cert-manager': object
+            }
           }
       entrypoint?: string
     }

@@ -13,6 +13,7 @@ import { nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
+import CodeEditorWidget from './CodeEditorWidget'
 import DescriptionField from './DescriptionField'
 import ArrayFieldTemplate from './FieldTemplate/ArrayFieldTemplate'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
@@ -140,7 +141,7 @@ export default function ({
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
-        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget }}
+        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget, CodeEditorWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
         disabled={disabled || mutating}

@@ -110,7 +110,7 @@ export const getAppUiSchema = (
   if (model) {
     const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
     leafs.forEach((path) => {
-      set(uiSchema, path, { 'ui:FieldTemplate': CodeEditor })
+      set(uiSchema, path, { 'ui:widget': CodeEditor })
     })
   }
   switch (appId) {

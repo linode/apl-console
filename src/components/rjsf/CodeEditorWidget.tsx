@@ -1,10 +1,12 @@
-import { FieldTemplateProps } from '@rjsf/core'
+import { WidgetProps } from '@rjsf/core'
 import CodeEditor from 'components/CodeEditor'
+import { isEmpty } from 'lodash'
 import React, { ChangeEventHandler } from 'react'
 
-export default function ({ onChange, formData, ...props }: FieldTemplateProps) {
+export default function ({ onChange, formData, schema, ...props }: WidgetProps) {
   const onChangeWrapper: ChangeEventHandler<HTMLTextAreaElement> = (formData) => {
     if (onChange) onChange(formData)
   }
-  return <CodeEditor {...props} code={formData} lang='yaml' onChange={onChangeWrapper} />
+  const code = isEmpty(formData) && schema['x-default'] ? schema['x-default'] : formData
+  return <CodeEditor code={code} lang='yaml' onChange={onChangeWrapper} />
 }

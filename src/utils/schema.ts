@@ -1,4 +1,4 @@
-import { cloneDeep, get, memoize, set, unset } from 'lodash'
+import { cloneDeep, get, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -62,7 +62,7 @@ export const cleanReadOnly = (schema, formData) => {
   return ret
 }
 
-export const extract = memoize((o, f) => {
+export const extract = (o, f) => {
   const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
   const leafs = {}
   traverse(o, (o, i, path) => {
@@ -75,6 +75,6 @@ export const extract = memoize((o, f) => {
     if (!leafs[p]) leafs[p] = res
   })
   return leafs
-})
+}
 
 export const propsToAccordion = ['image', 'resources']
