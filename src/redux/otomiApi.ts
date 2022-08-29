@@ -2434,7 +2434,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
     apiName?: string
     apiServer?: string
@@ -2652,7 +2652,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -2664,7 +2664,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
     isHomeMonitored?: boolean
-    isManaged?: boolean
     isMultitenant?: boolean
     nodeSelector?: {
       name?: string
@@ -2820,7 +2819,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
       apiName?: string
       apiServer?: string
@@ -3038,7 +3037,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -3050,7 +3049,6 @@ export type EditSettingsApiArg = {
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
       isHomeMonitored?: boolean
-      isManaged?: boolean
       isMultitenant?: boolean
       nodeSelector?: {
         name?: string
