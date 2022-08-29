@@ -72,14 +72,14 @@ export const getSettingSchema = (
           unset(schema, `${providerPath}.aadClientSecret`)
           set(
             schema,
-            `${path}.properties.azure.required`,
+            `${providerPath}.required`,
             requiredProps
               .filter((p) => !['aadClientId', 'aadClientSecret'].includes(p))
               .concat('userAssignedIdentityID'),
           )
         } else {
           unset(schema, `${providerPath}.userAssignedIdentityID`)
-          set(schema, `${path}.properties.azure.required`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
+          set(schema, `${providerPath}.required`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
         }
         if (!isEmpty(data.secretName)) {
           set(schema, `${providerPath}.aadClientId.readOnly`, true)
