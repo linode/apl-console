@@ -61,25 +61,23 @@ export const getSettingSchema = (
         const providerPath = formData.provider?.azure
           ? `${path}.properties.azure.properties`
           : `${path}.properties.azure-private-dns.properties`
-        const requiredProps: string[] = get(
-          schema,
-          formData.provider?.azure
-            ? `${path}.properties.azure.required`
-            : `${path}.properties.azure-private-dns.required`,
-        )
+        const requiredPropsPath = formData.provider?.azure
+          ? `${path}.properties.azure.required`
+          : `${path}.properties.azure-private-dns.required`
+        const requiredProps: string[] = get(schema, requiredPropsPath)
         if (data?.useManagedIdentityExtension) {
           unset(schema, `${providerPath}.aadClientId`)
           unset(schema, `${providerPath}.aadClientSecret`)
           set(
             schema,
-            `${providerPath}.required`,
+            requiredPropsPath,
             requiredProps
               .filter((p) => !['aadClientId', 'aadClientSecret'].includes(p))
               .concat('userAssignedIdentityID'),
           )
         } else {
           unset(schema, `${providerPath}.userAssignedIdentityID`)
-          set(schema, `${providerPath}.required`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
+          set(schema, `${requiredPropsPath}`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
         }
         if (!isEmpty(data.secretName)) {
           set(schema, `${providerPath}.aadClientId.readOnly`, true)
