@@ -90,12 +90,13 @@ export const getSettingSchema = (
       if (formData.provider?.cloudflare) {
         const path = 'properties.provider.oneOf[4]'
         const providerPath = `${path}.properties.cloudflare.properties`
-        const requiredProps: string[] = get(schema, `${path}.properties.cloudflare.required`, [])
+        const requiredPropsPath = `${path}.properties.cloudflare.required`
+        const requiredProps: string[] = get(schema, requiredPropsPath, [])
         const newRequiredProps =
           !isEmpty(formData.provider?.cloudflare?.apiSecret) || !isEmpty(formData.provider?.cloudflare?.email)
             ? requiredProps.concat(['apiSecret', 'email'])
             : requiredProps.filter((p) => !['apiSecret', 'email'].includes(p))
-        set(schema, `${path}.properties.cloudflare.required`, newRequiredProps)
+        set(schema, requiredPropsPath, newRequiredProps)
         if (!isEmpty(formData.provider?.cloudflare?.secretName)) {
           set(schema, `${providerPath}.apiToken.readOnly`, true)
           set(schema, `${providerPath}.apiSecret.readOnly`, true)
