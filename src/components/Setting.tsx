@@ -44,17 +44,6 @@ export const getSettingSchema = (
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
-      if (formData.provider?.aws) {
-        const path = 'properties.provider.oneOf[1]'
-        const providerPath = `${path}.properties.aws.properties`
-        if (!isEmpty(formData.provider?.aws?.credentials?.secretName)) {
-          set(schema, `${providerPath}.credentials.properties.accessKey.readOnly`, true)
-          set(schema, `${providerPath}.credentials.properties.secretKey.readOnly`, true)
-        } else {
-          set(schema, `${providerPath}.credentials.properties.accessKey.readOnly`, false)
-          set(schema, `${providerPath}.credentials.properties.secretKey.readOnly`, false)
-        }
-      }
       if (formData.provider?.azure || formData.provider?.['azure-private-dns']) {
         const data = formData.provider?.azure || formData.provider?.['azure-private-dns']
         const path = formData.provider?.azure ? 'properties.provider.oneOf[2]' : 'properties.provider.oneOf[3]'
@@ -65,13 +54,6 @@ export const getSettingSchema = (
           ? `${path}.properties.azure.required`
           : `${path}.properties.azure-private-dns.required`
         const requiredProps: string[] = get(schema, requiredPropsPath)
-        if (!isEmpty(data.secretName)) {
-          set(schema, `${providerPath}.aadClientId.readOnly`, true)
-          set(schema, `${providerPath}.aadClientSecret.readOnly`, true)
-        } else {
-          set(schema, `${providerPath}.aadClientId.readOnly`, false)
-          set(schema, `${providerPath}.aadClientSecret.readOnly`, false)
-        }
         if (data?.useManagedIdentityExtension) {
           unset(schema, `${providerPath}.aadClientId`)
           unset(schema, `${providerPath}.aadClientSecret`)
@@ -97,31 +79,7 @@ export const getSettingSchema = (
             ? requiredProps.concat(['apiSecret', 'email'])
             : requiredProps.filter((p) => !['apiSecret', 'email'].includes(p))
         set(schema, requiredPropsPath, newRequiredProps)
-        if (!isEmpty(formData.provider?.cloudflare?.secretName)) {
-          set(schema, `${providerPath}.apiToken.readOnly`, true)
-          set(schema, `${providerPath}.apiSecret.readOnly`, true)
-          set(schema, `${providerPath}.email.readOnly`, true)
-        } else {
-          set(schema, `${providerPath}.apiToken.readOnly`, false)
-          set(schema, `${providerPath}.apiSecret.readOnly`, false)
-          set(schema, `${providerPath}.email.readOnly`, false)
-        }
       }
-      if (formData.provider?.digitalocean) {
-        const path = 'properties.provider.oneOf[5]'
-        const providerPath = `${path}.properties.digitalocean.properties`
-        if (!isEmpty(formData.provider?.digitalocean?.secretName))
-          set(schema, `${providerPath}.apiToken.readOnly`, true)
-        else set(schema, `${providerPath}.apiToken.readOnly`, false)
-      }
-      if (formData.provider?.google) {
-        const path = 'properties.provider.oneOf[6]'
-        const providerPath = `${path}.properties.google.properties`
-        if (!isEmpty(formData.provider?.google?.secretName))
-          set(schema, `${providerPath}.serviceAccountKey.readOnly`, true)
-        else set(schema, `${providerPath}.serviceAccountKey.readOnly`, false)
-      }
-
       break
     case 'oidc':
       break
