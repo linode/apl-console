@@ -65,6 +65,13 @@ export const getSettingSchema = (
           ? `${path}.properties.azure.required`
           : `${path}.properties.azure-private-dns.required`
         const requiredProps: string[] = get(schema, requiredPropsPath)
+        if (!isEmpty(data.secretName)) {
+          set(schema, `${providerPath}.aadClientId.readOnly`, true)
+          set(schema, `${providerPath}.aadClientSecret.readOnly`, true)
+        } else {
+          set(schema, `${providerPath}.aadClientId.readOnly`, false)
+          set(schema, `${providerPath}.aadClientSecret.readOnly`, false)
+        }
         if (data?.useManagedIdentityExtension) {
           unset(schema, `${providerPath}.aadClientId`)
           unset(schema, `${providerPath}.aadClientSecret`)
@@ -78,13 +85,6 @@ export const getSettingSchema = (
         } else {
           unset(schema, `${providerPath}.userAssignedIdentityID`)
           set(schema, `${requiredPropsPath}`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
-        }
-        if (!isEmpty(data.secretName)) {
-          set(schema, `${providerPath}.aadClientId.readOnly`, true)
-          set(schema, `${providerPath}.aadClientSecret.readOnly`, true)
-        } else {
-          set(schema, `${providerPath}.aadClientId.readOnly`, false)
-          set(schema, `${providerPath}.aadClientSecret.readOnly`, false)
         }
       }
       if (formData.provider?.cloudflare) {
