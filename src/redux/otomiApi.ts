@@ -2516,7 +2516,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             credentials?: {
               secretKey?: string
               accessKey?: string
-              secretName?: string
             }
             region: string
             role?: string
@@ -2531,7 +2530,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             subscriptionId: string
             aadClientId?: string
             aadClientSecret?: string
-            secretName?: string
             useManagedIdentityExtension?: boolean
             userAssignedIdentityID?: string
           }
@@ -2545,7 +2543,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             subscriptionId: string
             aadClientId?: string
             aadClientSecret?: string
-            secretName?: string
             useManagedIdentityExtension?: boolean
             userAssignedIdentityID?: string
           }
@@ -2555,21 +2552,18 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             apiToken?: string
             apiSecret?: string
             email?: string
-            secretName?: string
             proxied?: boolean
           }
         }
       | {
           digitalocean: {
             apiToken?: string
-            secretName?: string
           }
         }
       | {
           google: {
             serviceAccountKey?: string
             project: string
-            secretName?: string
           }
         }
       | {
@@ -2901,7 +2895,6 @@ export type EditSettingsApiArg = {
               credentials?: {
                 secretKey?: string
                 accessKey?: string
-                secretName?: string
               }
               region: string
               role?: string
@@ -2916,7 +2909,6 @@ export type EditSettingsApiArg = {
               subscriptionId: string
               aadClientId?: string
               aadClientSecret?: string
-              secretName?: string
               useManagedIdentityExtension?: boolean
               userAssignedIdentityID?: string
             }
@@ -2930,7 +2922,6 @@ export type EditSettingsApiArg = {
               subscriptionId: string
               aadClientId?: string
               aadClientSecret?: string
-              secretName?: string
               useManagedIdentityExtension?: boolean
               userAssignedIdentityID?: string
             }
@@ -2940,21 +2931,18 @@ export type EditSettingsApiArg = {
               apiToken?: string
               apiSecret?: string
               email?: string
-              secretName?: string
               proxied?: boolean
             }
           }
         | {
             digitalocean: {
               apiToken?: string
-              secretName?: string
             }
           }
         | {
             google: {
               serviceAccountKey?: string
               project: string
-              secretName?: string
             }
           }
         | {
