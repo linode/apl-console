@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
+import { cloneDeep, get, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -68,17 +68,6 @@ export const getSettingSchema = (
           unset(schema, `${providerPath}.userAssignedIdentityID`)
           set(schema, `${requiredPropsPath}`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
         }
-      }
-      if (formData.provider?.cloudflare) {
-        const path = 'properties.provider.oneOf[4]'
-        const providerPath = `${path}.properties.cloudflare.properties`
-        const requiredPropsPath = `${path}.properties.cloudflare.required`
-        const requiredProps: string[] = get(schema, requiredPropsPath, [])
-        const newRequiredProps =
-          !isEmpty(formData.provider?.cloudflare?.apiSecret) || !isEmpty(formData.provider?.cloudflare?.email)
-            ? requiredProps.concat(['apiSecret', 'email'])
-            : requiredProps.filter((p) => !['apiSecret', 'email'].includes(p))
-        set(schema, requiredPropsPath, newRequiredProps)
       }
       break
     case 'oidc':
