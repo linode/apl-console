@@ -46,6 +46,7 @@ export const getSettingSchema = (
     case 'dns':
       if (formData.provider?.azure || formData.provider?.['azure-private-dns']) {
         const data = formData.provider?.azure || formData.provider?.['azure-private-dns']
+        const dataPath = ''
         const path = formData.provider?.azure ? 'properties.provider.oneOf[2]' : 'properties.provider.oneOf[3]'
         const providerPath = formData.provider?.azure
           ? `${path}.properties.azure.properties`

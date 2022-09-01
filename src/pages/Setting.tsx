@@ -6,6 +6,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { cleanData } from 'utils/data'
 import { cleanReadOnly } from 'utils/schema'
 
 interface Params {
@@ -25,8 +26,8 @@ export default function ({
   const mutating = isLoadingUpdate
   const handleSubmit = (formData) => {
     const schema = getSpec().components.schemas.Settings
-    const cleanData = cleanReadOnly(schema.properties[settingId], formData)
-    edit({ settingId, body: { [settingId]: cleanData } })
+    // const cleanData = cleanReadOnly(schema.properties[settingId], formData)
+    edit({ settingId, body: { [settingId]: formData } })
       .then(refetch)
       .then(refetchSettings)
   }
