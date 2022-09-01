@@ -30,7 +30,7 @@ export const getSettingSchema = (
       if (provider === 'aws')
         // make region required
         set(schema, 'required', get(schema, 'required', []).concat(['region']))
-      else unset(schema, 'properties.region')
+      else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
       deleteAlertEndpoints(schema, formData)
@@ -56,8 +56,10 @@ export const getSettingSchema = (
           : `${path}.properties.azure-private-dns.required`
         const requiredProps: string[] = get(schema, requiredPropsPath)
         if (data?.useManagedIdentityExtension) {
-          unset(schema, `${providerPath}.aadClientId`)
-          unset(schema, `${providerPath}.aadClientSecret`)
+          set(schema, `${providerPath}.aadClientId.x-nullMe`, true)
+          set(schema, `${providerPath}.aadClientSecret.x-nullMe`, true)
+          unset(schema, `${providerPath}.userAssignedIdentityID.x-nullMe`)
+
           set(
             schema,
             requiredPropsPath,
@@ -66,7 +68,9 @@ export const getSettingSchema = (
               .concat('userAssignedIdentityID'),
           )
         } else {
-          unset(schema, `${providerPath}.userAssignedIdentityID`)
+          set(schema, `${providerPath}.userAssignedIdentityID.x-nullMe`, true)
+          unset(schema, `${providerPath}.aadClientId.x-nullMe`)
+          unset(schema, `${providerPath}.aadClientSecret.x-nullMe`)
           set(schema, `${requiredPropsPath}`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
         }
       }

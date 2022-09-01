@@ -30,7 +30,7 @@ import { useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
-import { extract, isOf, nullify } from 'utils/schema'
+import { extract, isOf } from 'utils/schema'
 import YAML from 'yaml'
 import AppButtons from './AppButtons'
 import CodeEditor from './CodeEditor'
@@ -235,7 +235,7 @@ export default function ({
   const isAdminApps = teamId === 'admin'
 
   const handleSubmit = () => {
-    const data = { id, teamId, values: nullify(values), rawValues, shortcuts }
+    const data = { id, teamId, values, rawValues, shortcuts }
     if (validValues && validRaw && validShortcuts) onSubmit(data)
   }
   const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {

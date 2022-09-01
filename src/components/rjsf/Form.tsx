@@ -9,7 +9,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cleanData } from 'utils/data'
-import { nullify } from 'utils/schema'
+import { cleanReadOnly, nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
@@ -95,8 +95,11 @@ export default function ({
   }
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
+    //
     const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
-    const nulledCleanFormData = nullify(cleanFormData)
+    const cleanFormData2 = cleanReadOnly(schema, cleanFormData)
+
+    const nulledCleanFormData = nullify(cleanFormData2, schema)
     onSubmit(nulledCleanFormData)
     // setState(undefined)
     setOriginalState(cleanData(formData) || {})

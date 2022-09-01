@@ -1,4 +1,4 @@
-import { cloneDeep, get, set, unset } from 'lodash'
+import { cloneDeep, each, get, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
@@ -45,10 +45,14 @@ export const traverse = (o, func, path = '') =>
     }
   })
 
-export const nullify = (data) => {
+export const nullify = (data, schema) => {
+  const nullMe = extract(schema, (o) => o['x-nullMe'])
   const d = cloneDeep(data || {})
   traverse(d, (o, i) => {
     if (o && o[i] === undefined) o[i] = null
+  })
+  each(nullMe, (v, path) => {
+    set(d, path, null)
   })
   return d
 }
