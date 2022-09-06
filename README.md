@@ -49,3 +49,8 @@ In vscode: open `Run and Debug` window, select `Attach to Chrome and run debuggi
 ### Api client
 
 The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:store` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).
+
+## Custom schema decorators
+
+**x-nullMe** - the properie with this decorator are not rendered and thier values are set to `null` on form submit.
+Notice that the otomi-api schema must define a given property as nullable in order make ik compatible with this decorator.
