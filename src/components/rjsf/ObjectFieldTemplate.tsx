@@ -84,6 +84,9 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
     const hidden = isHidden(o.content?.props)
     const isOf = hasSomeOf(schema)
+    // do not render input fields that are marked with x-nullMe
+    if ('x-nullMe' in schema) return null
+
     if (hidden) {
       if (!schema.properties && !isOf) {
         return (

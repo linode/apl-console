@@ -95,7 +95,6 @@ export default function ({
   }
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
-    //
     const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
     const cleanFormData2 = cleanReadOnly(schema, cleanFormData)
 

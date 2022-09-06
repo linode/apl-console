@@ -36,7 +36,7 @@ export const addDomainEnumField = (schema: JSONSchema7Definition, settings, form
   if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
   if (zones.length > 1) ingressSchema.domain.enum = zones
   else if (!ing.domain) ing.domain = zones[0]
-  ingressSchema.domain.readOnly = true
+  // ingressSchema.domain.readOnly = true
 }
 
 export const getServiceSchema = (
