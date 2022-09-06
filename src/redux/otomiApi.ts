@@ -2523,28 +2523,22 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
       | {
           azure: {
-            environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
             resourceGroup: string
             hostedZoneName?: string
             tenantId: string
             subscriptionId: string
-            aadClientId?: string
-            aadClientSecret?: string
-            useManagedIdentityExtension?: boolean
-            userAssignedIdentityID?: string
+            aadClientId: string
+            aadClientSecret: string
           }
         }
       | {
           'azure-private-dns': {
-            environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
             resourceGroup: string
             hostedZoneName?: string
             tenantId: string
             subscriptionId: string
-            aadClientId?: string
-            aadClientSecret?: string
-            useManagedIdentityExtension?: boolean
-            userAssignedIdentityID?: string
+            aadClientId: string
+            aadClientSecret: string
           }
         }
       | {
@@ -2902,28 +2896,22 @@ export type EditSettingsApiArg = {
           }
         | {
             azure: {
-              environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
               resourceGroup: string
               hostedZoneName?: string
               tenantId: string
               subscriptionId: string
-              aadClientId?: string
-              aadClientSecret?: string
-              useManagedIdentityExtension?: boolean
-              userAssignedIdentityID?: string
+              aadClientId: string
+              aadClientSecret: string
             }
           }
         | {
             'azure-private-dns': {
-              environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
               resourceGroup: string
               hostedZoneName?: string
               tenantId: string
               subscriptionId: string
-              aadClientId?: string
-              aadClientSecret?: string
-              useManagedIdentityExtension?: boolean
-              userAssignedIdentityID?: string
+              aadClientId: string
+              aadClientSecret: string
             }
           }
         | {
