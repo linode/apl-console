@@ -44,36 +44,6 @@ export const getSettingSchema = (
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
-      if (formData.provider?.azure || formData.provider?.['azure-private-dns']) {
-        const data = formData.provider?.azure || formData.provider?.['azure-private-dns']
-        const dataPath = ''
-        const path = formData.provider?.azure ? 'properties.provider.oneOf[2]' : 'properties.provider.oneOf[3]'
-        const providerPath = formData.provider?.azure
-          ? `${path}.properties.azure.properties`
-          : `${path}.properties.azure-private-dns.properties`
-        const requiredPropsPath = formData.provider?.azure
-          ? `${path}.properties.azure.required`
-          : `${path}.properties.azure-private-dns.required`
-        const requiredProps: string[] = get(schema, requiredPropsPath)
-        if (data?.useManagedIdentityExtension) {
-          set(schema, `${providerPath}.aadClientId.x-nullMe`, true)
-          set(schema, `${providerPath}.aadClientSecret.x-nullMe`, true)
-          unset(schema, `${providerPath}.userAssignedIdentityID.x-nullMe`)
-
-          set(
-            schema,
-            requiredPropsPath,
-            requiredProps
-              .filter((p) => !['aadClientId', 'aadClientSecret'].includes(p))
-              .concat('userAssignedIdentityID'),
-          )
-        } else {
-          set(schema, `${providerPath}.userAssignedIdentityID.x-nullMe`, true)
-          unset(schema, `${providerPath}.aadClientId.x-nullMe`)
-          unset(schema, `${providerPath}.aadClientSecret.x-nullMe`)
-          set(schema, `${requiredPropsPath}`, requiredProps.concat(['aadClientId', 'aadClientSecret']))
-        }
-      }
       break
     case 'oidc':
       break
