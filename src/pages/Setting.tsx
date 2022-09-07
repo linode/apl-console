@@ -1,4 +1,3 @@
-import { getSpec } from 'common/api-spec'
 import Setting from 'components/Setting'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
@@ -6,7 +5,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
-import { cleanReadOnly } from 'utils/schema'
 
 interface Params {
   settingId?: string
@@ -24,9 +22,7 @@ export default function ({
   // END HOOKS
   const mutating = isLoadingUpdate
   const handleSubmit = (formData) => {
-    const schema = getSpec().components.schemas.Settings
-    const cleanData = cleanReadOnly(schema.properties[settingId], formData)
-    edit({ body: { [settingId]: cleanData } })
+    edit({ settingId, body: { [settingId]: formData } })
       .then(refetch)
       .then(refetchSettings)
   }

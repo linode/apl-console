@@ -98,7 +98,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
     }),
     editSettings: build.mutation<EditSettingsApiResponse, EditSettingsApiArg>({
-      query: (queryArg) => ({ url: `/settings`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/settings/${queryArg.settingId}`, method: 'PUT', body: queryArg.body }),
     }),
     getApps: build.query<GetAppsApiResponse, GetAppsApiArg>({
       query: (queryArg) => ({ url: `/apps/${queryArg.teamId}`, params: { picks: queryArg.picks } }),
@@ -2434,7 +2434,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
     apiName?: string
     apiServer?: string
@@ -2507,37 +2507,65 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   dns?: {
     zones?: string[]
+    domainFilters?: string[]
+    zoneIdFilters?: string[]
     provider?:
       | (object | null)
       | {
           aws: {
-            accessKeyID?: string
-            secretAccessKey?: string
-            role?: string
+            credentials?: {
+              secretKey?: string
+              accessKey?: string
+            }
             region: string
+            role?: string
           }
         }
       | {
           azure: {
-            environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
             resourceGroup: string
             hostedZoneName?: string
             tenantId: string
             subscriptionId: string
-            useManagedIdentityExtension?: boolean
-            userAssignedIdentityID?: string
-            aadClientId?: string
-            aadClientSecret?: string
+            aadClientId: string
+            aadClientSecret: string
+          }
+        }
+      | {
+          'azure-private-dns': {
+            resourceGroup: string
+            hostedZoneName?: string
+            tenantId: string
+            subscriptionId: string
+            aadClientId: string
+            aadClientSecret: string
+          }
+        }
+      | {
+          cloudflare: {
+            apiToken?: string
+            apiSecret?: string
+            email?: string
+            proxied?: boolean
+          }
+        }
+      | {
+          digitalocean: {
+            apiToken?: string
           }
         }
       | {
           google: {
-            serviceAccountKey: string
+            serviceAccountKey?: string
             project: string
           }
         }
       | {
-          other: object
+          other: {
+            name: string
+            'external-dns': object
+            'cert-manager': object
+          }
         }
     entrypoint?: string
   }
@@ -2612,7 +2640,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -2624,7 +2652,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
     isHomeMonitored?: boolean
-    isManaged?: boolean
     isMultitenant?: boolean
     nodeSelector?: {
       name?: string
@@ -2737,6 +2764,8 @@ export type GetSettingsApiArg = {
 }
 export type EditSettingsApiResponse = /** status 200 Successfully edited settings. */ undefined
 export type EditSettingsApiArg = {
+  /** ID of the setting */
+  settingId: string
   /** Put new settings. */
   body: {
     alerts?: {
@@ -2778,7 +2807,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
       apiName?: string
       apiServer?: string
@@ -2851,37 +2880,65 @@ export type EditSettingsApiArg = {
     }
     dns?: {
       zones?: string[]
+      domainFilters?: string[]
+      zoneIdFilters?: string[]
       provider?:
         | (object | null)
         | {
             aws: {
-              accessKeyID?: string
-              secretAccessKey?: string
-              role?: string
+              credentials?: {
+                secretKey?: string
+                accessKey?: string
+              }
               region: string
+              role?: string
             }
           }
         | {
             azure: {
-              environment?: 'AzurePublicCloud' | 'AzureChinaCloud' | 'AzureUSGovernment' | 'AzureGermanCloud'
               resourceGroup: string
               hostedZoneName?: string
               tenantId: string
               subscriptionId: string
-              useManagedIdentityExtension?: boolean
-              userAssignedIdentityID?: string
-              aadClientId?: string
-              aadClientSecret?: string
+              aadClientId: string
+              aadClientSecret: string
+            }
+          }
+        | {
+            'azure-private-dns': {
+              resourceGroup: string
+              hostedZoneName?: string
+              tenantId: string
+              subscriptionId: string
+              aadClientId: string
+              aadClientSecret: string
+            }
+          }
+        | {
+            cloudflare: {
+              apiToken?: string
+              apiSecret?: string
+              email?: string
+              proxied?: boolean
+            }
+          }
+        | {
+            digitalocean: {
+              apiToken?: string
             }
           }
         | {
             google: {
-              serviceAccountKey: string
+              serviceAccountKey?: string
               project: string
             }
           }
         | {
-            other: object
+            other: {
+              name: string
+              'external-dns': object
+              'cert-manager': object
+            }
           }
       entrypoint?: string
     }
@@ -2956,7 +3013,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'custom'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -2968,7 +3025,6 @@ export type EditSettingsApiArg = {
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
       isHomeMonitored?: boolean
-      isManaged?: boolean
       isMultitenant?: boolean
       nodeSelector?: {
         name?: string

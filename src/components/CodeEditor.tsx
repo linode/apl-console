@@ -47,11 +47,11 @@ export default function ({
       const obj = YAML.parse(yaml)
       if (typeof obj !== 'object') throw new Error(`invalid object parsed from yaml: ${obj}`)
       setLocalValid(true)
-      setValid(true)
+      if (setValid) setValid(true)
       return obj
     } catch (e) {
       setLocalValid(false)
-      setValid(false)
+      if (setValid) setValid(false)
       console.error('invalid yaml detected')
       return undefined
     }
@@ -61,7 +61,7 @@ export default function ({
     const code = e.target.value
     setCode(code)
     const obj = fromYaml(code)
-    if (onChange && valid) onChange(obj)
+    if (onChange && obj) onChange(obj)
   }
 
   return (

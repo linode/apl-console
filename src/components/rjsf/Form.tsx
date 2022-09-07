@@ -13,6 +13,7 @@ import { nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
+import CodeEditorWidget from './CodeEditorWidget'
 import DescriptionField from './DescriptionField'
 import ArrayFieldTemplate from './FieldTemplate/ArrayFieldTemplate'
 import FieldTemplate from './FieldTemplate/FieldTemplate'
@@ -95,7 +96,11 @@ export default function ({
   const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
     const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
-    const nulledCleanFormData = nullify(cleanFormData)
+
+    // We need to send whole objects to api as it can not be merged on update (oneOf properties cannot be merged in api)
+    // const cleanFormData2 = cleanReadOnly(schema, cleanFormData)
+
+    const nulledCleanFormData = nullify(cleanFormData, schema)
     onSubmit(nulledCleanFormData)
     // setState(undefined)
     setOriginalState(cleanData(formData) || {})
@@ -140,7 +145,7 @@ export default function ({
         ObjectFieldTemplate={ObjectFieldTemplate}
         FieldTemplate={FieldTemplate}
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
-        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget }}
+        widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget, CodeEditorWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
         disabled={disabled || mutating}

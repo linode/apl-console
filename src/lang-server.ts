@@ -1,4 +1,3 @@
-import bodyParser from 'body-parser'
 import express from 'express'
 import i18next from 'i18next'
 import middleware from 'i18next-http-middleware'

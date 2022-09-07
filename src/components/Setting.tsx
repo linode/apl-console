@@ -5,6 +5,8 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
+import { extract, isOf } from 'utils/schema'
+import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
 export const getSettingSchema = (
@@ -21,14 +23,18 @@ export const getSettingSchema = (
   switch (settingId) {
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
+      set(schema, 'properties.adminPassword.readOnly', true)
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
+      set(schema, 'properties.provider.readOnly', true)
       unset(schema, 'properties.k8sVersion.description')
+      set(schema, 'properties.k8sVersion.readOnly', true)
+      set(schema, 'properties.apiName.readOnly', true)
       if (provider === 'aws')
         // make region required
         set(schema, 'required', get(schema, 'required', []).concat(['region']))
-      else unset(schema, 'properties.region')
+      else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
       deleteAlertEndpoints(schema, formData)
@@ -42,27 +48,11 @@ export const getSettingSchema = (
       if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
-      const requiredProps: string[] = get(schema, 'properties.provider.oneOf[2].properties.azure.required')
-      if (formData.provider?.azure?.useManagedIdentityExtension) {
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientId')
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.aadClientSecret')
-        set(
-          schema,
-          'properties.provider.oneOf[2].properties.azure.required',
-          requiredProps.filter((p) => !['aadClientId', 'aadClientSecret'].includes(p)).concat('userAssignedIdentityID'),
-        )
-      } else {
-        unset(schema, 'properties.provider.oneOf[2].properties.azure.properties.userAssignedIdentityID')
-        set(
-          schema,
-          'properties.provider.oneOf[2].properties.azure.required',
-          requiredProps.concat(['aadClientId', 'aadClientSecret']),
-        )
-      }
       break
     case 'oidc':
       break
     case 'ingress':
+      set(schema, 'properties.platformClass.allOf[0].properties.className', true)
       unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
       if (provider !== 'azure') {
         unset(schema, 'properties.platformClass.allOf[1].properties.network')
@@ -83,6 +73,7 @@ export const getSettingUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   settingId: string,
+  formData: any,
 ): any => {
   const uiSchema: any = {
     cluster: {
@@ -108,24 +99,40 @@ export const getSettingUiSchema = (
     }
   }
 
+  const settingsModel = getSpec().components.schemas.Settings
+  const model = settingsModel.properties[settingId]
+  if (model) {
+    // turn on code editor for fields of type object that don't have any properties
+    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    leafs.forEach((path) => {
+      set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
+    })
+  }
   return uiSchema[settingId] || {}
 }
 
 interface Props extends CrudProps {
-  settings: any
+  settings: GetSettingsApiResponse
   settingId: string
 }
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
   const [setting, setSetting]: any = useState(data)
+  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
+  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId, data))
   useEffect(() => {
     setSetting(data)
+    onChangeHandler(data)
   }, [data])
   // END HOOKS
-  const schema = getSettingSchema(appsEnabled, settings, settingId, setting)
-  // we provide oboTeamId (not teamId) when a resource is only allowed edits by admin:
-  const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
+  const onChangeHandler = (data) => {
+    setSetting(data)
+    const schema = getSettingSchema(appsEnabled, settings, settingId, data)
+    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId, data)
+    setSchema(schema)
+    setUiSchema(uiSchema)
+  }
   return (
     <Form
       key={settingId}
@@ -133,7 +140,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       uiSchema={uiSchema}
       data={setting}
       resourceType='Settings'
-      onChange={setSetting}
+      onChange={onChangeHandler}
       idProp={null}
       adminOnly
       {...other}
