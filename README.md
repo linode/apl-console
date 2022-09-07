@@ -50,7 +50,14 @@ In vscode: open `Run and Debug` window, select `Attach to Chrome and run debuggi
 
 The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:store` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).
 
-## Custom schema decorators
+## Custom schema extensions
 
-**x-nullMe** - the properie with this decorator are not rendered and thier values are set to `null` on form submit.
-Notice that the otomi-api schema must define a given property as nullable in order make ik compatible with this decorator.
+**x-nullMe** - use this property extension to prevent from rendering and enforce its value to be set to `null` on form submit. Only applicable to trivial types like: sting, integer or boolean which are defined as `nullable` in OpenApi schema at the otomi-api project.
+
+**x-formtype** - use this property extension to set ui:widget that overloads default one. E.g.: `x-formtype: textarea`
+
+**x-hideTitle** - use this property extension to instruct to not render title and description
+
+**x-secret** - use this property extension to display value as password
+
+**x-default** - use this property to prevent property default value to be sent to otomi-api
