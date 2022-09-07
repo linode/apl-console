@@ -92,6 +92,12 @@ export const getAppSchema = (appId, formData): any => {
       if (formData.issuer === 'letsencrypt') schema.properties.values.required = ['email']
       else delete schema.properties.values.required
       break
+    case 'gitea':
+      schema.properties.postgresqlPassword.readOnly = true
+      break
+    case 'keycloak':
+      schema.properties.postgresqlPassword.readOnly = true
+      break
     default:
       break
   }

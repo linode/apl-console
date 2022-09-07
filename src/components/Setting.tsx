@@ -23,10 +23,14 @@ export const getSettingSchema = (
   switch (settingId) {
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
+      set(schema, 'properties.adminPassword.readOnly', true)
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
+      set(schema, 'properties.provider.readOnly', true)
       unset(schema, 'properties.k8sVersion.description')
+      set(schema, 'properties.k8sVersion.readOnly', true)
+      set(schema, 'properties.apiName.readOnly', true)
       if (provider === 'aws')
         // make region required
         set(schema, 'required', get(schema, 'required', []).concat(['region']))
@@ -48,6 +52,7 @@ export const getSettingSchema = (
     case 'oidc':
       break
     case 'ingress':
+      set(schema, 'properties.platformClass.allOf[0].properties.className', true)
       unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
       if (provider !== 'azure') {
         unset(schema, 'properties.platformClass.allOf[1].properties.network')
