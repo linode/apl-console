@@ -9,7 +9,6 @@ import DnsIcon from '@mui/icons-material/Dns'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
-import HomeIcon from '@mui/icons-material/Home'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
@@ -19,6 +18,8 @@ import MailIcon from '@mui/icons-material/Mail'
 import PeopleIcon from '@mui/icons-material/People'
 import PolicyIcon from '@mui/icons-material/Policy'
 import SettingsIcon from '@mui/icons-material/Settings'
+import BackupTableIcon from '@mui/icons-material/BackupTable'
+import HandshakeIcon from '@mui/icons-material/Handshake'
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import { Collapse, List, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
@@ -119,15 +120,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
 
   const settingIds = {
     cluster: [t('Cluster'), <HubIcon />],
+    otomi: [t('Otomi'), <DonutLargeIcon />],
+    kms: [t('Key Management'), <LockOpenIcon />],
     alerts: [t('Alerts'), <AnnouncementIcon />],
-    home: ['Home alerts', <HomeIcon />],
+    home: [t('Remote Monitoring'), <HandshakeIcon />],
     azure: [t('Azure'), <CloudIcon />],
     dns: [t('DNS'), <DnsIcon />],
-    ingress: [t('Ingress'), <AltRoute />],
-    kms: [t('KMS'), <LockOpenIcon />],
+    ingress: [t('Ingress Classes'), <AltRoute />],
     oidc: [t('OIDC'), <SettingsEthernetIcon />],
-    otomi: [t('Otomi'), <DonutLargeIcon />],
     smtp: [t('SMTP'), <MailIcon />],
+    backup: [t('Backup'), <BackupTableIcon />],
   }
 
   return (

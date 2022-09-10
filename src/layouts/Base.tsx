@@ -172,7 +172,7 @@ export default function ({ children, title }: Props): React.ReactElement {
             <Box sx={{ display: { xs: 'none', md: 'block' } }}>
               <IconButton>
                 {img}
-                <Typography className={classes.title}>otomi console</Typography>
+                <Typography className={classes.title}>Otomi Platform</Typography>
               </IconButton>
             </Box>
             <Box sx={{ display: { xs: 'block', md: 'none' } }}>

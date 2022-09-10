@@ -59,6 +59,9 @@ k8s:
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: vault
+    - name: velero
+      disableIstioInjection: true
+      disablePolicyChecks: true
 
 adminApps:
   - name: alertmanager
@@ -276,6 +279,8 @@ adminApps:
         port: 8200
         type: public
         auth: true
+  - name: velero
+    tags: [backup]
 
 teamApps:
   - name: alertmanager
