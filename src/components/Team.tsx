@@ -50,7 +50,7 @@ export const getTeamUiSchema = (
   }
   if (!appsEnabled.grafana || !otomi.isMultitenant) uiSchema.azureMonitor = { 'ui:disabled': true }
 
-  applyAclToUiSchema(uiSchema, user, teamId, 'Team')
+  applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
 }
 
