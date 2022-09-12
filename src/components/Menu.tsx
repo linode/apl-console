@@ -224,6 +224,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                   (id === 'dns' && !otomi.hasExternalDNS)
                 )
                   disabled = true
+                if (id === 'backup' && !appsEnabled.velero) disabled = true
                 return (
                   <StyledMenuItem
                     key={id}

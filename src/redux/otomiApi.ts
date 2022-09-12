@@ -2442,6 +2442,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     region?: string
     k8sContext?: string
   }
+  backup?: {
+    platformSchedule?: {
+      enabled?: boolean
+    }
+  }
   home?: {
     repeatInterval?: string
     groupInterval?: string
@@ -2814,6 +2819,11 @@ export type EditSettingsApiArg = {
       owner?: string
       region?: string
       k8sContext?: string
+    }
+    backup?: {
+      platformSchedule?: {
+        enabled?: boolean
+      }
     }
     home?: {
       repeatInterval?: string
