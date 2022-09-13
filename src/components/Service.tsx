@@ -125,7 +125,7 @@ export const getServiceUiSchema = (
   // So we remove the item from the schema instead (see getServiceSchema above)
   // if (!appsEnabled.alertmanager || !otomi.isMultitenant) uiSchema.ksvc = { 'ui:enumDisabled': [1, 2] }
 
-  applyAclToUiSchema(uiSchema, user, teamId, 'Service')
+  applyAclToUiSchema(uiSchema, user, teamId, 'service')
 
   return uiSchema
 }
