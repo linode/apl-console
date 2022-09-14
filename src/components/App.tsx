@@ -92,12 +92,6 @@ export const getAppSchema = (appId, formData): any => {
       if (formData.issuer === 'letsencrypt') schema.properties.values.required = ['email']
       else delete schema.properties.values.required
       break
-    case 'gitea':
-      schema.properties.postgresqlPassword.readOnly = true
-      break
-    case 'keycloak':
-      schema.properties.postgresqlPassword.readOnly = true
-      break
     default:
       break
   }
@@ -205,7 +199,7 @@ export default function ({
     schema,
     shortcuts: defaultShortcuts,
   } = getAppData(session, teamId, id)
-  const defTab = hashMap[hash] ?? 0
+  const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
     setTab(tab)
@@ -302,22 +296,27 @@ export default function ({
       </Box>
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
-          <Tab href='#info' label='Info' value={0} />
-          <Tab href='#shortcuts' label={t('Shortcuts')} value={1} disabled={enabled === false || !hasShortcuts} />
+          <Tab href='#info' label='Info' value={hashMap.info} />
+          <Tab
+            href='#shortcuts'
+            label={t('Shortcuts')}
+            value={hashMap.shortcuts}
+            disabled={enabled === false || !hasShortcuts}
+          />
           {isAdminApps && (
-            <Tab href='#values' label={t('Values')} value={2} disabled={enabled === false || !appSchema || !inValues} />
+            <Tab href='#values' label={t('Values')} value={hashMap.values} disabled={enabled === false || !appSchema} />
           )}
           {isAdminApps && (
             <Tab
               href='#rawvalues'
               label={t('Raw values')}
-              value={3}
-              disabled={enabled === false || !appSchema || !inRawValues}
+              value={hashMap.rawvalues}
+              disabled={enabled === false || !appSchema}
             />
           )}
         </Tabs>
       </AppBar>
-      <TabPanel value={tab} index={0}>
+      <TabPanel value={tab} index={hashMap.info}>
         <Grid container direction='row'>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
@@ -385,7 +384,7 @@ export default function ({
           </Grid>
         </Grid>
       </TabPanel>
-      <TabPanel value={tab} index={1}>
+      <TabPanel value={tab} index={hashMap.shortcuts}>
         <Header
           title={t('Shortcuts')}
           description={t('FORM_SHORTCUTS_DESC', { title: appInfo.title })}
@@ -442,48 +441,44 @@ export default function ({
           </Button>
         </Box>
       </TabPanel>
-      {inValues && (
-        <TabPanel value={tab} index={2}>
-          <Form
-            adminOnly
-            description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
-            data={values}
-            schema={appSchema}
-            uiSchema={appUiSchema}
-            onChange={handleValuesChange}
-            onSubmit={handleSubmit}
-            resourceType='Values'
-            idProp={null}
-            mutating={mutating}
-          />
-        </TabPanel>
-      )}
-      {inValues && (
-        <TabPanel value={tab} index={3}>
-          <Header title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
-          <div className={classes.buffer}> </div>
-          <CodeEditor
-            code={yaml}
-            onChange={(data) => setRawValues(data || {})}
-            disabled={!isEdit}
-            setValid={setValidRaw}
-          />
-          <Box display='flex' flexDirection='row-reverse' m={1}>
-            <Button
-              color='primary'
-              variant='contained'
-              data-cy='button-edit-rawvalues'
-              onClick={() => {
-                if (isEdit) handleSubmit()
-                setIsEdit(!isEdit)
-              }}
-              disabled={!validRaw}
-            >
-              {isEdit ? t('Submit') : t('Edit')}
-            </Button>
-          </Box>
-        </TabPanel>
-      )}
+      <TabPanel value={tab} index={hashMap.values}>
+        <Form
+          adminOnly
+          description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
+          data={values}
+          schema={appSchema}
+          uiSchema={appUiSchema}
+          onChange={handleValuesChange}
+          onSubmit={handleSubmit}
+          resourceType='Values'
+          idProp={null}
+          mutating={mutating}
+        />
+      </TabPanel>
+      <TabPanel value={tab} index={hashMap.rawvalues}>
+        <Header title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
+        <div className={classes.buffer}> </div>
+        <CodeEditor
+          code={yaml}
+          onChange={(data) => setRawValues(data || {})}
+          disabled={!isEdit}
+          setValid={setValidRaw}
+        />
+        <Box display='flex' flexDirection='row-reverse' m={1}>
+          <Button
+            color='primary'
+            variant='contained'
+            data-cy='button-edit-rawvalues'
+            onClick={() => {
+              if (isEdit) handleSubmit()
+              setIsEdit(!isEdit)
+            }}
+            disabled={!validRaw}
+          >
+            {isEdit ? t('Submit') : t('Edit')}
+          </Button>
+        </Box>
+      </TabPanel>
     </Box>
   )
 }
