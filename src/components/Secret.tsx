@@ -18,7 +18,7 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
     name: { 'ui:autofocus': true },
   }
 
-  applyAclToUiSchema(uiSchema, user, teamId, 'Secret')
+  applyAclToUiSchema(uiSchema, user, teamId, 'secret')
 
   return uiSchema
 }
