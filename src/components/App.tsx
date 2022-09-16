@@ -442,18 +442,20 @@ export default function ({
         </Box>
       </TabPanel>
       <TabPanel value={tab} index={hashMap.values}>
-        <Form
-          adminOnly
-          description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
-          data={values}
-          schema={appSchema}
-          uiSchema={appUiSchema}
-          onChange={handleValuesChange}
-          onSubmit={handleSubmit}
-          resourceType='Values'
-          idProp={null}
-          mutating={mutating}
-        />
+        {appSchema && (
+          <Form
+            adminOnly
+            description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
+            data={values}
+            schema={appSchema}
+            uiSchema={appUiSchema}
+            onChange={handleValuesChange}
+            onSubmit={handleSubmit}
+            resourceType='Values'
+            idProp={null}
+            mutating={mutating}
+          />
+        )}
       </TabPanel>
       <TabPanel value={tab} index={hashMap.rawvalues}>
         <Header title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
