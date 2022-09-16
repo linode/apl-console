@@ -15,7 +15,7 @@ import {
 } from 'redux/otomiApi'
 import { setDirty } from 'redux/reducers'
 import { ReducerState } from 'redux/store'
-import { ApiErrorGatewayTimeout, ApiErrorUnauthorized } from 'utils/error'
+import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
@@ -82,10 +82,16 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (session && oldDirty !== session.isDirty) dispatch(setDirty(session.isDirty))
   }, [session])
   // END HOOKS
-  const error = errorApps || errorSession || errorApiDocs || errorSettings
-  if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
+
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // else err = <ErrorComponent error={error} />
+  if (isLoadingSession) return <Loader />
+  if (!isLoadingSession && !errorSession && session.user.teams.length === 0)
+    return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
+
+  const error = errorApps || errorSession || errorApiDocs || errorSettings
+  if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
+
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
