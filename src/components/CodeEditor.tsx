@@ -52,7 +52,7 @@ export default function ({
     } catch (e) {
       setLocalValid(false)
       if (setValid) setValid(false)
-      console.error('invalid yaml detected')
+      console.error(e)
       return undefined
     }
   }

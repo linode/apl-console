@@ -9,6 +9,8 @@ import User from 'components/User'
 import { useSession } from 'providers/Session'
 import { useTheme } from 'providers/Theme'
 import React, { useState } from 'react'
+import ErrorComponent from 'components/Error'
+import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
@@ -224,7 +226,7 @@ export default function ({ children, title }: Props): React.ReactElement {
       </Box>
       <main className={classes.content}>
         <ToolbarOffset />
-        {children}
+        <ErrorBoundary FallbackComponent={ErrorComponent}>{children}</ErrorBoundary>
       </main>
     </div>
   )

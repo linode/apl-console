@@ -39,5 +39,14 @@ export default function ({ clusters }: ClustersProps): React.ReactElement {
       },
     },
   ]
-  return <ListTable headCells={headCells} rows={clusters} resourceType='Cluster' hasTeamScope={false} noCrud />
+  return (
+    <ListTable
+      headCells={headCells}
+      rows={clusters}
+      resourceType='Cluster'
+      hasTeamScope={false}
+      noCrud
+      idKey='domainSuffix'
+    />
+  )
 }

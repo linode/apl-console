@@ -33,3 +33,9 @@ export class ApiErrorUnauthorized extends ApiError {
     super(e['Unauthorized. The user may not be assigned to any team.'], 403)
   }
 }
+
+export class ApiErrorUnauthorizedNoGroups extends ApiError {
+  constructor() {
+    super('It seems that a user does not belong to any team. Please check the groups claim of the id_token')
+  }
+}
