@@ -86,7 +86,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // else err = <ErrorComponent error={error} />
   if (isLoadingSession) return <Loader />
-  if (!isLoadingSession && !errorSession && session.user.teams.length === 0)
+  if (!isLoadingSession && !errorSession && !session.user.isAdmin && session.user.teams.length === 0)
     return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
 
   const error = errorApps || errorSession || errorApiDocs || errorSettings
