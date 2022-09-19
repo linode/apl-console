@@ -175,7 +175,7 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
       <Grid item xs={12}>
         <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
           <Trans i18nKey='WELCOME_DASHBOARD'>
-            Welcome to the team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard!
+            Team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard
           </Trans>
         </Typography>
         <Divider />

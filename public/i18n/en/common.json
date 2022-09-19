@@ -68,7 +68,7 @@
   "Team": "Team",
   "Team_plural": "Teams",
   "Teams": "Teams",
-  "WELCOME_DASHBOARD": "Welcome to the team <1>{{teamName}}</1> dashboard!",
+  "WELCOME_DASHBOARD": "Team <1>{{teamName}}</1> dashboard",
   "add item": "add item",
   "admin": "admin",
   "all": "all",
