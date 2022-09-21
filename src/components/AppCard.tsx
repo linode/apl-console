@@ -93,7 +93,14 @@ export default function ({
       </RLink>
       {enabled !== false && (
         <Box className='hidden-button'>
-          <AppButtons id={id} teamId={teamId} setAppState={setAppState} enabled={enabled !== false} hideEnabled />
+          <AppButtons
+            id={id}
+            teamId={teamId}
+            setAppState={setAppState}
+            enabled={enabled !== false}
+            hideEnabled
+            hideSettings={teamId !== 'admin'}
+          />
         </Box>
       )}
     </Box>
