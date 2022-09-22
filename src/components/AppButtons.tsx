@@ -1,5 +1,5 @@
-import { PlayCircleFilled as PlayIcon, Settings as SettingsIcon } from '@mui/icons-material'
-import { ButtonGroup, Checkbox, IconButton, Link } from '@mui/material'
+import { Settings as SettingsIcon } from '@mui/icons-material'
+import { ButtonGroup, Checkbox, IconButton } from '@mui/material'
 import useAuthzSession from 'hooks/useAuthzSession'
 import React, { ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,11 +22,9 @@ export default function ({
   hideSettings = false,
 }: Props): React.ReactElement {
   const session = useAuthzSession()
-  const { externalUrl } = getAppData(session, teamId, id)
   const { t } = useTranslation()
   // END HOOKS
   const isAdminApps = teamId === 'admin'
-  const playButtonProps = { LinkComponent: Link, href: externalUrl, target: '_blank', rel: 'noopener' }
   const handleAppsToggle = (event: ChangeEvent<HTMLInputElement>) => {
     const enabled = event.target.checked
     const { deps } = getAppData(session, teamId, id)
@@ -56,22 +54,13 @@ export default function ({
           }}
         />
       )}
-      {externalUrl && (
-        <IconButton size='large' {...playButtonProps} disabled={!enabled} title={t('Click to play')}>
-          <PlayIcon
-            sx={{
-              color: !enabled ? 'action.disabled' : 'white',
-            }}
-          />
-        </IconButton>
-      )}
       {!hideSettings && (
         <IconButton
           component={RLink}
-          to={`/apps/${teamId}/${id}#values`}
+          to={`/apps/${teamId}/${id}`}
           size='large'
           disabled={!enabled}
-          title={t('Click to edit values')}
+          title={t('Click to edit settings')}
         >
           <SettingsIcon
             sx={{

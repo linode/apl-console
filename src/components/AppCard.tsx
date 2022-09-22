@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import { useDrag } from 'react-dnd'
-import { Link as RLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 import AppButtons from './AppButtons'
 
@@ -52,6 +52,7 @@ export default function ({
   title,
   setAppState,
   isCore = false,
+  externalUrl,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const canDrag = enabled !== undefined
@@ -71,36 +72,34 @@ export default function ({
     }),
     [],
   )
+  const image = (
+    <img
+      draggable={false}
+      className={cx(classes.img)}
+      src={img}
+      onError={({ currentTarget }) => {
+        currentTarget.onerror = null // prevents looping
+        currentTarget.src = imgAlt
+      }}
+      alt={`Logo for ${title} app`}
+    />
+  )
+
+  const linkStyle = enabled && externalUrl ? undefined : ({ pointerEvents: 'none' } as CSSProperties)
   return (
     <Box
       className={cx(classes.root, (isDragging === undefined ? undefined : !isDragging) && classes.notDragging)}
       ref={dragRef}
     >
-      <RLink to={`/apps/${teamId}/${id}`}>
-        <img
-          draggable={false}
-          className={cx(classes.img)}
-          src={img}
-          onError={({ currentTarget }) => {
-            currentTarget.onerror = null // prevents looping
-            currentTarget.src = imgAlt
-          }}
-          alt={`Logo for ${title} app`}
-        />
+      <Link to={{ pathname: externalUrl }} style={linkStyle} target='_blank'>
+        {image}
         <Typography className={cx(classes.title, isCore && classes.core)} variant='h6'>
           {title}
         </Typography>
-      </RLink>
+      </Link>
       {enabled !== false && (
         <Box className='hidden-button'>
-          <AppButtons
-            id={id}
-            teamId={teamId}
-            setAppState={setAppState}
-            enabled={enabled !== false}
-            hideEnabled
-            hideSettings={teamId !== 'admin'}
-          />
+          <AppButtons id={id} teamId={teamId} setAppState={setAppState} enabled={enabled !== false} hideEnabled />
         </Box>
       )}
     </Box>
