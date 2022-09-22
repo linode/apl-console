@@ -134,78 +134,91 @@ export default function ({ className, teamId }: Props): React.ReactElement {
 
   return (
     <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
-      <StyledListSubheader component='div' data-cy='list-subheader-platform'>
-        <ListItemText primary={t('Platform')} />
+      <StyledListSubheader component='div' data-cy='list-subheader-actions'>
+        <ListItemText primary={t('Actions')} />
       </StyledListSubheader>
-      <StyledMenuItem to='/' selected={pathname === `/`}>
+      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
         <ListItemIcon>
-          <DashboardIcon />
+          <CloudUploadIcon />
         </ListItemIcon>
-        <ListItemText primary={t('Dashboard')} data-cy='menu-item-dashboard' />
-      </StyledMenuItem>
-      {isAdmin && (
-        <StyledMenuItem to='/apps/admin' selected={pathname.indexOf(`/apps/admin`) === 0} data-cy='menu-item-otomiapps'>
-          <ListItemIcon>
-            <AppsIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('Apps')} />
-        </StyledMenuItem>
-      )}
-      {isAdmin && (
-        <StyledMenuItem
-          to='/shortcuts/admin'
-          selected={pathname === '/shortcuts/admin'}
-          data-cy='menu-item-otomishortcuts'
-        >
-          <ListItemIcon>
-            <ShortcutIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('Shortcuts')} />
-        </StyledMenuItem>
-      )}
-      <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
-        <ListItemIcon>
-          <CloudIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Clusters')} />
-      </StyledMenuItem>
-      {isAdmin && (
-        <StyledMenuItem
-          to='/policies'
-          selected={pathname.indexOf(`/policies`) === 0}
-          data-cy='menu-item-policies'
-          disabled={!appsEnabled.gatekeeper}
-        >
-          <ListItemIcon>
-            <PolicyIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('Policies')} />
-        </StyledMenuItem>
-      )}
-      <StyledMenuItem
-        to='/teams'
-        selected={pathname.indexOf('/teams') === 0 && pathname.match(/\//g).length < 3}
-        data-cy='menu-item-teams'
-      >
-        <ListItemIcon>
-          <PeopleIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Teams')} />
-      </StyledMenuItem>
-      <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
-        <ListItemIcon>
-          <SwapVerticalCircleIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Services')} />
-      </StyledMenuItem>
-      <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
-        <ListItemIcon>
-          <HourglassEmptyIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Jobs')} />
-      </StyledMenuItem>
+        <ListItemText primary={t('Deploy Changes')} />
+      </MenuItem>
       {isAdmin && (
         <>
+          <StyledListSubheader component='div' data-cy='list-subheader-platform'>
+            <ListItemText primary={t('Platform')} />
+          </StyledListSubheader>
+          <StyledMenuItem to='/' selected={pathname === `/`}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Dashboard')} data-cy='menu-item-dashboard' />
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            to='/apps/admin'
+            selected={pathname.indexOf(`/apps/admin`) === 0}
+            data-cy='menu-item-otomiapps'
+          >
+            <ListItemIcon>
+              <AppsIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Apps')} />
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            to='/shortcuts/admin'
+            selected={pathname === '/shortcuts/admin'}
+            data-cy='menu-item-otomishortcuts'
+          >
+            <ListItemIcon>
+              <ShortcutIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Shortcuts')} />
+          </StyledMenuItem>
+
+          <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
+            <ListItemIcon>
+              <CloudIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Clusters')} />
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            to='/policies'
+            selected={pathname.indexOf(`/policies`) === 0}
+            data-cy='menu-item-policies'
+            disabled={!appsEnabled.gatekeeper}
+          >
+            <ListItemIcon>
+              <PolicyIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Policies')} />
+          </StyledMenuItem>
+
+          <StyledMenuItem
+            to='/teams'
+            selected={pathname.indexOf('/teams') === 0 && pathname.match(/\//g).length < 3}
+            data-cy='menu-item-teams'
+          >
+            <ListItemIcon>
+              <PeopleIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Teams')} />
+          </StyledMenuItem>
+          <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
+            <ListItemIcon>
+              <SwapVerticalCircleIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Services')} />
+          </StyledMenuItem>
+          <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
+            <ListItemIcon>
+              <HourglassEmptyIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Jobs')} />
+          </StyledMenuItem>
+
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
             <ListItemIcon>
               <SettingsIcon />
@@ -242,12 +255,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </Collapse>
         </>
       )}
-      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
-        <ListItemIcon>
-          <CloudUploadIcon />
-        </ListItemIcon>
-        <ListItemText primary={t('Deploy Changes')} />
-      </MenuItem>
       {teamId && (
         <>
           <StyledListSubheader component='div'>
