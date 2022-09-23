@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.17](https://github.com/redkubes/otomi-stack-web/compare/v0.5.16...v0.5.17) (2022-09-23)
+
+
+### Features
+
+* add velero to platform apps ([#218](https://github.com/redkubes/otomi-stack-web/issues/218)) ([6e2e410](https://github.com/redkubes/otomi-stack-web/commit/6e2e4107d8acb70c88b942db172826e45afb8ccb))
+* hide admin menu from team users ([#219](https://github.com/redkubes/otomi-stack-web/issues/219)) ([e2b8a49](https://github.com/redkubes/otomi-stack-web/commit/e2b8a49442cac16e439a98ea6afc39ad2dcb12b8))
+* more dns providers, including 'other' ([#213](https://github.com/redkubes/otomi-stack-web/issues/213)) ([8777115](https://github.com/redkubes/otomi-stack-web/commit/87771159135213e49a9c1ccd2de19620336df1e5))
+
+
+### Bug Fixes
+
+* admin authentication ([#217](https://github.com/redkubes/otomi-stack-web/issues/217)) ([2ef5aa3](https://github.com/redkubes/otomi-stack-web/commit/2ef5aa37476a4549af4212b2b2b4e0b2a174aeac))
+* app tabs and error handling ([#216](https://github.com/redkubes/otomi-stack-web/issues/216)) ([2271549](https://github.com/redkubes/otomi-stack-web/commit/22715490686fdb9173c4884d9c4e61b125ea6952))
+* authorisation  ([#214](https://github.com/redkubes/otomi-stack-web/issues/214)) ([42bfe49](https://github.com/redkubes/otomi-stack-web/commit/42bfe49c70941b511c2edfe6dcb63c14ff719da2))
+* display values tab ([#215](https://github.com/redkubes/otomi-stack-web/issues/215)) ([6cf9aaa](https://github.com/redkubes/otomi-stack-web/commit/6cf9aaa6a4acdd5554529eefdb2e55a7e98de1a8))
+* do not show settings button for users that are not admins ([29993a8](https://github.com/redkubes/otomi-stack-web/commit/29993a89fbc780164391bb208eb1cebafcf452fe))
+
 ### [0.5.16](https://github.com/redkubes/otomi-stack-web/compare/v0.5.15...v0.5.16) (2022-08-24)
 
 
