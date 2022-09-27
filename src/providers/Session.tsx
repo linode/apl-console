@@ -98,6 +98,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const {
     user: { isAdmin, teams },
   } = session
+  if (!isAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
   if (!oboTeamId) {
     if (isAdmin) setOboTeamId('admin')
     else if (!isAdmin) {
