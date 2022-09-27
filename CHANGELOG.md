@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.18](https://github.com/redkubes/otomi-stack-web/compare/v0.5.17...v0.5.18) (2022-09-27)
+
+
+### Bug Fixes
+
+* reset oboTeamId if it does not match any teams that of a team user ([#220](https://github.com/redkubes/otomi-stack-web/issues/220)) ([78edd1c](https://github.com/redkubes/otomi-stack-web/commit/78edd1cfbb10b3c468f54171e6c23b339f73df33))
+
 ### [0.5.17](https://github.com/redkubes/otomi-stack-web/compare/v0.5.16...v0.5.17) (2022-09-23)
 
 
