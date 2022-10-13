@@ -1,5 +1,5 @@
 import { OptionsObject, SnackbarProvider, SnackbarProviderProps, WithSnackbarProps, useSnackbar } from 'notistack'
-import React from 'react'
+import React, { JSXElementConstructor, ReactElement } from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 export const defaultOpts = {
@@ -46,24 +46,24 @@ export function SnackbarUtilsConfigurator(): React.ReactElement {
 }
 
 export default {
-  success(msg: string, options: OptionsObject = {}): React.ReactElement {
+  success(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
     return this.toast(msg, { ...options, variant: 'success' })
   },
-  warning(msg: string, options: OptionsObject = {}): React.ReactElement {
+  warning(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
     return this.toast(msg, { ...options, variant: 'warning' })
   },
-  info(msg: string, options: OptionsObject = {}): React.ReactElement {
+  info(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
     return this.toast(msg, { ...options, variant: 'info' })
   },
-  error(msg: string, options: OptionsObject = {}): React.ReactElement {
+  error(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
     return this.toast(msg, { ...options, variant: 'error' })
   },
   // eslint-disable-next-line consistent-return
-  toast(msg: string, options: OptionsObject = {}): React.ReactElement | any {
+  toast(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> | any {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
   // eslint-disable-next-line consistent-return
-  close(id: number): React.ReactElement | any {
+  close(id: any): ReactElement<any, string | JSXElementConstructor<any>> | void {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)
   },
 }

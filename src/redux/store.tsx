@@ -17,7 +17,7 @@ export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (ac
       // dirty logic: every MUTATION we deem to make state dirty
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
       // after we processed a successful deploy QUERY we reset dirty state
-      if (endpointName === 'deploy' && requestStatus === 'fulfilled') dispatch(setDirty(false))
+      if (['deploy', 'revert'].includes(endpointName) && requestStatus === 'fulfilled') dispatch(setDirty(false))
     }
   } else if (payload) {
     const {

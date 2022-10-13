@@ -33,7 +33,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useDeployQuery } from 'redux/otomiApi'
+import { useDeployQuery, useRevertQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
@@ -55,6 +55,14 @@ const useStyles = makeStyles()((theme) => ({
     backgroundColor: theme.palette.primary.main,
     '&:hover': {
       backgroundColor: theme.palette.primary.light,
+    },
+  },
+  revert: {
+    height: theme.spacing(5),
+    // color: theme.palette.common.black,
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
     },
   },
   settingsList: {
@@ -85,14 +93,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
     appsEnabled,
+    editor,
     oboTeamId,
     settings: { cluster, otomi },
     user,
   } = useSession()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  const disabled = !isDirty || editor !== user.email
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
+  const [revert, setRevert] = useState(false)
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
+  const { isSuccess: okRevert, error: errorRevert }: any = useRevertQuery(!revert ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const [key, setKey] = useState<any>()
@@ -109,13 +121,26 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       setDeploy(false)
     }
   }
+  if (revert) {
+    if (!key) setKey(snack.info(t('Reverting... Hold on!'), { autoHideDuration: 8000 }))
+
+    if (okRevert || errorRevert) {
+      snack.close(key)
+      if (errorRevert) setTimeout(() => snack.error(t('Reverting failed. Please contact support@redkubes.com.')))
+      else window.location.reload()
+    }
+  }
 
   const handleCollapse = (): void => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
   }
 
-  const handleClick = (): void => {
+  const handleDeployClick = (): void => {
     setDeploy(true)
+  }
+
+  const handleRevertClick = (): void => {
+    setRevert(true)
   }
 
   const settingIds = {
@@ -137,12 +162,30 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       <StyledListSubheader component='div' data-cy='list-subheader-actions'>
         <ListItemText primary={t('Actions')} />
       </StyledListSubheader>
-      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <MenuItem
+        className={classes.deploy}
+        disabled={disabled}
+        onClick={handleDeployClick}
+        data-cy='menu-item-deploy-changes'
+      >
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
         <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
+      {isDirty && editor === user.email && (
+        <MenuItem
+          className={classes.revert}
+          disabled={disabled}
+          onClick={handleRevertClick}
+          data-cy='menu-item-reset-changes'
+        >
+          <ListItemIcon>
+            <CloudUploadIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('Revert Changes')} />
+        </MenuItem>
+      )}
       {isAdmin && (
         <>
           <StyledListSubheader component='div' data-cy='list-subheader-platform'>
@@ -332,7 +375,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             component={MuiLink}
             aria-label={t('Download KUBECFG')}
             href={`/api/v1/kubecfg/${oboTeamId}`}
-            disabled={!canDo(user, oboTeamId, 'downloadKubeConfig')}
+            disabled={teamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig')}
           >
             <ListItemIcon>
               <CloudDownloadIcon />

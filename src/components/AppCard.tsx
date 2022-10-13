@@ -1,4 +1,5 @@
 import { Box, Typography } from '@mui/material'
+import { useSession } from 'providers/Session'
 import React, { CSSProperties } from 'react'
 import { useDrag } from 'react-dnd'
 import { Link } from 'react-router-dom'
@@ -54,13 +55,18 @@ export default function ({
   isCore = false,
   externalUrl,
 }: any): React.ReactElement {
+  const session = useSession()
+  const {
+    editor,
+    user: { email },
+  } = session
+  const isReadOnly = editor && editor !== email
   const { classes, cx } = useStyles()
-  const canDrag = enabled !== undefined
   const [_, dragRef] = useDrag(
     () => ({
       type: 'card',
       item: { name: id },
-      canDrag,
+      canDrag: isReadOnly ? false : enabled !== undefined,
       collect: (monitor) => {
         const d = monitor.isDragging()
         if (d) setDeps(deps)
@@ -70,7 +76,7 @@ export default function ({
       },
       end: () => setTimeout(() => setDeps(undefined)),
     }),
-    [],
+    [isReadOnly],
   )
   const image = (
     <img

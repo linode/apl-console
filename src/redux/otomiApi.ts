@@ -85,6 +85,9 @@ const injectedRtkApi = api.injectEndpoints({
     deploy: build.query<DeployApiResponse, DeployApiArg>({
       query: () => ({ url: `/deploy` }),
     }),
+    revert: build.query<RevertApiResponse, RevertApiArg>({
+      query: () => ({ url: `/revert` }),
+    }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
@@ -2363,6 +2366,8 @@ export type DeleteSecretApiArg = {
 }
 export type DeployApiResponse = /** status 202 Deployment has been triggered */ object
 export type DeployApiArg = void
+export type RevertApiResponse = /** status 202 Revert has been triggered */ object
+export type RevertApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
   /** ID of team to return */
@@ -2371,6 +2376,7 @@ export type DownloadKubecfgApiArg = {
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
   ca?: string
   core?: object
+  editor?: string
   isDirty?: boolean
   user?: {
     name: string
@@ -2445,6 +2451,13 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   backup?: {
     platformSchedule?: {
       enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    teamSchedule?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
     }
   }
   home?: {
@@ -2823,6 +2836,13 @@ export type EditSettingsApiArg = {
     backup?: {
       platformSchedule?: {
         enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      teamSchedule?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
       }
     }
     home?: {
@@ -3221,6 +3241,7 @@ export const {
   useEditSecretMutation,
   useDeleteSecretMutation,
   useDeployQuery,
+  useRevertQuery,
   useDownloadKubecfgQuery,
   useGetSessionQuery,
   useApiDocsQuery,
