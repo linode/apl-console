@@ -124,9 +124,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     if (!key) setKey(snack.info(t('Reverting... Hold on!'), { autoHideDuration: 8000 }))
 
     if (okRevert || errorRevert) {
-      snack.close(key)
-      if (errorRevert) setTimeout(() => snack.error(t('Reverting failed. Please contact support@redkubes.com.')))
-      else window.location.reload()
+      if (errorRevert) {
+        setTimeout(() => {
+          snack.close(key)
+          snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
+        })
+      } else setTimeout(() => window.location.reload(), 4000)
     }
   }
 

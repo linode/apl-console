@@ -34,6 +34,7 @@ interface Props extends CrudProps {
   resourceName?: string
   adminOnly?: boolean
   disabled?: boolean
+  deleteDisabled?: boolean
   liveValidate?: boolean
   children?: any
   title?: any
@@ -51,6 +52,7 @@ export default function ({
   adminOnly = false,
   description,
   disabled,
+  deleteDisabled = false,
   resourceType,
   liveValidate,
   title: inTitle,
@@ -160,6 +162,7 @@ export default function ({
             resourceName={resourceName}
             resourceType={resourceType}
             disabled={disabled || !isDirty}
+            deleteDisabled={deleteDisabled || mutating || isReadOnly}
             onDelete={onDelete}
           />
         )}

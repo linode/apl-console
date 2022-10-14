@@ -76,6 +76,7 @@ export default function ({ team, ...other }: Props): React.ReactElement {
       onChange={setData}
       uiSchema={uiSchema}
       data={formData}
+      deleteDisabled={!user.isAdmin}
       resourceType='Team'
       {...other}
     />
