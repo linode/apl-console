@@ -2377,7 +2377,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   ca?: string
   core?: object
   editor?: string
-  isDirty?: boolean
   user?: {
     name: string
     email: string

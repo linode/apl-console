@@ -4,8 +4,6 @@ import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import React, { JSXElementConstructor, ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSelector } from 'react-redux'
-import { useAppDispatch } from 'redux/hooks'
 import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
@@ -14,8 +12,6 @@ import {
   useGetSessionQuery,
   useGetSettingsQuery,
 } from 'redux/otomiApi'
-import { setDirty } from 'redux/reducers'
-import { ReducerState } from 'redux/store'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
@@ -55,7 +51,6 @@ type DbMessage = {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const dispatch = useAppDispatch()
   const { data: session, isLoading: isLoadingSession, error: errorSession, isSuccess: okSession } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
@@ -87,23 +82,55 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       refetchSettings,
       setOboTeamId,
       settings,
-      isDirty: session?.isDirty || lastDbMessage?.state === 'dirty',
-      editor: lastDbMessage ? lastDbMessage.editor : session?.editor,
+      // eslint-disable-next-line no-nested-ternary
+      editor: lastDbMessage ? (lastDbMessage.state === 'dirty' ? lastDbMessage.editor : undefined) : session?.editor,
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
-  const oldDirty = useSelector(({ global }: ReducerState) => global.isDirty)
-  useEffect(() => {
-    // when the UI dirty flag changes on the server, and it has changed from local state, will we dispatch
-    if (session && oldDirty !== session.isDirty) dispatch(setDirty(session.isDirty))
-  }, [session])
+  const { editor, user } = ctx
+  const { email, isAdmin, teams } = user || {}
+
+  // const oldDirty = useSelector(({ global }: ReducerState) => global.isDirty)
+  // useEffect(() => {
+  //   // when the UI dirty flag changes on the server, and it has changed from local state, will we dispatch
+  //   if (session && oldDirty !== (session?)) dispatch(setDirty(session.isDirty))
+  // }, [session])
   const { t } = useTranslation()
-  const [lastEditor, setLastEditor] = useState<string | undefined>(session?.editor)
   const [closeKey, setCloseKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
   const [readyKey, setReadyKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
   useEffect(() => {
-    if (lastDbMessage && lastDbMessage.editor !== lastEditor) setLastEditor(lastDbMessage.editor)
-  }, [lastDbMessage])
+    if (editor && editor !== email) {
+      if (!closeKey) {
+        setCloseKey(
+          snack.warning(
+            t('User {{editor}} is already editing. Console is read-only until user finishes.', { editor }),
+            {
+              persist: true,
+              onClick: () => {
+                snack.close(closeKey)
+              },
+            },
+          ),
+        )
+      }
+    }
+    if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'clean') {
+      if (closeKey) snack.close(closeKey)
+      if (!readyKey) {
+        setReadyKey(
+          snack.info(t('User {{editor}} is done editing. Console is unblocked.', { editor }), {
+            persist: true,
+            onClick: () => {
+              snack.close(readyKey)
+            },
+          }),
+        )
+      }
+    }
+
+    if (!editor && closeKey) snack.close(closeKey)
+  }, [session, lastDbMessage, editor, closeKey, readyKey])
+
   // END HOOKS
 
   // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
@@ -118,44 +145,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
-  const {
-    editor,
-    user: { email, isAdmin, teams },
-  } = ctx
-  // messages
-  socket.on('connection', (socket) => {
-    console.log('a user connected')
-    snack.info(t('Another user just logged into the console.'))
-    socket.on('disconnect', () => {
-      console.log('user disconnected')
-    })
-  })
-  if (editor && editor !== email) {
-    if (!closeKey) {
-      setCloseKey(
-        snack.warning(t('User {{editor}} is already editing. Console is read-only until user finishes.', { editor }), {
-          persist: true,
-          onClick: () => {
-            snack.close(closeKey)
-          },
-        }),
-      )
-    }
-  }
-  if (!editor && closeKey) snack.close(closeKey)
-  if (lastEditor && lastEditor !== email && !lastDbMessage?.editor) {
-    if (!readyKey) {
-      setReadyKey(
-        snack.info(t('User {{editor}} is done editing. Console is unblocked.', { editor }), {
-          persist: true,
-          onClick: () => {
-            snack.close(readyKey)
-          },
-        }),
-      )
-    }
-  }
-
   if (!isAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
   if (!oboTeamId) {
     if (isAdmin) setOboTeamId('admin')

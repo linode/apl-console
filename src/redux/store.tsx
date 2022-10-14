@@ -2,24 +2,13 @@
 import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/toolkit'
 import logger from 'redux-logger'
 import { otomiApi } from 'redux/otomiApi'
-import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'
+import globalReducer, { GlobalState, setError } from 'redux/reducers'
 import snack from 'utils/snack'
 
 export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
   const { error, payload, meta } = action
   const { dispatch } = api
-  if (!error) {
-    if (meta) {
-      const {
-        arg: { type, endpointName },
-        requestStatus,
-      } = meta
-      // dirty logic: every MUTATION we deem to make state dirty
-      if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
-      // after we processed a successful deploy QUERY we reset dirty state
-      if (['deploy', 'revert'].includes(endpointName) && requestStatus === 'fulfilled') dispatch(setDirty(false))
-    }
-  } else if (payload) {
+  if (error && payload) {
     const {
       data: { error: err },
       status,

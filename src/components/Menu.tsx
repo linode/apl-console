@@ -32,7 +32,6 @@ import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
-import { useAppSelector } from 'redux/hooks'
 import { useDeployQuery, useRevertQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
@@ -98,8 +97,8 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     settings: { cluster, otomi },
     user,
   } = useSession()
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
-  const disabled = !isDirty || editor !== user.email
+  // const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  const disabled = editor !== user.email
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
@@ -173,7 +172,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         </ListItemIcon>
         <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
-      {isDirty && editor === user.email && (
+      {editor === user.email && (
         <MenuItem
           className={classes.revert}
           disabled={disabled}
