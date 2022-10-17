@@ -97,7 +97,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (editor && editor === email) {
       snack.warning(
         t(
-          'You started editing, thereby blocking others. By choosing "Revert" (or after 20 minutes of inactivity) changes will be reverted to give others access.',
+          'You started editing, thereby blocking others. By choosing "Revert" (or after 10 minutes of inactivity) changes will be reverted to give others access.',
           { editor },
         ),
         { autoHideDuration: 6000 },
