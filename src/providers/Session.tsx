@@ -47,6 +47,7 @@ interface Props {
 type DbMessage = {
   state: string
   editor: string
+  reason: string
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
@@ -82,8 +83,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       refetchSettings,
       setOboTeamId,
       settings,
-      // eslint-disable-next-line no-nested-ternary
-      editor: lastDbMessage?.editor : session?.editor,
+      editor: lastDbMessage?.editor || session?.editor,
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
@@ -102,13 +102,18 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (editor && editor === email) {
       snack.warning(
         t(
-          'You started editing, thereby blocking others. By choosing Revert (or after 20 minutes of inactivity) changes will be reverted to give others access.',
+          'You started editing, thereby blocking others. By choosing "Revert" (or after 20 minutes of inactivity) changes will be reverted to give others access.',
           { editor },
         ),
         { autoHideDuration: 6000 },
       )
     }
     if (editor && editor !== email) {
+      if (readyKey) {
+        snack.close(readyKey)
+        setReadyKey(undefined)
+      }
+
       if (!closeKey) {
         setCloseKey(
           snack.warning(
@@ -131,13 +136,19 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       }
       if (!readyKey) {
         setReadyKey(
-          snack.info(t('User {{editor}} is done editing. Console is unblocked.', { editor }), {
-            persist: true,
-            onClick: () => {
-              snack.close(readyKey)
-              setReadyKey(undefined)
+          snack.info(
+            t('User {{editor}} is done editing (reason: {{reason}}). Console is unblocked.', {
+              editor,
+              reason: lastDbMessage?.reason,
+            }),
+            {
+              persist: true,
+              onClick: () => {
+                snack.close(readyKey)
+                setReadyKey(undefined)
+              },
             },
-          }),
+          ),
         )
       }
     }
@@ -146,7 +157,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       snack.close(closeKey)
       setCloseKey(undefined)
     }
-  }, [session, lastDbMessage, editor, closeKey, readyKey])
+  }, [session, lastDbMessage, editor])
 
   // END HOOKS
 

@@ -9,6 +9,7 @@ import DnsIcon from '@mui/icons-material/Dns'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import HistoryIcon from '@mui/icons-material/History'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
@@ -58,7 +59,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   revert: {
     height: theme.spacing(5),
-    // color: theme.palette.common.black,
+    color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
     backgroundColor: theme.palette.secondary.main,
     '&:hover': {
       backgroundColor: theme.palette.secondary.light,
@@ -183,7 +184,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           data-cy='menu-item-reset-changes'
         >
           <ListItemIcon>
-            <CloudUploadIcon />
+            <HistoryIcon />
           </ListItemIcon>
           <ListItemText primary={t('Revert Changes')} />
         </MenuItem>

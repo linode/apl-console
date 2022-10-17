@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-globals */
 import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/toolkit'
-import logger from 'redux-logger'
 import { otomiApi } from 'redux/otomiApi'
 import globalReducer, { GlobalState, setError } from 'redux/reducers'
 import snack from 'utils/snack'
@@ -36,7 +35,7 @@ interface Props {
 
 export const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, logger, errorMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, errorMiddleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

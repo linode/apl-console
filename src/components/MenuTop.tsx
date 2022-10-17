@@ -1,8 +1,6 @@
-import {
-  Brightness3 as Brightness3Icon,
-  BrightnessHigh as BrightnessHighIcon,
-  Logout as LogoutIcon,
-} from '@mui/icons-material'
+import Brightness3Icon from '@mui/icons-material/Brightness3'
+import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
+import LogoutIcon from '@mui/icons-material/Logout'
 import {
   Avatar,
   Badge,
@@ -32,14 +30,10 @@ const useStyles = makeStyles()((theme) => {
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
   return {
     avatar: {
-      background: theme.palette.common.white,
-      color: background,
-      marginRight: 10,
-      width: theme.spacing(4),
-      height: theme.spacing(4),
+      background,
+      color,
     },
     select: {
-      // minWidth: '6rem !important',
       marginRight: '0.5rem',
       paddingLeft: '0.5rem',
       marginLeft: 3,
@@ -52,7 +46,6 @@ const useStyles = makeStyles()((theme) => {
       borderWidth: 0,
     },
     switchLabel: {
-      // minWidth: '6rem !important',
       marginRight: '0.5rem',
       paddingLeft: '0.5rem',
       marginLeft: 3,
@@ -195,7 +188,7 @@ export default function (): React.ReactElement {
             aria-expanded={open ? 'true' : undefined}
           >
             <Badge color='secondary' badgeContent={unreadNotifications.length}>
-              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+              <Avatar className={classes.avatar} alt={email} />
             </Badge>
           </IconButton>
         </Tooltip>
@@ -237,7 +230,7 @@ export default function (): React.ReactElement {
       >
         <MenuItem>
           <ListItemIcon>
-            <Avatar className={classes.avatar} />
+            <Avatar alt={email} />
           </ListItemIcon>
           <b>{email}</b>
         </MenuItem>
