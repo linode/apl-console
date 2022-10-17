@@ -129,7 +129,19 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         snack.close(closeKey)
         setCloseKey(undefined)
       }
-      if (!readyKey) {
+      if (lastDbMessage.reason === 'deploy') {
+        snack.info(
+          t('User {{editor}} has deployed changes. Reloading, hold on!', {
+            editor: lastDbMessage.editor,
+            reason: lastDbMessage.reason,
+          }),
+          {
+            persist: true,
+          },
+        )
+
+        setTimeout(() => window.location.reload(), 4000)
+      } else if (!readyKey) {
         setReadyKey(
           snack.info(
             t('User {{editor}} is done editing (reason: {{reason}}). Console is unblocked.', {
@@ -138,10 +150,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
             }),
             {
               persist: true,
-              onClick: () => {
-                snack.close(readyKey)
-                setReadyKey(undefined)
-              },
             },
           ),
         )
