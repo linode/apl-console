@@ -83,18 +83,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       refetchSettings,
       setOboTeamId,
       settings,
-      editor: lastDbMessage?.editor || session?.editor,
+      // eslint-disable-next-line no-nested-ternary
+      editor: lastDbMessage ? (lastDbMessage.state === 'dirty' ? lastDbMessage.editor : undefined) : session?.editor,
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
   const { editor, user } = ctx
   const { email, isAdmin, teams } = user || {}
-
-  // const oldDirty = useSelector(({ global }: ReducerState) => global.isDirty)
-  // useEffect(() => {
-  //   // when the UI dirty flag changes on the server, and it has changed from local state, will we dispatch
-  //   if (session && oldDirty !== (session?)) dispatch(setDirty(session.isDirty))
-  // }, [session])
   const { t } = useTranslation()
   const [closeKey, setCloseKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
   const [readyKey, setReadyKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
@@ -138,8 +133,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         setReadyKey(
           snack.info(
             t('User {{editor}} is done editing (reason: {{reason}}). Console is unblocked.', {
-              editor,
-              reason: lastDbMessage?.reason,
+              editor: lastDbMessage.editor,
+              reason: lastDbMessage.reason,
             }),
             {
               persist: true,
