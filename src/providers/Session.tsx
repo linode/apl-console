@@ -83,7 +83,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       setOboTeamId,
       settings,
       // eslint-disable-next-line no-nested-ternary
-      editor: lastDbMessage ? (lastDbMessage.state === 'dirty' ? lastDbMessage.editor : undefined) : session?.editor,
+      editor: lastDbMessage?.editor : session?.editor,
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
@@ -99,6 +99,15 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const [closeKey, setCloseKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
   const [readyKey, setReadyKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
   useEffect(() => {
+    if (editor && editor === email) {
+      snack.warning(
+        t(
+          'You started editing, thereby blocking others. By choosing Revert (or after 20 minutes of inactivity) changes will be reverted to give others access.',
+          { editor },
+        ),
+        { autoHideDuration: 6000 },
+      )
+    }
     if (editor && editor !== email) {
       if (!closeKey) {
         setCloseKey(
@@ -108,6 +117,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
               persist: true,
               onClick: () => {
                 snack.close(closeKey)
+                setCloseKey(undefined)
               },
             },
           ),
@@ -115,20 +125,27 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       }
     }
     if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'clean') {
-      if (closeKey) snack.close(closeKey)
+      if (closeKey) {
+        snack.close(closeKey)
+        setCloseKey(undefined)
+      }
       if (!readyKey) {
         setReadyKey(
           snack.info(t('User {{editor}} is done editing. Console is unblocked.', { editor }), {
             persist: true,
             onClick: () => {
               snack.close(readyKey)
+              setReadyKey(undefined)
             },
           }),
         )
       }
     }
 
-    if (!editor && closeKey) snack.close(closeKey)
+    if (!editor && closeKey) {
+      snack.close(closeKey)
+      setCloseKey(undefined)
+    }
   }, [session, lastDbMessage, editor, closeKey, readyKey])
 
   // END HOOKS

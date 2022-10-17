@@ -2,12 +2,12 @@ import {
   Brightness3 as Brightness3Icon,
   BrightnessHigh as BrightnessHighIcon,
   Logout as LogoutIcon,
-  Notifications as NotificationsIcon,
 } from '@mui/icons-material'
 import {
   Avatar,
   Badge,
   Box,
+  Divider,
   IconButton,
   Link,
   ListItemIcon,
@@ -98,8 +98,7 @@ export default function (): React.ReactElement {
   }
   // TODO: get notifications from api and stream updates
   const notifications = [{ type: 'PLATFORM', content: 'Coming soon', status: 'STICKY' }]
-  // const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
-  const unreadNotifications = notifications
+  const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
   const handleChangeTeam = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
@@ -238,12 +237,19 @@ export default function (): React.ReactElement {
       >
         <MenuItem>
           <ListItemIcon>
+            <Avatar className={classes.avatar} />
+          </ListItemIcon>
+          <b>{email}</b>
+        </MenuItem>
+        <Divider />
+        {/* <MenuItem>
+          <ListItemIcon>
             <Badge badgeContent={unreadNotifications.length} color='primary'>
               <NotificationsIcon fontSize='small' />
             </Badge>
           </ListItemIcon>
           Notifications
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={toggleTheme}>
           <ListItemIcon>
             {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon fontSize='small' />}

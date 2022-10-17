@@ -3,7 +3,7 @@ import React, { JSXElementConstructor, ReactElement } from 'react'
 import { makeStyles } from 'tss-react/mui'
 
 export const defaultOpts = {
-  maxSnack: 3,
+  maxSnack: 8,
   autoHideDuration: 4000,
   preventDuplicate: true,
 }
