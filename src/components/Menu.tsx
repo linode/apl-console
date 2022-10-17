@@ -102,11 +102,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
+  const [key, setKey] = useState<any>()
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
   const { isSuccess: okRevert, error: errorRevert }: any = useRevertQuery(!revert ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
-  const [key, setKey] = useState<any>()
   const { t } = useTranslation()
   // END HOOKS
   const { isAdmin } = user

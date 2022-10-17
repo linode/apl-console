@@ -1,7 +1,26 @@
-import { Avatar, Box, Link, MenuItem, Select, Tooltip, Typography } from '@mui/material'
-import { getThemeMode, useMainStyles } from 'common/theme'
+import {
+  Brightness3 as Brightness3Icon,
+  BrightnessHigh as BrightnessHighIcon,
+  Logout as LogoutIcon,
+  Notifications as NotificationsIcon,
+} from '@mui/icons-material'
+import {
+  Avatar,
+  Badge,
+  Box,
+  IconButton,
+  Link,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Select,
+  Tooltip,
+  Typography,
+} from '@mui/material'
+import { getThemeMode, toggleThemeMode } from 'common/theme'
 import { useSession } from 'providers/Session'
-import React from 'react'
+import { useTheme } from 'providers/Theme'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
@@ -48,8 +67,9 @@ const useStyles = makeStyles()((theme) => {
 })
 
 export default function (): React.ReactElement {
-  const { classes: mainClasses } = useMainStyles()
   const { classes } = useStyles()
+  const { setThemeMode } = useTheme()
+  const themeType = getThemeMode()
   const history = useHistory()
   const {
     settings: {
@@ -60,9 +80,11 @@ export default function (): React.ReactElement {
     oboTeamId,
     setOboTeamId,
   } = useSession()
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const { data: allTeams } = useGetTeamsQuery()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   // END HOOKs
+  const open = Boolean(anchorEl)
   let teams: GetTeamsApiResponse
   const allClusters = [...additionalClusters, cluster]
   if (isAdmin) {
@@ -74,7 +96,11 @@ export default function (): React.ReactElement {
       id,
     }))
   }
-  const handleChange = (event) => {
+  // TODO: get notifications from api and stream updates
+  const notifications = [{ type: 'PLATFORM', content: 'Coming soon', status: 'STICKY' }]
+  // const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
+  const unreadNotifications = notifications
+  const handleChangeTeam = (event) => {
     const teamId = event.target.value
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`
@@ -99,6 +125,16 @@ export default function (): React.ReactElement {
     const { domainSuffix } = additionalClusters.find((c) => c.name === name && c.provider === provider)
     window.location.href = `https://otomi.${domainSuffix}`
   }
+  const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleAccountClose = () => {
+    setAnchorEl(null)
+  }
+  const toggleTheme = (): void => {
+    setThemeMode(toggleThemeMode())
+  }
+
   return (
     <>
       <Typography variant='body1'>cluster:</Typography>
@@ -128,7 +164,7 @@ export default function (): React.ReactElement {
       <Select
         color='secondary'
         value={(teams.length && oboTeamId) || ''}
-        onChange={handleChange}
+        onChange={handleChangeTeam}
         className={classes.select}
         data-cy='select-oboteam'
         inputProps={{
@@ -149,17 +185,78 @@ export default function (): React.ReactElement {
         ))}
       </Select>
       &nbsp;
-      <Avatar className={classes.avatar} />
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <Typography variant='body1' data-cy='text-user-team'>
-          <Tooltip title='logout' aria-label='logout'>
-            <Link className={mainClasses.headerlink} href='/logout-otomi'>
-              {email}
-            </Link>
-          </Tooltip>{' '}
-          <strong>{isAdmin && '(admin)'}</strong>
-        </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+        <Tooltip title='Account settings'>
+          <IconButton
+            onClick={handleAccountClick}
+            size='small'
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup='true'
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Badge color='secondary' badgeContent={unreadNotifications.length}>
+              <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+            </Badge>
+          </IconButton>
+        </Tooltip>
       </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id='account-menu'
+        open={open}
+        onClose={handleAccountClose}
+        onClick={handleAccountClose}
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+            mt: 1.5,
+            '& .MuiAvatar-root': {
+              width: 32,
+              height: 32,
+              ml: -0.5,
+              mr: 1,
+            },
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+        <MenuItem>
+          <ListItemIcon>
+            <Badge badgeContent={unreadNotifications.length} color='primary'>
+              <NotificationsIcon fontSize='small' />
+            </Badge>
+          </ListItemIcon>
+          Notifications
+        </MenuItem>
+        <MenuItem onClick={toggleTheme}>
+          <ListItemIcon>
+            {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon fontSize='small' />}
+          </ListItemIcon>
+          {t('{{themeMode}} mode', { themeMode: themeType === 'light' ? 'Dark' : 'Light' })}
+        </MenuItem>
+        <MenuItem component={Link} href='/logout-otomi'>
+          <ListItemIcon>
+            <LogoutIcon fontSize='small' />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
     </>
   )
 }
