@@ -9,6 +9,8 @@ import {
   IconButton,
   Link,
   ListItemIcon,
+  ListItemText,
+  ListSubheader,
   Menu,
   MenuItem,
   Select,
@@ -228,13 +230,6 @@ export default function (): React.ReactElement {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
-          <ListItemIcon>
-            <Avatar alt={email} />
-          </ListItemIcon>
-          <b>{email}</b>
-        </MenuItem>
-        <Divider />
         {/* <MenuItem>
           <ListItemIcon>
             <Badge badgeContent={unreadNotifications.length} color='primary'>
@@ -249,6 +244,10 @@ export default function (): React.ReactElement {
           </ListItemIcon>
           {t('{{themeMode}} mode', { themeMode: themeType === 'light' ? 'Dark' : 'Light' })}
         </MenuItem>
+        <Divider />
+        <ListSubheader component='div' data-cy='list-subheader-user'>
+          <ListItemText primary={email} />
+        </ListSubheader>
         <MenuItem component={Link} href='/logout-otomi'>
           <ListItemIcon>
             <LogoutIcon fontSize='small' />
