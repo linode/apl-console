@@ -97,8 +97,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (editor && editor === email) {
       snack.warning(
         t(
-          'You started editing, thereby blocking others. By choosing "Revert" (or after 10 minutes of inactivity) changes will be reverted to give others access.',
-          { editor },
+          'You started editing, thereby blocking others. By choosing "Revert" (or after {{timeout}} minutes of inactivity timeout) changes will be reverted to give others access.',
+          { timeout: session.inactivityTimeout, editor },
         ),
         { autoHideDuration: 6000 },
       )
@@ -161,18 +161,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       setCloseKey(undefined)
     }
   }, [session, lastDbMessage, editor])
-
   // END HOOKS
 
-  // if (error.code === 504) err = <ErrorComponent error={new ApiErrorGatewayTimeout()} />
-  // else err = <ErrorComponent error={error} />
   if (isLoadingSession) return <Loader />
   if (!isLoadingSession && !errorSession && !session.user.isAdmin && session.user.teams.length === 0)
     return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
-
+  // if an error is caught at this stage related to api, we assume it is not responding and return timeout error
   const error = errorApps || errorSession || errorApiDocs || errorSettings
   if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
-
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
