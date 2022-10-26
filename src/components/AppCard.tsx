@@ -56,17 +56,12 @@ export default function ({
   externalUrl,
 }: any): React.ReactElement {
   const session = useSession()
-  const {
-    editor,
-    user: { email },
-  } = session
-  const isReadOnly = editor && editor !== email
   const { classes, cx } = useStyles()
   const [_, dragRef] = useDrag(
     () => ({
       type: 'card',
       item: { name: id },
-      canDrag: isReadOnly ? false : enabled !== undefined,
+      canDrag: enabled !== undefined,
       collect: (monitor) => {
         const d = monitor.isDragging()
         if (d) setDeps(deps)
@@ -76,7 +71,7 @@ export default function ({
       },
       end: () => setTimeout(() => setDeps(undefined)),
     }),
-    [isReadOnly],
+    [enabled],
   )
   const image = (
     <img

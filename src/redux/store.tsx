@@ -1,13 +1,24 @@
 /* eslint-disable no-restricted-globals */
 import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/toolkit'
 import { otomiApi } from 'redux/otomiApi'
-import globalReducer, { GlobalState, setError } from 'redux/reducers'
+import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'
 import snack from 'utils/snack'
 
 export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
   const { error, payload, meta } = action
   const { dispatch } = api
-  if (error && payload) {
+  if (!error) {
+    if (meta) {
+      const {
+        arg: { type, endpointName },
+        requestStatus,
+      } = meta
+      // dirty logic: every MUTATION we deem to make state dirty
+      if (type === 'mutation') dispatch(setDirty(true))
+      // after we processed a successful deploy QUERY we reset dirty state
+      if (['deploy', 'revert'].includes(endpointName) && requestStatus === 'fulfilled') dispatch(setDirty(false))
+    }
+  } else if (payload) {
     const {
       data: { error: err },
       status,
@@ -26,7 +37,7 @@ const reducer = {
   global: globalReducer,
 }
 export type ReducerState = {
-  [otomiApi.reducerPath]: typeof reducer
+  [otomiApi.reducerPath]: typeof otomiApi.reducer
   global: GlobalState
 }
 interface Props {

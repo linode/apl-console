@@ -42,11 +42,6 @@ interface Props {
 
 export default function ({ teamId, apps, loading, setAppState }: Props): React.ReactElement {
   const session = useSession()
-  const {
-    editor,
-    user: { email },
-  } = session
-  const isReadOnly = editor && editor !== email
   const { classes, cx } = useStyles()
   const [deps, setDeps] = useState(undefined)
   const doDrop =
@@ -66,21 +61,19 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
       collect: (monitor) => ({
         isIn: monitor.isOver(),
       }),
-      canDrop: () => !isReadOnly,
       options: {},
     }),
-    [isReadOnly],
+    [],
   )
-  const [{ isOut }, dropOut] = useDrop(
+  const [{ isOut }] = useDrop(
     () => ({
       accept: 'card',
       drop: doDrop(false),
       collect: (monitor) => ({
         isOut: monitor.isOver(),
       }),
-      canDrop: () => !isReadOnly,
     }),
-    [isReadOnly],
+    [],
   )
   // END HOOKS
   if (!apps || loading) return <Loader />

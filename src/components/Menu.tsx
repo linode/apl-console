@@ -30,7 +30,7 @@ import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 import { useDeployQuery, useRevertQuery } from 'redux/otomiApi'
@@ -95,11 +95,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     appsEnabled,
     editor,
     oboTeamId,
+    refetchSession,
     settings: { cluster, otomi },
     user,
   } = useSession()
-  // const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
-  const disabled = editor !== user.email
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
@@ -109,30 +108,39 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
-  // END HOOKS
   const { isAdmin } = user
-  if (deploy) {
-    if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
-
-    if (okDeploy || errorDeploy) {
-      snack.close(key)
-      if (errorDeploy) setTimeout(() => snack.error(t('Deployment failed. Please contact support@redkubes.com.')))
-      else setTimeout(() => snack.success(t('Scheduled for deployment')))
-      setDeploy(false)
-    }
+  const closeKey = (key) => {
+    snack.close(key)
+    setKey(undefined)
   }
-  if (revert) {
-    if (!key) setKey(snack.info(t('Reverting... Hold on!'), { autoHideDuration: 8000 }))
-
-    if (okRevert || errorRevert) {
-      if (errorRevert) {
-        setTimeout(() => {
+  useEffect(() => {
+    if (deploy) {
+      if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
+      if (okDeploy || errorDeploy) {
+        snack.close(key)
+        if (errorDeploy) {
+          setKey(
+            snack.warning(t('Deployment failed. Potential conflict with another editor. Choose "Revert".'), {
+              persist: true,
+              onClick: () => closeKey('conflict'),
+            }),
+          )
+        } else snack.success(t('Scheduled for deployment'))
+        setDeploy(false)
+        refetchSession()
+      }
+    }
+    if (revert) {
+      if (!key) setKey(snack.info(t('Reverting... Hold on!'), { autoHideDuration: 8000 }))
+      if (okRevert || errorRevert) {
+        if (errorRevert) {
           snack.close(key)
           snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
-        })
-      } else setTimeout(() => window.location.reload(), 4000)
+        } else setTimeout(() => window.location.reload(), process.env.NODE_ENV === 'development' ? 1000 : 4000)
+      }
     }
-  }
+  }, [deploy, okDeploy, errorDeploy, revert, okRevert, errorRevert, key])
+  // END HOOKS
 
   const handleCollapse = (): void => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
@@ -167,7 +175,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       </StyledListSubheader>
       <MenuItem
         className={classes.deploy}
-        disabled={disabled}
+        disabled={!editor}
         onClick={handleDeployClick}
         data-cy='menu-item-deploy-changes'
       >
@@ -176,19 +184,17 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         </ListItemIcon>
         <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
-      {editor === user.email && (
-        <MenuItem
-          className={classes.revert}
-          disabled={disabled}
-          onClick={handleRevertClick}
-          data-cy='menu-item-reset-changes'
-        >
-          <ListItemIcon>
-            <HistoryIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('Revert Changes')} />
-        </MenuItem>
-      )}
+      <MenuItem
+        className={classes.revert}
+        disabled={!editor}
+        onClick={handleRevertClick}
+        data-cy='menu-item-reset-changes'
+      >
+        <ListItemIcon>
+          <HistoryIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('Revert Changes')} />
+      </MenuItem>
       {isAdmin && (
         <>
           <StyledListSubheader component='div' data-cy='list-subheader-platform'>

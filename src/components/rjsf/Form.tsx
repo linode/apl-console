@@ -65,7 +65,7 @@ export default function ({
   children,
   ...other
 }: Props): React.ReactElement {
-  const { editor, oboTeamId, user } = useSession()
+  const { oboTeamId } = useSession()
   const [originalState, setOriginalState] = useState<Record<string, any>>(cleanData(data) || {})
   const [state, setState] = useState<Record<string, any>>(data) // initial state set to first time data, must rely on setData from here on
   const resourceName = other.resourceName ?? data?.[nameProp]
@@ -123,7 +123,6 @@ export default function ({
   //   })
   //   return errors
   // }
-  const isReadOnly = editor && editor !== user.email
   let title: string
   if (adminOnly && idProp && !id) title = t('FORM_TITLE_NEW', { model: t(resourceType) })
   if (adminOnly && ((idProp && id) || !idProp) && resourceName)
@@ -151,7 +150,7 @@ export default function ({
         widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget, CodeEditorWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmitWrapper}
-        disabled={disabled || mutating || isReadOnly}
+        disabled={disabled || mutating}
         // noValidate
         {...other}
       >
@@ -162,7 +161,7 @@ export default function ({
             resourceName={resourceName}
             resourceType={resourceType}
             disabled={disabled || !isDirty}
-            deleteDisabled={deleteDisabled || mutating || isReadOnly}
+            deleteDisabled={deleteDisabled || mutating}
             onDelete={onDelete}
           />
         )}

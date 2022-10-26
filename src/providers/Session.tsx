@@ -4,6 +4,7 @@ import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import React, { JSXElementConstructor, ReactElement, useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
@@ -22,6 +23,7 @@ export interface SessionContext extends GetSessionApiResponse {
   oboTeamId?: string
   setOboTeamId?: CallableFunction
   refetchAppsEnabled?: () => void
+  refetchSession?: () => void
   refetchSettings?: () => void
   settings?: GetSettingsApiResponse
 }
@@ -50,9 +52,31 @@ type DbMessage = {
   reason: string
 }
 
+type DroneRepo = {
+  id: string
+}
+type DroneBuild = {
+  id: string
+  status: string
+  timestamp: number
+}
+type DroneBuildEvent = {
+  id: number
+  action: string
+  repo: DroneRepo
+  build: DroneBuild
+}
+
 export default function SessionProvider({ children }: Props): React.ReactElement {
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
-  const { data: session, isLoading: isLoadingSession, error: errorSession, isSuccess: okSession } = useGetSessionQuery()
+  const {
+    data: session,
+    isLoading: isLoadingSession,
+    error: errorSession,
+    isSuccess: okSession,
+    refetch: refetchSession,
+  } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
   const {
@@ -70,6 +94,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
   const { socket, error: errorSocket } = useSocket({ url, path })
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
+  const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -80,95 +105,85 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       appsEnabled,
       oboTeamId,
       refetchAppsEnabled,
+      refetchSession,
       refetchSettings,
       setOboTeamId,
       settings,
-      // eslint-disable-next-line no-nested-ternary
-      editor: lastDbMessage ? (lastDbMessage.state === 'dirty' ? lastDbMessage.editor : undefined) : session?.editor,
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
   const { editor, user } = ctx
   const { email, isAdmin, teams } = user || {}
   const { t } = useTranslation()
-  const [closeKey, setCloseKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
-  const [readyKey, setReadyKey] = useState<ReactElement<any, string | JSXElementConstructor<any> | undefined>>()
+  const [keys, _] = useState<Record<string, ReactElement<any, string | JSXElementConstructor<any> | undefined>>>({})
+  const closeKey = (key) => {
+    if (!keys[key]) return
+    snack.close(keys[key])
+    delete keys[key]
+  }
   useEffect(() => {
-    if (editor && editor === email) {
-      snack.warning(
-        t(
-          'You started editing, thereby blocking others. By choosing "Revert" (or after {{timeout}} minutes of inactivity timeout) changes will be reverted to give others access.',
-          { timeout: session.inactivityTimeout, editor },
-        ),
-        { autoHideDuration: 6000 },
-      )
+    if (
+      editor &&
+      editor === email &&
+      lastDbMessage &&
+      lastDbMessage.state === 'clean' &&
+      lastDbMessage.reason === 'corrupt' &&
+      !keys.conflict
+    ) {
+      keys.conflict = snack.error(t('Deployment conflict. You have to revert changes and try again!'), {
+        persist: true,
+        onClick: () => {
+          closeKey('conflict')
+        },
+      })
     }
-    if (editor && editor !== email) {
-      if (readyKey) {
-        snack.close(readyKey)
-        setReadyKey(undefined)
-      }
 
-      if (!closeKey) {
-        setCloseKey(
-          snack.warning(
-            t('User {{editor}} is already editing. Console is read-only until user finishes.', { editor }),
-            {
-              persist: true,
-              onClick: () => {
-                snack.close(closeKey)
-                setCloseKey(undefined)
-              },
-            },
-          ),
-        )
-      }
-    }
+    if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'dirty')
+      snack.warning(t('User {{editor}} started editing.', { editor: lastDbMessage.editor }))
+
     if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'clean') {
-      if (closeKey) {
-        snack.close(closeKey)
-        setCloseKey(undefined)
-      }
       if (lastDbMessage.reason === 'deploy') {
+        snack.warning(
+          t('User {{editor}} has deployed changes. Potential conflict upon deploy!', {
+            editor: lastDbMessage.editor,
+          }),
+        )
+        // setTimeout(() => window.location.reload(), 4000)
+        refetchSession()
+      } else if (lastDbMessage.reason === 'revert') {
         snack.info(
-          t('User {{editor}} has deployed changes. Reloading, hold on!', {
+          t('User {{editor}} stopped editing (reason: {{reason}}).', {
             editor: lastDbMessage.editor,
             reason: lastDbMessage.reason,
           }),
-          {
-            persist: true,
-          },
-        )
-
-        setTimeout(() => window.location.reload(), 4000)
-      } else if (!readyKey) {
-        setReadyKey(
-          snack.info(
-            t('User {{editor}} is done editing (reason: {{reason}}). Console is unblocked.', {
-              editor: lastDbMessage.editor,
-              reason: lastDbMessage.reason,
-            }),
-            {
-              persist: true,
-            },
-          ),
         )
       }
     }
-
-    if (!editor && closeKey) {
-      snack.close(closeKey)
-      setCloseKey(undefined)
+    if (isDirty) {
+      refetchSession()
+      if (!editor) snack.info(t('Creating in memory database for the session. Hold on!.'))
     }
-  }, [session, lastDbMessage, editor])
+    // return () => {
+    //   Object.keys(keys).forEach(closeKey)
+    // }
+  }, [isDirty, session, lastDbMessage, editor])
+  // Drone events
+  useEffect(() => {
+    if (!lastDroneMessage) return
+    const { action, repo, build } = lastDroneMessage
+    const { id, status, timestamp } = build
+    snack.info(
+      t(`Drone build ${id} ${action} at ${new Date(timestamp).toLocaleTimeString()}, status changed to: ${status}`),
+    )
+  }, [lastDroneMessage])
   // END HOOKS
-
+  const error = errorApiDocs || errorApps || errorSession || errorSettings || errorSocket
   if (isLoadingSession) return <Loader />
-  if (!isLoadingSession && !errorSession && !session.user.isAdmin && session.user.teams.length === 0)
-    return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
   // if an error is caught at this stage related to api, we assume it is not responding and return timeout error
-  const error = errorApps || errorSession || errorApiDocs || errorSettings
   if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
+  // no error and we stopped loading, so we can check the user
+  if (!session.user.isAdmin && session.user.teams.length === 0)
+    return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set

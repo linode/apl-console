@@ -22,11 +22,6 @@ export default function ({
   hideSettings = false,
 }: Props): React.ReactElement {
   const session = useAuthzSession()
-  const {
-    editor,
-    user: { email },
-  } = session
-  const isReadOnly = editor && editor !== email
 
   const { t } = useTranslation()
   // END HOOKS
@@ -53,7 +48,7 @@ export default function ({
           title={t('Click to enable this app')}
           onChange={handleAppsToggle}
           checked={enabled !== false}
-          disabled={isReadOnly || enabled}
+          disabled={enabled}
           size='medium'
           sx={{
             color: !isAdminApps || enabled !== false ? 'white' : 'action.disabled',
