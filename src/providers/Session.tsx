@@ -148,7 +148,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
             editor: lastDbMessage.editor,
           }),
         )
-        // setTimeout(() => window.location.reload(), 4000)
         refetchSession()
       } else if (lastDbMessage.reason === 'revert') {
         snack.info(
@@ -163,6 +162,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       refetchSession()
       if (!editor) snack.info(t('Creating in memory database for the session. Hold on!.'))
     }
+
     // return () => {
     //   Object.keys(keys).forEach(closeKey)
     // }
@@ -172,7 +172,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (!lastDroneMessage) return
     const { action, repo, build } = lastDroneMessage
     const { id, status, timestamp } = build
-    snack.info(
+    snack[status === 'failed' ? 'error' : 'info'](
       t(`Drone build ${id} ${action} at ${new Date(timestamp).toLocaleTimeString()}, status changed to: ${status}`),
     )
   }, [lastDroneMessage])

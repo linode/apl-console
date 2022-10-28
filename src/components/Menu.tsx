@@ -125,7 +125,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               onClick: () => closeKey('conflict'),
             }),
           )
-        } else snack.success(t('Scheduled for deployment'))
+        } else {
+          snack.success(t('Scheduled for deployment. Reloading to get lates changes'))
+          setTimeout(() => window.location.reload(), 3000)
+        }
         setDeploy(false)
         refetchSession()
       }
@@ -136,7 +139,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         if (errorRevert) {
           snack.close(key)
           snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
-        } else setTimeout(() => window.location.reload(), process.env.NODE_ENV === 'development' ? 1000 : 4000)
+        } else setTimeout(() => window.location.reload(), 3000)
       }
     }
   }, [deploy, okDeploy, errorDeploy, revert, okRevert, errorRevert, key])
