@@ -130,7 +130,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           setTimeout(() => window.location.reload(), 3000)
         }
         setDeploy(false)
-        refetchSession()
       }
     }
     if (revert) {
