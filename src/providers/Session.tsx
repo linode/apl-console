@@ -143,11 +143,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
 
     if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'clean') {
       if (lastDbMessage.reason === 'deploy') {
-        snack.warning(
-          t('User {{editor}} has deployed changes. Potential conflict upon deploy!', {
+        snack.info(
+          t('User {{editor}} has deployed changes.', {
             editor: lastDbMessage.editor,
           }),
         )
+        if (editor) snack.warning(t('You have undeployed changes. Potential conflict upon deploy!'))
+
         refetchSession()
       } else if (lastDbMessage.reason === 'revert') {
         snack.info(
