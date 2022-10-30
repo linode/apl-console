@@ -378,10 +378,10 @@ export const useMainStyles = makeStyles()((theme) => {
         color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
       },
       '&&:hover': {
-        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.light,
       },
       '&&.Mui-selected': {
-        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.light,
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.dark,
       },
     },
     selectable: {

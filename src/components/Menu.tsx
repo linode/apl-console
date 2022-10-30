@@ -1,3 +1,4 @@
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
@@ -38,7 +39,7 @@ import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
 import { useAppSelector } from 'redux/hooks'
-import Cluster from './Cluster'
+import Versions from './Versions'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -100,6 +101,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     user,
   } = useSession()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
+  const [collapseVersions, setCollapseVersions] = useLocalStorage('menu-cluster-collapse', false)
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
   const [restore, setRestore] = useState(false)
@@ -155,8 +157,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const isCorrupt = useAppSelector(({ global: { isCorrupt } }) => isCorrupt)
   // END HOOKS
 
-  const handleCollapse = (): void => {
+  const handleSettingsCollapse = (): void => {
     setCollapseSettings((prevCollapse) => !prevCollapse)
+  }
+
+  const handleVersionsCollapse = (): void => {
+    setCollapseVersions((prevCollapse) => !prevCollapse)
   }
 
   const handleDeployClick = (): void => {
@@ -296,7 +302,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
 
-          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
+          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
@@ -329,6 +335,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                 )
               })}
             </List>
+          </Collapse>
+          <MenuItem data-cy='menu-item-versions' onClick={handleVersionsCollapse}>
+            <ListItemIcon>
+              <DynamicFeedIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Versions')} />
+            {collapseSettings ? <ExpandLess /> : <ExpandMore />}
+          </MenuItem>
+          <Collapse in={collapseVersions} timeout='auto' unmountOnExit>
+            <Versions />
           </Collapse>
         </>
       )}
@@ -418,10 +434,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </StyledMenuItem>
         </>
       )}
-      <StyledListSubheader component='div' data-cy='list-subheader-current-context'>
-        <ListItemText primary={t('Cluster')} />
-      </StyledListSubheader>
-      <Cluster />
     </MenuList>
   )
 }

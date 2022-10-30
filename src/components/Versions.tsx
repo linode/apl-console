@@ -28,9 +28,6 @@ const useStyles = makeStyles()((theme) => ({
   listItem: {
     height: theme.spacing(3),
   },
-  listItemSmall: {
-    height: theme.spacing(1),
-  },
   tableRow: {
     '&:last-child td, &:last-child th': { border: 0 },
   },
@@ -51,7 +48,7 @@ export default function (): React.ReactElement {
   const {
     ca,
     settings: {
-      cluster: { domainSuffix, name, provider, k8sVersion },
+      cluster: { domainSuffix, k8sVersion },
     },
     versions,
   } = useSession()
@@ -62,12 +59,11 @@ export default function (): React.ReactElement {
   // TODO: create from git config, which is now in otomi-api values. Move?
   const gitHost = `https://gitea.${domainSuffix}/otomi/values.git`
   const clusterLegend = {
-    [t('Provider')]: provider,
-    [t('K8S version')]: k8sVersion,
-    [t('Otomi version')]: versions.core,
-    [t('API version')]: versions.api,
-    [t('Console version')]: versions.console,
-    [t('Deployed values')]: (
+    [t('Kubernetes')]: k8sVersion,
+    [t('Otomi Core')]: versions.core,
+    [t('Otomi API')]: versions.api,
+    [t('Otomi Console')]: versions.console,
+    [t('Deployed Values')]: (
       <Link
         href={getCommitLink(versions.values.deployed, gitHost)}
         target='_blank'
@@ -77,7 +73,7 @@ export default function (): React.ReactElement {
         {versions.values.deployed?.substring(0, 8)}
       </Link>
     ),
-    [t('Console values')]: (
+    [t('Console Values')]: (
       <Link
         href={getCommitLink(versions.values.console, gitHost)}
         target='_blank'

@@ -163,4 +163,4 @@ export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admi
 
 export const cleanLink = (l: string) => l.replace('https://', '').replace(/\/$/g, '')
 
-export const getCommitLink = (sha: string, repo: string) => `${repo.replace('.git', '')}/${sha}`
+export const getCommitLink = (sha: string, repo: string) => `${repo.replace('.git', '')}/commit/${sha}`

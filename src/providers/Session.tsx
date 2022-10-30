@@ -211,7 +211,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (isDirty !== undefined) {
       refetchSession()
       if (keys.create && (!editor || !isDirty)) closeKey('create')
-      if (!editor && isDirty) keys.create = snack.info(t('Created in memory database for the session.'))
+      if (isDirty) keys.create = snack.info(t('Created in memory database for the session.'))
     }
   }, [isDirty])
   // Drone events
