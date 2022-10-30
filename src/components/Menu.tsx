@@ -33,10 +33,11 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
-import { useDeployQuery, useRevertQuery } from 'redux/otomiApi'
+import { useDeployQuery, useRestoreQuery, useRevertQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
+import { useAppSelector } from 'redux/hooks'
 import Cluster from './Cluster'
 
 const useStyles = makeStyles()((theme) => ({
@@ -95,16 +96,17 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     appsEnabled,
     editor,
     oboTeamId,
-    refetchSession,
     settings: { cluster, otomi },
     user,
   } = useSession()
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
+  const [restore, setRestore] = useState(false)
   const [key, setKey] = useState<any>()
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
   const { isSuccess: okRevert, error: errorRevert }: any = useRevertQuery(!revert ? skipToken : undefined)
+  const { isSuccess: okRestore, error: errorRestore }: any = useRestoreQuery(!restore ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
@@ -115,9 +117,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }
   useEffect(() => {
     if (deploy) {
-      if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
+      if (key) snack.close(key)
+      setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
       if (okDeploy || errorDeploy) {
-        snack.close(key)
+        if (key) snack.close(key)
         if (errorDeploy) {
           setKey(
             snack.warning(t('Deployment failed. Potential conflict with another editor. Choose "Revert".'), {
@@ -125,23 +128,31 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               onClick: () => closeKey('conflict'),
             }),
           )
-        } else {
-          snack.success(t('Scheduled for deployment. Reloading to get lates changes'))
-          setTimeout(() => window.location.reload(), 3000)
         }
         setDeploy(false)
       }
     }
+  }, [deploy, okDeploy, errorDeploy])
+  useEffect(() => {
     if (revert) {
-      if (!key) setKey(snack.info(t('Reverting... Hold on!'), { autoHideDuration: 8000 }))
+      if (key) snack.close(key)
+      setKey(snack.info(t('Reverting... Hold on!')))
       if (okRevert || errorRevert) {
-        if (errorRevert) {
-          snack.close(key)
-          snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
-        } else setTimeout(() => window.location.reload(), 3000)
+        if (errorRevert) snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
+        setRevert(false)
       }
     }
-  }, [deploy, okDeploy, errorDeploy, revert, okRevert, errorRevert, key])
+  }, [revert, okRevert, errorRevert])
+  useEffect(() => {
+    if (restore) {
+      if (key) snack.close(key)
+      setKey(snack.info(t('Restoring... Hold on!')))
+      if (okRestore || errorRestore)
+        if (errorRestore) snack.error(t('Restoration of DB failed. Please contact support@redkubes.com.'))
+      setRestore(false)
+    }
+  }, [restore, okRestore, errorRestore])
+  const isCorrupt = useAppSelector(({ global: { isCorrupt } }) => isCorrupt)
   // END HOOKS
 
   const handleCollapse = (): void => {
@@ -154,6 +165,10 @@ export default function ({ className, teamId }: Props): React.ReactElement {
 
   const handleRevertClick = (): void => {
     setRevert(true)
+  }
+
+  const handleRestoreClick = (): void => {
+    setRestore(true)
   }
 
   const settingIds = {
@@ -197,6 +212,14 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         </ListItemIcon>
         <ListItemText primary={t('Revert Changes')} />
       </MenuItem>
+      {isCorrupt && (
+        <MenuItem className={classes.deploy} onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
+          <ListItemIcon>
+            <HistoryIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('Restore DB')} />
+        </MenuItem>
+      )}
       {isAdmin && (
         <>
           <StyledListSubheader component='div' data-cy='list-subheader-platform'>

@@ -1,8 +1,11 @@
+import { Link } from '@mui/material'
 import { setSpec } from 'common/api-spec'
+import { useMainStyles } from 'common/theme'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import React, { JSXElementConstructor, ReactElement, useContext, useEffect, useMemo, useState } from 'react'
+import { SnackbarKey } from 'notistack'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
@@ -13,7 +16,9 @@ import {
   useGetSessionQuery,
   useGetSettingsQuery,
 } from 'redux/otomiApi'
+import { setCorrupt } from 'redux/reducers'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
+import { getCommitLink } from 'utils/data'
 import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
 
@@ -47,9 +52,10 @@ interface Props {
 }
 
 type DbMessage = {
-  state: string
+  state: 'clean' | 'corrupt' | 'dirty'
   editor: string
-  reason: string
+  reason: 'deploy' | 'revert' | 'restore' | 'conflict'
+  sha: string
 }
 
 type DroneRepo = {
@@ -68,7 +74,7 @@ type DroneBuildEvent = {
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  const { classes } = useMainStyles()
   const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
   const {
     data: session,
@@ -113,62 +119,101 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     [appsEnabled, oboTeamId, session, settings],
   )
   const { editor, user } = ctx
+  const gitHost = `https://gitea.${settings?.cluster?.domainSuffix}/otomi/values.git`
   const { email, isAdmin, teams } = user || {}
   const { t } = useTranslation()
-  const [keys, _] = useState<Record<string, ReactElement<any, string | JSXElementConstructor<any> | undefined>>>({})
+  const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
     if (!keys[key]) return
     snack.close(keys[key])
     delete keys[key]
   }
   useEffect(() => {
-    if (
-      editor &&
-      editor === email &&
-      lastDbMessage &&
-      lastDbMessage.state === 'clean' &&
-      lastDbMessage.reason === 'corrupt' &&
-      !keys.conflict
-    ) {
-      keys.conflict = snack.error(t('Deployment conflict. You have to revert changes and try again!'), {
+    if (!lastDbMessage) return
+    const { editor: msgEditor, state, reason, sha } = lastDbMessage
+    const isMsgEditor = msgEditor === email
+
+    // initiated by self
+    if (isMsgEditor) {
+      if (state === 'corrupt' && reason === 'deploy' && !keys.conflict) {
+        keys.conflict = snack.error(t('Deployment conflict. You have to revert changes and try again!'), {
+          persist: true,
+          onClick: () => {
+            closeKey('conflict')
+          },
+        })
+      }
+      if (state === 'clean' && reason === 'revert') snack.success(t(`DB reverted to commit {{sha}}`, { sha }))
+    }
+
+    // initiated by others
+    if (!isMsgEditor) {
+      if (state === 'dirty') snack.warning(t('User {{editor}} started editing.', { editor: msgEditor }))
+      if (state === 'clean') {
+        if (reason === 'deploy')
+          if (editor) snack.warning(t('You have undeployed changes. Potential conflict upon deploy!'))
+
+        if (reason === 'revert') {
+          snack.info(
+            t('User {{editor}} stopped editing (reason: {{reason}}).', {
+              editor: msgEditor,
+              reason,
+            }),
+          )
+        }
+      }
+    }
+
+    // global messages
+    if (state === 'corrupt' && reason === 'conflict') {
+      if (keys.conflict) closeKey('conflict')
+      keys.conflict = snack.error(t('Git conflict: upstream changes. Admin must restore DB.'), {
         persist: true,
         onClick: () => {
           closeKey('conflict')
         },
       })
+      setCorrupt(true)
     }
-
-    if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'dirty')
-      snack.warning(t('User {{editor}} started editing.', { editor: lastDbMessage.editor }))
-
-    if (lastDbMessage && lastDbMessage.editor !== email && lastDbMessage?.state === 'clean') {
-      if (lastDbMessage.reason === 'deploy') {
-        snack.info(
-          t('User {{editor}} has deployed changes.', {
-            editor: lastDbMessage.editor,
-          }),
-        )
-        if (editor) snack.warning(t('You have undeployed changes. Potential conflict upon deploy!'))
-
-        refetchSession()
-      } else if (lastDbMessage.reason === 'revert') {
-        snack.info(
-          t('User {{editor}} stopped editing (reason: {{reason}}).', {
-            editor: lastDbMessage.editor,
-            reason: lastDbMessage.reason,
-          }),
-        )
-      }
+    if (state === 'clean' && reason === 'deploy') {
+      if (keys.deploy) closeKey('deploy')
+      keys.deploy = snack.info(
+        <>
+          {t(`Deployment scheduled for commit: `)}&nbsp;
+          <Link
+            target='_blank'
+            rel='noopener'
+            color='inherit'
+            className={classes.toastLink}
+            href={getCommitLink(sha, gitHost)}
+          >
+            {sha}
+          </Link>
+        </>,
+        { key: keys.deploy },
+      )
+      setCorrupt(false)
     }
-    if (isDirty) {
+    if (state === 'clean' && reason === 'restore') {
+      if (keys.restore) closeKey('restore')
+      keys.restore = snack.success(t(`DB restored to commit: {{sha}}`, { sha }), {
+        persist: true,
+        onClick: () => {
+          closeKey('restore')
+        },
+      })
+      setCorrupt(false)
+    }
+  }, [lastDbMessage])
+  // separate one for isDirty so we can be sure only that has changed
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== undefined) {
       refetchSession()
-      if (!editor) snack.info(t('Creating in memory database for the session. Hold on!.'))
+      if (keys.create && (!editor || !isDirty)) closeKey('create')
+      if (!editor && isDirty) keys.create = snack.info(t('Created in memory database for the session.'))
     }
-
-    // return () => {
-    //   Object.keys(keys).forEach(closeKey)
-    // }
-  }, [isDirty, session, lastDbMessage, editor])
+  }, [isDirty])
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
@@ -179,6 +224,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     )
   }, [lastDroneMessage])
   // END HOOKS
+  // TODO: create from git config, which is now in otomi-api values. Move?
   const error = errorApiDocs || errorApps || errorSession || errorSettings || errorSocket
   if (isLoadingSession) return <Loader />
   // if an error is caught at this stage related to api, we assume it is not responding and return timeout error

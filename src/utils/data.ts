@@ -162,3 +162,5 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
 export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')
 
 export const cleanLink = (l: string) => l.replace('https://', '').replace(/\/$/g, '')
+
+export const getCommitLink = (sha: string, repo: string) => `${repo.replace('.git', '')}/${sha}`

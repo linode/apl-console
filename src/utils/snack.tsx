@@ -1,6 +1,14 @@
-import { OptionsObject, SnackbarProvider, SnackbarProviderProps, WithSnackbarProps, useSnackbar } from 'notistack'
-import React, { JSXElementConstructor, ReactElement } from 'react'
+import {
+  OptionsObject,
+  SnackbarKey,
+  SnackbarProvider,
+  SnackbarProviderProps,
+  WithSnackbarProps,
+  useSnackbar,
+} from 'notistack'
+import React, { ReactElement } from 'react'
 import { makeStyles } from 'tss-react/mui'
+import Linkify from 'react-linkify'
 
 export const defaultOpts = {
   maxSnack: 8,
@@ -46,24 +54,36 @@ export function SnackbarUtilsConfigurator(): React.ReactElement {
 }
 
 export default {
-  success(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
+  success(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'success' })
   },
-  warning(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
+  warning(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'warning' })
   },
-  info(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
+  info(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'info' })
   },
-  error(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> {
+  error(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'error' })
   },
   // eslint-disable-next-line consistent-return
-  toast(msg: string, options: OptionsObject = {}): ReactElement<any, string | JSXElementConstructor<any>> | any {
+  toast(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey | undefined {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
   // eslint-disable-next-line consistent-return
-  close(id: any): ReactElement<any, string | JSXElementConstructor<any>> | void {
+  close(id: any): SnackbarKey | void {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)
   },
 }
+
+export const linkify = (msg) => (
+  <Linkify
+    componentDecorator={(decoratedHref, decoratedText, key) => (
+      <a target='_blank' rel='noopener noreferrer' href={decoratedHref} key={key}>
+        {decoratedText}
+      </a>
+    )}
+  >
+    {msg}
+  </Linkify>
+)

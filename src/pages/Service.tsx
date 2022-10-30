@@ -2,9 +2,10 @@ import Service from 'components/Service'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import {
   useCreateServiceMutation,
   useDeleteServiceMutation,
@@ -28,8 +29,26 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditServiceMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteServiceMutation()
-  const { data, isLoading, isError: isErrorService } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
-  const { data: secrets, isLoading: isLoadingSecrets, isError: isErrorSecrets } = useGetSecretsQuery({ teamId })
+  const {
+    data,
+    isLoading: isLoadingService,
+    isFetching: isFetchingService,
+    isError: isErrorService,
+    refetch: refetchService,
+  } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  const {
+    data: secrets,
+    isLoading: isLoadingSecrets,
+    isFetching: isFetchingSecrets,
+    isError: isErrorSecrets,
+    refetch: refetchSecrets,
+  } = useGetSecretsQuery({ teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetchingService) refetchService()
+    if (!isFetchingSecrets) refetchSecrets()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -40,9 +59,9 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (serviceId) => del({ teamId, serviceId })
-  const loading = isLoading || isLoadingSecrets
-  const error = isErrorService || isErrorSecrets
-  const comp = !error && (
+  const loading = isLoadingService || isLoadingSecrets
+  const isError = isErrorService || isErrorSecrets
+  const comp = !isError && (
     <Service
       teamId={teamId}
       service={data}

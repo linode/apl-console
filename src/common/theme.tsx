@@ -59,6 +59,16 @@ const commonPalette = {
     contrastText: c.white,
   },
   text: textLight,
+  // action: {
+  //   active: c.yellowMain,
+  //   activeOpacity: 1,
+  //   hover: c.yellowLight,
+  //   hoverOpacity: 0.7,
+  //   focus: c.yellowDark,
+  //   focusOpacity: 1,
+  //   selected: c.yellowMain,
+  //   selectedOpacity: 1,
+  // },
 }
 
 const commonPaletteDark: PaletteOptions = {
@@ -360,9 +370,8 @@ export const getTheme = (): Theme => {
 export const useMainStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
-    headerlink: {
-      // color: p.primary.main,
-      color: p.common.white,
+    toastLink: {
+      color: p.secondary.main,
       fontWeight: 'bold',
       '&&': {
         textDecoration: 'none',

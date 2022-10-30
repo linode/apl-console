@@ -88,6 +88,9 @@ const injectedRtkApi = api.injectEndpoints({
     revert: build.query<RevertApiResponse, RevertApiArg>({
       query: () => ({ url: `/revert` }),
     }),
+    restore: build.query<RestoreApiResponse, RestoreApiArg>({
+      query: () => ({ url: `/restore` }),
+    }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
@@ -2364,10 +2367,12 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
-export type DeployApiResponse = /** status 202 Deployment has been triggered */ object
+export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
 export type DeployApiArg = void
-export type RevertApiResponse = /** status 202 Revert has been triggered */ object
+export type RevertApiResponse = unknown
 export type RevertApiArg = void
+export type RestoreApiResponse = unknown
+export type RestoreApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
   /** ID of team to return */
@@ -2395,6 +2400,11 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   versions?: {
     core?: string
     api?: string
+    console?: string
+    values?: {
+      console?: string
+      deployed?: string
+    }
   }
 }
 export type GetSessionApiArg = void
@@ -3242,6 +3252,7 @@ export const {
   useDeleteSecretMutation,
   useDeployQuery,
   useRevertQuery,
+  useRestoreQuery,
   useDownloadKubecfgQuery,
   useGetSessionQuery,
   useApiDocsQuery,

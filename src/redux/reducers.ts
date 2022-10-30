@@ -4,16 +4,20 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export interface GlobalState {
   error: any
-  isDirty: boolean
+  isCorrupt: boolean
+  isDirty: boolean | undefined
   isStale: boolean
 }
 
-const initialState = { error: undefined, isDirty: false, isStale: false } as GlobalState
+const initialState = { error: undefined, isCorrupt: false, isDirty: undefined, isStale: false } as GlobalState
 
 const slice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    setCorrupt: (state, action) => {
+      state.isCorrupt = action.payload
+    },
     setDirty: (state, action) => {
       state.isDirty = action.payload
     },
@@ -26,5 +30,5 @@ const slice = createSlice({
   },
 })
 
-export const { setDirty, setError, setStale } = slice.actions
+export const { setCorrupt, setDirty, setError, setStale } = slice.actions
 export default slice.reducer

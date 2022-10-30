@@ -78,6 +78,8 @@ export const getSettingUiSchema = (
   const uiSchema: any = {
     cluster: {
       k8sContext: { 'ui:widget': 'hidden' },
+      // TODO: check out why we need this:
+      name: { 'ui:autofocus': true }, // hack to bypass losing focus when typing in this field
     },
     kms: {
       sops: {
@@ -122,7 +124,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId, data))
   useEffect(() => {
-    setSetting(data)
     onChangeHandler(data)
   }, [data])
   // END HOOKS

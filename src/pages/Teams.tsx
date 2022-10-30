@@ -1,11 +1,16 @@
 import Teams from 'components/Teams'
 import PaperLayout from 'layouts/Paper'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useAppSelector } from 'redux/hooks'
 import { useGetTeamsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
-  const { data, isLoading, error } = useGetTeamsQuery()
+  const { data, isLoading, isFetching, refetch } = useGetTeamsQuery()
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false && !isFetching) refetch()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const comp = data && <Teams teams={data} />
