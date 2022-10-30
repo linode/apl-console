@@ -246,11 +246,11 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
         defaultProps: {
           underline: 'none',
         },
-        styleOverrides: {
-          root: {
-            color: p.mode === 'light' ? p.primary.main : p.primary.light,
-          },
-        },
+        // styleOverrides: {
+        //   root: {
+        //     color: p.mode === 'light' ? p.primary.main : p.primary.light,
+        //   },
+        // },
       },
       MuiListItemIcon: {
         styleOverrides: {

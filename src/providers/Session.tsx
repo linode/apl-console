@@ -1,12 +1,14 @@
-import { Link } from '@mui/material'
 import { setSpec } from 'common/api-spec'
 import { useMainStyles } from 'common/theme'
 import ErrorComponent from 'components/Error'
+import LinkCommit from 'components/LinkCommit'
 import Loader from 'components/Loader'
+import MessageDrone from 'components/MessageDrone'
+import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { SnackbarKey } from 'notistack'
+import { ProviderContext, SnackbarKey } from 'notistack'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
@@ -18,7 +20,6 @@ import {
 } from 'redux/otomiApi'
 import { setCorrupt } from 'redux/reducers'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { getCommitLink } from 'utils/data'
 import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
 
@@ -62,13 +63,19 @@ type DroneRepo = {
   id: string
 }
 type DroneBuild = {
+  after: string
   id: string
-  status: string
+  link: string
+  status: 'pending' | 'started' | 'success' | 'failed'
   timestamp: number
+  created: number
+  started: number
+  updated: number
+  finished: number
 }
 type DroneBuildEvent = {
   id: number
-  action: string
+  action: 'created' | 'updated' | 'completed'
   repo: DroneRepo
   build: DroneBuild
 }
@@ -119,7 +126,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     [appsEnabled, oboTeamId, session, settings],
   )
   const { editor, user } = ctx
-  const gitHost = `https://gitea.${settings?.cluster?.domainSuffix}/otomi/values.git`
   const { email, isAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
@@ -132,6 +138,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (!lastDbMessage) return
     const { editor: msgEditor, state, reason, sha } = lastDbMessage
     const isMsgEditor = msgEditor === email
+    const linkCommit = sha ? <LinkCommit sha={sha} short /> : null
 
     // initiated by self
     if (isMsgEditor) {
@@ -143,7 +150,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
           },
         })
       }
-      if (state === 'clean' && reason === 'revert') snack.success(t(`DB reverted to commit {{sha}}`, { sha }))
+      if (state === 'clean' && reason === 'revert') {
+        snack.success(
+          <MessageTrans defaults='DB reverted to commit <1></1>'>
+            DB reverted to commit <LinkCommit sha={sha} />
+          </MessageTrans>,
+        )
+      }
     }
 
     // initiated by others
@@ -178,25 +191,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (state === 'clean' && reason === 'deploy') {
       if (keys.deploy) closeKey('deploy')
       keys.deploy = snack.info(
-        <>
-          {t(`Deployment scheduled for commit: `)}&nbsp;
-          <Link
-            target='_blank'
-            rel='noopener'
-            color='inherit'
-            className={classes.toastLink}
-            href={getCommitLink(sha, gitHost)}
-          >
-            {sha}
-          </Link>
-        </>,
+        <Trans defaults='Deployment scheduled for commit: <0></0>' components={[linkCommit]} />,
         { key: keys.deploy },
       )
       setCorrupt(false)
     }
     if (state === 'clean' && reason === 'restore') {
       if (keys.restore) closeKey('restore')
-      keys.restore = snack.success(t(`DB restored to commit: {{sha}}`, { sha }), {
+      keys.restore = snack.success(<Trans defaults='DB restored to commit: <0><0>' components={[linkCommit]} />, {
         persist: true,
         onClick: () => {
           closeKey('restore')
@@ -218,11 +220,22 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
+    const domainSuffix = settings?.cluster?.domainSuffix
     const { action, repo, build } = lastDroneMessage
-    const { id, status, timestamp } = build
-    snack[status === 'failed' ? 'error' : 'info'](
-      t(`Drone build ${id} ${action} at ${new Date(timestamp).toLocaleTimeString()}, status changed to: ${status}`),
-    )
+    const { after: sha, id, link, status, created, started, updated, finished } = build
+    const interest = [
+      { type: 'info', cond: action === 'created' && status === 'started', time: started },
+      { type: 'error', cond: action === 'completed' && status === 'failed', time: finished },
+      { type: 'success', cond: action === 'completed' && status === 'success', time: finished },
+    ]
+    interest.forEach((msg) => {
+      const datetime = new Date(msg.time).toLocaleTimeString()
+      if (!msg.cond) return
+      ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
+        <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
+        { autoHideDuration: 3000000 },
+      )
+    })
   }, [lastDroneMessage])
   // END HOOKS
   // TODO: create from git config, which is now in otomi-api values. Move?

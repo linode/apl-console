@@ -1,3 +1,5 @@
+import generateDownloadLink from 'generate-download-link'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
@@ -24,9 +26,8 @@ import BackupTableIcon from '@mui/icons-material/BackupTable'
 import HandshakeIcon from '@mui/icons-material/Handshake'
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Collapse, List, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
+import { Collapse, List, ListItemIcon, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
 import MenuList from '@mui/material/List'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -95,6 +96,7 @@ interface Props {
 export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
+    ca,
     appsEnabled,
     editor,
     oboTeamId,
@@ -193,6 +195,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     smtp: [t('SMTP'), <MailIcon />],
     backup: [t('Backup'), <BackupTableIcon />],
   }
+  const downloadOpts = {
+    data: ca ?? '',
+    title: 'Click to download the custom root CA used to generate the browser certs.',
+    filename: 'ca.crt',
+  }
+  const anchor = ca ? generateDownloadLink(downloadOpts) : ''
 
   return (
     <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
@@ -435,6 +443,21 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
+          {ca && (
+            <StyledMenuItem
+              className={mainClasses.selectable}
+              component={Link}
+              aria-label={t('Download CA')}
+              href={anchor}
+              download={downloadOpts.filename}
+              title={downloadOpts.title}
+            >
+              <ListItemIcon>
+                <VerifiedUserIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('Download CA')} />
+            </StyledMenuItem>
+          )}
         </>
       )}
     </MenuList>

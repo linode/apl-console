@@ -50,13 +50,13 @@ function App() {
     <Suspense fallback={<Loader />}>
       <ErrorBoundary FallbackComponent={ErrorComponent}>
         <CacheProvider value={muiCache}>
-          <NotistackProvider>
-            <SnackbarUtilsConfigurator />
-            <Provider store={store}>
-              <DndProvider backend={HTML5Backend}>
-                <IoProvider>
-                  <SessionProvider>
-                    <ThemeProvider>
+          <Provider store={store}>
+            <DndProvider backend={HTML5Backend}>
+              <IoProvider>
+                <SessionProvider>
+                  <ThemeProvider>
+                    <NotistackProvider>
+                      <SnackbarUtilsConfigurator />
                       <CssBaseline />
                       <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
                       <Router basename={contextPath}>
@@ -90,12 +90,12 @@ function App() {
                           </Route>
                         </Switch>
                       </Router>
-                    </ThemeProvider>
-                  </SessionProvider>
-                </IoProvider>
-              </DndProvider>
-            </Provider>
-          </NotistackProvider>
+                    </NotistackProvider>
+                  </ThemeProvider>
+                </SessionProvider>
+              </IoProvider>
+            </DndProvider>
+          </Provider>
         </CacheProvider>
       </ErrorBoundary>
     </Suspense>
