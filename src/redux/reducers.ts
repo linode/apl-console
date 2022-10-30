@@ -5,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit'
 export interface GlobalState {
   error: any
   isCorrupt: boolean
-  isDirty: boolean | undefined
+  isDirty: boolean | undefined | null
   isStale: boolean
 }
 

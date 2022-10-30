@@ -39,6 +39,7 @@ import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
 import { useAppSelector } from 'redux/hooks'
+import { SnackbarKey } from 'notistack'
 import Versions from './Versions'
 
 const useStyles = makeStyles()((theme) => ({
@@ -105,30 +106,31 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
   const [restore, setRestore] = useState(false)
-  const [key, setKey] = useState<any>()
   const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
   const { isSuccess: okRevert, error: errorRevert }: any = useRevertQuery(!revert ? skipToken : undefined)
   const { isSuccess: okRestore, error: errorRestore }: any = useRestoreQuery(!restore ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
-  const { isAdmin } = user
+  const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
-    snack.close(key)
-    setKey(undefined)
+    if (!keys[key]) return
+    snack.close(keys[key])
+    delete keys[key]
   }
+  const { isAdmin } = user
   useEffect(() => {
     if (deploy) {
-      if (key) snack.close(key)
-      setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
+      keys.deploy = snack.info(t('Scheduling... Hold on!'), { persist: true, key: keys.deploy })
       if (okDeploy || errorDeploy) {
-        if (key) snack.close(key)
+        snack.close(keys.deploy)
         if (errorDeploy) {
-          setKey(
-            snack.warning(t('Deployment failed. Potential conflict with another editor. Choose "Revert".'), {
+          keys.deploy = snack.warning(
+            t('Deployment failed. Potential conflict with another editor. Choose "Revert".'),
+            {
               persist: true,
               onClick: () => closeKey('conflict'),
-            }),
+            },
           )
         }
         setDeploy(false)
@@ -137,9 +139,9 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }, [deploy, okDeploy, errorDeploy])
   useEffect(() => {
     if (revert) {
-      if (key) snack.close(key)
-      setKey(snack.info(t('Reverting... Hold on!')))
+      keys.revert = snack.info(t('Reverting... Hold on!'), { persist: true, key: keys.revert })
       if (okRevert || errorRevert) {
+        snack.close(keys.revert)
         if (errorRevert) snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
         setRevert(false)
       }
@@ -147,11 +149,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }, [revert, okRevert, errorRevert])
   useEffect(() => {
     if (restore) {
-      if (key) snack.close(key)
-      setKey(snack.info(t('Restoring... Hold on!')))
-      if (okRestore || errorRestore)
+      keys.restore = snack.info(t('Restoring... Hold on!'), { persist: true, key: keys.restore })
+      if (okRestore || errorRestore) {
+        snack.close(keys.restore)
         if (errorRestore) snack.error(t('Restoration of DB failed. Please contact support@redkubes.com.'))
-      setRestore(false)
+        setRestore(false)
+      }
     }
   }, [restore, okRestore, errorRestore])
   const isCorrupt = useAppSelector(({ global: { isCorrupt } }) => isCorrupt)

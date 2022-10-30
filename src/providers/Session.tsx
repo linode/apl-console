@@ -208,10 +208,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // separate one for isDirty so we can be sure only that has changed
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
-    if (isDirty !== undefined) {
+    if (isDirty === undefined) return
+    if (isDirty === null) keys.create = snack.info(t('Cloning DB for the session... Hold on!'), { key: keys.create })
+    else {
       refetchSession()
-      if (keys.create && (!editor || !isDirty)) closeKey('create')
-      if (isDirty) keys.create = snack.info(t('Created in memory database for the session.'))
+      if (keys.create && !isDirty) closeKey('create')
     }
   }, [isDirty])
   // Drone events

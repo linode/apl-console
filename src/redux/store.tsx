@@ -3,7 +3,7 @@ import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/t
 import { otomiApi } from 'redux/otomiApi'
 import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'
 
-export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
+const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
   const { error, payload, meta } = action
   const { dispatch } = api
   if (!error) {
@@ -13,6 +13,7 @@ export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (ac
         requestStatus,
       } = meta
       // dirty logic: every MUTATION we deem to make state dirty
+      if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
       // after we processed a successful deploy QUERY we reset dirty state
       if (['deploy', 'revert'].includes(endpointName)) {
@@ -41,7 +42,7 @@ interface Props {
 
 export const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, errorMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, interceptMiddleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
