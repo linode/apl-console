@@ -2,43 +2,55 @@
 k8s:
   namespaces:
     - name: argocd
-    - name: alertmanager
+      app: argocd
     - name: cert-manager
       disableIstioInjection: true
     - name: default
       disableIstioInjection: true
       disablePolicyChecks: true
+    - name: drone
     - name: drone-pipelines
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: external-dns
       disableIstioInjection: true
     - name: harbor
+      app: harbor
     - name: gatekeeper-system
+      app: gatekeeper
       disableIstioInjection: true
     - name: gitea
     - name: grafana
+      app: grafana
     - name: istio-system
       disableIstioInjection: true
+    - name: httpbin
+      app: httpbin
     - name: ingress
       # disabling istio sidecar as it does not preserve client ip (yet)
       # TODO: enable once it does
       disableIstioInjection: true
     - name: jaeger
+      app: jaeger
     - name: jaeger-operator
+      app: jaeger
       disableIstioInjection: true
     - name: keycloak
     - name: kiali
+      app: kiali
     - name: kiali-operator
+      app: kiali
       disableIstioInjection: true
     - name: knative-serving
+      app: knative
       disablePolicyChecks: true
       disableIstioInjection: true
     - name: kubeapps
+      app: kubeapps
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: kubeclarity
-      disableIstioInjection: true
+      app: kubeclarity
     - name: maintenance
       disableIstioInjection: true
     - name: monitoring
@@ -50,16 +62,22 @@ k8s:
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: otomi
-    - name: overprovisioner
+    - name: cluster-overprovisioner
+      app: cluster-overprovisioner
       disableIstioInjection: true
-    - name: prometheus
-    - name: shared
+    - name: redis
+      app: prometheus
+      disableIstioInjection: true
     - name: team-admin
     - name: tigera-operator
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: vault
+      app: vault
     - name: velero
+      app: velero
+    - name: minio
+      app: minio
       disableIstioInjection: true
       disablePolicyChecks: true
 
@@ -93,13 +111,13 @@ adminApps:
     ownHost: true
     ingress:
       - svc: drone
-        namespace: team-admin
+        namespace: drone
         type: public
         auth: true
         removeRequestHeaders:
           - authorization
       - svc: drone
-        namespace: team-admin
+        namespace: drone
         type: public
         paths: [/hook, /api/user, /api/repo]
         forwardPath: true
@@ -129,6 +147,10 @@ adminApps:
           - authorization
         type: public
         auth: true
+    shortcuts:
+      - title: NGINX
+        description: NGINX ingress controller metrics
+        path: /d/nginx/nginx-ingress-controller?orgId=1&refresh=5s
   - name: harbor
     tags: [security]
     isShared: true
@@ -157,7 +179,7 @@ adminApps:
     isShared: true
     ownHost: true
     ingress:
-      - namespace: shared
+      - namespace: httpbin
         svc: httpbin
         type: public
         auth: true
@@ -190,9 +212,12 @@ adminApps:
   - name: kiali
     tags: [tracing, telemetry, observability]
     deps: [istio]
+    path: /api/auth/openid_redirect
     ingress:
       - svc: kiali
         forwardPath: true
+        removeRequestHeaders:
+          - authorization
         port: 20001
         namespace: kiali
         type: public
@@ -213,6 +238,7 @@ adminApps:
   - name: kubeclarity
     tags: [security]
     ownHost: true
+    isShared: true
     ingress:
       - svc: kubeclarity
         namespace: kubeclarity
@@ -226,24 +252,14 @@ adminApps:
     path: /explore?orgId=1&left=%5B"now-1h","now","Loki",%7B%7D,%7B"mode":"Logs"%7D,%7B"ui":%5Btrue,true,true,"none"%5D%7D%5D
     shortcuts:
       - title: Ingress logs
-        description: all logs generated in the "ingress" namespace
+        description: All logs generated in the "ingress" namespace
         path: /explore?orgId=1&left=%5B"now-1h","now","Loki",%7B"expr":"%7Bnamespace%3D%5C"ingress%5C"%7D","refId":"A"%7D%5D
       - title: OWASP violations
-        description: ingress traffic triggering OWASP rules
+        description: All OWASP rule violations
         path: /explore?orgId=1&left=%5B"now-1h","now","Loki",%7B"expr":"%7Bnamespace%3D%5C"ingress%5C"%7D%20%7C%3D%5C"ModSecurity:%20%5C""%7D%5D
       - title: Gatekeeper violations
         description: Kube API violations logged by OPA gatekepeer
         path: /explore?orgId=1&left=%5B"now-1h","now","Loki",%7B"expr":"%7Bnamespace%3D%5C"gatekeeper-system%5C"%7D%20%7C%3D%5C"Policy:%20%5C""%7D%5D
-  # - name: notary
-  #   isShared: true
-  #   ownHost: true
-  #   hide: true
-  #   ingress:
-  #     - svc: harbor-notary-server
-  #       port: 4443
-  #       namespace: harbor
-  #       type: public
-  #       auth: true
   - name: otomi
     hide: true
     isShared: true
@@ -267,20 +283,37 @@ adminApps:
         # namespace: prometheus
         type: public
         auth: true
+  - name: thanos
+    tags: [metrics, observability]
+    deps: [grafana]
+    ingress:
+      - svc: thanos-querier
+        port: 9090
+        namespace: monitoring
+        type: public
+        auth: true
   - name: vault
     tags: [secrets, security, observability]
-    deps: [kubernetes-external-secrets]
+    deps: [external-secrets]
     isShared: true
     ownHost: true
-    path: /ui/vault/secrets/secret/list/teams/#NS#/
+    path: /ui/vault/auth?redirect_to=%2Fvault%2Fsecrets%2Fsecret%2Flist%2Fteams%2F#NS#%2F&with=oidc
     ingress:
       - namespace: vault
-        svc: vault-0
+        svc: vault
         port: 8200
         type: public
         auth: true
   - name: velero
     tags: [backup]
+  - name: minio
+    tags: [storage, backup]
+    ingress:
+      - svc: thanos-querier
+        port: 9001
+        namespace: minio
+        type: public
+        auth: true
 
 teamApps:
   - name: alertmanager
