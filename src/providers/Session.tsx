@@ -239,9 +239,15 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     interest.forEach((msg) => {
       const datetime = new Date(msg.time).toLocaleTimeString()
       if (!msg.cond) return
-      ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
+      keys[`drone-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
-        { persist: status !== 'pending', autoHideDuration: 5000 },
+        {
+          persist: status !== 'pending',
+          autoHideDuration: 5000,
+          onClick: () => {
+            closeKey(`drone-${msg.type}`)
+          },
+        },
       )
       // pull in latest state as it might have changed
       if (status !== 'pending') refetchSession()

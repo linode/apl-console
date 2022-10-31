@@ -141,7 +141,13 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }, [deploy, okDeploy, errorDeploy])
   useEffect(() => {
     if (revert) {
-      keys.revert = snack.info(`${t('Reverting... Hold on!')}`, { persist: true, key: keys.revert })
+      keys.revert = snack.info(`${t('Reverting... Hold on!')}`, {
+        persist: true,
+        key: keys.revert,
+        onClick: () => {
+          closeKey('revert')
+        },
+      })
       if (okRevert || errorRevert) {
         snack.close(keys.revert)
         if (errorRevert) snack.error(`${t('Reverting failed. Please contact support@redkubes.com.')}`)
