@@ -11,7 +11,7 @@ interface LinkExtendedProps extends LinkProps {
 export default function ({ domainSuffix, id, label, ...props }: LinkExtendedProps): React.ReactElement {
   const { t } = useTranslation()
   // END HOOKS
-  const href = props.href ?? `https://gitea.${domainSuffix}/otomi/values/${id}`
+  const href = props.href ?? `https://drone.${domainSuffix}/otomi/values/${id}`
   const title = props.title ?? t(`Follow to view build with id {{id}}`, { id })
   const color = props.color ?? 'secondary'
   const insert = { ...props, color, href, title }
