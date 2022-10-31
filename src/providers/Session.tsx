@@ -76,6 +76,7 @@ type DroneBuild = {
 type DroneBuildEvent = {
   id: number
   action: 'created' | 'updated' | 'completed'
+  event: 'build' | 'repo'
   repo: DroneRepo
   build: DroneBuild
 }
@@ -220,14 +221,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
-    console.log('lastDroneMessage: ', lastDroneMessage)
+    if (process.env.NODE_ENV !== 'production') console.log('lastDroneMessage: ', lastDroneMessage)
     const domainSuffix = settings?.cluster?.domainSuffix
-    const { action, repo, build } = lastDroneMessage
+    const { event, action, repo, build } = lastDroneMessage
     const { after: sha, id, link, status, created, started, updated, finished } = build
     const interest = [
-      { type: 'info', cond: action === 'created' && status === 'started', time: started },
-      { type: 'error', cond: action === 'completed' && status === 'failed', time: finished },
-      { type: 'success', cond: action === 'completed' && status === 'success', time: finished },
+      { type: 'info', cond: action === 'created' && status === 'pending', time: started },
+      { type: 'error', cond: action === 'updated' && status === 'failed', time: finished },
+      { type: 'success', cond: action === 'updated' && status === 'success', time: finished },
     ]
     interest.forEach((msg) => {
       const datetime = new Date(msg.time).toLocaleTimeString()
