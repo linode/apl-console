@@ -239,6 +239,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (!msg.cond) return
       ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
+        { persist: status === 'failed', autoHideDuration: status === 'success' ? 5000 : 3000 },
       )
     })
   }, [lastDroneMessage])
