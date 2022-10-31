@@ -228,11 +228,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (process.env.NODE_ENV !== 'production') console.log('lastDroneMessage: ', lastDroneMessage)
     const domainSuffix = settings?.cluster?.domainSuffix
     const { action, build } = lastDroneMessage
-    const { after: sha, id, status, started, finished } = build
+    const { after: sha, created, id, status, updated } = build
     const interest = [
-      { type: 'info', cond: action === 'created' && status === 'pending', time: started },
-      { type: 'error', cond: action === 'updated' && status === 'failed', time: finished },
-      { type: 'success', cond: action === 'updated' && status === 'success', time: finished },
+      { type: 'info', cond: action === 'created' && status === 'pending', time: created },
+      { type: 'error', cond: action === 'updated' && status === 'failed', time: updated },
+      { type: 'success', cond: action === 'updated' && status === 'success', time: updated },
     ]
     interest.forEach((msg) => {
       const datetime = new Date(msg.time).toLocaleTimeString()
