@@ -60,7 +60,7 @@ interface Props extends CrudProps {
 
 export default function ({ team, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
-  const [data, setData]: any = useState(team)
+  const [data, setData] = useState<GetTeamApiResponse>(team)
   useEffect(() => {
     setData(team)
   }, [team])

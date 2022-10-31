@@ -42,7 +42,7 @@ export default function ({
   const [code, setCode] = useState(startCode)
   const [valid, setLocalValid] = useState(true)
   const { classes } = useStyles()
-  const fromYaml = (yaml: string) => {
+  const fromYaml = (yaml: string): any | undefined => {
     try {
       const obj = YAML.parse(yaml)
       if (typeof obj !== 'object') throw new Error(`invalid object parsed from yaml: ${obj}`)
@@ -59,7 +59,7 @@ export default function ({
   const onChangeHandler = (e: any) => {
     const code = e.target.value as string
     setCode(code)
-    const obj = fromYaml(code)
+    const obj: React.ChangeEvent<HTMLTextAreaElement> = fromYaml(code)
     if (onChange && obj) onChange(obj)
   }
 

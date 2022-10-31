@@ -2,7 +2,7 @@ import { Box } from '@mui/material'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(() => ({
   root: {
     // paddingTop: theme.spacing(2),
   },

@@ -338,7 +338,7 @@ export default function ({
                       </TableCell>
                       <TableCell align='left'>
                         <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
-                          {cleanLink(appInfo.repo)}
+                          {cleanLink(appInfo.repo as string)}
                         </Link>
                       </TableCell>
                     </TableRow>

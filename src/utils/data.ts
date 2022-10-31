@@ -96,7 +96,12 @@ export const getApps = (session, teamId) => {
 
 const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
 
-export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, mergeShortcuts = false) => {
+export const getAppData = (
+  session: GetSessionApiResponse,
+  teamId,
+  appOrId,
+  mergeShortcuts = false,
+): Record<string, any> => {
   const {
     core: { appsInfo },
     settings: {
@@ -161,4 +166,4 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
 // eslint-disable-next-line no-nested-ternary
 export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')
 
-export const cleanLink = (l: string) => l.replace('https://', '').replace(/\/$/g, '')
+export const cleanLink = (l: string): string => l.replace('https://', '').replace(/\/$/g, '')

@@ -9,8 +9,8 @@ import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
-  function (row): React.ReactElement {
-    const { teamId, id, name } = row
+  function (row): string | React.ReactElement {
+    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path = `/teams/${teamId}/services/${encodeURIComponent(id)}`

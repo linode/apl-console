@@ -104,7 +104,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
   const { socket, error: errorSocket } = useSocket({ url, path })
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
@@ -239,7 +241,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (!msg.cond) return
       ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
-        { persist: status === 'failed', autoHideDuration: status === 'success' ? 5000 : 3000 },
+        { persist: status === 'failed', autoHideDuration: status === 'success' ? 10000 : 5000 },
       )
       // pull in latest state as it might have changed
       if (status !== 'pending') refetchSession()

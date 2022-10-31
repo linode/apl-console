@@ -73,7 +73,6 @@ export const getSettingUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   settingId: string,
-  formData: any,
 ): any => {
   const uiSchema: any = {
     cluster: {
@@ -120,9 +119,9 @@ interface Props extends CrudProps {
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
-  const [setting, setSetting]: any = useState(data)
+  const [setting, setSetting]: any = useState<GetSettingsApiResponse>(data)
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
-  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId, data))
+  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
   useEffect(() => {
     onChangeHandler(data)
   }, [data])
@@ -130,7 +129,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   const onChangeHandler = (data) => {
     setSetting(data)
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
-    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId, data)
+    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)
     setUiSchema(uiSchema)
   }

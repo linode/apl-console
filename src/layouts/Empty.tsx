@@ -14,7 +14,7 @@ interface Props {
   title?: string
 }
 
-export default function ({ children, title }: any): React.ReactElement {
+export default function ({ children, title }: Props): React.ReactElement {
   const { classes } = useStyles()
   return (
     <MainLayout title={title}>

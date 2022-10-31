@@ -10,6 +10,7 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7
   const shortList = schema.enum?.length < 5
+  // eslint-disable-next-line no-param-reassign
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
     if (schema.enum && schema.enum.length === 1) {

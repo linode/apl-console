@@ -3,7 +3,7 @@ import CodeEditor from 'components/CodeEditor'
 import { isEmpty } from 'lodash'
 import React, { ChangeEventHandler } from 'react'
 
-export default function ({ onChange, formData, schema, ...props }: WidgetProps) {
+export default function ({ onChange, formData, schema }: WidgetProps) {
   const onChangeWrapper: ChangeEventHandler<HTMLTextAreaElement> = (formData) => {
     if (onChange) onChange(formData)
   }
