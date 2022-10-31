@@ -37,8 +37,8 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 
-export default function (props): React.ReactElement {
-  const { classes, cx } = useStyles()
+export default function (): React.ReactElement {
+  const { classes } = useStyles()
   const { i18n } = useTranslation()
   return (
     <Select

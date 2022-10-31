@@ -77,7 +77,7 @@ export default function (): React.ReactElement {
   } = useSession()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const { data: allTeams } = useGetTeamsQuery()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   // END HOOKs
   const open = Boolean(anchorEl)
   let teams: GetTeamsApiResponse
@@ -95,14 +95,14 @@ export default function (): React.ReactElement {
   const notifications = [{ type: 'PLATFORM', content: 'Coming soon', status: 'STICKY' }]
   const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
   const handleChangeTeam = (event) => {
-    const teamId = event.target.value
+    const teamId = event.target.value as string
     const path = window.location.pathname
     const teamPart = `/teams/${oboTeamId}`
     const newTeamPart = `/teams/${teamId}`
     const hasTeamId = path.includes(teamId)
     const hasTeamPart = path.includes(teamPart)
     const hasIDvalue = path.split('/').length === 5
-    let url
+    let url: string
     if (teamId) {
       if (hasTeamPart && !hasIDvalue) url = path.replace(teamPart, newTeamPart)
       else if (hasTeamId && !hasIDvalue) url = path.replace(oboTeamId, teamId)

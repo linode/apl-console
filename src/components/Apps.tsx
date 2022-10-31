@@ -47,7 +47,6 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
   const doDrop =
     (inOut) =>
     ({ name }) => {
-      console.log(`drop ${inOut ? 'in' : 'out'} app: ${name}`)
       const { deps } = getAppData(session, teamId, name)
       // we only allow turning on
       if (!inOut || session.appsEnabled[name]) return

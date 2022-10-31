@@ -15,7 +15,7 @@ export default function ({ domainSuffix, label, sha, short = true, ...props }: L
   // END HOOKS
   const repo = props.repo ?? `https://gitea.${domainSuffix}/otomi/values`
   const href = props.href ?? `${repo.replace('.git', '')}/commit/${sha}`
-  const shaShort = sha.substring(0, 8)
+  const shaShort = sha?.substring(0, 8)
   const children = props.children ?? short ? shaShort : sha
   const title = props.title ?? t(`Follow to view commit with sha {{sha}}`, { sha })
   const color = props.color ?? 'secondary'

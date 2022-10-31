@@ -2381,6 +2381,7 @@ export type DownloadKubecfgApiArg = {
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
   ca?: string
   core?: object
+  corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
   user?: {

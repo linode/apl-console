@@ -1,5 +1,4 @@
 import { setSpec } from 'common/api-spec'
-import { useMainStyles } from 'common/theme'
 import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
 import Loader from 'components/Loader'
@@ -55,7 +54,7 @@ interface Props {
 type DbMessage = {
   state: 'clean' | 'corrupt' | 'dirty'
   editor: string
-  reason: 'deploy' | 'revert' | 'restore' | 'conflict'
+  reason: 'deploy' | 'revert' | 'restore' | 'conflict' | 'started' | 'restored' | 'reloaded'
   sha: string
 }
 
@@ -82,13 +81,11 @@ type DroneBuildEvent = {
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
-  const { classes } = useMainStyles()
-  const [oboTeamId, setOboTeamId] = useLocalStorage('oboTeamId', undefined)
+  const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const {
     data: session,
     isLoading: isLoadingSession,
     error: errorSession,
-    isSuccess: okSession,
     refetch: refetchSession,
   } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
@@ -126,7 +123,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
-  const { editor, user } = ctx
+  const { corrupt, editor, user } = ctx
   const { email, isAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
@@ -135,6 +132,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     snack.close(keys[key])
     delete keys[key]
   }
+  const { isCorrupt, isDirty } = useAppSelector(({ global: { isCorrupt, isDirty } }) => ({
+    isCorrupt,
+    isDirty,
+  }))
   useEffect(() => {
     if (!lastDbMessage) return
     const { editor: msgEditor, state, reason, sha } = lastDbMessage
@@ -144,7 +145,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     // initiated by self
     if (isMsgEditor) {
       if (state === 'corrupt' && reason === 'deploy' && !keys.conflict) {
-        keys.conflict = snack.error(t('Deployment conflict. You have to revert changes and try again!'), {
+        keys.conflict = snack.error(`${t('Deployment conflict. You have to revert changes and try again!')}`, {
           persist: true,
           onClick: () => {
             closeKey('conflict')
@@ -162,33 +163,23 @@ export default function SessionProvider({ children }: Props): React.ReactElement
 
     // initiated by others
     if (!isMsgEditor) {
-      if (state === 'dirty') snack.warning(t('User {{editor}} started editing.', { editor: msgEditor }))
+      if (state === 'dirty') snack.warning(`${t('User {{editor}} started editing.', { editor: msgEditor })}`)
       if (state === 'clean') {
         if (reason === 'deploy')
-          if (editor) snack.warning(t('You have undeployed changes. Potential conflict upon deploy!'))
+          if (editor) snack.warning(`${t('You have undeployed changes. Potential conflict upon deploy!')}`)
 
         if (reason === 'revert') {
           snack.info(
-            t('User {{editor}} stopped editing (reason: {{reason}}).', {
+            `${t('User {{editor}} stopped editing (reason: {{reason}}).', {
               editor: msgEditor,
               reason,
-            }),
+            })}`,
           )
         }
       }
     }
 
     // global messages
-    if (state === 'corrupt' && reason === 'conflict') {
-      if (keys.conflict) closeKey('conflict')
-      keys.conflict = snack.error(t('Git conflict: upstream changes. Admin must restore DB.'), {
-        persist: true,
-        onClick: () => {
-          closeKey('conflict')
-        },
-      })
-      setCorrupt(true)
-    }
     if (state === 'clean' && reason === 'deploy') {
       if (keys.deploy) closeKey('deploy')
       keys.deploy = snack.info(
@@ -208,11 +199,22 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       setCorrupt(false)
     }
   }, [lastDbMessage])
+  // special one for corrupt state
+  useEffect(() => {
+    if (!(corrupt || isCorrupt)) return
+    if (keys.conflict) closeKey('conflict')
+    keys.conflict = snack.error(`${t('Git conflict: upstream changes. Admin must restore DB.')}`, {
+      persist: true,
+      onClick: () => {
+        closeKey('conflict')
+      },
+    })
+  }, [corrupt, isCorrupt])
   // separate one for isDirty so we can be sure only that has changed
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty === undefined) return
-    if (isDirty === null) keys.create = snack.info(t('Cloning DB for the session... Hold on!'), { key: keys.create })
+    if (isDirty === null)
+      keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, { key: keys.create })
     else {
       refetchSession()
       if (keys.create && !isDirty) closeKey('create')
@@ -221,10 +223,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
+    // eslint-disable-next-line no-console
     if (process.env.NODE_ENV !== 'production') console.log('lastDroneMessage: ', lastDroneMessage)
     const domainSuffix = settings?.cluster?.domainSuffix
-    const { event, action, repo, build } = lastDroneMessage
-    const { after: sha, id, link, status, created, started, updated, finished } = build
+    const { action, build } = lastDroneMessage
+    const { after: sha, id, status, started, finished } = build
     const interest = [
       { type: 'info', cond: action === 'created' && status === 'pending', time: started },
       { type: 'error', cond: action === 'updated' && status === 'failed', time: finished },
@@ -240,7 +243,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     })
   }, [lastDroneMessage])
   // END HOOKS
-  // TODO: create from git config, which is now in otomi-api values. Move?
   const error = errorApiDocs || errorApps || errorSession || errorSettings || errorSocket
   if (isLoadingSession) return <Loader />
   // if an error is caught at this stage related to api, we assume it is not responding and return timeout error

@@ -202,7 +202,7 @@ export interface EnhancedTableProps {
   disableSelect?: boolean
   orderByStart?: string
   headCells: any[]
-  rows: any[]
+  rows: Record<string, any>[]
   idKey?: string | CallableFunction
 }
 
@@ -215,8 +215,8 @@ export default function ({
   idKey = 'id',
 }: EnhancedTableProps): React.ReactElement {
   const { classes } = useEnhancedStyles()
-  const [order, setOrder] = useLocalStorage('EnhancedTable:order', 'asc')
-  const [orderBy, setOrderBy] = useLocalStorage('EnhancedTable:orderByStart', orderByStart)
+  const [order, setOrder] = useLocalStorage<Order>('EnhancedTable:order', 'asc')
+  const [orderBy, setOrderBy] = useLocalStorage<string>('EnhancedTable:orderByStart', orderByStart)
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [dense, setDense] = useLocalStorage('EnhancedTable:dense', false)
@@ -297,14 +297,14 @@ export default function ({
                 // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name)
+                  const isItemSelected = isSelected(row.name as string)
                   const labelId = `enhanced-table-checkbox-${index}`
                   const key = `row-${typeof idKey === 'function' ? idKey(row) : row[idKey]}`
                   return (
                     <TableRow
                       hover
                       // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.name as string)}
                       role='checkbox'
                       aria-checked={isItemSelected}
                       tabIndex={-1}

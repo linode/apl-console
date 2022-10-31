@@ -16,12 +16,13 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
       if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
       // after we processed a successful deploy QUERY we reset dirty state
-      if (['deploy', 'revert'].includes(endpointName)) {
+      if (['deploy', 'revert'].includes(endpointName as string)) {
         // clear state
         if (requestStatus === 'fulfilled') dispatch(setDirty(false))
       }
     }
   } else if (payload) {
+    // eslint-disable-next-line no-console
     console.error('We got a rejected action with payload: ', payload)
     dispatch(setError(payload))
   }
@@ -35,9 +36,6 @@ const reducer = {
 export type ReducerState = {
   [otomiApi.reducerPath]: typeof otomiApi.reducer
   global: GlobalState
-}
-interface Props {
-  children: any
 }
 
 export const store = configureStore({

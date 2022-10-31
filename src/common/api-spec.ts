@@ -67,6 +67,7 @@ export const setSpec = (inSpec): void => {
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
     if (!(formData?.receivers || []).includes(receiver) && !(formData?.drone || []).includes(receiver))
+      // eslint-disable-next-line no-param-reassign
       delete schema.properties[receiver]
   })
 }

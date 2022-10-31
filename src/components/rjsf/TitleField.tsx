@@ -16,7 +16,7 @@ export default function ({ id, title, docUrl, variant = 'h6' }: Props) {
   return (
     <Grid>
       <Typography variant={variant}>
-        {sentenceCase(t(title))} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
+        {sentenceCase(`${t(title)}`)} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
       </Typography>
       <Divider />
     </Grid>

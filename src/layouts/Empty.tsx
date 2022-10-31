@@ -3,7 +3,7 @@ import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(() => ({
   container: {
     padding: 0,
   },

@@ -102,10 +102,10 @@ export const getSettingUiSchema = (
   }
 
   const settingsModel = getSpec().components.schemas.Settings
-  const model = settingsModel.properties[settingId]
+  const model = settingsModel.properties[settingId] as JSONSchema7
   if (model) {
     // turn on code editor for fields of type object that don't have any properties
-    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
     leafs.forEach((path) => {
       set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
     })

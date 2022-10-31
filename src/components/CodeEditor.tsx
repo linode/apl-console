@@ -42,7 +42,7 @@ export default function ({
   const [code, setCode] = useState(startCode)
   const [valid, setLocalValid] = useState(true)
   const { classes } = useStyles()
-  const fromYaml = (yaml) => {
+  const fromYaml = (yaml: string) => {
     try {
       const obj = YAML.parse(yaml)
       if (typeof obj !== 'object') throw new Error(`invalid object parsed from yaml: ${obj}`)
@@ -52,13 +52,12 @@ export default function ({
     } catch (e) {
       setLocalValid(false)
       if (setValid) setValid(false)
-      console.error(e)
       return undefined
     }
   }
 
-  const onChangeHandler = (e) => {
-    const code = e.target.value
+  const onChangeHandler = (e: any) => {
+    const code = e.target.value as string
     setCode(code)
     const obj = fromYaml(code)
     if (onChange && obj) onChange(obj)

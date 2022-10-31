@@ -1,4 +1,5 @@
 #!/usr/bin/env node --nolazy --loader ts-node/esm
+/* eslint-disable no-console */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-misused-promises */

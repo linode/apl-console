@@ -123,12 +123,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { isAdmin } = user
   useEffect(() => {
     if (deploy) {
-      keys.deploy = snack.info(t('Scheduling... Hold on!'), { persist: true, key: keys.deploy })
+      keys.deploy = snack.info(`${t('Scheduling... Hold on!')}`, { persist: true, key: keys.deploy })
       if (okDeploy || errorDeploy) {
         snack.close(keys.deploy)
         if (errorDeploy) {
           keys.deploy = snack.warning(
-            t('Deployment failed. Potential conflict with another editor. Choose "Revert".'),
+            `${t('Deployment failed. Potential conflict with another editor. Choose "Revert".')}`,
             {
               persist: true,
               onClick: () => closeKey('conflict'),
@@ -141,20 +141,20 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }, [deploy, okDeploy, errorDeploy])
   useEffect(() => {
     if (revert) {
-      keys.revert = snack.info(t('Reverting... Hold on!'), { persist: true, key: keys.revert })
+      keys.revert = snack.info(`${t('Reverting... Hold on!')}`, { persist: true, key: keys.revert })
       if (okRevert || errorRevert) {
         snack.close(keys.revert)
-        if (errorRevert) snack.error(t('Reverting failed. Please contact support@redkubes.com.'))
+        if (errorRevert) snack.error(`${t('Reverting failed. Please contact support@redkubes.com.')}`)
         setRevert(false)
       }
     }
   }, [revert, okRevert, errorRevert])
   useEffect(() => {
     if (restore) {
-      keys.restore = snack.info(t('Restoring... Hold on!'), { persist: true, key: keys.restore })
+      keys.restore = snack.info(`${t('Restoring... Hold on!')}`, { persist: true, key: keys.restore })
       if (okRestore || errorRestore) {
         snack.close(keys.restore)
-        if (errorRestore) snack.error(t('Restoration of DB failed. Please contact support@redkubes.com.'))
+        if (errorRestore) snack.error(`${t('Restoration of DB failed. Please contact support@redkubes.com.')}`)
         setRestore(false)
       }
     }
@@ -163,11 +163,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   // END HOOKS
 
   const handleSettingsCollapse = (): void => {
-    setCollapseSettings((prevCollapse) => !prevCollapse)
+    setCollapseSettings(!collapseSettings)
   }
 
   const handleVersionsCollapse = (): void => {
-    setCollapseVersions((prevCollapse) => !prevCollapse)
+    setCollapseVersions(!collapseVersions)
   }
 
   const handleDeployClick = (): void => {

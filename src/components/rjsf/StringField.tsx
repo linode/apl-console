@@ -16,6 +16,7 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       // hide one item enum that was set to its default value, as those are used for selectors
       if (schema.default) newUiSchema['ui:widget'] = 'hidden'
       // we can just set the default value to the one enum
+      // eslint-disable-next-line prefer-destructuring
       else newSchema.default = schema.enum[0]
     } else if (schema.enum && schema.enum.length > 1 && !listTooLong) {
       newUiSchema['ui:widget'] = RadioWidget

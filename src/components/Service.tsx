@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, getIngressSchemaPath, getSpec, podSpecUiSchema, setSecretsEnum } from 'common/api-spec'
-import { JSONSchema7Definition } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
@@ -18,7 +18,7 @@ const idxMap = {
   tlsPass: 2,
 }
 
-export const addDomainEnumField = (schema: JSONSchema7Definition, settings, formData): void => {
+export const addDomainEnumField = (schema: JSONSchema7, settings, formData): void => {
   const { cluster, dns } = settings
   if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
   const ing = formData?.ingress

@@ -1,5 +1,4 @@
 import { Box, Typography } from '@mui/material'
-import { useSession } from 'providers/Session'
 import React, { CSSProperties } from 'react'
 import { useDrag } from 'react-dnd'
 import { Link } from 'react-router-dom'
@@ -8,7 +7,6 @@ import AppButtons from './AppButtons'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
-  const m = p.mode
   return {
     root: {
       textAlign: 'center',
@@ -55,7 +53,6 @@ export default function ({
   isCore = false,
   externalUrl,
 }: any): React.ReactElement {
-  const session = useSession()
   const { classes, cx } = useStyles()
   const [_, dragRef] = useDrag(
     () => ({
@@ -79,7 +76,9 @@ export default function ({
       className={cx(classes.img)}
       src={img}
       onError={({ currentTarget }) => {
+        // eslint-disable-next-line no-param-reassign
         currentTarget.onerror = null // prevents looping
+        // eslint-disable-next-line no-param-reassign
         currentTarget.src = imgAlt
       }}
       alt={`Logo for ${title} app`}

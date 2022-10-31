@@ -70,9 +70,9 @@ export default {
   toast(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey | undefined {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
-  // eslint-disable-next-line consistent-return
-  close(id: any): SnackbarKey | void {
+  close(id: SnackbarKey): void {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)
+    return undefined
   },
 }
 
