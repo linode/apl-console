@@ -241,6 +241,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
         { persist: status === 'failed', autoHideDuration: status === 'success' ? 5000 : 3000 },
       )
+      // pull in latest state as it might have changed
+      if (status !== 'pending') refetchSession()
     })
   }, [lastDroneMessage])
   // END HOOKS
