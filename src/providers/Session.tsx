@@ -145,10 +145,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     // initiated by self
     if (isMsgEditor) {
       if (state === 'corrupt' && reason === 'deploy' && !keys.conflict) {
-        keys.conflict = snack.error(`${t('Deployment conflict. You have to revert changes and try again!')}`, {
+        closeKey('deploy')
+        keys.deploy = snack.error(`${t('Deployment conflict. You have to revert changes and try again!')}`, {
           persist: true,
           onClick: () => {
-            closeKey('conflict')
+            closeKey('deploy')
           },
         })
       }
@@ -238,7 +239,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (!msg.cond) return
       ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
-        { autoHideDuration: 3000000 },
       )
     })
   }, [lastDroneMessage])
