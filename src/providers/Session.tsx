@@ -241,7 +241,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (!msg.cond) return
       ;(snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
-        { persist: status === 'failed', autoHideDuration: status === 'success' ? 10000 : 5000 },
+        { persist: status !== 'pending', autoHideDuration: 5000 },
       )
       // pull in latest state as it might have changed
       if (status !== 'pending') refetchSession()
