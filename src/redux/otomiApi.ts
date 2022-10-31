@@ -2402,10 +2402,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     core?: string
     api?: string
     console?: string
-    values?: {
-      console?: string
-      deployed?: string
-    }
+    values?: string
   }
 }
 export type GetSessionApiArg = void
