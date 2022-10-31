@@ -220,6 +220,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
+    console.log('lastDroneMessage: ', lastDroneMessage)
     const domainSuffix = settings?.cluster?.domainSuffix
     const { action, repo, build } = lastDroneMessage
     const { after: sha, id, link, status, created, started, updated, finished } = build
