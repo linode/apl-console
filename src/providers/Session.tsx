@@ -112,6 +112,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     memo[a.id] = !!a.enabled
     return memo
   }, {})
+  const { isCorrupt, isDirty } = useAppSelector(({ global: { isCorrupt, isDirty } }) => ({
+    isCorrupt,
+    isDirty,
+  }))
   const ctx = useMemo(
     () => ({
       ...(session || {}),
@@ -134,10 +138,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     snack.close(keys[key])
     delete keys[key]
   }
-  const { isCorrupt, isDirty } = useAppSelector(({ global: { isCorrupt, isDirty } }) => ({
-    isCorrupt,
-    isDirty,
-  }))
   useEffect(() => {
     if (!lastDbMessage) return
     const { editor: msgEditor, state, reason, sha } = lastDbMessage
@@ -222,7 +222,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       refetchSession()
       if (keys.create && !isDirty) closeKey('create')
     }
-  }, [isDirty])
+  }, [isCorrupt, isDirty])
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
