@@ -131,7 +131,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             `${t('Deployment failed. Potential conflict with another editor. Choose "Revert".')}`,
             {
               persist: true,
-              onClick: () => closeKey('conflict'),
+              onClick: () => closeKey('deploy'),
             },
           )
         }
