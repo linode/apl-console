@@ -98,6 +98,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const {
     ca,
     appsEnabled,
+    corrupt,
     editor,
     oboTeamId,
     settings: { cluster, otomi },
@@ -235,7 +236,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         </ListItemIcon>
         <ListItemText primary={t('Revert Changes')} />
       </MenuItem>
-      {isCorrupt && (
+      {(corrupt || isCorrupt) && (
         <MenuItem className={classes.deploy} onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
           <ListItemIcon>
             <HistoryIcon />
