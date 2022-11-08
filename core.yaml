@@ -76,6 +76,7 @@ k8s:
       app: vault
     - name: velero
       app: velero
+      disablePolicyChecks: true
     - name: minio
       app: minio
       disableIstioInjection: true
@@ -285,13 +286,22 @@ adminApps:
         auth: true
   - name: thanos
     tags: [metrics, observability]
-    deps: [grafana]
+    ownHost: true
+    isShared: true
+    deps: [grafana, minio]
     ingress:
-      - svc: thanos-querier
+      - svc: thanos-query-frontend
         port: 9090
         namespace: monitoring
+        forwardPath: true
         type: public
         auth: true
+      - svc: thanos-receive
+        port: 19291
+        namespace: monitoring
+        paths: [/api/]
+        forwardPath: true
+        type: public
   - name: vault
     tags: [secrets, security, observability]
     deps: [external-secrets]
@@ -308,13 +318,17 @@ adminApps:
     tags: [backup]
   - name: minio
     tags: [storage, backup]
+    ownHost: true
+    isShared: true
+    deps: [minio]
     ingress:
-      - svc: thanos-querier
+      - svc: minio
         port: 9001
         namespace: minio
         type: public
-        auth: true
-
+        # auth: true
+        # removeRequestHeaders:
+        #   - authorization
 teamApps:
   - name: alertmanager
     ingress:
