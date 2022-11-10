@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel, FormGroup, Typography } from '@mui/material'
 import { WidgetProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import Checkbox from 'components/Checkbox'
 import React from 'react'
 

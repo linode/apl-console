@@ -62,15 +62,6 @@ export const nullify = (data: Record<string, unknown>, schema: JSONSchema7) => {
   return d
 }
 
-export const cleanReadOnly = (schema: JSONSchema7, formData: any) => {
-  const ret = cloneDeep(formData)
-  const leafs = Object.keys(extract(schema, (o) => o.readOnly))
-  leafs.forEach((path) => {
-    unset(ret, path)
-  })
-  return ret
-}
-
 export const extract = (o: JSONSchema7, f: CallableFunction) => {
   const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
   const leafs = {}

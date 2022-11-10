@@ -30,7 +30,6 @@ export const getSettingSchema = (
       set(schema, 'properties.provider.readOnly', true)
       unset(schema, 'properties.k8sVersion.description')
       set(schema, 'properties.k8sVersion.readOnly', true)
-      set(schema, 'properties.apiName.readOnly', true)
       if (provider === 'aws')
         // make region required
         set(schema, 'required', get(schema, 'required', []).concat(['region']))

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import { Divider, Grid, Paper } from '@mui/material'
 import { FieldProps, IdSchema, ObjectFieldTemplateProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import { JSONSchema7 } from 'json-schema'
 import React from 'react'
 import { getSchemaType, hasSomeOf, propsToAccordion } from 'utils/schema'

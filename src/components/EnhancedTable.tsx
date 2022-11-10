@@ -20,7 +20,7 @@ import {
   Typography,
   lighten,
 } from '@mui/material'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'

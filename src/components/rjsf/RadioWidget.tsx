@@ -5,7 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import { WidgetProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 

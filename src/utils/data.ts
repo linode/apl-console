@@ -7,6 +7,7 @@ import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
+import { sentenceCase as sentenceCaseOrig } from 'change-case'
 
 export type CleanOptions = {
   cleanKeys?: any[]
@@ -167,3 +168,5 @@ export const getAppData = (
 export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')
 
 export const cleanLink = (l: string): string => l.replace('https://', '').replace(/\/$/g, '')
+
+export const sentenceCase = (str: string) => sentenceCaseOrig(str, { stripRegexp: /[-_]+/gi })
