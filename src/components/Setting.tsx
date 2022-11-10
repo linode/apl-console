@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, set, unset } from 'lodash'
+import { JSONSchema4 } from 'json-schema'
+import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -15,7 +15,7 @@ export const getSettingSchema = (
   settingId,
   formData: any,
 ): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId]) as JSONSchema7
+  const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   const {
     cluster: { provider },
     otomi: { hasCloudLB },
@@ -32,7 +32,7 @@ export const getSettingSchema = (
       set(schema, 'properties.k8sVersion.readOnly', true)
       if (provider === 'aws')
         // make region required
-        set(schema, 'required', get(schema, 'required', []).concat(['region']))
+        set(schema, 'required', (schema.required ?? []).concat(['region']))
       else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
@@ -100,10 +100,12 @@ export const getSettingUiSchema = (
   }
 
   const settingsModel = getSpec().components.schemas.Settings
-  const model = settingsModel.properties[settingId] as JSONSchema7
+  const model = settingsModel.properties[settingId]
   if (model) {
     // turn on code editor for fields of type object that don't have any properties
-    const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
+    const leafs = Object.keys(
+      extract(model, (o: JSONSchema4) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable),
+    )
     leafs.forEach((path) => {
       set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
     })

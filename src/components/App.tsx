@@ -106,7 +106,7 @@ export const getAppUiSchema = (
   formData,
 ): any => {
   const modelName = `App${pascalCase(appId)}`
-  const model = getSpec().components.schemas[modelName].properties.values as JSONSchema7
+  const model = getSpec().components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {
     const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
