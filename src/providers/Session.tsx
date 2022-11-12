@@ -7,7 +7,7 @@ import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
@@ -186,19 +186,22 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (state === 'clean' && reason === 'deploy') {
       if (keys.deploy) closeKey('deploy')
       keys.deploy = snack.info(
-        <Trans defaults='Deployment scheduled for commit: <0></0>' components={[linkCommit]} />,
+        <MessageTrans defaults='Deployment scheduled for commit: <0></0>' components={[linkCommit]} />,
         { key: keys.deploy },
       )
       setCorrupt(false)
     }
     if (state === 'clean' && reason === 'restore') {
       if (keys.restore) closeKey('restore')
-      keys.restore = snack.success(<Trans defaults='DB restored to commit: <0><0>' components={[linkCommit]} />, {
-        persist: true,
-        onClick: () => {
-          closeKey('restore')
+      keys.restore = snack.success(
+        <MessageTrans defaults='DB restored to commit: <0><0>' components={[linkCommit]} />,
+        {
+          persist: true,
+          onClick: () => {
+            closeKey('restore')
+          },
         },
-      })
+      )
       setCorrupt(false)
     }
   }, [lastDbMessage])

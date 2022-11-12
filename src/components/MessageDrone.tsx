@@ -1,8 +1,9 @@
 import { LinkProps } from '@mui/material'
 import React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import LinkCommit from './LinkCommit'
 import LinkDrone from './LinkDrone'
+import MessageTrans from './MessageTrans'
 
 interface LinkExtendedProps extends LinkProps {
   datetime: string
@@ -31,10 +32,10 @@ export default function ({
   const data = { datetime, id, sha, status }
   return (
     <div style={{ whiteSpace: 'pre-wrap' }}>
-      <Trans i18nKey='DRONE_MESSAGE' t={t} {...data}>
+      <MessageTrans i18nKey='DRONE_MESSAGE' t={t} {...data}>
         Drone <LinkDrone {...drone}>build {{ id }}</LinkDrone> <strong>{{ status }}</strong> for commit{' '}
         <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ datetime }}.
-      </Trans>
+      </MessageTrans>
     </div>
   )
 }
