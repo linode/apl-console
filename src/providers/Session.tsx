@@ -237,7 +237,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       { type: 'success', cond: action === 'updated' && status === 'success', time: updated },
     ]
     interest.forEach((msg) => {
-      const datetime = new Date(msg.time).toLocaleTimeString()
+      const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
       if (!msg.cond) return
       keys[`drone-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
         <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
