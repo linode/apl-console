@@ -186,22 +186,19 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (state === 'clean' && reason === 'deploy') {
       if (keys.deploy) closeKey('deploy')
       keys.deploy = snack.info(
-        <MessageTrans defaults='Deployment scheduled for commit: <0></0>' components={[linkCommit]} />,
+        <MessageTrans defaults='Deployment scheduled for commit <0></0>' components={[linkCommit]} />,
         { key: keys.deploy },
       )
       setCorrupt(false)
     }
     if (state === 'clean' && reason === 'restore') {
       if (keys.restore) closeKey('restore')
-      keys.restore = snack.success(
-        <MessageTrans defaults='DB restored to commit: <0><0>' components={[linkCommit]} />,
-        {
-          persist: true,
-          onClick: () => {
-            closeKey('restore')
-          },
+      keys.restore = snack.success(<MessageTrans defaults='DB restored to commit <0><0>' components={[linkCommit]} />, {
+        persist: true,
+        onClick: () => {
+          closeKey('restore')
         },
-      )
+      })
       setCorrupt(false)
     }
   }, [lastDbMessage])
