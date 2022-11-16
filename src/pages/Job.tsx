@@ -3,9 +3,10 @@ import Job from 'components/Job'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import {
   useCreateJobMutation,
   useDeleteJobMutation,
@@ -28,8 +29,26 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateJobMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditJobMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteJobMutation()
-  const { data, isLoading } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
-  const { data: secrets, isLoading: isLoadingSecrets, isError } = useGetSecretsQuery({ teamId })
+  const {
+    data,
+    isLoading: isLoadingJob,
+    isFetching: isFetchingJob,
+    isError: isErrorJob,
+    refetch: refetchJob,
+  } = useGetJobQuery({ teamId, jobId }, { skip: !jobId })
+  const {
+    data: secrets,
+    isLoading: isLoadingSecrets,
+    isFetching: isFetchingSecrets,
+    isError: isErrorSecrets,
+    refetch: refetchSecrets,
+  } = useGetSecretsQuery({ teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetchingJob) refetchJob()
+    if (!isFetchingSecrets) refetchSecrets()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -40,7 +59,8 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, jobId: deleteId })
-  const loading = isLoading || isLoadingSecrets
+  const loading = isLoadingJob || isLoadingSecrets
+  const isError = isErrorJob || isErrorSecrets
   const comp = !isError && (
     <Job
       teamId={teamId}

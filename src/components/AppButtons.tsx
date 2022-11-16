@@ -22,6 +22,7 @@ export default function ({
   hideSettings = false,
 }: Props): React.ReactElement {
   const session = useAuthzSession()
+
   const { t } = useTranslation()
   // END HOOKS
   const isAdminApps = teamId === 'admin'

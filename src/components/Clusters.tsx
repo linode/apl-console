@@ -1,6 +1,5 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import ListTable from './ListTable'
@@ -10,8 +9,6 @@ interface ClustersProps {
   clusters: Record<string, any>[]
 }
 export default function ({ clusters }: ClustersProps): React.ReactElement {
-  const { t } = useTranslation()
-  // END HOOKS
   const {
     settings: { cluster },
   } = useSession()

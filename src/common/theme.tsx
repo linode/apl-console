@@ -7,16 +7,19 @@ export const c = {
   black: '#111',
   white: '#eee',
   backgroundDark: '#121212',
+  backgroundLight: '#777',
   paperDark: '#282828',
   grey: '#CFD8DC',
+  greyLight: '#777',
+  greyDark: '#777',
   blueSoft: '#A4D2FF',
   blueLight: '#67B3FF',
   blueMain: '#1976D2',
-  blueDark: '#777777',
+  blueDark: '#0D47A1',
   redSoft: '#ffbbae',
   redLight: '#ff7359',
   redMain: '#ca2000',
-  redDark: '#777777',
+  redDark: '#a11900',
   yellowSoft: '#ece7e2',
   yellowLight: '#ffd700',
   yellowMain: '#f1c400',
@@ -45,6 +48,9 @@ export const textDark = {
 
 const commonPalette = {
   mode: 'light' as PaletteMode,
+  background: {
+    default: c.backgroundLight,
+  },
   common: {
     black: c.black,
     white: c.white,
@@ -53,6 +59,16 @@ const commonPalette = {
     contrastText: c.white,
   },
   text: textLight,
+  // action: {
+  //   active: c.yellowMain,
+  //   activeOpacity: 1,
+  //   hover: c.yellowLight,
+  //   hoverOpacity: 0.7,
+  //   focus: c.yellowDark,
+  //   focusOpacity: 1,
+  //   selected: c.yellowMain,
+  //   selectedOpacity: 1,
+  // },
 }
 
 const commonPaletteDark: PaletteOptions = {
@@ -70,7 +86,7 @@ const commonPaletteDark: PaletteOptions = {
 export const teamPalette: PaletteOptions = {
   ...cloneDeep(commonPalette),
   background: {
-    default: c.blueDark,
+    default: c.greyLight,
     paper: c.yellowSoft,
   },
   primary: {
@@ -88,7 +104,7 @@ export const teamPalette: PaletteOptions = {
 export const adminPalette: PaletteOptions = {
   ...cloneDeep(commonPalette),
   background: {
-    default: c.redDark,
+    default: c.greyLight,
     paper: c.brownSoft,
   },
   primary: {
@@ -230,11 +246,11 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
         defaultProps: {
           underline: 'none',
         },
-        styleOverrides: {
-          root: {
-            color: p.mode === 'light' ? p.primary.main : p.primary.light,
-          },
-        },
+        // styleOverrides: {
+        //   root: {
+        //     color: p.mode === 'light' ? p.primary.main : p.primary.light,
+        //   },
+        // },
       },
       MuiListItemIcon: {
         styleOverrides: {
@@ -251,7 +267,6 @@ const getOverrides = (palette: PaletteOptions): ThemeOptions => {
             marginTop: 0,
             paddingBottom: 4,
             paddingTop: 4,
-            // color: p.mode === 'light' ? p.text.primary : p.text.secondary,
           },
         },
       },
@@ -314,7 +329,7 @@ const teamDarkOverrides = getOverrides({
   ...cloneDeep(commonPaletteDark),
   primary: {
     // contrastText: c.blueSoft,
-    main: c.blueDark,
+    main: c.greyDark,
   },
   secondary: {
     main: c.blueMain,
@@ -328,11 +343,10 @@ const adminDarkOverrides = getOverrides({
   ...cloneDeep(adminPalette),
   ...cloneDeep(commonPaletteDark),
   primary: {
-    // contrastText: c.redSoft,
-    main: c.redDark,
+    main: c.greyDark,
   },
   secondary: {
-    main: c.redMain,
+    main: c.greyDark,
   },
 })
 const adminLight = createTheme(adminOverrides)
@@ -356,19 +370,18 @@ export const getTheme = (): Theme => {
 export const useMainStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
-    headerlink: {
-      // color: p.primary.main,
-      color: p.common.white,
+    toastLink: {
+      color: p.secondary.main,
       fontWeight: 'bold',
       '&&': {
         textDecoration: 'none',
         color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
       },
       '&&:hover': {
-        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.main,
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.light,
       },
       '&&.Mui-selected': {
-        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.light,
+        color: p.mode === 'dark' ? p.secondary.contrastText : p.secondary.dark,
       },
     },
     selectable: {

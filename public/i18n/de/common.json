@@ -9,6 +9,7 @@
   "Clusters": "Cluster",
   "DELETE_RESOURCE": "{{name}} {{model}} löschen",
   "DELETE_RESOURCE_CONFIRMATION": "Geben Sie zur Bestätigung den Namen des {{model}} (\"{{name}}\") ein.",
+  "DRONE_MESSAGE": "Drone <1>build {{id}}</1> <strong>{{status}}</strong> für commit <6>{{sha}}</6> auf {{datetime}}.",
   "Dashboard": "Dashboard",
   "Deploy changes": "Änderungen bereitstellen",
   "FORM_ABOUT": "Über {{title}}",

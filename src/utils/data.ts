@@ -1,12 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
-import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
+import { pascalCase, sentenceCase as sentenceCaseOrig } from 'change-case'
 
 export type CleanOptions = {
   cleanKeys?: any[]
@@ -96,7 +96,12 @@ export const getApps = (session, teamId) => {
 
 const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
 
-export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, mergeShortcuts = false) => {
+export const getAppData = (
+  session: GetSessionApiResponse,
+  teamId,
+  appOrId,
+  mergeShortcuts = false,
+): Record<string, any> => {
   const {
     core: { appsInfo },
     settings: {
@@ -161,31 +166,6 @@ export const getAppData = (session: GetSessionApiResponse, teamId, appOrId, merg
 // eslint-disable-next-line no-nested-ternary
 export const getRole = (teamId) => (!teamId ? 'all' : teamId === 'admin' ? 'admin' : 'team')
 
-export const deepDiff = (base, object): Record<string, any> => {
-  const changes = {}
+export const cleanLink = (l: string): string => l.replace('https://', '').replace(/\/$/g, '')
 
-  function walkObject(base, object, path = '') {
-    for (const key of Object.keys(base)) {
-      const currentPath = path === '' ? key : `${path}.${key}`
-
-      if (object[key] === undefined) changes[currentPath] = '-'
-    }
-
-    for (const [key, value] of Object.entries(object)) {
-      // eslint-disable-next-line no-nested-ternary
-      const currentPath = Array.isArray(object) ? `${path}[${key}]` : path === '' ? key : `${path}.${key}`
-
-      if (base[key] === undefined) changes[currentPath] = '+'
-      else if (value !== base[key]) {
-        if (typeof value === 'object' && typeof base[key] === 'object') walkObject(base[key], value, currentPath)
-        else changes[currentPath] = object[key]
-      }
-    }
-  }
-
-  walkObject(base, object)
-
-  return changes
-}
-
-export const cleanLink = (l: string) => l.replace('https://', '').replace(/\/$/g, '')
+export const sentenceCase = (str: string) => sentenceCaseOrig(str, { stripRegexp: /[-_]+/gi })

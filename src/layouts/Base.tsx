@@ -1,18 +1,13 @@
-import Brightness3Icon from '@mui/icons-material/Brightness3'
-import BrightnessHighIcon from '@mui/icons-material/BrightnessHigh'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 import { AppBar, Box, Divider, Drawer, IconButton, Toolbar, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { getThemeMode, toggleThemeMode } from 'common/theme'
 import Menu from 'components/Menu'
-import User from 'components/User'
+import MenuTop from 'components/MenuTop'
 import { useSession } from 'providers/Session'
-import { useTheme } from 'providers/Theme'
 import React, { useState } from 'react'
 import ErrorComponent from 'components/Error'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
-import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 
 const drawerWidth = '240px'
@@ -129,12 +124,8 @@ interface Props {
 
 export default function ({ children, title }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
-  const { setThemeMode } = useTheme()
-  const themeType = getThemeMode()
-
   const { classes, cx } = useStyles()
   const [open, setOpen] = useState(false)
-  const { t, i18n } = useTranslation()
   // END HOOKS
   const handleDrawerOpen = (e) => {
     e.preventDefault()
@@ -143,9 +134,6 @@ export default function ({ children, title }: Props): React.ReactElement {
   const handleDrawerClose = (e) => {
     e.preventDefault()
     setOpen(false)
-  }
-  const toggleTheme = (): void => {
-    setThemeMode(toggleThemeMode())
   }
 
   const img = (
@@ -181,11 +169,7 @@ export default function ({ children, title }: Props): React.ReactElement {
               <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
             </Box>
           </div>
-          <User />
-          <IconButton title={`Toggle theme: ${themeType}`} onClick={toggleTheme}>
-            {themeType === 'dark' ? <Brightness3Icon /> : <BrightnessHighIcon />}
-          </IconButton>
-          {/* <LangSwitcher /> */}
+          <MenuTop />
         </Toolbar>
       </AppBar>
       <Box sx={{ display: { xs: 'block', md: 'none' } }}>

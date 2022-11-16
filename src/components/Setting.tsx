@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, set, unset } from 'lodash'
+import { JSONSchema4 } from 'json-schema'
+import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -15,7 +15,7 @@ export const getSettingSchema = (
   settingId,
   formData: any,
 ): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId]) as JSONSchema7
+  const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   const {
     cluster: { provider },
     otomi: { hasCloudLB },
@@ -30,10 +30,9 @@ export const getSettingSchema = (
       set(schema, 'properties.provider.readOnly', true)
       unset(schema, 'properties.k8sVersion.description')
       set(schema, 'properties.k8sVersion.readOnly', true)
-      set(schema, 'properties.apiName.readOnly', true)
       if (provider === 'aws')
         // make region required
-        set(schema, 'required', get(schema, 'required', []).concat(['region']))
+        set(schema, 'required', (schema.required ?? []).concat(['region']))
       else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
@@ -73,11 +72,12 @@ export const getSettingUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   settingId: string,
-  formData: any,
 ): any => {
   const uiSchema: any = {
     cluster: {
       k8sContext: { 'ui:widget': 'hidden' },
+      // TODO: check out why we need this:
+      name: { 'ui:autofocus': true }, // hack to bypass losing focus when typing in this field
     },
     kms: {
       sops: {
@@ -103,7 +103,9 @@ export const getSettingUiSchema = (
   const model = settingsModel.properties[settingId]
   if (model) {
     // turn on code editor for fields of type object that don't have any properties
-    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    const leafs = Object.keys(
+      extract(model, (o: JSONSchema4) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable),
+    )
     leafs.forEach((path) => {
       set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
     })
@@ -118,18 +120,17 @@ interface Props extends CrudProps {
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
-  const [setting, setSetting]: any = useState(data)
+  const [setting, setSetting]: any = useState<GetSettingsApiResponse>(data)
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
-  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId, data))
+  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
   useEffect(() => {
-    setSetting(data)
     onChangeHandler(data)
   }, [data])
   // END HOOKS
   const onChangeHandler = (data) => {
     setSetting(data)
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
-    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId, data)
+    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)
     setUiSchema(uiSchema)
   }

@@ -1,9 +1,10 @@
 import Secrets from 'components/Secrets'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import { useGetSecretsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
@@ -17,7 +18,11 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const { data, isLoading } = useGetSecretsQuery({ teamId })
+  const { data, isLoading, isFetching, refetch } = useGetSecretsQuery({ teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false && !isFetching) refetch()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const comp = data && <Secrets teamId={teamId} secrets={data} />

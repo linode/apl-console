@@ -30,9 +30,3 @@ it('team can not doSomething', () => {
   set(user, 'authz.teamA.deniedAttributes.Team', ['doSomething'])
   expect(canDo(user, 'teamA', 'doSomething')).toBeFalsy()
 })
-
-it('admin without teamId can not doSomething', () => {
-  const user: GetSessionApiResponse['user'] = { ...userTpl }
-  user.isAdmin = true
-  expect(canDo(user, undefined, 'doSomething')).toBeFalsy()
-})

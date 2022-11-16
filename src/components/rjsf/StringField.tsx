@@ -10,12 +10,14 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7
   const shortList = schema.enum?.length < 5
+  // eslint-disable-next-line no-param-reassign
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
     if (schema.enum && schema.enum.length === 1) {
       // hide one item enum that was set to its default value, as those are used for selectors
       if (schema.default) newUiSchema['ui:widget'] = 'hidden'
       // we can just set the default value to the one enum
+      // eslint-disable-next-line prefer-destructuring
       else newSchema.default = schema.enum[0]
     } else if (schema.enum && schema.enum.length > 1 && !listTooLong) {
       newUiSchema['ui:widget'] = RadioWidget

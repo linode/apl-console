@@ -4,6 +4,7 @@ import useAuthzSession from 'hooks/useAuthzSession'
 import MainLayout from 'layouts/Empty'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import { useGetAppsQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
@@ -18,8 +19,8 @@ export default function ({
   const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
-  const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
+  const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
   useEffect(() => {
     if (appIds) {
       setAppState([])
@@ -32,6 +33,11 @@ export default function ({
       setTimeout(refetchAppsEnabled)
     }
   }, [appIds, okToggle])
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetching) refetch()
+  }, [isDirty])
   // END HOOKS
   return (
     <MainLayout title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`}>

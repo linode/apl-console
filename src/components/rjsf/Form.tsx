@@ -34,6 +34,7 @@ interface Props extends CrudProps {
   resourceName?: string
   adminOnly?: boolean
   disabled?: boolean
+  deleteDisabled?: boolean
   liveValidate?: boolean
   children?: any
   title?: any
@@ -49,8 +50,8 @@ export default function ({
   nameProp = 'name',
   mutating,
   adminOnly = false,
-  description,
   disabled,
+  deleteDisabled = false,
   resourceType,
   liveValidate,
   title: inTitle,
@@ -76,7 +77,7 @@ export default function ({
   const id = data?.[idProp]
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
-  const onChangeWrapper = ({ formData, errors }: IChangeEvent<any>) => {
+  const onChangeWrapper = ({ formData, errors }: IChangeEvent<Record<string, unknown>>) => {
     // lets check if form data is dirty (has meaningful changes)
     const cleanFormDataStripped = cleanData(formData) // strip all empty structs except empty arrays
     const d = originalState && !isEqual(cleanFormDataStripped, originalState)
@@ -93,13 +94,9 @@ export default function ({
     // keep local state for form sync
     setState(cleanFormData)
   }
-  const onSubmitWrapper = ({ formData }: IChangeEvent<any>, ev) => {
+  const onSubmitWrapper = ({ formData }: IChangeEvent<Record<string, unknown>>): void => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
     const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
-
-    // We need to send whole objects to api as it can not be merged on update (oneOf properties cannot be merged in api)
-    // const cleanFormData2 = cleanReadOnly(schema, cleanFormData)
-
     const nulledCleanFormData = nullify(cleanFormData, schema)
     onSubmit(nulledCleanFormData)
     // setState(undefined)
@@ -159,6 +156,7 @@ export default function ({
             resourceName={resourceName}
             resourceType={resourceType}
             disabled={disabled || !isDirty}
+            deleteDisabled={deleteDisabled || mutating}
             onDelete={onDelete}
           />
         )}

@@ -1,11 +1,9 @@
 /* eslint-disable no-restricted-globals */
 import { AnyAction, Middleware, MiddlewareAPI, configureStore } from '@reduxjs/toolkit'
-import logger from 'redux-logger'
 import { otomiApi } from 'redux/otomiApi'
 import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'
-import snack from 'utils/snack'
 
-export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
+const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
   const { error, payload, meta } = action
   const { dispatch } = api
   if (!error) {
@@ -15,19 +13,17 @@ export const errorMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (ac
         requestStatus,
       } = meta
       // dirty logic: every MUTATION we deem to make state dirty
+      if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
       // after we processed a successful deploy QUERY we reset dirty state
-      if (endpointName === 'deploy' && requestStatus === 'fulfilled') dispatch(setDirty(false))
+      if (['deploy', 'revert'].includes(endpointName as string)) {
+        // clear state
+        if (requestStatus === 'fulfilled') dispatch(setDirty(false))
+      }
     }
   } else if (payload) {
-    const {
-      data: { error: err },
-      status,
-    } = payload
+    // eslint-disable-next-line no-console
     console.error('We got a rejected action with payload: ', payload)
-    if (location.hostname === 'localhost')
-      snack.error(`Api Error[${status}] calling '${action.meta?.arg?.endpointName}': ${err}`)
-    // dispatch error also
     dispatch(setError(payload))
   }
   return next(action)
@@ -38,16 +34,13 @@ const reducer = {
   global: globalReducer,
 }
 export type ReducerState = {
-  [otomiApi.reducerPath]: typeof reducer
+  [otomiApi.reducerPath]: typeof otomiApi.reducer
   global: GlobalState
-}
-interface Props {
-  children: any
 }
 
 export const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, logger, errorMiddleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(otomiApi.middleware, interceptMiddleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -1,9 +1,17 @@
-import { OptionsObject, SnackbarProvider, SnackbarProviderProps, WithSnackbarProps, useSnackbar } from 'notistack'
-import React from 'react'
+import {
+  OptionsObject,
+  SnackbarKey,
+  SnackbarProvider,
+  SnackbarProviderProps,
+  WithSnackbarProps,
+  useSnackbar,
+} from 'notistack'
+import React, { ReactElement } from 'react'
 import { makeStyles } from 'tss-react/mui'
+import Linkify from 'react-linkify'
 
 export const defaultOpts = {
-  maxSnack: 3,
+  maxSnack: 8,
   autoHideDuration: 4000,
   preventDuplicate: true,
 }
@@ -46,24 +54,36 @@ export function SnackbarUtilsConfigurator(): React.ReactElement {
 }
 
 export default {
-  success(msg: string, options: OptionsObject = {}): React.ReactElement {
+  success(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'success' })
   },
-  warning(msg: string, options: OptionsObject = {}): React.ReactElement {
+  warning(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'warning' })
   },
-  info(msg: string, options: OptionsObject = {}): React.ReactElement {
+  info(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'info' })
   },
-  error(msg: string, options: OptionsObject = {}): React.ReactElement {
+  error(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey {
     return this.toast(msg, { ...options, variant: 'error' })
   },
   // eslint-disable-next-line consistent-return
-  toast(msg: string, options: OptionsObject = {}): React.ReactElement | any {
+  toast(msg: string | ReactElement, options: OptionsObject = {}): SnackbarKey | undefined {
     if (snackbarRef) return snackbarRef.enqueueSnackbar(msg, options)
   },
-  // eslint-disable-next-line consistent-return
-  close(id: number): React.ReactElement | any {
+  close(id: SnackbarKey): void {
     if (snackbarRef) return snackbarRef.closeSnackbar(id)
+    return undefined
   },
 }
+
+export const linkify = (msg) => (
+  <Linkify
+    componentDecorator={(decoratedHref, decoratedText, key) => (
+      <a target='_blank' rel='noopener noreferrer' href={decoratedHref} key={key}>
+        {decoratedText}
+      </a>
+    )}
+  >
+    {msg}
+  </Linkify>
+)

@@ -1,4 +1,4 @@
-import Cluster from 'components/Cluster'
+import Cluster from 'components/Versions'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 

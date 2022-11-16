@@ -20,6 +20,7 @@ import TableRow from '@mui/material/TableRow'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
+import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEqual, set } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import { CrudProps } from 'pages/types'
@@ -84,7 +85,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export const getAppSchema = (appId, formData): any => {
+export const getAppSchema = (appId: string, formData): any => {
   const modelName = `App${pascalCase(appId)}`
   const schema = cloneDeep(getSpec().components.schemas[modelName]) as Record<string, any>
   switch (appId) {
@@ -101,14 +102,14 @@ export const getAppSchema = (appId, formData): any => {
 export const getAppUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
-  appId,
+  appId: string,
   formData,
 ): any => {
   const modelName = `App${pascalCase(appId)}`
   const model = getSpec().components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {
-    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
     leafs.forEach((path) => {
       set(uiSchema, path, { 'ui:widget': CodeEditor })
     })
@@ -272,7 +273,9 @@ export default function ({
             className={classes.img}
             src={`/logos/${logo}`}
             onError={({ currentTarget }) => {
+              // eslint-disable-next-line no-param-reassign
               currentTarget.onerror = null // prevents looping
+              // eslint-disable-next-line no-param-reassign
               currentTarget.src = `/logos/${logoAlt}`
             }}
             alt={`Logo for ${appInfo.title} app`}
@@ -335,7 +338,7 @@ export default function ({
                       </TableCell>
                       <TableCell align='left'>
                         <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
-                          {cleanLink(appInfo.repo)}
+                          {cleanLink(appInfo.repo as string)}
                         </Link>
                       </TableCell>
                     </TableRow>

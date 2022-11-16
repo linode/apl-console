@@ -4,7 +4,7 @@ import { e } from 'i18n/i18n'
 export class HttpError extends Error {
   code?: number
 
-  constructor(message: any, code?: number | undefined) {
+  constructor(message: string, code?: number | undefined) {
     super(message)
     this.code = code
     // restore prototype chain

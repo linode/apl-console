@@ -85,6 +85,12 @@ const injectedRtkApi = api.injectEndpoints({
     deploy: build.query<DeployApiResponse, DeployApiArg>({
       query: () => ({ url: `/deploy` }),
     }),
+    revert: build.query<RevertApiResponse, RevertApiArg>({
+      query: () => ({ url: `/revert` }),
+    }),
+    restore: build.query<RestoreApiResponse, RestoreApiArg>({
+      query: () => ({ url: `/restore` }),
+    }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
@@ -330,6 +336,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             certSelect?: boolean
             certName?: string
             certArn?: string
+            ownHost?: boolean
           } & {
             type?: 'public'
           })
@@ -407,24 +414,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -483,24 +472,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -560,24 +531,6 @@ export type CreateTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -636,24 +589,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -715,24 +650,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -794,24 +711,6 @@ export type EditTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -1254,6 +1153,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             certSelect?: boolean
             certName?: string
             certArn?: string
+            ownHost?: boolean
           } & {
             type?: 'public'
           })
@@ -1368,6 +1268,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             certSelect?: boolean
             certName?: string
             certArn?: string
+            ownHost?: boolean
           } & {
             type?: 'public'
           })
@@ -1482,6 +1383,7 @@ export type CreateServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
+              ownHost?: boolean
             } & {
               type?: 'public'
             })
@@ -1949,6 +1851,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             certSelect?: boolean
             certName?: string
             certArn?: string
+            ownHost?: boolean
           } & {
             type?: 'public'
           })
@@ -2065,6 +1968,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             certSelect?: boolean
             certName?: string
             certArn?: string
+            ownHost?: boolean
           } & {
             type?: 'public'
           })
@@ -2181,6 +2085,7 @@ export type EditServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
+              ownHost?: boolean
             } & {
               type?: 'public'
             })
@@ -2361,8 +2266,12 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
-export type DeployApiResponse = /** status 202 Deployment has been triggered */ object
+export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
 export type DeployApiArg = void
+export type RevertApiResponse = unknown
+export type RevertApiArg = void
+export type RestoreApiResponse = unknown
+export type RestoreApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
   /** ID of team to return */
@@ -2371,7 +2280,9 @@ export type DownloadKubecfgApiArg = {
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
   ca?: string
   core?: object
-  isDirty?: boolean
+  corrupt?: boolean
+  editor?: string
+  inactivityTimeout?: number
   user?: {
     name: string
     email: string
@@ -2389,6 +2300,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   versions?: {
     core?: string
     api?: string
+    console?: string
+    values?: string
   }
 }
 export type GetSessionApiArg = void
@@ -2445,6 +2358,13 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   backup?: {
     platformSchedule?: {
       enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    teamSchedule?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
     }
   }
   home?: {
@@ -2648,8 +2568,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     }[]
     globalPullSecret?: {
-      username?: string
-      password?: string
+      username: string
+      password: string
       email?: string
       server?: string
     } | null
@@ -2823,6 +2743,13 @@ export type EditSettingsApiArg = {
     backup?: {
       platformSchedule?: {
         enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      teamSchedule?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
       }
     }
     home?: {
@@ -3026,8 +2953,8 @@ export type EditSettingsApiArg = {
         provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       }[]
       globalPullSecret?: {
-        username?: string
-        password?: string
+        username: string
+        password: string
         email?: string
         server?: string
       } | null
@@ -3144,7 +3071,7 @@ export type EditSettingsApiArg = {
 }
 export type GetAppsApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
-  id?: string
+  id: string
   rawValues?: object
   shortcuts?: {
     title: string
@@ -3166,7 +3093,7 @@ export type ToggleAppsApiArg = {
 }
 export type GetAppApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
-  id?: string
+  id: string
   rawValues?: object
   shortcuts?: {
     title: string
@@ -3186,7 +3113,7 @@ export type EditAppApiArg = {
   /** Edit app values */
   body: {
     enabled?: boolean
-    id?: string
+    id: string
     rawValues?: object
     shortcuts?: {
       title: string
@@ -3221,6 +3148,8 @@ export const {
   useEditSecretMutation,
   useDeleteSecretMutation,
   useDeployQuery,
+  useRevertQuery,
+  useRestoreQuery,
   useDownloadKubecfgQuery,
   useGetSessionQuery,
   useApiDocsQuery,

@@ -20,9 +20,9 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
-  if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   else if (!appsEnabled.grafana || !otomi.isMultitenant)
     set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
+  if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   return schema
 }
 
@@ -60,7 +60,7 @@ interface Props extends CrudProps {
 
 export default function ({ team, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
-  const [data, setData]: any = useState(team)
+  const [data, setData] = useState<GetTeamApiResponse>(team)
   useEffect(() => {
     setData(team)
   }, [team])
@@ -76,6 +76,7 @@ export default function ({ team, ...other }: Props): React.ReactElement {
       onChange={setData}
       uiSchema={uiSchema}
       data={formData}
+      deleteDisabled={!user.isAdmin}
       resourceType='Team'
       {...other}
     />

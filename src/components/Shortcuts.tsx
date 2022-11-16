@@ -2,14 +2,14 @@ import { Typography } from '@mui/material'
 import { capitalize } from 'lodash'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAppsApiResponse } from 'redux/otomiApi'
+import { GetAppApiResponse, GetAppsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 import MuiLink from './MuiLink'
 
 const getAppLink = (teamId: string) =>
-  function (app): React.ReactElement {
+  function (app: GetAppApiResponse): React.ReactElement {
     const { id } = app
     const path = `/apps/${teamId}/${id}#shortcuts`
     return (

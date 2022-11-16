@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, getIngressSchemaPath, getSpec, podSpecUiSchema, setSecretsEnum } from 'common/api-spec'
-import { JSONSchema7Definition } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
@@ -13,44 +13,47 @@ import {
 import { getStrict } from 'utils/schema'
 import Form from './rjsf/Form'
 
-const idxMap = {
+const idxMap: Record<string, number> = {
   public: 1,
   tlsPass: 2,
 }
 
-export const addDomainEnumField = (schema: JSONSchema7Definition, settings, formData): void => {
+export const addDomainEnumField = (
+  schema: JSONSchema7,
+  settings: GetSettingsApiResponse,
+  formData: GetServiceApiResponse,
+): void => {
   const { cluster, dns } = settings
   if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
-  const ing = formData?.ingress
+  const ing = formData?.ingress as any
   const idx = idxMap[formData?.ingress?.type]
   if (!formData || isEmpty(ing)) return
   const ingressSchemaPath = getIngressSchemaPath(idx)
   const ingressSchema = getStrict(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns?.zones || [])]
   if (!ingressSchema) return
-  if (formData.ingress.domain) {
-    const { length } = formData.ingress.domain
+  if (ing.domain) {
+    const { length } = ing.domain
     ingressSchema.subdomain.maxLength = 64 - length
   }
   // we only need to create an enum if we have more than one option
   if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
   if (zones.length > 1) ingressSchema.domain.enum = zones
   else if (!ing.domain) ing.domain = zones[0]
-  // ingressSchema.domain.readOnly = true
 }
 
 export const getServiceSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
-  formData,
+  formData: GetServiceApiResponse,
   teamId,
   secrets: Array<any>,
 ): any => {
-  const { cluster, otomi } = settings
-  const schema = cloneDeep(getSpec().components.schemas.Service) as any
+  const { cluster } = settings
+  const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
   const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   addDomainEnumField(schema, settings, formData)
-  const ing = formData?.ingress
+  const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
@@ -79,7 +82,7 @@ export const getServiceSchema = (
         if (secrets.length === 1) ing.certName = tlsSecretNames[0]
       }
     }
-    if (['cluster', 'tlsPass'].includes(ing?.type)) {
+    if (['cluster', 'tlsPass'].includes(ing?.type as string)) {
       unset(ingressSchema, 'auth')
       unset(ingressSchema, 'forwardPath')
       unset(ingressSchema, 'path')
@@ -87,7 +90,7 @@ export const getServiceSchema = (
     }
   }
   if (teamId !== 'admin') delete schema.properties.namespace
-  if (!appsEnabled.knative) schema.properties.ksvc.oneOf.splice(1, 2)
+  if (!appsEnabled.knative) (schema.properties.ksvc as JSONSchema7).oneOf.splice(1, 2)
   // if (!appsEnabled.knative) {
   //   schema.properties.ksvc.oneOf[1].disabled = true
   //   schema.properties.ksvc.oneOf[2].disabled = true
@@ -100,12 +103,11 @@ export const getServiceSchema = (
 
 export const getServiceUiSchema = (
   appsEnabled: Record<string, any>,
-  { otomi }: GetSettingsApiResponse,
   formData: GetServiceApiResponse,
   user: GetSessionApiResponse['user'],
   teamId: string,
 ): any => {
-  const ing = formData?.ingress as any
+  const ing = formData?.ingress as Record<string, any>
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
@@ -138,13 +140,12 @@ interface Props extends CrudProps {
 
 function getSubdomain(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
-  if (teamId === 'admin') return serviceName
   return `${serviceName}.team-${teamId}`
 }
 
 export default function ({ service, secrets, teamId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
-  const [data, setData]: any = useState(service)
+  const [data, setData] = useState<GetServiceApiResponse>(service)
   useEffect(() => {
     setData(service)
   }, [service])
@@ -154,8 +155,11 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
   const teamSubdomain = getSubdomain(formData?.name, teamId)
   const defaultSubdomain = teamSubdomain
   if (formData?.ingress) {
-    let ing = formData.ingress
-    if (!['cluster'].includes(ing.type) && (!data.ingress?.domain || ing.useDefaultSubdomain)) {
+    let ing = formData.ingress as Record<string, any>
+    if (
+      !['cluster'].includes(ing.type as string) &&
+      (!(data.ingress as Record<string, any>)?.domain || ing.useDefaultSubdomain)
+    ) {
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
       ing.subdomain = defaultSubdomain
@@ -176,7 +180,7 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
   }
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets)
-  const uiSchema = getServiceUiSchema(appsEnabled, settings, formData, user, teamId)
+  const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
   )

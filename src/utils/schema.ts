@@ -1,8 +1,9 @@
+import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, each, get, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
-export function getStrict(obj: any, path: string, def: any = undefined) {
+export function getStrict(obj: Record<string, any>, path: string, def: any = undefined) {
   const holderPath = getHolderPath(path)
   const val = get(obj, holderPath)
   if (val === undefined)
@@ -10,14 +11,14 @@ export function getStrict(obj: any, path: string, def: any = undefined) {
   return get(obj, path, def)
 }
 
-export function setStrict(obj: any, path: string, value: any) {
+export function setStrict(obj: Record<string, any>, path: string, value: any) {
   const holderPath = getHolderPath(path)
   if (get(obj, holderPath) === undefined)
     throw new Error(`Path ${path} does not exist on obj. Existing props: ${JSON.stringify(Object.keys(obj))}`)
   set(obj, path, value)
 }
 
-export function unsetStrict(obj: any, path: string) {
+export function unsetStrict(obj: Record<string, any>, path: string) {
   get(obj, path, undefined) // will warn if bogus path
   unset(obj, path)
 }
@@ -29,26 +30,30 @@ export const hasSomeOf = (schema) => {
   return ['allOf', 'anyOf', 'oneOf'].some((p) => !!schema[p])
 }
 
-export const getSchemaType = (schema) => {
-  if (typeof schema.type === 'object' && schema.type.length) return schema.type.filter((t) => t !== 'null')[0]
-  return schema?.type ?? (schema.allOf && schema.allOf.length === 1 ? schema.allOf[0].type ?? 'object' : 'object')
+export const getSchemaType = (schema: JSONSchema7): string => {
+  if (typeof schema.type === 'object' && schema.type.length) return schema.type.filter((t: string) => t !== 'null')[0]
+  const { allOf } = schema
+  const first: JSONSchema7 | undefined = allOf?.length === 1 ? (allOf[0] as JSONSchema7) : undefined
+  return (schema.type ?? first?.type ?? 'object') as string
 }
 
-export const isOf = (o): boolean => Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
+export const isOf = (o: Record<string, any>): boolean =>
+  Object.keys(o).some((p) => ['anyOf', 'allOf', 'oneOf'].includes(p))
 
-export const traverse = (o, func, path = '') =>
+export const traverse = (o: Record<string, any>, func, path = '') =>
   Object.getOwnPropertyNames(o).forEach((i) => {
     func(o, i, path)
     if (o[i] !== undefined && o[i] !== null && typeof o[i] === 'object') {
       // going one step down in the object tree!!
-      traverse(o[i], func, path !== '' ? `${path}.${i}` : i)
+      traverse(o[i] as Record<string, any>, func, path !== '' ? `${path}.${i}` : i)
     }
   })
 
-export const nullify = (data, schema) => {
+export const nullify = (data: Record<string, unknown>, schema: JSONSchema7) => {
   const nullMe = extract(schema, (o) => o['x-nullMe'])
   const d = cloneDeep(data || {})
-  traverse(d, (o, i) => {
+  traverse(d, (o: Record<string, any>, i: string | number) => {
+    // eslint-disable-next-line no-param-reassign
     if (o && o[i] === undefined) o[i] = null
   })
   each(nullMe, (v, path) => {
@@ -57,16 +62,7 @@ export const nullify = (data, schema) => {
   return d
 }
 
-export const cleanReadOnly = (schema, formData) => {
-  const ret = cloneDeep(formData)
-  const leafs = Object.keys(extract(schema, (o) => o.readOnly))
-  leafs.forEach((path) => {
-    unset(ret, path)
-  })
-  return ret
-}
-
-export const extract = (o, f) => {
+export const extract = (o: JSONSchema7, f: CallableFunction) => {
   const schemaKeywords = ['properties', 'items', 'anyOf', 'allOf', 'oneOf', 'default', 'x-secret', 'x-acl']
   const leafs = {}
   traverse(o, (o, i, path) => {
