@@ -1,13 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
-import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
-import { sentenceCase as sentenceCaseOrig } from 'change-case'
+import { pascalCase, sentenceCase as sentenceCaseOrig } from 'change-case'
 
 export type CleanOptions = {
   cleanKeys?: any[]

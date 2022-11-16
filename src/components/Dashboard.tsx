@@ -2,18 +2,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import CloudIcon from '@mui/icons-material/Cloud'
 import PeopleIcon from '@mui/icons-material/People'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import {
-  Avatar,
-  Card,
-  CardHeader,
-  Divider,
-  Grid,
-  IconButton,
-  Tooltip,
-  Typography,
-  Typography,
-  Typography,
-} from '@mui/material'
+import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
 import Link from '@mui/material/Link'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
