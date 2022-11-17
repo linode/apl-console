@@ -215,13 +215,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   }, [corrupt, isCorrupt])
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
+    refetchSession()
     if (isDirty === undefined) return
     if (isDirty === null)
       keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, { key: keys.create })
-    else {
-      refetchSession()
-      if (keys.create && !isDirty) closeKey('create')
-    }
+    else if (keys.create && !isDirty) closeKey('create')
   }, [isCorrupt, isDirty])
   // Drone events
   useEffect(() => {
