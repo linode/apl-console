@@ -142,7 +142,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (!lastDbMessage) return
     const { editor: msgEditor, state, reason, sha } = lastDbMessage
     const isMsgEditor = msgEditor === email
-    const linkCommit = sha ? <LinkCommit sha={sha} short /> : null
+    const linkCommit = sha ? <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} short /> : null
 
     // initiated by self
     if (isMsgEditor) {
@@ -158,7 +158,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (state === 'clean' && reason === 'revert') {
         snack.success(
           <MessageTrans defaults='DB reverted to commit <1></1>'>
-            DB reverted to commit <LinkCommit sha={sha} />
+            DB reverted to commit <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} />
           </MessageTrans>,
         )
       }
