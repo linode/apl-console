@@ -135,8 +135,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
 
     // initiated by self
     if (isMsgEditor) {
-      if (state === 'clean' && reason === 'revert')
-        snack.success(<MessageTrans defaults='DB reverted to commit <0></0>' components={[linkCommit]} />)
+      if (state === 'clean' && reason === 'revert') {
+        snack.success(
+          <MessageTrans defaults='DB reverted to commit <1></1>'>
+            DB reverted to commit <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} />
+          </MessageTrans>,
+        )
+        refetchSession()
+      }
     }
 
     // initiated by others
@@ -158,10 +164,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }
 
     // global messages
-    if (state === 'clean' && reason === 'revert') {
-      closeKey('conflict')
-      refetchSession()
-    }
+    if (state === 'clean' && reason === 'revert') closeKey('conflict')
     if (state === 'corrupt' && reason === 'deploy') refetchSession()
     if (state === 'clean' && reason === 'deploy') {
       closeKey('deploy')
@@ -169,6 +172,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         <MessageTrans defaults='Deployment scheduled for commit <0></0>' components={[linkCommit]} />,
         { key: keys.deploy },
       )
+      // setCorrupt(false)
       refetchSession()
     }
     if (state === 'clean' && reason === 'restore') {
@@ -179,6 +183,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
           closeKey('restore')
         },
       })
+      // setCorrupt(false)
       refetchSession()
     }
   }, [lastDbMessage])
@@ -196,15 +201,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
     if (isDirty === undefined) return
-    if (!editor && isDirty === null) {
-      keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, {
-        key: keys.create,
-        persist: true,
-        onClick: () => {
-          closeKey('create')
-        },
-      })
-    } else if (isDirty !== null) closeKey('create')
+    if (!editor && isDirty === null)
+      keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, { key: keys.create })
+    else if (isDirty === false) closeKey('create')
     if (isDirty) refetchSession()
   }, [isDirty])
   // Drone events
