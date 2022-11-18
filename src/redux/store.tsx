@@ -16,7 +16,7 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
       if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
       // after we processed a successful deploy QUERY we reset dirty state
-      if (['deploy', 'revert'].includes(endpointName as string)) {
+      if (['deploy', 'revert', 'restore'].includes(endpointName as string)) {
         // clear state
         if (requestStatus === 'fulfilled') dispatch(setDirty(false))
       }
