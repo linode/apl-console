@@ -17,8 +17,9 @@ import {
   useGetSessionQuery,
   useGetSettingsQuery,
 } from 'redux/otomiApi'
+import { setCorrupt } from 'redux/reducers'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
+import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
 
 export interface SessionContext extends GetSessionApiResponse {
@@ -81,17 +82,24 @@ type DroneBuildEvent = {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
-  const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
+  const {
+    data: session,
+    isLoading: isLoadingSession,
+    error: errorSession,
+    refetch: refetchSession,
+  } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
   const {
     data: settings,
     isLoading: isLoadingSettings,
+    error: errorSettings,
     refetch: refetchSettings,
   } = useGetSettingsQuery({ ids: ['cluster', 'dns', 'otomi'] })
   const {
     data: apps,
     isLoading: isLoadingApps,
+    error: errorApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
@@ -104,7 +112,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     memo[a.id] = !!a.enabled
     return memo
   }, {})
-  const { isDirty } = useAppSelector(({ global: { isDirty } }) => ({ isDirty }))
+  const { isCorrupt, isDirty } = useAppSelector(({ global: { isCorrupt, isDirty } }) => ({
+    isCorrupt,
+    isDirty,
+  }))
   const ctx = useMemo(
     () => ({
       ...(session || {}),
@@ -131,17 +142,25 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (!lastDbMessage) return
     const { editor: msgEditor, state, reason, sha } = lastDbMessage
     const isMsgEditor = msgEditor === email
-    const linkCommit = sha ? <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} short /> : null
+    const linkCommit = sha ? <LinkCommit sha={sha} short /> : null
 
     // initiated by self
     if (isMsgEditor) {
+      if (state === 'corrupt' && reason === 'deploy' && !keys.conflict) {
+        closeKey('deploy')
+        keys.deploy = snack.error(`${t('Deployment conflict. You have to revert changes and try again!')}`, {
+          persist: true,
+          onClick: () => {
+            closeKey('deploy')
+          },
+        })
+      }
       if (state === 'clean' && reason === 'revert') {
         snack.success(
           <MessageTrans defaults='DB reverted to commit <1></1>'>
-            DB reverted to commit <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} />
+            DB reverted to commit <LinkCommit sha={sha} />
           </MessageTrans>,
         )
-        refetchSession()
       }
     }
 
@@ -164,48 +183,46 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }
 
     // global messages
-    if (state === 'clean' && reason === 'revert') closeKey('conflict')
-    if (state === 'corrupt' && reason === 'deploy') refetchSession()
     if (state === 'clean' && reason === 'deploy') {
-      closeKey('deploy')
+      if (keys.deploy) closeKey('deploy')
       keys.deploy = snack.info(
         <MessageTrans defaults='Deployment scheduled for commit <0></0>' components={[linkCommit]} />,
         { key: keys.deploy },
       )
-      // setCorrupt(false)
-      refetchSession()
+      setCorrupt(false)
     }
     if (state === 'clean' && reason === 'restore') {
-      closeKey('conflict')
+      if (keys.restore) closeKey('restore')
       keys.restore = snack.success(<MessageTrans defaults='DB restored to commit <0><0>' components={[linkCommit]} />, {
         persist: true,
         onClick: () => {
           closeKey('restore')
         },
       })
-      // setCorrupt(false)
-      refetchSession()
+      setCorrupt(false)
     }
   }, [lastDbMessage])
   // special one for corrupt state
   useEffect(() => {
-    if (corrupt) {
-      keys.conflict = snack.error(`${t('Git conflict: upstream changes. Admin must restore DB.')}`, {
-        persist: true,
-        onClick: () => {
-          closeKey('conflict')
-        },
-      })
-    } else closeKey('conflict')
-  }, [corrupt])
+    if (!(corrupt || isCorrupt)) return
+    if (keys.conflict) closeKey('conflict')
+    keys.conflict = snack.error(`${t('Git conflict: upstream changes. Admin must restore DB.')}`, {
+      persist: true,
+      onClick: () => {
+        closeKey('conflict')
+      },
+    })
+  }, [corrupt, isCorrupt])
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
     if (isDirty === undefined) return
-    if (!editor && isDirty === null)
+    if (isDirty === null)
       keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, { key: keys.create })
-    else if (isDirty === false) closeKey('create')
-    if (isDirty) refetchSession()
-  }, [isDirty])
+    else {
+      refetchSession()
+      if (keys.create && !isDirty) closeKey('create')
+    }
+  }, [isCorrupt, isDirty])
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
@@ -237,10 +254,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     })
   }, [lastDroneMessage])
   // END HOOKS
+  const error = errorApiDocs || errorApps || errorSession || errorSettings || errorSocket
   if (isLoadingSession) return <Loader />
-  // if an error occured we keep rendering and let the error component show what happened
-  if (errorSocket)
-    keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
+  // if an error is caught at this stage related to api, we assume it is not responding and return timeout error
+  if (error) return <ErrorComponent error={new ApiErrorGatewayTimeout()} />
   // no error and we stopped loading, so we can check the user
   if (!session.user.isAdmin && session.user.teams.length === 0)
     return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />

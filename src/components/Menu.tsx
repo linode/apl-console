@@ -39,6 +39,7 @@ import { useDeployQuery, useRestoreQuery, useRevertQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
+import { useAppSelector } from 'redux/hooks'
 import { SnackbarKey } from 'notistack'
 import Versions from './Versions'
 
@@ -108,21 +109,9 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const [deploy, setDeploy] = useState(false)
   const [revert, setRevert] = useState(false)
   const [restore, setRestore] = useState(false)
-  const {
-    isSuccess: okDeploy,
-    error: errorDeploy,
-    isFetching: isDeploying,
-  }: any = useDeployQuery(!deploy ? skipToken : undefined)
-  const {
-    isSuccess: okRevert,
-    error: errorRevert,
-    isFetching: isReverting,
-  }: any = useRevertQuery(!revert ? skipToken : undefined)
-  const {
-    isSuccess: okRestore,
-    error: errorRestore,
-    isFetching: isRestoring,
-  }: any = useRestoreQuery(!restore ? skipToken : undefined)
+  const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
+  const { isSuccess: okRevert, error: errorRevert }: any = useRevertQuery(!revert ? skipToken : undefined)
+  const { isSuccess: okRestore, error: errorRestore }: any = useRestoreQuery(!restore ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
@@ -135,14 +124,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const { isAdmin } = user
   useEffect(() => {
     if (deploy) {
-      keys.deploy = snack.info(`${t('Scheduling... Hold on!')}`, {
-        persist: true,
-        key: keys.deploy,
-        onClick: () => closeKey('deploy'),
-      })
+      keys.deploy = snack.info(`${t('Scheduling... Hold on!')}`, { persist: true, key: keys.deploy })
       if (okDeploy || errorDeploy) {
         snack.close(keys.deploy)
-        if (errorDeploy) snack.warning(`${t('Deployment failed. Potential conflict with another editor.')}`)
+        if (errorDeploy) {
+          keys.deploy = snack.warning(
+            `${t('Deployment failed. Potential conflict with another editor. Choose "Revert".')}`,
+            {
+              persist: true,
+              onClick: () => closeKey('deploy'),
+            },
+          )
+        }
         setDeploy(false)
       }
     }
@@ -165,14 +158,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   }, [revert, okRevert, errorRevert])
   useEffect(() => {
     if (restore) {
-      snack.close(keys.revert)
-      keys.restore = snack.info(`${t('Restoring... Hold on!')}`, {
-        persist: true,
-        key: keys.restore,
-        onClick: () => {
-          closeKey('restore')
-        },
-      })
+      keys.restore = snack.info(`${t('Restoring... Hold on!')}`, { persist: true, key: keys.restore })
       if (okRestore || errorRestore) {
         snack.close(keys.restore)
         if (errorRestore) snack.error(`${t('Restoration of DB failed. Please contact support@redkubes.com.')}`)
@@ -180,6 +166,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       }
     }
   }, [restore, okRestore, errorRestore])
+  const isCorrupt = useAppSelector(({ global: { isCorrupt } }) => isCorrupt)
   // END HOOKS
 
   const handleSettingsCollapse = (): void => {
@@ -229,7 +216,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       </StyledListSubheader>
       <MenuItem
         className={classes.deploy}
-        disabled={!editor || isDeploying || corrupt}
+        disabled={!editor}
         onClick={handleDeployClick}
         data-cy='menu-item-deploy-changes'
       >
@@ -240,7 +227,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
       </MenuItem>
       <MenuItem
         className={classes.revert}
-        disabled={!editor || isDeploying || isReverting || corrupt}
+        disabled={!editor}
         onClick={handleRevertClick}
         data-cy='menu-item-reset-changes'
       >
@@ -249,7 +236,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         </ListItemIcon>
         <ListItemText primary={t('Revert Changes')} />
       </MenuItem>
-      {isAdmin && !isRestoring && corrupt && (
+      {(corrupt || isCorrupt) && (
         <MenuItem className={classes.deploy} onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
           <ListItemIcon>
             <HistoryIcon />
