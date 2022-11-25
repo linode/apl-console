@@ -159,7 +159,7 @@ export const getAppUiSchema = (
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       break
     case 'prometheus':
-      set(uiSchema, 'remoteWrite.customConfig.ui:widget', 'textarea')
+      set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
       break
     default:
       break
