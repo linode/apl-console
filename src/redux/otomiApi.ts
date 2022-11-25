@@ -2642,6 +2642,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
+    otomiCloudApikey?: string
+    isActivatedOnOtomiCloud?: boolean
     additionalClusters?: {
       domainSuffix: string
       name: string

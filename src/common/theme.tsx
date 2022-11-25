@@ -92,9 +92,9 @@ export const adminPalette: PaletteOptions = {
     paper: c.brownSoft,
   },
   primary: {
-    light: c.redLight,
-    main: c.redMain,
-    dark: c.redDark,
+    light: c.brownLight,
+    main: c.brownMain,
+    dark: c.brownDark,
   },
   secondary: {
     light: c.yellowLight,

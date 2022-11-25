@@ -24,6 +24,8 @@ export const getSettingSchema = (
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
       set(schema, 'properties.adminPassword.readOnly', true)
+      set(schema, 'properties.isActivatedOnOtomiCloud.readOnly', true)
+      unset(schema, 'properties.isActivatedOnOtomiCloud.description')
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
@@ -88,6 +90,11 @@ export const getSettingUiSchema = (
       },
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
+    otomi: {
+      properties: {
+        otomiCloudApikey: { 'ui:disabled': false },
+      },
+    },
   }
 
   if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
