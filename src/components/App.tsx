@@ -158,6 +158,9 @@ export const getAppUiSchema = (
     case 'loki':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       break
+    case 'prometheus':
+      set(uiSchema, 'remoteWrite.customConfig.ui:widget', 'textarea')
+      break
     default:
       break
   }
