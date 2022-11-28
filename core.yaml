@@ -43,6 +43,10 @@ k8s:
       disableIstioInjection: true
     - name: monitoring
       disableIstioInjection: true
+    - name: minio
+      app: minio
+      disableIstioInjection: true
+      disablePolicyChecks: true
     - name: olm
       disableIstioInjection: true
       disablePolicyChecks: true
@@ -244,6 +248,18 @@ adminApps:
   #       namespace: harbor
   #       type: public
   #       auth: true
+  - name: minio
+    tags: [storage, backup]
+    ownHost: true
+    deps: [minio]
+    ingress:
+      - svc: minio
+        port: 9001
+        namespace: minio
+        type: public
+        auth: true
+        removeRequestHeaders:
+          - authorization
   - name: otomi
     hide: true
     isShared: true
