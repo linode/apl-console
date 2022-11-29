@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.19](https://github.com/redkubes/otomi-stack-web/compare/v0.5.18...v0.5.19) (2022-11-18)
+
+
+### Features
+
+* detect git conflicts on multi-user values changes ([#221](https://github.com/redkubes/otomi-stack-web/issues/221)) ([da8825b](https://github.com/redkubes/otomi-stack-web/commit/da8825bd1e2718062129457757cbe2f5afe99167))
+
+
+### Bug Fixes
+
+* commit link with domian suffix ([f5db0e7](https://github.com/redkubes/otomi-stack-web/commit/f5db0e784fb32871c49bd623a54f7826aa4151de))
+
+
+### Reverts
+
+* Revert "fix: msg events, button logic, cleanup" ([6990457](https://github.com/redkubes/otomi-stack-web/commit/699045757971477c3ef85ba23391658d6823d393))
+
 ### [0.5.18](https://github.com/redkubes/otomi-stack-web/compare/v0.5.17...v0.5.18) (2022-09-27)
 
 

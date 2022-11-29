@@ -36,6 +36,6 @@ export class ApiErrorUnauthorized extends ApiError {
 
 export class ApiErrorUnauthorizedNoGroups extends ApiError {
   constructor() {
-    super('It seems that a user does not belong to any team. Please check the groups claim of the id_token')
+    super('It seems that this user does not belong to any team. Please check the groups claim of the id token.')
   }
 }
