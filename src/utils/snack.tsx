@@ -11,7 +11,7 @@ import { makeStyles } from 'tss-react/mui'
 import Linkify from 'react-linkify'
 
 export const defaultOpts = {
-  maxSnack: 8,
+  maxSnack: 5,
   autoHideDuration: 4000,
   preventDuplicate: true,
 }
