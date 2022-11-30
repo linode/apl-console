@@ -5,7 +5,7 @@ import MainLayout from 'layouts/Empty'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAppsQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useGetAppsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -21,6 +21,7 @@ export default function ({
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
   const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
+  const { data: teamSettings } = useGetTeamQuery({ teamId })
   useEffect(() => {
     if (appIds) {
       setAppState([])
@@ -41,7 +42,13 @@ export default function ({
   // END HOOKS
   return (
     <MainLayout title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`}>
-      <Apps teamId={teamId} apps={isFetching ? undefined : apps} setAppState={setAppState} loading={isLoading} />
+      <Apps
+        teamId={teamId}
+        apps={isFetching ? undefined : apps}
+        teamSettings={teamSettings}
+        setAppState={setAppState}
+        loading={isLoading}
+      />
     </MainLayout>
   )
 }
