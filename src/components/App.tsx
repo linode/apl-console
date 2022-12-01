@@ -232,6 +232,7 @@ export default function ({
       setValidShortcuts(true)
     }
   }, [inValues, inRawValues, inShortcuts])
+
   // END HOOKS
   const appSchema = getAppSchema(id, values).properties?.values
   const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
@@ -242,6 +243,7 @@ export default function ({
     const data = { id, teamId, values, rawValues, shortcuts }
     if (validValues && validRaw && validShortcuts) onSubmit(data)
   }
+
   const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
     setShortcuts(shortcuts)
     setValidShortcuts(errors.length === 0)
@@ -468,7 +470,9 @@ export default function ({
         <div className={classes.buffer}> </div>
         <CodeEditor
           code={yaml}
-          onChange={(data) => setRawValues(data || {})}
+          onChange={(data) => {
+            setRawValues(data || {})
+          }}
           disabled={!isEdit}
           setValid={setValidRaw}
         />

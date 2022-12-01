@@ -2,7 +2,7 @@ import { Grid, Typography } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { useDrop } from 'react-dnd'
-import { GetAppsApiResponse } from 'redux/otomiApi'
+import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
@@ -36,11 +36,12 @@ const useStyles = makeStyles()((theme) => {
 interface Props {
   teamId: string
   apps: GetAppsApiResponse
+  teamSettings: GetTeamApiResponse
   loading: boolean
   setAppState: CallableFunction
 }
 
-export default function ({ teamId, apps, loading, setAppState }: Props): React.ReactElement {
+export default function ({ teamId, apps, teamSettings, loading, setAppState }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
   const [deps, setDeps] = useState(undefined)
@@ -74,13 +75,23 @@ export default function ({ teamId, apps, loading, setAppState }: Props): React.R
     }),
     [],
   )
+
   // END HOOKS
   if (!apps || loading) return <Loader />
   // we visualize drag state for all app dependencies
   const isAdminApps = teamId === 'admin'
   const sorter = (a, b) => (a.id > b.id ? 1 : -1)
+  const disabledByMonitoringStackApps = {
+    alertmanager: true,
+    prometheus: true,
+    loki: true,
+    grafana: true,
+  }
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
-  const enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
+  let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
+  if (!teamSettings?.monitoringStack?.enabled && !isAdminApps)
+    enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
+
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
     items.map((item) => {

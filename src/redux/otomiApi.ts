@@ -598,6 +598,9 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
+  monitoringStack?: {
+    enabled?: boolean
+  }
 }
 export type GetTeamApiArg = {
   /** ID of team to return */
