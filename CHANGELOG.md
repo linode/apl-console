@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.20](https://github.com/redkubes/otomi-stack-web/compare/v0.5.19...v0.5.20) (2022-12-05)
+
+
+### Features
+
+* add minio app ([#225](https://github.com/redkubes/otomi-stack-web/issues/225)) ([57515b1](https://github.com/redkubes/otomi-stack-web/commit/57515b17ea25d1d89bf58ce0ef191af18aba8d56))
+* new code editor based on Monaco ([#227](https://github.com/redkubes/otomi-stack-web/issues/227)) ([be918bd](https://github.com/redkubes/otomi-stack-web/commit/be918bd059b29036a002ee3c193bfec0f7328741))
+* set text area for the remoteConfig ([#226](https://github.com/redkubes/otomi-stack-web/issues/226)) ([a7ec90f](https://github.com/redkubes/otomi-stack-web/commit/a7ec90f2e5436d87ceded811790531a0bdf0f1bf))
+
+
+### Bug Fixes
+
+* messaging, button activation, white screen of death ([#224](https://github.com/redkubes/otomi-stack-web/issues/224)) ([3a93dbb](https://github.com/redkubes/otomi-stack-web/commit/3a93dbb83844ca79f029994294056232117bacb2))
+
 ### [0.5.19](https://github.com/redkubes/otomi-stack-web/compare/v0.5.18...v0.5.19) (2022-11-18)
 
 
