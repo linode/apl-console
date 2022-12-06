@@ -162,6 +162,15 @@ export const getAppUiSchema = (
     case 'prometheus':
       set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
       break
+    case 'velero':
+      const cloudprovider = get(formData, 'cloud.provider')
+      if (cloudprovider?.type === 'azure') {
+        set(uiSchema, 'storage.provider.azureBlob.tenantId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.provider.azureBlob.subscriptionId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.provider.azureBlob.aadClientId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.provider.azureBlob.aadClientSecret.ui:widget', 'hidden')
+      }
+      break
     default:
       break
   }
