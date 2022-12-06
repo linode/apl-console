@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.21](https://github.com/redkubes/otomi-stack-web/compare/v0.5.20...v0.5.21) (2022-12-06)
+
+
+### Bug Fixes
+
+* monitoringstack default ([#230](https://github.com/redkubes/otomi-stack-web/issues/230)) ([428fb5e](https://github.com/redkubes/otomi-stack-web/commit/428fb5efa93fad835d1ba01c22b5b139f068f3ed))
+
 ### [0.5.20](https://github.com/redkubes/otomi-stack-web/compare/v0.5.19...v0.5.20) (2022-12-05)
 
 
