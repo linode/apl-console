@@ -89,7 +89,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   }
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
   let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
-  if (!teamSettings?.monitoringStack?.enabled && !isAdminApps)
+  if (teamSettings?.monitoringStack && !teamSettings?.monitoringStack?.enabled && !isAdminApps)
     enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
 
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
