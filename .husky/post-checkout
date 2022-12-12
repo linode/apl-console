@@ -1,4 +1,64 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# configure/install nvm
+install_nvm() {
+    if [ -f ~/.nvm/nvm.sh ]; then
+        echo 'Sourcing nvm from ~/.nvm'
+        . ~/.nvm/nvm.sh
+    elif command -v brew; then
+        _brew_prefix=$(brew --prefix nvm)
+        if [ -f "$_brew_prefix/nvm.sh" ]; then
+            echo "Sourcing nvm from brew ($_brew_prefix)"
+            . $_brew_prefix/nvm.sh
+        fi
+    else
+        printf 'nvm was not found, do you want to install it? (You need nvm to run this project) (y/n)'
+        # POSIX compliant y/n input. Only able to type y or n. No need for return key
+        old_stty_cfg=$(stty -g)
+        stty raw -echo
+        answer=$(while ! head -c 1 | grep -i '[ny]'; do true; done)
+        stty $old_stty_cfg
+        if echo "$answer" | grep -iq "^y"; then
+            printf "\n"
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            . ~/.nvm/nvm.sh
+        else
+            printf "\n"
+            echo "Please make sure nvm is installed (correctly), you can do so manually with:
+                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+                "
+            echo "Returning error in 3.2.1... "
+        fi
+    fi
+}
+
+# automatically change/install node version at checkout
+configure_npm() {
+    _node_version="$(nvm version)"
+    _nvmrc_path="$(nvm_find_nvmrc)"
+
+    echo "current node version: ${_node_version}"
+
+    if [ -n "$_nvmrc_path" ]; then
+        _nvmrc_node_version=$(nvm version "$(cat "${_nvmrc_path}")")
+        echo "node version found in nvmrc: ${_nvmrc_node_version}"
+        if [ "$_nvmrc_node_version" = "N/A" ]; then
+            echo "nmvrc node version not installed, attempting installation..."
+            nvm install
+        elif [ "$_nvmrc_node_version" != "$_node_version" ]; then
+            echo "nvmrc node version found! Switching from ${_node_version} to ${_nvmrc_node_version}"
+            nvm use
+        else
+            echo "It's a match! Continue using ${_node_version}"
+        fi
+    elif [ "$_node_version" != "$(nvm version default)" ]; then
+        echo "No .nvmrc file found! Reverting to nvm default version..."
+        nvm use default
+    fi
+}
+
+install_nvm
+configure_npm
+
 npm run run-if-changed
