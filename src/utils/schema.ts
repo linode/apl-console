@@ -77,4 +77,4 @@ export const extract = (o: JSONSchema7, f: CallableFunction) => {
   return leafs
 }
 
-export const propsToAccordion = ['image', 'resources']
+export const propsToAccordion = ['image', 'resources', 'headers']
