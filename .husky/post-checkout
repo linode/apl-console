@@ -13,23 +13,9 @@ install_nvm() {
             . $_brew_prefix/nvm.sh
         fi
     else
-        printf 'nvm was not found, do you want to install it? (You need nvm to run this project) (y/n)'
-        # POSIX compliant y/n input. Only able to type y or n. No need for return key
-        old_stty_cfg=$(stty -g)
-        stty raw -echo
-        answer=$(while ! head -c 1 | grep -i '[ny]'; do true; done)
-        stty $old_stty_cfg
-        if echo "$answer" | grep -iq "^y"; then
-            printf "\n"
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-            . ~/.nvm/nvm.sh
-        else
-            printf "\n"
-            echo "Please make sure nvm is installed (correctly), you can do so manually with:
-                curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-                "
-            echo "Returning error in 3.2.1... "
-        fi
+        echo "Please make sure nvm is installed (correctly), please follow the installation instructions
+              at: https://github.com/nvm-sh/nvm  
+            "
     fi
 }
 
