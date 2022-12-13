@@ -137,6 +137,7 @@ export const getAppUiSchema = (
       set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
       break
     case 'harbor':
+      set(uiSchema, 'databasePassword.ui:widget', 'hidden')
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       set(uiSchema, 'core.ui:widget', 'hidden')
       set(uiSchema, 'registry.ui:widget', 'hidden')
