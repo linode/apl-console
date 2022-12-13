@@ -2,7 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 # configure/install nvm
-install_nvm() {
+source_nvm() {
     if [ -f ~/.nvm/nvm.sh ]; then
         echo 'Sourcing nvm from ~/.nvm'
         . ~/.nvm/nvm.sh
@@ -44,7 +44,7 @@ configure_npm() {
     fi
 }
 
-install_nvm
+source_nvm
 configure_npm
 
 npm run run-if-changed
