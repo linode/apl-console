@@ -6,7 +6,7 @@ import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typograph
 import Link from '@mui/material/Link'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
-import { Trans, useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import { Link as RouterLink } from 'react-router-dom'
 import {
   GetAllServicesApiResponse,
@@ -15,6 +15,7 @@ import {
   GetTeamsApiResponse,
 } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
+import MessageTrans from './MessageTrans'
 
 type Panel = {
   name: string
@@ -174,9 +175,9 @@ export default function ({ team, services, teams }: Props): React.ReactElement {
     <Grid container className={classes.grid}>
       <Grid item xs={12}>
         <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
-          <Trans i18nKey='WELCOME_DASHBOARD'>
+          <MessageTrans i18nKey='WELCOME_DASHBOARD'>
             Team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard
-          </Trans>
+          </MessageTrans>
         </Typography>
         <Divider />
       </Grid>

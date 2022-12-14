@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel, FormGroup, Typography } from '@mui/material'
 import { WidgetProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import Checkbox from 'components/Checkbox'
 import React from 'react'
 
@@ -28,7 +28,6 @@ export default function ({
   value,
   autofocus,
   readonly,
-  required,
   onChange,
   onBlur,
   onFocus,
@@ -51,7 +50,7 @@ export default function ({
     <>
       <Typography variant='h6'>{label || schema.title}</Typography>
       <FormGroup row={!!inline}>
-        {(enumOptions as any).map((option: any, index: number) => {
+        {(enumOptions as any).map((option: Record<string, string>, index: number) => {
           const checked = value.includes(option.value)
           const itemDisabled = enumDisabled && (enumDisabled as any).indexOf(option.value) !== -1
           const def = schema.default as string[]

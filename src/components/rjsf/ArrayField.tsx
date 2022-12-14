@@ -1,14 +1,15 @@
-import { utils } from '@rjsf/core'
+import { FieldProps, utils } from '@rjsf/core'
 import ArrayField from '@rjsf/core/lib/components/fields/ArrayField'
+import { JSONSchema7 } from 'json-schema'
 import { set } from 'lodash'
 import React from 'react'
 import RadioWidget from './RadioWidget'
 
-export default function ({ uiSchema, schema, formData, ...props }: any): React.ReactElement {
+export default function ({ uiSchema, schema, formData, ...props }: FieldProps<any>): React.ReactElement {
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
-  const listTooLong = schema.items?.enum?.length > 8
-  const shortList = schema.items?.enum?.length < 5
+  const listTooLong = (schema.items as JSONSchema7)?.enum?.length > 8
+  const shortList = (schema.items as JSONSchema7)?.enum?.length < 5
   set(newUiSchema, 'ui:options.row', shortList)
 
   if (!listTooLong && uiSchema['ui:widget'] !== 'hidden') {

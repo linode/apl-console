@@ -7,7 +7,6 @@ import AppButtons from './AppButtons'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
-  const m = p.mode
   return {
     root: {
       textAlign: 'center',
@@ -55,12 +54,11 @@ export default function ({
   externalUrl,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
-  const canDrag = enabled !== undefined
   const [_, dragRef] = useDrag(
     () => ({
       type: 'card',
       item: { name: id },
-      canDrag,
+      canDrag: enabled !== undefined,
       collect: (monitor) => {
         const d = monitor.isDragging()
         if (d) setDeps(deps)
@@ -70,7 +68,7 @@ export default function ({
       },
       end: () => setTimeout(() => setDeps(undefined)),
     }),
-    [],
+    [enabled],
   )
   const image = (
     <img
@@ -78,7 +76,9 @@ export default function ({
       className={cx(classes.img)}
       src={img}
       onError={({ currentTarget }) => {
+        // eslint-disable-next-line no-param-reassign
         currentTarget.onerror = null // prevents looping
+        // eslint-disable-next-line no-param-reassign
         currentTarget.src = imgAlt
       }}
       alt={`Logo for ${title} app`}

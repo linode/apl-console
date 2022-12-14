@@ -4,7 +4,7 @@ import { e } from 'i18n/i18n'
 export class HttpError extends Error {
   code?: number
 
-  constructor(message: any, code?: number | undefined) {
+  constructor(message: string, code?: number | undefined) {
     super(message)
     this.code = code
     // restore prototype chain
@@ -36,6 +36,6 @@ export class ApiErrorUnauthorized extends ApiError {
 
 export class ApiErrorUnauthorizedNoGroups extends ApiError {
   constructor() {
-    super('It seems that a user does not belong to any team. Please check the groups claim of the id_token')
+    super('It seems that this user does not belong to any team. Please check the groups claim of the id token.')
   }
 }

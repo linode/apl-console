@@ -1,5 +1,6 @@
-import CodeEditor, { TextareaCodeEditorProps } from '@uiw/react-textarea-code-editor'
+import MonacoEditor, { MonacoEditorProps } from '@uiw/react-monacoeditor'
 import { isEmpty } from 'lodash'
+import { Box } from '@mui/material'
 import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import YAML from 'yaml'
@@ -8,10 +9,7 @@ const useStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
     root: {
-      backgroundColor: p.mode === 'dark' ? p.common.black : p.common.white,
-      fontFamily: 'ui-monospace,SFMono-Regular,SF Mono,Consolas,Liberation Mono,Menlo,monospace',
-      fontSize: 12,
-      border: 1,
+      border: '1px solid transparent',
     },
     disabled: {
       backgroundColor: p.action.disabled,
@@ -19,16 +17,29 @@ const useStyles = makeStyles()((theme) => {
     invalid: {
       border: '1px solid red',
     },
+    errorMessageWrapper: {
+      marginTop: theme.spacing(2),
+      backgroundColor: '#feefef',
+      border: '1px solid red',
+      color: 'red',
+      borderRadius: theme.spacing(1),
+    },
+    errorMessage: {
+      whiteSpace: 'pre-wrap',
+      marginLeft: theme.spacing(3),
+    },
   }
 })
 
-interface Props extends TextareaCodeEditorProps {
+interface Props extends MonacoEditorProps {
   lang?: string
   code?: string
+  onChange?: any
+  disabled?: boolean
   setValid?: CallableFunction
 }
 
-const toYaml = (obj) => YAML.stringify(obj)
+const toYaml = (obj) => YAML.stringify(obj, { blockQuote: 'literal' })
 
 export default function ({
   code: inCode,
@@ -38,42 +49,53 @@ export default function ({
   disabled,
   ...props
 }: Props): React.ReactElement {
-  const startCode = isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, '')
-  const [code, setCode] = useState(startCode)
+  const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
   const [valid, setLocalValid] = useState(true)
+  const [error, setError] = useState('')
   const { classes } = useStyles()
-  const fromYaml = (yaml) => {
+  const fromYaml = (yaml: string): any | undefined => {
     try {
       const obj = YAML.parse(yaml)
       if (typeof obj !== 'object') throw new Error(`invalid object parsed from yaml: ${obj}`)
       setLocalValid(true)
+      setError('')
       if (setValid) setValid(true)
       return obj
     } catch (e) {
+      setError(e.message)
       setLocalValid(false)
       if (setValid) setValid(false)
-      console.error(e)
       return undefined
     }
   }
 
-  const onChangeHandler = (e) => {
-    const code = e.target.value
-    setCode(code)
+  const onChangeHandler = (newValue: any) => {
+    const code = newValue as string
     const obj = fromYaml(code)
     if (onChange && obj) onChange(obj)
   }
 
   return (
-    <CodeEditor
-      className={`${classes.root}${disabled ? ` ${classes.disabled}` : ''}${!valid ? ` ${classes.invalid}` : ''}`}
-      value={code}
-      language={lang}
-      placeholder={`Please enter ${lang.toUpperCase()} code.`}
-      onChange={onChangeHandler}
-      padding={15}
-      disabled={disabled}
-      {...props}
-    />
+    <>
+      <MonacoEditor
+        className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
+        height='500px'
+        theme='vs-dark'
+        value={startCode}
+        language={lang}
+        placeholder={`Please enter ${lang.toUpperCase()} code.`}
+        onChange={onChangeHandler}
+        options={{
+          readOnly: disabled,
+          automaticLayout: true,
+        }}
+        {...props}
+      />
+      {error && (
+        <Box className={classes.errorMessageWrapper} display='flex'>
+          <p className={classes.errorMessage}>{error}</p>
+        </Box>
+      )}
+    </>
   )
 }

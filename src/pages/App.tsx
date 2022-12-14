@@ -2,8 +2,9 @@
 import App from 'components/App'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
@@ -17,9 +18,14 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchAppsEnabled } = useSession()
-  const { data, isLoading, refetch, isError } = useGetAppQuery({ teamId, appId })
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
   const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
+  const { data, isLoading, isFetching, isError, refetch } = useGetAppQuery({ teamId, appId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetching) refetch()
+  }, [isDirty])
   // END HOOKS
   const mutating = isLoadingUpdate || isLoadingToggle
   const handleSubmit = (formData) => edit({ teamId, appId, body: formData }).then(refetch)

@@ -5,7 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import { WidgetProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
@@ -30,6 +30,7 @@ function RadioWidget({
 }: WidgetProps) {
   const { inline, enumOptions, enumDisabled } = options
   const renderOptions = [...((enumOptions as any[]) || [])]
+  const disabledOptions = [...((enumDisabled as any[]) || [])]
   const { classes } = useStyles()
   const _onChange = ({}, value: any) => onChange(schema.type === 'boolean' ? value !== 'false' : value)
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLInputElement>) => onBlur(id, value)
@@ -56,13 +57,13 @@ function RadioWidget({
         onBlur={_onBlur}
         onFocus={_onFocus}
       >
-        {(renderOptions as any).map((option: any) => {
-          const itemDisabled = enumDisabled && (enumDisabled as any).indexOf(option.value) !== -1
+        {renderOptions.map((option: Record<string, any>) => {
+          const itemDisabled = disabledOptions && disabledOptions.indexOf(option.value) !== -1
 
           const radio = (
             <FormControlLabel
               control={<Radio key={option.label} />}
-              label={schema.enum ? option.label : sentenceCase(option.label)}
+              label={schema.enum ? option.label : sentenceCase(option.label as string)}
               value={option.value}
               key={option.label}
               disabled={disabled || itemDisabled || readonly}

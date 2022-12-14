@@ -1,9 +1,10 @@
 import Setting from 'components/Setting'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 
 interface Params {
@@ -17,7 +18,11 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchSettings } = useSession()
   const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
-  const { data, isLoading, refetch } = useGetSettingsQuery({ ids: [settingId] })
+  const { data, isLoading, isFetching, refetch } = useGetSettingsQuery({ ids: [settingId] })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== undefined && !isDirty && !isFetching) refetch()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingUpdate

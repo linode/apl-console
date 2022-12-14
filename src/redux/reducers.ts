@@ -4,10 +4,10 @@ import { createSlice } from '@reduxjs/toolkit'
 
 export interface GlobalState {
   error: any
-  isDirty: boolean
+  isDirty: boolean | undefined | null
 }
 
-const initialState = { error: undefined, isDirty: false } as GlobalState
+const initialState = { error: undefined, isDirty: undefined, isStale: false } as GlobalState
 
 const slice = createSlice({
   name: 'global',

@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.21](https://github.com/redkubes/otomi-stack-web/compare/v0.5.20...v0.5.21) (2022-12-06)
+
+
+### Bug Fixes
+
+* monitoringstack default ([#230](https://github.com/redkubes/otomi-stack-web/issues/230)) ([428fb5e](https://github.com/redkubes/otomi-stack-web/commit/428fb5efa93fad835d1ba01c22b5b139f068f3ed))
+
+### [0.5.20](https://github.com/redkubes/otomi-stack-web/compare/v0.5.19...v0.5.20) (2022-12-05)
+
+
+### Features
+
+* add minio app ([#225](https://github.com/redkubes/otomi-stack-web/issues/225)) ([57515b1](https://github.com/redkubes/otomi-stack-web/commit/57515b17ea25d1d89bf58ce0ef191af18aba8d56))
+* new code editor based on Monaco ([#227](https://github.com/redkubes/otomi-stack-web/issues/227)) ([be918bd](https://github.com/redkubes/otomi-stack-web/commit/be918bd059b29036a002ee3c193bfec0f7328741))
+* set text area for the remoteConfig ([#226](https://github.com/redkubes/otomi-stack-web/issues/226)) ([a7ec90f](https://github.com/redkubes/otomi-stack-web/commit/a7ec90f2e5436d87ceded811790531a0bdf0f1bf))
+
+
+### Bug Fixes
+
+* messaging, button activation, white screen of death ([#224](https://github.com/redkubes/otomi-stack-web/issues/224)) ([3a93dbb](https://github.com/redkubes/otomi-stack-web/commit/3a93dbb83844ca79f029994294056232117bacb2))
+
+### [0.5.19](https://github.com/redkubes/otomi-stack-web/compare/v0.5.18...v0.5.19) (2022-11-18)
+
+
+### Features
+
+* detect git conflicts on multi-user values changes ([#221](https://github.com/redkubes/otomi-stack-web/issues/221)) ([da8825b](https://github.com/redkubes/otomi-stack-web/commit/da8825bd1e2718062129457757cbe2f5afe99167))
+
+
+### Bug Fixes
+
+* commit link with domian suffix ([f5db0e7](https://github.com/redkubes/otomi-stack-web/commit/f5db0e784fb32871c49bd623a54f7826aa4151de))
+
+
+### Reverts
+
+* Revert "fix: msg events, button logic, cleanup" ([6990457](https://github.com/redkubes/otomi-stack-web/commit/699045757971477c3ef85ba23391658d6823d393))
+
 ### [0.5.18](https://github.com/redkubes/otomi-stack-web/compare/v0.5.17...v0.5.18) (2022-09-27)
 
 

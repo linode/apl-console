@@ -11,7 +11,7 @@ const getJobLink = (isAdmin, ownerId): CallableFunction =>
     const { teamId, id, name } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
-    const path = `/teams/${teamId}/jobs/${encodeURIComponent(id)}`
+    const path = `/teams/${teamId}/jobs/${encodeURIComponent(id as string)}`
     return (
       <RLink to={path} label={name}>
         {name}

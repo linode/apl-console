@@ -20,6 +20,7 @@ import TableRow from '@mui/material/TableRow'
 import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
+import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEqual, set } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import { CrudProps } from 'pages/types'
@@ -84,7 +85,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-export const getAppSchema = (appId, formData): any => {
+export const getAppSchema = (appId: string, formData): any => {
   const modelName = `App${pascalCase(appId)}`
   const schema = cloneDeep(getSpec().components.schemas[modelName]) as Record<string, any>
   switch (appId) {
@@ -101,14 +102,14 @@ export const getAppSchema = (appId, formData): any => {
 export const getAppUiSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
-  appId,
+  appId: string,
   formData,
 ): any => {
   const modelName = `App${pascalCase(appId)}`
   const model = getSpec().components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {
-    const leafs = Object.keys(extract(model, (o) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable))
+    const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
     leafs.forEach((path) => {
       set(uiSchema, path, { 'ui:widget': CodeEditor })
     })
@@ -136,6 +137,7 @@ export const getAppUiSchema = (
       set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
       break
     case 'harbor':
+      set(uiSchema, 'databasePassword.ui:widget', 'hidden')
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       set(uiSchema, 'core.ui:widget', 'hidden')
       set(uiSchema, 'registry.ui:widget', 'hidden')
@@ -157,6 +159,9 @@ export const getAppUiSchema = (
       break
     case 'loki':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
+      break
+    case 'prometheus':
+      set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
       break
     default:
       break
@@ -228,6 +233,7 @@ export default function ({
       setValidShortcuts(true)
     }
   }, [inValues, inRawValues, inShortcuts])
+
   // END HOOKS
   const appSchema = getAppSchema(id, values).properties?.values
   const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
@@ -238,6 +244,7 @@ export default function ({
     const data = { id, teamId, values, rawValues, shortcuts }
     if (validValues && validRaw && validShortcuts) onSubmit(data)
   }
+
   const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
     setShortcuts(shortcuts)
     setValidShortcuts(errors.length === 0)
@@ -272,7 +279,9 @@ export default function ({
             className={classes.img}
             src={`/logos/${logo}`}
             onError={({ currentTarget }) => {
+              // eslint-disable-next-line no-param-reassign
               currentTarget.onerror = null // prevents looping
+              // eslint-disable-next-line no-param-reassign
               currentTarget.src = `/logos/${logoAlt}`
             }}
             alt={`Logo for ${appInfo.title} app`}
@@ -335,7 +344,7 @@ export default function ({
                       </TableCell>
                       <TableCell align='left'>
                         <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
-                          {cleanLink(appInfo.repo)}
+                          {cleanLink(appInfo.repo as string)}
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -462,7 +471,9 @@ export default function ({
         <div className={classes.buffer}> </div>
         <CodeEditor
           code={yaml}
-          onChange={(data) => setRawValues(data || {})}
+          onChange={(data) => {
+            setRawValues(data || {})
+          }}
           disabled={!isEdit}
           setValid={setValidRaw}
         />

@@ -3,9 +3,10 @@ import Secret from 'components/Secret'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import {
   useCreateSecretMutation,
   useDeleteSecretMutation,
@@ -27,7 +28,12 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSecretMutation()
-  const { data, isLoading, isError } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetching) refetch()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete

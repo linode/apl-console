@@ -4,7 +4,7 @@ import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAppsQuery } from 'redux/otomiApi'
+import { GetAppsApiResponse, useGetAppsQuery } from 'redux/otomiApi'
 import { getAppData, getRole } from 'utils/data'
 
 interface Params {
@@ -28,6 +28,6 @@ export default function ({
       app.shortcuts.forEach((s) => memo.push({ ...app, shortcut: s, description: s.description }))
       return memo
     }, [])
-  const comp = apps && <Shortcuts teamId={teamId} apps={appsWithShortcuts} />
+  const comp = apps && <Shortcuts teamId={teamId} apps={appsWithShortcuts as GetAppsApiResponse} />
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SHORTCUTS', { role: getRole(teamId) })} />
 }

@@ -1,9 +1,10 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Services from 'components/Services'
 import PaperLayout from 'layouts/Paper'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
 import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
@@ -16,11 +17,24 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { data: allServices, isLoading: isLoadingAllServices } = useGetAllServicesQuery(teamId ? skipToken : undefined)
-  const { data: teamServices, isLoading: isLoadingTeamServices } = useGetTeamServicesQuery(
-    { teamId },
-    { skip: !teamId },
-  )
+  const {
+    data: allServices,
+    isLoading: isLoadingAllServices,
+    isFetching: isFetchingAllServices,
+    refetch: refetchAllServices,
+  } = useGetAllServicesQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamServices,
+    isLoading: isLoadingTeamServices,
+    isFetching: isFetchingTeamServices,
+    refetch: refetchTeamServices,
+  } = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!teamId && !isFetchingAllServices) refetchAllServices()
+    else if (teamId && !isFetchingTeamServices) refetchTeamServices()
+  }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllServices || isLoadingTeamServices

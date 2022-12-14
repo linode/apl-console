@@ -9,7 +9,7 @@ const headers = []
 const baseQuery = fetchBaseQuery({
   baseUrl: '/api/v1/',
   prepareHeaders: (h) => {
-    headers.map(([idx, val]) => h.set(idx, val))
+    headers.map(([idx, val]: [string, string]) => h.set(idx, val))
     return h
   },
 })

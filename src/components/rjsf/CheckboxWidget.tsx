@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel } from '@mui/material'
 import { WidgetProps, utils } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { sentenceCase } from 'utils/data'
 import Checkbox from 'components/Checkbox'
 import React from 'react'
 
@@ -16,7 +16,7 @@ export default function (props: WidgetProps) {
     typeof value === 'undefined' ? schema['x-default'] !== undefined && schema['x-default'] : Boolean(value)
   const required = schemaRequiresTrueValue(schema)
 
-  const _onChange = (_, checked: boolean) => onChange(checked)
+  const _onChange = (_: any, checked: boolean) => onChange(checked)
   const _onBlur = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onBlur(id, value)
   const _onFocus = ({ target: { value } }: React.FocusEvent<HTMLButtonElement>) => onFocus(id, value)
   const indeterminate = schema['x-default'] !== undefined && schema['x-default'] === !!checked

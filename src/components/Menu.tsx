@@ -1,3 +1,6 @@
+import generateDownloadLink from 'generate-download-link'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
@@ -9,6 +12,7 @@ import DnsIcon from '@mui/icons-material/Dns'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
+import HistoryIcon from '@mui/icons-material/History'
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
@@ -22,22 +26,21 @@ import BackupTableIcon from '@mui/icons-material/BackupTable'
 import HandshakeIcon from '@mui/icons-material/Handshake'
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Collapse, List, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
+import { Collapse, List, ListItemIcon, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
 import MenuList from '@mui/material/List'
-import ListItemIcon from '@mui/material/ListItemIcon'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
-import { useAppSelector } from 'redux/hooks'
-import { useDeployQuery } from 'redux/otomiApi'
+import { useDeployQuery, useRestoreQuery, useRevertQuery } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
-import Cluster from './Cluster'
+import { SnackbarKey } from 'notistack'
+import Versions from './Versions'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -55,6 +58,14 @@ const useStyles = makeStyles()((theme) => ({
     backgroundColor: theme.palette.primary.main,
     '&:hover': {
       backgroundColor: theme.palette.primary.light,
+    },
+  },
+  revert: {
+    height: theme.spacing(5),
+    color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
+    backgroundColor: theme.palette.secondary.main,
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
     },
   },
   settingsList: {
@@ -84,38 +95,111 @@ interface Props {
 export default function ({ className, teamId }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const {
+    ca,
     appsEnabled,
+    corrupt,
+    editor,
     oboTeamId,
     settings: { cluster, otomi },
     user,
   } = useSession()
-  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const [collapseSettings, setCollapseSettings] = useLocalStorage('menu-settings-collapse', true)
+  const [collapseVersions, setCollapseVersions] = useLocalStorage('menu-cluster-collapse', false)
   const [deploy, setDeploy] = useState(false)
-  const { isSuccess: okDeploy, error: errorDeploy }: any = useDeployQuery(!deploy ? skipToken : undefined)
+  const [revert, setRevert] = useState(false)
+  const [restore, setRestore] = useState(false)
+  const {
+    isSuccess: okDeploy,
+    error: errorDeploy,
+    isFetching: isDeploying,
+  }: any = useDeployQuery(!deploy ? skipToken : undefined)
+  const {
+    isSuccess: okRevert,
+    error: errorRevert,
+    isFetching: isReverting,
+  }: any = useRevertQuery(!revert ? skipToken : undefined)
+  const {
+    isSuccess: okRestore,
+    error: errorRestore,
+    isFetching: isRestoring,
+  }: any = useRestoreQuery(!restore ? skipToken : undefined)
   const { classes, cx } = useStyles()
   const { classes: mainClasses } = useMainStyles()
-  const [key, setKey] = useState<any>()
   const { t } = useTranslation()
-  // END HOOKS
+  const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
+  const closeKey = (key) => {
+    if (!keys[key]) return
+    snack.close(keys[key])
+    delete keys[key]
+  }
   const { isAdmin } = user
-  if (deploy) {
-    if (!key) setKey(snack.info(t('Scheduling... Hold on!'), { autoHideDuration: 8000 }))
-
-    if (okDeploy || errorDeploy) {
-      snack.close(key)
-      if (errorDeploy) setTimeout(() => snack.error(t('Deployment failed. Please contact support@redkubes.com.')))
-      else setTimeout(() => snack.success(t('Scheduled for deployment')))
-      setDeploy(false)
+  useEffect(() => {
+    if (deploy) {
+      keys.deploy = snack.info(`${t('Scheduling... Hold on!')}`, {
+        persist: true,
+        key: keys.deploy,
+        onClick: () => closeKey('deploy'),
+      })
+      if (okDeploy || errorDeploy) {
+        snack.close(keys.deploy)
+        if (errorDeploy) snack.warning(`${t('Deployment failed. Potential conflict with another editor.')}`)
+        setDeploy(false)
+      }
     }
+  }, [deploy, okDeploy, errorDeploy])
+  useEffect(() => {
+    if (revert) {
+      keys.revert = snack.info(`${t('Reverting... Hold on!')}`, {
+        persist: true,
+        key: keys.revert,
+        onClick: () => {
+          closeKey('revert')
+        },
+      })
+      if (okRevert || errorRevert) {
+        snack.close(keys.revert)
+        if (errorRevert) snack.error(`${t('Reverting failed. Please contact support@redkubes.com.')}`)
+        setRevert(false)
+      }
+    }
+  }, [revert, okRevert, errorRevert])
+  useEffect(() => {
+    if (restore) {
+      snack.close(keys.revert)
+      keys.restore = snack.info(`${t('Restoring... Hold on!')}`, {
+        persist: true,
+        key: keys.restore,
+        onClick: () => {
+          closeKey('restore')
+        },
+      })
+      if (okRestore || errorRestore) {
+        snack.close(keys.restore)
+        if (errorRestore) snack.error(`${t('Restoration of DB failed. Please contact support@redkubes.com.')}`)
+        setRestore(false)
+      }
+    }
+  }, [restore, okRestore, errorRestore])
+  // END HOOKS
+
+  const handleSettingsCollapse = (): void => {
+    setCollapseSettings(!collapseSettings)
   }
 
-  const handleCollapse = (): void => {
-    setCollapseSettings((prevCollapse) => !prevCollapse)
+  const handleVersionsCollapse = (): void => {
+    setCollapseVersions(!collapseVersions)
   }
 
-  const handleClick = (): void => {
+  const handleDeployClick = (): void => {
     setDeploy(true)
+  }
+
+  const handleRevertClick = (): void => {
+    setRevert(true)
+  }
+
+  const handleRestoreClick = (): void => {
+    setRestore(true)
   }
 
   const settingIds = {
@@ -131,18 +215,48 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     smtp: [t('SMTP'), <MailIcon />],
     backup: [t('Backup'), <BackupTableIcon />],
   }
+  const downloadOpts = {
+    data: ca ?? '',
+    title: 'Click to download the custom root CA used to generate the browser certs.',
+    filename: 'ca.crt',
+  }
+  const anchor = ca ? generateDownloadLink(downloadOpts) : ''
 
   return (
     <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-actions'>
         <ListItemText primary={t('Actions')} />
       </StyledListSubheader>
-      <MenuItem className={classes.deploy} disabled={!isDirty} onClick={handleClick} data-cy='menu-item-deploy-changes'>
+      <MenuItem
+        className={classes.deploy}
+        disabled={!editor || isDeploying || corrupt}
+        onClick={handleDeployClick}
+        data-cy='menu-item-deploy-changes'
+      >
         <ListItemIcon>
           <CloudUploadIcon />
         </ListItemIcon>
         <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
+      <MenuItem
+        className={classes.revert}
+        disabled={!editor || isDeploying || isReverting || corrupt}
+        onClick={handleRevertClick}
+        data-cy='menu-item-reset-changes'
+      >
+        <ListItemIcon>
+          <HistoryIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('Revert Changes')} />
+      </MenuItem>
+      {isAdmin && !isRestoring && corrupt && (
+        <MenuItem className={classes.deploy} onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
+          <ListItemIcon>
+            <HistoryIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('Restore DB')} />
+        </MenuItem>
+      )}
       {isAdmin && (
         <>
           <StyledListSubheader component='div' data-cy='list-subheader-platform'>
@@ -219,7 +333,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
 
-          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleCollapse}>
+          <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
@@ -252,6 +366,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                 )
               })}
             </List>
+          </Collapse>
+          <MenuItem data-cy='menu-item-versions' onClick={handleVersionsCollapse}>
+            <ListItemIcon>
+              <DynamicFeedIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Versions')} />
+            {collapseSettings ? <ExpandLess /> : <ExpandMore />}
+          </MenuItem>
+          <Collapse in={collapseVersions} timeout='auto' unmountOnExit>
+            <Versions />
           </Collapse>
         </>
       )}
@@ -332,19 +456,30 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             component={MuiLink}
             aria-label={t('Download KUBECFG')}
             href={`/api/v1/kubecfg/${oboTeamId}`}
-            disabled={!canDo(user, oboTeamId, 'downloadKubeConfig')}
+            disabled={teamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig')}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
             </ListItemIcon>
             <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
+          {ca && (
+            <StyledMenuItem
+              className={mainClasses.selectable}
+              component={Link}
+              aria-label={t('Download CA')}
+              href={anchor}
+              download={downloadOpts.filename}
+              title={downloadOpts.title}
+            >
+              <ListItemIcon>
+                <VerifiedUserIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('Download CA')} />
+            </StyledMenuItem>
+          )}
         </>
       )}
-      <StyledListSubheader component='div' data-cy='list-subheader-current-context'>
-        <ListItemText primary={t('Cluster')} />
-      </StyledListSubheader>
-      <Cluster />
     </MenuList>
   )
 }

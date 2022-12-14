@@ -1,4 +1,4 @@
-import { JSONSchema7, JSONSchema7Definition } from 'json-schema'
+import { JSONSchema7 } from 'json-schema'
 import { get, set } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 
@@ -33,7 +33,7 @@ export interface OpenApi {
 export interface Schema extends JSONSchema7 {
   'x-acl'?: Acl
   properties?: {
-    [propertyName: string]: JSONSchema7Definition
+    [propertyName: string]: JSONSchema7
   }
   items?: any
 }
@@ -67,6 +67,7 @@ export const setSpec = (inSpec): void => {
 export const deleteAlertEndpoints = (schema, formData) => {
   schema.properties.receivers.items.enum.forEach((receiver) => {
     if (!(formData?.receivers || []).includes(receiver) && !(formData?.drone || []).includes(receiver))
+      // eslint-disable-next-line no-param-reassign
       delete schema.properties[receiver]
   })
 }

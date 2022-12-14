@@ -1,7 +1,8 @@
 /* eslint-disable react/no-array-index-key */
 import { Divider, Grid, Paper } from '@mui/material'
-import { ObjectFieldTemplateProps } from '@rjsf/core'
-import { sentenceCase } from 'change-case'
+import { FieldProps, IdSchema, ObjectFieldTemplateProps } from '@rjsf/core'
+import { sentenceCase } from 'utils/data'
+import { JSONSchema7 } from 'json-schema'
 import React from 'react'
 import { getSchemaType, hasSomeOf, propsToAccordion } from 'utils/schema'
 import DescriptionField from './DescriptionField'
@@ -19,8 +20,8 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   const fields = []
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
-    let { schema } = o.content.props
-    if (schema === 'object') schema = {}
+    let schema: JSONSchema7 = o.content.props.schema
+    if (schema === 'object') schema = { type: 'object' } as JSONSchema7
     const type = getSchemaType(schema)
     // we group props together that we want to render in their own row
     if (isHidden(o) || isOf || ['boolean', 'object'].includes(type)) {
@@ -32,10 +33,14 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   // to catch the last iteration
   if (grouped) fields.push(grouped)
 
-  const renderTitleDescription = (props, skipTitle = undefined): React.ReactElement | undefined => {
-    const { idSchema = {}, title, description, name, required, schema, uiSchema } = props
+  const renderTitleDescription = (
+    props: FieldProps | ObjectFieldTemplateProps,
+    inSkipTitle = undefined,
+  ): React.ReactElement | undefined => {
+    const { idSchema, title, description, required, schema, uiSchema } = props as ObjectFieldTemplateProps
+    const name: string | undefined = (props as FieldProps).name
     const type = getSchemaType(schema)
-    if (type === 'boolean' && !skipTitle) return
+    if (type === 'boolean' && !inSkipTitle) return
     const docUrl =
       schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
     // we may get the title from the following:
@@ -49,14 +54,15 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const displayDescription =
       uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
-    if (skipTitle === undefined)
-      skipTitle = schema['x-hideTitle'] || propsToAccordion.includes(uiSchema.title || schema.title || title)
+    const skipTitle =
+      inSkipTitle ??
+      (schema['x-hideTitle'] || propsToAccordion.includes((uiSchema.title as string) || schema.title || title))
     // eslint-disable-next-line consistent-return
     return (
-      <Grid key={`${idSchema.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
+      <Grid key={`${idSchema?.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
         {displayTitle && !skipTitle && (
           <TitleField
-            {...props}
+            {...(props as FieldProps)}
             schema={schema}
             uiSchema={uiSchema}
             key={`${idSchema.$id}-title`}
@@ -78,10 +84,11 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     )
   }
 
-  const render = (o, id = o.name) => {
-    const { idSchema = {}, schema } = o.content?.props ?? {}
+  const render = (o: FieldProps, id = o.name) => {
+    const { idSchema: _idSchema, schema } = (o.content?.props ?? {}) as FieldProps
+    const idSchema = (_idSchema ?? {}) as IdSchema
     const type = getSchemaType(schema)
-    const isCustomArray = type === 'array' && schema.uniqueItems && schema.items?.enum
+    const isCustomArray = type === 'array' && schema.uniqueItems && (schema.items as JSONSchema7).enum
     const hidden = isHidden(o.content?.props)
     const isOf = hasSomeOf(schema)
     // do not render input fields that are marked with x-nullMe
@@ -107,7 +114,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
           <Paper key={`${id}-paper`} className={cx(classes.paper, classes.grid)}>
             {(isOf || (!isOf && type === 'object' && !schema.properties)) && (
               <Grid item key={`${idSchema.$id}-title`}>
-                {renderTitleDescription(o.content?.props)}
+                {renderTitleDescription(o.content?.props as FieldProps)}
               </Grid>
             )}
             <Grid key={`${idSchema.$id}-content`}>{o.content}</Grid>
@@ -123,7 +130,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
           <Grid className={classes.box} container item>
             {o.content}
           </Grid>
-          {renderTitleDescription(o.content?.props, true)}
+          {renderTitleDescription(o.content?.props as FieldProps, true)}
         </Grid>
       )
     }
@@ -133,7 +140,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
           <Grid key={id} item xs={12} className={classes.grid}>
             {o.content}
           </Grid>
-          {schema.type !== 'string' && renderTitleDescription(o.content?.props, true)}
+          {schema.type !== 'string' && renderTitleDescription(o.content?.props as FieldProps, true)}
         </Grid>
       )
     }
@@ -151,7 +158,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
           {renderTitleDescription(props)}
         </Grid>
       )}
-      {fields.map((o: any, idx: number) => {
+      {fields.map((o: FieldProps, idx: number) => {
         if (o.length) {
           return (
             //   <FormControl fullWidth key={idx} className={classes.container}>

@@ -3,7 +3,7 @@ import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles()(() => ({
   container: {
     padding: 0,
   },
@@ -14,7 +14,7 @@ interface Props {
   title?: string
 }
 
-export default function ({ children, title }: any): React.ReactElement {
+export default function ({ children, title }: Props): React.ReactElement {
   const { classes } = useStyles()
   return (
     <MainLayout title={title}>
