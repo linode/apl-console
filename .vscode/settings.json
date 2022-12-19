@@ -25,5 +25,11 @@
     "**/public/i18n": true
   },
   "prettier.enable": true,
-  "stylelint.enable": true
+  "stylelint.enable": true,
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-docker"
+  }
 }
