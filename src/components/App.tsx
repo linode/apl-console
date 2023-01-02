@@ -17,7 +17,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
-import { pascalCase } from 'change-case'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
 import { JSONSchema7 } from 'json-schema'
@@ -31,7 +30,7 @@ import { useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
-import { extract, isOf } from 'utils/schema'
+import { extract, getAppSchemaName, isOf } from 'utils/schema'
 import YAML from 'yaml'
 import AppButtons from './AppButtons'
 import CodeEditor from './CodeEditor'
@@ -86,7 +85,7 @@ const useStyles = makeStyles()((theme) => ({
 }))
 
 export const getAppSchema = (appId: string, formData): any => {
-  const modelName = `App${pascalCase(appId)}`
+  const modelName = getAppSchemaName(appId)
   const schema = cloneDeep(getSpec().components.schemas[modelName]) as Record<string, any>
   switch (appId) {
     case 'cert-manager':
@@ -105,7 +104,7 @@ export const getAppUiSchema = (
   appId: string,
   formData,
 ): any => {
-  const modelName = `App${pascalCase(appId)}`
+  const modelName = getAppSchemaName(appId)
   const model = getSpec().components.schemas[modelName].properties.values
   const uiSchema = {}
   if (model) {

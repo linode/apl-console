@@ -123,7 +123,8 @@ export const getAppData = (
 
   // get the core app
   const apps = getApps(session, teamId)
-  const coreApp = find(apps, { name: appId })
+  const coreAppId = appId.startsWith('ingress-nginx-') ? 'ingress-nginx' : appId
+  const coreApp = find(apps, { name: coreAppId })
   const { useHost, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
@@ -143,7 +144,7 @@ export const getAppData = (
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
-  const modelName = `App${pascalCase(appId as string)}`
+  const modelName = `App${pascalCase(coreAppId as string)}`
   const schema = spec.components.schemas[modelName] ? (spec.components.schemas[modelName] as JSONSchema7) : {}
   const mode = getThemeMode()
   const logoSuffix = mode === 'light' ? '' : '-dark'
@@ -153,9 +154,9 @@ export const getAppData = (
     ...app,
     id: appId,
     baseUrl,
-    logo: `${appId}_logo${logoSuffix}.svg`,
-    logoAlt: `${appId}_logo${logoAltSuffix}.svg`,
-    appInfo: appsInfo[appId],
+    logo: `${coreAppId}_logo${logoSuffix}.svg`,
+    logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
+    appInfo: appsInfo[coreAppId],
     schema,
     externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
