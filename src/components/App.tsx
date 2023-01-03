@@ -185,7 +185,7 @@ export default function ({
   setAppState,
   mutating,
   onSubmit,
-  appFlavors = [],
+  appFlavors = ['ingress-nginx-platform', 'ingress-nginx-net-a', 'ingress-nginx-private'],
 }: Props): React.ReactElement {
   const history = useHistory()
   const location = useLocation()
@@ -276,7 +276,6 @@ export default function ({
 
   const handleAppFlavorChange = (event) => {
     const appName = event.target.value as string
-    event.preventDefault()
     const url = `/apps/admin/${appName}`
     history.push(url)
   }
@@ -303,22 +302,17 @@ export default function ({
             {appInfo.title}
           </Typography>
         </Box>
-        {appFlavors.length > 0 && (
-          <Select
-            color='secondary'
-            value={appFlavors[0]}
-            onChange={handleAppFlavorChange}
-            // className={classes.select}
-            data-cy='select-app-flavor'
-          >
-            {appFlavors.map((id) => (
-              <MenuItem key={id} value={id} data-cy={`select-app-flavor-${id}`}>
-                {id}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
+
         <Box className={classes.headerButtons}>
+          {appFlavors.length > 0 && (
+            <Select color='secondary' value={id} onChange={handleAppFlavorChange} data-cy='select-app-flavor'>
+              {appFlavors.map((id) => (
+                <MenuItem key={id} value={id} data-cy={`select-app-flavor-${id}`}>
+                  {id}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
           <AppButtons
             setAppState={setAppState}
             id={id}
