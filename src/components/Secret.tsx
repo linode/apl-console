@@ -1,21 +1,36 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSecretApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getSecretSchema = (teamId: string): any => {
+export const getSecretSchema = (isAdmin: boolean): any => {
   const schema = cloneDeep(getSpec().components.schemas.Secret)
-  if (teamId !== 'admin') delete schema.properties.namespace
+  if (!isAdmin) {
+    delete schema.properties.clusterWide
+    delete schema.properties.namespaces
+  }
   return schema
 }
 
-export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getSecretUiSchema = (
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  secret: GetSecretApiResponse | Record<string, any> = {},
+): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
+  }
+  if (secret.clusterWide) {
+    set(uiSchema, 'namespaces.ui:disabled', true)
+    set(uiSchema, 'teamsWide.ui:disabled', true)
+    set(uiSchema, 'teams.ui:disabled', true)
+  } else if (secret.teamsWide) {
+    set(uiSchema, 'namespaces.ui:disabled', true)
+    set(uiSchema, 'teams.ui:disabled', true)
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'secret')
@@ -36,8 +51,8 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   }, [secret])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getSecretSchema(teamId)
-  const uiSchema = getSecretUiSchema(user, teamId)
+  const schema = getSecretSchema(user.isAdmin)
+  const uiSchema = getSecretUiSchema(user, teamId, data)
   return (
     <Form
       schema={schema}
