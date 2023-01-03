@@ -8,6 +8,8 @@ import {
   List,
   ListItem,
   ListSubheader,
+  MenuItem,
+  Select,
   Tab,
   Tabs,
   Typography,
@@ -26,7 +28,7 @@ import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
@@ -171,6 +173,7 @@ export const getAppUiSchema = (
 interface Props extends CrudProps, GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
+  appFlavors?: string[]
 }
 export default function ({
   id,
@@ -182,7 +185,9 @@ export default function ({
   setAppState,
   mutating,
   onSubmit,
+  appFlavors = [],
 }: Props): React.ReactElement {
+  const history = useHistory()
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
@@ -269,6 +274,13 @@ export default function ({
     )
   }
 
+  const handleAppFlavorChange = (event) => {
+    const appName = event.target.value as string
+    event.preventDefault()
+    const url = `/apps/admin/${appName}`
+    history.push(url)
+  }
+
   return (
     <Box>
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
@@ -291,6 +303,21 @@ export default function ({
             {appInfo.title}
           </Typography>
         </Box>
+        {appFlavors.length > 0 && (
+          <Select
+            color='secondary'
+            value={appFlavors[0]}
+            onChange={handleAppFlavorChange}
+            // className={classes.select}
+            data-cy='select-app-flavor'
+          >
+            {appFlavors.map((id) => (
+              <MenuItem key={id} value={id} data-cy={`select-app-flavor-${id}`}>
+                {id}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
         <Box className={classes.headerButtons}>
           <AppButtons
             setAppState={setAppState}
