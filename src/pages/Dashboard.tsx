@@ -35,7 +35,7 @@ export default function (): React.ReactElement {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllServices) refetchAllServices()
     if (teamId && !isFetchingTeamServices) refetchTeamServices()
-    if (teamId && !isFetchingTeams) refetchTeams()
+    if (!isFetchingTeams) refetchTeams()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS

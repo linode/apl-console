@@ -12,6 +12,7 @@ import {
   useDeleteSecretMutation,
   useEditSecretMutation,
   useGetSecretQuery,
+  useGetTeamsQuery,
 } from 'redux/otomiApi'
 
 interface Params {
@@ -28,11 +29,25 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSecretMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
+  const {
+    data: teams,
+    isLoading: isLoadingTeams,
+    isFetching: isFetchingTeams,
+    isError: isErrorTeams,
+    refetch: refetchTeams,
+  } = useGetTeamsQuery()
+  const {
+    data,
+    isLoading: isLoadingSecret,
+    isFetching: isFetchingSecret,
+    isError: isErrorSecret,
+    refetch,
+  } = useGetSecretQuery({ teamId, secretId }, { skip: !secretId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
-    if (!isFetching) refetch()
+    if (!isFetchingSecret) refetch()
+    if (!isFetchingTeams) refetchTeams()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
@@ -44,8 +59,17 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, secretId: deleteId })
+  const isLoading = isLoadingSecret || isLoadingTeams
+  const isError = isErrorSecret || isErrorTeams
   const comp = !isError && (
-    <Secret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
+    <Secret
+      onSubmit={handleSubmit}
+      teams={teams}
+      secret={data}
+      onDelete={handleDelete}
+      teamId={teamId}
+      mutating={mutating}
+    />
   )
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />
 }

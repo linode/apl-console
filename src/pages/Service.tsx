@@ -59,7 +59,7 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (serviceId) => del({ teamId, serviceId })
-  const loading = isLoadingService || isLoadingSecrets
+  const isLoading = isLoadingService || isLoadingSecrets
   const isError = isErrorService || isErrorSecrets
   const comp = !isError && (
     <Service
@@ -71,5 +71,5 @@ export default function ({
       mutating={mutating}
     />
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICE', { role: getRole(teamId) })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SERVICE', { role: getRole(teamId) })} />
 }
