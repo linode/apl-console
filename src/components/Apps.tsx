@@ -91,7 +91,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
   if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps)
     enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
-
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
     items.map((item) => {
@@ -110,7 +109,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             isDragging={isDragging}
             setDeps={setDeps}
             teamId={teamId}
-            title={appInfo.title}
+            title={id}
             setAppState={setAppState}
           />
         </Grid>

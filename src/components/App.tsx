@@ -173,7 +173,6 @@ export const getAppUiSchema = (
 interface Props extends CrudProps, GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
-  appFlavors?: string[]
 }
 export default function ({
   id,
@@ -185,7 +184,7 @@ export default function ({
   setAppState,
   mutating,
   onSubmit,
-  appFlavors = ['ingress-nginx-platform', 'ingress-nginx-net-a', 'ingress-nginx-private'],
+  appFlavors = [],
 }: Props): React.ReactElement {
   const history = useHistory()
   const location = useLocation()
