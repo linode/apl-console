@@ -8,8 +8,6 @@ import {
   List,
   ListItem,
   ListSubheader,
-  MenuItem,
-  Select,
   Tab,
   Tabs,
   Typography,
@@ -28,7 +26,7 @@ import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
@@ -184,9 +182,7 @@ export default function ({
   setAppState,
   mutating,
   onSubmit,
-  appFlavors = [],
 }: Props): React.ReactElement {
-  const history = useHistory()
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
@@ -273,12 +269,6 @@ export default function ({
     )
   }
 
-  const handleAppFlavorChange = (event) => {
-    const appName = event.target.value as string
-    const url = `/apps/admin/${appName}`
-    history.push(url)
-  }
-
   return (
     <Box>
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
@@ -303,15 +293,6 @@ export default function ({
         </Box>
 
         <Box className={classes.headerButtons}>
-          {appFlavors.length > 0 && (
-            <Select color='secondary' value={id} onChange={handleAppFlavorChange} data-cy='select-app-flavor'>
-              {appFlavors.map((id) => (
-                <MenuItem key={id} value={id} data-cy={`select-app-flavor-${id}`}>
-                  {id}
-                </MenuItem>
-              ))}
-            </Select>
-          )}
           <AppButtons
             setAppState={setAppState}
             id={id}

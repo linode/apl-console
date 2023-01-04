@@ -7,7 +7,7 @@ import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 import { sentenceCase as sentenceCaseOrig } from 'change-case'
-import { getAppSchemaId, getAppSchemaName } from './schema'
+import { getAppSchemaName, getCoreAppId } from './schema'
 
 export type CleanOptions = {
   cleanKeys?: any[]
@@ -124,7 +124,7 @@ export const getAppData = (
 
   // get the core app
   const apps = getApps(session, teamId)
-  const coreAppId = getAppSchemaId(appId)
+  const coreAppId = getCoreAppId(appId)
   const coreApp = find(apps, { name: coreAppId })
   const { useHost, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
