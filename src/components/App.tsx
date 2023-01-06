@@ -163,6 +163,10 @@ export const getAppUiSchema = (
     case 'prometheus':
       set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
       break
+    case 'falco':
+      set(uiSchema, 'rules.otomiRules.ui:widget', 'textarea')
+      set(uiSchema, 'rules.customRules.ui:widget', 'textarea')
+      break
     default:
       break
   }
