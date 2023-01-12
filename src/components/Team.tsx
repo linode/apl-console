@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -20,9 +20,9 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
-  else if (!appsEnabled.grafana || !otomi.isMultitenant)
-    set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
+  if (!otomi.isMultitenant) unset(schema, 'properties.monitoringStack')
+  if (!appsEnabled.alertmanager) unset(schema, 'properties.alerts')
   return schema
 }
 
@@ -43,13 +43,6 @@ export const getTeamUiSchema = (
       },
     },
   }
-  if (!appsEnabled.alertmanager || !otomi.isMultitenant) {
-    uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
-    uiSchema.alerts['ui:disabled'] = true
-    uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
-  }
-  if (!appsEnabled.grafana || !otomi.isMultitenant) uiSchema.azureMonitor = { 'ui:disabled': true }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
 }
