@@ -6,7 +6,8 @@ import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
-import { pascalCase, sentenceCase as sentenceCaseOrig } from 'change-case'
+import { sentenceCase as sentenceCaseOrig } from 'change-case'
+import { getAppSchemaName, getCoreAppId } from './schema'
 
 export type CleanOptions = {
   cleanKeys?: any[]
@@ -123,7 +124,8 @@ export const getAppData = (
 
   // get the core app
   const apps = getApps(session, teamId)
-  const coreApp = find(apps, { name: appId })
+  const coreAppId = getCoreAppId(appId)
+  const coreApp = find(apps, { name: coreAppId })
   const { useHost, ingress, isShared, ownHost, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
@@ -143,7 +145,7 @@ export const getAppData = (
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
-  const modelName = `App${pascalCase(appId as string)}`
+  const modelName = getAppSchemaName(appId)
   const schema = spec.components.schemas[modelName] ? (spec.components.schemas[modelName] as JSONSchema7) : {}
   const mode = getThemeMode()
   const logoSuffix = mode === 'light' ? '' : '-dark'
@@ -153,9 +155,9 @@ export const getAppData = (
     ...app,
     id: appId,
     baseUrl,
-    logo: `${appId}_logo${logoSuffix}.svg`,
-    logoAlt: `${appId}_logo${logoAltSuffix}.svg`,
-    appInfo: appsInfo[appId],
+    logo: `${coreAppId}_logo${logoSuffix}.svg`,
+    logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
+    appInfo: appsInfo[coreAppId],
     schema,
     externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
