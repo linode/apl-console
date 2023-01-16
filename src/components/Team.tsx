@@ -23,6 +23,7 @@ export const getTeamSchema = (
   else if (!appsEnabled.grafana || !otomi.isMultitenant)
     set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
+  if (!otomi.isMultitenant) set(schema, 'properties.monitoringStack.title', 'Private Team monitoring (disabled)')
   return schema
 }
 
@@ -49,6 +50,7 @@ export const getTeamUiSchema = (
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
   if (!appsEnabled.grafana || !otomi.isMultitenant) uiSchema.azureMonitor = { 'ui:disabled': true }
+  if (!otomi.isMultitenant) uiSchema.monitoringStack = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
