@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.23](https://github.com/redkubes/otomi-stack-web/compare/v0.5.22...v0.5.23) (2023-01-16)
+
+
+### Features
+
+* define ingress-nginx settings for each ingress class ([#235](https://github.com/redkubes/otomi-stack-web/issues/235)) ([a59fcee](https://github.com/redkubes/otomi-stack-web/commit/a59fceeb3cce47bf8e63cc22181bd6351c9689c5))
+
+
+### Others
+
+* locked node version to project ([#231](https://github.com/redkubes/otomi-stack-web/issues/231)) ([07fcab1](https://github.com/redkubes/otomi-stack-web/commit/07fcab141812031046e3e9cc997033b2b936de31))
+
 ### [0.5.22](https://github.com/redkubes/otomi-stack-web/compare/v0.5.21...v0.5.22) (2022-12-14)
 
 
