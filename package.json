@@ -43,7 +43,7 @@
     "react-dnd-html5-backend": "15.1.3",
     "react-dom": "17.0.2",
     "react-error-boundary": "3.1.4",
-    "react-helmet": "5.2.1",
+    "react-helmet": "6.1.0",
     "react-i18next": "^12.0.0",
     "react-icons": "3.11.0",
     "react-linkify": "^1.0.0-alpha",
@@ -106,6 +106,10 @@
     "ts-node": "10.8.1",
     "typescript": "4.7.3"
   },
+  "engines": {
+    "npm": ">=8.0.0 <9.0.0",
+    "node": ">=18.0.0 <19.0.0"
+  },
   "lint-staged": {
     "*.{js,ts,tsx,json,md,yml,yaml}": [
       "prettier --write"
@@ -122,7 +126,7 @@
     "cz:retry": "git-cz --retry",
     "cz": "git-cz",
     "dev:docker": "npm ci && npm run dev",
-    "dev": "run-p start watch:ts",
+    "dev": "run-p start watch:ts start:chrome",
     "eject": "react-scripts eject",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
@@ -131,12 +135,12 @@
     "lint:ts": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "lint": "run-p types lint:ts",
-    "//preinstall": "npx npm-force-resolutions",
     "prepare": "husky install",
     "release": "standard-version",
     "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
     "start": "dotenv -e .env react-scripts start --no-cache",
+    "start:chrome": "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 &",
     "lang:server": "DEBUG='*' node --no-warnings --experimental-json-modules --loader ts-node/esm src/lang-server",
     "lang:export": "node --nolazy --loader ts-node/esm src/lang-export",
     "lang:import": "IMPORT=1 node --nolazy --loader ts-node/esm src/lang-export",
@@ -149,5 +153,5 @@
       "tag": true
     }
   },
-  "version": "0.5.21"
+  "version": "0.5.23"
 }
