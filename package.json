@@ -126,7 +126,7 @@
     "cz:retry": "git-cz --retry",
     "cz": "git-cz",
     "dev:docker": "npm ci && npm run dev",
-    "dev": "run-p start watch:ts",
+    "dev": "run-p start watch:ts start:chrome",
     "eject": "react-scripts eject",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
     "format": "prettier --check \"**/*.{js,json,md,ts,yml,yaml}\"",
@@ -135,12 +135,12 @@
     "lint:ts": "eslint --ext js,ts,tsx .",
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "lint": "run-p types lint:ts",
-    "//preinstall": "npx npm-force-resolutions",
     "prepare": "husky install",
     "release": "standard-version",
     "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
     "start": "dotenv -e .env react-scripts start --no-cache",
+    "start:chrome": "'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --remote-debugging-port=9222 &",
     "lang:server": "DEBUG='*' node --no-warnings --experimental-json-modules --loader ts-node/esm src/lang-server",
     "lang:export": "node --nolazy --loader ts-node/esm src/lang-export",
     "lang:import": "IMPORT=1 node --nolazy --loader ts-node/esm src/lang-export",
@@ -153,5 +153,5 @@
       "tag": true
     }
   },
-  "version": "0.5.22"
+  "version": "0.5.23"
 }
