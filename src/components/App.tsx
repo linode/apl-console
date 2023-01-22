@@ -163,12 +163,16 @@ export const getAppUiSchema = (
       set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
       break
     case 'velero':
-      const cloudprovider = get(formData, 'cloud.provider')
-      if (cloudprovider?.type === 'azure') {
-        set(uiSchema, 'storage.provider.azureBlob.tenantId.ui:widget', 'hidden')
-        set(uiSchema, 'storage.provider.azureBlob.subscriptionId.ui:widget', 'hidden')
-        set(uiSchema, 'storage.provider.azureBlob.aadClientId.ui:widget', 'hidden')
-        set(uiSchema, 'storage.provider.azureBlob.aadClientSecret.ui:widget', 'hidden')
+      const cp = get(formData, 'cloud')
+      if (cp?.type === 'azure') {
+        set(uiSchema, 'storage.azureBlob.tenantId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.azureBlob.subscriptionId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.azureBlob.aadClientId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.azureBlob.aadClientSecret.ui:widget', 'hidden')
+      }
+      if (cp?.type === 'aws') {
+        set(uiSchema, 'storage.s3.accessKeyId.ui:widget', 'hidden')
+        set(uiSchema, 'storage.s3.secretAccessKey.ui:widget', 'hidden')
       }
       break
     default:
