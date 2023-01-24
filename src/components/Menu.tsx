@@ -466,7 +466,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           {ca && (
             <StyledMenuItem
               className={mainClasses.selectable}
-              component={Link}
+              component={MuiLink}
               aria-label={t('Download CA')}
               href={anchor}
               download={downloadOpts.filename}
