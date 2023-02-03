@@ -87,14 +87,22 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     loki: true,
     grafana: true,
   }
+  const enabledByProvider = (app) => {
+    const filter = { falco: ['aws', 'azure'] }
+    if (!filter[app]) return true
+    return filter[app].includes(session.settings.cluster?.provider)
+  }
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
   let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
-  if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps)
-    enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
+  if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps) {
+    enabledApps = enabledApps
+      .filter((app) => !disabledByMonitoringStackApps[app.id])
+      .filter((app) => enabledByProvider(app.id))
+  }
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
     items.map((item) => {
-      const { enabled, externalUrl, id, logo, logoAlt, appInfo, deps: coreDeps } = getAppData(session, teamId, item)
+      const { enabled, externalUrl, id, logo, logoAlt, deps: coreDeps } = getAppData(session, teamId, item)
       const isDragging = deps === undefined ? deps : deps.includes(id)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
