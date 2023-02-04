@@ -232,7 +232,7 @@ adminApps:
     tags: [security]
     ownHost: true
     ingress:
-      - svc: kubeclarity
+      - svc: kubeclarity.kubeclarity
         namespace: kubeclarity
         port: 8080
         type: public
