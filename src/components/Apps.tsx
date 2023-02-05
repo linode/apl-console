@@ -97,7 +97,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps) {
     enabledApps = enabledApps
       .filter((app) => !disabledByMonitoringStackApps[app.id])
-      .filter((app) => enabledByProvider(app.id))
+      .filter((app) => !enabledByProvider(app.id))
   }
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
