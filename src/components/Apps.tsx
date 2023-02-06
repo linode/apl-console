@@ -87,18 +87,18 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     loki: true,
     grafana: true,
   }
-  const enabledByProvider = (app) => {
-    const filter = { falco: ['aws', 'azure'] }
-    if (filter[app]) return true
-    return filter[app].includes(session.settings.cluster?.provider)
+
+  const disabledByProviderApps = {
+    falco: true,
   }
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
   let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
-  if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps) {
+  if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps)
     enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
-    enabledApps.filter((app) => !enabledByProvider(app.id))
-  }
-  const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
+  let disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
+  const provider = session.settings.cluster?.provider
+  if (provider !== 'azure' && provider !== 'aws')
+    disabledApps = disabledApps.filter((app) => !disabledByProviderApps[app.id])
   const out = (items) =>
     items.map((item) => {
       const { enabled, externalUrl, id, logo, logoAlt, deps: coreDeps } = getAppData(session, teamId, item)
