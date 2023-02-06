@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.24](https://github.com/redkubes/otomi-stack-web/compare/v0.5.23...v0.5.24) (2023-02-06)
+
+
+### Features
+
+* add falco ([#240](https://github.com/redkubes/otomi-stack-web/issues/240)) ([ef4aecc](https://github.com/redkubes/otomi-stack-web/commit/ef4aeccdf3d37fc3e7ea52485d77f2982ba825a4))
+* Falco sidekick UI ingress ([#241](https://github.com/redkubes/otomi-stack-web/issues/241)) ([68dcdd8](https://github.com/redkubes/otomi-stack-web/commit/68dcdd88e242474fb31207fbb9a3ca69d99a19c6))
+* hide velero fields ([#229](https://github.com/redkubes/otomi-stack-web/issues/229)) ([54bcc3f](https://github.com/redkubes/otomi-stack-web/commit/54bcc3fc223f11895ef6089e36d5c3fb2690c2e6))
+* thanos ([#234](https://github.com/redkubes/otomi-stack-web/issues/234)) ([c716bbf](https://github.com/redkubes/otomi-stack-web/commit/c716bbf80440cafad2a6279e0279d57f9312faf9))
+
+
+### Bug Fixes
+
+* ca download component ([#239](https://github.com/redkubes/otomi-stack-web/issues/239)) ([937f2ed](https://github.com/redkubes/otomi-stack-web/commit/937f2edb003e83a6f8aea10b566e7bb7c232cd24))
+* exclude falco if provider is not azure/aws ([#242](https://github.com/redkubes/otomi-stack-web/issues/242)) ([fdb9e6d](https://github.com/redkubes/otomi-stack-web/commit/fdb9e6d2b1d2c549ff2b2b8cce6e222514414b5d))
+* kiali deps ([#236](https://github.com/redkubes/otomi-stack-web/issues/236)) ([35067b1](https://github.com/redkubes/otomi-stack-web/commit/35067b106a9bce9d341bc002ffbda2807fa7b4e6))
+* unset teammon if not mt ([#237](https://github.com/redkubes/otomi-stack-web/issues/237)) ([d0d3183](https://github.com/redkubes/otomi-stack-web/commit/d0d31836d60eb3f7c694246a118d49e95eb247ca))
+
+
+### Others
+
+* git hooks ([6274232](https://github.com/redkubes/otomi-stack-web/commit/62742329b6e4ceee29ef06c24aea4a771e1ec5a2))
+
 ### [0.5.23](https://github.com/redkubes/otomi-stack-web/compare/v0.5.22...v0.5.23) (2023-01-16)
 
 
