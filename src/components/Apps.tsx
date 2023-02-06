@@ -89,15 +89,14 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   }
   const enabledByProvider = (app) => {
     const filter = { falco: ['aws', 'azure'] }
-    if (!filter[app]) return true
+    if (filter[app]) return true
     return filter[app].includes(session.settings.cluster?.provider)
   }
   // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
   let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
   if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps) {
-    enabledApps = enabledApps
-      .filter((app) => !disabledByMonitoringStackApps[app.id])
-      .filter((app) => !enabledByProvider(app.id))
+    enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
+    enabledApps.filter((app) => !enabledByProvider(app.id))
   }
   const disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
   const out = (items) =>
