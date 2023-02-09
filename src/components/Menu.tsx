@@ -463,6 +463,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
+          <StyledMenuItem
+            className={mainClasses.selectable}
+            component={MuiLink}
+            aria-label={t('Download DOCKERCFG')}
+            href={`/api/v1/dockerconfig/${oboTeamId}`}
+            disabled={teamId === 'admin' || !canDo(user, oboTeamId, 'downloadDockerConfig')}
+          >
+            <ListItemIcon>
+              <CloudDownloadIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Download DOCKERCFG')} />
+          </StyledMenuItem>
           {ca && (
             <StyledMenuItem
               className={mainClasses.selectable}
