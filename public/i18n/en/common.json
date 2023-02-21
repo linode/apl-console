@@ -69,6 +69,8 @@
   "Team": "Team",
   "Team_plural": "Teams",
   "Teams": "Teams",
+  "Workloads": "Workloads",
+  "Workload_plural": "Workloads",
   "WELCOME_DASHBOARD": "Team <1>{{teamName}}</1> dashboard",
   "add item": "add item",
   "admin": "admin",

@@ -5,6 +5,7 @@ import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import ErrorComponent from 'components/Error'
 import Loader from 'components/Loader'
+import Workloads from 'pages/Workloads'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
@@ -72,6 +73,7 @@ function App() {
                           <Route path='/policies' component={Policies} exact />
                           <Route path='/policies/:policyId' component={Policy} exact />
                           <Route path='/services' component={Services} exact />
+                          <Route path='/workloads' component={Workloads} exact />
                           <Route path='/settings/:settingId' component={Setting} exact />
                           <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                           <Route path='/teams' component={Teams} exact />
@@ -83,6 +85,8 @@ function App() {
                           <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
                           <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                           <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                          <Route path='/teams/:teamId/workloads' component={Workloads} exact />
+                          {/* <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact /> */}
                           <Route path='/teams/:teamId/services' component={Services} exact />
                           <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
                           <Route path='*'>
