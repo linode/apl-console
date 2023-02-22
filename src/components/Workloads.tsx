@@ -1,3 +1,4 @@
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetTeamWorkloadsApiResponse } from 'redux/otomiApi'
@@ -38,6 +39,8 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   //   oboTeamId,
   //   user: { isAdmin },
   // } = useSession()
+  const { appsEnabled } = useSession()
+
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -52,6 +55,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
       renderer: (row: Row) => getWorkloadValuesLink(row),
     },
   ]
+  if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={workloads} resourceType='Workload' />
 }

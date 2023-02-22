@@ -4,6 +4,7 @@ import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -322,7 +323,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </StyledMenuItem>
           <StyledMenuItem to='/workloads' selected={pathname === '/workloads'} data-cy='menu-item-workloads'>
             <ListItemIcon>
-              <SwapVerticalCircleIcon />
+              <AppRegistrationIcon />
             </ListItemIcon>
             <ListItemText primary={t('Workloads')} />
           </StyledMenuItem>
@@ -420,7 +421,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             data-cy='menu-item-team-workloads'
           >
             <ListItemIcon>
-              <SwapVerticalCircleIcon />
+              <AppRegistrationIcon />
             </ListItemIcon>
             <ListItemText primary={t('Workloads')} />
           </StyledMenuItem>

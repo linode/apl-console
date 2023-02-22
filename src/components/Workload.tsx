@@ -8,13 +8,13 @@ import Form from './rjsf/Form'
 
 export const getWorkloadSchema = (teamId: string): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
-  if (teamId !== 'admin') delete schema.properties.namespace
   return schema
 }
 
 export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    teamId: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
   }
 

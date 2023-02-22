@@ -35,6 +35,7 @@ export default function ({
     if (!teamId && !isFetchingAllWorkloads) refetchAllWorkloads()
     else if (teamId && !isFetchingTeamWorkloads) refetchTeamWorkloads()
   }, [isDirty])
+
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllWorkloads || isLoadingTeamWorkloads
