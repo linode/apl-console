@@ -1,6 +1,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { GetTeamWorkloadsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
@@ -20,11 +21,24 @@ const getWorkloadLink = (row: Row) => {
     </RLink>
   )
 }
+const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
+  const app = `${row.teamId}-${row.name}`
+  const path = `/applications/argocd/${app}`
+  const host = `https://argocd.${domainSuffix}`
+  const externalUrl = `${host}/${path}`
+
+  return (
+    <Link to={{ pathname: externalUrl }} target='_blank'>
+      Application
+    </Link>
+  )
+}
+
 const getWorkloadValuesLink = (row: Row) => {
   const path = `/teams/${row.teamId}/workloads/${encodeURIComponent(row.id)}/values`
   return (
     <RLink to={path} label='values'>
-      values
+      edit
     </RLink>
   )
 }
@@ -39,20 +53,30 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   //   oboTeamId,
   //   user: { isAdmin },
   // } = useSession()
-  const { appsEnabled } = useSession()
+  const {
+    appsEnabled,
+    settings: {
+      cluster: { domainSuffix },
+    },
+  } = useSession()
 
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Name'),
+      label: t('Workload name'),
       renderer: (row: Row) => getWorkloadLink(row),
     },
     {
       id: 'values',
-      label: 'Values',
+      label: 'Workload values',
       renderer: (row: Row) => getWorkloadValuesLink(row),
+    },
+    {
+      id: 'argocd',
+      label: t('Argocd'),
+      renderer: (row: Row) => getArgocdApplicationLink(row, domainSuffix),
     },
   ]
   if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
