@@ -79,6 +79,14 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
       renderer: (row: Row) => getArgocdApplicationLink(row, domainSuffix),
     },
   ]
+
+  if (!teamId) {
+    headCells.push({
+      id: 'teamId',
+      label: t('Team'),
+    })
+  }
+
   if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={workloads} resourceType='Workload' />
