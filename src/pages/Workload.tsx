@@ -42,7 +42,7 @@ export default function ({
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/workloads`} />
-  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/workloads/${createData.id}`} />
+  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/workloads/${createData.id}/values`} />
   const handleSubmit = (formData) => {
     if (workloadId) update({ teamId, workloadId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
