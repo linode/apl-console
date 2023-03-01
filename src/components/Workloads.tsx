@@ -65,7 +65,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Workload name'),
+      label: t('Workload'),
       renderer: (row: Row) => getWorkloadLink(row),
     },
     {
