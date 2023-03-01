@@ -22,7 +22,7 @@ const getWorkloadLink = (row: Row) => {
   )
 }
 const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
-  const app = `${row.teamId}-${row.name}`
+  const app = `team-${row.teamId}-${row.name}`
   const path = `/applications/argocd/${app}`
   const host = `https://argocd.${domainSuffix}`
   const externalUrl = `${host}/${path}`
