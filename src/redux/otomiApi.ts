@@ -82,6 +82,38 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
+      query: () => ({ url: `/workloads` }),
+    }),
+    getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
+    }),
+    createWorkload: build.mutation<CreateWorkloadApiResponse, CreateWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteWorkload: build.mutation<DeleteWorkloadApiResponse, DeleteWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`, method: 'DELETE' }),
+    }),
+    getWorkload: build.query<GetWorkloadApiResponse, GetWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}` }),
+    }),
+    editWorkload: build.mutation<EditWorkloadApiResponse, EditWorkloadApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getWorkloadValues: build.query<GetWorkloadValuesApiResponse, GetWorkloadValuesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values` }),
+    }),
+    editWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     deploy: build.query<DeployApiResponse, DeployApiArg>({
       query: () => ({ url: `/deploy` }),
     }),
@@ -336,7 +368,14 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -414,6 +453,27 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -472,6 +532,27 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -531,6 +612,27 @@ export type CreateTeamApiArg = {
       name: string
       value: string
     }[]
+    azureMonitor?:
+      | (
+          | (object | null)
+          | {
+              appInsightsApiKey?: string
+              appInsightsAppId?: string
+              azureLogAnalyticsSameAs?: boolean
+              clientId: string
+              clientSecret: string
+              logAnalyticsClientId?: string
+              logAnalyticsClientSecret?: string
+              logAnalyticsTenantId?: string
+              logAnalyticsDefaultWorkspace?: string
+              subscriptionId?: string
+              tenantId?: string
+            }
+        )
+      | null
+    monitoringStack?: {
+      enabled?: boolean
+    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -589,6 +691,27 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -597,9 +720,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
-  }
-  monitoringStack?: {
-    enabled?: boolean
   }
 }
 export type GetTeamApiArg = {
@@ -653,6 +773,27 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -714,6 +855,27 @@ export type EditTeamApiArg = {
       name: string
       value: string
     }[]
+    azureMonitor?:
+      | (
+          | (object | null)
+          | {
+              appInsightsApiKey?: string
+              appInsightsAppId?: string
+              azureLogAnalyticsSameAs?: boolean
+              clientId: string
+              clientSecret: string
+              logAnalyticsClientId?: string
+              logAnalyticsClientSecret?: string
+              logAnalyticsTenantId?: string
+              logAnalyticsDefaultWorkspace?: string
+              subscriptionId?: string
+              tenantId?: string
+            }
+        )
+      | null
+    monitoringStack?: {
+      enabled?: boolean
+    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -1156,7 +1318,14 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1271,7 +1440,14 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1386,7 +1562,14 @@ export type CreateServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
-              ownHost?: boolean
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
             } & {
               type?: 'public'
             })
@@ -1854,7 +2037,14 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1971,7 +2161,14 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -2088,7 +2285,14 @@ export type EditServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
-              ownHost?: boolean
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
             } & {
               type?: 'public'
             })
@@ -2269,6 +2473,130 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}[]
+export type GetAllWorkloadsApiArg = void
+export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}[]
+export type GetTeamWorkloadsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateWorkloadApiResponse = /** status 200 Successfully stored workload configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type CreateWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Workload object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+  }
+}
+export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
+export type DeleteWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type GetWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type GetWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type EditWorkloadApiResponse = /** status 200 Successfully edited a team secret */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type EditWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+  /** Workload object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+  }
+}
+export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
+  id?: string
+  teamId?: string
+  name?: string
+  values: object
+}
+export type GetWorkloadValuesApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited a team secret */ {
+  id?: string
+  teamId?: string
+  name?: string
+  values: object
+}
+export type EditWorkloadValuesApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+  /** Workload values */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: object
+  }
+}
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
 export type DeployApiArg = void
 export type RevertApiResponse = unknown
@@ -2359,12 +2687,49 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sContext?: string
   }
   backup?: {
-    platformSchedule?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
+    platform?: {
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      drone?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      harbor?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      vault?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      argo?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      kubeapps?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      minio?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
     }
-    teamSchedule?: {
+    teams?: {
       enabled?: boolean
       ttl?: string
       schedule?: string
@@ -2571,8 +2936,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     }[]
     globalPullSecret?: {
-      username: string
-      password: string
+      username?: string
+      password?: string
       email?: string
       server?: string
     } | null
@@ -2744,12 +3109,49 @@ export type EditSettingsApiArg = {
       k8sContext?: string
     }
     backup?: {
-      platformSchedule?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
+      platform?: {
+        gitea?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        drone?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        keycloak?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        harbor?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        vault?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        argo?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        kubeapps?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        minio?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
       }
-      teamSchedule?: {
+      teams?: {
         enabled?: boolean
         ttl?: string
         schedule?: string
@@ -2956,8 +3358,8 @@ export type EditSettingsApiArg = {
         provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       }[]
       globalPullSecret?: {
-        username: string
-        password: string
+        username?: string
+        password?: string
         email?: string
         server?: string
       } | null
@@ -3150,6 +3552,14 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllWorkloadsQuery,
+  useGetTeamWorkloadsQuery,
+  useCreateWorkloadMutation,
+  useDeleteWorkloadMutation,
+  useGetWorkloadQuery,
+  useEditWorkloadMutation,
+  useGetWorkloadValuesQuery,
+  useEditWorkloadValuesMutation,
   useDeployQuery,
   useRevertQuery,
   useRestoreQuery,
