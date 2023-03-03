@@ -25,7 +25,8 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateWorkloadMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
+    useCreateWorkloadMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditWorkloadMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteWorkloadMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetWorkloadQuery(
@@ -40,8 +41,8 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
-    return <Redirect to={`/teams/${teamId}/workloads`} />
+  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/workloads`} />
+  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/workloads/${createData.id}/values`} />
   const handleSubmit = (formData) => {
     if (workloadId) update({ teamId, workloadId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
