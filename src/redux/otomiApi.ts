@@ -126,6 +126,9 @@ const injectedRtkApi = api.injectEndpoints({
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
+    downloadDockerConfig: build.query<DownloadDockerConfigApiResponse, DownloadDockerConfigApiArg>({
+      query: (queryArg) => ({ url: `/dockerconfig/${queryArg.teamId}` }),
+    }),
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/session` }),
     }),
@@ -480,7 +483,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }[]
@@ -559,7 +562,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -639,7 +642,7 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -718,7 +721,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -800,7 +803,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -882,7 +885,7 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -2608,6 +2611,11 @@ export type DownloadKubecfgApiArg = {
   /** ID of team to return */
   teamId: string
 }
+export type DownloadDockerConfigApiResponse = /** status 200 Succesfully finished the download */ Blob
+export type DownloadDockerConfigApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
   ca?: string
   core?: object
@@ -3564,6 +3572,7 @@ export const {
   useRevertQuery,
   useRestoreQuery,
   useDownloadKubecfgQuery,
+  useDownloadDockerConfigQuery,
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsQuery,
