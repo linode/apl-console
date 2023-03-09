@@ -485,7 +485,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             component={MuiLink}
             aria-label={t('Download DOCKERCFG')}
             href={`/api/v1/dockerconfig/${oboTeamId}`}
-            disabled={!canDo(user, oboTeamId, 'downloadDockerConfig')}
+            disabled={!canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor}
           >
             <ListItemIcon>
               <CloudDownloadIcon />
