@@ -14,7 +14,6 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import HistoryIcon from '@mui/icons-material/History'
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
 import LockIcon from '@mui/icons-material/Lock'
@@ -333,12 +332,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
           </StyledMenuItem>
-          <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
-            <ListItemIcon>
-              <HourglassEmptyIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Jobs')} />
-          </StyledMenuItem>
 
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
@@ -434,16 +427,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
-          </StyledMenuItem>
-          <StyledMenuItem
-            to={`/teams/${teamId}/jobs`}
-            selected={pathname.indexOf(`/teams/${teamId}/jobs`) === 0}
-            data-cy='menu-item-team-jobs'
-          >
-            <ListItemIcon>
-              <HourglassEmptyIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}

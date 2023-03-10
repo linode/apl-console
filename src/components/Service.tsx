@@ -1,4 +1,4 @@
-import { applyAclToUiSchema, getIngressSchemaPath, getSpec, podSpecUiSchema, setSecretsEnum } from 'common/api-spec'
+import { applyAclToUiSchema, getIngressSchemaPath, getSpec, setSecretsEnum } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
@@ -117,10 +117,6 @@ export const getServiceUiSchema = (
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData?.ksvc?.serviceType !== 'svcPredeployed' },
-    },
-    ksvc: {
-      ...podSpecUiSchema,
     },
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
