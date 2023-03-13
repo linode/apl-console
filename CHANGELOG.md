@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.25](https://github.com/redkubes/otomi-stack-web/compare/v0.5.24...v0.5.25) (2023-03-13)
+
+
+### Features
+
+* add trviy app ([#244](https://github.com/redkubes/otomi-stack-web/issues/244)) ([c603c82](https://github.com/redkubes/otomi-stack-web/commit/c603c82b52d5d43b3d81cc1ba8287e73bf76be07))
+* download docker config ([#243](https://github.com/redkubes/otomi-stack-web/issues/243)) ([54aa802](https://github.com/redkubes/otomi-stack-web/commit/54aa802501e50453bccefb0a70febba4b72cc360))
+* team workloads ([#247](https://github.com/redkubes/otomi-stack-web/issues/247)) ([ed6b280](https://github.com/redkubes/otomi-stack-web/commit/ed6b2802279015df9d134be31549a4cdf0d8918d))
+
+
+### Bug Fixes
+
+* enable button if harbor is active ([851ab3d](https://github.com/redkubes/otomi-stack-web/commit/851ab3d360e2dc7f58cb2f4a5852273197a898b3))
+
+
+### Others
+
+* hide docker download config button ([69802a9](https://github.com/redkubes/otomi-stack-web/commit/69802a953a9199fdc70b75a47f2ed1c9b02c93e8))
+
 ### [0.5.24](https://github.com/redkubes/otomi-stack-web/compare/v0.5.23...v0.5.24) (2023-02-06)
 
 
