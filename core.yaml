@@ -42,6 +42,8 @@ k8s:
       disablePolicyChecks: true
     - name: kubeclarity
       disableIstioInjection: true
+    - name: kured
+      app: kured
     - name: maintenance
       disableIstioInjection: true
     - name: monitoring
@@ -256,6 +258,8 @@ adminApps:
       - title: Gatekeeper violations
         description: Kube API violations logged by OPA gatekepeer
         path: /explore?orgId=1&left=%5B"now-1h","now","Loki",%7B"expr":"%7Bnamespace%3D%5C"gatekeeper-system%5C"%7D%20%7C%3D%5C"Policy:%20%5C""%7D%5D
+  - name: kured
+    tags: [security]
   # - name: notary
   #   isShared: true
   #   ownHost: true
