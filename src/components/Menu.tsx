@@ -480,7 +480,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
-          {/* <StyledMenuItem
+          <StyledMenuItem
             className={mainClasses.selectable}
             component={MuiLink}
             aria-label={t('Download DOCKERCFG')}
@@ -491,7 +491,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <CloudDownloadIcon />
             </ListItemIcon>
             <ListItemText primary={t('Download DOCKERCFG')} />
-          </StyledMenuItem> */}
+          </StyledMenuItem>
           {ca && (
             <StyledMenuItem
               className={mainClasses.selectable}
