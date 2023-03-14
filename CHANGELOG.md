@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/redkubes/otomi-stack-web/compare/v0.5.25...v0.6.0) (2023-03-14)
+
+
+### Reverts
+
+* Revert "chore: hide docker download config button" ([43cff71](https://github.com/redkubes/otomi-stack-web/commit/43cff71bed60aa1acd4e69f658e5e40ad8e276b1))
+
 ### [0.5.25](https://github.com/redkubes/otomi-stack-web/compare/v0.5.24...v0.5.25) (2023-03-13)
 
 
