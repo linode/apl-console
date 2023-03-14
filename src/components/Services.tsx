@@ -10,13 +10,13 @@ import MuiLink from './MuiLink'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, id, name, port }: { teamId: string; id: string; name: string; port: number } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path = `/teams/${teamId}/services/${encodeURIComponent(id)}`
     return (
       <RLink to={path} label={name}>
-        {name}
+        {name}:{port || 80}
       </RLink>
     )
   }
@@ -49,7 +49,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Service name'),
+      label: t('Service'),
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {
