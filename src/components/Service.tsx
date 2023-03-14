@@ -1,6 +1,6 @@
-import { applyAclToUiSchema, getIngressSchemaPath, getSpec, setSecretsEnum } from 'common/api-spec'
+import { applyAclToUiSchema, getIngressSchemaPath, getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
+import { cloneDeep, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -51,7 +51,6 @@ export const getServiceSchema = (
 ): any => {
   const { cluster } = settings
   const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
-  const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
@@ -90,13 +89,6 @@ export const getServiceSchema = (
     }
   }
   if (teamId !== 'admin') delete schema.properties.namespace
-  if (!appsEnabled.knative) (schema.properties.ksvc as JSONSchema7).oneOf.splice(1, 2)
-  // if (!appsEnabled.knative) {
-  //   schema.properties.ksvc.oneOf[1].disabled = true
-  //   schema.properties.ksvc.oneOf[2].disabled = true
-  // }
-  // set the Secrets enum with items to choose from
-  else setSecretsEnum(get(schema, ksvcSchemaPath), secrets)
 
   return schema
 }
