@@ -67,6 +67,10 @@ k8s:
     - name: tigera-operator
       disableIstioInjection: true
       disablePolicyChecks: true
+    - name: trivy-operator
+      app: trivy
+      disableIstioInjection: true
+      disablePolicyChecks: true
     - name: vault
     - name: velero
       disableIstioInjection: true
@@ -318,6 +322,9 @@ adminApps:
         paths: [/api/]
         forwardPath: true
         type: public
+  - name: trivy
+    tags: [security]
+    deps: [prometheus, grafana]
   - name: vault
     tags: [secrets, security, observability]
     deps: [kubernetes-external-secrets]
