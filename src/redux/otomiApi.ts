@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
+      query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -157,6 +160,27 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
+  isValid: boolean
+  hasLicense: boolean
+  jwt?: string
+  body?: {
+    version: number
+    key: string
+    type: 'community' | 'professional' | 'enterprise'
+    capabilities: {
+      teams: number
+      services: number
+      workloads: number
+    }
+  }
+}
+export type ActivateLicenseApiArg = {
+  /** License JWT */
+  body: {
+    jwt: string
+  }
+}
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -400,7 +424,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1350,7 +1374,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1472,7 +1496,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1594,7 +1618,7 @@ export type CreateServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2069,7 +2093,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2193,7 +2217,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2317,7 +2341,7 @@ export type EditServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2622,6 +2646,21 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
+  license?: {
+    isValid: boolean
+    hasLicense: boolean
+    jwt?: string
+    body?: {
+      version: number
+      key: string
+      type: 'community' | 'professional' | 'enterprise'
+      capabilities: {
+        teams: number
+        services: number
+        workloads: number
+      }
+    }
+  }
   user?: {
     name: string
     email: string
@@ -2687,7 +2726,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+    k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3109,7 +3148,7 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+      k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -3537,6 +3576,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useActivateLicenseMutation,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
