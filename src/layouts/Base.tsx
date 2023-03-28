@@ -4,10 +4,11 @@ import { styled } from '@mui/material/styles'
 import Menu from 'components/Menu'
 import MenuTop from 'components/MenuTop'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ErrorComponent from 'components/Error'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
+import { useHistory } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 
 const drawerWidth = '240px'
@@ -124,7 +125,9 @@ interface Props {
 
 export default function ({ children, title }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
+  const session = useSession()
   const { classes, cx } = useStyles()
+  const history = useHistory()
   const [open, setOpen] = useState(false)
   // END HOOKS
   const handleDrawerOpen = (e) => {
@@ -152,6 +155,13 @@ export default function ({ children, title }: Props): React.ReactElement {
       <Menu teamId={oboTeamId} />
     </div>
   )
+
+  useEffect(() => {
+    if (session && !session.license) {
+      // Redirect to /activate
+      history.push('/activate')
+    }
+  }, [session, history])
 
   return (
     <div className={classes.root}>

@@ -4,9 +4,9 @@ import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import ErrorComponent from 'components/Error'
-import Loader from 'components/Loader'
 import Workloads from 'pages/Workloads'
 import OtomiApp from 'pages/App'
+import Activate from 'pages/Activate'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
 import Clusters from 'pages/Clusters'
@@ -37,6 +37,7 @@ import { store } from 'redux/store'
 import { IoProvider } from 'socket.io-react-hook'
 import Workload from 'pages/Workload'
 import WorkloadValues from 'pages/WorkloadValues'
+import LoadingScreen from 'components/LoadingScreen'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -50,7 +51,7 @@ if (location.hostname === 'localhost') contextPath = ''
 
 function App() {
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<LoadingScreen />}>
       <ErrorBoundary FallbackComponent={ErrorComponent}>
         <CacheProvider value={muiCache}>
           <Provider store={store}>
@@ -66,6 +67,7 @@ function App() {
                         <Switch>
                           {/* ! user && <Route path='/' component={Home} exact /> */}
                           <Route path='/' component={Dashboard} exact />
+                          <Route path='/activate' component={Activate} exact />
                           <Route path='/apps/:teamId' component={Apps} exact />
                           <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
                           <Route path='/clusters/:clusterId' component={Cluster} exact />
