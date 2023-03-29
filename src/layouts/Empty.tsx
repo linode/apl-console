@@ -8,12 +8,10 @@ const useStyles = makeStyles()(() => ({
     padding: 0,
   },
 }))
-
 interface Props {
   children?: any
   title?: string
 }
-
 export default function ({ children, title }: Props): React.ReactElement {
   const { classes } = useStyles()
   return (

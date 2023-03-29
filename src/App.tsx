@@ -37,6 +37,7 @@ import { store } from 'redux/store'
 import { IoProvider } from 'socket.io-react-hook'
 import Workload from 'pages/Workload'
 import WorkloadValues from 'pages/WorkloadValues'
+import Maintenance from 'pages/Maintenance'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -66,6 +67,7 @@ function App() {
                         <Switch>
                           {/* ! user && <Route path='/' component={Home} exact /> */}
                           <Route path='/' component={Dashboard} exact />
+                          <Route path='/maintenance' component={Maintenance} exact />
                           <Route path='/apps/:teamId' component={Apps} exact />
                           <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
                           <Route path='/clusters/:clusterId' component={Cluster} exact />
