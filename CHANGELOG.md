@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/redkubes/otomi-stack-web/compare/v0.6.0...v0.7.0) (2023-03-31)
+
+
+### Features
+
+* hide ns field for non admin ([#250](https://github.com/redkubes/otomi-stack-web/issues/250)) ([f465316](https://github.com/redkubes/otomi-stack-web/commit/f465316e515cb6270147f4f28ae2674189aaa75d))
+
+
+### Bug Fixes
+
+* make kured optional app ([#246](https://github.com/redkubes/otomi-stack-web/issues/246)) ([2497ccf](https://github.com/redkubes/otomi-stack-web/commit/2497ccf0d176ae076f215e363ec413f7b881ddfe))
+
+
+### Others
+
+* release only from the releases/ branches ([#251](https://github.com/redkubes/otomi-stack-web/issues/251)) ([9325e5e](https://github.com/redkubes/otomi-stack-web/commit/9325e5e86bc0f7f7cee9e6749eea421bd943d55b))
+* **release:** 0.7.0 ([81cb210](https://github.com/redkubes/otomi-stack-web/commit/81cb210e33472aba889706889c1f016dc039f59b))
+
 ## [0.6.0](https://github.com/redkubes/otomi-stack-web/compare/v0.5.25...v0.6.0) (2023-03-14)
 
 
