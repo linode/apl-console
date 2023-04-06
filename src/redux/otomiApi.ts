@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getK8SAllServices: build.query<GetK8SAllServicesApiResponse, GetK8SAllServicesApiArg>({
+      query: () => ({ url: `/kubernetes/services` }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -36,6 +39,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     createService: build.mutation<CreateServiceApiResponse, CreateServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
+    }),
+    getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getJob: build.query<GetJobApiResponse, GetJobApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}` }),
@@ -157,6 +163,11 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type GetK8SAllServicesApiResponse = /** status 200 Successfully obtained kuebrentes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetK8SAllServicesApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -400,7 +411,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1350,7 +1361,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1472,7 +1483,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1594,7 +1605,7 @@ export type CreateServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1602,6 +1613,14 @@ export type CreateServiceApiArg = {
       }[]
     }
   }
+}
+export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetTeamK8SServicesApiArg = {
+  /** ID of team to return */
+  teamId: string
 }
 export type GetJobApiResponse = /** status 200 Successfully obtained job configuration */ {
   id?: string
@@ -2069,7 +2088,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2193,7 +2212,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2317,7 +2336,7 @@ export type EditServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2687,7 +2706,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+    k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3109,7 +3128,7 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+      k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -3537,6 +3556,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useGetK8SAllServicesQuery,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
@@ -3549,6 +3569,7 @@ export const {
   useCreateJobMutation,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
+  useGetTeamK8SServicesQuery,
   useGetJobQuery,
   useEditJobMutation,
   useDeleteJobMutation,
