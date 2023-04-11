@@ -12,6 +12,7 @@ import {
   useEditServiceMutation,
   useGetSecretsQuery,
   useGetServiceQuery,
+  useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
@@ -37,6 +38,13 @@ export default function ({
     refetch: refetchService,
   } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const {
+    data: k8sServices,
+    isLoading: isLoadingK8sServices,
+    isFetching: isFetchingK8sServices,
+    isError: isErrorK8sServices,
+    refetch: refetchK8sServices,
+  } = useGetTeamK8SServicesQuery({ teamId })
+  const {
     data: secrets,
     isLoading: isLoadingSecrets,
     isFetching: isFetchingSecrets,
@@ -48,6 +56,7 @@ export default function ({
     if (isDirty !== false) return
     if (!isFetchingService) refetchService()
     if (!isFetchingSecrets) refetchSecrets()
+    if (!isFetchingK8sServices) refetchK8sServices()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
@@ -59,12 +68,13 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (serviceId) => del({ teamId, serviceId })
-  const loading = isLoadingService || isLoadingSecrets
+  const loading = isLoadingService || isLoadingSecrets || isLoadingK8sServices
   const isError = isErrorService || isErrorSecrets
   const comp = !isError && (
     <Service
       teamId={teamId}
       service={data}
+      k8sServices={k8sServices}
       secrets={secrets}
       onSubmit={handleSubmit}
       onDelete={handleDelete}

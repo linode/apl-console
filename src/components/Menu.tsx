@@ -4,6 +4,7 @@ import DynamicFeedIcon from '@mui/icons-material/DynamicFeed'
 import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -320,6 +321,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Teams')} />
           </StyledMenuItem>
+          <StyledMenuItem to='/workloads' selected={pathname === '/workloads'} data-cy='menu-item-workloads'>
+            <ListItemIcon>
+              <AppRegistrationIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Workloads')} />
+          </StyledMenuItem>
           <StyledMenuItem to='/services' selected={pathname === '/services'} data-cy='menu-item-services'>
             <ListItemIcon>
               <SwapVerticalCircleIcon />
@@ -409,6 +416,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </StyledMenuItem>
           )}
           <StyledMenuItem
+            to={`/teams/${teamId}/workloads`}
+            selected={pathname.indexOf(`/teams/${teamId}/workloads`) === 0}
+            data-cy='menu-item-team-workloads'
+          >
+            <ListItemIcon>
+              <AppRegistrationIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Workloads')} />
+          </StyledMenuItem>
+          <StyledMenuItem
             to={`/teams/${teamId}/services`}
             selected={pathname.indexOf(`/teams/${teamId}/services`) === 0}
             data-cy='menu-item-team-services'
@@ -462,6 +479,18 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <CloudDownloadIcon />
             </ListItemIcon>
             <ListItemText primary={t('Download KUBECFG')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            className={mainClasses.selectable}
+            component={MuiLink}
+            aria-label={t('Download DOCKERCFG')}
+            href={`/api/v1/dockerconfig/${oboTeamId}`}
+            disabled={!canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor}
+          >
+            <ListItemIcon>
+              <CloudDownloadIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Download DOCKERCFG')} />
           </StyledMenuItem>
           {ca && (
             <StyledMenuItem

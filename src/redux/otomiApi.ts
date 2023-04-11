@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getK8SAllServices: build.query<GetK8SAllServicesApiResponse, GetK8SAllServicesApiArg>({
+      query: () => ({ url: `/kubernetes/services` }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -36,6 +39,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     createService: build.mutation<CreateServiceApiResponse, CreateServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
+    }),
+    getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getJob: build.query<GetJobApiResponse, GetJobApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}` }),
@@ -82,6 +88,38 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
+      query: () => ({ url: `/workloads` }),
+    }),
+    getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
+    }),
+    createWorkload: build.mutation<CreateWorkloadApiResponse, CreateWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteWorkload: build.mutation<DeleteWorkloadApiResponse, DeleteWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`, method: 'DELETE' }),
+    }),
+    getWorkload: build.query<GetWorkloadApiResponse, GetWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}` }),
+    }),
+    editWorkload: build.mutation<EditWorkloadApiResponse, EditWorkloadApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getWorkloadValues: build.query<GetWorkloadValuesApiResponse, GetWorkloadValuesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values` }),
+    }),
+    editWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     deploy: build.query<DeployApiResponse, DeployApiArg>({
       query: () => ({ url: `/deploy` }),
     }),
@@ -93,6 +131,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
+    }),
+    downloadDockerConfig: build.query<DownloadDockerConfigApiResponse, DownloadDockerConfigApiArg>({
+      query: (queryArg) => ({ url: `/dockerconfig/${queryArg.teamId}` }),
     }),
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/session` }),
@@ -122,6 +163,11 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type GetK8SAllServicesApiResponse = /** status 200 Successfully obtained kuebrentes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetK8SAllServicesApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -336,7 +382,14 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -358,7 +411,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -414,13 +467,34 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }[]
@@ -472,13 +546,34 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -531,13 +626,34 @@ export type CreateTeamApiArg = {
       name: string
       value: string
     }[]
+    azureMonitor?:
+      | (
+          | (object | null)
+          | {
+              appInsightsApiKey?: string
+              appInsightsAppId?: string
+              azureLogAnalyticsSameAs?: boolean
+              clientId: string
+              clientSecret: string
+              logAnalyticsClientId?: string
+              logAnalyticsClientSecret?: string
+              logAnalyticsTenantId?: string
+              logAnalyticsDefaultWorkspace?: string
+              subscriptionId?: string
+              tenantId?: string
+            }
+        )
+      | null
+    monitoringStack?: {
+      enabled?: boolean
+    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -589,17 +705,35 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
-  }
-  monitoringStack?: {
-    enabled?: boolean
   }
 }
 export type GetTeamApiArg = {
@@ -653,13 +787,34 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     name: string
     value: string
   }[]
+  azureMonitor?:
+    | (
+        | (object | null)
+        | {
+            appInsightsApiKey?: string
+            appInsightsAppId?: string
+            azureLogAnalyticsSameAs?: boolean
+            clientId: string
+            clientSecret: string
+            logAnalyticsClientId?: string
+            logAnalyticsClientSecret?: string
+            logAnalyticsTenantId?: string
+            logAnalyticsDefaultWorkspace?: string
+            subscriptionId?: string
+            tenantId?: string
+          }
+      )
+    | null
+  monitoringStack?: {
+    enabled?: boolean
+  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -714,13 +869,34 @@ export type EditTeamApiArg = {
       name: string
       value: string
     }[]
+    azureMonitor?:
+      | (
+          | (object | null)
+          | {
+              appInsightsApiKey?: string
+              appInsightsAppId?: string
+              azureLogAnalyticsSameAs?: boolean
+              clientId: string
+              clientSecret: string
+              logAnalyticsClientId?: string
+              logAnalyticsClientSecret?: string
+              logAnalyticsTenantId?: string
+              logAnalyticsDefaultWorkspace?: string
+              subscriptionId?: string
+              tenantId?: string
+            }
+        )
+      | null
+    monitoringStack?: {
+      enabled?: boolean
+    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'networkPolicy')[]
+      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -1156,7 +1332,14 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1178,7 +1361,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1271,7 +1454,14 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1293,7 +1483,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1386,7 +1576,14 @@ export type CreateServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
-              ownHost?: boolean
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
             } & {
               type?: 'public'
             })
@@ -1408,7 +1605,7 @@ export type CreateServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1416,6 +1613,14 @@ export type CreateServiceApiArg = {
       }[]
     }
   }
+}
+export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetTeamK8SServicesApiArg = {
+  /** ID of team to return */
+  teamId: string
 }
 export type GetJobApiResponse = /** status 200 Successfully obtained job configuration */ {
   id?: string
@@ -1854,7 +2059,14 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1876,7 +2088,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -1971,7 +2183,14 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             certSelect?: boolean
             certName?: string
             certArn?: string
-            ownHost?: boolean
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
           } & {
             type?: 'public'
           })
@@ -1993,7 +2212,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           mode: 'AllowAll'
         }
     egressPublic?: {
-      domain?: string
+      domain: string
       ports?: {
         number: number
         protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2088,7 +2307,14 @@ export type EditServiceApiArg = {
               certSelect?: boolean
               certName?: string
               certArn?: string
-              ownHost?: boolean
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
             } & {
               type?: 'public'
             })
@@ -2110,7 +2336,7 @@ export type EditServiceApiArg = {
             mode: 'AllowAll'
           }
       egressPublic?: {
-        domain?: string
+        domain: string
         ports?: {
           number: number
           protocol: 'HTTPS' | 'HTTP' | 'TCP'
@@ -2269,6 +2495,130 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}[]
+export type GetAllWorkloadsApiArg = void
+export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}[]
+export type GetTeamWorkloadsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateWorkloadApiResponse = /** status 200 Successfully stored workload configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type CreateWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Workload object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+  }
+}
+export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
+export type DeleteWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type GetWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type GetWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type EditWorkloadApiResponse = /** status 200 Successfully edited a team secret */ {
+  id?: string
+  teamId?: string
+  name: string
+  url: string
+  path?: string
+  chart?: string
+  revision?: string
+}
+export type EditWorkloadApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+  /** Workload object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+  }
+}
+export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
+  id?: string
+  teamId?: string
+  name?: string
+  values: object
+}
+export type GetWorkloadValuesApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+}
+export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited a team secret */ {
+  id?: string
+  teamId?: string
+  name?: string
+  values: object
+}
+export type EditWorkloadValuesApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+  /** Workload values */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: object
+  }
+}
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
 export type DeployApiArg = void
 export type RevertApiResponse = unknown
@@ -2277,6 +2627,11 @@ export type RestoreApiResponse = unknown
 export type RestoreApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type DownloadDockerConfigApiResponse = /** status 200 Succesfully finished the download */ Blob
+export type DownloadDockerConfigApiArg = {
   /** ID of team to return */
   teamId: string
 }
@@ -2351,7 +2706,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+    k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -2359,12 +2714,49 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sContext?: string
   }
   backup?: {
-    platformSchedule?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
+    platform?: {
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      drone?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      harbor?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      vault?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      argo?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      kubeapps?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      minio?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
     }
-    teamSchedule?: {
+    teams?: {
       enabled?: boolean
       ttl?: string
       schedule?: string
@@ -2571,8 +2963,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
     }[]
     globalPullSecret?: {
-      username: string
-      password: string
+      username?: string
+      password?: string
       email?: string
       server?: string
     } | null
@@ -2736,7 +3128,7 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.19' | '1.20' | '1.21' | '1.22' | '1.23'
+      k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -2744,12 +3136,49 @@ export type EditSettingsApiArg = {
       k8sContext?: string
     }
     backup?: {
-      platformSchedule?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
+      platform?: {
+        gitea?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        drone?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        keycloak?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        harbor?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        vault?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        argo?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        kubeapps?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        minio?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
       }
-      teamSchedule?: {
+      teams?: {
         enabled?: boolean
         ttl?: string
         schedule?: string
@@ -2956,8 +3385,8 @@ export type EditSettingsApiArg = {
         provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
       }[]
       globalPullSecret?: {
-        username: string
-        password: string
+        username?: string
+        password?: string
         email?: string
         server?: string
       } | null
@@ -3127,6 +3556,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useGetK8SAllServicesQuery,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
@@ -3139,6 +3569,7 @@ export const {
   useCreateJobMutation,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
+  useGetTeamK8SServicesQuery,
   useGetJobQuery,
   useEditJobMutation,
   useDeleteJobMutation,
@@ -3150,10 +3581,19 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllWorkloadsQuery,
+  useGetTeamWorkloadsQuery,
+  useCreateWorkloadMutation,
+  useDeleteWorkloadMutation,
+  useGetWorkloadQuery,
+  useEditWorkloadMutation,
+  useGetWorkloadValuesQuery,
+  useEditWorkloadValuesMutation,
   useDeployQuery,
   useRevertQuery,
   useRestoreQuery,
   useDownloadKubecfgQuery,
+  useDownloadDockerConfigQuery,
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsQuery,
