@@ -1,9 +1,6 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getK8SAllServices: build.query<GetK8SAllServicesApiResponse, GetK8SAllServicesApiArg>({
-      query: () => ({ url: `/kubernetes/services` }),
-    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -163,11 +160,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type GetK8SAllServicesApiResponse = /** status 200 Successfully obtained kuebrentes services */ {
-  name: string
-  ports?: number[]
-}[]
-export type GetK8SAllServicesApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -2503,6 +2495,7 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }[]
 export type GetAllWorkloadsApiArg = void
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
@@ -2513,6 +2506,7 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -2526,6 +2520,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -2539,6 +2534,7 @@ export type CreateWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    namespace?: string
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -2556,6 +2552,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -2571,6 +2568,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -2586,6 +2584,7 @@ export type EditWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    namespace?: string
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
@@ -3556,7 +3555,6 @@ export type EditAppApiArg = {
   }
 }
 export const {
-  useGetK8SAllServicesQuery,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
