@@ -23,7 +23,6 @@ export const getTeamSchema = (
   else if (!appsEnabled.grafana || !otomi.isMultitenant)
     set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
-  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   if (!otomi.isMultitenant) set(schema, 'properties.monitoringStack.title', 'Private Team monitoring (disabled)')
   return schema
 }

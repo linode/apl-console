@@ -55,7 +55,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
+  if (!appsEnabled.kpack) return <p>Admin needs to enable the Kpack app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
 }
