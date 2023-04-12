@@ -2522,7 +2522,7 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   id?: string
   teamId?: string
   name: string
-  tag: string
+  tag?: string
   repoUrl: string
   path?: string
   revision?: string
@@ -2532,8 +2532,12 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   id?: string
   teamId?: string
   name: string
-  tag: string
+  tag?: string
+  otomiGit?: boolean
+  privateGit?: boolean
   repoUrl: string
+  repoUserName?: string
+  repoPassword?: string
   path?: string
   revision?: string
 }[]
@@ -2545,8 +2549,12 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored workload
   id?: string
   teamId?: string
   name: string
-  tag: string
+  tag?: string
+  otomiGit?: boolean
+  privateGit?: boolean
   repoUrl: string
+  repoUserName?: string
+  repoPassword?: string
   path?: string
   revision?: string
 }
@@ -2558,8 +2566,12 @@ export type CreateBuildApiArg = {
     id?: string
     teamId?: string
     name: string
-    tag: string
+    tag?: string
+    otomiGit?: boolean
+    privateGit?: boolean
     repoUrl: string
+    repoUserName?: string
+    repoPassword?: string
     path?: string
     revision?: string
   }
@@ -2575,9 +2587,13 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained workload 
   id?: string
   teamId?: string
   name: string
-  url: string
+  tag?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUrl: string
+  repoUserName?: string
+  repoPassword?: string
   path?: string
-  chart?: string
   revision?: string
 }
 export type GetBuildApiArg = {
@@ -2590,9 +2606,13 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team sec
   id?: string
   teamId?: string
   name: string
-  url: string
+  tag?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUrl: string
+  repoUserName?: string
+  repoPassword?: string
   path?: string
-  chart?: string
   revision?: string
 }
 export type EditBuildApiArg = {
@@ -2605,9 +2625,13 @@ export type EditBuildApiArg = {
     id?: string
     teamId?: string
     name: string
-    url: string
+    tag?: string
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUrl: string
+    repoUserName?: string
+    repoPassword?: string
     path?: string
-    chart?: string
     revision?: string
   }
 }
