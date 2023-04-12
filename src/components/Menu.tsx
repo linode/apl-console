@@ -5,6 +5,7 @@ import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
+import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -323,7 +324,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </StyledMenuItem>
           <StyledMenuItem to='/builds' selected={pathname === '/builds'} data-cy='menu-item-builds'>
             <ListItemIcon>
-              <AppRegistrationIcon />
+              <AddToDriveIcon />
             </ListItemIcon>
             <ListItemText primary={t('Builds')} />
           </StyledMenuItem>
@@ -427,7 +428,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             data-cy='menu-item-team-builds'
           >
             <ListItemIcon>
-              <AppRegistrationIcon />
+              <AddToDriveIcon />
             </ListItemIcon>
             <ListItemText primary={t('builds')} />
           </StyledMenuItem>
