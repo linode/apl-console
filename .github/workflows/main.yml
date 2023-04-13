@@ -39,6 +39,8 @@ jobs:
         uses: actions/checkout@v2
       - name: CI tests, image build and push tag for main or branch
         uses: whoan/docker-build-with-cache-action@v5
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
         with:
           username: redkubesbot
           password: '${{ secrets.NPM_TOKEN }}'
