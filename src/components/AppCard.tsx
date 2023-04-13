@@ -143,6 +143,7 @@ export default function ({
           id={id}
           teamId={teamId}
           enabled={enabled}
+          externalUrl={externalUrl}
           setAppState={setAppState}
           toggleApp={toggleApp}
           appTitle={title}

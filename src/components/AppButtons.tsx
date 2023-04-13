@@ -16,6 +16,7 @@ interface Props extends GetAppApiResponse {
   toggleApp?: any
   appTitle?: string
   isHostedByOtomi?: boolean
+  externalUrl?: string
 }
 export default function ({
   id,
@@ -27,6 +28,7 @@ export default function ({
   toggleApp,
   appTitle,
   isHostedByOtomi,
+  externalUrl,
 }: Props): React.ReactElement {
   const session = useAuthzSession()
 
@@ -66,6 +68,17 @@ export default function ({
             />
           </IconButton>
         ))}
+
+      {enabled && externalUrl && (
+        <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank'>
+          <Iconify
+            icon='ri:share-forward-fill'
+            sx={{
+              color: 'white',
+            }}
+          />
+        </IconButton>
+      )}
 
       <IconButton component={RLink} to={`/apps/${teamId}/${id}`} title={t('Click to edit settings')}>
         <SettingsIcon
