@@ -25,6 +25,7 @@ export default function ({
   useEffect(() => {
     if (appIds) {
       setAppState([])
+      console.log('halo reach apps toggle', appIds, appEnabled)
       toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     }
     if (okToggle) {

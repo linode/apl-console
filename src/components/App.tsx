@@ -32,9 +32,8 @@ import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
 import { extract, getAppSchemaName, isOf } from 'utils/schema'
 import YAML from 'yaml'
-import AppButtons from './AppButtons'
 import CodeEditor from './CodeEditor'
-import Header from './Header'
+import HeaderTitle from './HeaderTitle'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
@@ -300,17 +299,6 @@ export default function ({
             {appInfo.title}
           </Typography>
         </Box>
-
-        <Box className={classes.headerButtons}>
-          <AppButtons
-            setAppState={setAppState}
-            id={id}
-            teamId={teamId}
-            enabled={enabled !== false}
-            hideSettings
-            hideEnabled={false}
-          />
-        </Box>
       </Box>
       <AppBar position='relative' color='primary'>
         <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
@@ -391,19 +379,19 @@ export default function ({
           </Grid>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
-              <Header
+              <HeaderTitle
                 title={t('FORM_ABOUT', { title: appInfo.title })}
                 description={appInfo.about}
                 resourceType='App'
               />
-              <Header title={t('FORM_HEAD_ABOUT', { title: appInfo.title })} resourceType='App' />
+              <HeaderTitle title={t('FORM_HEAD_ABOUT', { title: appInfo.title })} resourceType='App' />
               <Markdown>{appInfo.integration || `No info defined yet for ${appInfo.title}`}</Markdown>
             </Box>
           </Grid>
         </Grid>
       </TabPanel>
       <TabPanel value={tab} index={hashMap.shortcuts}>
-        <Header
+        <HeaderTitle
           title={t('Shortcuts')}
           description={t('FORM_SHORTCUTS_DESC', { title: appInfo.title })}
           resourceType='Shortcut'
@@ -476,7 +464,7 @@ export default function ({
         )}
       </TabPanel>
       <TabPanel value={tab} index={hashMap.rawvalues}>
-        <Header title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
+        <HeaderTitle title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
         <div className={classes.buffer}> </div>
         <CodeEditor
           code={yaml}

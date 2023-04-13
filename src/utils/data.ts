@@ -2,7 +2,6 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
 import { getSpec } from 'common/api-spec'
-import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
@@ -147,9 +146,9 @@ export const getAppData = (
   const spec = getSpec()
   const modelName = getAppSchemaName(appId)
   const schema = spec.components.schemas[modelName] ? (spec.components.schemas[modelName] as JSONSchema7) : {}
-  const mode = getThemeMode()
-  const logoSuffix = mode === 'light' ? '' : '-dark'
-  const logoAltSuffix = mode === 'light' ? '-dark' : ''
+  // const mode = getThemeMode()
+  const logoSuffix = ''
+  const logoAltSuffix = ''
   return {
     ...coreApp,
     ...app,
