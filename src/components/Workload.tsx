@@ -16,6 +16,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
+    namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')

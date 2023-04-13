@@ -4,6 +4,9 @@ const injectedRtkApi = api.injectEndpoints({
     activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
       query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
     }),
+    getK8SAllServices: build.query<GetK8SAllServicesApiResponse, GetK8SAllServicesApiArg>({
+      query: () => ({ url: `/kubernetes/services` }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -39,6 +42,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     createService: build.mutation<CreateServiceApiResponse, CreateServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
+    }),
+    getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getJob: build.query<GetJobApiResponse, GetJobApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}` }),
@@ -181,6 +187,11 @@ export type ActivateLicenseApiArg = {
     jwt: string
   }
 }
+export type GetK8SAllServicesApiResponse = /** status 200 Successfully obtained kuebrentes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetK8SAllServicesApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -1626,6 +1637,14 @@ export type CreateServiceApiArg = {
       }[]
     }
   }
+}
+export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
+  name: string
+  ports?: number[]
+}[]
+export type GetTeamK8SServicesApiArg = {
+  /** ID of team to return */
+  teamId: string
 }
 export type GetJobApiResponse = /** status 200 Successfully obtained job configuration */ {
   id?: string
@@ -3577,6 +3596,7 @@ export type EditAppApiArg = {
 }
 export const {
   useActivateLicenseMutation,
+  useGetK8SAllServicesQuery,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
@@ -3589,6 +3609,7 @@ export const {
   useCreateJobMutation,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
+  useGetTeamK8SServicesQuery,
   useGetJobQuery,
   useEditJobMutation,
   useDeleteJobMutation,

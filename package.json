@@ -144,6 +144,7 @@
     "lint": "run-p types lint:ts",
     "prepare": "husky install",
     "release": "standard-version",
+    "release:bump:minor": "standard-version --skip.changelog true --release-as minor",
     "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
     "start": "dotenv -e .env react-scripts start --no-cache",
@@ -160,5 +161,5 @@
       "tag": true
     }
   },
-  "version": "0.6.0"
+  "version": "0.7.0"
 }

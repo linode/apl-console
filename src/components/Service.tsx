@@ -9,6 +9,7 @@ import {
   GetServiceApiResponse,
   GetSessionApiResponse,
   GetSettingsApiResponse,
+  GetTeamK8SServicesApiResponse,
 } from 'redux/otomiApi'
 import { getStrict } from 'utils/schema'
 import Form from './rjsf/Form'
@@ -42,16 +43,35 @@ export const addDomainEnumField = (
   else if (!ing.domain) ing.domain = zones[0]
 }
 
+export const addServiceNameEnumField = (
+  schema: JSONSchema7,
+  k8sServices: GetTeamK8SServicesApiResponse,
+  formData: GetServiceApiResponse,
+): void => {
+  const k8sService = k8sServices.filter((item) => item.name === formData?.name)
+  if (k8sService.length === 0 && formData?.name) return
+
+  const k8sServiceNames = k8sServices.map((item) => item.name)
+  set(schema, 'properties.name.enum', k8sServiceNames)
+  if (formData && formData?.name) {
+    set(schema, 'properties.port.enum', k8sService[0].ports)
+    unset(schema, 'properties.port.default')
+  }
+}
+
 export const getServiceSchema = (
   appsEnabled: Record<string, any>,
   settings: GetSettingsApiResponse,
   formData: GetServiceApiResponse,
   teamId,
   secrets: Array<any>,
+  k8sServices: GetTeamK8SServicesApiResponse,
 ): any => {
   const { cluster } = settings
   const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
   const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
+  // FIXME: add support for admin services
+  if (teamId !== 'admin') addServiceNameEnumField(schema, k8sServices, formData)
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
@@ -134,6 +154,7 @@ export const getServiceUiSchema = (
 
 interface Props extends CrudProps {
   service?: GetServiceApiResponse
+  k8sServices?: GetTeamK8SServicesApiResponse
   secrets: GetSecretsApiResponse
   teamId: string
 }
@@ -143,7 +164,7 @@ function getSubdomain(serviceName: string | undefined, teamId): string {
   return `${serviceName}.team-${teamId}`
 }
 
-export default function ({ service, secrets, teamId, ...other }: Props): React.ReactElement {
+export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
   const [data, setData] = useState<GetServiceApiResponse>(service)
   useEffect(() => {
@@ -179,7 +200,7 @@ export default function ({ service, secrets, teamId, ...other }: Props): React.R
     }
   }
   // pass to the schema getters that manipulate the schemas based on form data
-  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets)
+  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
