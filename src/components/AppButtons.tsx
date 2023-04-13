@@ -53,21 +53,20 @@ export default function ({
         paddingBottom: '10px',
       }}
     >
-      {!isHostedByOtomi ||
-        (!enabled && (
-          <IconButton
-            onClick={() => {
-              handleAppsToggle()
+      {!isHostedByOtomi && !enabled && (
+        <IconButton
+          onClick={() => {
+            handleAppsToggle()
+          }}
+        >
+          <Iconify
+            icon='material-symbols:mode-off-on'
+            sx={{
+              color: 'white',
             }}
-          >
-            <Iconify
-              icon='material-symbols:mode-off-on'
-              sx={{
-                color: 'white',
-              }}
-            />
-          </IconButton>
-        ))}
+          />
+        </IconButton>
+      )}
 
       {enabled && externalUrl && (
         <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank'>

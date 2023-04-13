@@ -66,7 +66,7 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
         {/* <NavbarAccount isCollapse={isCollapse} /> */}
       </Stack>
 
-      <SidebarContent navConfig={navConfig} isCollapse={isCollapse} />
+      <SidebarContent navConfig={navConfig()} isCollapse={isCollapse} />
       {/* <Menu teamId={oboTeamId} /> */}
       {/* <NavSectionVertical navConfig={navConfig} isCollapse={isCollapse} /> */}
 
