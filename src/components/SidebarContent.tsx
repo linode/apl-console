@@ -42,9 +42,11 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
               {group.subheader}
             </ListSubheaderStyle>
           )}
-          {group.items.map((list) => (
-            <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
-          ))}
+          {group.items.map((list) => {
+            if (oboTeamId === 'admin' && list.dontShowIfAdminTeam) return null
+
+            return <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
+          })}
         </List>
       ))}
     </Box>

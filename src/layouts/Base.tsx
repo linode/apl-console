@@ -82,7 +82,7 @@ export default function ({ children, title }: Props): React.ReactElement {
           <Header />
         </Toolbar>
       </AppBar> */}
-      <Header isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} verticalLayout />
+      <Header isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
       <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
       <MainStyle collapseClick={collapseClick}>
         <ErrorBoundary FallbackComponent={ErrorComponent}>{children}</ErrorBoundary>

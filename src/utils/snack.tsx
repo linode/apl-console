@@ -15,6 +15,7 @@ import Linkify from 'react-linkify'
 import Iconify from 'components/Iconify'
 import { ColorSchema } from 'theme/palette'
 import { IconButtonAnimate } from 'components/animate'
+import { HEADER } from 'config'
 
 function SnackbarStyles() {
   const theme = useTheme()
@@ -75,6 +76,7 @@ export function NotistackProvider({ children }: SnackbarProviderProps): React.Re
         maxSnack={5}
         autoHideDuration={4000}
         preventDuplicate
+        style={{ marginTop: HEADER.MAIN_DESKTOP_HEIGHT }}
         iconVariant={{
           info: <SnackbarIcon icon='eva:info-fill' color='info' />,
           success: <SnackbarIcon icon='eva:checkmark-circle-2-fill' color='success' />,

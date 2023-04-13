@@ -19,7 +19,7 @@ export default function NavConfig() {
       ],
     },
     {
-      subheader: 'admin',
+      subheader: 'platform',
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
@@ -36,14 +36,24 @@ export default function NavConfig() {
       ],
     },
     {
-      subheader: 'team',
+      subheader: `${oboTeamId}`,
       items: [
-        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg') },
-        { title: 'Shortcuts', path: `/shortcuts/${oboTeamId}`, icon: getIcon('shortcuts_icon.svg') },
+        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
+        {
+          title: 'Shortcuts',
+          path: `/shortcuts/${oboTeamId}`,
+          icon: getIcon('shortcuts_icon.svg'),
+          dontShowIfAdminTeam: true,
+        },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
-        { title: 'Settings', path: `/teams/${oboTeamId}`, icon: getIcon('settings_icon.svg') },
+        {
+          title: 'Settings',
+          path: `/teams/${oboTeamId}`,
+          icon: getIcon('settings_icon.svg'),
+          dontShowIfAdminTeam: true,
+        },
       ],
     },
   ]
