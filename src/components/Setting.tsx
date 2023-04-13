@@ -79,6 +79,9 @@ export const getSettingUiSchema = (
       // TODO: check out why we need this:
       name: { 'ui:autofocus': true }, // hack to bypass losing focus when typing in this field
     },
+    otomi: {
+      isMultitenant: { 'ui:widget': 'hidden' },
+    },
     kms: {
       sops: {
         provider: { 'ui:widget': 'hidden' },
