@@ -55,7 +55,8 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.kpack) return <p>Admin needs to enable the Kpack app to activate this feature.</p>
+  if (!appsEnabled.kpack || !appsEnabled.harbor)
+    return <p>Admin needs to enable the Kpack and Harbor apps to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
 }
