@@ -6,6 +6,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
 import { extract, isOf } from 'utils/schema'
+import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
@@ -126,9 +127,23 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   const [setting, setSetting]: any = useState<GetSettingsApiResponse>(data)
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
+  const [disabledMessage, setDisabledMessage] = useState('')
   useEffect(() => {
     onChangeHandler(data)
   }, [data])
+
+  useEffect(() => {
+    if (settingId) {
+      if (!appsEnabled.alertmanager && settingId === 'alerts')
+        setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
+
+      if (!appsEnabled.alertmanager && settingId === 'home')
+        setDisabledMessage('Please enable Alertmanager to activate Co-monitoring')
+
+      if (!appsEnabled.velero && settingId === 'backup') setDisabledMessage('Please enable Velero to activate Backups')
+    }
+  }, [settingId])
+
   // END HOOKS
   const onChangeHandler = (data) => {
     setSetting(data)
@@ -138,16 +153,21 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
     setUiSchema(uiSchema)
   }
   return (
-    <Form
-      key={settingId}
-      schema={schema}
-      uiSchema={uiSchema}
-      data={setting}
-      resourceType='Settings'
-      onChange={onChangeHandler}
-      idProp={null}
-      adminOnly
-      {...other}
-    />
+    <>
+      {disabledMessage && <InformationBanner message={disabledMessage} />}
+
+      <Form
+        key={settingId}
+        schema={schema}
+        uiSchema={uiSchema}
+        data={setting}
+        disabled={!!disabledMessage}
+        resourceType='Settings'
+        onChange={onChangeHandler}
+        idProp={null}
+        adminOnly
+        {...other}
+      />
+    </>
   )
 }
