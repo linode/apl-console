@@ -104,10 +104,7 @@ export const getAppData = (
 ): Record<string, any> => {
   const {
     core: { appsInfo },
-    settings: {
-      cluster,
-      otomi: { isMultitenant },
-    },
+    settings: { cluster },
   }: any = session
   let appId = appOrId
   let ownShortcuts = []
@@ -140,7 +137,7 @@ export const getAppData = (
   const baseUrl = useHost
     ? getAppData(session, teamId, useHost).baseUrl
     : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+        !(isShared || teamId === 'admin') ? `.team-${teamId}` : ''
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
