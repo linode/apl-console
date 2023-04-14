@@ -145,8 +145,6 @@ export const getServiceUiSchema = (
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
   // So we remove the item from the schema instead (see getServiceSchema above)
-  // if (!appsEnabled.alertmanager || !otomi.isMultitenant) uiSchema.ksvc = { 'ui:enumDisabled': [1, 2] }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'service')
 
   return uiSchema
