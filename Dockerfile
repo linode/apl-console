@@ -20,6 +20,7 @@ RUN npm ci
 FROM dev as ci
 
 ENV NODE_ENV=test
+ENV NODE_OPTIONS=--max-old-space-size=4096
 
 COPY ts*.json .es* .prettier*  ./
 COPY src src
