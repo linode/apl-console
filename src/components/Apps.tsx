@@ -61,21 +61,29 @@ function getComparator<Key extends keyof any>(
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
+// function sortArray(a, b) {
+//   // Treat undefined as true
+//   const aEnabled = a.enabled === undefined ? true : a.enabled
+//   const bEnabled = b.enabled === undefined ? true : b.enabled
+
+//   // Sort by "enabled" first, then by "id"
+//   if (aEnabled === bEnabled) {
+//     if (a.id < b.id) return -1
+//     if (a.id > b.id) return 1
+//     return 0
+//   }
+
+//   // Sort disabled apps first, then enabled apps
+//   if (!aEnabled) return -1
+//   return 1
+// }
+
 function sortArray(a, b) {
   // Treat undefined as true
-  const aEnabled = a.enabled === undefined ? true : a.enabled
-  const bEnabled = b.enabled === undefined ? true : b.enabled
+  if (a.id < b.id) return -1
+  if (a.id > b.id) return 1
 
-  // Sort by "enabled" first, then by "id"
-  if (aEnabled === bEnabled) {
-    if (a.id < b.id) return -1
-    if (a.id > b.id) return 1
-    return 0
-  }
-
-  // Sort disabled apps first, then enabled apps
-  if (!aEnabled) return -1
-  return 1
+  return 0
 }
 
 // ---- JSX -------------------------------------------------------------
@@ -173,8 +181,9 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     </div>
   ) : (
     <div className={cx(classes.root)}>
+      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(enabledApps)}
+        {out(dataFiltered.filter((app) => app.enabled === true).sort(sortArray))}
       </Grid>
     </div>
   )
