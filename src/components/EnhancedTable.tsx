@@ -1,10 +1,9 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
-import DeleteIcon from '@mui/icons-material/Delete'
 import {
+  Box,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Paper,
   Switch,
   Table,
@@ -15,9 +14,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Toolbar,
-  Tooltip,
-  Typography,
   lighten,
 } from '@mui/material'
 import { sentenceCase } from 'utils/data'
@@ -25,6 +21,7 @@ import { useLocalStorage } from 'hooks/useLocalStorage'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
+import TableToolbar from './TableToolbar'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (get(b, orderBy) < get(a, orderBy)) return -1
@@ -172,32 +169,6 @@ interface EnhancedTableToolbarProps {
   numSelected: number
 }
 
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  const { classes, cx } = useToolbarStyles()
-  const { numSelected } = props
-
-  return (
-    <Toolbar
-      className={cx(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}
-    >
-      {numSelected > 0 && (
-        <Typography className={classes.title} color='inherit' variant='subtitle1' component='div'>
-          {numSelected} selected
-        </Typography>
-      )}
-      {numSelected > 0 && (
-        <Tooltip title='Delete'>
-          <IconButton aria-label='delete'>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  )
-}
-
 export interface EnhancedTableProps {
   disableSelect?: boolean
   orderByStart?: string
@@ -207,7 +178,7 @@ export interface EnhancedTableProps {
 }
 
 // eslint-disable-next-line react/prop-types
-export default function ({
+export default function EnhancedTable({
   disableSelect,
   orderByStart = 'name',
   headCells,
@@ -219,6 +190,7 @@ export default function ({
   const [orderBy, setOrderBy] = useLocalStorage<string>('EnhancedTable:orderByStart', orderByStart)
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
+  const [filterName, setFilterName] = useState('')
   const [dense, setDense] = useLocalStorage('EnhancedTable:dense', false)
   const [rowsPerPage, setRowsPerPage] = useLocalStorage('EnhancedTable:rowsPerPage', 10)
 
@@ -266,16 +238,26 @@ export default function ({
 
   const isSelected = (name: string) => selected.includes(name)
 
+  const handleFilterName = (filterName: string) => {
+    setFilterName(filterName)
+    setPage(0)
+  }
+
+  const dataFiltered = applySortFilter({
+    tableData: rows,
+    comparator: getComparator(order, orderBy),
+    filterName,
+  })
+
   // eslint-disable-next-line react/prop-types
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage)
 
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <TableToolbar filterName={filterName} onFilterName={handleFilterName} noPadding />
         <TableContainer>
           <Table
-            className={classes.table}
             aria-labelledby='tableTitle'
             size={dense ? 'small' : 'medium'}
             aria-label='enhanced table'
@@ -293,42 +275,39 @@ export default function ({
               headCells={headCells}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name as string)
-                  const labelId = `enhanced-table-checkbox-${index}`
-                  const key = `row-${typeof idKey === 'function' ? idKey(row) : row[idKey]}`
-                  return (
-                    <TableRow
-                      hover
-                      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-                      onClick={(event) => handleClick(event, row.name as string)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={key}
-                      selected={isItemSelected}
-                    >
-                      {!disableSelect && (
-                        <TableCell padding='checkbox' key='header-checkbox'>
-                          <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
-                        </TableCell>
-                      )}
-                      {headCells.map((c) => (
-                        <TableCell
-                          key={`cell-${c.id}`}
-                          align={c.numeric ? 'right' : 'left'}
-                          padding={c.disablePadding ? 'none' : 'normal'}
-                          sortDirection={orderBy === c.id ? order : false}
-                        >
-                          {c.renderer ? c.renderer(row) : row[c.id]}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  )
-                })}
+              {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => {
+                const isItemSelected = isSelected(row.name as string)
+                const labelId = `enhanced-table-checkbox-${index}`
+                const key = `row-${typeof idKey === 'function' ? idKey(row) : row[idKey]}`
+                return (
+                  <TableRow
+                    hover
+                    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+                    onClick={(event) => handleClick(event, row.name as string)}
+                    role='checkbox'
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={key}
+                    selected={isItemSelected}
+                  >
+                    {!disableSelect && (
+                      <TableCell padding='checkbox' key='header-checkbox'>
+                        <Checkbox checked={isItemSelected} inputProps={{ 'aria-labelledby': labelId }} />
+                      </TableCell>
+                    )}
+                    {headCells.map((c) => (
+                      <TableCell
+                        key={`cell-${c.id}`}
+                        align={c.numeric ? 'right' : 'left'}
+                        padding={c.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === c.id ? order : false}
+                      >
+                        {c.renderer ? c.renderer(row) : row[c.id]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                   <TableCell colSpan={6} />
@@ -337,17 +316,53 @@ export default function ({
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component='div'
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        <Box sx={{ position: 'relative' }}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component='div'
+            count={rows.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label='Dense padding'
+            sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
+          />
+        </Box>
       </Paper>
-      <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label='Dense padding' />
     </div>
   )
+}
+
+// ----------------------------------------------------------------------
+
+function applySortFilter({
+  tableData,
+  comparator,
+  filterName,
+}: {
+  tableData: any
+  comparator: (a: any, b: any) => number
+  filterName: string
+}) {
+  const stabilizedThis = tableData.map((el, index) => [el, index] as const)
+
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0])
+    if (order !== 0) return order
+    return a[1] - b[1]
+  })
+
+  tableData = stabilizedThis.map((el) => el[0])
+
+  if (filterName) {
+    tableData = tableData.filter(
+      (item: Record<string, any>) => item.name.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
+    )
+  }
+
+  return tableData
 }
