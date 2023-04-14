@@ -17,6 +17,7 @@ extends:
   - airbnb
   - plugin:prettier/recommended
   - prettier/react
+  - prettier
   # - prettier/@typescript-eslint
   - plugin:import/recommended
   - plugin:import/typescript
@@ -69,6 +70,7 @@ rules:
   import/default: off
   import/extensions: off
   import/no-extraneous-dependencies: off
+  import/prefer-default-export: off
   no-case-declarations: off
   no-debugger: warn
   no-fallthrough: warn
@@ -88,6 +90,7 @@ rules:
   react-hooks/exhaustive-deps: off
   react/jsx-filename-extension: off
   react/jsx-props-no-spreading: off
+  react/no-children-prop: off
   react/no-unused-prop-types: warn
   react/require-default-props: off
   react/react-in-jsx-scope: off

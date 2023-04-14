@@ -39,6 +39,7 @@ interface Props {
 
 export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
+    appsEnabled,
     oboTeamId,
     settings: { cluster },
     user: { isAdmin },
@@ -69,5 +70,8 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
       renderer: (row) => row.namespace || `team-${row.teamId}`,
     })
   }
+
+  if (!appsEnabled.vault) return <p>Admin needs to enable the Vault app to activate this feature.</p>
+
   return <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
 }

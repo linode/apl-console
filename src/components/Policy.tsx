@@ -1,9 +1,11 @@
 /* eslint-disable no-nested-ternary */
+import { Box, Typography } from '@mui/material'
 import { getSpec } from 'common/api-spec'
 import { cloneDeep, get } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
+import Iconify from './Iconify'
 import Form from './rjsf/Form'
 
 const getPolicySchema = (policyId): any => {
@@ -29,16 +31,34 @@ export default function ({ policies, policyId, ...other }: Props): React.ReactEl
   // END HOOKS
   const schema = getPolicySchema(policyId)
   return (
-    <Form
-      key={policyId}
-      schema={schema}
-      data={data}
-      onChange={setData}
-      disabled={!appsEnabled.gatekeeper}
-      resourceType='Policy'
-      idProp={null}
-      adminOnly
-      {...other}
-    />
+    <>
+      {!appsEnabled.gatekeeper && (
+        <Box
+          sx={{
+            backgroundColor: '#f2f2894d',
+            padding: '10px',
+            border: '1px solid #d4d402',
+            borderRadius: '8px',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <Iconify icon='material-symbols:info' width={40} height={28} color='#c7d030d9' />
+          <Typography>Please enable gatekeeper to activate policies</Typography>
+        </Box>
+      )}
+
+      <Form
+        key={policyId}
+        schema={schema}
+        data={data}
+        onChange={setData}
+        disabled={!appsEnabled.gatekeeper}
+        resourceType='Policy'
+        idProp={null}
+        adminOnly
+        {...other}
+      />
+    </>
   )
 }

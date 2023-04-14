@@ -39,8 +39,9 @@ const useStyles = makeStyles()((theme) => ({
   },
   card: {
     backgroundColor: theme.palette.primary.light,
-    color: theme.palette.primary.contrastText,
+    color: '#fff',
     boxShadow: 'none',
+    padding: '10px 20px',
   },
   cardSubHeader: {
     fontSize: 20,
@@ -53,10 +54,8 @@ const useStyles = makeStyles()((theme) => ({
     textTransform: 'capitalize',
   },
   iconBtn: {
-    color: theme.palette.primary.dark,
-    '&:hover': {
-      background: theme.palette.secondary.dark,
-    },
+    color: theme.palette.primary.main,
+    marginTop: '10px',
   },
   title: {
     paddingTop: 30,
@@ -91,11 +90,11 @@ interface DashboardCardProps {
 function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
   const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
   return (
-    <Grid item xs={12} sm={6} md={4} className={classes.grid}>
-      <Card classes={{ root: classes.card }}>
+    <Grid item xs={12} sm={6} md={4}>
+      <Card>
         <CardHeader
+          className={classes.card}
           data-cy={`card-${item.name}`}
-          classes={{ subheader: classes.cardSubHeader, action: classes.cardActionBtn, title: classes.cardHeaderTitle }}
           avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
           title={`${item.name}s`}
           subheader={
@@ -131,7 +130,7 @@ function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.Rea
   )
 }
 
-export default function ({ team, services, teams }: Props): React.ReactElement {
+export default function Dashboard({ team, services, teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     settings: {

@@ -1,7 +1,7 @@
 import { IChangeEvent, UiSchema, withTheme } from '@rjsf/core'
 import { Theme5 } from '@rjsf/material-ui'
 import ButtonGroup from 'components/ButtonGroup'
-import Header from 'components/Header'
+import HeaderTitle from 'components/HeaderTitle'
 import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import { CrudProps } from 'pages/types'
@@ -128,7 +128,7 @@ export default function ({
 
   return (
     <>
-      {!hideHelp && <Header title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
+      {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
         formData={state}
         key={`${resourceType}-${resourceName}`}

@@ -7,7 +7,7 @@ import { GetWorkloadValuesApiResponse } from 'redux/otomiApi'
 import YAML from 'yaml'
 import { makeStyles } from 'tss-react/mui'
 import CodeEditor from './CodeEditor'
-import Header from './Header'
+import HeaderTitle from './HeaderTitle'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -67,7 +67,7 @@ export default function ({ workloadValues, onSubmit, ...other }: Props): React.R
   }
   return (
     <>
-      <Header
+      <HeaderTitle
         title={t('WORKLOAD_VALUES_TITLE', { name: workloadValues.name, teamId: workloadValues.teamId })}
         description={t('WORKLOAD_VALUES_DESC')}
         resourceType='WorkloadValues'

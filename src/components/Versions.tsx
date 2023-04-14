@@ -43,8 +43,8 @@ export default function (): React.ReactElement {
     [t('Otomi Values')]: <LinkCommit domainSuffix={domainSuffix} sha={versions.values} color='primary' short />,
   }
   return (
-    <TableContainer>
-      <Table size='small' aria-label='simple table'>
+    <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
+      <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
         {map(clusterLegend, (v, title) => (
           <TableBody key={title}>
             <TableRow className={classes.tableRow}>

@@ -1,7 +1,7 @@
 import { setSpec } from 'common/api-spec'
 import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
-import Loader from 'components/Loader'
+import LoadingScreen from 'components/LoadingScreen'
 import MessageDrone from 'components/MessageDrone'
 import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -238,14 +238,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     })
   }, [lastDroneMessage])
   // END HOOKS
-  if (isLoadingSession) return <Loader />
+  if (isLoadingSession) return <LoadingScreen />
   // if an error occured we keep rendering and let the error component show what happened
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (!session.user.isAdmin && session.user.teams.length === 0)
     return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
-  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <Loader />
+  if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
   if (!isAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
@@ -254,7 +254,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     else if (!isAdmin) {
       if (teams.length) {
         setOboTeamId(teams[0])
-        return <Loader />
+        return <LoadingScreen />
       }
       return <ErrorComponent error={new ApiErrorUnauthorized()} />
     }
