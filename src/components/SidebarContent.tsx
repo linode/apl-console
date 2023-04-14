@@ -25,7 +25,7 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
   const { oboTeamId, user } = useSession()
   const { isAdmin } = user
 
-  if (!isAdmin) navConfig = navConfig.filter((group) => group.subheader !== 'admin')
+  if (!isAdmin) navConfig = navConfig.filter((group) => group.subheader !== 'platform')
 
   return (
     <Box {...other}>
