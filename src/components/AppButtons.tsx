@@ -1,4 +1,3 @@
-import { Settings as SettingsIcon } from '@mui/icons-material'
 import { ButtonGroup, IconButton } from '@mui/material'
 import useAuthzSession from 'hooks/useAuthzSession'
 import React from 'react'
@@ -7,6 +6,12 @@ import { Link as RLink } from 'react-router-dom'
 import { GetAppApiResponse } from 'redux/otomiApi'
 import { getAppData } from 'utils/data'
 import Iconify from './Iconify'
+
+// const useAppButtonStyles = makeStyles()((theme) => ({
+//   root: {
+//     color: theme.palette.
+//   }
+// }))
 
 interface Props extends GetAppApiResponse {
   teamId: string
@@ -59,32 +64,18 @@ export default function ({
             handleAppsToggle()
           }}
         >
-          <Iconify
-            icon='material-symbols:mode-off-on'
-            sx={{
-              color: 'white',
-            }}
-          />
+          <Iconify icon='material-symbols:mode-off-on' />
         </IconButton>
       )}
 
       {enabled && externalUrl && (
         <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank'>
-          <Iconify
-            icon='ri:share-forward-fill'
-            sx={{
-              color: 'white',
-            }}
-          />
+          <Iconify icon='ri:share-forward-fill' />
         </IconButton>
       )}
 
       <IconButton component={RLink} to={`/apps/${teamId}/${id}`} title={t('Click to edit settings')}>
-        <SettingsIcon
-          sx={{
-            color: 'white',
-          }}
-        />
+        <Iconify icon='material-symbols:settings' />
       </IconButton>
     </ButtonGroup>
   )

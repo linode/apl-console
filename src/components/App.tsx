@@ -300,8 +300,8 @@ export default function ({
           </Typography>
         </Box>
       </Box>
-      <AppBar position='relative' color='primary'>
-        <Tabs value={tab} onChange={handleTabChange} textColor='secondary' indicatorColor='secondary'>
+      <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
+        <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           <Tab href='#info' label='Info' value={hashMap.info} />
           <Tab
             href='#shortcuts'

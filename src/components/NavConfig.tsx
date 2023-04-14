@@ -1,5 +1,7 @@
+import generateDownloadLink from 'generate-download-link'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
+import canDo from 'utils/permission'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -8,7 +10,14 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const { oboTeamId } = useSession()
+  const { ca, appsEnabled, oboTeamId, user } = useSession()
+
+  const downloadOpts = {
+    data: ca ?? '',
+    title: 'Click to download the custom root CA used to generate the browser certs.',
+    filename: 'ca.crt',
+  }
+  const anchor = ca ? generateDownloadLink(downloadOpts) : ''
 
   return [
     {
@@ -36,7 +45,7 @@ export default function NavConfig() {
       ],
     },
     {
-      subheader: `${oboTeamId}`,
+      subheader: `Team ${oboTeamId}`,
       items: [
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
         {
@@ -53,6 +62,24 @@ export default function NavConfig() {
           path: `/teams/${oboTeamId}`,
           icon: getIcon('settings_icon.svg'),
           dontShowIfAdminTeam: true,
+        },
+        {
+          title: 'Download KUBECFG',
+          path: `/api/v1/kubecfg/${oboTeamId}`,
+          icon: getIcon('download_icon.svg'),
+          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig'),
+        },
+        {
+          title: 'Download DOCKERCFG',
+          path: `/api/v1/dockerconfig/${oboTeamId}`,
+          icon: getIcon('download_icon.svg'),
+          disabled: !canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor,
+        },
+        {
+          title: 'Download CA',
+          path: `${anchor}`,
+          icon: getIcon('download_icon.svg'),
+          disabled: !ca,
         },
       ],
     },

@@ -44,7 +44,7 @@ export default function (): React.ReactElement {
   }
   return (
     <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
-      <Table size='small' aria-label='simple table' sx={{ display: 'flex' }}>
+      <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
         {map(clusterLegend, (v, title) => (
           <TableBody key={title}>
             <TableRow className={classes.tableRow}>
