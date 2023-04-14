@@ -191,7 +191,6 @@ function applySortFilter({
   comparator: (a: any, b: any) => number
   filterName: string
 }) {
-  console.log('tableData', tableData)
   const stabilizedThis = tableData.map((el, index) => [el, index] as const)
 
   stabilizedThis.sort((a, b) => {

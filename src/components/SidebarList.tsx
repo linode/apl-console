@@ -17,7 +17,7 @@ type NavListRootProps = {
 
 export function SidebarListRoot({ list, isCollapse }: NavListRootProps) {
   const { pathname } = useLocation()
-  //   console.log('active information', list.path, pathname)
+
   const active = pathname === list.path
 
   const [open, setOpen] = useState(active)

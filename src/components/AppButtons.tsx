@@ -41,7 +41,6 @@ export default function ({
   // END HOOKS
   const isAdminApps = teamId === 'admin'
   const handleAppsToggle = () => {
-    console.log('app data in button', id, enabled)
     const { deps } = getAppData(session, teamId, id)
     setAppState([[id], !enabled])
   }
