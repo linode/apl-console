@@ -5,7 +5,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import EnhancedTable, { EnhancedTableProps } from './EnhancedTable'
-import Header from './Header'
+import HeaderTitle from './HeaderTitle'
 
 interface ListTableProps extends EnhancedTableProps {
   teamId?: string
@@ -40,20 +40,28 @@ export default function ({
   const resourceTypeLow = resourceType.toLowerCase()
   return (
     <>
-      <Header title={inTitle || title} resourceType={resourceType} />
-      {(isAdmin || oboTeamId) && !noCrud && (
-        <Box mb={1}>
-          <Button
-            component={Link}
-            to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
-            startIcon={<AddCircleIcon />}
-            // disabled={!adminOnly && isAdmin && !oboTeamId}
-            data-cy={`button-create-${resourceType}`}
-          >
-            {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
-          </Button>
+      <Box sx={{ ml: 2, mr: 2 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ flexGrow: 1 }}>
+            <HeaderTitle title={inTitle || title} resourceType={resourceType} />
+          </Box>
+          {(isAdmin || oboTeamId) && !noCrud && (
+            <Box mb={1}>
+              <Button
+                variant='contained'
+                component={Link}
+                to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
+                startIcon={<AddCircleIcon />}
+                // disabled={!adminOnly && isAdmin && !oboTeamId}
+                data-cy={`button-create-${resourceType}`}
+              >
+                {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
+              </Button>
+            </Box>
+          )}
         </Box>
-      )}
+      </Box>
+
       <EnhancedTable disableSelect {...other} idKey={(o) => `${o[idKey]}-${o.teamId}-${o.title}`} />
     </>
   )

@@ -1,12 +1,11 @@
 import { MenuItem, Select } from '@mui/material'
-import { getThemeMode } from 'common/theme'
 import { availableLanguages } from 'i18n/i18n'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 
 const useStyles = makeStyles()((theme) => {
-  const isDark = getThemeMode() === 'dark'
+  const isDark = false
   const color = isDark ? theme.palette.secondary.contrastText : theme.palette.secondary.main
   const background = isDark ? theme.palette.primary.light : theme.palette.primary.dark
   return {

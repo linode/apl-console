@@ -20,8 +20,7 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
-  else if (!appsEnabled.grafana || !otomi.isMultitenant)
-    set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
+  else if (!appsEnabled.grafana) set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   if (!otomi.isMultitenant) set(schema, 'properties.monitoringStack.title', 'Private Team monitoring (disabled)')
@@ -45,13 +44,12 @@ export const getTeamUiSchema = (
       },
     },
   }
-  if (!appsEnabled.alertmanager || !otomi.isMultitenant) {
+  if (!appsEnabled.alertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
-  if (!appsEnabled.grafana || !otomi.isMultitenant) uiSchema.azureMonitor = { 'ui:disabled': true }
-  if (!otomi.isMultitenant) uiSchema.monitoringStack = { 'ui:disabled': true }
+  if (!appsEnabled.grafana) uiSchema.azureMonitor = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema

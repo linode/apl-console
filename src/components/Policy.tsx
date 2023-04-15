@@ -4,6 +4,7 @@ import { cloneDeep, get } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
+import InformationBanner from './InformationBanner'
 import Form from './rjsf/Form'
 
 const getPolicySchema = (policyId): any => {
@@ -29,16 +30,20 @@ export default function ({ policies, policyId, ...other }: Props): React.ReactEl
   // END HOOKS
   const schema = getPolicySchema(policyId)
   return (
-    <Form
-      key={policyId}
-      schema={schema}
-      data={data}
-      onChange={setData}
-      disabled={!appsEnabled.gatekeeper}
-      resourceType='Policy'
-      idProp={null}
-      adminOnly
-      {...other}
-    />
+    <>
+      {!appsEnabled.gatekeeper && <InformationBanner message='Please enable gatekeeper to activate policies' />}
+
+      <Form
+        key={policyId}
+        schema={schema}
+        data={data}
+        onChange={setData}
+        disabled={!appsEnabled.gatekeeper}
+        resourceType='Policy'
+        idProp={null}
+        adminOnly
+        {...other}
+      />
+    </>
   )
 }
