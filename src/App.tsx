@@ -84,7 +84,6 @@ function App() {
                                 <Route path='/clusters/:clusterId' component={Cluster} exact />
                                 <Route path='/clusters' component={Clusters} exact />
                                 <Route path='/create-team' component={Team} exact />
-                                <Route path='/jobs' component={Jobs} exact />
                                 <Route path='/policies' component={Policies} exact />
                                 <Route path='/policies/:policyId' component={Policy} exact />
                                 <Route path='/services' component={Services} exact />
@@ -94,12 +93,9 @@ function App() {
                                 <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                                 <Route path='/teams' component={Teams} exact />
                                 <Route path='/teams/:teamId' component={Team} exact />
-                                <Route path='/teams/:teamId/create-job' component={Job} exact />
                                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                                 <Route path='/teams/:teamId/create-workload' component={Workload} exact />
-                                <Route path='/teams/:teamId/jobs' component={Jobs} exact />
-                                <Route path='/teams/:teamId/jobs/:jobId' component={Job} exact />
                                 <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                                 <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
                                 <Route path='/teams/:teamId/workloads' component={Workloads} exact />
