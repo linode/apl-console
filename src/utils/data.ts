@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
@@ -83,6 +84,27 @@ export const cleanDeep = (object, opts: CleanOptions = {}) => {
 export const cleanData = (obj: Record<string, unknown>, options?: CleanOptions): Record<string, unknown> => {
   const ret = cleanDeep(cloneDeep(obj), options) as Record<string, any> | undefined
   return ret || {}
+}
+
+export const cleanUnusedValues = (
+  obj: Record<string, unknown>,
+  possibleReceivers: string[]
+): Record<string, unknown> => {
+  // const possibleReceivers: string[] = ['slack', 'msteams', 'opsgenie', 'email']
+  for (const possibleReceiver of possibleReceivers) {
+    // does possible receiver exist in obj
+    if (obj[possibleReceiver]) {
+      interface objWithReceivers {
+        receivers?: string[]
+      }
+      // check if possible receiver is also in receiver list
+      if (!(obj as unknown as objWithReceivers).receivers.includes(possibleReceiver)) {
+        // remove receiver values from object
+        delete obj[possibleReceiver]
+      }
+    }
+  }
+  return obj
 }
 
 export const getApps = (session, teamId) => {
