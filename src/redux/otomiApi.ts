@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
+      query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -160,6 +163,27 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
+  isValid: boolean
+  hasLicense: boolean
+  jwt?: string
+  body?: {
+    version: number
+    key: string
+    type: 'community' | 'professional' | 'enterprise'
+    capabilities: {
+      teams: number
+      services: number
+      workloads: number
+    }
+  }
+}
+export type ActivateLicenseApiArg = {
+  /** License JWT */
+  body: {
+    jwt: string
+  }
+}
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -2640,6 +2664,21 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
+  license?: {
+    isValid: boolean
+    hasLicense: boolean
+    jwt?: string
+    body?: {
+      version: number
+      key: string
+      type: 'community' | 'professional' | 'enterprise'
+      capabilities: {
+        teams: number
+        services: number
+        workloads: number
+      }
+    }
+  }
   user?: {
     name: string
     email: string
@@ -3555,6 +3594,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useActivateLicenseMutation,
   useGetAllSecretsQuery,
   useGetAllJobsQuery,
   useGetAllServicesQuery,
