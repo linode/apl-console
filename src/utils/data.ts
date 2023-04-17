@@ -90,7 +90,6 @@ export const cleanUnusedValues = (
   obj: Record<string, unknown>,
   possibleReceivers: string[]
 ): Record<string, unknown> => {
-  // const possibleReceivers: string[] = ['slack', 'msteams', 'opsgenie', 'email']
   for (const possibleReceiver of possibleReceivers) {
     // does possible receiver exist in obj
     if (obj[possibleReceiver]) {
