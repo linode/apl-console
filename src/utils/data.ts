@@ -2,7 +2,6 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-param-reassign */
 import { getSpec } from 'common/api-spec'
-import { getThemeMode } from 'common/theme'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
@@ -105,10 +104,7 @@ export const getAppData = (
 ): Record<string, any> => {
   const {
     core: { appsInfo },
-    settings: {
-      cluster,
-      otomi: { isMultitenant },
-    },
+    settings: { cluster },
   }: any = session
   let appId = appOrId
   let ownShortcuts = []
@@ -141,15 +137,15 @@ export const getAppData = (
   const baseUrl = useHost
     ? getAppData(session, teamId, useHost).baseUrl
     : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin' || !isMultitenant) ? `.team-${teamId}` : ''
+        !(isShared || teamId === 'admin') ? `.team-${teamId}` : ''
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = getAppSchemaName(appId)
   const schema = spec.components.schemas[modelName] ? (spec.components.schemas[modelName] as JSONSchema7) : {}
-  const mode = getThemeMode()
-  const logoSuffix = mode === 'light' ? '' : '-dark'
-  const logoAltSuffix = mode === 'light' ? '-dark' : ''
+  // const mode = getThemeMode()
+  const logoSuffix = ''
+  const logoAltSuffix = ''
   return {
     ...coreApp,
     ...app,

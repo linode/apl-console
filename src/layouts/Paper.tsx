@@ -1,6 +1,6 @@
-import { Box, Container, Paper } from '@mui/material'
+import { Card, Container } from '@mui/material'
 import Error from 'components/Error'
-import Loader from 'components/Loader'
+import LoadingScreen from 'components/LoadingScreen'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import MainLayout from './Base'
@@ -51,12 +51,12 @@ export default function ({ loading, comp, title }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   return (
     <MainLayout title={title}>
-      <Container maxWidth='lg' className={classes.container}>
-        <Box component={Paper} className={cx(classes.paper, classes.root)}>
+      <Container maxWidth='lg'>
+        <Card sx={{ p: 3 }}>
           <Error />
-          {loading && <Loader />}
+          {loading && <LoadingScreen />}
           {!loading && comp}
-        </Box>
+        </Card>
       </Container>
     </MainLayout>
   )

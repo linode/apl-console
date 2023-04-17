@@ -25,6 +25,7 @@ export default function ({
   useEffect(() => {
     if (appIds) {
       setAppState([])
+
       toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     }
     if (okToggle) {

@@ -29,62 +29,23 @@ import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
 import { Collapse, List, ListItemIcon, ListItemText, ListSubheader, MenuItem, Link as MuiLink } from '@mui/material'
 import MenuList from '@mui/material/List'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
-import { useMainStyles } from 'common/theme'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router-dom'
 import { useDeployQuery, useRestoreQuery, useRevertQuery } from 'redux/otomiApi'
-import { makeStyles } from 'tss-react/mui'
 import canDo from 'utils/permission'
 import snack from 'utils/snack'
 import { SnackbarKey } from 'notistack'
 import Versions from './Versions'
 
-const useStyles = makeStyles()((theme) => ({
-  root: {
-    paddingTop: 0,
-  },
-  listSubheader: {
-    backgroundColor: theme.palette.divider,
-  },
-  listItem: {
-    height: theme.spacing(5),
-  },
-  deploy: {
-    height: theme.spacing(5),
-    color: theme.palette.common.white,
-    backgroundColor: theme.palette.primary.main,
-    '&:hover': {
-      backgroundColor: theme.palette.primary.light,
-    },
-  },
-  revert: {
-    height: theme.spacing(5),
-    color: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.common.black,
-    backgroundColor: theme.palette.secondary.main,
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.light,
-    },
-  },
-  settingsList: {
-    background: 'rgba(0, 0, 0, 0.05)',
-  },
-  settingsItem: {
-    marginLeft: '30px',
-  },
-}))
-
 function StyledMenuItem(props: any): React.ReactElement {
-  const { classes: mainClasses } = useMainStyles()
-  const { classes, cx } = useStyles()
-  return <MenuItem component={Link} className={cx(mainClasses.selectable, classes.listItem)} {...props} />
+  return <MenuItem component={Link} {...props} />
 }
 
 function StyledListSubheader(props: any): React.ReactElement {
-  const { classes } = useStyles()
-  return <ListSubheader className={classes.listSubheader} {...props} />
+  return <ListSubheader {...props} />
 }
 
 interface Props {
@@ -123,8 +84,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     error: errorRestore,
     isFetching: isRestoring,
   }: any = useRestoreQuery(!restore ? skipToken : undefined)
-  const { classes, cx } = useStyles()
-  const { classes: mainClasses } = useMainStyles()
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
@@ -223,12 +182,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
 
   return (
-    <MenuList className={cx(classes.root, className)} data-cy='menu-list-otomi'>
+    <MenuList data-cy='menu-list-otomi'>
       <StyledListSubheader component='div' data-cy='list-subheader-actions'>
         <ListItemText primary={t('Actions')} />
       </StyledListSubheader>
       <MenuItem
-        className={classes.deploy}
         disabled={!editor || isDeploying || corrupt}
         onClick={handleDeployClick}
         data-cy='menu-item-deploy-changes'
@@ -239,7 +197,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemText primary={t('Deploy Changes')} />
       </MenuItem>
       <MenuItem
-        className={classes.revert}
         disabled={!editor || isDeploying || isReverting || corrupt}
         onClick={handleRevertClick}
         data-cy='menu-item-reset-changes'
@@ -250,7 +207,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
         <ListItemText primary={t('Revert Changes')} />
       </MenuItem>
       {isAdmin && !isRestoring && corrupt && (
-        <MenuItem className={classes.deploy} onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
+        <MenuItem onClick={handleRestoreClick} data-cy='menu-item-reset-changes'>
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>
@@ -341,7 +298,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             {collapseSettings ? <ExpandLess /> : <ExpandMore />}
           </MenuItem>
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
-            <List className={classes.settingsList} disablePadding>
+            <List disablePadding>
               {Object.keys(settingIds).map((id) => {
                 if (cluster.provider !== 'azure' && id === 'azure') return undefined
                 let disabled = false
@@ -360,7 +317,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                     data-cy={`menu-item-${id}`}
                     disabled={disabled}
                   >
-                    <ListItemIcon className={classes.settingsItem}>{settingIds[id][1]}</ListItemIcon>
+                    <ListItemIcon>{settingIds[id][1]}</ListItemIcon>
                     <ListItemText primary={settingIds[id][0]} />
                   </StyledMenuItem>
                 )
@@ -452,7 +409,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </StyledMenuItem>
           )}
           <StyledMenuItem
-            className={mainClasses.selectable}
             component={MuiLink}
             aria-label={t('Download KUBECFG')}
             href={`/api/v1/kubecfg/${oboTeamId}`}
@@ -464,7 +420,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemText primary={t('Download KUBECFG')} />
           </StyledMenuItem>
           <StyledMenuItem
-            className={mainClasses.selectable}
             component={MuiLink}
             aria-label={t('Download DOCKERCFG')}
             href={`/api/v1/dockerconfig/${oboTeamId}`}
@@ -477,7 +432,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
           </StyledMenuItem>
           {ca && (
             <StyledMenuItem
-              className={mainClasses.selectable}
               component={MuiLink}
               aria-label={t('Download CA')}
               href={anchor}
