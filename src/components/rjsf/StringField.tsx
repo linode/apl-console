@@ -26,7 +26,11 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
     } else if (schema['x-secret'] !== undefined && !schema['x-decrypt']) {
       newUiSchema['ui:widget'] = 'password'
       set(newUiSchema, 'ui:options.autocomplete', 'off')
-    } else if (schema['x-formtype']) newUiSchema['ui:widget'] = schema['x-formtype']
+    }
+
+    if (schema['x-formtype'] === 'SelectWidget' && schema.enum?.length > 0)
+      newUiSchema['ui:widget'] = schema['x-formtype']
+    if (schema['x-formtype'] !== 'SelectWidget') newUiSchema['ui:widget'] = schema['x-formtype']
 
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
   }

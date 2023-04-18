@@ -232,11 +232,11 @@ export default function ({
       setValidValues(true)
     }
     if (inRawValues !== rawValues) {
-      setValues(inRawValues)
+      setRawValues(inRawValues)
       setValidRaw(true)
     }
     if (inShortcuts !== shortcuts) {
-      setValues(inShortcuts)
+      setShortcuts(inShortcuts)
       setValidShortcuts(true)
     }
   }, [inValues, inRawValues, inShortcuts])
