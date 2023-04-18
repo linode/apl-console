@@ -50,6 +50,7 @@ export const getTeamUiSchema = (
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
   if (!appsEnabled.grafana) uiSchema.azureMonitor = { 'ui:disabled': true }
+  if (!appsEnabled.velero) uiSchema.azureMonitor = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
