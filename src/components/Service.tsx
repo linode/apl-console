@@ -122,10 +122,13 @@ export const getServiceUiSchema = (
   teamId: string,
 ): any => {
   const ing = formData?.ingress as Record<string, any>
+  // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
+  const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
+    ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
