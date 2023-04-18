@@ -4,6 +4,7 @@ import { forwardRef } from 'react'
 import { Box, ListItemText, Tooltip, Typography } from '@mui/material'
 // guards
 // type
+import { Link } from 'react-router-dom'
 import { NavItemProps } from './SidebarTypes'
 //
 import Iconify from './Iconify'
@@ -67,7 +68,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
   if (title === 'Revert Changes') return <SidebarRevertButton item={item}>{renderContent}</SidebarRevertButton>
 
   return (
-    <ListItem href={path} onClick={onOpen} activeRoot={active} disabled={disabled} roles={roles}>
+    <ListItem component={Link} to={path} onClick={onOpen} activeRoot={active} disabled={disabled} roles={roles}>
       {renderContent}
     </ListItem>
   )
@@ -113,7 +114,7 @@ export function SidebarItemSub({ item, open = false, active = false, onOpen }: S
   }
 
   return (
-    <ListItem href={path} activeRoot={active} disabled={disabled} roles={roles}>
+    <ListItem component={Link} to={path} activeRoot={active} disabled={disabled} roles={roles}>
       {renderContent}
     </ListItem>
   )
