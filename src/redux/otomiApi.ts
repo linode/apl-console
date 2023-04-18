@@ -88,7 +88,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
-
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -312,6 +311,14 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       nonCritical: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -343,7 +350,15 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'oidc'
+      | 'billingAlertQuotas'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }[]
@@ -391,6 +406,14 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       nonCritical: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -422,7 +445,15 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'oidc'
+      | 'billingAlertQuotas'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -471,6 +502,14 @@ export type CreateTeamApiArg = {
         nonCritical: string
       }
     }
+    billingAlertQuotas?: {
+      teamCpuMonthQuotaReached?: {
+        quota?: number
+      }
+      teamMemMonthQuotaReached?: {
+        quota?: number
+      }
+    }
     resourceQuota?: {
       name: string
       value: string
@@ -502,7 +541,15 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+      team?: (
+        | 'alerts'
+        | 'oidc'
+        | 'billingAlertQuotas'
+        | 'resourceQuota'
+        | 'downloadKubeConfig'
+        | 'downloadDockerConfig'
+        | 'networkPolicy'
+      )[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -550,6 +597,14 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       nonCritical: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -581,7 +636,15 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'oidc'
+      | 'billingAlertQuotas'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -632,6 +695,14 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       nonCritical: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -663,7 +734,15 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'oidc'
+      | 'billingAlertQuotas'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -714,6 +793,14 @@ export type EditTeamApiArg = {
         nonCritical: string
       }
     }
+    billingAlertQuotas?: {
+      teamCpuMonthQuotaReached?: {
+        quota?: number
+      }
+      teamMemMonthQuotaReached?: {
+        quota?: number
+      }
+    }
     resourceQuota?: {
       name: string
       value: string
@@ -745,7 +832,15 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+      team?: (
+        | 'alerts'
+        | 'oidc'
+        | 'billingAlertQuotas'
+        | 'resourceQuota'
+        | 'downloadKubeConfig'
+        | 'downloadDockerConfig'
+        | 'networkPolicy'
+      )[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -1322,6 +1417,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   repoUrl: string
   path?: string
   revision?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUserName?: string
+  repoPassword?: string
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1329,30 +1428,30 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   teamId?: string
   name: string
   tag?: string
-  otomiGit?: boolean
-  privateGit?: boolean
   repoUrl: string
-  repoUserName?: string
-  repoPassword?: string
   path?: string
   revision?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUserName?: string
+  repoPassword?: string
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type CreateBuildApiResponse = /** status 200 Successfully stored workload configuration */ {
+export type CreateBuildApiResponse = /** status 200 Successfully stored build configuration */ {
   id?: string
   teamId?: string
   name: string
   tag?: string
-  otomiGit?: boolean
-  privateGit?: boolean
   repoUrl: string
-  repoUserName?: string
-  repoPassword?: string
   path?: string
   revision?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUserName?: string
+  repoPassword?: string
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1363,58 +1462,58 @@ export type CreateBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
-    otomiGit?: boolean
-    privateGit?: boolean
     repoUrl: string
-    repoUserName?: string
-    repoPassword?: string
     path?: string
     revision?: string
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
   }
 }
-export type DeleteBuildApiResponse = /** status 200 Successfully deleted a workload */ undefined
+export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
 export type DeleteBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** ID of the build */
   buildId: string
 }
-export type GetBuildApiResponse = /** status 200 Successfully obtained workload configuration */ {
+export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
   id?: string
   teamId?: string
   name: string
   tag?: string
-  otomiGit?: boolean
-  privateGit?: boolean
   repoUrl: string
-  repoUserName?: string
-  repoPassword?: string
   path?: string
   revision?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUserName?: string
+  repoPassword?: string
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** ID of the build */
   buildId: string
 }
-export type EditBuildApiResponse = /** status 200 Successfully edited a team secret */ {
+export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
   id?: string
   teamId?: string
   name: string
   tag?: string
-  otomiGit?: boolean
-  privateGit?: boolean
   repoUrl: string
-  repoUserName?: string
-  repoPassword?: string
   path?: string
   revision?: string
+  otomiGit?: boolean
+  privateGit?: boolean
+  repoUserName?: string
+  repoPassword?: string
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** ID of the build */
   buildId: string
   /** Build object that contains updated values */
   body: {
@@ -1422,16 +1521,15 @@ export type EditBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
-    otomiGit?: boolean
-    privateGit?: boolean
     repoUrl: string
-    repoUserName?: string
-    repoPassword?: string
     path?: string
     revision?: string
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
   }
 }
-
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
