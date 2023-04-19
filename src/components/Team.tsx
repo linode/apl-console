@@ -4,6 +4,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
+import { cleanUnusedAlertValues } from 'utils/data'
 import Form from './rjsf/Form'
 
 export const getTeamSchema = (
@@ -68,11 +69,15 @@ export default function ({ team, ...other }: Props): React.ReactElement {
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
   const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
+  const onChangeHandler = (data) => {
+    data = cleanUnusedAlertValues('teamAlerts', data, schema.properties.alerts.properties.receivers.items.enum)
+    setData(data)
+  }
   return (
     <Form
       adminOnly
       schema={schema}
-      onChange={setData}
+      onChange={onChangeHandler}
       uiSchema={uiSchema}
       data={formData}
       deleteDisabled={!user.isAdmin}
