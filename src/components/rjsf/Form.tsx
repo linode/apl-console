@@ -8,7 +8,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { cleanData, cleanUnusedValues } from 'utils/data'
+import { cleanData } from 'utils/data'
 import { nullify } from 'utils/schema'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
@@ -84,9 +84,7 @@ export default function ({
     setDirty(d) // compare with initial data
     // only now do we set the state of the form, as rjsf needs to update the form values once with defaults
     // finally we send the fully stripped version to subscribers
-    const { items } = schema.properties.receivers as any
-    const cleanUnesedValues = cleanUnusedValues(formData, items.enum)
-    const cleanFormData = cleanData(cleanUnesedValues, {
+    const cleanFormData = cleanData(formData, {
       keepValues,
       emptyArrays: false,
       emptyObjects: false,
@@ -99,8 +97,6 @@ export default function ({
   const onSubmitWrapper = ({ formData }: IChangeEvent<Record<string, unknown>>): void => {
     // keep undefineds to nullify below, allowing api to unset paths in nested structures
     const cleanFormData = cleanData(formData, { emptyArrays: false, undefinedValues: false })
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    // const cleanFormData2 = cleanUnusedValues(cleanFormData)
     const nulledCleanFormData = nullify(cleanFormData, schema)
     onSubmit(nulledCleanFormData)
     // setState(undefined)

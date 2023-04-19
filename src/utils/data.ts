@@ -1,7 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable no-restricted-syntax */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-param-reassign */
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
@@ -88,9 +84,9 @@ export const cleanData = (obj: Record<string, unknown>, options?: CleanOptions):
 
 export const cleanUnusedValues = (
   obj: Record<string, unknown>,
-  possibleReceivers: string[]
+  possibleReceivers: string[],
 ): Record<string, unknown> => {
-  for (const possibleReceiver of possibleReceivers) {
+  possibleReceivers.forEach((possibleReceiver) => {
     // does possible receiver exist in obj
     if (obj[possibleReceiver]) {
       interface objWithReceivers {
@@ -102,7 +98,7 @@ export const cleanUnusedValues = (
         delete obj[possibleReceiver]
       }
     }
-  }
+  })
   return obj
 }
 
