@@ -6,7 +6,6 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSettingsApiResponse } from 'redux/otomiApi'
 import { extract, isOf } from 'utils/schema'
-import { cleanUnusedAlertValues } from 'utils/data'
 import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
@@ -148,7 +147,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   // END HOOKS
   const onChangeHandler = (data) => {
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
-    data = cleanUnusedAlertValues('platformAlerts', data, schema.properties.receivers.items.enum)
     setSetting(data)
     const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)

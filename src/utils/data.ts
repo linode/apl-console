@@ -82,37 +82,6 @@ export const cleanData = (obj: Record<string, unknown>, options?: CleanOptions):
   return ret || {}
 }
 
-export const cleanUnusedAlertValues = (
-  formType: 'platformAlerts' | 'teamAlerts',
-  formData: any,
-  possibleReceivers: string[],
-): Record<string, unknown> => {
-  if (formType === 'platformAlerts') {
-    possibleReceivers.forEach((possibleReceiver) => {
-      // does possible receiver exist in formdata
-      if (formData[possibleReceiver]) {
-        // check if possible receiver is also in receiver list
-        if (!formData.receivers.includes(possibleReceiver)) {
-          // remove receiver values from formdata
-          delete formData[possibleReceiver]
-        }
-      }
-    })
-  } else if (formType === 'teamAlerts') {
-    possibleReceivers.forEach((possibleReceiver) => {
-      // does possible receiver exist in formdata
-      if (formData.alerts[possibleReceiver]) {
-        // check if possible receiver is also in receiver list
-        if (!formData.alerts.receivers.includes(possibleReceiver)) {
-          // remove receiver values from formdata
-          delete formData.alerts[possibleReceiver]
-        }
-      }
-    })
-  }
-  return formData
-}
-
 export const getApps = (session, teamId) => {
   const {
     core: { adminApps, teamApps },
