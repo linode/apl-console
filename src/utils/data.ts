@@ -91,9 +91,6 @@ export const cleanUnusedAlertValues = (
     possibleReceivers.forEach((possibleReceiver) => {
       // does possible receiver exist in formdata
       if (formData[possibleReceiver]) {
-        interface objWithReceivers {
-          receivers?: string[]
-        }
         // check if possible receiver is also in receiver list
         if (!formData.receivers.includes(possibleReceiver)) {
           // remove receiver values from formdata
