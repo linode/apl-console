@@ -173,7 +173,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     ingress: [t('Ingress'), <AltRoute />],
     oidc: [t('OIDC'), <SettingsEthernetIcon />],
     smtp: [t('SMTP'), <MailIcon />],
-    backup: [t('Backup'), <BackupTableIcon />],
+    platformBackups: [t('Backup'), <BackupTableIcon />],
   }
   const downloadOpts = {
     data: ca ?? '',
@@ -315,7 +315,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                   (id === 'dns' && !otomi.hasExternalDNS)
                 )
                   disabled = true
-                if (id === 'backup' && !appsEnabled.velero) disabled = true
+                if (id === 'platformBackups' && !appsEnabled.velero) disabled = true
                 return (
                   <StyledMenuItem
                     key={id}
