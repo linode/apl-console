@@ -45,7 +45,7 @@ export default function ({ build, teamId, ...other }: Props): React.ReactElement
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.argocd}
+      disabled={!appsEnabled.kpack}
       resourceType='Build'
       {...other}
     />
