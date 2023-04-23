@@ -41,5 +41,5 @@ export default function ({
   const loading = isLoadingAllBackups || isLoadingTeamBackups
   const backups = teamId ? teamBackups : allBackups
   const comp = backups && <Backups backups={backups} teamId={teamId} />
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BACKUPS', { scope: getRole(teamId) })} />
 }

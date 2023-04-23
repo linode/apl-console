@@ -29,10 +29,7 @@ export default function ({
     useCreateBackupMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBackupMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteBackupMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetBackupQuery(
-    { teamId, backupId },
-    { skip: !backupId },
-  )
+  const { data, isLoading, isFetching, isError, refetch } = useGetBackupQuery({ teamId, backupId }, { skip: !backupId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -51,5 +48,5 @@ export default function ({
   const comp = !isError && (
     <Backup onSubmit={handleSubmit} backup={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_WORKLOAD', { backupId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BACKUP', { backupId, role: 'team' })} />
 }

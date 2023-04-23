@@ -3,7 +3,7 @@ import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, GetBackupApiResponse } from 'redux/otomiApi'
+import { GetBackupApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getBackupSchema = (teamId: string): any => {
@@ -45,7 +45,7 @@ export default function ({ backup, teamId, ...other }: Props): React.ReactElemen
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.argocd}
+      disabled={!appsEnabled.velero}
       resourceType='Backup'
       {...other}
     />

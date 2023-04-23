@@ -88,7 +88,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: 'PUT',
         body: queryArg.body,
       }),
-
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -176,7 +176,6 @@ export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
       teams: number
       services: number
       workloads: number
-      backups: number
     }
   }
 }
@@ -1324,7 +1323,7 @@ export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all 
   ttl?: string
   snapshotVolumes: boolean
   labelSelector?: string
-  includedResources?: array
+  includedResources?: string[]
 }[]
 export type GetAllBackupsApiArg = void
 export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ {
@@ -1335,7 +1334,7 @@ export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained tea
   ttl?: string
   snapshotVolumes: boolean
   labelSelector?: string
-  includedResources?: array
+  includedResources?: string[]
 }[]
 export type GetTeamBackupsApiArg = {
   /** ID of team to return */
@@ -1349,7 +1348,7 @@ export type CreateBackupApiResponse = /** status 200 Successfully stored backup 
   ttl?: string
   snapshotVolumes: boolean
   labelSelector?: string
-  includedResources?: array
+  includedResources?: string[]
 }
 export type CreateBackupApiArg = {
   /** ID of team to return */
@@ -1363,7 +1362,7 @@ export type CreateBackupApiArg = {
     ttl?: string
     snapshotVolumes: boolean
     labelSelector?: string
-    includedResources?: array
+    includedResources?: string[]
   }
 }
 export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
@@ -1381,7 +1380,7 @@ export type GetBackupApiResponse = /** status 200 Successfully obtained backup c
   ttl?: string
   snapshotVolumes: boolean
   labelSelector?: string
-  includedResources?: array
+  includedResources?: string[]
 }
 export type GetBackupApiArg = {
   /** ID of team to return */
@@ -1397,7 +1396,7 @@ export type EditBackupApiResponse = /** status 200 Successfully edited a team se
   ttl?: string
   snapshotVolumes: boolean
   labelSelector?: string
-  includedResources?: array
+  includedResources?: string[]
 }
 export type EditBackupApiArg = {
   /** ID of team to return */
@@ -1413,7 +1412,7 @@ export type EditBackupApiArg = {
     ttl?: string
     snapshotVolumes: boolean
     labelSelector?: string
-    includedResources?: array
+    includedResources?: string[]
   }
 }
 
@@ -2073,50 +2072,43 @@ export type EditSettingsApiArg = {
       region?: string
       k8sContext?: string
     }
-    backup?: {
-      platform?: {
-        gitea?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        drone?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        keycloak?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        harbor?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        vault?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        argo?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        kubeapps?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        minio?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
+    platformBackup?: {
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
       }
-      teams?: {
+      drone?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      harbor?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      vault?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      argo?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      kubeapps?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      minio?: {
         enabled?: boolean
         ttl?: string
         schedule?: string

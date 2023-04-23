@@ -96,7 +96,6 @@ function App() {
                                 <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                                 <Route path='/teams' component={Teams} exact />
                                 <Route path='/teams/:teamId' component={Team} exact />
-                                <Route path='/teams/:teamId/create-job' component={Job} exact />
                                 <Route path='/teams/:teamId/create-backup' component={Backup} exact />
                                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                                 <Route path='/teams/:teamId/create-service' component={Service} exact />
@@ -104,7 +103,7 @@ function App() {
                                 <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                                 <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
                                 <Route path='/teams/:teamId/backups' component={Backups} exact />
-                                <Route path='/teams/:teamId/backups/:backupId' component={Workload} exact />
+                                <Route path='/teams/:teamId/backups/:backupId' component={Backup} exact />
                                 <Route path='/teams/:teamId/workloads' component={Workloads} exact />
                                 <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact />
                                 <Route
