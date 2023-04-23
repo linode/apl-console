@@ -66,6 +66,29 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+
+    getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
+      query: () => ({ url: `/backups` }),
+    }),
+    getTeamBackups: build.query<GetTeamBackupsApiResponse, GetTeamBackupsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups` }),
+    }),
+    createBackup: build.mutation<CreateBackupApiResponse, CreateBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteBackup: build.mutation<DeleteBackupApiResponse, DeleteBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`, method: 'DELETE' }),
+    }),
+    getBackup: build.query<GetBackupApiResponse, GetBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}` }),
+    }),
+    editBackup: build.mutation<EditBackupApiResponse, EditBackupApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -153,6 +176,7 @@ export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
       teams: number
       services: number
       workloads: number
+      backups: number
     }
   }
 }
@@ -1291,6 +1315,108 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+
+export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  schedule?: string
+  ttl?: string
+  snapshotVolumes: boolean
+  labelSelector?: string
+  includedResources?: array
+}[]
+export type GetAllBackupsApiArg = void
+export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  schedule?: string
+  ttl?: string
+  snapshotVolumes: boolean
+  labelSelector?: string
+  includedResources?: array
+}[]
+export type GetTeamBackupsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  schedule?: string
+  ttl?: string
+  snapshotVolumes: boolean
+  labelSelector?: string
+  includedResources?: array
+}
+export type CreateBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Backup object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    schedule?: string
+    ttl?: string
+    snapshotVolumes: boolean
+    labelSelector?: string
+    includedResources?: array
+  }
+}
+export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
+export type DeleteBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+}
+export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  schedule?: string
+  ttl?: string
+  snapshotVolumes: boolean
+  labelSelector?: string
+  includedResources?: array
+}
+export type GetBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+}
+export type EditBackupApiResponse = /** status 200 Successfully edited a team secret */ {
+  id?: string
+  teamId?: string
+  name: string
+  schedule?: string
+  ttl?: string
+  snapshotVolumes: boolean
+  labelSelector?: string
+  includedResources?: array
+}
+export type EditBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+  /** Backup object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    schedule?: string
+    ttl?: string
+    snapshotVolumes: boolean
+    labelSelector?: string
+    includedResources?: array
+  }
+}
+
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -1456,6 +1582,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
         teams: number
         services: number
         workloads: number
+        backups: number
       }
     }
   }
@@ -2391,6 +2518,12 @@ export const {
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
   useGetWorkloadQuery,
+  useEditBackupMutation,
+  useGetAllBackupsQuery,
+  useGetTeamBackupsQuery,
+  useCreateBackupMutation,
+  useDeleteBackupMutation,
+  useGetBackupQuery,
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,

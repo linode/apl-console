@@ -289,6 +289,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
           </StyledMenuItem>
+          <StyledMenuItem to='/backups' selected={pathname === '/backups'} data-cy='menu-item-backups'>
+            <ListItemIcon>
+              <BackupTableIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Services')} />
+          </StyledMenuItem>
 
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
@@ -395,6 +401,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary={t('Secrets')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            to={`/teams/${teamId}/backups`}
+            selected={pathname.indexOf(`/teams/${teamId}/backups`) === 0}
+            data-cy='menu-item-team-backups'
+          >
+            <ListItemIcon>
+              <AppRegistrationIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Backups')} />
           </StyledMenuItem>
           {oboTeamId !== 'admin' && (
             <StyledMenuItem
