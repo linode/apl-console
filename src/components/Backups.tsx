@@ -10,13 +10,23 @@ interface Row {
   teamId: string
   id: string
   name: string
+  schedule: string
 }
 
-const getBackupLink = (row: Row) => {
+const getBackupNames = (row: Row) => {
   const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.id)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
+    </RLink>
+  )
+}
+
+const getBackupSchedules = (row: Row) => {
+  const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.id)}`
+  return (
+    <RLink to={path} label={row.schedule}>
+      {row.schedule}
     </RLink>
   )
 }
@@ -44,7 +54,12 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Backup'),
-      renderer: (row: Row) => getBackupLink(row),
+      renderer: (row: Row) => getBackupNames(row),
+    },
+    {
+      id: 'name',
+      label: t('Schedule'),
+      renderer: (row: Row) => getBackupSchedules(row),
     },
   ]
 
