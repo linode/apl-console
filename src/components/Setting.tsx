@@ -146,8 +146,8 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
 
   // END HOOKS
   const onChangeHandler = (data) => {
-    setSetting(data)
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
+    setSetting(data)
     const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)
     setUiSchema(uiSchema)
