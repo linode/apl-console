@@ -68,12 +68,14 @@ export default function NavConfig() {
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
           disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig'),
+          isDownload: true,
         },
         {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
           disabled: !canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor,
+          isDownload: true,
         },
         {
           title: 'Download CA',
