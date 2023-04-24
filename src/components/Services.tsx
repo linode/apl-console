@@ -58,11 +58,6 @@ export default function ({ services, teamId }: Props): React.ReactElement {
       renderer: (row) => (row.ingress?.type === 'cluster' ? '-' : row.ingress?.ingressClassName ?? 'platform'),
     },
     {
-      id: 'serviceType',
-      label: t('Service type'),
-      renderer: (row) => row.ksvc?.serviceType ?? '',
-    },
-    {
       id: 'url',
       label: t('URL'),
       renderer: renderHost,

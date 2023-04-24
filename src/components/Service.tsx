@@ -1,6 +1,6 @@
-import { applyAclToUiSchema, getIngressSchemaPath, getSpec, podSpecUiSchema, setSecretsEnum } from 'common/api-spec'
+import { applyAclToUiSchema, getIngressSchemaPath, getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, isEmpty, set, unset } from 'lodash'
+import { cloneDeep, isEmpty, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -53,8 +53,10 @@ export const addServiceNameEnumField = (
 
   const k8sServiceNames = k8sServices.map((item) => item.name)
   set(schema, 'properties.name.enum', k8sServiceNames)
+  set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
     set(schema, 'properties.port.enum', k8sService[0].ports)
+    if (k8sService[0].managedByKnative) set(formData, 'ksvc.predeployed', true)
     unset(schema, 'properties.port.default')
   }
 }
@@ -69,7 +71,6 @@ export const getServiceSchema = (
 ): any => {
   const { cluster } = settings
   const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
-  const ksvcSchemaPath = 'properties.ksvc.oneOf[2].allOf[2].properties'
   // FIXME: add support for admin services
   if (teamId !== 'admin') addServiceNameEnumField(schema, k8sServices, formData)
   addDomainEnumField(schema, settings, formData)
@@ -110,13 +111,6 @@ export const getServiceSchema = (
     }
   }
   if (teamId !== 'admin') delete schema.properties.namespace
-  if (!appsEnabled.knative) (schema.properties.ksvc as JSONSchema7).oneOf.splice(1, 2)
-  // if (!appsEnabled.knative) {
-  //   schema.properties.ksvc.oneOf[1].disabled = true
-  //   schema.properties.ksvc.oneOf[2].disabled = true
-  // }
-  // set the Secrets enum with items to choose from
-  else setSecretsEnum(get(schema, ksvcSchemaPath), secrets)
 
   return schema
 }
@@ -128,19 +122,18 @@ export const getServiceUiSchema = (
   teamId: string,
 ): any => {
   const ing = formData?.ingress as Record<string, any>
+  // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
+  const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
+    ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
       domain: { 'ui:readonly': ing?.useDefaultSubdomain },
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
-      tlsPass: { 'ui:readonly': formData?.ksvc?.serviceType !== 'svcPredeployed' },
-    },
-    ksvc: {
-      ...podSpecUiSchema,
     },
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
