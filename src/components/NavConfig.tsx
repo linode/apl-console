@@ -82,6 +82,7 @@ export default function NavConfig() {
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
           disabled: !ca,
+          isDownload: true,
         },
       ],
     },
