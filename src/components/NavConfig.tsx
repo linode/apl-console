@@ -37,7 +37,7 @@ export default function NavConfig() {
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
-        { title: 'Backups', path: '/backups', icon: getIcon('services_icon.svg') }, // replace .svg
+        { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: '/settings',
@@ -58,7 +58,7 @@ export default function NavConfig() {
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
-        { title: 'Backups', path: `/teams/${oboTeamId}/backups`, icon: getIcon('services_icon.svg') }, // replace .svg
+        { title: 'Backups', path: `/teams/${oboTeamId}/backups`, icon: getIcon('backup_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
