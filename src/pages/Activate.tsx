@@ -1,40 +1,42 @@
-import { Alert, Box, Container, Grid, TextField, Typography, styled } from '@mui/material'
+import { Alert, Box, Card, Container, TextField, styled } from '@mui/material'
 import { FormEventHandler, useEffect, useState } from 'react'
 import Logo from 'components/Logo'
 import { useActivateLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
+import useSettings from 'hooks/useSettings'
 
-const Wrapper = styled(Box)({
+const StyledPage = styled(Container)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  minHeight: '100vh',
-  background: '#2c2e5b',
+  height: '100vh',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundImage: `url(/teaser.png)`,
+    backgroundSize: 'cover',
+    backgroundRepeat: 'no-repeat',
+    opacity: 0.8, // Set opacity to 0.9 to make the background slightly transparent
+  },
 })
 
-const LeftPanel = styled(Box)({
-  background: '#2c2e5b',
-  height: '100%',
+const StyledCard = styled(Card)({
   display: 'flex',
   flexDirection: 'column',
+  height: '40vh',
+  width: '40vh',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: '2rem',
-})
-
-const RightPanel = styled(Box)({
-  background: 'white',
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '2rem',
+  paddingTop: '4vh',
 })
 
 export default function Activate() {
   const [create] = useActivateLicenseMutation()
+  const { themeStretch } = useSettings()
   const [jwt, setJwt] = useState('')
   const [loading, setLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
@@ -71,47 +73,34 @@ export default function Activate() {
   }
 
   return (
-    <Wrapper>
-      <Container maxWidth='sm'>
-        <Grid container>
-          <Grid item xs={24} sm={12}>
-            <LeftPanel>
-              <Logo width={100} height={100} />
-            </LeftPanel>
-          </Grid>
-          <Grid item xs={24} sm={12}>
-            <RightPanel>
-              <Typography variant='h4' gutterBottom>
-                Activate Otomi
-              </Typography>
-              <form onSubmit={handleActivateLicense}>
-                <TextField
-                  fullWidth
-                  margin='normal'
-                  label='Your key'
-                  variant='outlined'
-                  value={jwt}
-                  onChange={(event) => setJwt(event.target.value)}
-                />
-                {isInvalid && <Alert severity='error'>Invalid key</Alert>}
+    <StyledPage>
+      <StyledCard>
+        <Logo width={100} height={100} />
+        <form onSubmit={handleActivateLicense}>
+          <TextField
+            fullWidth
+            margin='normal'
+            label='Your key'
+            variant='outlined'
+            value={jwt}
+            onChange={(event) => setJwt(event.target.value)}
+          />
+          {isInvalid && <Alert severity='error'>Invalid key</Alert>}
 
-                <Box marginTop={2}>
-                  <LoadingButton
-                    fullWidth
-                    color='primary'
-                    variant='contained'
-                    type='submit'
-                    loading={loading}
-                    disabled={!jwt}
-                  >
-                    Activate
-                  </LoadingButton>
-                </Box>
-              </form>
-            </RightPanel>
-          </Grid>
-        </Grid>
-      </Container>
-    </Wrapper>
+          <Box marginTop={2}>
+            <LoadingButton
+              fullWidth
+              color='primary'
+              variant='contained'
+              type='submit'
+              loading={loading}
+              disabled={!jwt}
+            >
+              Activate
+            </LoadingButton>
+          </Box>
+        </form>
+      </StyledCard>
+    </StyledPage>
   )
 }
