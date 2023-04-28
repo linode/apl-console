@@ -55,8 +55,8 @@ export default function NavConfig() {
           icon: getIcon('shortcuts_icon.svg'),
           dontShowIfAdminTeam: true,
         },
-        { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Builds (BETA)', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
+        { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
         {
