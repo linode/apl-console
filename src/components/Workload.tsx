@@ -3,8 +3,10 @@ import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, GetWorkloadApiResponse } from 'redux/otomiApi'
+import { GetSessionApiResponse, GetWorkloadApiResponse, useGetTeamWorkloadsQuery } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import Form from './rjsf/Form'
+import InformationBanner from './InformationBanner'
 
 export const getWorkloadSchema = (teamId: string): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
@@ -30,7 +32,8 @@ interface Props extends CrudProps {
 }
 
 export default function ({ workload, teamId, ...other }: Props): React.ReactElement {
-  const { appsEnabled, user } = useSession()
+  const { appsEnabled, user, license } = useSession()
+  const allSessionData = useSession()
   const [data, setData]: any = useState(workload)
   useEffect(() => {
     setData(workload)
@@ -39,15 +42,24 @@ export default function ({ workload, teamId, ...other }: Props): React.ReactElem
   const formData = cloneDeep(data)
   const schema = getWorkloadSchema(teamId)
   const uiSchema = getWorkloadUiSchema(user, teamId)
+  const workloads = useGetTeamWorkloadsQuery({ teamId }, { skip: !teamId })
   return (
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      data={formData}
-      onChange={setData}
-      disabled={!appsEnabled.argocd}
-      resourceType='Workload'
-      {...other}
-    />
+    <>
+      {!createCapabilities(workloads.data?.length, license.body.capabilities.workloads) && (
+        <InformationBanner message='Max amount of workloads reached for this license.' />
+      )}
+
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        data={formData}
+        onChange={setData}
+        disabled={
+          !appsEnabled.argocd || !createCapabilities(workloads.data?.length, license.body.capabilities.workloads)
+        }
+        resourceType='Workload'
+        {...other}
+      />
+    </>
   )
 }

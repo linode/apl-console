@@ -54,7 +54,7 @@ export default function ({ children, title }: Props): React.ReactElement {
   useEffect(() => {
     if (session && !session.license.isValid) {
       // Redirect to /activate
-      // history.push('/activate')
+      history.push('/activate')
     }
   }, [session, history])
 

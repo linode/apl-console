@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetTeamWorkloadsApiResponse } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -55,6 +56,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   // } = useSession()
   const {
     appsEnabled,
+    license,
     settings: {
       cluster: { domainSuffix },
     },
@@ -89,5 +91,13 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
 
   if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={workloads} resourceType='Workload' />
+  return (
+    <ListTable
+      teamId={teamId}
+      createDisabled={!createCapabilities(workloads.length, license.body.capabilities.workloads)}
+      headCells={headCells}
+      rows={workloads}
+      resourceType='Workload'
+    />
+  )
 }

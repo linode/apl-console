@@ -3,6 +3,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -12,7 +13,6 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction =>
   function (row): string | React.ReactElement {
     const { teamId, id, name }: { teamId: string; id: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
-
     const path = `/teams/${teamId}/services/${encodeURIComponent(id)}`
     return (
       <RLink to={path} label={name}>
@@ -43,6 +43,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
+    license,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -70,5 +71,13 @@ export default function ({ services, teamId }: Props): React.ReactElement {
       label: t('Team'),
     })
   }
-  return <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
+  return (
+    <ListTable
+      teamId={teamId}
+      createDisabled={!createCapabilities(services.length, license.body.capabilities.services)}
+      headCells={headCells}
+      rows={services}
+      resourceType='Service'
+    />
+  )
 }
