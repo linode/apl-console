@@ -1,7 +1,7 @@
 import { forwardRef } from 'react'
 // next
 // @mui
-import { Box, ListItemText, Tooltip, Typography } from '@mui/material'
+import { Box, ListItemText, Link as MuiLink, Tooltip, Typography } from '@mui/material'
 // guards
 // type
 import { Link } from 'react-router-dom'
@@ -25,7 +25,7 @@ const ListItem = forwardRef<HTMLDivElement & HTMLAnchorElement, ListItemStylePro
 ))
 
 export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen }: NavItemProps) {
-  const { title, path, icon, info, children, disabled, caption, roles } = item
+  const { title, path, icon, info, children, disabled, caption, roles, isDownload } = item
 
   const renderContent = (
     <>
@@ -68,7 +68,15 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
   if (title === 'Revert Changes') return <SidebarRevertButton item={item}>{renderContent}</SidebarRevertButton>
 
   return (
-    <ListItem component={Link} to={path} onClick={onOpen} activeRoot={active} disabled={disabled} roles={roles}>
+    <ListItem
+      component={isDownload ? MuiLink : Link}
+      to={path}
+      target={isDownload && '_blank'}
+      onClick={onOpen}
+      activeRoot={active}
+      disabled={disabled}
+      roles={roles}
+    >
       {renderContent}
     </ListItem>
   )
