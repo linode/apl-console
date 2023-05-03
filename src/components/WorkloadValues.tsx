@@ -54,6 +54,7 @@ interface Props {
   onSubmit?: (formData: any) => void
   workloadValues?: GetWorkloadValuesApiResponse
   setWorkloadValues?: (formData: any) => void
+  hideTitle?: boolean
 }
 
 export default function ({
@@ -61,6 +62,7 @@ export default function ({
   onSubmit,
   workloadValues,
   setWorkloadValues,
+  hideTitle = false,
   ...other
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
@@ -78,11 +80,13 @@ export default function ({
   }
   return (
     <>
-      <HeaderTitle
-        title={t('WORKLOAD_VALUES_TITLE', { name: workloadValues?.name, teamId: workloadValues?.teamId })}
-        description={t('WORKLOAD_VALUES_DESC')}
-        resourceType='WorkloadValues'
-      />
+      {!hideTitle && (
+        <HeaderTitle
+          title={t('WORKLOAD_VALUES_TITLE', { name: workloadValues.name, teamId: workloadValues.teamId })}
+          description={t('WORKLOAD_VALUES_DESC')}
+          resourceType='WorkloadValues'
+        />
+      )}
       <div className={classes.buffer}> </div>{' '}
       <CodeEditor
         code={yaml}

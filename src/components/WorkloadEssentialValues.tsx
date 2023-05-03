@@ -3,8 +3,8 @@ import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
-import React, { useEffect } from 'react'
-import { GetSessionApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiApi'
+import React from 'react'
+import { GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getWorkloadValuesSchema = (): any => {
@@ -31,17 +31,13 @@ export const getWorkloadValuesUiSchema = (user: GetSessionApiResponse['user'], t
 }
 
 interface Props extends CrudProps {
-  workloadId: string
   teamId: string
-  setData: any
+  valuesData: any
+  setData: (formData: any) => void
 }
 
-export default function ({ workloadId, teamId, setData, ...other }: Props): React.ReactElement {
+export default function ({ teamId, valuesData, setData, ...other }: Props): React.ReactElement {
   const { appsEnabled, user } = useSession()
-  const { data } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
-  useEffect(() => {
-    setData(data)
-  }, [data])
   // END HOOKS
   const schema = getWorkloadValuesSchema()
   const uiSchema = getWorkloadValuesUiSchema(user, teamId)
@@ -50,7 +46,7 @@ export default function ({ workloadId, teamId, setData, ...other }: Props): Reac
     <Form
       schema={schema}
       uiSchema={uiSchema}
-      data={data}
+      data={valuesData}
       onChange={setData}
       disabled={!appsEnabled.argocd}
       resourceType='Workload'

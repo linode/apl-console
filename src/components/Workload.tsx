@@ -13,10 +13,11 @@ import {
 } from '@mui/material'
 import { omit } from 'lodash'
 import { CrudProps } from 'pages/types'
-import React, { useState } from 'react'
-import { GetWorkloadApiResponse } from 'redux/otomiApi'
+import React, { useEffect, useState } from 'react'
+import { GetWorkloadApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
+import { useSession } from 'providers/Session'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
 import WorkloadDefine from './WorkloadDefine'
@@ -59,13 +60,20 @@ export default function ({
 }: Props): React.ReactElement {
   const history = useHistory()
   const { t } = useTranslation()
-  const [data, setData]: any = useState(workload)
-  console.log('data', data)
-  const [valuesData, setValuesData]: any = useState()
-  const title = t('FORM_TITLE_NEW', { model: t('Workload') })
-
+  const { oboTeamId } = useSession()
   const [activeStep, setActiveStep] = useState(0)
+  const [data, setData]: any = useState(workload)
+  const [valuesData, setValuesData]: any = useState()
   const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
+  const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const resourceType = activeStep ? 'Workload values' : 'Workload'
+  let title: string
+  if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
+  if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
+
+  useEffect(() => {
+    setValuesData(WLvaluesData)
+  }, [WLvaluesData])
 
   const isDisabled = () => {
     if (activeStep === 0) return !data?.name || (selectedChart === 'custom' && !data?.url)
@@ -76,7 +84,7 @@ export default function ({
     return false
   }
 
-  const handleCreateWorkload = async () => {
+  const handleCreateUpdateWorkload = async () => {
     const body =
       selectedChart === 'custom'
         ? data
@@ -110,7 +118,7 @@ export default function ({
         values: omit(values, ['id', 'teamId', 'selectedChart']),
       } as any,
     })
-    setValuesData(res.data)
+    setValuesData({ ...res.data, name: workload?.name, teamId })
   }
 
   const handleEditWorkloadValues = async () => {
@@ -127,7 +135,7 @@ export default function ({
   const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
 
   const handleNext = async () => {
-    if (activeStep === 0) await handleCreateWorkload()
+    if (activeStep === 0) await handleCreateUpdateWorkload()
     else if (activeStep === 1 && selectedChart !== 'custom') await handleUpdateWorkloadValues()
     else if (activeStep === steps[selectedChart].length - 1) await handleEditWorkloadValues()
 
@@ -138,7 +146,7 @@ export default function ({
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <HeaderTitle title={`${title} ${teamId && `(${teamId})`}`} resourceType='Workload' />
+        <HeaderTitle title={title} resourceType={resourceType} />
         {workloadId && (
           <DeleteButton
             onDelete={() => deleteWorkload({ teamId, workloadId })}
@@ -153,7 +161,7 @@ export default function ({
           <FormLabel sx={{ mb: 1 }}>Choose one of the following helm charts.</FormLabel>
           <RadioGroup onChange={(e) => setSelectedChart(e.target.value)} value={selectedChart}>
             {radioValues.map(({ value, label }: { value: string; label: string }) => (
-              <FormControlLabel value={value} control={<Radio />} label={label} />
+              <FormControlLabel key={value} value={value} control={<Radio />} label={label} />
             ))}
           </RadioGroup>
         </FormControl>
@@ -181,11 +189,11 @@ export default function ({
           )}
 
           {activeStep === 1 && selectedChart !== 'custom' && (
-            <WorkloadEssentialValues workloadId={workloadId} teamId={teamId} setData={setValuesData} {...other} />
+            <WorkloadEssentialValues teamId={teamId} valuesData={WLvaluesData} setData={setValuesData} {...other} />
           )}
 
           {activeStep === steps[selectedChart].length - 1 && (
-            <WorkloadValues editable workloadValues={valuesData} setWorkloadValues={setValuesData} />
+            <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
           )}
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>

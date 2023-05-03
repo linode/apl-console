@@ -40,7 +40,7 @@ interface Props extends CrudProps {
   workload?: GetWorkloadApiResponse
   teamId: string
   data: any
-  setData: any
+  setData: (formData: any) => void
   selectedChart: string
 }
 
