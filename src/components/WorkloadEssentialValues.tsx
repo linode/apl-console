@@ -20,8 +20,14 @@ export const getWorkloadValuesUiSchema = (user: GetSessionApiResponse['user'], t
     values: {
       fullnameOverride: { 'ui:widget': 'hidden' },
       containerPorts: {
-        name: { 'ui:widget': 'hidden' },
-        protocol: { 'ui:widget': 'hidden' },
+        items: {
+          name: { 'ui:widget': 'hidden' },
+          protocol: { 'ui:widget': 'hidden' },
+        },
+        'ui:options': {
+          addable: false,
+          removable: false,
+        },
       },
     },
   }
