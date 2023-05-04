@@ -27,7 +27,7 @@ import DeleteButton from './DeleteButton'
 const radioValues = [
   { value: 'deployment', label: 'Regular application (deployment chart)' },
   { value: 'ksvc', label: 'Function as a Service (ksvc chart)' },
-  { value: 'custom', label: 'Bring your own' },
+  { value: 'custom', label: 'Bring your own Helm chart' },
 ]
 
 const steps = {
