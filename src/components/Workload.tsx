@@ -31,9 +31,9 @@ const radioValues = [
 ]
 
 const steps = {
-  deployment: ['Define workload name', 'Define essential chart values', 'Define raw values'],
-  ksvc: ['Define workload name', 'Define essential chart values', 'Define raw values'],
-  custom: ['Define workload name', 'Define raw values'],
+  deployment: ['Define workload name', 'Define chart values', 'Review and adjust values'],
+  ksvc: ['Define workload name', 'Define chart values', 'Review and adjust values'],
+  custom: ['Define workload name', 'Review and adjust values'],
 }
 
 interface Props extends CrudProps {
@@ -92,7 +92,7 @@ export default function ({
             name: data?.name,
             url: 'https://github.com/redkubes/otomi-charts.git',
             path: selectedChart,
-            revision: '1.0',
+            revision: 'v1.0.0',
           }
     if (workloadId) {
       await updateWorkload({
