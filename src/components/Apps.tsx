@@ -147,6 +147,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     disabledApps = disabledApps.filter((app) => !disabledByProviderApps[app.id])
 
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
+  console.log('apps', apps)
 
   const out = (items) =>
     items.map((item) => {
@@ -185,7 +186,12 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {out(
           dataFiltered
-            .filter((app) => app.enabled === true || app.id === 'gitea' || app.id === 'drone' || app.id !== 'falco')
+            .filter(
+              (app) =>
+                (app.enabled === true || app.id === 'gitea' || app.id === 'drone') &&
+                app.id !== 'kubeclarity' &&
+                app.id !== 'falco',
+            )
             .sort(sortArray),
         )}
       </Grid>
