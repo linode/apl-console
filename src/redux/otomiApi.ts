@@ -1498,7 +1498,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   id?: string
   teamId?: string
   name: string
-  url?: string
+  url: string
   path?: string
   chart?: string
   revision?: string
@@ -1512,7 +1512,7 @@ export type CreateWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
-    url?: string
+    url: string
     path?: string
     chart?: string
     revision?: string
@@ -1530,7 +1530,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   id?: string
   teamId?: string
   name: string
-  url?: string
+  url: string
   path?: string
   chart?: string
   revision?: string
