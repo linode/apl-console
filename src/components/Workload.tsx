@@ -63,9 +63,9 @@ export default function ({
   const { oboTeamId } = useSession()
   const [activeStep, setActiveStep] = useState(0)
   const [data, setData]: any = useState(workload)
-  const [valuesData, setValuesData]: any = useState()
-  const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
   const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [valuesData, setValuesData]: any = useState(WLvaluesData)
+  const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
   const resourceType = activeStep ? 'Workload values' : 'Workload'
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
@@ -109,6 +109,7 @@ export default function ({
   }
 
   const handleUpdateWorkloadValues = async () => {
+    if (selectedChart === 'deployment') valuesData.values.containerPorts[0].name = 'http'
     const values = { ...valuesData?.values, fullnameOverride: workload?.name }
     const res = await updateWorkloadValues({
       teamId,
@@ -127,7 +128,7 @@ export default function ({
       workloadId,
       body: {
         id: workloadId,
-        values: omit(valuesData, ['id', 'teamId', 'selectedChart']),
+        values: omit(valuesData.values, ['id', 'teamId', 'selectedChart']),
       } as any,
     })
   }
@@ -189,7 +190,13 @@ export default function ({
           )}
 
           {activeStep === 1 && selectedChart !== 'custom' && (
-            <WorkloadEssentialValues teamId={teamId} valuesData={WLvaluesData} setData={setValuesData} {...other} />
+            <WorkloadEssentialValues
+              teamId={teamId}
+              valuesData={valuesData}
+              setValuesData={setValuesData}
+              selectedChart={selectedChart}
+              {...other}
+            />
           )}
 
           {activeStep === steps[selectedChart].length - 1 && (

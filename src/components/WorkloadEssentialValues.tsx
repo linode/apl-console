@@ -7,8 +7,16 @@ import React from 'react'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getWorkloadValuesSchema = (): any => {
+export const getWorkloadValuesSchema = (selectedChart): any => {
   const schema = cloneDeep(getSpec().components.schemas.WorkloadValues)
+  if (selectedChart === 'ksvc') {
+    const { image }: any = schema.properties.values.properties
+    schema.properties.values.properties.scaleToZero = { type: 'boolean', default: false, title: 'Scale to Zero' }
+    schema.properties.values.properties.image = {
+      ...image,
+      properties: { ...image.properties, harbor: { type: 'boolean', default: false, title: 'Harbor registry' } },
+    }
+  }
   return schema
 }
 
@@ -39,13 +47,14 @@ export const getWorkloadValuesUiSchema = (user: GetSessionApiResponse['user'], t
 interface Props extends CrudProps {
   teamId: string
   valuesData: any
-  setData: (formData: any) => void
+  setValuesData: (formData: any) => void
+  selectedChart: string
 }
 
-export default function ({ teamId, valuesData, setData, ...other }: Props): React.ReactElement {
+export default function ({ teamId, valuesData, setValuesData, selectedChart, ...other }: Props): React.ReactElement {
   const { appsEnabled, user } = useSession()
   // END HOOKS
-  const schema = getWorkloadValuesSchema()
+  const schema = getWorkloadValuesSchema(selectedChart)
   const uiSchema = getWorkloadValuesUiSchema(user, teamId)
 
   return (
@@ -53,7 +62,7 @@ export default function ({ teamId, valuesData, setData, ...other }: Props): Reac
       schema={schema}
       uiSchema={uiSchema}
       data={valuesData}
-      onChange={setData}
+      onChange={setValuesData}
       disabled={!appsEnabled.argocd}
       resourceType='Workload'
       children

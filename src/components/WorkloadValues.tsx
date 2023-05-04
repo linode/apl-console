@@ -92,7 +92,9 @@ export default function ({
         code={yaml}
         onChange={(data) => {
           setRawValues(data || {})
-          setWorkloadValues?.(data)
+          setWorkloadValues?.((prev: any) => {
+            return { ...prev, values: data }
+          })
         }}
         disabled={!isEdit}
         setValid={setValidRaw}
