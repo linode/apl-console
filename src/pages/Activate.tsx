@@ -1,37 +1,27 @@
-import { Alert, Box, Card, Container, TextField, styled } from '@mui/material'
-import { FormEventHandler, useEffect, useState } from 'react'
+import { Alert, Box, Card, Container, TextField, Typography, styled } from '@mui/material'
+import { FormEventHandler, useState } from 'react'
 import Logo from 'components/Logo'
 import { useActivateLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
 import useSettings from 'hooks/useSettings'
+import snack from 'utils/snack'
 
 const StyledPage = styled(Container)({
   display: 'flex',
+  flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
   height: '100vh',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundImage: `url(/teaser.png)`,
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-    opacity: 0.8, // Set opacity to 0.9 to make the background slightly transparent
-  },
 })
 
 const StyledCard = styled(Card)({
   display: 'flex',
   flexDirection: 'column',
-  height: '40vh',
+  height: '36vh',
   width: '40vh',
   alignItems: 'center',
-  paddingTop: '4vh',
+  padding: '4vh',
 })
 
 export default function Activate() {
@@ -41,19 +31,6 @@ export default function Activate() {
   const [loading, setLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
   const history = useHistory()
-
-  useEffect(() => {
-    // Store the current body background color
-    const originalBodyBackgroundColor = document.body.style.backgroundColor
-
-    // Set the body background color to white
-    document.body.style.backgroundColor = 'white'
-
-    // Restore the original background color on unmount
-    return () => {
-      document.body.style.backgroundColor = originalBodyBackgroundColor
-    }
-  }, [])
 
   const handleActivateLicense: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
@@ -65,7 +42,7 @@ export default function Activate() {
       .then((result) => {
         setLoading(false)
         if ('data' in result && result.data.isValid) history.push('/')
-        else setIsInvalid(true)
+        else snack.error('License is invalid')
       })
       .catch(() => {
         setLoading(false)
@@ -74,32 +51,45 @@ export default function Activate() {
 
   return (
     <StyledPage>
+      <Logo width={100} height={100} sx={{ position: 'absolute', top: '10px', left: '10px' }} />
+      <Logo
+        width={1000}
+        height={1000}
+        sx={{ position: 'absolute', right: '-10%', bottom: '-35%', zIndex: -100, opacity: 0.3 }}
+      />
       <StyledCard>
-        <Logo width={100} height={100} />
-        <form onSubmit={handleActivateLicense}>
-          <TextField
-            fullWidth
-            margin='normal'
-            label='Your key'
-            variant='outlined'
-            value={jwt}
-            onChange={(event) => setJwt(event.target.value)}
-          />
-          {isInvalid && <Alert severity='error'>Invalid key</Alert>}
-
-          <Box marginTop={2}>
-            <LoadingButton
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
+          <Typography variant='h5'>Register your cluster</Typography>
+          <Typography sx={{ mt: 2 }}>
+            Register a free account at <b>Otomi cloud</b>. From the dashboard click <b> Register cluster </b> and copy
+            the api key
+          </Typography>
+        </Box>
+        <Box sx={{ width: '100%', mt: 4 }}>
+          <form onSubmit={handleActivateLicense}>
+            <TextField
               fullWidth
-              color='primary'
-              variant='contained'
-              type='submit'
-              loading={loading}
-              disabled={!jwt}
-            >
-              Activate
-            </LoadingButton>
-          </Box>
-        </form>
+              label='Your api key'
+              variant='outlined'
+              value={jwt}
+              onChange={(event) => setJwt(event.target.value)}
+            />
+            {isInvalid && <Alert severity='error'>Invalid key</Alert>}
+
+            <Box marginTop={5}>
+              <LoadingButton
+                fullWidth
+                color='primary'
+                variant='contained'
+                type='submit'
+                loading={loading}
+                disabled={!jwt}
+              >
+                Activate
+              </LoadingButton>
+            </Box>
+          </form>
+        </Box>
       </StyledCard>
     </StyledPage>
   )
