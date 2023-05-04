@@ -5,6 +5,7 @@ import AltRoute from '@mui/icons-material/AltRoute'
 import AnnouncementIcon from '@mui/icons-material/Announcement'
 import AppsIcon from '@mui/icons-material/Apps'
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
+import AddToDriveIcon from '@mui/icons-material/AddToDrive'
 import CloudIcon from '@mui/icons-material/Cloud'
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
@@ -14,7 +15,6 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import HistoryIcon from '@mui/icons-material/History'
-import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty'
 import HubIcon from '@mui/icons-material/Hub'
 import ShortcutIcon from '@mui/icons-material/Link'
 import LockIcon from '@mui/icons-material/Lock'
@@ -278,6 +278,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Teams')} />
           </StyledMenuItem>
+          <StyledMenuItem to='/builds' selected={pathname === '/builds'} data-cy='menu-item-builds'>
+            <ListItemIcon>
+              <AddToDriveIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Builds')} />
+          </StyledMenuItem>
           <StyledMenuItem to='/workloads' selected={pathname === '/workloads'} data-cy='menu-item-workloads'>
             <ListItemIcon>
               <AppRegistrationIcon />
@@ -289,12 +295,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
-          </StyledMenuItem>
-          <StyledMenuItem to='/jobs' selected={pathname === '/jobs'} data-cy='menu-item-jobs'>
-            <ListItemIcon>
-              <HourglassEmptyIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
 
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
@@ -373,6 +373,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </StyledMenuItem>
           )}
           <StyledMenuItem
+            to={`/teams/${teamId}/builds`}
+            selected={pathname.indexOf(`/teams/${teamId}/builds`) === 0}
+            data-cy='menu-item-team-builds'
+          >
+            <ListItemIcon>
+              <AddToDriveIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('builds')} />
+          </StyledMenuItem>
+          <StyledMenuItem
             to={`/teams/${teamId}/workloads`}
             selected={pathname.indexOf(`/teams/${teamId}/workloads`) === 0}
             data-cy='menu-item-team-workloads'
@@ -391,16 +401,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
-          </StyledMenuItem>
-          <StyledMenuItem
-            to={`/teams/${teamId}/jobs`}
-            selected={pathname.indexOf(`/teams/${teamId}/jobs`) === 0}
-            data-cy='menu-item-team-jobs'
-          >
-            <ListItemIcon>
-              <HourglassEmptyIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Jobs')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}

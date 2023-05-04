@@ -4,14 +4,8 @@ const injectedRtkApi = api.injectEndpoints({
     activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
       query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
     }),
-    getK8SAllServices: build.query<GetK8SAllServicesApiResponse, GetK8SAllServicesApiArg>({
-      query: () => ({ url: `/kubernetes/services` }),
-    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
-    }),
-    getAllJobs: build.query<GetAllJobsApiResponse, GetAllJobsApiArg>({
-      query: () => ({ url: `/jobs` }),
     }),
     getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
       query: () => ({ url: `/services` }),
@@ -31,12 +25,6 @@ const injectedRtkApi = api.injectEndpoints({
     deleteTeam: build.mutation<DeleteTeamApiResponse, DeleteTeamApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}`, method: 'DELETE' }),
     }),
-    getTeamJobs: build.query<GetTeamJobsApiResponse, GetTeamJobsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs` }),
-    }),
-    createJob: build.mutation<CreateJobApiResponse, CreateJobApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs`, method: 'POST', body: queryArg.body }),
-    }),
     getTeamServices: build.query<GetTeamServicesApiResponse, GetTeamServicesApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services` }),
     }),
@@ -45,19 +33,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
-    }),
-    getJob: build.query<GetJobApiResponse, GetJobApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}` }),
-    }),
-    editJob: build.mutation<EditJobApiResponse, EditJobApiArg>({
-      query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
-    deleteJob: build.mutation<DeleteJobApiResponse, DeleteJobApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/jobs/${queryArg.jobId}`, method: 'DELETE' }),
     }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}` }),
@@ -90,6 +65,28 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
+    }),
+    getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
+      query: () => ({ url: `/builds` }),
+    }),
+    getTeamBuilds: build.query<GetTeamBuildsApiResponse, GetTeamBuildsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds` }),
+    }),
+    createBuild: build.mutation<CreateBuildApiResponse, CreateBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteBuild: build.mutation<DeleteBuildApiResponse, DeleteBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`, method: 'DELETE' }),
+    }),
+    getBuild: build.query<GetBuildApiResponse, GetBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}` }),
+    }),
+    editBuild: build.mutation<EditBuildApiResponse, EditBuildApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
     }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
@@ -187,11 +184,6 @@ export type ActivateLicenseApiArg = {
     jwt: string
   }
 }
-export type GetK8SAllServicesApiResponse = /** status 200 Successfully obtained kuebrentes services */ {
-  name: string
-  ports?: number[]
-}[]
-export type GetK8SAllServicesApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -212,183 +204,15 @@ export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all 
       }
 }[]
 export type GetAllSecretsApiArg = void
-export type GetAllJobsApiResponse = /** status 200 Successfully obtained all jobs */ ({
-  id?: string
-  teamId?: string
-} & {
-  name: string
-  enabled?: boolean
-  type: 'Job' | 'CronJob'
-  script: string
-  ttlSecondsAfterFinished?: number
-  schedule?: string
-  runPolicy?: 'Always' | 'OnSpecChange'
-  init?: ({
-    securityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      [key: string]: any
-    }
-  } & {
-    image: {
-      repository: string
-    } & {
-      tag: string
-      pullPolicy?: 'IfNotPresent' | 'Always'
-    }
-    resources: {
-      limits: {
-        cpu: string
-        memory: string
-      }
-      requests: {
-        cpu: string
-        memory: string
-      }
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    secrets?: string[]
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    command?: string
-    args?: string
-  })[]
-} & ({
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-  } & {
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      fsGroup?: string
-      fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-    }
-  } & ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    })))[]
-export type GetAllJobsApiArg = void
 export type GetAllServicesApiResponse = /** status 200 Successfully obtained all services */ {
   id?: string
   teamId?: string
   name: string
   namespace?: string
   port?: number
-  ksvc?:
-    | {
-        serviceType?: 'svcPredeployed'
-      }
-    | {
-        serviceType?: 'ksvcPredeployed'
-      }
-    | ({
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-      } & {
-        securityContext?: {
-          runAsUser?: number
-          readOnlyRootFilesystem?: boolean
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      } & {
-        serviceType: 'ksvc'
-        scaleToZero?: boolean
-        containerPort?: number
-      })
+  ksvc?: {
+    predeployed?: boolean
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -459,15 +283,15 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -483,8 +307,8 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -538,15 +362,15 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -562,8 +386,8 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -618,15 +442,15 @@ export type CreateTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -642,8 +466,8 @@ export type CreateTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -697,15 +521,15 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -721,8 +545,8 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -779,15 +603,15 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -803,8 +627,8 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -861,15 +685,15 @@ export type EditTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -885,8 +709,8 @@ export type EditTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -930,415 +754,15 @@ export type DeleteTeamApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type GetTeamJobsApiResponse = /** status 200 Successfully obtained jobs */ ({
-  id?: string
-  teamId?: string
-} & {
-  name: string
-  enabled?: boolean
-  type: 'Job' | 'CronJob'
-  script: string
-  ttlSecondsAfterFinished?: number
-  schedule?: string
-  runPolicy?: 'Always' | 'OnSpecChange'
-  init?: ({
-    securityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      [key: string]: any
-    }
-  } & {
-    image: {
-      repository: string
-    } & {
-      tag: string
-      pullPolicy?: 'IfNotPresent' | 'Always'
-    }
-    resources: {
-      limits: {
-        cpu: string
-        memory: string
-      }
-      requests: {
-        cpu: string
-        memory: string
-      }
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    secrets?: string[]
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    command?: string
-    args?: string
-  })[]
-} & ({
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-  } & {
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      fsGroup?: string
-      fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-    }
-  } & ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    })))[]
-export type GetTeamJobsApiArg = {
-  /** ID of team to return */
-  teamId: string
-}
-export type CreateJobApiResponse = /** status 200 Successfully stored job configuration */ {
-  id?: string
-  teamId?: string
-} & {
-  name: string
-  enabled?: boolean
-  type: 'Job' | 'CronJob'
-  script: string
-  ttlSecondsAfterFinished?: number
-  schedule?: string
-  runPolicy?: 'Always' | 'OnSpecChange'
-  init?: ({
-    securityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      [key: string]: any
-    }
-  } & {
-    image: {
-      repository: string
-    } & {
-      tag: string
-      pullPolicy?: 'IfNotPresent' | 'Always'
-    }
-    resources: {
-      limits: {
-        cpu: string
-        memory: string
-      }
-      requests: {
-        cpu: string
-        memory: string
-      }
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    secrets?: string[]
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    command?: string
-    args?: string
-  })[]
-} & ({
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-  } & {
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      fsGroup?: string
-      fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-    }
-  } & ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    }))
-export type CreateJobApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** Job object */
-  body: {
-    id?: string
-    teamId?: string
-  } & {
-    name: string
-    enabled?: boolean
-    type: 'Job' | 'CronJob'
-    script: string
-    ttlSecondsAfterFinished?: number
-    schedule?: string
-    runPolicy?: 'Always' | 'OnSpecChange'
-    init?: ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    })[]
-  } & ({
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-    } & {
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        fsGroup?: string
-        fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-      }
-    } & ({
-        securityContext?: {
-          runAsUser?: number
-          runAsGroup?: number
-          runAsNonRoot?: boolean
-          [key: string]: any
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      }))
-}
 export type GetTeamServicesApiResponse = /** status 200 Successfully obtained services */ {
   id?: string
   teamId?: string
   name: string
   namespace?: string
   port?: number
-  ksvc?:
-    | {
-        serviceType?: 'svcPredeployed'
-      }
-    | {
-        serviceType?: 'ksvcPredeployed'
-      }
-    | ({
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-      } & {
-        securityContext?: {
-          runAsUser?: number
-          readOnlyRootFilesystem?: boolean
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      } & {
-        serviceType: 'ksvc'
-        scaleToZero?: boolean
-        containerPort?: number
-      })
+  ksvc?: {
+    predeployed?: boolean
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1403,64 +827,9 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
   name: string
   namespace?: string
   port?: number
-  ksvc?:
-    | {
-        serviceType?: 'svcPredeployed'
-      }
-    | {
-        serviceType?: 'ksvcPredeployed'
-      }
-    | ({
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-      } & {
-        securityContext?: {
-          runAsUser?: number
-          readOnlyRootFilesystem?: boolean
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      } & {
-        serviceType: 'ksvc'
-        scaleToZero?: boolean
-        containerPort?: number
-      })
+  ksvc?: {
+    predeployed?: boolean
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1525,64 +894,9 @@ export type CreateServiceApiArg = {
     name: string
     namespace?: string
     port?: number
-    ksvc?:
-      | {
-          serviceType?: 'svcPredeployed'
-        }
-      | {
-          serviceType?: 'ksvcPredeployed'
-        }
-      | ({
-          annotations?: {
-            name?: string
-            value?: string
-          }[]
-        } & {
-          securityContext?: {
-            runAsUser?: number
-            readOnlyRootFilesystem?: boolean
-          }
-        } & {
-          image: {
-            repository: string
-          } & {
-            tag: string
-            pullPolicy?: 'IfNotPresent' | 'Always'
-          }
-          resources: {
-            limits: {
-              cpu: string
-              memory: string
-            }
-            requests: {
-              cpu: string
-              memory: string
-            }
-          }
-          env?:
-            | {
-                name: string
-                value: string
-              }[]
-            | null
-          secrets?: string[]
-          secretMounts?: {
-            name: string
-            path: string
-          }[]
-          files?:
-            | {
-                path: string
-                content: string
-              }[]
-            | null
-          command?: string
-          args?: string
-        } & {
-          serviceType: 'ksvc'
-          scaleToZero?: boolean
-          containerPort?: number
-        })
+    ksvc?: {
+      predeployed?: boolean
+    }
     ingress:
       | ({
           type?: 'cluster'
@@ -1641,366 +955,11 @@ export type CreateServiceApiArg = {
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
   name: string
   ports?: number[]
+  managedByKnative?: boolean
 }[]
 export type GetTeamK8SServicesApiArg = {
   /** ID of team to return */
   teamId: string
-}
-export type GetJobApiResponse = /** status 200 Successfully obtained job configuration */ {
-  id?: string
-  teamId?: string
-} & {
-  name: string
-  enabled?: boolean
-  type: 'Job' | 'CronJob'
-  script: string
-  ttlSecondsAfterFinished?: number
-  schedule?: string
-  runPolicy?: 'Always' | 'OnSpecChange'
-  init?: ({
-    securityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      [key: string]: any
-    }
-  } & {
-    image: {
-      repository: string
-    } & {
-      tag: string
-      pullPolicy?: 'IfNotPresent' | 'Always'
-    }
-    resources: {
-      limits: {
-        cpu: string
-        memory: string
-      }
-      requests: {
-        cpu: string
-        memory: string
-      }
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    secrets?: string[]
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    command?: string
-    args?: string
-  })[]
-} & ({
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-  } & {
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      fsGroup?: string
-      fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-    }
-  } & ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    }))
-export type GetJobApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the job */
-  jobId: string
-}
-export type EditJobApiResponse = /** status 200 Successfully edited job */ {
-  id?: string
-  teamId?: string
-} & {
-  name: string
-  enabled?: boolean
-  type: 'Job' | 'CronJob'
-  script: string
-  ttlSecondsAfterFinished?: number
-  schedule?: string
-  runPolicy?: 'Always' | 'OnSpecChange'
-  init?: ({
-    securityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      [key: string]: any
-    }
-  } & {
-    image: {
-      repository: string
-    } & {
-      tag: string
-      pullPolicy?: 'IfNotPresent' | 'Always'
-    }
-    resources: {
-      limits: {
-        cpu: string
-        memory: string
-      }
-      requests: {
-        cpu: string
-        memory: string
-      }
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    secrets?: string[]
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    command?: string
-    args?: string
-  })[]
-} & ({
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-  } & {
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsGroup?: number
-      runAsNonRoot?: boolean
-      fsGroup?: string
-      fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-    }
-  } & ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    }))
-export type EditJobApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the job */
-  jobId: string
-  /** Job object that contains updated values */
-  body: {
-    id?: string
-    teamId?: string
-  } & {
-    name: string
-    enabled?: boolean
-    type: 'Job' | 'CronJob'
-    script: string
-    ttlSecondsAfterFinished?: number
-    schedule?: string
-    runPolicy?: 'Always' | 'OnSpecChange'
-    init?: ({
-      securityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        [key: string]: any
-      }
-    } & {
-      image: {
-        repository: string
-      } & {
-        tag: string
-        pullPolicy?: 'IfNotPresent' | 'Always'
-      }
-      resources: {
-        limits: {
-          cpu: string
-          memory: string
-        }
-        requests: {
-          cpu: string
-          memory: string
-        }
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      secrets?: string[]
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      command?: string
-      args?: string
-    })[]
-  } & ({
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-    } & {
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsGroup?: number
-        runAsNonRoot?: boolean
-        fsGroup?: string
-        fsGroupChangePolicy?: 'Always' | 'OnRootMismatch'
-      }
-    } & ({
-        securityContext?: {
-          runAsUser?: number
-          runAsGroup?: number
-          runAsNonRoot?: boolean
-          [key: string]: any
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      }))
-}
-export type DeleteJobApiResponse = /** status 200 Successfully deleted a job */ undefined
-export type DeleteJobApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the job */
-  jobId: string
 }
 export type GetServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
   id?: string
@@ -2008,64 +967,9 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
   name: string
   namespace?: string
   port?: number
-  ksvc?:
-    | {
-        serviceType?: 'svcPredeployed'
-      }
-    | {
-        serviceType?: 'ksvcPredeployed'
-      }
-    | ({
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-      } & {
-        securityContext?: {
-          runAsUser?: number
-          readOnlyRootFilesystem?: boolean
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      } & {
-        serviceType: 'ksvc'
-        scaleToZero?: boolean
-        containerPort?: number
-      })
+  ksvc?: {
+    predeployed?: boolean
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -2132,64 +1036,9 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
   name: string
   namespace?: string
   port?: number
-  ksvc?:
-    | {
-        serviceType?: 'svcPredeployed'
-      }
-    | {
-        serviceType?: 'ksvcPredeployed'
-      }
-    | ({
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-      } & {
-        securityContext?: {
-          runAsUser?: number
-          readOnlyRootFilesystem?: boolean
-        }
-      } & {
-        image: {
-          repository: string
-        } & {
-          tag: string
-          pullPolicy?: 'IfNotPresent' | 'Always'
-        }
-        resources: {
-          limits: {
-            cpu: string
-            memory: string
-          }
-          requests: {
-            cpu: string
-            memory: string
-          }
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        secrets?: string[]
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        command?: string
-        args?: string
-      } & {
-        serviceType: 'ksvc'
-        scaleToZero?: boolean
-        containerPort?: number
-      })
+  ksvc?: {
+    predeployed?: boolean
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -2256,64 +1105,9 @@ export type EditServiceApiArg = {
     name: string
     namespace?: string
     port?: number
-    ksvc?:
-      | {
-          serviceType?: 'svcPredeployed'
-        }
-      | {
-          serviceType?: 'ksvcPredeployed'
-        }
-      | ({
-          annotations?: {
-            name?: string
-            value?: string
-          }[]
-        } & {
-          securityContext?: {
-            runAsUser?: number
-            readOnlyRootFilesystem?: boolean
-          }
-        } & {
-          image: {
-            repository: string
-          } & {
-            tag: string
-            pullPolicy?: 'IfNotPresent' | 'Always'
-          }
-          resources: {
-            limits: {
-              cpu: string
-              memory: string
-            }
-            requests: {
-              cpu: string
-              memory: string
-            }
-          }
-          env?:
-            | {
-                name: string
-                value: string
-              }[]
-            | null
-          secrets?: string[]
-          secretMounts?: {
-            name: string
-            path: string
-          }[]
-          files?:
-            | {
-                path: string
-                content: string
-              }[]
-            | null
-          command?: string
-          args?: string
-        } & {
-          serviceType: 'ksvc'
-          scaleToZero?: boolean
-          containerPort?: number
-        })
+    ksvc?: {
+      predeployed?: boolean
+    }
     ingress:
       | ({
           type?: 'cluster'
@@ -2519,6 +1313,155 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}[]
+export type GetAllBuildsApiArg = void
+export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}[]
+export type GetTeamBuildsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateBuildApiResponse = /** status 200 Successfully stored build configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type CreateBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Build object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+    appSource?: {
+      repoUrl?: string
+      path?: string
+      revision?: string
+    }
+  }
+}
+export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
+export type DeleteBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+}
+export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type GetBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+}
+export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type EditBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+  /** Build object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+    appSource?: {
+      repoUrl?: string
+      path?: string
+      revision?: string
+    }
+  }
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -2527,6 +1470,7 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }[]
 export type GetAllWorkloadsApiArg = void
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
@@ -2537,6 +1481,7 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -2550,6 +1495,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -2563,6 +1509,7 @@ export type CreateWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    namespace?: string
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -2580,6 +1527,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -2595,6 +1543,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   path?: string
   chart?: string
   revision?: string
+  namespace?: string
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -2610,6 +1559,7 @@ export type EditWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    namespace?: string
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
@@ -2713,15 +1663,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -2737,8 +1687,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   cluster?: {
@@ -2809,15 +1759,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -2833,8 +1783,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   azure?: {
@@ -3135,15 +2085,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -3159,8 +2109,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     cluster?: {
@@ -3231,15 +2181,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -3255,8 +2205,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     azure?: {
@@ -3596,23 +2546,16 @@ export type EditAppApiArg = {
 }
 export const {
   useActivateLicenseMutation,
-  useGetK8SAllServicesQuery,
   useGetAllSecretsQuery,
-  useGetAllJobsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
   useCreateTeamMutation,
   useGetTeamQuery,
   useEditTeamMutation,
   useDeleteTeamMutation,
-  useGetTeamJobsQuery,
-  useCreateJobMutation,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
   useGetTeamK8SServicesQuery,
-  useGetJobQuery,
-  useEditJobMutation,
-  useDeleteJobMutation,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
@@ -3621,6 +2564,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllBuildsQuery,
+  useGetTeamBuildsQuery,
+  useCreateBuildMutation,
+  useDeleteBuildMutation,
+  useGetBuildQuery,
+  useEditBuildMutation,
   useGetAllWorkloadsQuery,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,

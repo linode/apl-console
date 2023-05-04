@@ -44,6 +44,10 @@ k8s:
       disableIstioInjection: true
     - name: kured
       app: kured
+    - name: kpack
+      app: kpack
+      disableIstioInjection: true
+      disablePolicyChecks: true
     - name: maintenance
       disableIstioInjection: true
     - name: monitoring
@@ -273,6 +277,8 @@ adminApps:
   #       namespace: harbor
   #       type: public
   #       auth: true
+  - name: kpack
+    tags: [buildpacks]
   - name: minio
     tags: [storage, backup]
     ownHost: true
