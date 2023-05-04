@@ -66,6 +66,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
+      query: () => ({ url: `/builds` }),
+    }),
+    getTeamBuilds: build.query<GetTeamBuildsApiResponse, GetTeamBuildsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds` }),
+    }),
+    createBuild: build.mutation<CreateBuildApiResponse, CreateBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteBuild: build.mutation<DeleteBuildApiResponse, DeleteBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`, method: 'DELETE' }),
+    }),
+    getBuild: build.query<GetBuildApiResponse, GetBuildApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}` }),
+    }),
+    editBuild: build.mutation<EditBuildApiResponse, EditBuildApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -261,15 +283,15 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -285,8 +307,8 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -340,15 +362,15 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -364,8 +386,8 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -420,15 +442,15 @@ export type CreateTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -444,8 +466,8 @@ export type CreateTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -499,15 +521,15 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -523,8 +545,8 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -581,15 +603,15 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -605,8 +627,8 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -663,15 +685,15 @@ export type EditTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -687,8 +709,8 @@ export type EditTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -1291,6 +1313,155 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}[]
+export type GetAllBuildsApiArg = void
+export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}[]
+export type GetTeamBuildsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateBuildApiResponse = /** status 200 Successfully stored build configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type CreateBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Build object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+    appSource?: {
+      repoUrl?: string
+      path?: string
+      revision?: string
+    }
+  }
+}
+export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
+export type DeleteBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+}
+export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type GetBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+}
+export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
+  id?: string
+  teamId?: string
+  name: string
+  tag?: string
+  repoAccess?: {
+    otomiGit?: boolean
+    privateGit?: boolean
+    repoUserName?: string
+    repoPassword?: string
+  }
+  appSource?: {
+    repoUrl?: string
+    path?: string
+    revision?: string
+  }
+}
+export type EditBuildApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  buildId: string
+  /** Build object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+    appSource?: {
+      repoUrl?: string
+      path?: string
+      revision?: string
+    }
+  }
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -1492,15 +1663,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -1516,8 +1687,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   cluster?: {
@@ -1588,15 +1759,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -1612,8 +1783,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   azure?: {
@@ -1914,15 +2085,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -1938,8 +2109,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     cluster?: {
@@ -2010,15 +2181,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -2034,8 +2205,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     azure?: {
@@ -2393,6 +2564,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllBuildsQuery,
+  useGetTeamBuildsQuery,
+  useCreateBuildMutation,
+  useDeleteBuildMutation,
+  useGetBuildQuery,
+  useEditBuildMutation,
   useGetAllWorkloadsQuery,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,

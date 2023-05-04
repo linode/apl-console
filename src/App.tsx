@@ -6,6 +6,7 @@ import { CssBaseline } from '@mui/material'
 import cookie from 'cookie'
 import ErrorComponent from 'components/Error'
 import Workloads from 'pages/Workloads'
+import Builds from 'pages/Builds'
 import OtomiApp from 'pages/App'
 import Activate from 'pages/Activate'
 import Apps from 'pages/Apps'
@@ -35,6 +36,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { store } from 'redux/store'
 import { IoProvider } from 'socket.io-react-hook'
 import Workload from 'pages/Workload'
+import Build from 'pages/Build'
 import WorkloadValues from 'pages/WorkloadValues'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
@@ -89,6 +91,7 @@ function App() {
                                 <Route path='/services' component={Services} exact />
                                 <Route path='/workloads' component={Workloads} exact />
                                 <Route path='/settings' component={SettingsOverview} exact />
+                                <Route path='/builds' component={Builds} exact />
                                 <Route path='/settings/:settingId' component={Setting} exact />
                                 <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                                 <Route path='/teams' component={Teams} exact />
@@ -96,8 +99,11 @@ function App() {
                                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                                 <Route path='/teams/:teamId/create-workload' component={Workload} exact />
+                                <Route path='/teams/:teamId/create-build' component={Build} exact />
                                 <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                                 <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                                <Route path='/teams/:teamId/builds' component={Builds} exact />
+                                <Route path='/teams/:teamId/builds/:buildId' component={Build} exact />
                                 <Route path='/teams/:teamId/workloads' component={Workloads} exact />
                                 <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact />
                                 <Route
