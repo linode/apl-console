@@ -9,14 +9,8 @@ import Form from './rjsf/Form'
 
 export const getWorkloadValuesSchema = (selectedChart): any => {
   const schema = cloneDeep(getSpec().components.schemas.WorkloadValues)
-  if (selectedChart === 'ksvc') {
-    const { image }: any = schema.properties.values.properties
-    schema.properties.values.properties.scaleToZero = { type: 'boolean', default: false, title: 'Scale to Zero' }
-    schema.properties.values.properties.image = {
-      ...image,
-      properties: { ...image.properties, harbor: { type: 'boolean', default: false, title: 'Harbor registry' } },
-    }
-  }
+  if (selectedChart === 'ksvc')
+    schema.properties.values.properties.scaleToZero = { type: 'boolean', default: true, title: 'Scale to Zero' }
   return schema
 }
 
