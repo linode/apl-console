@@ -35,6 +35,7 @@ export default function NavConfig() {
         { title: 'Shortcuts', path: '/shortcuts/admin', icon: getIcon('shortcuts_icon.svg') },
         { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
+        { title: 'Builds (BETA)', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
         {
@@ -54,6 +55,7 @@ export default function NavConfig() {
           icon: getIcon('shortcuts_icon.svg'),
           dontShowIfAdminTeam: true,
         },
+        { title: 'Builds (BETA)', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
