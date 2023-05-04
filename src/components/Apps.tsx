@@ -183,7 +183,11 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     <div className={cx(classes.root)}>
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(dataFiltered.filter((app) => app.enabled === true).sort(sortArray))}
+        {out(
+          dataFiltered
+            .filter((app) => app.enabled === true || app.id === 'gitea' || app.id === 'drone' || app.id !== 'falco')
+            .sort(sortArray),
+        )}
       </Grid>
     </div>
   )
