@@ -169,6 +169,10 @@ export const getAppUiSchema = (
         set(uiSchema, 'storage.azureBlob.aadClientId.ui:widget', 'hidden')
         set(uiSchema, 'storage.azureBlob.aadClientSecret.ui:widget', 'hidden')
       }
+      if (cloudprovider?.type === 'google') {
+        set(uiSchema, 'storage.gcs.serviceAccount.ui:widget', 'hidden')
+        set(uiSchema, 'storage.gcs.saKeyJson.ui:widget', 'hidden')
+      }
       break
     default:
       break
