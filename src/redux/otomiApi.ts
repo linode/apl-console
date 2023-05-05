@@ -120,6 +120,13 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    updateWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        method: 'PATCH',
+        body: queryArg.body,
+      }),
+    }),
     deploy: build.query<DeployApiResponse, DeployApiArg>({
       query: () => ({ url: `/deploy` }),
     }),
@@ -1528,6 +1535,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: string
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -1566,7 +1574,7 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
   id?: string
   teamId?: string
   name?: string
-  values: object
+  values?: object
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -2578,6 +2586,7 @@ export const {
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
+  useUpdateWorkloadValuesMutation,
   useDeployQuery,
   useRevertQuery,
   useRestoreQuery,
