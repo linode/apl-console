@@ -147,7 +147,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     disabledApps = disabledApps.filter((app) => !disabledByProviderApps[app.id])
 
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
-  console.log('apps', apps)
 
   const out = (items) =>
     items.map((item) => {
