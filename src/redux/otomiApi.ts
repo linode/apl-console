@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    deleteLicense: build.mutation<DeleteLicenseApiResponse, DeleteLicenseApiArg>({
+      query: () => ({ url: `/license`, method: 'DELETE' }),
+    }),
     activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
       query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
     }),
@@ -141,6 +144,8 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type DeleteLicenseApiResponse = unknown
+export type DeleteLicenseApiArg = void
 export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
   isValid: boolean
   hasLicense: boolean
@@ -261,15 +266,15 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -285,8 +290,8 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -340,15 +345,15 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -364,8 +369,8 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -420,15 +425,15 @@ export type CreateTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -444,8 +449,8 @@ export type CreateTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -499,15 +504,15 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -523,8 +528,8 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -581,15 +586,15 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -605,8 +610,8 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -663,15 +668,15 @@ export type EditTeamApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -687,8 +692,8 @@ export type EditTeamApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -1492,15 +1497,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -1516,8 +1521,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   cluster?: {
@@ -1588,15 +1593,15 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     slack?: {
       channel?: string
       channelCrit?: string
-      url: string
+      url?: string
     }
     msteams?: {
-      highPrio: string
-      lowPrio: string
+      highPrio?: string
+      lowPrio?: string
     }
     opsgenie?: {
-      apiKey: string
-      url: string
+      apiKey?: string
+      url?: string
       responders?: ({
         type: 'team' | 'user' | 'escalation' | 'schedule'
       } & (
@@ -1612,8 +1617,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       ))[]
     }
     email?: {
-      critical: string
-      nonCritical: string
+      critical?: string
+      nonCritical?: string
     }
   }
   azure?: {
@@ -1914,15 +1919,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -1938,8 +1943,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     cluster?: {
@@ -2010,15 +2015,15 @@ export type EditSettingsApiArg = {
       slack?: {
         channel?: string
         channelCrit?: string
-        url: string
+        url?: string
       }
       msteams?: {
-        highPrio: string
-        lowPrio: string
+        highPrio?: string
+        lowPrio?: string
       }
       opsgenie?: {
-        apiKey: string
-        url: string
+        apiKey?: string
+        url?: string
         responders?: ({
           type: 'team' | 'user' | 'escalation' | 'schedule'
         } & (
@@ -2034,8 +2039,8 @@ export type EditSettingsApiArg = {
         ))[]
       }
       email?: {
-        critical: string
-        nonCritical: string
+        critical?: string
+        nonCritical?: string
       }
     }
     azure?: {
@@ -2374,6 +2379,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useDeleteLicenseMutation,
   useActivateLicenseMutation,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,

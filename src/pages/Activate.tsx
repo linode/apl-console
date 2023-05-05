@@ -1,11 +1,12 @@
-import { Alert, Box, Card, Container, TextField, Typography, styled } from '@mui/material'
+import { Box, Button, Card, Container, TextField, Typography, styled } from '@mui/material'
 import { FormEventHandler, useState } from 'react'
 import Logo from 'components/Logo'
-import { useActivateLicenseMutation } from 'redux/otomiApi'
+import { useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
 import useSettings from 'hooks/useSettings'
 import snack from 'utils/snack'
+import { useSession } from 'providers/Session'
 
 const StyledPage = styled(Container)({
   display: 'flex',
@@ -13,6 +14,7 @@ const StyledPage = styled(Container)({
   alignItems: 'center',
   justifyContent: 'center',
   height: '100vh',
+  overflow: 'hidden',
 })
 
 const StyledCard = styled(Card)({
@@ -26,10 +28,12 @@ const StyledCard = styled(Card)({
 
 export default function Activate() {
   const [create] = useActivateLicenseMutation()
+  const [del] = useDeleteLicenseMutation()
   const { themeStretch } = useSettings()
   const [jwt, setJwt] = useState('')
   const [loading, setLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
+  const session = useSession()
   const history = useHistory()
 
   const handleActivateLicense: FormEventHandler<HTMLFormElement> = (event) => {
@@ -49,6 +53,13 @@ export default function Activate() {
       })
   }
 
+  const removeLicense = () => {
+    console.log('clicked')
+    del().then((result) => {
+      console.log('result', result)
+    })
+  }
+
   return (
     <StyledPage>
       <Logo width={100} height={100} sx={{ position: 'absolute', top: '10px', left: '10px' }} />
@@ -58,38 +69,45 @@ export default function Activate() {
         sx={{ position: 'absolute', right: '-10%', bottom: '-35%', zIndex: -100, opacity: 0.3 }}
       />
       <StyledCard>
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
-          <Typography variant='h5'>Register your cluster</Typography>
-          <Typography sx={{ mt: 2 }}>
-            Register a free account at <b>Otomi cloud</b>. From the dashboard click <b> Register cluster </b> and copy
-            the api key
-          </Typography>
-        </Box>
-        <Box sx={{ width: '100%', mt: 4 }}>
-          <form onSubmit={handleActivateLicense}>
-            <TextField
-              fullWidth
-              label='Your api key'
-              variant='outlined'
-              value={jwt}
-              onChange={(event) => setJwt(event.target.value)}
-            />
-            {isInvalid && <Alert severity='error'>Invalid key</Alert>}
-
-            <Box marginTop={5}>
-              <LoadingButton
-                fullWidth
-                color='primary'
-                variant='contained'
-                type='submit'
-                loading={loading}
-                disabled={!jwt}
-              >
-                Activate
-              </LoadingButton>
+        {session && session.license.isValid ? (
+          <Button fullWidth variant='contained' onClick={() => removeLicense()}>
+            delete license
+          </Button>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
+              <Typography variant='h5'>Register your cluster</Typography>
+              <Typography sx={{ mt: 2 }}>
+                Register a free account at <b>Otomi cloud</b>. From the dashboard click <b> Register cluster </b> and
+                copy the api key
+              </Typography>
             </Box>
-          </form>
-        </Box>
+            <Box sx={{ width: '100%', mt: 4 }}>
+              <form onSubmit={handleActivateLicense}>
+                <TextField
+                  fullWidth
+                  label='Your api key'
+                  variant='outlined'
+                  value={jwt}
+                  onChange={(event) => setJwt(event.target.value)}
+                />
+
+                <Box marginTop={3}>
+                  <LoadingButton
+                    fullWidth
+                    color='primary'
+                    variant='contained'
+                    type='submit'
+                    loading={loading}
+                    disabled={!jwt}
+                  >
+                    Activate
+                  </LoadingButton>
+                </Box>
+              </form>
+            </Box>
+          </>
+        )}
       </StyledCard>
     </StyledPage>
   )
