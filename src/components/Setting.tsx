@@ -144,24 +144,14 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         setDisabledMessage('Please enable Velero to activate Backups')
     }
   }, [settingId])
-  // END HOOKS
-  const getDynamicUiSchema = (data) => {
-    const { receivers, drone } = schema.properties
-    const allItems = [...new Set([...receivers.items.enum, ...drone.items.enum])]
-    const uiSchema = {}
-    const diff = allItems.filter((receiver) => !data.receivers.includes(receiver) && !data.drone.includes(receiver))
-    diff.forEach((receiver) => {
-      uiSchema[receiver] = { 'ui:widget': 'hidden' }
-    })
-    return uiSchema
-  }
 
+  // END HOOKS
   const onChangeHandler = (data) => {
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
     setSetting(data)
     const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)
-    setUiSchema({ ...uiSchema, ...getDynamicUiSchema(data) })
+    setUiSchema(uiSchema)
   }
   return (
     <>
