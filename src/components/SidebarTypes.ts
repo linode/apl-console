@@ -8,6 +8,7 @@ export type NavListProps = {
   path: string
   icon?: ReactElement
   dontShowIfAdminTeam?: boolean
+  isDownload?: boolean
   info?: ReactElement
   caption?: string
   disabled?: boolean
