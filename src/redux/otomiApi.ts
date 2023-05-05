@@ -66,6 +66,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
+      query: () => ({ url: `/backups` }),
+    }),
+    getTeamBackups: build.query<GetTeamBackupsApiResponse, GetTeamBackupsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups` }),
+    }),
+    createBackup: build.mutation<CreateBackupApiResponse, CreateBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteBackup: build.mutation<DeleteBackupApiResponse, DeleteBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`, method: 'DELETE' }),
+    }),
+    getBackup: build.query<GetBackupApiResponse, GetBackupApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}` }),
+    }),
+    editBackup: build.mutation<EditBackupApiResponse, EditBackupApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
       query: () => ({ url: `/builds` }),
     }),
@@ -117,6 +139,13 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({
         url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
         method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    updateWorkloadValues: build.mutation<UpdateWorkloadValuesApiResponse, UpdateWorkloadValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        method: 'PATCH',
         body: queryArg.body,
       }),
     }),
@@ -342,7 +371,15 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'backup'
+      | 'oidc'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }[]
@@ -421,7 +458,15 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'backup'
+      | 'oidc'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -501,7 +546,15 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+      team?: (
+        | 'alerts'
+        | 'backup'
+        | 'oidc'
+        | 'resourceQuota'
+        | 'downloadKubeConfig'
+        | 'downloadDockerConfig'
+        | 'networkPolicy'
+      )[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -580,7 +633,15 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'backup'
+      | 'oidc'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -662,7 +723,15 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+    team?: (
+      | 'alerts'
+      | 'backup'
+      | 'oidc'
+      | 'resourceQuota'
+      | 'downloadKubeConfig'
+      | 'downloadDockerConfig'
+      | 'networkPolicy'
+    )[]
     apps?: ('argocd' | 'gitea')[]
   }
 }
@@ -744,7 +813,15 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('alerts' | 'oidc' | 'resourceQuota' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'networkPolicy')[]
+      team?: (
+        | 'alerts'
+        | 'backup'
+        | 'oidc'
+        | 'resourceQuota'
+        | 'downloadKubeConfig'
+        | 'downloadDockerConfig'
+        | 'networkPolicy'
+      )[]
       apps?: ('argocd' | 'gitea')[]
     }
   }
@@ -1313,6 +1390,120 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  schedule?: string
+  snapshotVolumes?: boolean
+  labelSelector?: {
+    name?: string
+    value?: string
+  }[]
+  ttl?: string
+}[]
+export type GetAllBackupsApiArg = void
+export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  schedule?: string
+  snapshotVolumes?: boolean
+  labelSelector?: {
+    name?: string
+    value?: string
+  }[]
+  ttl?: string
+}[]
+export type GetTeamBackupsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  schedule?: string
+  snapshotVolumes?: boolean
+  labelSelector?: {
+    name?: string
+    value?: string
+  }[]
+  ttl?: string
+}
+export type CreateBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Backup object */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    schedule?: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl?: string
+  }
+}
+export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
+export type DeleteBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+}
+export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  schedule?: string
+  snapshotVolumes?: boolean
+  labelSelector?: {
+    name?: string
+    value?: string
+  }[]
+  ttl?: string
+}
+export type GetBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+}
+export type EditBackupApiResponse = /** status 200 Successfully edited a team backup */ {
+  id?: string
+  teamId?: string
+  name?: string
+  schedule?: string
+  snapshotVolumes?: boolean
+  labelSelector?: {
+    name?: string
+    value?: string
+  }[]
+  ttl?: string
+}
+export type EditBackupApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  backupId: string
+  /** Backup object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    schedule?: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl?: string
+  }
+}
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   id?: string
   teamId?: string
@@ -1325,7 +1516,7 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
     repoPassword?: string
   }
   appSource?: {
-    repoUrl?: string
+    repoUrl: string
     path?: string
     revision?: string
   }
@@ -1343,7 +1534,7 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
     repoPassword?: string
   }
   appSource?: {
-    repoUrl?: string
+    repoUrl: string
     path?: string
     revision?: string
   }
@@ -1364,7 +1555,7 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
     repoPassword?: string
   }
   appSource?: {
-    repoUrl?: string
+    repoUrl: string
     path?: string
     revision?: string
   }
@@ -1385,7 +1576,7 @@ export type CreateBuildApiArg = {
       repoPassword?: string
     }
     appSource?: {
-      repoUrl?: string
+      repoUrl: string
       path?: string
       revision?: string
     }
@@ -1410,7 +1601,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
     repoPassword?: string
   }
   appSource?: {
-    repoUrl?: string
+    repoUrl: string
     path?: string
     revision?: string
   }
@@ -1433,7 +1624,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
     repoPassword?: string
   }
   appSource?: {
-    repoUrl?: string
+    repoUrl: string
     path?: string
     revision?: string
   }
@@ -1456,7 +1647,7 @@ export type EditBuildApiArg = {
       repoPassword?: string
     }
     appSource?: {
-      repoUrl?: string
+      repoUrl: string
       path?: string
       revision?: string
     }
@@ -1471,6 +1662,7 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetAllWorkloadsApiArg = void
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
@@ -1482,6 +1674,7 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -1496,6 +1689,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -1510,6 +1704,7 @@ export type CreateWorkloadApiArg = {
     chart?: string
     revision?: string
     namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -1528,6 +1723,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -1544,6 +1740,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   chart?: string
   revision?: string
   namespace?: string
+  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -1560,13 +1757,25 @@ export type EditWorkloadApiArg = {
     chart?: string
     revision?: string
     namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
   id?: string
   teamId?: string
   name?: string
-  values: object
+  values: {
+    fullnameOverride?: string
+    image?: {
+      repository: string
+      tag: string
+    }
+    containerPorts?: {
+      name?: string
+      containerPort?: number
+      protocol?: string
+    }[]
+  }
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -1574,11 +1783,22 @@ export type GetWorkloadValuesApiArg = {
   /** ID of the workload */
   workloadId: string
 }
-export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited a team secret */ {
+export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited workload values */ {
   id?: string
   teamId?: string
   name?: string
-  values: object
+  values: {
+    fullnameOverride?: string
+    image?: {
+      repository: string
+      tag: string
+    }
+    containerPorts?: {
+      name?: string
+      containerPort?: number
+      protocol?: string
+    }[]
+  }
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -1590,7 +1810,59 @@ export type EditWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+    }
+  }
+}
+export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
+  id?: string
+  teamId?: string
+  name?: string
+  values: {
+    fullnameOverride?: string
+    image?: {
+      repository: string
+      tag: string
+    }
+    containerPorts?: {
+      name?: string
+      containerPort?: number
+      protocol?: string
+    }[]
+  }
+}
+export type UpdateWorkloadValuesApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the workload */
+  workloadId: string
+  /** Workload values */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+    }
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
@@ -1702,50 +1974,43 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     region?: string
     k8sContext?: string
   }
-  backup?: {
-    platform?: {
-      gitea?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      drone?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      keycloak?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      harbor?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      vault?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      argo?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      kubeapps?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      minio?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
+  platformBackups?: {
+    gitea?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
     }
-    teams?: {
+    drone?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    keycloak?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    harbor?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    vault?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    argo?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    kubeapps?: {
+      enabled?: boolean
+      ttl?: string
+      schedule?: string
+    }
+    minio?: {
       enabled?: boolean
       ttl?: string
       schedule?: string
@@ -2124,50 +2389,43 @@ export type EditSettingsApiArg = {
       region?: string
       k8sContext?: string
     }
-    backup?: {
-      platform?: {
-        gitea?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        drone?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        keycloak?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        harbor?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        vault?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        argo?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        kubeapps?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        minio?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
+    platformBackups?: {
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
       }
-      teams?: {
+      drone?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      harbor?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      vault?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      argo?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      kubeapps?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      minio?: {
         enabled?: boolean
         ttl?: string
         schedule?: string
@@ -2564,6 +2822,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllBackupsQuery,
+  useGetTeamBackupsQuery,
+  useCreateBackupMutation,
+  useDeleteBackupMutation,
+  useGetBackupQuery,
+  useEditBackupMutation,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
   useCreateBuildMutation,
@@ -2578,6 +2842,7 @@ export const {
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
+  useUpdateWorkloadValuesMutation,
   useDeployQuery,
   useRevertQuery,
   useRestoreQuery,
