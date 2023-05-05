@@ -173,7 +173,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
     ingress: [t('Ingress'), <AltRoute />],
     oidc: [t('OIDC'), <SettingsEthernetIcon />],
     smtp: [t('SMTP'), <MailIcon />],
-    backup: [t('Backup'), <BackupTableIcon />],
+    platformBackups: [t('Backup'), <BackupTableIcon />],
   }
   const downloadOpts = {
     data: ca ?? '',
@@ -296,6 +296,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
           </StyledMenuItem>
+          <StyledMenuItem to='/backups' selected={pathname === '/backups'} data-cy='menu-item-backups'>
+            <ListItemIcon>
+              <BackupTableIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Services')} />
+          </StyledMenuItem>
 
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
@@ -315,7 +321,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
                   (id === 'dns' && !otomi.hasExternalDNS)
                 )
                   disabled = true
-                if (id === 'backup' && !appsEnabled.velero) disabled = true
+                if (id === 'platformBackups' && !appsEnabled.velero) disabled = true
                 return (
                   <StyledMenuItem
                     key={id}
@@ -412,6 +418,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <LockIcon />
             </ListItemIcon>
             <ListItemText primary={t('Secrets')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            to={`/teams/${teamId}/backups`}
+            selected={pathname.indexOf(`/teams/${teamId}/backups`) === 0}
+            data-cy='menu-item-team-backups'
+          >
+            <ListItemIcon>
+              <AppRegistrationIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Backups')} />
           </StyledMenuItem>
           {oboTeamId !== 'admin' && (
             <StyledMenuItem
