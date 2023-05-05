@@ -2,7 +2,6 @@
 import Workload from 'components/Workload'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { omit } from 'lodash'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -11,7 +10,9 @@ import {
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
   useEditWorkloadMutation,
+  useEditWorkloadValuesMutation,
   useGetWorkloadQuery,
+  useUpdateWorkloadValuesMutation,
 } from 'redux/otomiApi'
 
 interface Params {
@@ -25,31 +26,40 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
-    useCreateWorkloadMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditWorkloadMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteWorkloadMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetWorkloadQuery(
-    { teamId, workloadId },
-    { skip: !workloadId },
-  )
+  const { t } = useTranslation()
+  const [createWL, { isLoading: isLoadingCWL, data: createWLData }] = useCreateWorkloadMutation()
+  const [updateWL] = useEditWorkloadMutation()
+  const {
+    data: WLData,
+    isLoading,
+    isFetching,
+    isError,
+    refetch,
+  } = useGetWorkloadQuery({ teamId, workloadId: workloadId || createWLData?.id }, { skip: !workloadId })
+  const [editWLValues] = useEditWorkloadValuesMutation()
+  const [updateWLValues] = useUpdateWorkloadValuesMutation()
+  const [deleteWL, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
   }, [isDirty])
-  const { t } = useTranslation()
   // END HOOKS
-  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/workloads`} />
-  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/workloads/${createData.id}/values`} />
-  const handleSubmit = (formData) => {
-    if (workloadId) update({ teamId, workloadId, body: omit(formData, ['id', 'teamId']) as any })
-    else create({ teamId, body: formData })
-  }
-  const handleDelete = (deleteId) => del({ teamId, workloadId: deleteId })
+  const mutating = isLoadingCWL || isLoadingDWL
+  if (!mutating && isSuccessDWL) return <Redirect to={`/teams/${teamId}/workloads`} />
+
   const comp = !isError && (
-    <Workload onSubmit={handleSubmit} workload={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
+    <Workload
+      teamId={teamId}
+      workload={WLData || createWLData}
+      workloadId={workloadId || createWLData?.id}
+      mutating={mutating}
+      createWorkload={createWL}
+      updateWorkload={updateWL}
+      editWorkloadValues={editWLValues}
+      updateWorkloadValues={updateWLValues}
+      deleteWorkload={deleteWL}
+    />
   )
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_WORKLOAD', { workloadId, role: 'team' })} />
 }
