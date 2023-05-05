@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { getSpec } from 'common/api-spec'
 import { cloneDeep } from 'lodash'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetWorkloadValuesApiResponse } from 'redux/otomiApi'
 import YAML from 'yaml'
@@ -50,16 +50,29 @@ export const getWorkloadValuesSchema = (): any => {
 }
 
 interface Props {
-  workloadValues?: GetWorkloadValuesApiResponse
+  editable?: boolean
   onSubmit?: (formData: any) => void
+  workloadValues?: GetWorkloadValuesApiResponse
+  setWorkloadValues?: (formData: any) => void
+  hideTitle?: boolean
 }
 
-export default function ({ workloadValues, onSubmit, ...other }: Props): React.ReactElement {
-  const [isEdit, setIsEdit] = useState(false)
-  const [rawValues, setRawValues] = useState(workloadValues.values)
+export default function ({
+  editable = false,
+  onSubmit,
+  workloadValues,
+  setWorkloadValues,
+  hideTitle = false,
+  ...other
+}: Props): React.ReactElement {
+  const [isEdit, setIsEdit] = useState(editable)
+  const [rawValues, setRawValues] = useState(workloadValues?.values)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
+  useEffect(() => {
+    setRawValues(workloadValues?.values)
+  }, [workloadValues])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
   const handleSubmit = () => {
@@ -67,34 +80,41 @@ export default function ({ workloadValues, onSubmit, ...other }: Props): React.R
   }
   return (
     <>
-      <HeaderTitle
-        title={t('WORKLOAD_VALUES_TITLE', { name: workloadValues.name, teamId: workloadValues.teamId })}
-        description={t('WORKLOAD_VALUES_DESC')}
-        resourceType='WorkloadValues'
-      />
+      {!hideTitle && (
+        <HeaderTitle
+          title={t('WORKLOAD_VALUES_TITLE', { name: workloadValues.name, teamId: workloadValues.teamId })}
+          description={t('WORKLOAD_VALUES_DESC')}
+          resourceType='WorkloadValues'
+        />
+      )}
       <div className={classes.buffer}> </div>{' '}
       <CodeEditor
         code={yaml}
         onChange={(data) => {
           setRawValues(data || {})
+          setWorkloadValues?.((prev: any) => {
+            return { ...prev, values: data }
+          })
         }}
         disabled={!isEdit}
         setValid={setValidRaw}
       />
-      <Box display='flex' flexDirection='row-reverse' m={1}>
-        <Button
-          color='primary'
-          variant='contained'
-          data-cy='button-edit-rawvalues'
-          onClick={() => {
-            if (isEdit) handleSubmit()
-            setIsEdit(!isEdit)
-          }}
-          disabled={!validRaw}
-        >
-          {isEdit ? t('Submit') : t('Edit')}
-        </Button>
-      </Box>
+      {!editable && (
+        <Box display='flex' flexDirection='row-reverse' m={1}>
+          <Button
+            color='primary'
+            variant='contained'
+            data-cy='button-edit-rawvalues'
+            onClick={() => {
+              if (isEdit) handleSubmit()
+              setIsEdit(!isEdit)
+            }}
+            disabled={!validRaw}
+          >
+            {isEdit ? t('Submit') : t('Edit')}
+          </Button>
+        </Box>
+      )}
     </>
   )
 }
