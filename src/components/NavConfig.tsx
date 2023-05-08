@@ -38,6 +38,7 @@ export default function NavConfig() {
         { title: 'Builds (BETA)', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
+        { title: 'Backups (BETA)', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: '/settings',
@@ -59,6 +60,7 @@ export default function NavConfig() {
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
+        { title: 'Backups (BETA)', path: `/teams/${oboTeamId}/backups`, icon: getIcon('backup_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,

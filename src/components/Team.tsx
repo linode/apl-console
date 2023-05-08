@@ -22,6 +22,8 @@ export const getTeamSchema = (
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
   else if (!appsEnabled.grafana) set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
+  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
+  if (!otomi.isMultitenant) set(schema, 'properties.monitoringStack.title', 'Private Team monitoring (disabled)')
   return schema
 }
 
@@ -48,6 +50,7 @@ export const getTeamUiSchema = (
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
   if (!appsEnabled.grafana) uiSchema.azureMonitor = { 'ui:disabled': true }
+  if (!appsEnabled.velero) uiSchema.azureMonitor = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
