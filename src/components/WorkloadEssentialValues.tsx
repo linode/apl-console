@@ -8,9 +8,8 @@ import { GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getWorkloadValuesSchema = (selectedChart): any => {
-  const schema = cloneDeep(getSpec().components.schemas.WorkloadValues)
-  if (selectedChart === 'ksvc')
-    schema.properties.values.properties.scaleToZero = { type: 'boolean', default: true, title: 'Scale to Zero' }
+  const schema: any = cloneDeep(getSpec().components.schemas.WorkloadValues)
+  if (selectedChart === 'ksvc') schema.properties.values.properties.autoscaling.properties.minReplicas.default = 0
   return schema
 }
 
