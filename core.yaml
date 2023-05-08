@@ -44,8 +44,8 @@ k8s:
       disableIstioInjection: true
     - name: kured
       app: kured
-    - name: kpack
-      app: kpack
+    - name: tekton
+      app: tekton
       disableIstioInjection: true
       disablePolicyChecks: true
     - name: maintenance
@@ -277,7 +277,7 @@ adminApps:
   #       namespace: harbor
   #       type: public
   #       auth: true
-  - name: kpack
+  - name: tekton
     tags: [buildpacks]
   - name: minio
     tags: [storage, backup]
