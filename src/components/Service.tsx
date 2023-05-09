@@ -87,7 +87,7 @@ export const getServiceSchema = (
       unset(ingressSchema, 'path')
       unset(ingressSchema, `certArn`)
       unset(ingressSchema, `certName`)
-      unset(ingressSchema, `g`)
+      unset(ingressSchema, `certSelect`)
     }
     if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
