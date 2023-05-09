@@ -340,6 +340,14 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       nonCritical?: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -374,6 +382,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     team?: (
       | 'alerts'
       | 'backup'
+      | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
@@ -427,6 +436,14 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       nonCritical?: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -461,6 +478,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     team?: (
       | 'alerts'
       | 'backup'
+      | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
@@ -515,6 +533,14 @@ export type CreateTeamApiArg = {
         nonCritical?: string
       }
     }
+    billingAlertQuotas?: {
+      teamCpuMonthQuotaReached?: {
+        quota?: number
+      }
+      teamMemMonthQuotaReached?: {
+        quota?: number
+      }
+    }
     resourceQuota?: {
       name: string
       value: string
@@ -549,6 +575,7 @@ export type CreateTeamApiArg = {
       team?: (
         | 'alerts'
         | 'backup'
+        | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
         | 'downloadKubeConfig'
@@ -602,6 +629,14 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       nonCritical?: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -636,6 +671,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     team?: (
       | 'alerts'
       | 'backup'
+      | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
@@ -692,6 +728,14 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       nonCritical?: string
     }
   }
+  billingAlertQuotas?: {
+    teamCpuMonthQuotaReached?: {
+      quota?: number
+    }
+    teamMemMonthQuotaReached?: {
+      quota?: number
+    }
+  }
   resourceQuota?: {
     name: string
     value: string
@@ -726,6 +770,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     team?: (
       | 'alerts'
       | 'backup'
+      | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
@@ -782,6 +827,14 @@ export type EditTeamApiArg = {
         nonCritical?: string
       }
     }
+    billingAlertQuotas?: {
+      teamCpuMonthQuotaReached?: {
+        quota?: number
+      }
+      teamMemMonthQuotaReached?: {
+        quota?: number
+      }
+    }
     resourceQuota?: {
       name: string
       value: string
@@ -816,6 +869,7 @@ export type EditTeamApiArg = {
       team?: (
         | 'alerts'
         | 'backup'
+        | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
         | 'downloadKubeConfig'
@@ -1509,16 +1563,28 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   teamId?: string
   name: string
   tag?: string
+  mode?:
+    | {
+        docker: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'docker'
+      }
+    | {
+        buildpacks: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'buildpacks'
+      }
   repoAccess?: {
     otomiGit?: boolean
     privateGit?: boolean
     repoUserName?: string
     repoPassword?: string
-  }
-  appSource?: {
-    repoUrl: string
-    path?: string
-    revision?: string
   }
 }[]
 export type GetAllBuildsApiArg = void
@@ -1527,16 +1593,28 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   teamId?: string
   name: string
   tag?: string
+  mode?:
+    | {
+        docker: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'docker'
+      }
+    | {
+        buildpacks: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'buildpacks'
+      }
   repoAccess?: {
     otomiGit?: boolean
     privateGit?: boolean
     repoUserName?: string
     repoPassword?: string
-  }
-  appSource?: {
-    repoUrl: string
-    path?: string
-    revision?: string
   }
 }[]
 export type GetTeamBuildsApiArg = {
@@ -1548,16 +1626,28 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   teamId?: string
   name: string
   tag?: string
+  mode?:
+    | {
+        docker: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'docker'
+      }
+    | {
+        buildpacks: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'buildpacks'
+      }
   repoAccess?: {
     otomiGit?: boolean
     privateGit?: boolean
     repoUserName?: string
     repoPassword?: string
-  }
-  appSource?: {
-    repoUrl: string
-    path?: string
-    revision?: string
   }
 }
 export type CreateBuildApiArg = {
@@ -1569,16 +1659,28 @@ export type CreateBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
     repoAccess?: {
       otomiGit?: boolean
       privateGit?: boolean
       repoUserName?: string
       repoPassword?: string
-    }
-    appSource?: {
-      repoUrl: string
-      path?: string
-      revision?: string
     }
   }
 }
@@ -1594,16 +1696,28 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   teamId?: string
   name: string
   tag?: string
+  mode?:
+    | {
+        docker: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'docker'
+      }
+    | {
+        buildpacks: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'buildpacks'
+      }
   repoAccess?: {
     otomiGit?: boolean
     privateGit?: boolean
     repoUserName?: string
     repoPassword?: string
-  }
-  appSource?: {
-    repoUrl: string
-    path?: string
-    revision?: string
   }
 }
 export type GetBuildApiArg = {
@@ -1617,16 +1731,28 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   teamId?: string
   name: string
   tag?: string
+  mode?:
+    | {
+        docker: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'docker'
+      }
+    | {
+        buildpacks: {
+          repoUrl: string
+          path?: string
+          revision?: string
+        }
+        type: 'buildpacks'
+      }
   repoAccess?: {
     otomiGit?: boolean
     privateGit?: boolean
     repoUserName?: string
     repoPassword?: string
-  }
-  appSource?: {
-    repoUrl: string
-    path?: string
-    revision?: string
   }
 }
 export type EditBuildApiArg = {
@@ -1640,16 +1766,28 @@ export type EditBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
     repoAccess?: {
       otomiGit?: boolean
       privateGit?: boolean
       repoUserName?: string
       repoPassword?: string
-    }
-    appSource?: {
-      repoUrl: string
-      path?: string
-      revision?: string
     }
   }
 }
@@ -1775,6 +1913,16 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
       containerPort?: number
       protocol?: string
     }[]
+    resources?: {
+      requests?: {
+        cpu?: string
+        memory?: string
+      }
+    }
+    autoscaling?: {
+      minReplicas?: number
+      maxReplicas?: number
+    }
   }
 }
 export type GetWorkloadValuesApiArg = {
@@ -1798,6 +1946,16 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
       containerPort?: number
       protocol?: string
     }[]
+    resources?: {
+      requests?: {
+        cpu?: string
+        memory?: string
+      }
+    }
+    autoscaling?: {
+      minReplicas?: number
+      maxReplicas?: number
+    }
   }
 }
 export type EditWorkloadValuesApiArg = {
@@ -1821,6 +1979,16 @@ export type EditWorkloadValuesApiArg = {
         containerPort?: number
         protocol?: string
       }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
     }
   }
 }
@@ -1839,6 +2007,16 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
       containerPort?: number
       protocol?: string
     }[]
+    resources?: {
+      requests?: {
+        cpu?: string
+        memory?: string
+      }
+    }
+    autoscaling?: {
+      minReplicas?: number
+      maxReplicas?: number
+    }
   }
 }
 export type UpdateWorkloadValuesApiArg = {
@@ -1862,6 +2040,16 @@ export type UpdateWorkloadValuesApiArg = {
         containerPort?: number
         protocol?: string
       }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
     }
   }
 }

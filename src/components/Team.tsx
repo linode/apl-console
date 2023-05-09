@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -20,10 +20,8 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
-  else if (!appsEnabled.grafana) set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
-  if (!otomi.isMultitenant) set(schema, 'properties.monitoringStack.title', 'Private Team monitoring (disabled)')
   return schema
 }
 
