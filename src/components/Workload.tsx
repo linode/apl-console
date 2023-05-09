@@ -109,7 +109,7 @@ export default function ({
   }
 
   const handleUpdateWorkloadValues = async () => {
-    if (selectedChart === 'deployment') valuesData.values.containerPorts[0].name = 'http'
+    if (selectedChart === 'ksvc') valuesData.values.containerPorts[0].name = 'http1'
     const values = { ...valuesData?.values, fullnameOverride: workload?.name }
     const res = await updateWorkloadValues({
       teamId,
