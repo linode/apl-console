@@ -10,6 +10,7 @@ interface Row {
   teamId: string
   id: string
   name: string
+  mode: { type: string }
 }
 
 const getBuildLink = (row: Row) => {
@@ -45,6 +46,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'name',
       label: t('Build'),
       renderer: (row: Row) => getBuildLink(row),
+    },
+    {
+      id: 'mode',
+      label: t('Type'),
+      renderer: (row) => row.mode.type,
     },
   ]
 
