@@ -1,7 +1,7 @@
 import { Box, Button, Card, Container, TextField, Typography, styled } from '@mui/material'
-import { FormEventHandler, useEffect, useState } from 'react'
+import { FormEventHandler, useState } from 'react'
 import Logo from 'components/Logo'
-import { ActivateLicenseApiResponse, useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
+import { useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
 import useSettings from 'hooks/useSettings'
@@ -36,26 +36,20 @@ export default function Activate() {
   const session = useSession()
   const history = useHistory()
 
-  useEffect(() => {
-    // if (session.license.isValid) history.push('/')
-  }, [session])
-
   const handleActivateLicense: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
 
     setLoading(true)
     setIsInvalid(false)
 
-    const license: Promise<ActivateLicenseApiResponse> = create({ body: { jwt } }).unwrap()
-    license
+    create({ body: { jwt } })
       .then((result) => {
         setLoading(false)
-        console.log(result)
-        // if ('data' in result && result.(data.isValid as ActivateLicenseApiResponse)) history.push('/')
+        if ('data' in result && result.data.isValid) history.push('/')
+        else snack.error('License is invalid')
       })
       .catch(() => {
         setLoading(false)
-        snack.error('License is invalid')
       })
   }
 
