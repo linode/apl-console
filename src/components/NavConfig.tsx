@@ -36,6 +36,7 @@ export default function NavConfig() {
         { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'Builds (BETA)', path: '/builds', icon: getIcon('builds_icon.svg') },
+        { title: 'Secrets', path: `/secrets`, icon: getIcon('secrets_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
         { title: 'Backups (BETA)', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
@@ -57,6 +58,7 @@ export default function NavConfig() {
           dontShowIfAdminTeam: true,
         },
         { title: 'Builds (BETA)', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
+        { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },

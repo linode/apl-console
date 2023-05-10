@@ -44,7 +44,7 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Backup'),
+      label: t('Name'),
       renderer: (row: Row) => getBackupNames(row),
     },
     {
