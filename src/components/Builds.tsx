@@ -62,7 +62,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
   }
 
   if (!appsEnabled.tekton || !appsEnabled.harbor)
-    return <p>Admin needs to enable the Kpack and Harbor apps to activate this feature.</p>
+    return <p>Admin needs to enable the Tekton and Harbor apps to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
 }
