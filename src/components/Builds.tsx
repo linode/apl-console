@@ -44,7 +44,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Build'),
+      label: t('Name'),
       renderer: (row: Row) => getBuildLink(row),
     },
     {
