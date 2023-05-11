@@ -13,13 +13,7 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   // eslint-disable-next-line no-param-reassign
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
-    if (schema.enum && schema.enum.length === 1) {
-      // hide one item enum that was set to its default value, as those are used for selectors
-      if (schema.default) newUiSchema['ui:widget'] = 'hidden'
-      // we can just set the default value to the one enum
-      // eslint-disable-next-line prefer-destructuring
-      else newSchema.default = schema.enum[0]
-    } else if (schema.enum && schema.enum.length > 1 && !listTooLong) {
+    if (schema.enum && schema.enum.length > 1 && !listTooLong) {
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
       set(newUiSchema, 'ui:options.hasLabel', true)
@@ -33,6 +27,12 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
     if (schema['x-formtype'] !== 'SelectWidget') newUiSchema['ui:widget'] = schema['x-formtype']
 
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
+
+    if (schema.enum && schema.enum.length === 1) {
+      // hide one item enum that was set to its default value, as those are used for selectors
+      if (schema.default) newUiSchema['ui:widget'] = 'hidden'
+      else newSchema.default = schema.enum[0]
+    }
   }
   return (
     <StringField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema}>
