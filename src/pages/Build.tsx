@@ -36,6 +36,7 @@ export default function ({
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/builds`} />
   if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/builds/`} />
   const handleSubmit = (formData) => {
+    if (formData?.mode.type === 'buildpacks') delete formData.mode.docker
     if (buildId) update({ teamId, buildId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
