@@ -92,6 +92,7 @@ function App() {
                                 <Route path='/policies' component={Policies} exact />
                                 <Route path='/policies/:policyId' component={Policy} exact />
                                 <Route path='/services' component={Services} exact />
+                                <Route path='/secrets' component={Secrets} exact />
                                 <Route path='/workloads' component={Workloads} exact />
                                 <Route path='/settings' component={SettingsOverview} exact />
                                 <Route path='/builds' component={Builds} exact />
