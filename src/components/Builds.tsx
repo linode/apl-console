@@ -10,6 +10,7 @@ interface Row {
   teamId: string
   id: string
   name: string
+  mode: { type: string }
 }
 
 const getBuildLink = (row: Row) => {
@@ -43,8 +44,13 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Build'),
+      label: t('Name'),
       renderer: (row: Row) => getBuildLink(row),
+    },
+    {
+      id: 'mode',
+      label: t('Type'),
+      renderer: (row) => row.mode.type,
     },
   ]
 
@@ -55,7 +61,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.kpack || !appsEnabled.harbor)
+  if (!appsEnabled.tekton || !appsEnabled.harbor)
     return <p>Admin needs to enable the Kpack and Harbor apps to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />

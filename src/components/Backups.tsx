@@ -22,15 +22,6 @@ const getBackupNames = (row: Row) => {
   )
 }
 
-const getBackupSchedules = (row: Row) => {
-  const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.id)}`
-  return (
-    <RLink to={path} label={row.schedule}>
-      {row.schedule}
-    </RLink>
-  )
-}
-
 interface Props {
   backups: GetTeamBackupsApiResponse
   teamId?: string
@@ -53,13 +44,13 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Backup'),
+      label: t('Name'),
       renderer: (row: Row) => getBackupNames(row),
     },
     {
-      id: 'name',
+      id: 'mode',
       label: t('Schedule'),
-      renderer: (row: Row) => getBackupSchedules(row),
+      renderer: (row) => row.schedule,
     },
   ]
 
