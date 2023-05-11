@@ -152,6 +152,7 @@ interface Props extends CrudProps {
 
 function getSubdomain(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
+  if (teamId === 'admin') return serviceName
   return `${serviceName}.team-${teamId}`
 }
 
