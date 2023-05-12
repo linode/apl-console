@@ -52,7 +52,7 @@ export default function ({ children, title }: Props): React.ReactElement {
   const verticalLayout = 'vertical'
 
   useEffect(() => {
-    if (session && !session.license.isValid) {
+    if (session && !session.license?.isValid) {
       // Redirect to /activate
       history.push('/activate')
     }
