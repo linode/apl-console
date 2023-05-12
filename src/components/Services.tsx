@@ -2,7 +2,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
+import { GetAllServicesApiResponse, GetTeamServicesApiResponse, useGetAllServicesQuery } from 'redux/otomiApi'
 import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
@@ -45,6 +45,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     oboTeamId,
     license,
   } = useSession()
+  const allServices = useGetAllServicesQuery().data
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -74,7 +75,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   return (
     <ListTable
       teamId={teamId}
-      createDisabled={!createCapabilities(services.length, license.body.capabilities.services)}
+      createDisabled={!createCapabilities(allServices.length, license.body.capabilities.services)}
       headCells={headCells}
       rows={services}
       resourceType='Service'
