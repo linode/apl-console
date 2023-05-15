@@ -33,15 +33,12 @@ export default function ({
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllServices) refetchAllServices()
-    else if (teamId && !isFetchingTeamServices) {
-      refetchTeamServices()
-      refetchAllServices()
-    }
+    else if (teamId && !isFetchingTeamServices) refetchTeamServices()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllServices || isLoadingTeamServices
   const services = teamId ? teamServices : allServices
-  const comp = services && <Services allServices={allServices} services={services} teamId={teamId} />
+  const comp = services && <Services services={services} teamId={teamId} />
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICES', { scope: getRole(teamId) })} />
 }

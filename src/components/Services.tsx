@@ -2,7 +2,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
+import { GetAllServicesApiResponse, GetTeamServicesApiResponse, useGetAllServicesQuery } from 'redux/otomiApi'
 import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
@@ -34,19 +34,18 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
 }
 
 interface Props {
-  allServices: GetAllServicesApiResponse
   services: GetAllServicesApiResponse | GetTeamServicesApiResponse
   teamId?: string
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default function ({ allServices, services, teamId }: Props): React.ReactElement {
+export default function ({ services, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
     license,
   } = useSession()
-  // const allServices = useGetAllServicesQuery().data
+  const allServices = useGetAllServicesQuery().data
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
