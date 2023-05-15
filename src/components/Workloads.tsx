@@ -94,7 +94,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   return (
     <ListTable
       teamId={teamId}
-      createDisabled={!createCapabilities(allWorkloads.length, license.body.capabilities.workloads)}
+      createDisabled={!createCapabilities(allWorkloads && allWorkloads.length, license.body.capabilities.workloads)}
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
