@@ -1,5 +1,5 @@
-import { Box, Button, Card, Container, TextField, Typography, styled } from '@mui/material'
-import { FormEventHandler, useState } from 'react'
+import { Box, Card, Container, TextField, Typography, styled } from '@mui/material'
+import { FormEventHandler, useEffect, useState } from 'react'
 import Logo from 'components/Logo'
 import { useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
@@ -33,8 +33,16 @@ export default function Activate() {
   const [jwt, setJwt] = useState('')
   const [loading, setLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
+  const [isValid, setIsValid] = useState(false)
   const session = useSession()
   const history = useHistory()
+
+  useEffect(() => {
+    if (session && session.license?.isValid) {
+      // Redirect to /activate
+      history.push('/')
+    }
+  }, [session, history])
 
   const handleActivateLicense: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
@@ -45,7 +53,7 @@ export default function Activate() {
     create({ body: { jwt } })
       .then((result) => {
         setLoading(false)
-        if ('data' in result && result.data.isValid) history.push('/')
+        if ('data' in result && result.data.isValid) setIsValid(true)
         else snack.error('License is invalid')
       })
       .catch(() => {
@@ -63,16 +71,17 @@ export default function Activate() {
   return (
     <StyledPage>
       <Logo width={100} height={100} sx={{ position: 'absolute', top: '10px', left: '10px' }} />
-      <Logo
+      {/* <Logo
         width={1000}
         height={1000}
         sx={{ position: 'absolute', right: '-10%', bottom: '-35%', zIndex: -100, opacity: 0.3 }}
-      />
+      /> */}
       <StyledCard>
-        {session && session.license.isValid ? (
-          <Button fullWidth variant='contained' onClick={() => removeLicense()}>
-            delete license
-          </Button>
+        {isValid ? (
+          <Box>
+            <Typography variant='h5'>License uploaded succesfully</Typography>
+            <Typography>you will be redirected automatically</Typography>
+          </Box>
         ) : (
           <>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
