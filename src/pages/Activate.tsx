@@ -88,7 +88,7 @@ export default function Activate() {
               <Typography variant='h5'>Register your cluster</Typography>
               <Typography sx={{ mt: 2 }}>
                 1) Create a free account at{' '}
-                <Link target='_blank' to='https://portal.otomi.cloud'>
+                <Link style={{ color: 'red', textDecoration: 'none' }} target='_blank' to='https://portal.otomi.cloud'>
                   Otomi Cloud
                 </Link>
               </Typography>
