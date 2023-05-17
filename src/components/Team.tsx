@@ -3,8 +3,10 @@ import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
+import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import Form from './rjsf/Form'
+import InformationBanner from './InformationBanner'
 
 export const getTeamSchema = (
   appsEnabled: Record<string, any>,
@@ -59,7 +61,7 @@ interface Props extends CrudProps {
 }
 
 export default function ({ team, ...other }: Props): React.ReactElement {
-  const { appsEnabled, settings, user } = useSession()
+  const { appsEnabled, settings, user, license } = useSession()
   const [data, setData] = useState<GetTeamApiResponse>(team)
   useEffect(() => {
     setData(team)
@@ -79,16 +81,24 @@ export default function ({ team, ...other }: Props): React.ReactElement {
     return uiSchema
   }
   const uiSchema = getDynamicUiSchema()
+  const teams = useGetTeamsQuery()
   return (
-    <Form
-      adminOnly
-      schema={schema}
-      onChange={setData}
-      uiSchema={uiSchema}
-      data={formData}
-      deleteDisabled={!user.isAdmin}
-      resourceType='Team'
-      {...other}
-    />
+    <>
+      {!createCapabilities(teams.data?.length, license.body.capabilities.teams) && (
+        <InformationBanner message='Max amount of teams reached for this license.' />
+      )}
+
+      <Form
+        adminOnly
+        schema={schema}
+        onChange={setData}
+        disabled={!createCapabilities(teams.data?.length, license.body.capabilities.teams)}
+        uiSchema={uiSchema}
+        data={formData}
+        deleteDisabled={!user.isAdmin}
+        resourceType='Team'
+        {...other}
+      />
+    </>
   )
 }

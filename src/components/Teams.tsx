@@ -2,6 +2,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetTeamsApiResponse } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -13,6 +14,7 @@ interface Props {
 export default function ({ teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
+    license,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -31,5 +33,14 @@ export default function ({ teams }: Props): React.ReactElement {
     },
   ]
 
-  return <ListTable headCells={headCells} rows={teams} resourceType='Team' adminOnly hasTeamScope={false} />
+  return (
+    <ListTable
+      createDisabled={!createCapabilities(teams.length, license.body.capabilities.teams)}
+      headCells={headCells}
+      rows={teams}
+      resourceType='Team'
+      adminOnly
+      hasTeamScope={false}
+    />
+  )
 }
