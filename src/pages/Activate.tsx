@@ -87,15 +87,15 @@ export default function Activate() {
             <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
               <Typography variant='h5'>Register your cluster</Typography>
               <Typography sx={{ mt: 2 }}>
-                Register a free account at <b>Otomi cloud</b>. From the dashboard click <b> Register cluster </b> and
-                copy the api key
+                1) Create a free account at <a href='https://portal.otomi.cloud'>Otomi Cloud</a>
               </Typography>
+              <Typography sx={{ mt: 2 }}>2) Register your cluster and copy the license key</Typography>
             </Box>
             <Box sx={{ width: '100%', mt: 4 }}>
               <form onSubmit={handleActivateLicense}>
                 <TextField
                   fullWidth
-                  label='Your api key'
+                  label='Your license key'
                   variant='outlined'
                   value={jwt}
                   onChange={(event) => setJwt(event.target.value)}
