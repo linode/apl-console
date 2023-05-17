@@ -80,7 +80,7 @@ export default function Activate() {
         {isValid ? (
           <Box>
             <Typography variant='h5'>License uploaded succesfully</Typography>
-            <Typography>you will be redirected automatically</Typography>
+            <Typography>You will be redirected automatically</Typography>
           </Box>
         ) : (
           <>
