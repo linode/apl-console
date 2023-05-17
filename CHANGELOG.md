@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.1](https://github.com/redkubes/otomi-console/compare/v0.8.0...v0.8.1) (2023-05-17)
+
+
+### Features
+
+* activate page styling ([282f0ef](https://github.com/redkubes/otomi-console/commit/282f0efd849439f2171714362dee051205477df1))
+* add license overview ([01b7930](https://github.com/redkubes/otomi-console/commit/01b793058ed37df1910509cab94fe77b2b558285))
+* added alerts and checks for if license capabilities are exceeded ([ee805d9](https://github.com/redkubes/otomi-console/commit/ee805d90e429e188b642c0cbeb5ff62c6367aeea))
+* delete button ([8de7f16](https://github.com/redkubes/otomi-console/commit/8de7f1624029b1b125667950dc528779a86e2fd1))
+* styling for activate page, not final ([fd7887d](https://github.com/redkubes/otomi-console/commit/fd7887ddb61f775b0b2a51281750154c3a6ef03d))
+
+
+### Bug Fixes
+
+* activation text ([2dbdecb](https://github.com/redkubes/otomi-console/commit/2dbdecb4de4e0448373e7e7cb4ad3174b7f9df99))
+* capital ([ccc81a6](https://github.com/redkubes/otomi-console/commit/ccc81a60abd6982e57629ae25eabbbd796c8d4cd))
+* final fix for links :) ([867a983](https://github.com/redkubes/otomi-console/commit/867a98304ae64c46421716532c9801c2ea3166dc))
+* fixed capabilities calcalations ([a4a1a13](https://github.com/redkubes/otomi-console/commit/a4a1a13b2fb4098e140e4e92d4737075cced05b0))
+* get all workloads and services ([27ddc1a](https://github.com/redkubes/otomi-console/commit/27ddc1a3b97e0c42099ca19e3d54cebbc8308098))
+* license redirect ([04ec758](https://github.com/redkubes/otomi-console/commit/04ec758ffdaf3068750bf0900efeafcf3efd3a95))
+* license upload fix not working 1 ([478c168](https://github.com/redkubes/otomi-console/commit/478c168358d771b7a3adf4744b0a53d2f025865c))
+* link color ([46ca648](https://github.com/redkubes/otomi-console/commit/46ca648f2389733330aecade7687ac1b6208e290))
+* link recolour ([ba8cc7d](https://github.com/redkubes/otomi-console/commit/ba8cc7d592be95740904b14694d834f26c8f6fd1))
+* removed extra code ([ca05bd6](https://github.com/redkubes/otomi-console/commit/ca05bd6948bee8a74f807a08d44e74131ae97cec))
+* removed teaser image ([b477a70](https://github.com/redkubes/otomi-console/commit/b477a70b43d6445fecfc7bbe1dd58cf5ca5c3caa))
+* revert to previous commit ([730b1ce](https://github.com/redkubes/otomi-console/commit/730b1ce0b2bfe896c2ed7e3fb33ce2fee9fa22b7))
+* update subdomain renderer functions for team-admin ([886969f](https://github.com/redkubes/otomi-console/commit/886969f8d009855b36b7ec3addf84ea2884baccd))
+
 ## [0.6.0](https://github.com/redkubes/otomi-stack-web/compare/v0.5.25...v0.6.0) (2023-03-14)
 
 
