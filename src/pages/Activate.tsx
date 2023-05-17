@@ -1,57 +1,48 @@
-import { Alert, Box, Container, Grid, TextField, Typography, styled } from '@mui/material'
+import { Box, Card, Container, TextField, Typography, styled } from '@mui/material'
 import { FormEventHandler, useEffect, useState } from 'react'
 import Logo from 'components/Logo'
-import { useActivateLicenseMutation } from 'redux/otomiApi'
+import { useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
+import useSettings from 'hooks/useSettings'
+import snack from 'utils/snack'
+import { useSession } from 'providers/Session'
 
-const Wrapper = styled(Box)({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  background: '#2c2e5b',
-})
-
-const LeftPanel = styled(Box)({
-  background: '#2c2e5b',
-  height: '100%',
+const StyledPage = styled(Container)({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '2rem',
+  height: '100vh',
+  overflow: 'hidden',
 })
 
-const RightPanel = styled(Box)({
-  background: 'white',
-  height: '100%',
+const StyledCard = styled(Card)({
   display: 'flex',
   flexDirection: 'column',
+  height: '36vh',
+  width: '40vh',
   alignItems: 'center',
-  justifyContent: 'center',
-  padding: '2rem',
+  padding: '4vh',
 })
 
 export default function Activate() {
   const [create] = useActivateLicenseMutation()
+  const [del] = useDeleteLicenseMutation()
+  const { themeStretch } = useSettings()
   const [jwt, setJwt] = useState('')
   const [loading, setLoading] = useState(false)
   const [isInvalid, setIsInvalid] = useState(false)
+  const [isValid, setIsValid] = useState(false)
+  const session = useSession()
   const history = useHistory()
 
   useEffect(() => {
-    // Store the current body background color
-    const originalBodyBackgroundColor = document.body.style.backgroundColor
-
-    // Set the body background color to white
-    document.body.style.backgroundColor = 'white'
-
-    // Restore the original background color on unmount
-    return () => {
-      document.body.style.backgroundColor = originalBodyBackgroundColor
+    if (session && session.license?.isValid) {
+      // Redirect to /activate
+      history.push('/')
     }
-  }, [])
+  }, [session, history])
 
   const handleActivateLicense: FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault()
@@ -62,40 +53,63 @@ export default function Activate() {
     create({ body: { jwt } })
       .then((result) => {
         setLoading(false)
-        if ('data' in result && result.data.isValid) history.push('/')
-        else setIsInvalid(true)
+        if ('data' in result && result.data.isValid) setIsValid(true)
+        else snack.error('License is invalid')
       })
       .catch(() => {
         setLoading(false)
       })
   }
 
+  // const removeLicense = () => {
+  //   console.log('clicked')
+  //   del().then((result) => {
+  //     console.log('result', result)
+  //   })
+  // }
+
   return (
-    <Wrapper>
-      <Container maxWidth='sm'>
-        <Grid container>
-          <Grid item xs={24} sm={12}>
-            <LeftPanel>
-              <Logo width={100} height={100} />
-            </LeftPanel>
-          </Grid>
-          <Grid item xs={24} sm={12}>
-            <RightPanel>
-              <Typography variant='h4' gutterBottom>
-                Activate Otomi
+    <StyledPage>
+      <Logo width={100} height={100} sx={{ position: 'absolute', top: '10px', left: '10px' }} />
+      {/* <Logo
+        width={1000}
+        height={1000}
+        sx={{ position: 'absolute', right: '-10%', bottom: '-35%', zIndex: -100, opacity: 0.3 }}
+      /> */}
+      <StyledCard>
+        {isValid ? (
+          <Box>
+            <Typography variant='h5'>License uploaded succesfully</Typography>
+            <Typography>You will be redirected automatically</Typography>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
+              <Typography variant='h5'>Register your cluster</Typography>
+              <Typography sx={{ mt: 2 }}>
+                1) Create a free account at{' '}
+                <a
+                  style={{ color: 'red', textDecoration: 'none' }}
+                  target='_blank'
+                  href='https://portal.otomi.cloud'
+                  rel='noreferrer'
+                >
+                  Otomi Cloud
+                </a>
               </Typography>
+              <Typography sx={{ mt: 2 }}>2) Register your cluster and copy the license key</Typography>
+            </Box>
+            <Box sx={{ width: '100%', mt: 4 }}>
               <form onSubmit={handleActivateLicense}>
                 <TextField
                   fullWidth
-                  margin='normal'
-                  label='Your key'
+                  label='Your license key'
                   variant='outlined'
                   value={jwt}
                   onChange={(event) => setJwt(event.target.value)}
                 />
-                {isInvalid && <Alert severity='error'>Invalid key</Alert>}
 
-                <Box marginTop={2}>
+                <Box marginTop={3}>
                   <LoadingButton
                     fullWidth
                     color='primary'
@@ -108,10 +122,10 @@ export default function Activate() {
                   </LoadingButton>
                 </Box>
               </form>
-            </RightPanel>
-          </Grid>
-        </Grid>
-      </Container>
-    </Wrapper>
+            </Box>
+          </>
+        )}
+      </StyledCard>
+    </StyledPage>
   )
 }
