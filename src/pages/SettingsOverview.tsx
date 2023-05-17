@@ -23,7 +23,7 @@ export default function SettingsOverview() {
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg'), color: '#523a34' },
     { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg'), color: 'blue' },
     { title: 'SMTP', path: '/settings/smtp', icon: getIcon('smtp_icon.svg'), color: 'green' },
-    { title: 'Backup', path: '/settings/backup', icon: getIcon('backup_icon.svg'), color: 'purple' },
+    { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg'), color: 'purple' },
   ]
   // TODO: remove inline styling and use theming
   const SettingsCard = ({ title, path, icon, borderColor }) => (

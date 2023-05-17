@@ -12,6 +12,7 @@ interface Row {
   teamId: string
   id: string
   name: string
+  selectedChart: string
 }
 
 const getWorkloadLink = (row: Row) => {
@@ -35,13 +36,8 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-const getWorkloadValuesLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/workloads/${encodeURIComponent(row.id)}/values`
-  return (
-    <RLink to={path} label='values'>
-      edit
-    </RLink>
-  )
+const getWorkloadType = (row: Row) => {
+  return row.selectedChart ? row.selectedChart : 'custom'
 }
 
 interface Props {
@@ -67,13 +63,13 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Workload'),
+      label: t('Name'),
       renderer: (row: Row) => getWorkloadLink(row),
     },
     {
-      id: 'values',
-      label: 'Workload values',
-      renderer: (row: Row) => getWorkloadValuesLink(row),
+      id: 'type',
+      label: 'Type',
+      renderer: (row: Row) => getWorkloadType(row),
     },
     {
       id: 'argocd',

@@ -1,7 +1,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
+import { GetTeamBackupsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -10,11 +10,11 @@ interface Row {
   teamId: string
   id: string
   name: string
-  mode: { type: string }
+  schedule: string
 }
 
-const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.id)}`
+const getBackupNames = (row: Row) => {
+  const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.id)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -23,11 +23,11 @@ const getBuildLink = (row: Row) => {
 }
 
 interface Props {
-  builds: GetTeamBuildsApiResponse
+  backups: GetTeamBackupsApiResponse
   teamId?: string
 }
 
-export default function ({ builds, teamId }: Props): React.ReactElement {
+export default function ({ backups, teamId }: Props): React.ReactElement {
   // const {
   //   oboTeamId,
   //   user: { isAdmin },
@@ -45,12 +45,12 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: (row: Row) => getBuildLink(row),
+      renderer: (row: Row) => getBackupNames(row),
     },
     {
       id: 'mode',
-      label: t('Type'),
-      renderer: (row) => row.mode.type,
+      label: t('Schedule'),
+      renderer: (row) => row.schedule,
     },
   ]
 
@@ -61,8 +61,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.tekton || !appsEnabled.harbor)
-    return <p>Admin needs to enable the Tekton and Harbor apps to activate this feature.</p>
+  if (!appsEnabled.velero) return <p>Admin needs to enable the Velero app to activate this feature.</p>
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
+  return <ListTable teamId={teamId} headCells={headCells} rows={backups} resourceType='Backup' />
 }

@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -22,8 +22,8 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
-  else if (!appsEnabled.grafana) set(schema, 'properties.azureMonitor.title', 'Azure Monitor (disabled)')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
+  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   return schema
 }
 
@@ -50,6 +50,7 @@ export const getTeamUiSchema = (
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
   if (!appsEnabled.grafana) uiSchema.azureMonitor = { 'ui:disabled': true }
+  if (!appsEnabled.velero) uiSchema.azureMonitor = { 'ui:disabled': true }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
@@ -69,7 +70,17 @@ export default function ({ team, ...other }: Props): React.ReactElement {
   const action = team && team.id ? 'update' : 'create'
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
-  const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
+  const getDynamicUiSchema = () => {
+    const { receivers } = schema.properties.alerts.properties
+    const allItems = receivers.items.enum
+    const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
+    const diff = allItems.filter((receiver) => !data?.alerts.receivers?.includes(receiver))
+    diff.forEach((receiver) => {
+      uiSchema.alerts[receiver] = { 'ui:widget': 'hidden' }
+    })
+    return uiSchema
+  }
+  const uiSchema = getDynamicUiSchema()
   const teams = useGetTeamsQuery()
   return (
     <>

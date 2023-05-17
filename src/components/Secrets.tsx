@@ -66,7 +66,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   if (!teamId) {
     headCells.splice(2, 0, {
       id: 'namespace',
-      label: t('Namespace'),
+      label: t('Team'),
       renderer: (row) => row.namespace || `team-${row.teamId}`,
     })
   }

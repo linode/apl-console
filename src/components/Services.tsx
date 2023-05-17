@@ -51,7 +51,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   const headCells: HeadCell[] = [
     {
       id: 'name',
-      label: t('Service name'),
+      label: t('Name'),
       renderer: getServiceLink(isAdmin, oboTeamId),
     },
     {

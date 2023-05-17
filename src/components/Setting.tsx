@@ -140,17 +140,27 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       if (!appsEnabled.alertmanager && settingId === 'home')
         setDisabledMessage('Please enable Alertmanager to activate Co-monitoring')
 
-      if (!appsEnabled.velero && settingId === 'backup') setDisabledMessage('Please enable Velero to activate Backups')
+      if (!appsEnabled.velero && settingId === 'platformBackups')
+        setDisabledMessage('Please enable Velero to activate Backups')
     }
   }, [settingId])
-
   // END HOOKS
+  const getDynamicUiSchema = (data) => {
+    if (settingId !== 'alerts') return getSettingUiSchema(appsEnabled, settings, settingId)
+    const { receivers, drone } = schema.properties
+    const allItems = [...new Set([...receivers.items.enum, ...drone.items.enum])]
+    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
+    const diff = allItems.filter((receiver) => !data.receivers?.includes(receiver) && !data.drone?.includes(receiver))
+    diff.forEach((receiver) => {
+      uiSchema[receiver] = { 'ui:widget': 'hidden' }
+    })
+    return uiSchema
+  }
   const onChangeHandler = (data) => {
     const schema = getSettingSchema(appsEnabled, settings, settingId, data)
     setSetting(data)
-    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
     setSchema(schema)
-    setUiSchema(uiSchema)
+    setUiSchema(getDynamicUiSchema(data))
   }
   return (
     <>

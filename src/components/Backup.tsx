@@ -3,15 +3,15 @@ import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetBuildApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
+import { GetBackupApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getBuildSchema = (teamId: string): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Build)
+export const getBackupSchema = (teamId: string): any => {
+  const schema = cloneDeep(getSpec().components.schemas.Backup)
   return schema
 }
 
-export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getBackupUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
@@ -19,34 +19,34 @@ export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: st
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
 
-  applyAclToUiSchema(uiSchema, user, teamId, 'build')
+  applyAclToUiSchema(uiSchema, user, teamId, 'backup')
 
   return uiSchema
 }
 
 interface Props extends CrudProps {
   teamId: string
-  build?: GetBuildApiResponse
+  backup?: GetBackupApiResponse
 }
 
-export default function ({ build, teamId, ...other }: Props): React.ReactElement {
+export default function ({ backup, teamId, ...other }: Props): React.ReactElement {
   const { appsEnabled, user } = useSession()
-  const [data, setData]: any = useState(build)
+  const [data, setData]: any = useState(backup)
   useEffect(() => {
-    setData(build)
-  }, [build])
+    setData(backup)
+  }, [backup])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getBuildSchema(teamId)
-  const uiSchema = getBuildUiSchema(user, teamId)
+  const schema = getBackupSchema(teamId)
+  const uiSchema = getBackupUiSchema(user, teamId)
   return (
     <Form
       schema={schema}
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.tekton}
-      resourceType='Build'
+      disabled={!appsEnabled.velero}
+      resourceType='Backup'
       {...other}
     />
   )
