@@ -198,7 +198,6 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
   const allServices = useGetAllServicesQuery().data
-  // const services: GetAllServicesApiResponse = useGetAllServicesQuery(teamId ? skipToken : undefined)
   return (
     <>
       {!createCapabilities(allServices && allServices.length, license.body.capabilities.services) && (
