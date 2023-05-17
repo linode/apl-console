@@ -10,7 +10,7 @@ import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
   GetTeamK8SServicesApiResponse,
-  useGetTeamServicesQuery,
+  useGetAllServicesQuery,
 } from 'redux/otomiApi'
 import { getStrict } from 'utils/schema'
 import { createCapabilities } from 'utils/permission'
@@ -197,10 +197,11 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
-  const services = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
+  const allServices = useGetAllServicesQuery().data
+  // const services: GetAllServicesApiResponse = useGetAllServicesQuery(teamId ? skipToken : undefined)
   return (
     <>
-      {!createCapabilities(services.data?.length, license.body.capabilities.services) && (
+      {!createCapabilities(allServices && allServices.length, license.body.capabilities.services) && (
         <InformationBanner message='Max amount of services reached for this license.' />
       )}
 
@@ -209,7 +210,7 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
         uiSchema={uiSchema}
         data={formData}
         onChange={setData}
-        disabled={!createCapabilities(services.data?.length, license.body.capabilities.services)}
+        disabled={!createCapabilities(allServices && allServices.length, license.body.capabilities.services)}
         resourceType='Service'
         {...other}
       />
