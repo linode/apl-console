@@ -2,7 +2,7 @@ import { Box, Card, Container, TextField, Typography, styled } from '@mui/materi
 import { FormEventHandler, useEffect, useState } from 'react'
 import Logo from 'components/Logo'
 import { useActivateLicenseMutation, useDeleteLicenseMutation } from 'redux/otomiApi'
-import { useHistory } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { LoadingButton } from '@mui/lab'
 import useSettings from 'hooks/useSettings'
 import snack from 'utils/snack'
@@ -61,12 +61,12 @@ export default function Activate() {
       })
   }
 
-  const removeLicense = () => {
-    console.log('clicked')
-    del().then((result) => {
-      console.log('result', result)
-    })
-  }
+  // const removeLicense = () => {
+  //   console.log('clicked')
+  //   del().then((result) => {
+  //     console.log('result', result)
+  //   })
+  // }
 
   return (
     <StyledPage>
@@ -87,7 +87,10 @@ export default function Activate() {
             <Box sx={{ display: 'flex', flexDirection: 'column', alignSelf: 'flex-start' }}>
               <Typography variant='h5'>Register your cluster</Typography>
               <Typography sx={{ mt: 2 }}>
-                1) Create a free account at <a href='https://portal.otomi.cloud'>Otomi Cloud</a>
+                1) Create a free account at{' '}
+                <Link target='_blank' to='https://portal.otomi.cloud'>
+                  Otomi Cloud
+                </Link>
               </Typography>
               <Typography sx={{ mt: 2 }}>2) Register your cluster and copy the license key</Typography>
             </Box>
