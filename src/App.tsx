@@ -42,10 +42,12 @@ import Build from 'pages/Build'
 import WorkloadValues from 'pages/WorkloadValues'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
+import Projects from 'pages/Projects'
 import { CollapseDrawerProvider } from 'contexts/CollapseDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
+import Project from 'pages/Project'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -95,6 +97,7 @@ function App() {
                                 <Route path='/secrets' component={Secrets} exact />
                                 <Route path='/workloads' component={Workloads} exact />
                                 <Route path='/settings' component={SettingsOverview} exact />
+                                <Route path='/projects' component={Projects} exact />
                                 <Route path='/builds' component={Builds} exact />
                                 <Route path='/settings/:settingId' component={Setting} exact />
                                 <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
@@ -104,11 +107,14 @@ function App() {
                                 <Route path='/teams/:teamId/create-secret' component={Secret} exact />
                                 <Route path='/teams/:teamId/create-service' component={Service} exact />
                                 <Route path='/teams/:teamId/create-workload' component={Workload} exact />
+                                <Route path='/teams/:teamId/create-project' component={Project} exact />
                                 <Route path='/teams/:teamId/create-build' component={Build} exact />
                                 <Route path='/teams/:teamId/secrets' component={Secrets} exact />
                                 <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
                                 <Route path='/teams/:teamId/backups' component={Backups} exact />
                                 <Route path='/teams/:teamId/backups/:backupId' component={Backup} exact />
+                                <Route path='/teams/:teamId/projects' component={Projects} exact />
+                                <Route path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                 <Route path='/teams/:teamId/builds' component={Builds} exact />
                                 <Route path='/teams/:teamId/builds/:buildId' component={Build} exact />
                                 <Route path='/teams/:teamId/workloads' component={Workloads} exact />

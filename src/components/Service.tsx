@@ -48,10 +48,10 @@ export const addServiceNameEnumField = (
   k8sServices: GetTeamK8SServicesApiResponse,
   formData: GetServiceApiResponse,
 ): void => {
-  const k8sService = k8sServices.filter((item) => item.name === formData?.name)
-  if (k8sService.length === 0 && formData?.name) return
+  const k8sService = k8sServices?.filter((item) => item.name === formData?.name)
+  if (k8sService?.length === 0 && formData?.name) return
 
-  const k8sServiceNames = k8sServices.map((item) => item.name)
+  const k8sServiceNames = k8sServices?.map((item) => item.name)
   set(schema, 'properties.name.enum', k8sServiceNames)
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
