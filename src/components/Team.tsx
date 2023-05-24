@@ -58,24 +58,29 @@ export const getTeamUiSchema = (
 
 interface Props extends CrudProps {
   team?: GetTeamApiResponse
+  diffReceivers: string[]
+  setDiffReceivers: (receivers: string[]) => void
 }
 
-export default function ({ team, ...other }: Props): React.ReactElement {
+export default function ({ team, diffReceivers, setDiffReceivers, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user, license } = useSession()
   const [data, setData] = useState<GetTeamApiResponse>(team)
   useEffect(() => {
     setData(team)
   }, [team])
+  useEffect(() => {
+    const { receivers } = schema.properties.alerts.properties
+    const allItems = receivers.items.enum
+    const diff = allItems.filter((receiver) => !data?.alerts?.receivers?.includes(receiver))
+    setDiffReceivers(diff)
+  }, [data])
   // END HOOKS
   const action = team && team.id ? 'update' : 'create'
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
   const getDynamicUiSchema = () => {
-    const { receivers } = schema.properties.alerts.properties
-    const allItems = receivers.items.enum
     const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
-    const diff = allItems.filter((receiver) => !data?.alerts?.receivers?.includes(receiver))
-    diff.forEach((receiver) => {
+    diffReceivers.forEach((receiver) => {
       uiSchema.alerts[receiver] = { 'ui:widget': 'hidden' }
     })
     return uiSchema
