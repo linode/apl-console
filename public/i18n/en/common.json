@@ -1,6 +1,7 @@
 {
   "App": "App",
   "Apps": "Apps",
+  "Build": "Build",
   "BUTTON_NEW_RESOURCE": "Create {{model}}",
   "CREATE_MODEL": "Create a {{model}}",
   "CREATE_MODEL_FOR_TEAM": "Create a {{model}} for team {{teamName}}",
@@ -74,6 +75,7 @@
   "TITLE_BUILD": "Build details",
   "Team_plural": "Teams",
   "Teams": "Teams",
+  "Workload": "Workload",
   "Workloads": "Workloads",
   "Backups": "Backups",
   "Workload_plural": "Workloads",
