@@ -74,7 +74,7 @@ export default function ({ team, ...other }: Props): React.ReactElement {
     const { receivers } = schema.properties.alerts.properties
     const allItems = receivers.items.enum
     const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
-    const diff = allItems.filter((receiver) => !data?.alerts.receivers?.includes(receiver))
+    const diff = allItems.filter((receiver) => !data?.alerts?.receivers?.includes(receiver))
     diff.forEach((receiver) => {
       uiSchema.alerts[receiver] = { 'ui:widget': 'hidden' }
     })
