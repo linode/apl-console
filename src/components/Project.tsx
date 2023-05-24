@@ -215,7 +215,7 @@ export default function ({
     if (activeStep === 0) return !data?.name
     if (activeStep === 1) return !data?.build?.mode?.docker?.repoUrl && !data?.build?.mode?.buildpacks?.repoUrl
     if (activeStep === 3 && teamId === 'admin') return !data?.service?.namespace
-    if (activeStepWL === 0) return !data?.workload?.url
+    if (activeStepWL === 0) return selectedChart === 'custom' && !data?.workload?.url
     return false
   }
 
