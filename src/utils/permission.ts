@@ -7,3 +7,9 @@ export default (user: GetSessionApiResponse['user'], teamId: string | undefined,
   const deniedActions = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
   return !deniedActions.includes(action)
 }
+
+export function createCapabilities(currentAmount: number, licenseCapabilites: number | undefined): boolean {
+  if (!licenseCapabilites) return false
+  if (currentAmount < licenseCapabilites) return true
+  return false
+}

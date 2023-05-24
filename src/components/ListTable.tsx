@@ -1,5 +1,5 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { Box, Button } from '@mui/material'
+import { Box, Button, Tooltip } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -14,6 +14,7 @@ interface ListTableProps extends EnhancedTableProps {
   resourceType: string
   adminOnly?: boolean
   noCrud?: boolean
+  createDisabled?: boolean
   idKey?: string
 }
 export default function ({
@@ -23,6 +24,7 @@ export default function ({
   resourceType,
   adminOnly = false,
   noCrud = false,
+  createDisabled = false,
   idKey = 'id',
   ...other
 }: ListTableProps): React.ReactElement {
@@ -46,18 +48,21 @@ export default function ({
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
           {(isAdmin || oboTeamId) && !noCrud && (
-            <Box mb={1}>
-              <Button
-                variant='contained'
-                component={Link}
-                to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
-                startIcon={<AddCircleIcon />}
-                // disabled={!adminOnly && isAdmin && !oboTeamId}
-                data-cy={`button-create-${resourceType}`}
-              >
-                {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
-              </Button>
-            </Box>
+            <Tooltip title={!createDisabled ? '' : `maximum amount of ${title.toLowerCase()} reached for this license`}>
+              <Box mb={1}>
+                <Button
+                  disabled={createDisabled}
+                  variant='contained'
+                  component={Link}
+                  to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
+                  startIcon={<AddCircleIcon />}
+                  // disabled={!adminOnly && isAdmin && !oboTeamId}
+                  data-cy={`button-create-${resourceType}`}
+                >
+                  {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
+                </Button>
+              </Box>
+            </Tooltip>
           )}
         </Box>
       </Box>

@@ -1,6 +1,9 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    deleteLicense: build.mutation<DeleteLicenseApiResponse, DeleteLicenseApiArg>({
+      query: () => ({ url: `/license`, method: 'DELETE' }),
+    }),
     activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
       query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
     }),
@@ -214,6 +217,8 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
+export type DeleteLicenseApiResponse = unknown
+export type DeleteLicenseApiArg = void
 export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
   isValid: boolean
   hasLicense: boolean
@@ -3079,6 +3084,7 @@ export type EditAppApiArg = {
   }
 }
 export const {
+  useDeleteLicenseMutation,
   useActivateLicenseMutation,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,
