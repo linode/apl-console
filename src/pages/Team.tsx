@@ -32,6 +32,11 @@ export default function ({
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
   const handleSubmit = (formData) => {
+    const allItems = ['slack', 'msteams', 'opsgenie', 'email']
+    const diff = allItems.filter((receiver) => !formData?.alerts?.receivers?.includes(receiver))
+    diff.forEach((receiver) => {
+      delete formData.alerts[receiver]
+    })
     if (teamId) update({ teamId, body: omit(formData, ['id']) as typeof formData })
     else create({ body: formData })
   }
