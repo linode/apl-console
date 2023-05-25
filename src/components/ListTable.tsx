@@ -16,6 +16,7 @@ interface ListTableProps extends EnhancedTableProps {
   noCrud?: boolean
   createDisabled?: boolean
   idKey?: string
+  collection?: string
 }
 export default function ({
   teamId,
@@ -26,6 +27,7 @@ export default function ({
   noCrud = false,
   createDisabled = false,
   idKey = 'id',
+  collection = '',
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -48,7 +50,11 @@ export default function ({
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
           {(isAdmin || oboTeamId) && !noCrud && (
-            <Tooltip title={!createDisabled ? '' : `maximum amount of ${title.toLowerCase()} reached for this license`}>
+            <Tooltip
+              title={
+                !createDisabled ? '' : `maximum amount of ${collection || title.toLowerCase()} reached for this license`
+              }
+            >
               <Box mb={1}>
                 <Button
                   disabled={createDisabled}

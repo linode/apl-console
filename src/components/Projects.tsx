@@ -1,7 +1,8 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetTeamProjectsApiResponse } from 'redux/otomiApi'
+import { GetTeamProjectsApiResponse, useGetAllServicesQuery, useGetAllWorkloadsQuery } from 'redux/otomiApi'
+import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -74,8 +75,10 @@ export default function ({ projects, teamId }: Props): React.ReactElement {
     settings: {
       cluster: { domainSuffix },
     },
+    license,
   } = useSession()
-
+  const allWorkloads = useGetAllWorkloadsQuery().data
+  const allServices = useGetAllServicesQuery().data
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -111,5 +114,21 @@ export default function ({ projects, teamId }: Props): React.ReactElement {
   if (!appsEnabled.tekton || !appsEnabled.harbor)
     return <p>Admin needs to enable the Tekton and Harbor apps to activate this feature.</p>
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={projects} resourceType='Project' />
+  const isDisabled = (): { collection: string; value: boolean } => {
+    const workload = !createCapabilities(allWorkloads && allWorkloads.length, license.body.capabilities.workloads)
+    const service = !createCapabilities(allServices && allServices.length, license.body.capabilities.services)
+    if (!allWorkloads || !allServices) return { collection: '', value: false }
+    return { collection: workload ? 'workload' : 'service', value: workload || service }
+  }
+
+  return (
+    <ListTable
+      teamId={teamId}
+      createDisabled={isDisabled().value}
+      headCells={headCells}
+      rows={projects}
+      resourceType='Project'
+      collection={isDisabled().collection}
+    />
+  )
 }
