@@ -19,6 +19,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     teamId: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     selectedChart: { 'ui:widget': 'hidden' },
+    namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
   const preDefined = {
     id: { 'ui:widget': 'hidden' },
