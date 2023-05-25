@@ -114,6 +114,10 @@ export default function ({
 
   const handleCreateProject = () => {
     if (data?.id) {
+      if (selectedPath === 'useExisting') {
+        setActiveStep(2)
+        return
+      }
       setActiveStep((prev) => prev + 1)
       return
     }
@@ -126,6 +130,7 @@ export default function ({
   }
 
   const handleUpdateProject = async () => {
+    if (selectedPath === 'useExisting') delete data.build
     await update({
       teamId,
       projectId,

@@ -58,8 +58,8 @@ export const addServiceNameEnumField = (
   set(schema, 'properties.name.enum', k8sServiceNames)
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
-    set(schema, 'properties.port.enum', k8sService[0].ports)
-    if (k8sService[0].managedByKnative) set(formData, 'ksvc.predeployed', true)
+    set(schema, 'properties.port.enum', k8sService?.[0].ports)
+    if (k8sService?.[0].managedByKnative) set(formData, 'ksvc.predeployed', true)
     unset(schema, 'properties.port.default')
   }
 }
