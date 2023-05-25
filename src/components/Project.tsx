@@ -6,7 +6,7 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import { GetSessionApiResponse, useGetSecretsQuery, useGetTeamK8SServicesQuery } from 'redux/otomiApi'
@@ -14,7 +14,7 @@ import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import Form from './rjsf/Form'
-import { getServiceSchema, getServiceUiSchema } from './Service'
+import { getServiceSchema, getServiceUiSchema, getSubdomain } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
 import WorkloadValues from './WorkloadValues'
 import { getWorkloadSchema, getWorkloadUiSchema } from './WorkloadDefine'
@@ -112,9 +112,40 @@ export default function ({
   const serviceUiSchema = getServiceUiSchema(appsEnabled, data?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
+  if (data?.service?.ingress) {
+    try {
+      let ing = data.service.ingress as Record<string, any>
+      if (
+        !['cluster'].includes(ing?.type as string) &&
+        (!(data.service.ingress as Record<string, any>)?.domain || ing?.useDefaultSubdomain)
+      ) {
+        // Set default domain and subdomain if ingress type not is 'cluster'
+        ing = { ...ing }
+        ing.subdomain = getSubdomain(data?.service?.name, teamId)
+        data.service.ingress = ing
+      }
+      if (ing?.type === 'tlsPass') {
+        // we don't expect some props when choosing tlsPass
+        ing = { ...ing }
+        unset(ing, 'hasCert')
+        unset(ing, 'certArn')
+        unset(ing, 'certName')
+        unset(ing, 'forwardPath')
+        data.service.ingress = ing
+      } else if (ing?.type === 'cluster') {
+        // cluster has an empty ingress
+        data.service.ingress = { type: 'cluster' }
+      }
+      // eslint-disable-next-line no-empty
+    } catch (error) {}
+  }
+
   const handleCreateProject = () => {
+    const { name } = data
     if (data?.id) {
+      if (!data.service.name) setData({ ...data, service: { name } })
       if (selectedPath === 'useExisting') {
+        delete data.build
         setActiveStep(2)
         return
       }
@@ -123,14 +154,13 @@ export default function ({
     }
     create({ teamId, body: data }).then((res: any) => {
       if (res.error) return
-      setData(res.data)
+      setData({ ...res.data, build: { name }, service: { name } })
       if (selectedPath === 'useExisting') setActiveStep(2)
       else setActiveStep((prev) => prev + 1)
     })
   }
 
   const handleUpdateProject = async () => {
-    if (selectedPath === 'useExisting') delete data.build
     await update({
       teamId,
       projectId,
@@ -219,7 +249,6 @@ export default function ({
   const isDisabled = () => {
     if (activeStep === 0) return !data?.name
     if (activeStep === 1) return !data?.build?.mode?.docker?.repoUrl && !data?.build?.mode?.buildpacks?.repoUrl
-    if (activeStep === 3 && teamId === 'admin') return !data?.service?.namespace
     if (activeStepWL === 0) return selectedChart === 'custom' && !data?.workload?.url
     return false
   }
@@ -352,15 +381,9 @@ export default function ({
                           Back
                         </Button>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        {activeStepWL === workloadSteps[selectedChart].length - 1 ? (
-                          <Button variant='contained' onClick={handleNextWL}>
-                            Continue
-                          </Button>
-                        ) : (
-                          <Button variant='contained' disabled={isDisabled()} onClick={handleNextWL}>
-                            Next
-                          </Button>
-                        )}
+                        <Button variant='contained' disabled={isDisabled()} onClick={handleNextWL}>
+                          Next
+                        </Button>
                       </Box>
                     </>
                   )}
@@ -392,7 +415,7 @@ export default function ({
                     Back
                   </Button>
                   <Button variant='contained' onClick={handleNext} disabled={isDisabled()}>
-                    {index === projectSteps.length - 1 ? 'Submit' : 'Continue'}
+                    {index === projectSteps.length - 1 ? 'Submit' : 'Next'}
                   </Button>
                 </Box>
               )}

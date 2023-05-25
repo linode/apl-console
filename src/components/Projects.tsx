@@ -84,21 +84,21 @@ export default function ({ projects, teamId }: Props): React.ReactElement {
       label: t('Name'),
       renderer: (row: Row) => getProjectLink(row),
     },
-    {
-      id: 'build',
-      label: t('Build'),
-      renderer: (row: Row) => getBuildLink(row),
-    },
-    {
-      id: 'workload',
-      label: t('Workload'),
-      renderer: (row: Row) => getWorkloadLink(row),
-    },
-    {
-      id: 'service',
-      label: t('Service'),
-      renderer: (row: Row) => getServiceLink(row),
-    },
+    // {
+    //   id: 'build',
+    //   label: t('Build'),
+    //   renderer: (row: Row) => getBuildLink(row),
+    // },
+    // {
+    //   id: 'workload',
+    //   label: t('Workload'),
+    //   renderer: (row: Row) => getWorkloadLink(row),
+    // },
+    // {
+    //   id: 'service',
+    //   label: t('Service'),
+    //   renderer: (row: Row) => getServiceLink(row),
+    // },
   ]
 
   if (!teamId) {
