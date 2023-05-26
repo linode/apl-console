@@ -2,7 +2,7 @@ import Team from 'components/Team'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
@@ -18,6 +18,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
+  const [diffReceivers, setDiffReceivers] = useState<string[]>([])
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
@@ -32,10 +33,22 @@ export default function ({
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
   const handleSubmit = (formData) => {
+    diffReceivers.forEach((receiver) => {
+      delete formData.alerts[receiver]
+    })
     if (teamId) update({ teamId, body: omit(formData, ['id']) as typeof formData })
     else create({ body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId: deleteId })
-  const comp = !isError && <Team team={data} onSubmit={handleSubmit} onDelete={handleDelete} mutating={mutating} />
+  const comp = !isError && (
+    <Team
+      team={data}
+      onSubmit={handleSubmit}
+      onDelete={handleDelete}
+      mutating={mutating}
+      diffReceivers={diffReceivers}
+      setDiffReceivers={setDiffReceivers}
+    />
+  )
   return <PaperLayout loading={isLoading} comp={comp} title={t('Team details')} />
 }
