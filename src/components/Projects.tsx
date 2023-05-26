@@ -26,57 +26,13 @@ const getProjectLink = (row: Row) => {
   )
 }
 
-const getBuildLink = (row: Row) => {
-  if (row?.build?.id) {
-    const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.build.id)}`
-    return (
-      <RLink to={path} label={row.name}>
-        {row.name}
-      </RLink>
-    )
-  }
-  return '-'
-}
-const getWorkloadLink = (row: Row) => {
-  if (row?.workload?.id) {
-    const path = `/teams/${row.teamId}/workloads/${encodeURIComponent(row.workload.id)}`
-    return (
-      <RLink to={path} label={row.name}>
-        {row.name}
-      </RLink>
-    )
-  }
-  return '-'
-}
-const getServiceLink = (row: Row) => {
-  if (row?.service?.id) {
-    const path = `/teams/${row.teamId}/services/${encodeURIComponent(row.service.id)}`
-    return (
-      <RLink to={path} label={row.name}>
-        {row.name}
-      </RLink>
-    )
-  }
-  return '-'
-}
-
 interface Props {
   projects: GetTeamProjectsApiResponse
   teamId?: string
 }
 
 export default function ({ projects, teamId }: Props): React.ReactElement {
-  // const {
-  //   oboTeamId,
-  //   user: { isAdmin },
-  // } = useSession()
-  const {
-    appsEnabled,
-    settings: {
-      cluster: { domainSuffix },
-    },
-    license,
-  } = useSession()
+  const { appsEnabled, license } = useSession()
   const allWorkloads = useGetAllWorkloadsQuery().data
   const allServices = useGetAllServicesQuery().data
   const { t } = useTranslation()
@@ -87,21 +43,6 @@ export default function ({ projects, teamId }: Props): React.ReactElement {
       label: t('Name'),
       renderer: (row: Row) => getProjectLink(row),
     },
-    // {
-    //   id: 'build',
-    //   label: t('Build'),
-    //   renderer: (row: Row) => getBuildLink(row),
-    // },
-    // {
-    //   id: 'workload',
-    //   label: t('Workload'),
-    //   renderer: (row: Row) => getWorkloadLink(row),
-    // },
-    // {
-    //   id: 'service',
-    //   label: t('Service'),
-    //   renderer: (row: Row) => getServiceLink(row),
-    // },
   ]
 
   if (!teamId) {
