@@ -28,6 +28,7 @@ export function canCreateAdditionalResource(
     case 'team':
       return metrics.otomi_teams < license.body.capabilities.teams
     default:
-      return true
+      console.warn(`Unknown resource type '${resourceType}'`)
+      return false
   }
 }
