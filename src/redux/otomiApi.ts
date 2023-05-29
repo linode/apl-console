@@ -7,6 +7,9 @@ const injectedRtkApi = api.injectEndpoints({
     activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
       query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
     }),
+    getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
+      query: () => ({ url: `/metrics` }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -218,6 +221,15 @@ export type ActivateLicenseApiArg = {
     jwt: string
   }
 }
+export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi metrics */ {
+  otomi_backups: number
+  otomi_builds: number
+  otomi_secrets: number
+  otomi_services: number
+  otomi_teams: number
+  otomi_workloads: number
+}
+export type GetMetricsApiArg = void
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -2998,6 +3010,7 @@ export type EditAppApiArg = {
 export const {
   useDeleteLicenseMutation,
   useActivateLicenseMutation,
+  useGetMetricsQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
