@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.3](https://github.com/redkubes/otomi-stack-web/compare/v0.8.1...v0.8.3) (2023-05-29)
+
+
+### Features
+
+* update otomi-charts version ([#290](https://github.com/redkubes/otomi-stack-web/issues/290)) ([702e4d1](https://github.com/redkubes/otomi-stack-web/commit/702e4d15bb94456cb57bcb79f84cc290012725f3))
+* use metrics endpoint for license limits ([#292](https://github.com/redkubes/otomi-stack-web/issues/292)) ([d53937f](https://github.com/redkubes/otomi-stack-web/commit/d53937fc1dfa8659aaa4d10fce3dc68e62150742))
+
+
+### Bug Fixes
+
+* team settings page and alerts data ([#287](https://github.com/redkubes/otomi-stack-web/issues/287)) ([57244a1](https://github.com/redkubes/otomi-stack-web/commit/57244a11f234a5f6a05d14be4414ad1386dc92ae))
+
+
+### Others
+
+* **release:** 0.8.2 ([975c22d](https://github.com/redkubes/otomi-stack-web/commit/975c22d55922d44313b85f5f26a086febe8ef6ce))
+
 ### [0.8.2](https://github.com/redkubes/otomi-stack-web/compare/v0.8.1...v0.8.2) (2023-05-29)
 
 
