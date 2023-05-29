@@ -92,7 +92,7 @@ export default function ({
             name: data?.name,
             url: 'https://github.com/redkubes/otomi-charts.git',
             path: selectedChart,
-            revision: 'v1.0.1',
+            revision: 'v1.0.2',
           }
     if (workloadId) {
       await updateWorkload({
