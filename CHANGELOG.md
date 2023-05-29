@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.8.4](https://github.com/redkubes/otomi-stack-web/compare/v0.8.3...v0.8.4) (2023-05-29)
+
+
+### Bug Fixes
+
+* remove secrets item from platform menu ([6479160](https://github.com/redkubes/otomi-stack-web/commit/6479160c5cb4af823206b29ed82434413e7f20f2))
+
 ### [0.8.3](https://github.com/redkubes/otomi-stack-web/compare/v0.8.1...v0.8.3) (2023-05-29)
 
 
