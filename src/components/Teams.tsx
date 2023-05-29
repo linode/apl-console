@@ -2,19 +2,18 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetTeamsApiResponse } from 'redux/otomiApi'
-import { createCapabilities } from 'utils/permission'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 
 interface Props {
   teams: GetTeamsApiResponse
+  canCreateResource: boolean
 }
 
-export default function ({ teams }: Props): React.ReactElement {
+export default function ({ teams, canCreateResource }: Props): React.ReactElement {
   const {
     user: { isAdmin },
-    license,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -35,7 +34,7 @@ export default function ({ teams }: Props): React.ReactElement {
 
   return (
     <ListTable
-      createDisabled={!createCapabilities(teams.length, license.body.capabilities.teams)}
+      canCreateResource={canCreateResource}
       headCells={headCells}
       rows={teams}
       resourceType='Team'
