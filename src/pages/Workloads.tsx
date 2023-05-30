@@ -1,12 +1,14 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Workloads from 'components/Workloads'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllWorkloadsQuery, useGetTeamWorkloadsQuery } from 'redux/otomiApi'
+import { useGetAllWorkloadsQuery, useGetMetricsQuery, useGetTeamWorkloadsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
+import { canCreateAdditionalResource } from 'utils/permission'
 
 interface Params {
   teamId?: string
@@ -29,6 +31,8 @@ export default function ({
     isFetching: isFetchingTeamWorkloads,
     refetch: refetchTeamWorkloads,
   } = useGetTeamWorkloadsQuery({ teamId }, { skip: !teamId })
+  const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery()
+  const { license } = useSession()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -38,8 +42,14 @@ export default function ({
 
   const { t } = useTranslation()
   // END HOOKS
-  const loading = isLoadingAllWorkloads || isLoadingTeamWorkloads
+  const loading = isLoadingAllWorkloads || isLoadingTeamWorkloads || isLoadingMetrics
   const workloads = teamId ? teamWorkloads : allWorkloads
-  const comp = workloads && <Workloads workloads={workloads} teamId={teamId} />
+  const comp = workloads && (
+    <Workloads
+      workloads={workloads}
+      teamId={teamId}
+      canCreateResource={canCreateAdditionalResource('workload', metrics, license)}
+    />
+  )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
 }

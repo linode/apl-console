@@ -10,12 +10,9 @@ import {
   GetSessionApiResponse,
   GetSettingsApiResponse,
   GetTeamK8SServicesApiResponse,
-  useGetTeamServicesQuery,
 } from 'redux/otomiApi'
 import { getStrict } from 'utils/schema'
-import { createCapabilities } from 'utils/permission'
 import Form from './rjsf/Form'
-import InformationBanner from './InformationBanner'
 
 const idxMap: Record<string, number> = {
   public: 1,
@@ -160,7 +157,7 @@ function getSubdomain(serviceName: string | undefined, teamId): string {
 }
 
 export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
-  const { appsEnabled, settings, user, license } = useSession()
+  const { appsEnabled, settings, user } = useSession()
   const [data, setData] = useState<GetServiceApiResponse>(service)
   useEffect(() => {
     setData(service)
@@ -197,22 +194,7 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
-  const services = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
   return (
-    <>
-      {!createCapabilities(services.data?.length, license.body.capabilities.services) && (
-        <InformationBanner message='Max amount of services reached for this license.' />
-      )}
-
-      <Form
-        schema={schema}
-        uiSchema={uiSchema}
-        data={formData}
-        onChange={setData}
-        disabled={!createCapabilities(services.data?.length, license.body.capabilities.services)}
-        resourceType='Service'
-        {...other}
-      />
-    </>
+    <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
   )
 }

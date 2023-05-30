@@ -2,8 +2,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAllServicesApiResponse, GetTeamServicesApiResponse, useGetAllServicesQuery } from 'redux/otomiApi'
-import { createCapabilities } from 'utils/permission'
+import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -37,16 +36,15 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
 interface Props {
   services: GetAllServicesApiResponse | GetTeamServicesApiResponse
   teamId?: string
+  canCreateResource: boolean
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default function ({ services, teamId }: Props): React.ReactElement {
+export default function ({ services, teamId, canCreateResource }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
-    license,
   } = useSession()
-  const allServices = useGetAllServicesQuery().data
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -76,7 +74,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
   return (
     <ListTable
       teamId={teamId}
-      createDisabled={!createCapabilities(allServices && allServices.length, license.body.capabilities.services)}
+      canCreateResource={canCreateResource}
       headCells={headCells}
       rows={services}
       resourceType='Service'
