@@ -1,12 +1,14 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Projects from 'components/Projects'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps, useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllProjectsQuery, useGetTeamProjectsQuery } from 'redux/otomiApi'
+import { useGetAllProjectsQuery, useGetMetricsQuery, useGetTeamProjectsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
+import { canCreateAdditionalResource } from 'utils/permission'
 
 interface Params {
   teamId?: string
@@ -32,17 +34,24 @@ export default function ({
     isFetching: isFetchingTeamProjects,
     refetch: refetchTeamProjects,
   } = useGetTeamProjectsQuery({ teamId }, { skip: !teamId })
+  const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllProjects) refetchAllProjects()
     else if (teamId && !isFetchingTeamProjects) refetchTeamProjects()
   }, [isDirty])
-
+  const { license } = useSession()
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllProjects || isLoadingTeamProjects
   const projects = teamId ? teamProjects : allProjects
-  const comp = projects && <Projects projects={projects} teamId={teamId} />
+  const comp = projects && (
+    <Projects
+      projects={projects}
+      teamId={teamId}
+      canCreateResource={canCreateAdditionalResource('project', metrics, license)}
+    />
+  )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
 }

@@ -14,7 +14,7 @@ interface ListTableProps extends EnhancedTableProps {
   resourceType: string
   adminOnly?: boolean
   noCrud?: boolean
-  createDisabled?: boolean
+  canCreateResource?: boolean
   idKey?: string
   collection?: string
 }
@@ -25,9 +25,8 @@ export default function ({
   resourceType,
   adminOnly = false,
   noCrud = false,
-  createDisabled = false,
+  canCreateResource = true,
   idKey = 'id',
-  collection = '',
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -42,6 +41,9 @@ export default function ({
   if ((adminOnly || !teamId) && hasTeamScope) title = t('LIST_TITLE', { model: t(resourceTypePlural) })
   if (!adminOnly && teamId) title = t('LIST_TITLE_TEAM', { model: t(resourceTypePlural), teamId })
   const resourceTypeLow = resourceType.toLowerCase()
+  const toolTip = !canCreateResource
+    ? `Your license does not allow to create an additional ${resourceType.toLowerCase()}`
+    : ''
   return (
     <>
       <Box sx={{ ml: 2, mr: 2 }}>
@@ -50,14 +52,10 @@ export default function ({
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
           {(isAdmin || oboTeamId) && !noCrud && (
-            <Tooltip
-              title={
-                !createDisabled ? '' : `maximum amount of ${collection || title.toLowerCase()} reached for this license`
-              }
-            >
+            <Tooltip title={toolTip}>
               <Box mb={1}>
                 <Button
-                  disabled={createDisabled}
+                  disabled={!canCreateResource}
                   variant='contained'
                   component={Link}
                   to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}

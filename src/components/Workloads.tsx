@@ -2,8 +2,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { GetAllWorkloadsApiResponse, useGetAllWorkloadsQuery } from 'redux/otomiApi'
-import { createCapabilities } from 'utils/permission'
+import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -43,21 +42,20 @@ const getWorkloadType = (row: Row) => {
 interface Props {
   workloads: GetAllWorkloadsApiResponse
   teamId?: string
+  canCreateResource: boolean
 }
 
-export default function ({ workloads, teamId }: Props): React.ReactElement {
+export default function ({ workloads, teamId, canCreateResource }: Props): React.ReactElement {
   // const {
   //   oboTeamId,
   //   user: { isAdmin },
   // } = useSession()
   const {
     appsEnabled,
-    license,
     settings: {
       cluster: { domainSuffix },
     },
   } = useSession()
-  const allWorkloads = useGetAllWorkloadsQuery().data
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -90,7 +88,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
   return (
     <ListTable
       teamId={teamId}
-      createDisabled={!createCapabilities(allWorkloads && allWorkloads.length, license.body.capabilities.workloads)}
+      canCreateResource={canCreateResource}
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
