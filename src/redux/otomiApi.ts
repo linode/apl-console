@@ -116,6 +116,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/cloudtty`, method: 'POST', body: queryArg.body }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -1808,6 +1811,23 @@ export type EditBuildApiArg = {
     }
   }
 }
+export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
+  id?: string
+  teamId: string
+  domain: string
+  sub: string
+  iFrameUrl?: string
+}
+export type ConnectCloudttyApiArg = {
+  /** Cloudtty object */
+  body: {
+    id?: string
+    teamId: string
+    domain: string
+    sub: string
+    iFrameUrl?: string
+  }
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -2172,7 +2192,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
+    k8sVersion?: '1.23' | '1.24'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -2587,7 +2607,7 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.21' | '1.22' | '1.23' | '1.24'
+      k8sVersion?: '1.23' | '1.24'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -3041,6 +3061,7 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useConnectCloudttyMutation,
   useGetAllWorkloadsQuery,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
