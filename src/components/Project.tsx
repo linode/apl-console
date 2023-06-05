@@ -6,7 +6,7 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep, unset } from 'lodash'
+import { cloneDeep, omit } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import { GetSessionApiResponse, useGetSecretsQuery, useGetTeamK8SServicesQuery } from 'redux/otomiApi'
@@ -14,7 +14,7 @@ import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import Form from './rjsf/Form'
-import { getServiceSchema, getServiceUiSchema, getSubdomain } from './Service'
+import { getServiceSchema, getServiceUiSchema, getSubdomain, updateIngressField } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
 import WorkloadValues from './WorkloadValues'
 import { getWorkloadSchema, getWorkloadUiSchema } from './WorkloadDefine'
@@ -31,7 +31,10 @@ export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: 
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
-    data: { 'ui:widget': 'hidden' },
+    build: { 'ui:widget': 'hidden' },
+    workload: { 'ui:widget': 'hidden' },
+    workloadValues: { 'ui:widget': 'hidden' },
+    service: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
 
@@ -94,6 +97,8 @@ export default function ({
     setData(project)
   }, [project])
 
+  const formData = cloneDeep(data)
+
   const projectSchema = getProjectSchema(teamId)
   const projectUiSchema = getProjectUiSchema(user, teamId)
 
@@ -102,69 +107,56 @@ export default function ({
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
   const workloadSchema = getWorkloadSchema()
-  if (data?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
+  if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsQuery({ teamId })
-  const serviceSchema = getServiceSchema(appsEnabled, settings, data?.service, teamId, secrets, k8sServices)
-  const serviceUiSchema = getServiceUiSchema(appsEnabled, data?.service, user, teamId)
+  const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
+  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
-  if (data?.service?.ingress) {
-    try {
-      let ing = data.service.ingress as Record<string, any>
-      if (
-        !['cluster'].includes(ing?.type as string) &&
-        (!(data.service.ingress as Record<string, any>)?.domain || ing?.useDefaultSubdomain)
-      ) {
-        // Set default domain and subdomain if ingress type not is 'cluster'
-        ing = { ...ing }
-        ing.subdomain = getSubdomain(data?.service?.name, teamId)
-        data.service.ingress = ing
-      }
-      if (ing?.type === 'tlsPass') {
-        // we don't expect some props when choosing tlsPass
-        ing = { ...ing }
-        unset(ing, 'hasCert')
-        unset(ing, 'certArn')
-        unset(ing, 'certName')
-        unset(ing, 'forwardPath')
-        data.service.ingress = ing
-      } else if (ing?.type === 'cluster') {
-        // cluster has an empty ingress
-        data.service.ingress = { type: 'cluster' }
-      }
-      // eslint-disable-next-line no-empty
-    } catch (error) {}
+  const teamSubdomain = getSubdomain(formData?.service?.name, teamId)
+  const defaultSubdomain = teamSubdomain
+  updateIngressField(formData?.service, defaultSubdomain)
+
+  const setNextStep = () => setActiveStep((prev) => prev + 1)
+  const setPreviousStep = () => setActiveStep((prev) => prev - 1)
+
+  const setNextStepWL = () => setActiveStepWL((prev) => prev + 1)
+  const setPreviousStepWL = () => {
+    if (activeStepWL === 0) setPreviousStep()
+    else setActiveStepWL((prev) => prev - 1)
   }
 
   const handleCreateProject = () => {
-    const { name } = data
-    if (data?.id) {
-      if (!data.service.name) setData({ ...data, service: { name } })
+    const { name } = formData
+    if (formData?.id) {
+      if (!formData.service.name) setData({ ...formData, service: { name } })
       if (selectedPath === 'useExisting') {
-        delete data.build
+        delete formData.build
         setActiveStep(2)
         return
       }
-      setActiveStep((prev) => prev + 1)
+      setNextStep()
       return
     }
-    create({ teamId, body: data }).then((res: any) => {
-      if (res.error) return
-      setData({ ...res.data, build: { name }, service: { name } })
-      if (selectedPath === 'useExisting') setActiveStep(2)
-      else setActiveStep((prev) => prev + 1)
-    })
+    create({ teamId, body: omit(formData, ['id', 'build', 'workload', 'workloadValues', 'service']) }).then(
+      (res: any) => {
+        if (res.error) return
+        setData({ ...res.data, build: { name }, service: { name } })
+        if (selectedPath === 'useExisting') setActiveStep(2)
+        else setNextStep()
+      },
+    )
   }
 
   const handleUpdateProject = async () => {
     await update({
       teamId,
       projectId,
-      body: { ...data, service: data.service },
+      body: { ...formData, service: formData.service },
     })
     history.push(`/projects`)
   }
@@ -177,25 +169,26 @@ export default function ({
   const handleNext = async () => {
     if (activeStep === 0) handleCreateProject()
     if (activeStep === 1) {
-      const registry = `harbor.${domainSuffix}/team-${teamId}/${data?.name}`
-      setValuesData({ values: { image: { repository: registry, tag: data.build.tag } } })
-      setActiveStep((prev) => prev + 1)
+      const registry = `harbor.${domainSuffix}/team-${teamId}/${formData?.name}`
+      setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
+      setNextStep()
     }
     if (activeStep === 3) await handleUpdateProject()
   }
 
   const handleSelectChart = (e: any) => {
     const chart = e.target.value
-    if (chart === 'custom') setData({ ...data, workload: { ...data?.workload, name: data.name, selectedChart: chart } })
+    if (chart === 'custom')
+      setData({ ...formData, workload: { ...formData?.workload, name: formData.name, selectedChart: chart } })
     setSelectedChart(chart)
   }
 
   const handleNextWL = () => {
     const body =
       selectedChart === 'custom'
-        ? { ...data.workload, name: data?.name }
+        ? { ...formData.workload, name: formData?.name }
         : {
-            name: data?.name,
+            name: formData?.name,
             url: 'https://github.com/redkubes/otomi-charts.git',
             path: selectedChart,
             revision: 'HEAD',
@@ -204,52 +197,43 @@ export default function ({
     if (selectedChart === 'custom' && activeStepWL === 0) {
       setValuesData({})
       setData({
-        ...data,
+        ...formData,
         workload: { ...body, selectedChart },
       })
-      setActiveStepWL((prev) => prev + 1)
+      setNextStepWL()
       return
     }
 
     if (selectedChart === 'custom' && activeStepWL === 1) {
       setValuesData({ values: valuesData?.values })
       setData({
-        ...data,
-        workload: { ...data?.workload, ...body, selectedChart },
-        workloadValues: { ...data.workloadValues, values: valuesData?.values },
+        ...formData,
+        workload: { ...formData?.workload, ...body, selectedChart },
+        workloadValues: { ...formData.workloadValues, values: valuesData?.values },
       })
-      setActiveStep((prev) => prev + 1)
+      setNextStep()
       return
     }
 
     let { containerPorts } = valuesData.values
     if (selectedChart === 'ksvc' && containerPorts[0].name !== 'http1')
       containerPorts = [{ ...containerPorts[0], name: 'http1' }]
-    const values = { fullnameOverride: data?.name, ...valuesData?.values, containerPorts }
+    const values = { fullnameOverride: formData?.name, ...valuesData?.values, containerPorts }
     setValuesData({ values })
 
     setData({
-      ...data,
-      workload: { ...data?.workload, ...body, selectedChart },
-      workloadValues: { ...data.workloadValues, values },
+      ...formData,
+      workload: { ...formData?.workload, ...body, selectedChart },
+      workloadValues: { ...formData.workloadValues, values },
     })
-    if (activeStepWL === workloadSteps[selectedChart].length - 1) setActiveStep((prev) => prev + 1)
-    else setActiveStepWL((prev) => prev + 1)
-  }
-
-  const handleBack = () => {
-    setActiveStep((prev) => prev - 1)
-  }
-
-  const handleBackWL = () => {
-    if (activeStepWL === 0) setActiveStep((prev) => prev - 1)
-    else setActiveStepWL((prev) => prev - 1)
+    if (activeStepWL === workloadSteps[selectedChart].length - 1) setNextStep()
+    else setNextStepWL()
   }
 
   const isDisabled = () => {
-    if (activeStep === 0) return !data?.name
-    if (activeStep === 1) return !data?.build?.mode?.docker?.repoUrl && !data?.build?.mode?.buildpacks?.repoUrl
-    if (activeStepWL === 0) return selectedChart === 'custom' && !data?.workload?.url
+    if (activeStep === 0) return !formData?.name
+    if (activeStep === 1) return !formData?.build?.mode?.docker?.repoUrl && !formData?.build?.mode?.buildpacks?.repoUrl
+    if (activeStepWL === 0) return selectedChart === 'custom' && !formData?.workload?.url
     return false
   }
 
@@ -276,9 +260,9 @@ export default function ({
                   <Form
                     schema={projectSchema}
                     uiSchema={projectUiSchema}
-                    data={data}
-                    onChange={(formData: any) => setData({ ...data, ...formData })}
-                    disabled={!appsEnabled.tekton || !!data?.id}
+                    data={formData}
+                    onChange={(data: any) => setData({ ...formData, ...data })}
+                    disabled={!appsEnabled.tekton || !!formData?.id}
                     resourceType='Project'
                     {...other}
                     children
@@ -298,8 +282,8 @@ export default function ({
                 <Form
                   schema={buildSchema}
                   uiSchema={buildUiSchema}
-                  data={data.build}
-                  onChange={(formData: any) => setData({ ...data, build: formData })}
+                  data={formData.build}
+                  onChange={(data: any) => setData({ ...formData, build: data })}
                   disabled={!appsEnabled.tekton}
                   resourceType='Build'
                   {...other}
@@ -310,7 +294,7 @@ export default function ({
 
               {activeStep === 2 && (
                 <Box sx={{ width: '100%' }}>
-                  {!selectedChart && !data?.workload?.id ? (
+                  {!selectedChart && !formData?.workload?.id ? (
                     <FormControl sx={{ mt: 1 }}>
                       <FormLabel sx={{ mb: 1 }}>Choose one of the following helm charts.</FormLabel>
                       <RadioGroup onChange={(e) => handleSelectChart(e)} value={selectedChart}>
@@ -339,10 +323,11 @@ export default function ({
                               ? workloadUiSchema.preDefined
                               : workloadUiSchema.custom
                           }
-                          data={data.workload}
-                          onChange={(formData: any) => setData({ ...data, workload: formData })}
+                          data={formData.workload}
+                          onChange={(data: any) => setData({ ...formData, workload: data })}
                           disabled={
-                            !appsEnabled.argocd || (data?.workload?.selectedChart !== 'custom' && !!data?.workload?.id)
+                            !appsEnabled.argocd ||
+                            (formData?.workload?.selectedChart !== 'custom' && !!formData?.workload?.id)
                           }
                           resourceType='Workload'
                           children
@@ -375,7 +360,7 @@ export default function ({
                           variant='contained'
                           color='inherit'
                           // disabled={activeStepWL === 0}
-                          onClick={handleBackWL}
+                          onClick={setPreviousStepWL}
                           sx={{ mr: 1 }}
                         >
                           Back
@@ -394,8 +379,8 @@ export default function ({
                 <Form
                   schema={serviceSchema}
                   uiSchema={serviceUiSchema}
-                  data={data.service}
-                  onChange={(formData: any) => setData({ ...data, service: formData })}
+                  data={formData.service}
+                  onChange={(data: any) => setData({ ...formData, service: data })}
                   resourceType='Service'
                   children
                   hideHelp
@@ -411,7 +396,7 @@ export default function ({
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Button variant='contained' color='inherit' disabled={index === 0} onClick={handleBack}>
+                  <Button variant='contained' color='inherit' disabled={index === 0} onClick={setPreviousStep}>
                     Back
                   </Button>
                   <Button variant='contained' onClick={handleNext} disabled={isDisabled()}>
