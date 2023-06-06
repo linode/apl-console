@@ -2,6 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box, Button } from '@mui/material'
 import { useConnectCloudttyMutation } from 'redux/otomiApi'
+import { useSession } from 'providers/Session'
 import LoadingScreen from './LoadingScreen'
 
 interface Props {
@@ -10,6 +11,8 @@ interface Props {
 
 export default function ({ teamId }: Props): React.ReactElement {
   const { t } = useTranslation()
+  const { user } = useSession()
+  console.log('user', user)
   const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
   console.log('connectData', data)
 
@@ -17,7 +20,7 @@ export default function ({ teamId }: Props): React.ReactElement {
 
   // END HOOKS
   const handleTty = () => {
-    connect({ body: { teamId, domain: hostname, sub: 'myRandomSub' } })
+    connect({ body: { teamId, domain: hostname, sub: user.sub } })
   }
 
   return (
