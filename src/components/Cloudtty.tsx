@@ -15,12 +15,12 @@ export default function ({ teamId }: Props): React.ReactElement {
   console.log('user', user)
   const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
   console.log('connectData', data)
-
   const hostname = window.location.hostname
+  const domain = hostname.split('.').slice(1).join('.')
 
   // END HOOKS
   const handleTty = () => {
-    connect({ body: { teamId, domain: hostname, sub: user.sub } })
+    connect({ body: { teamId, domain, sub: user.sub } })
   }
 
   return (
