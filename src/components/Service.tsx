@@ -48,15 +48,15 @@ export const addServiceNameEnumField = (
   k8sServices: GetTeamK8SServicesApiResponse,
   formData: GetServiceApiResponse,
 ): void => {
-  const k8sService = k8sServices.filter((item) => item.name === formData?.name)
-  if (k8sService.length === 0 && formData?.name) return
+  const k8sService = k8sServices?.filter((item) => item.name === formData?.name)
+  if (k8sService?.length === 0 && formData?.name) return
 
-  const k8sServiceNames = k8sServices.map((item) => item.name)
+  const k8sServiceNames = k8sServices?.map((item) => item.name)
   set(schema, 'properties.name.enum', k8sServiceNames)
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
-    set(schema, 'properties.port.enum', k8sService[0].ports)
-    if (k8sService[0].managedByKnative) set(formData, 'ksvc.predeployed', true)
+    set(schema, 'properties.port.enum', k8sService?.[0].ports)
+    if (k8sService?.[0].managedByKnative) set(formData, 'ksvc.predeployed', true)
     unset(schema, 'properties.port.default')
   }
 }
@@ -143,35 +143,18 @@ export const getServiceUiSchema = (
   return uiSchema
 }
 
-interface Props extends CrudProps {
-  service?: GetServiceApiResponse
-  k8sServices?: GetTeamK8SServicesApiResponse
-  secrets: GetSecretsApiResponse
-  teamId: string
-}
-
-function getSubdomain(serviceName: string | undefined, teamId): string {
+export function getSubdomain(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
   if (teamId === 'admin') return serviceName
   return `${serviceName}.team-${teamId}`
 }
 
-export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
-  const { appsEnabled, settings, user } = useSession()
-  const [data, setData] = useState<GetServiceApiResponse>(service)
-  useEffect(() => {
-    setData(service)
-  }, [service])
-  // END HOOKS
-  // manipulate form data and set derived stuff:
-  const formData = cloneDeep(data)
-  const teamSubdomain = getSubdomain(formData?.name, teamId)
-  const defaultSubdomain = teamSubdomain
+export const updateIngressField = (formData, defaultSubdomain) => {
   if (formData?.ingress) {
     let ing = formData.ingress as Record<string, any>
     if (
       !['cluster'].includes(ing.type as string) &&
-      (!(data.ingress as Record<string, any>)?.domain || ing.useDefaultSubdomain)
+      (!(formData.ingress as Record<string, any>)?.domain || ing.useDefaultSubdomain)
     ) {
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
@@ -191,6 +174,27 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
       formData.ingress = { type: 'cluster' }
     }
   }
+}
+
+interface Props extends CrudProps {
+  service?: GetServiceApiResponse
+  k8sServices?: GetTeamK8SServicesApiResponse
+  secrets: GetSecretsApiResponse
+  teamId: string
+}
+
+export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
+  const { appsEnabled, settings, user } = useSession()
+  const [data, setData] = useState<GetServiceApiResponse>(service)
+  useEffect(() => {
+    setData(service)
+  }, [service])
+  // END HOOKS
+  // manipulate form data and set derived stuff:
+  const formData = cloneDeep(data)
+  const teamSubdomain = getSubdomain(formData?.name, teamId)
+  const defaultSubdomain = teamSubdomain
+  updateIngressField(formData, defaultSubdomain)
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)

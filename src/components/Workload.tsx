@@ -92,7 +92,7 @@ export default function ({
             name: data?.name,
             url: 'https://github.com/redkubes/otomi-charts.git',
             path: selectedChart,
-            revision: 'v1.0.2',
+            revision: 'HEAD',
           }
     if (workloadId) {
       await updateWorkload({
@@ -112,7 +112,10 @@ export default function ({
     let { containerPorts } = valuesData.values
     if (selectedChart === 'ksvc' && containerPorts[0].name !== 'http1')
       containerPorts = [{ ...containerPorts[0], name: 'http1' }]
-    const values = { ...valuesData?.values, containerPorts, fullnameOverride: workload?.name }
+    const values =
+      selectedChart === 'custom'
+        ? valuesData?.values
+        : { ...valuesData?.values, containerPorts, fullnameOverride: workload?.name }
     const res = await updateWorkloadValues({
       teamId,
       workloadId,
