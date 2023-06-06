@@ -14,9 +14,16 @@ interface DeleteDialogProps {
   onDelete: () => void
   resourceName: string
   resourceType: string
+  customContent?: string
 }
 
-export default function ({ onCancel, onDelete, resourceName, resourceType }: DeleteDialogProps): React.ReactElement {
+export default function ({
+  onCancel,
+  onDelete,
+  resourceName,
+  resourceType,
+  customContent,
+}: DeleteDialogProps): React.ReactElement {
   const [buttonDisabled, setButtonDisabled] = useState(true)
   const { t } = useTranslation()
   // END HOOKS
@@ -30,7 +37,7 @@ export default function ({ onCancel, onDelete, resourceName, resourceType }: Del
     <Dialog open>
       <DialogTitle>{dialogTitle} </DialogTitle>
       <DialogContent>
-        <DialogContentText>{dialogContent}</DialogContentText>
+        <DialogContentText>{customContent ? `${customContent} ${dialogContent}` : dialogContent}</DialogContentText>
         <TextField
           autoComplete='off'
           margin='dense'

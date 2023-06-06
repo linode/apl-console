@@ -16,6 +16,7 @@ interface ListTableProps extends EnhancedTableProps {
   noCrud?: boolean
   canCreateResource?: boolean
   idKey?: string
+  collection?: string
 }
 export default function ({
   teamId,

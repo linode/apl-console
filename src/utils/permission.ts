@@ -27,6 +27,11 @@ export function canCreateAdditionalResource(
       return metrics.otomi_workloads < license.body.capabilities.workloads
     case 'team':
       return metrics.otomi_teams < license.body.capabilities.teams
+    case 'project':
+      return (
+        metrics.otomi_services < license.body.capabilities.services &&
+        metrics.otomi_workloads < license.body.capabilities.workloads
+      )
     default:
       console.warn(`Unknown resource type '${resourceType}'`)
       return false

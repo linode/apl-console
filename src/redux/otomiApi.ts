@@ -116,6 +116,28 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
+      query: () => ({ url: `/projects` }),
+    }),
+    getTeamProjects: build.query<GetTeamProjectsApiResponse, GetTeamProjectsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects` }),
+    }),
+    createProject: build.mutation<CreateProjectApiResponse, CreateProjectApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteProject: build.mutation<DeleteProjectApiResponse, DeleteProjectApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}`, method: 'DELETE' }),
+    }),
+    getProject: build.query<GetProjectApiResponse, GetProjectApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}` }),
+    }),
+    editProject: build.mutation<EditProjectApiResponse, EditProjectApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -1808,6 +1830,72 @@ export type EditBuildApiArg = {
     }
   }
 }
+export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetAllProjectsApiArg = void
+export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained team projects configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetTeamProjectsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateProjectApiResponse = /** status 200 Successfully stored project configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type CreateProjectApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Project object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type DeleteProjectApiResponse = /** status 200 Successfully deleted a project */ undefined
+export type DeleteProjectApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  projectId: string
+}
+export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type GetProjectApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  projectId: string
+}
+export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type EditProjectApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the build */
+  projectId: string
+  /** Project object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    data?: any
+  }
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -3041,6 +3129,12 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useGetAllProjectsQuery,
+  useGetTeamProjectsQuery,
+  useCreateProjectMutation,
+  useDeleteProjectMutation,
+  useGetProjectQuery,
+  useEditProjectMutation,
   useGetAllWorkloadsQuery,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,

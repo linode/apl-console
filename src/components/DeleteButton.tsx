@@ -10,6 +10,7 @@ interface DeleteButtonProps {
   onDelete: () => void
   resourceName: string
   resourceType: string
+  customContent?: string
 }
 export default function ({ loading, disabled, ...other }: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
