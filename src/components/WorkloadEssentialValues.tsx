@@ -4,11 +4,11 @@ import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { GetSessionApiResponse } from 'redux/otomiApi'
+import { GetSessionApiResponse, useGetSecretsQuery } from 'redux/otomiApi'
 import { Box, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import Form from './rjsf/Form'
 
-export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string): any => {
+export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, tlsSecretNames: any): any => {
   const schema: any = cloneDeep(getSpec().components.schemas.WorkloadValues)
   const defaultServicePorts = [
     {
@@ -23,6 +23,7 @@ export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string):
     schema.properties.values.properties.autoscaling.properties.minReplicas.default = 0
     delete schema.properties.values.properties.servicePorts
   }
+  schema.properties.values.properties.secrets.enum = tlsSecretNames
   schema.properties.values.title = `${valuesType} values`
   return schema
 }
@@ -33,7 +34,18 @@ export const getWorkloadValuesUiSchema = (
   valuesType: string,
 ): any => {
   const hidden = () => <div className='hiddenDiv' style={{ position: 'absolute' }} />
-  const advancedFields = ['env', 'args', 'labels', 'annotations', 'secrets', 'files', 'secretMounts', 'servicePorts']
+  const advancedFields = [
+    'env',
+    'args',
+    'labels',
+    'annotations',
+    'secrets',
+    'files',
+    'secretMounts',
+    'servicePorts',
+    'containerSecurityContext',
+    'serviceMonitor',
+  ]
   const advancedUiSchema = advancedFields.reduce((acc: any, item: string) => {
     acc[`${item}`] = {
       'ui:widget': 'hidden',
@@ -62,8 +74,6 @@ export const getWorkloadValuesUiSchema = (
       resources: {
         limits: valuesType !== 'Advanced' && { 'ui:widget': 'hidden' },
       },
-      containerSecurityContext: valuesType !== 'Advanced' && { 'ui:widget': 'hidden' },
-      serviceMonitor: valuesType !== 'Advanced' && { 'ui:widget': 'hidden' },
       ...(valuesType !== 'Advanced' && advancedUiSchema),
     },
   }
@@ -84,9 +94,12 @@ interface Props extends CrudProps {
 export default function ({ teamId, valuesData, setValuesData, selectedChart, ...other }: Props): React.ReactElement {
   const { appsEnabled, user } = useSession()
   const [valuesType, setValuesType] = useState('Basic')
+  const { data: secrets } = useGetSecretsQuery({ teamId })
   // END HOOKS
-  const schema = getWorkloadValuesSchema(selectedChart, valuesType)
+  const tlsSecretNames = secrets?.filter((s) => s.secret.type === 'tls').map((s) => s.name)
+  const schema = getWorkloadValuesSchema(selectedChart, valuesType, tlsSecretNames)
   const uiSchema = getWorkloadValuesUiSchema(user, teamId, valuesType)
+  if (secrets?.length === 1) valuesData.values.secrets = tlsSecretNames[0]
 
   return (
     <Box sx={{ mt: '2rem' }}>
