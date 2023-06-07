@@ -10,6 +10,8 @@ import Form from './rjsf/Form'
 
 export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, tlsSecretNames: any): any => {
   const schema: any = cloneDeep(getSpec().components.schemas.WorkloadValues)
+  const defaultDeploymentContainerPorts = [{ name: 'http', containerPort: 8080, protocol: 'TCP' }]
+  const defaultKsvcContainerPorts = [{ name: 'http1', containerPort: 8080, protocol: 'TCP' }]
   const defaultServicePorts = [
     {
       name: 'http',
@@ -18,8 +20,12 @@ export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, 
       protocol: 'TCP',
     },
   ]
-  if (selectedChart === 'deployment') schema.properties.values.properties.servicePorts.default = defaultServicePorts
+  if (selectedChart === 'deployment') {
+    schema.properties.values.properties.servicePorts.default = defaultServicePorts
+    schema.properties.values.properties.containerPorts.default = defaultDeploymentContainerPorts
+  }
   if (selectedChart === 'ksvc') {
+    schema.properties.values.properties.containerPorts.default = defaultKsvcContainerPorts
     schema.properties.values.properties.autoscaling.properties.minReplicas.default = 0
     delete schema.properties.values.properties.servicePorts
   }
