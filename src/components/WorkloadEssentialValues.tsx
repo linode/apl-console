@@ -39,25 +39,34 @@ export const getWorkloadValuesUiSchema = (
   teamId: string,
   valuesType: string,
 ): any => {
-  const hidden = () => <div className='hiddenDiv' style={{ position: 'absolute' }} />
+  const hidden = () => <div />
   const advancedFields = [
     'env',
     'args',
-    'labels',
-    'annotations',
-    'secrets',
     'files',
+    'labels',
+    'secrets',
+    'annotations',
     'secretMounts',
     'servicePorts',
-    'containerSecurityContext',
     'serviceMonitor',
+    'resources.limits',
+    'containerSecurityContext',
   ]
-  const advancedUiSchema = advancedFields.reduce((acc: any, item: string) => {
-    acc[`${item}`] = {
-      'ui:widget': 'hidden',
-      'ui:field': hidden,
-      'ui:description': ' ',
-    }
+  const hiddenAdvancedUiSchema = advancedFields.reduce((acc: any, item: string) => {
+    const properties = item.split('.')
+    let currentObj = acc
+    properties.forEach((prop, index) => {
+      if (!currentObj[prop]) currentObj[prop] = {}
+      if (index === properties.length - 1) {
+        currentObj[prop] = {
+          'ui:widget': 'hidden',
+          'ui:field': hidden,
+          'ui:description': ' ',
+        }
+      }
+      currentObj = currentObj[prop]
+    })
     return acc
   }, {})
 
@@ -77,10 +86,7 @@ export const getWorkloadValuesUiSchema = (
           removable: false,
         },
       },
-      resources: {
-        limits: valuesType !== 'Advanced' && { 'ui:widget': 'hidden' },
-      },
-      ...(valuesType !== 'Advanced' && advancedUiSchema),
+      ...(valuesType !== 'Advanced' && hiddenAdvancedUiSchema),
     },
   }
 
