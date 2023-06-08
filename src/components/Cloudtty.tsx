@@ -19,10 +19,15 @@ export default function ({ teamId }: Props): React.ReactElement {
   const domain = hostname.split('.').slice(1).join('.') || hostname
 
   const [myUrl, setMyUrl] = React.useState('')
+  const [url, setUrl] = React.useState(`https://tty.${domain}/${user.sub}`)
 
   // END HOOKS
   const handleTty = () => {
     connect({ body: { teamId, domain, sub: user.sub } })
+  }
+
+  const handleSetMyUrl = () => {
+    setMyUrl(url)
   }
 
   return (
@@ -45,7 +50,10 @@ export default function ({ teamId }: Props): React.ReactElement {
               style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, width: '100%', height: '100%' }}
             />
           </Box>
-          <input type='text' onChange={(e) => setMyUrl(e.target.value)} />
+          <input style={{ width: '100%' }} type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
+          <button style={{ width: '100%' }} type='button' onClick={handleSetMyUrl}>
+            Set My URL
+          </button>
         </>
       ) : (
         <Button variant='outlined' onClick={handleTty}>
