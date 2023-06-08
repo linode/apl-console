@@ -30,6 +30,7 @@ export default function NavConfig() {
     {
       subheader: 'platform',
       items: [
+        { title: 'Cloudtty', path: '/cloudtty/admin', icon: getIcon('cloudtty_icon.svg') },
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
         { title: 'Shortcuts', path: '/shortcuts/admin', icon: getIcon('shortcuts_icon.svg') },
