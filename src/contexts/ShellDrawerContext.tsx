@@ -22,7 +22,7 @@ const initialState: ShellDrawerContextProps = {
   isShell: false,
   isMinimized: false,
   iFrameUrl: '',
-  shellHeight: 250,
+  shellHeight: 20,
   onOpenShell: () => {},
   onCloseShell: () => {},
   onSetIFrameUrl: () => {},
@@ -42,10 +42,10 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   const minShellHeight = 20
   const maxShellHeight = 500
   const defaultShellHeight = 250
-  const [shellHeight, setShellHeight] = useState(defaultShellHeight)
+  const [shellHeight, setShellHeight] = useState(minShellHeight)
   const [shell, setShell] = useState({
     isShell: false,
-    isMinimized: false,
+    isMinimized: true,
     iFrameUrl: '',
   })
   // console.log('shell', shell)
@@ -54,7 +54,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
     if (isMobile) {
       setShell({
         isShell: false,
-        isMinimized: false,
+        isMinimized: true,
         iFrameUrl: '',
       })
     }

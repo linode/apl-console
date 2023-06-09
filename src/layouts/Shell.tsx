@@ -56,6 +56,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
       connect({ body: { teamId: 'admin', domain, sub: user.sub } }).then((res: any) => {
         console.log('res', res)
         onSetIFrameUrl(res.data.iFrameUrl)
+        onToggleShell()
       })
     }
   }, [isShell])
