@@ -29,7 +29,7 @@ export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, 
     schema.properties.values.properties.autoscaling.properties.minReplicas.default = 0
     delete schema.properties.values.properties.servicePorts
   }
-  schema.properties.values.properties.secrets.enum = tlsSecretNames
+  schema.properties.values.properties.secrets.items.enum = tlsSecretNames
   schema.properties.values.title = `${valuesType} values`
   return schema
 }
