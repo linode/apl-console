@@ -42,13 +42,13 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   const minShellHeight = 20
   const maxShellHeight = 500
   const defaultShellHeight = 250
-  const [shellHeight, setShellHeight] = useState(minShellHeight)
   const [shell, setShell] = useState({
     isShell: false,
     isMinimized: true,
     iFrameUrl: '',
+    shellHeight: minShellHeight,
   })
-  // console.log('shell', shell)
+  console.log('shell', shell)
 
   useEffect(() => {
     if (isMobile) {
@@ -56,6 +56,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
         isShell: false,
         isMinimized: true,
         iFrameUrl: '',
+        shellHeight: minShellHeight,
       })
     }
   }, [isMobile])
@@ -68,17 +69,16 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   }
 
   const handleSetIFrameUrl = (url: string) => {
-    setShell({ ...shell, iFrameUrl: url })
+    setShell({ ...shell, iFrameUrl: url, isMinimized: false, shellHeight: defaultShellHeight })
   }
 
   const handleSetShellHeight = (height: number) => {
-    if (height > minShellHeight && height < maxShellHeight) setShellHeight(height)
+    if (height > minShellHeight && height < maxShellHeight) setShell({ ...shell, shellHeight: height })
   }
 
   const handleToggleShell = () => {
-    setShell({ ...shell, isMinimized: !shell.isMinimized })
-    if (shell.isMinimized) setShellHeight(defaultShellHeight)
-    else setShellHeight(minShellHeight)
+    if (shell.isMinimized) setShell({ ...shell, isMinimized: !shell.isMinimized, shellHeight: defaultShellHeight })
+    else setShell({ ...shell, isMinimized: !shell.isMinimized, shellHeight: minShellHeight })
   }
 
   return (
@@ -87,7 +87,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
         isShell: shell.isShell,
         isMinimized: shell.isMinimized,
         iFrameUrl: shell.iFrameUrl,
-        shellHeight,
+        shellHeight: shell.shellHeight,
         onOpenShell: handleOpenShell,
         onCloseShell: handleCloseShell,
         onSetIFrameUrl: handleSetIFrameUrl,

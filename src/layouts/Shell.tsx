@@ -56,7 +56,6 @@ function Shell({ collapseClick }: Props): React.ReactElement {
       connect({ body: { teamId: 'admin', domain, sub: user.sub } }).then((res: any) => {
         console.log('res', res)
         onSetIFrameUrl(res.data.iFrameUrl)
-        onToggleShell()
       })
     }
   }, [isShell])
@@ -121,20 +120,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, marginRight: '10px' }} />
         </Box>
       </Box>
-      <Box
-        sx={{
-          position: 'absolute',
-          overflow: 'hidden',
-          width: '100%',
-          paddingTop: '56.25%',
-        }}
-      >
-        <iframe
-          title='Shell iFrame'
-          src={iFrameUrl}
-          style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, width: '100%', height: '100%' }}
-        />
-      </Box>
+      <iframe title='Shell iFrame' src={iFrameUrl} style={{ width: '100%', height: '100%' }} />
     </ShellStyle>
   )
 }
