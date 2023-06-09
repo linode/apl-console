@@ -7,8 +7,10 @@ import { useHistory } from 'react-router-dom'
 import Sidebar from 'components/Sidebar'
 import Header from 'components/Header'
 import useCollapseDrawer from 'hooks/useCollapseDrawer'
+import useShellDrawer from 'hooks/useShellDrawer'
 import { Box, styled } from '@mui/material'
 import { HEADER, NAVBAR } from '../config'
+import Shell from './Shell'
 
 // ----------------------------------------------------------------------
 
@@ -45,6 +47,7 @@ interface Props {
 
 export default function ({ children, title }: Props): React.ReactElement {
   const { collapseClick, isCollapse } = useCollapseDrawer()
+  const { isShell, shellHeight } = useShellDrawer()
   const session = useSession()
   const history = useHistory()
   const [open, setOpen] = useState(false)
@@ -63,6 +66,7 @@ export default function ({ children, title }: Props): React.ReactElement {
       sx={{
         display: { lg: 'flex' },
         minHeight: { lg: 1 },
+        pb: `${shellHeight}px`,
       }}
     >
       {title && <Helmet title={title} />}
@@ -87,6 +91,7 @@ export default function ({ children, title }: Props): React.ReactElement {
       <MainStyle collapseClick={collapseClick}>
         <ErrorBoundary FallbackComponent={ErrorComponent}>{children}</ErrorBoundary>
       </MainStyle>
+      {isShell && <Shell collapseClick={collapseClick} />}
     </Box>
   )
 }

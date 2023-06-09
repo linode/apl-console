@@ -45,6 +45,7 @@ import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
 import Projects from 'pages/Projects'
 import { CollapseDrawerProvider } from 'contexts/CollapseDrawerContext'
+import { ShellDrawerProvider } from 'contexts/ShellDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
@@ -72,72 +73,74 @@ function App() {
             <DndProvider backend={HTML5Backend}>
               <IoProvider>
                 <SessionProvider>
-                  <CollapseDrawerProvider>
-                    <SettingsProvider defaultSettings={settings}>
-                      <ThemeProvider>
-                        <ThemeColorPresets>
-                          <NotistackProvider>
-                            <SnackbarUtilsConfigurator />
-                            <CssBaseline />
-                            {/* <ProgressBar /> */}
-                            <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
-                            <Router basename={contextPath}>
-                              <Switch>
-                                {/* ! user && <Route path='/' component={Home} exact /> */}
-                                <Route path='/' component={Dashboard} exact />
-                                <Route path='/activate' component={Activate} exact />
-                                <Route path='/apps/:teamId' component={Apps} exact />
-                                <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                                <Route path='/backups' component={Backups} exact />
-                                <Route path='/clusters/:clusterId' component={Cluster} exact />
-                                <Route path='/clusters' component={Clusters} exact />
-                                <Route path='/create-team' component={Team} exact />
-                                <Route path='/policies' component={Policies} exact />
-                                <Route path='/policies/:policyId' component={Policy} exact />
-                                <Route path='/services' component={Services} exact />
-                                <Route path='/secrets' component={Secrets} exact />
-                                <Route path='/workloads' component={Workloads} exact />
-                                <Route path='/settings' component={SettingsOverview} exact />
-                                <Route path='/projects' component={Projects} exact />
-                                <Route path='/builds' component={Builds} exact />
-                                <Route path='/cloudtty/:teamId' component={Cloudtty} exact />
-                                <Route path='/settings/:settingId' component={Setting} exact />
-                                <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
-                                <Route path='/teams' component={Teams} exact />
-                                <Route path='/teams/:teamId' component={Team} exact />
-                                <Route path='/teams/:teamId/create-backup' component={Backup} exact />
-                                <Route path='/teams/:teamId/create-secret' component={Secret} exact />
-                                <Route path='/teams/:teamId/create-service' component={Service} exact />
-                                <Route path='/teams/:teamId/create-workload' component={Workload} exact />
-                                <Route path='/teams/:teamId/create-project' component={Project} exact />
-                                <Route path='/teams/:teamId/create-build' component={Build} exact />
-                                <Route path='/teams/:teamId/secrets' component={Secrets} exact />
-                                <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
-                                <Route path='/teams/:teamId/backups' component={Backups} exact />
-                                <Route path='/teams/:teamId/backups/:backupId' component={Backup} exact />
-                                <Route path='/teams/:teamId/projects' component={Projects} exact />
-                                <Route path='/teams/:teamId/projects/:projectId' component={Project} exact />
-                                <Route path='/teams/:teamId/builds' component={Builds} exact />
-                                <Route path='/teams/:teamId/builds/:buildId' component={Build} exact />
-                                <Route path='/teams/:teamId/workloads' component={Workloads} exact />
-                                <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact />
-                                <Route
-                                  path='/teams/:teamId/workloads/:workloadId/values'
-                                  component={WorkloadValues}
-                                  exact
-                                />
-                                <Route path='/teams/:teamId/services' component={Services} exact />
-                                <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                                <Route path='*'>
-                                  <Error error={new HttpErrorBadRequest()} />
-                                </Route>
-                              </Switch>
-                            </Router>
-                          </NotistackProvider>
-                        </ThemeColorPresets>
-                      </ThemeProvider>
-                    </SettingsProvider>
-                  </CollapseDrawerProvider>
+                  <ShellDrawerProvider>
+                    <CollapseDrawerProvider>
+                      <SettingsProvider defaultSettings={settings}>
+                        <ThemeProvider>
+                          <ThemeColorPresets>
+                            <NotistackProvider>
+                              <SnackbarUtilsConfigurator />
+                              <CssBaseline />
+                              {/* <ProgressBar /> */}
+                              <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
+                              <Router basename={contextPath}>
+                                <Switch>
+                                  {/* ! user && <Route path='/' component={Home} exact /> */}
+                                  <Route path='/' component={Dashboard} exact />
+                                  <Route path='/activate' component={Activate} exact />
+                                  <Route path='/apps/:teamId' component={Apps} exact />
+                                  <Route path='/apps/:teamId/:appId' component={OtomiApp} exact />
+                                  <Route path='/backups' component={Backups} exact />
+                                  <Route path='/clusters/:clusterId' component={Cluster} exact />
+                                  <Route path='/clusters' component={Clusters} exact />
+                                  <Route path='/create-team' component={Team} exact />
+                                  <Route path='/policies' component={Policies} exact />
+                                  <Route path='/policies/:policyId' component={Policy} exact />
+                                  <Route path='/services' component={Services} exact />
+                                  <Route path='/secrets' component={Secrets} exact />
+                                  <Route path='/workloads' component={Workloads} exact />
+                                  <Route path='/settings' component={SettingsOverview} exact />
+                                  <Route path='/projects' component={Projects} exact />
+                                  <Route path='/builds' component={Builds} exact />
+                                  <Route path='/cloudtty/:teamId' component={Cloudtty} exact />
+                                  <Route path='/settings/:settingId' component={Setting} exact />
+                                  <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
+                                  <Route path='/teams' component={Teams} exact />
+                                  <Route path='/teams/:teamId' component={Team} exact />
+                                  <Route path='/teams/:teamId/create-backup' component={Backup} exact />
+                                  <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                                  <Route path='/teams/:teamId/create-service' component={Service} exact />
+                                  <Route path='/teams/:teamId/create-workload' component={Workload} exact />
+                                  <Route path='/teams/:teamId/create-project' component={Project} exact />
+                                  <Route path='/teams/:teamId/create-build' component={Build} exact />
+                                  <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                                  <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                                  <Route path='/teams/:teamId/backups' component={Backups} exact />
+                                  <Route path='/teams/:teamId/backups/:backupId' component={Backup} exact />
+                                  <Route path='/teams/:teamId/projects' component={Projects} exact />
+                                  <Route path='/teams/:teamId/projects/:projectId' component={Project} exact />
+                                  <Route path='/teams/:teamId/builds' component={Builds} exact />
+                                  <Route path='/teams/:teamId/builds/:buildId' component={Build} exact />
+                                  <Route path='/teams/:teamId/workloads' component={Workloads} exact />
+                                  <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact />
+                                  <Route
+                                    path='/teams/:teamId/workloads/:workloadId/values'
+                                    component={WorkloadValues}
+                                    exact
+                                  />
+                                  <Route path='/teams/:teamId/services' component={Services} exact />
+                                  <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                                  <Route path='*'>
+                                    <Error error={new HttpErrorBadRequest()} />
+                                  </Route>
+                                </Switch>
+                              </Router>
+                            </NotistackProvider>
+                          </ThemeColorPresets>
+                        </ThemeProvider>
+                      </SettingsProvider>
+                    </CollapseDrawerProvider>
+                  </ShellDrawerProvider>
                 </SessionProvider>
               </IoProvider>
             </DndProvider>
