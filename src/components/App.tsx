@@ -376,6 +376,12 @@ export default function ({
                       </TableCell>
                       <TableCell align='left'>{appInfo.license}</TableCell>
                     </TableRow>
+                    <TableRow key='dependencies' className={classes.tableRow}>
+                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                        <Chip label={t('Dependencies:')} />
+                      </TableCell>
+                      <TableCell align='left'>{appInfo.dependencies}</TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
