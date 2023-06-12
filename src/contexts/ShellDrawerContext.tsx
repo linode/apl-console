@@ -3,6 +3,7 @@
 import { ReactNode, createContext, useEffect, useState } from 'react'
 import { useMediaQuery } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
+import { HEADER } from 'config'
 
 // ----------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
   const minShellHeight = 20
-  const maxShellHeight = 500
+  const maxShellHeight = window.innerHeight - HEADER.DASHBOARD_DESKTOP_HEIGHT
   const defaultShellHeight = 250
   const [shell, setShell] = useState({
     isShell: false,
@@ -73,7 +74,8 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   }
 
   const handleSetShellHeight = (height: number) => {
-    if (height > minShellHeight && height < maxShellHeight) setShell({ ...shell, shellHeight: height })
+    if (height > minShellHeight && height < maxShellHeight)
+      setShell({ ...shell, isMinimized: false, shellHeight: height })
   }
 
   const handleToggleShell = () => {

@@ -1,5 +1,5 @@
-import React, { memo, useCallback, useEffect } from 'react'
-import { Box, CircularProgress, Typography, styled } from '@mui/material'
+import React, { useCallback, useEffect } from 'react'
+import { Box, CircularProgress, styled } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
 import { useConnectCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
@@ -20,7 +20,7 @@ const ShellStyle = styled('div', {
   position: 'fixed',
   bottom: 0,
   right: 0,
-  backgroundColor: '#454F5B',
+  backgroundColor: '#2b2b2b',
   height: `${drawerHeight}px`,
   ...(collapseClick
     ? {
@@ -84,16 +84,12 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
-          backgroundColor: '#454F5B',
+          backgroundColor: '#2b2b2b',
           position: 'relative',
         }}
       >
         <Box sx={{ ml: '10px', mr: 'auto', display: 'flex', alignItems: 'center' }}>
-          {isLoading ? (
-            <CircularProgress size={16} thickness={8} />
-          ) : (
-            <Typography sx={{ fontStyle: 'italic' }}>Shell</Typography>
-          )}
+          {isLoading && <CircularProgress size={16} thickness={8} />}
         </Box>
         <Box
           sx={{
@@ -113,16 +109,20 @@ function Shell({ collapseClick }: Props): React.ReactElement {
         <Box onClick={onToggleShell}>
           <SvgIconStyle
             src={`/assets/${isMinimized ? 'expand' : 'minimize'}_icon.svg`}
-            sx={{ width: '20px', height: 1, marginRight: '10px' }}
+            sx={{ width: '20px', height: 1, ml: '10px', mr: '5px' }}
           />
         </Box>
         <Box onClick={onCloseShell}>
-          <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, marginRight: '10px' }} />
+          <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, ml: '5px', mr: '10px' }} />
         </Box>
       </Box>
-      <iframe title='Shell iFrame' src={iFrameUrl} style={{ width: '100%', height: '100%' }} />
+      <iframe
+        title='Shell iFrame'
+        src={iFrameUrl}
+        style={{ width: '100%', height: '100%', border: 'none', borderTop: '1px dashed #919eab3d' }}
+      />
     </ShellStyle>
   )
 }
 
-export default memo(Shell)
+export default Shell
