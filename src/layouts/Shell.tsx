@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Box, CircularProgress, styled } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
 import { useConnectCloudttyMutation } from 'redux/otomiApi'
@@ -51,6 +51,8 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const hostname = window.location.hostname
   const domain = hostname.split('.').slice(1).join('.') || hostname
 
+  const [transparency, setTransparency] = useState(false)
+
   useEffect(() => {
     if (isShell && !iFrameUrl) {
       connect({ body: { teamId: 'admin', domain, sub: user.sub } }).then((res: any) => {
@@ -61,11 +63,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   }, [isShell])
 
   const handleMouseDown = () => {
+    setTransparency(true)
     document.addEventListener('mouseup', handleMouseUp, true)
     document.addEventListener('mousemove', handleMouseMove, true)
   }
 
   const handleMouseUp = () => {
+    setTransparency(false)
     document.removeEventListener('mouseup', handleMouseUp, true)
     document.removeEventListener('mousemove', handleMouseMove, true)
   }
@@ -94,7 +98,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
         <Box
           sx={{
             width: '100px',
-            cursor: 'row-resize',
+            cursor: 'ns-resize',
             padding: '4px 0 0',
             position: 'absolute',
             top: '8px',
@@ -105,6 +109,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
             borderRadius: '4px',
           }}
           onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         />
         <Box onClick={onToggleShell}>
           <SvgIconStyle
@@ -116,6 +121,16 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, ml: '5px', mr: '10px' }} />
         </Box>
       </Box>
+      {transparency && (
+        <div
+          style={{
+            width: '100%',
+            position: 'absolute',
+            backgroundColor: 'transparent',
+            height: '100%',
+          }}
+        />
+      )}
       <iframe
         title='Shell iFrame'
         src={iFrameUrl}
