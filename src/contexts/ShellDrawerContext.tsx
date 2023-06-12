@@ -63,24 +63,40 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   }, [isMobile])
 
   const handleOpenShell = () => {
-    setShell({ ...shell, isShell: true })
+    setShell((shell) => {
+      return { ...shell, isShell: true }
+    })
   }
   const handleCloseShell = () => {
-    setShell({ ...shell, isShell: false })
+    setShell((shell) => {
+      return { ...shell, isShell: false }
+    })
   }
 
   const handleSetIFrameUrl = (url: string) => {
-    setShell({ ...shell, iFrameUrl: url, isMinimized: false, shellHeight: defaultShellHeight })
+    setShell((shell) => {
+      return { ...shell, iFrameUrl: url, isMinimized: false, shellHeight: defaultShellHeight }
+    })
   }
 
   const handleSetShellHeight = (height: number) => {
-    if (height > minShellHeight && height < maxShellHeight)
-      setShell({ ...shell, isMinimized: false, shellHeight: height })
+    if (height > minShellHeight && height < maxShellHeight) {
+      setShell((shell) => {
+        return { ...shell, shellHeight: height }
+      })
+    }
   }
 
   const handleToggleShell = () => {
-    if (shell.isMinimized) setShell({ ...shell, isMinimized: !shell.isMinimized, shellHeight: defaultShellHeight })
-    else setShell({ ...shell, isMinimized: !shell.isMinimized, shellHeight: minShellHeight })
+    if (shell.isMinimized) {
+      setShell((shell) => {
+        return { ...shell, isMinimized: !shell.isMinimized, shellHeight: defaultShellHeight }
+      })
+    } else {
+      setShell((shell) => {
+        return { ...shell, isMinimized: !shell.isMinimized, shellHeight: minShellHeight }
+      })
+    }
   }
 
   return (
