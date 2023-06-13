@@ -121,13 +121,15 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, ml: '5px', mr: '10px' }} />
         </Box>
       </Box>
+      {/* By adding an absolute transparent div overlay, we ensure that the onmouseup event remains active even when the mouse is over the iframe. 
+      This allows us to capture mouse release events reliably and perform necessary actions within our Shell component. */}
       {transparency && (
-        <div
-          style={{
-            width: '100%',
+        <Box
+          sx={{
             position: 'absolute',
+            width: '100%',
+            height: 'calc(100% - 20px)',
             backgroundColor: 'transparent',
-            height: '100%',
           }}
         />
       )}
