@@ -30,6 +30,20 @@ const ShellStyle = styled('div', {
 }))
 
 // ----------------------------------------------------------------------
+
+interface ShellButtonProps {
+  src: string
+  onClick: () => void
+}
+
+function ShellButton({ src, onClick }: ShellButtonProps): React.ReactElement {
+  return (
+    <Box onClick={onClick}>
+      <SvgIconStyle src={src} sx={{ width: '16px', height: 1, ml: '5px', mr: '5px' }} />
+    </Box>
+  )
+}
+
 interface Props {
   collapseClick?: boolean
 }
@@ -79,6 +93,18 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetShellHeight(shellHeight)
   }, [])
 
+  const handleOpenInNew = () => {
+    onCloseShell()
+    window.open(iFrameUrl, '_blank')
+  }
+
+  const handleDeletePod = () => {
+    onSetIFrameUrl('')
+    onToggleShell()
+    onCloseShell()
+    console.log('delete pod')
+  }
+
   return (
     <ShellStyle collapseClick={collapseClick} drawerHeight={shellHeight}>
       <Box
@@ -90,9 +116,11 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           justifyContent: 'space-between',
           backgroundColor: '#2b2b2b',
           position: 'relative',
+          pl: '10px',
+          pr: '10px',
         }}
       >
-        <Box sx={{ ml: '10px', mr: 'auto', display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center' }}>
           {isLoading && <CircularProgress size={16} thickness={8} />}
         </Box>
         <Box
@@ -111,15 +139,10 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           onMouseDown={handleMouseDown}
           onMouseUp={handleMouseUp}
         />
-        <Box onClick={onToggleShell}>
-          <SvgIconStyle
-            src={`/assets/${isMinimized ? 'expand' : 'minimize'}_icon.svg`}
-            sx={{ width: '20px', height: 1, ml: '10px', mr: '5px' }}
-          />
-        </Box>
-        <Box onClick={onCloseShell}>
-          <SvgIconStyle src='/assets/close_icon.svg' sx={{ width: '20px', height: 1, ml: '5px', mr: '10px' }} />
-        </Box>
+        <ShellButton src='/assets/openInNew_icon.svg' onClick={handleOpenInNew} />
+        <ShellButton src='/assets/delete_icon.svg' onClick={handleDeletePod} />
+        <ShellButton src={`/assets/${isMinimized ? 'expand' : 'minimize'}_icon.svg`} onClick={onToggleShell} />
+        <ShellButton src='/assets/close_icon.svg' onClick={onCloseShell} />
       </Box>
       {/* By adding an absolute transparent div overlay, we ensure that the onmouseup event remains active even when the mouse is over the iframe. 
       This allows us to capture mouse release events reliably and perform necessary actions within our Shell component. */}
