@@ -65,6 +65,7 @@ export const getSettingSchema = (
       break
     case 'platformBackups':
       if (!appsEnabled.velero) set(schema, 'properties.persistentVolumes.readOnly', true)
+      if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
       break
     default:
       break
