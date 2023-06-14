@@ -119,6 +119,9 @@ const injectedRtkApi = api.injectEndpoints({
     connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
       query: (queryArg) => ({ url: `/cloudtty`, method: 'POST', body: queryArg.body }),
     }),
+    deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
+      query: () => ({ url: `/cloudtty`, method: 'DELETE' }),
+    }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
       query: () => ({ url: `/projects` }),
     }),
@@ -1850,16 +1853,278 @@ export type ConnectCloudttyApiArg = {
     iFrameUrl?: string
   }
 }
+export type DeleteCloudttyApiResponse = unknown
+export type DeleteCloudttyApiArg = void
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
   id?: string
   teamId?: string
   name: string
+  build?: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+  }
+  workload?: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+    namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
+  }
+  workloadValues?: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
+    }
+  }
+  service?: {
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultSubdomain?: boolean
+              subdomain: string
+              domain: string
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              certArn?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+    networkPolicy?: {
+      ingressPrivate?:
+        | {
+            mode: 'DenyAll'
+          }
+        | {
+            mode: 'AllowOnly'
+            allow: {
+              team: string
+              service?: string
+            }[]
+          }
+        | {
+            mode: 'AllowAll'
+          }
+      egressPublic?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }[]
+    }
+  }
 }[]
 export type GetAllProjectsApiArg = void
 export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained team projects configuration */ {
   id?: string
   teamId?: string
   name: string
+  build?: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+  }
+  workload?: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+    namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
+  }
+  workloadValues?: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
+    }
+  }
+  service?: {
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultSubdomain?: boolean
+              subdomain: string
+              domain: string
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              certArn?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+    networkPolicy?: {
+      ingressPrivate?:
+        | {
+            mode: 'DenyAll'
+          }
+        | {
+            mode: 'AllowOnly'
+            allow: {
+              team: string
+              service?: string
+            }[]
+          }
+        | {
+            mode: 'AllowAll'
+          }
+      egressPublic?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }[]
+    }
+  }
 }[]
 export type GetTeamProjectsApiArg = {
   /** ID of team to return */
@@ -1869,6 +2134,136 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
   id?: string
   teamId?: string
   name: string
+  build?: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+  }
+  workload?: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+    namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
+  }
+  workloadValues?: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
+    }
+  }
+  service?: {
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultSubdomain?: boolean
+              subdomain: string
+              domain: string
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              certArn?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+    networkPolicy?: {
+      ingressPrivate?:
+        | {
+            mode: 'DenyAll'
+          }
+        | {
+            mode: 'AllowOnly'
+            allow: {
+              team: string
+              service?: string
+            }[]
+          }
+        | {
+            mode: 'AllowAll'
+          }
+      egressPublic?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }[]
+    }
+  }
 }
 export type CreateProjectApiArg = {
   /** ID of team to return */
@@ -1878,6 +2273,136 @@ export type CreateProjectApiArg = {
     id?: string
     teamId?: string
     name: string
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+            }
+            type: 'buildpacks'
+          }
+      repoAccess?: {
+        otomiGit?: boolean
+        privateGit?: boolean
+        repoUserName?: string
+        repoPassword?: string
+      }
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      url: string
+      path?: string
+      chart?: string
+      revision?: string
+      namespace?: string
+      selectedChart?: 'deployment' | 'ksvc' | 'custom'
+    }
+    workloadValues?: {
+      id?: string
+      teamId?: string
+      name?: string
+      values: {
+        fullnameOverride?: string
+        image?: {
+          repository: string
+          tag: string
+        }
+        containerPorts?: {
+          name?: string
+          containerPort?: number
+          protocol?: string
+        }[]
+        resources?: {
+          requests?: {
+            cpu?: string
+            memory?: string
+          }
+        }
+        autoscaling?: {
+          minReplicas?: number
+          maxReplicas?: number
+        }
+      }
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultSubdomain?: boolean
+                subdomain: string
+                domain: string
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                certArn?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+      networkPolicy?: {
+        ingressPrivate?:
+          | {
+              mode: 'DenyAll'
+            }
+          | {
+              mode: 'AllowOnly'
+              allow: {
+                team: string
+                service?: string
+              }[]
+            }
+          | {
+              mode: 'AllowAll'
+            }
+        egressPublic?: {
+          domain: string
+          ports?: {
+            number: number
+            protocol: 'HTTPS' | 'HTTP' | 'TCP'
+          }[]
+        }[]
+      }
+    }
   }
 }
 export type DeleteProjectApiResponse = /** status 200 Successfully deleted a project */ undefined
@@ -1891,6 +2416,136 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
   id?: string
   teamId?: string
   name: string
+  build?: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+  }
+  workload?: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+    namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
+  }
+  workloadValues?: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
+    }
+  }
+  service?: {
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultSubdomain?: boolean
+              subdomain: string
+              domain: string
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              certArn?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+    networkPolicy?: {
+      ingressPrivate?:
+        | {
+            mode: 'DenyAll'
+          }
+        | {
+            mode: 'AllowOnly'
+            allow: {
+              team: string
+              service?: string
+            }[]
+          }
+        | {
+            mode: 'AllowAll'
+          }
+      egressPublic?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }[]
+    }
+  }
 }
 export type GetProjectApiArg = {
   /** ID of team to return */
@@ -1902,6 +2557,136 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
   id?: string
   teamId?: string
   name: string
+  build?: {
+    id?: string
+    teamId?: string
+    name: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+          }
+          type: 'buildpacks'
+        }
+    repoAccess?: {
+      otomiGit?: boolean
+      privateGit?: boolean
+      repoUserName?: string
+      repoPassword?: string
+    }
+  }
+  workload?: {
+    id?: string
+    teamId?: string
+    name: string
+    url: string
+    path?: string
+    chart?: string
+    revision?: string
+    namespace?: string
+    selectedChart?: 'deployment' | 'ksvc' | 'custom'
+  }
+  workloadValues?: {
+    id?: string
+    teamId?: string
+    name?: string
+    values: {
+      fullnameOverride?: string
+      image?: {
+        repository: string
+        tag: string
+      }
+      containerPorts?: {
+        name?: string
+        containerPort?: number
+        protocol?: string
+      }[]
+      resources?: {
+        requests?: {
+          cpu?: string
+          memory?: string
+        }
+      }
+      autoscaling?: {
+        minReplicas?: number
+        maxReplicas?: number
+      }
+    }
+  }
+  service?: {
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultSubdomain?: boolean
+              subdomain: string
+              domain: string
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              certArn?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+    networkPolicy?: {
+      ingressPrivate?:
+        | {
+            mode: 'DenyAll'
+          }
+        | {
+            mode: 'AllowOnly'
+            allow: {
+              team: string
+              service?: string
+            }[]
+          }
+        | {
+            mode: 'AllowAll'
+          }
+      egressPublic?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }[]
+    }
+  }
 }
 export type EditProjectApiArg = {
   /** ID of team to return */
@@ -1913,7 +2698,136 @@ export type EditProjectApiArg = {
     id?: string
     teamId?: string
     name: string
-    data?: any
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+            }
+            type: 'buildpacks'
+          }
+      repoAccess?: {
+        otomiGit?: boolean
+        privateGit?: boolean
+        repoUserName?: string
+        repoPassword?: string
+      }
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      url: string
+      path?: string
+      chart?: string
+      revision?: string
+      namespace?: string
+      selectedChart?: 'deployment' | 'ksvc' | 'custom'
+    }
+    workloadValues?: {
+      id?: string
+      teamId?: string
+      name?: string
+      values: {
+        fullnameOverride?: string
+        image?: {
+          repository: string
+          tag: string
+        }
+        containerPorts?: {
+          name?: string
+          containerPort?: number
+          protocol?: string
+        }[]
+        resources?: {
+          requests?: {
+            cpu?: string
+            memory?: string
+          }
+        }
+        autoscaling?: {
+          minReplicas?: number
+          maxReplicas?: number
+        }
+      }
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultSubdomain?: boolean
+                subdomain: string
+                domain: string
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                certArn?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+      networkPolicy?: {
+        ingressPrivate?:
+          | {
+              mode: 'DenyAll'
+            }
+          | {
+              mode: 'AllowOnly'
+              allow: {
+                team: string
+                service?: string
+              }[]
+            }
+          | {
+              mode: 'AllowAll'
+            }
+        egressPublic?: {
+          domain: string
+          ports?: {
+            number: number
+            protocol: 'HTTPS' | 'HTTP' | 'TCP'
+          }[]
+        }[]
+      }
+    }
   }
 }
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
@@ -3151,6 +4065,7 @@ export const {
   useGetBuildQuery,
   useEditBuildMutation,
   useConnectCloudttyMutation,
+  useDeleteCloudttyMutation,
   useGetAllProjectsQuery,
   useGetTeamProjectsQuery,
   useCreateProjectMutation,

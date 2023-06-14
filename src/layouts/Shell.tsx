@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, CircularProgress, styled } from '@mui/material'
+import { Box, CircularProgress, styled, useTheme } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
-import { useConnectCloudttyMutation } from 'redux/otomiApi'
+import { useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { NAVBAR } from '../config'
@@ -60,8 +60,10 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onToggleShell,
   } = useShellDrawer()
   const { user } = useSession()
+  const theme = useTheme()
 
   const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
+  const [del] = useDeleteCloudttyMutation()
   const hostname = window.location.hostname
   const domain = hostname.split('.').slice(1).join('.') || hostname
 
@@ -103,6 +105,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onToggleShell()
     onCloseShell()
     console.log('delete pod')
+    del()
   }
 
   return (
@@ -133,7 +136,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
             left: 'calc(50% - 50px)',
             right: 'calc(50% - 50px)',
             zIndex: 100,
-            backgroundColor: '#f4f7f9',
+            backgroundColor: transparency ? theme.palette.primary.main : '#f4f7f9',
             borderRadius: '4px',
           }}
           onMouseDown={handleMouseDown}
