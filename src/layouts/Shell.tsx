@@ -71,7 +71,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
 
   useEffect(() => {
     if (isShell && !iFrameUrl) {
-      connect({ body: { teamId: 'admin', domain, sub: user.sub } }).then((res: any) => {
+      connect({ body: { teamId: 'admin', domain, sub: user.email } }).then((res: any) => {
         console.log('res', res)
         onSetIFrameUrl(res.data.iFrameUrl)
       })
