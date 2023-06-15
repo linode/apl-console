@@ -68,7 +68,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const domain = hostname.split('.').slice(1).join('.') || hostname
 
   const [transparency, setTransparency] = useState(false)
-  const sub = user.sub.replaceAll('@', '-').replaceAll('.', '-')
+  const sub = user.email.replaceAll('@', '-').replaceAll('.', '-')
 
   useEffect(() => {
     if (isShell && !iFrameUrl) {
@@ -106,7 +106,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onToggleShell()
     onCloseShell()
     console.log('delete pod')
-    del({ body: { teamId: 'admin', domain, sub: user.sub } })
+    del({ body: { teamId: 'admin', domain, sub } })
   }
 
   return (
