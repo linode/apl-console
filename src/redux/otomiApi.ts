@@ -1840,7 +1840,7 @@ export type ConnectCloudttyApiResponse = /** status 200 Successfully stored clou
   id?: string
   teamId: string
   domain: string
-  sub: string
+  emailNoSymbols: string
   iFrameUrl?: string
 }
 export type ConnectCloudttyApiArg = {
@@ -1849,7 +1849,7 @@ export type ConnectCloudttyApiArg = {
     id?: string
     teamId: string
     domain: string
-    sub: string
+    emailNoSymbols: string
     iFrameUrl?: string
   }
 }
@@ -1860,7 +1860,7 @@ export type DeleteCloudttyApiArg = {
     id?: string
     teamId: string
     domain: string
-    sub: string
+    emailNoSymbols: string
     iFrameUrl?: string
   }
 }
@@ -3151,7 +3151,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     }
     teams: string[]
     roles: string[]
-    sub: string
   }
   versions?: {
     core?: string
