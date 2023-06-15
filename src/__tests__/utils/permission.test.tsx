@@ -9,7 +9,6 @@ const userTpl: GetSessionApiResponse['user'] = {
   teams: [],
   roles: [],
   authz: {},
-  sub: 'ok',
 }
 
 it('admin can download kubecfg', () => {

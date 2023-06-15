@@ -47,7 +47,6 @@ const Context = React.createContext<SessionContext>({
     isAdmin: undefined,
     roles: undefined,
     authz: undefined,
-    sub: undefined,
   },
   versions: undefined,
 })
