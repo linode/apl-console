@@ -39,7 +39,6 @@ import { IoProvider } from 'socket.io-react-hook'
 import Workload from 'pages/Workload'
 import Backup from 'pages/Backup'
 import Build from 'pages/Build'
-import Cloudtty from 'pages/Cloudtty'
 import WorkloadValues from 'pages/WorkloadValues'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
@@ -102,7 +101,6 @@ function App() {
                                   <Route path='/settings' component={SettingsOverview} exact />
                                   <Route path='/projects' component={Projects} exact />
                                   <Route path='/builds' component={Builds} exact />
-                                  <Route path='/cloudtty/:teamId' component={Cloudtty} exact />
                                   <Route path='/settings/:settingId' component={Setting} exact />
                                   <Route path='/shortcuts/:teamId' component={Shortcuts} exact />
                                   <Route path='/teams' component={Teams} exact />
