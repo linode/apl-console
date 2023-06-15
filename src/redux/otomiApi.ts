@@ -120,7 +120,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/cloudtty`, method: 'POST', body: queryArg.body }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: () => ({ url: `/cloudtty`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/cloudtty`, method: 'DELETE', body: queryArg.body }),
     }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
       query: () => ({ url: `/projects` }),
@@ -1854,7 +1854,16 @@ export type ConnectCloudttyApiArg = {
   }
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = void
+export type DeleteCloudttyApiArg = {
+  /** Cloudtty object */
+  body: {
+    id?: string
+    teamId: string
+    domain: string
+    sub: string
+    iFrameUrl?: string
+  }
+}
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
   id?: string
   teamId?: string

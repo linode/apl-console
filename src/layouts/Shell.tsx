@@ -105,7 +105,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onToggleShell()
     onCloseShell()
     console.log('delete pod')
-    del()
+    del({ body: { teamId: 'admin', domain, sub: user.sub } })
   }
 
   return (
