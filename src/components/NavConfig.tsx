@@ -73,7 +73,7 @@ export default function NavConfig() {
           icon: getIcon('settings_icon.svg'),
           dontShowIfAdminTeam: true,
         },
-        { title: 'Shell', path: '/cloudtty/admin', icon: getIcon('cloudtty_icon.svg') },
+        { title: 'Shell', path: '/cloudtty', icon: getIcon('cloudtty_icon.svg') },
         {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,

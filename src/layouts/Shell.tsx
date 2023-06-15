@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, CircularProgress, styled, useTheme } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
-import { useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
+import { ConnectCloudttyApiResponse, useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { NAVBAR } from '../config'
@@ -59,22 +59,21 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetShellHeight,
     onToggleShell,
   } = useShellDrawer()
-  const { user } = useSession()
   const theme = useTheme()
-
+  const { user, oboTeamId } = useSession()
+  const [transparency, setTransparency] = useState(false)
   const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
   const [del] = useDeleteCloudttyMutation()
+
+  const teamId = oboTeamId
   const hostname = window.location.hostname
   const domain = hostname.split('.').slice(1).join('.') || hostname
-
-  const [transparency, setTransparency] = useState(false)
   const emailNoSymbols = user.email.replaceAll('@', '-').replaceAll('.', '-')
 
   useEffect(() => {
     if (isShell && !iFrameUrl) {
-      connect({ body: { teamId: 'admin', domain, emailNoSymbols } }).then((res: any) => {
-        console.log('res', res)
-        onSetIFrameUrl(res.data.iFrameUrl)
+      connect({ body: { teamId, domain, emailNoSymbols } }).then(({ data }: { data: ConnectCloudttyApiResponse }) => {
+        onSetIFrameUrl(data.iFrameUrl)
       })
     }
   }, [isShell])
@@ -105,8 +104,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    console.log('delete pod')
-    del({ body: { teamId: 'admin', domain, emailNoSymbols } })
+    del({ body: { teamId, domain, emailNoSymbols } })
   }
 
   return (
