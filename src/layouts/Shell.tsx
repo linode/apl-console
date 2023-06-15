@@ -68,10 +68,11 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const domain = hostname.split('.').slice(1).join('.') || hostname
 
   const [transparency, setTransparency] = useState(false)
+  const sub = user.sub.replaceAll('@', '-').replaceAll('.', '-')
 
   useEffect(() => {
     if (isShell && !iFrameUrl) {
-      connect({ body: { teamId: 'admin', domain, sub: user.email } }).then((res: any) => {
+      connect({ body: { teamId: 'admin', domain, sub } }).then((res: any) => {
         console.log('res', res)
         onSetIFrameUrl(res.data.iFrameUrl)
       })
