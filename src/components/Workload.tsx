@@ -75,14 +75,8 @@ export default function ({
     setValuesData(WLvaluesData)
   }, [WLvaluesData])
 
-  const isDisabled = () => {
-    if (activeStep === 0) return !data?.name || (selectedChart === 'custom' && !data?.url)
-    if (activeStep === 1) {
-      const values = valuesData?.values
-      return !values?.image?.repository || !values?.image?.tag
-    }
-    return false
-  }
+  const setNextStep = () => setActiveStep((prev) => prev + 1)
+  const setPreviousStep = () => setActiveStep((prev) => prev - 1)
 
   const handleCreateUpdateWorkload = async () => {
     const body =
@@ -100,22 +94,21 @@ export default function ({
         workloadId,
         body: { ...body, selectedChart },
       })
+      setNextStep()
       return
     }
-    await createWorkload({
+    createWorkload({
       teamId,
       body: { ...body, selectedChart },
+    }).then((res: any) => {
+      if (res.error) return
+      setNextStep()
     })
   }
 
   const handleUpdateWorkloadValues = async () => {
-    let { containerPorts } = valuesData.values
-    if (selectedChart === 'ksvc' && containerPorts[0].name !== 'http1')
-      containerPorts = [{ ...containerPorts[0], name: 'http1' }]
     const values =
-      selectedChart === 'custom'
-        ? valuesData?.values
-        : { ...valuesData?.values, containerPorts, fullnameOverride: workload?.name }
+      selectedChart === 'custom' ? valuesData?.values : { ...valuesData?.values, fullnameOverride: workload?.name }
     const res = await updateWorkloadValues({
       teamId,
       workloadId,
@@ -125,6 +118,7 @@ export default function ({
       } as any,
     })
     setValuesData({ ...res.data, name: workload?.name, teamId })
+    setNextStep()
   }
 
   const handleEditWorkloadValues = async () => {
@@ -136,17 +130,22 @@ export default function ({
         values: omit(valuesData.values, ['id', 'teamId', 'selectedChart']),
       } as any,
     })
+    history.push(`/teams/${teamId}/workloads`)
   }
-
-  const handleBack = () => setActiveStep((prevActiveStep) => prevActiveStep - 1)
 
   const handleNext = async () => {
     if (activeStep === 0) await handleCreateUpdateWorkload()
-    else if (activeStep === 1 && selectedChart !== 'custom') await handleUpdateWorkloadValues()
+    if (activeStep === 1 && selectedChart !== 'custom') await handleUpdateWorkloadValues()
     else if (activeStep === steps[selectedChart].length - 1) await handleEditWorkloadValues()
+  }
 
-    if (activeStep < steps[selectedChart].length - 1) setActiveStep((prevActiveStep) => prevActiveStep + 1)
-    else history.push(`/teams/${teamId}/workloads`)
+  const isDisabled = () => {
+    if (activeStep === 0) return !data?.name || (selectedChart === 'custom' && !data?.url)
+    if (activeStep === 1) {
+      const values = valuesData?.values
+      return !values?.image?.repository || !values?.image?.tag
+    }
+    return false
   }
 
   return (
@@ -209,7 +208,13 @@ export default function ({
           )}
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button variant='contained' color='inherit' disabled={activeStep === 0} onClick={handleBack} sx={{ mr: 1 }}>
+            <Button
+              variant='contained'
+              color='inherit'
+              disabled={activeStep === 0}
+              onClick={setPreviousStep}
+              sx={{ mr: 1 }}
+            >
               Back
             </Button>
             <Box sx={{ flex: '1 1 auto' }} />
