@@ -71,7 +71,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const emailNoSymbols = user.email.replaceAll('@', '-').replaceAll('.', '-')
 
   useEffect(() => {
-    if (isShell && !iFrameUrl) {
+    if (isShell) {
       connect({ body: { teamId, domain, emailNoSymbols } }).then(({ data }: { data: ConnectCloudttyApiResponse }) => {
         onSetIFrameUrl(data.iFrameUrl)
       })
@@ -123,7 +123,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
         }}
       >
         <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center' }}>
-          {isLoading && <CircularProgress size={16} thickness={8} />}
+          {isLoading ? <CircularProgress size={16} thickness={8} /> : <Box>{`team-${teamId}`}</Box>}
         </Box>
         <Box
           sx={{
