@@ -3154,7 +3154,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     }
     teams: string[]
     roles: string[]
-    groups: string[]
   }
   versions?: {
     core?: string
