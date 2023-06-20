@@ -69,7 +69,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   }
   const handleCloseShell = () => {
     setShell((shell) => {
-      return { ...shell, iFrameUrl: '', isShell: false }
+      return { ...shell, iFrameUrl: '', isMinimized: true, isShell: false }
     })
   }
 
