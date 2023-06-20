@@ -61,6 +61,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   } = useShellDrawer()
   const theme = useTheme()
   const { user, oboTeamId } = useSession()
+  console.log('user', user)
   const [transparency, setTransparency] = useState(false)
   const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
   const [del] = useDeleteCloudttyMutation()
@@ -72,9 +73,11 @@ function Shell({ collapseClick }: Props): React.ReactElement {
 
   useEffect(() => {
     if (isShell) {
-      connect({ body: { teamId, domain, emailNoSymbols } }).then(({ data }: { data: ConnectCloudttyApiResponse }) => {
-        onSetIFrameUrl(data.iFrameUrl)
-      })
+      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: true } }).then(
+        ({ data }: { data: ConnectCloudttyApiResponse }) => {
+          onSetIFrameUrl(data.iFrameUrl)
+        },
+      )
     }
   }, [isShell])
 
