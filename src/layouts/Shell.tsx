@@ -71,9 +71,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const domain = hostname.split('.').slice(1).join('.') || hostname
   const emailNoSymbols = user.email.replaceAll('@', '-').replaceAll('.', '-')
 
+  const isAdmin = () => {
+    return user.groups.includes('admin')
+  }
+
   useEffect(() => {
     if (isShell) {
-      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: true } }).then(
+      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: isAdmin() } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)
         },
