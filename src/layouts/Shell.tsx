@@ -75,9 +75,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     return user?.groups.includes('admin')
   }
 
+  const getUserTeams = (user: any) => {
+    return user?.groups.filter((group: string) => group.startsWith('team-')) || []
+  }
+
   useEffect(() => {
     if (isShell) {
-      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: isAdmin(user) } }).then(
+      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: isAdmin(user), userTeams: getUserTeams(user) } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)
         },

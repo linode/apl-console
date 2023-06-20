@@ -1843,6 +1843,7 @@ export type ConnectCloudttyApiResponse = /** status 200 Successfully stored clou
   emailNoSymbols: string
   iFrameUrl?: string
   isAdmin?: boolean
+  userTeams?: string[]
 }
 export type ConnectCloudttyApiArg = {
   /** Cloudtty object */
@@ -1853,6 +1854,7 @@ export type ConnectCloudttyApiArg = {
     emailNoSymbols: string
     iFrameUrl?: string
     isAdmin?: boolean
+    userTeams?: string[]
   }
 }
 export type DeleteCloudttyApiResponse = unknown
@@ -1865,6 +1867,7 @@ export type DeleteCloudttyApiArg = {
     emailNoSymbols: string
     iFrameUrl?: string
     isAdmin?: boolean
+    userTeams?: string[]
   }
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
