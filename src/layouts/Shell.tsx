@@ -71,17 +71,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const domain = hostname.split('.').slice(1).join('.') || hostname
   const emailNoSymbols = user.email.replaceAll('@', '-').replaceAll('.', '-')
 
-  const isAdmin = (user: any) => {
-    return user?.groups.includes('admin')
-  }
-
   const getUserTeams = (user: any) => {
     return user?.groups.filter((group: string) => group.startsWith('team-')) || []
   }
 
   useEffect(() => {
     if (isShell) {
-      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: isAdmin(user), userTeams: getUserTeams(user) } }).then(
+      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)
         },
@@ -115,7 +111,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    del({ body: { teamId, domain, emailNoSymbols } })
+    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } })
   }
 
   return (
