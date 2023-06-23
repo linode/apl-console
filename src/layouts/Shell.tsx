@@ -80,7 +80,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     if (isShell) {
       connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
-          onSetIFrameUrl('https://tty.134.209.138.24.nip.io/admin-oto-mi')
+          onSetIFrameUrl(data.iFrameUrl)
         },
       )
     }
