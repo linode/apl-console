@@ -21,6 +21,7 @@ const ShellStyle = styled('div', {
   bottom: 0,
   right: 0,
   backgroundColor: '#2b2b2b',
+  paddingBottom: '1rem',
   height: `${drawerHeight}px`,
   ...(collapseClick
     ? {
@@ -79,7 +80,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     if (isShell) {
       connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
-          onSetIFrameUrl(data.iFrameUrl)
+          onSetIFrameUrl('https://tty.134.209.138.24.nip.io/admin-oto-mi')
         },
       )
     }
@@ -165,11 +166,18 @@ function Shell({ collapseClick }: Props): React.ReactElement {
           }}
         />
       )}
-      <iframe
-        title='Shell iFrame'
-        src={iFrameUrl}
-        style={{ width: '100%', height: '100%', border: 'none', borderTop: '1px dashed #919eab3d' }}
-      />
+      <Box sx={{ borderTop: '1px dashed #919eab3d', height: '100%' }}>
+        <iframe
+          title='Shell iFrame'
+          src={iFrameUrl}
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            marginLeft: '0.5rem',
+          }}
+        />
+      </Box>
     </ShellStyle>
   )
 }
