@@ -1842,7 +1842,7 @@ export type ConnectCloudttyApiResponse = /** status 200 Successfully stored clou
   domain: string
   emailNoSymbols: string
   iFrameUrl?: string
-  isAdmin?: boolean
+  isAdmin: boolean
   userTeams?: string[]
 }
 export type ConnectCloudttyApiArg = {
@@ -1853,7 +1853,7 @@ export type ConnectCloudttyApiArg = {
     domain: string
     emailNoSymbols: string
     iFrameUrl?: string
-    isAdmin?: boolean
+    isAdmin: boolean
     userTeams?: string[]
   }
 }
@@ -1866,7 +1866,7 @@ export type DeleteCloudttyApiArg = {
     domain: string
     emailNoSymbols: string
     iFrameUrl?: string
-    isAdmin?: boolean
+    isAdmin: boolean
     userTeams?: string[]
   }
 }
@@ -1934,10 +1934,62 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -2070,10 +2122,62 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -2209,10 +2313,62 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -2348,10 +2504,62 @@ export type CreateProjectApiArg = {
             cpu?: string
             memory?: string
           }
+          limits?: {
+            cpu?: string
+            memory?: string
+          }
         }
         autoscaling?: {
           minReplicas?: number
           maxReplicas?: number
+        }
+        env?:
+          | {
+              name: string
+              value: string
+            }[]
+          | null
+        args?: string[]
+        labels?: {
+          name?: string
+          value?: string
+        }[]
+        annotations?: {
+          name?: string
+          value?: string
+        }[]
+        secrets?: string[]
+        podSecurityContext?: {
+          runAsUser?: number
+          runAsNonRoot?: boolean
+          readOnlyRootFilesystem?: boolean
+        }
+        files?:
+          | {
+              path: string
+              content: string
+            }[]
+          | null
+        secretMounts?: {
+          name: string
+          path: string
+        }[]
+        servicePorts?:
+          | {
+              name: string
+              port: number
+              targetPort: string
+              protocol: 'TCP' | 'UDP'
+            }[]
+          | null
+        serviceMonitor?: {
+          create?: boolean
+          endpoints?:
+            | {
+                port: number
+                path: string
+              }[]
+            | null
         }
       }
     }
@@ -2491,10 +2699,62 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -2632,10 +2892,62 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -2773,10 +3085,62 @@ export type EditProjectApiArg = {
             cpu?: string
             memory?: string
           }
+          limits?: {
+            cpu?: string
+            memory?: string
+          }
         }
         autoscaling?: {
           minReplicas?: number
           maxReplicas?: number
+        }
+        env?:
+          | {
+              name: string
+              value: string
+            }[]
+          | null
+        args?: string[]
+        labels?: {
+          name?: string
+          value?: string
+        }[]
+        annotations?: {
+          name?: string
+          value?: string
+        }[]
+        secrets?: string[]
+        podSecurityContext?: {
+          runAsUser?: number
+          runAsNonRoot?: boolean
+          readOnlyRootFilesystem?: boolean
+        }
+        files?:
+          | {
+              path: string
+              content: string
+            }[]
+          | null
+        secretMounts?: {
+          name: string
+          path: string
+        }[]
+        servicePorts?:
+          | {
+              name: string
+              port: number
+              targetPort: string
+              protocol: 'TCP' | 'UDP'
+            }[]
+          | null
+        serviceMonitor?: {
+          create?: boolean
+          endpoints?:
+            | {
+                port: number
+                path: string
+              }[]
+            | null
         }
       }
     }
@@ -2972,10 +3336,62 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
         cpu?: string
         memory?: string
       }
+      limits?: {
+        cpu?: string
+        memory?: string
+      }
     }
     autoscaling?: {
       minReplicas?: number
       maxReplicas?: number
+    }
+    env?:
+      | {
+          name: string
+          value: string
+        }[]
+      | null
+    args?: string[]
+    labels?: {
+      name?: string
+      value?: string
+    }[]
+    annotations?: {
+      name?: string
+      value?: string
+    }[]
+    secrets?: string[]
+    podSecurityContext?: {
+      runAsUser?: number
+      runAsNonRoot?: boolean
+      readOnlyRootFilesystem?: boolean
+    }
+    files?:
+      | {
+          path: string
+          content: string
+        }[]
+      | null
+    secretMounts?: {
+      name: string
+      path: string
+    }[]
+    servicePorts?:
+      | {
+          name: string
+          port: number
+          targetPort: string
+          protocol: 'TCP' | 'UDP'
+        }[]
+      | null
+    serviceMonitor?: {
+      create?: boolean
+      endpoints?:
+        | {
+            port: number
+            path: string
+          }[]
+        | null
     }
   }
 }
@@ -3005,10 +3421,62 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
         cpu?: string
         memory?: string
       }
+      limits?: {
+        cpu?: string
+        memory?: string
+      }
     }
     autoscaling?: {
       minReplicas?: number
       maxReplicas?: number
+    }
+    env?:
+      | {
+          name: string
+          value: string
+        }[]
+      | null
+    args?: string[]
+    labels?: {
+      name?: string
+      value?: string
+    }[]
+    annotations?: {
+      name?: string
+      value?: string
+    }[]
+    secrets?: string[]
+    podSecurityContext?: {
+      runAsUser?: number
+      runAsNonRoot?: boolean
+      readOnlyRootFilesystem?: boolean
+    }
+    files?:
+      | {
+          path: string
+          content: string
+        }[]
+      | null
+    secretMounts?: {
+      name: string
+      path: string
+    }[]
+    servicePorts?:
+      | {
+          name: string
+          port: number
+          targetPort: string
+          protocol: 'TCP' | 'UDP'
+        }[]
+      | null
+    serviceMonitor?: {
+      create?: boolean
+      endpoints?:
+        | {
+            port: number
+            path: string
+          }[]
+        | null
     }
   }
 }
@@ -3038,10 +3506,62 @@ export type EditWorkloadValuesApiArg = {
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -3066,10 +3586,62 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
         cpu?: string
         memory?: string
       }
+      limits?: {
+        cpu?: string
+        memory?: string
+      }
     }
     autoscaling?: {
       minReplicas?: number
       maxReplicas?: number
+    }
+    env?:
+      | {
+          name: string
+          value: string
+        }[]
+      | null
+    args?: string[]
+    labels?: {
+      name?: string
+      value?: string
+    }[]
+    annotations?: {
+      name?: string
+      value?: string
+    }[]
+    secrets?: string[]
+    podSecurityContext?: {
+      runAsUser?: number
+      runAsNonRoot?: boolean
+      readOnlyRootFilesystem?: boolean
+    }
+    files?:
+      | {
+          path: string
+          content: string
+        }[]
+      | null
+    secretMounts?: {
+      name: string
+      path: string
+    }[]
+    servicePorts?:
+      | {
+          name: string
+          port: number
+          targetPort: string
+          protocol: 'TCP' | 'UDP'
+        }[]
+      | null
+    serviceMonitor?: {
+      create?: boolean
+      endpoints?:
+        | {
+            port: number
+            path: string
+          }[]
+        | null
     }
   }
 }
@@ -3099,10 +3671,62 @@ export type UpdateWorkloadValuesApiArg = {
           cpu?: string
           memory?: string
         }
+        limits?: {
+          cpu?: string
+          memory?: string
+        }
       }
       autoscaling?: {
         minReplicas?: number
         maxReplicas?: number
+      }
+      env?:
+        | {
+            name: string
+            value: string
+          }[]
+        | null
+      args?: string[]
+      labels?: {
+        name?: string
+        value?: string
+      }[]
+      annotations?: {
+        name?: string
+        value?: string
+      }[]
+      secrets?: string[]
+      podSecurityContext?: {
+        runAsUser?: number
+        runAsNonRoot?: boolean
+        readOnlyRootFilesystem?: boolean
+      }
+      files?:
+        | {
+            path: string
+            content: string
+          }[]
+        | null
+      secretMounts?: {
+        name: string
+        path: string
+      }[]
+      servicePorts?:
+        | {
+            name: string
+            port: number
+            targetPort: string
+            protocol: 'TCP' | 'UDP'
+          }[]
+        | null
+      serviceMonitor?: {
+        create?: boolean
+        endpoints?:
+          | {
+              port: number
+              path: string
+            }[]
+          | null
       }
     }
   }
@@ -3383,7 +4007,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             'cert-manager': object
           }
         }
-    entrypoint?: string
   }
   ingress?: {
     platformClass?: {
@@ -3394,6 +4017,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       loadBalancerRG?: string
       loadBalancerSubnet?: string
       sourceIpAddressFiltering?: string
+      entrypoint?: string
     }
     classes?: ({
       className?: string
@@ -3403,6 +4027,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       loadBalancerRG?: string
       loadBalancerSubnet?: string
       sourceIpAddressFiltering?: string
+      entrypoint?: string
     })[]
   }
   kms?: {
@@ -3798,7 +4423,6 @@ export type EditSettingsApiArg = {
               'cert-manager': object
             }
           }
-      entrypoint?: string
     }
     ingress?: {
       platformClass?: {
@@ -3809,6 +4433,7 @@ export type EditSettingsApiArg = {
         loadBalancerRG?: string
         loadBalancerSubnet?: string
         sourceIpAddressFiltering?: string
+        entrypoint?: string
       }
       classes?: ({
         className?: string
@@ -3818,6 +4443,7 @@ export type EditSettingsApiArg = {
         loadBalancerRG?: string
         loadBalancerSubnet?: string
         sourceIpAddressFiltering?: string
+        entrypoint?: string
       })[]
     }
     kms?: {
