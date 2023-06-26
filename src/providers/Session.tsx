@@ -40,14 +40,7 @@ const Context = React.createContext<SessionContext>({
   oboTeamId: undefined,
   setOboTeamId: undefined,
   settings: undefined,
-  user: {
-    teams: undefined,
-    name: undefined,
-    email: undefined,
-    isAdmin: undefined,
-    roles: undefined,
-    authz: undefined,
-  },
+  user: { teams: undefined, name: undefined, email: undefined, isAdmin: undefined, roles: undefined, authz: undefined },
   versions: undefined,
 })
 

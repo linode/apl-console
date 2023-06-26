@@ -1,21 +1,23 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, CircularProgress, styled, useTheme } from '@mui/material'
+import { Box, CircularProgress, Tooltip, styled } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
 import { ConnectCloudttyApiResponse, useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import SvgIconStyle from 'components/SvgIconStyle'
+import useResponsive from 'hooks/useResponsive'
 import { NAVBAR } from '../config'
 
 // ----------------------------------------------------------------------
 
 type ShellStyleProps = {
+  isDesktop: boolean
   collapseClick: boolean
   drawerHeight: number
 }
 
 const ShellStyle = styled('div', {
   shouldForwardProp: (prop) => prop !== 'collapseClick',
-})<ShellStyleProps>(({ collapseClick, drawerHeight, theme }) => ({
+})<ShellStyleProps>(({ isDesktop, collapseClick, drawerHeight }) => ({
   flexGrow: 1,
   position: 'fixed',
   bottom: 0,
@@ -28,20 +30,65 @@ const ShellStyle = styled('div', {
         width: `calc(100% - ${NAVBAR.DASHBOARD_COLLAPSE_WIDTH}px)`,
       }
     : { width: `calc(100% - ${NAVBAR.DASHBOARD_WIDTH}px)` }),
+  ...(!isDesktop && { width: '100%' }),
+}))
+
+const ShellBarStyle = styled(Box)(() => ({
+  width: '100%',
+  height: '20px',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  backgroundColor: '#2b2b2b',
+  position: 'relative',
+  paddingLeft: '16px',
+  paddingRight: '10px',
+}))
+
+type HandleBarStyleProps = {
+  transparency: boolean
+}
+
+const HandleBarStyle = styled(Box)<HandleBarStyleProps>(({ transparency, theme }) => ({
+  width: '100px',
+  cursor: 'ns-resize',
+  padding: '4px 0 0',
+  position: 'absolute',
+  top: '8px',
+  left: 'calc(50% - 50px)',
+  right: 'calc(50% - 50px)',
+  zIndex: 100,
+  backgroundColor: transparency ? theme.palette.primary.main : '#f4f7f9',
+  borderRadius: '4px',
+}))
+
+const TransparentStyle = styled(Box)(() => ({
+  position: 'absolute',
+  width: '100%',
+  height: 'calc(100% - 20px)',
+  backgroundColor: 'transparent',
+}))
+
+const IFrameStyle = styled(Box)(() => ({
+  borderTop: '1px dashed #919eab3d',
+  height: '100%',
 }))
 
 // ----------------------------------------------------------------------
 
 interface ShellButtonProps {
+  tooltip: string
   src: string
   onClick: () => void
 }
 
-function ShellButton({ src, onClick }: ShellButtonProps): React.ReactElement {
+function ShellButton({ tooltip, src, onClick }: ShellButtonProps): React.ReactElement {
   return (
-    <Box onClick={onClick}>
-      <SvgIconStyle src={src} sx={{ width: '16px', height: 1, ml: '5px', mr: '5px' }} />
-    </Box>
+    <Tooltip title={tooltip}>
+      <Box onClick={onClick}>
+        <SvgIconStyle src={src} sx={{ width: '16px', height: 1, ml: '6px', mr: '6px' }} />
+      </Box>
+    </Tooltip>
   )
 }
 
@@ -60,11 +107,10 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetShellHeight,
     onToggleShell,
   } = useShellDrawer()
-  const theme = useTheme()
   const { user, oboTeamId } = useSession()
-  console.log('user', user)
+  const isDesktop = useResponsive('up', 'lg')
   const [transparency, setTransparency] = useState(false)
-  const [connect, { isLoading, isSuccess, data }] = useConnectCloudttyMutation()
+  const [connect, { isLoading }] = useConnectCloudttyMutation()
   const [del] = useDeleteCloudttyMutation()
 
   const teamId = oboTeamId
@@ -77,7 +123,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   }
 
   useEffect(() => {
-    if (isShell) {
+    if (isShell && !iFrameUrl) {
       connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)
@@ -116,57 +162,30 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   }
 
   return (
-    <ShellStyle collapseClick={collapseClick} drawerHeight={shellHeight}>
-      <Box
-        sx={{
-          width: '100%',
-          height: '20px',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          backgroundColor: '#2b2b2b',
-          position: 'relative',
-          pl: '10px',
-          pr: '10px',
-        }}
-      >
+    <ShellStyle isDesktop={isDesktop} collapseClick={collapseClick} drawerHeight={shellHeight}>
+      <ShellBarStyle>
         <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center' }}>
-          {isLoading ? <CircularProgress size={16} thickness={8} /> : <Box>{`team-${teamId}`}</Box>}
+          {isLoading ? (
+            <CircularProgress size={16} thickness={8} />
+          ) : (
+            <Box>{`team-${user.isAdmin ? 'admin' : teamId}`}</Box>
+          )}
         </Box>
-        <Box
-          sx={{
-            width: '100px',
-            cursor: 'ns-resize',
-            padding: '4px 0 0',
-            position: 'absolute',
-            top: '8px',
-            left: 'calc(50% - 50px)',
-            right: 'calc(50% - 50px)',
-            zIndex: 100,
-            backgroundColor: transparency ? theme.palette.primary.main : '#f4f7f9',
-            borderRadius: '4px',
-          }}
-          onMouseDown={handleMouseDown}
-          onMouseUp={handleMouseUp}
+        <HandleBarStyle transparency={transparency} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
+        <ShellButton tooltip='Open shell in a new tab' src='/assets/openInNew_icon.svg' onClick={handleOpenInNew} />
+        <ShellButton tooltip='Delete shell' src='/assets/delete_icon.svg' onClick={handleDeletePod} />
+        <ShellButton
+          tooltip={`${isMinimized ? 'Maximize' : 'Minimize'} shell`}
+          src={`/assets/${isMinimized ? 'maximize' : 'minimize'}_icon.svg`}
+          onClick={onToggleShell}
         />
-        <ShellButton src='/assets/openInNew_icon.svg' onClick={handleOpenInNew} />
-        <ShellButton src='/assets/delete_icon.svg' onClick={handleDeletePod} />
-        <ShellButton src={`/assets/${isMinimized ? 'expand' : 'minimize'}_icon.svg`} onClick={onToggleShell} />
-        <ShellButton src='/assets/close_icon.svg' onClick={onCloseShell} />
-      </Box>
+        <ShellButton tooltip='Close shell' src='/assets/close_icon.svg' onClick={onCloseShell} />
+      </ShellBarStyle>
       {/* By adding an absolute transparent div overlay, we ensure that the onmouseup event remains active even when the mouse is over the iframe. 
       This allows us to capture mouse release events reliably and perform necessary actions within our Shell component. */}
-      {transparency && (
-        <Box
-          sx={{
-            position: 'absolute',
-            width: '100%',
-            height: 'calc(100% - 20px)',
-            backgroundColor: 'transparent',
-          }}
-        />
-      )}
-      <Box sx={{ borderTop: '1px dashed #919eab3d', height: '100%' }}>
+      {transparency && <TransparentStyle />}
+
+      <IFrameStyle>
         <iframe
           title='Shell iFrame'
           src={iFrameUrl}
@@ -177,7 +196,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
             marginLeft: '0.5rem',
           }}
         />
-      </Box>
+      </IFrameStyle>
     </ShellStyle>
   )
 }

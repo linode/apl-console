@@ -1,8 +1,6 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { ReactNode, createContext, useEffect, useState } from 'react'
-import { useMediaQuery } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { ReactNode, createContext, useState } from 'react'
 import { HEADER } from 'config'
 
 // ----------------------------------------------------------------------
@@ -38,8 +36,6 @@ type ShellDrawerProviderProps = {
 }
 
 function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
   const minShellHeight = 20
   const maxShellHeight = window.innerHeight - HEADER.DASHBOARD_DESKTOP_HEIGHT
   const defaultShellHeight = 250
@@ -49,18 +45,6 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
     iFrameUrl: '',
     shellHeight: minShellHeight,
   })
-  console.log('shell', shell)
-
-  useEffect(() => {
-    if (isMobile) {
-      setShell({
-        isShell: false,
-        isMinimized: true,
-        iFrameUrl: '',
-        shellHeight: minShellHeight,
-      })
-    }
-  }, [isMobile])
 
   const handleOpenShell = () => {
     setShell((shell) => {
@@ -69,13 +53,18 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   }
   const handleCloseShell = () => {
     setShell((shell) => {
-      return { ...shell, iFrameUrl: '', isMinimized: true, isShell: false }
+      return { ...shell, isShell: false }
     })
   }
 
   const handleSetIFrameUrl = (url: string) => {
     setShell((shell) => {
-      return { ...shell, iFrameUrl: url, isMinimized: false, shellHeight: defaultShellHeight }
+      return {
+        ...shell,
+        iFrameUrl: url,
+        isMinimized: false,
+        shellHeight: defaultShellHeight,
+      }
     })
   }
 
