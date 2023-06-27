@@ -145,6 +145,9 @@ export const getAppUiSchema = (
     case 'grafana':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       break
+    case 'istio':
+      set(uiSchema, 'meshConfig', { 'ui:widget': CodeEditor })
+      break
     case 'keycloak':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
