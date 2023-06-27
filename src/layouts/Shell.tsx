@@ -93,6 +93,27 @@ function ShellButton({ tooltip, src, onClick }: ShellButtonProps): React.ReactEl
   )
 }
 
+interface IFrameProps {
+  iFrameUrl: string
+}
+
+function IFrame({ iFrameUrl }: IFrameProps): React.ReactElement {
+  return (
+    <iframe
+      title='Shell iFrame'
+      src={iFrameUrl}
+      style={{
+        width: '100%',
+        height: '100%',
+        border: 'none',
+        marginLeft: '0.5rem',
+      }}
+    />
+  )
+}
+
+const MemoizedIFrame = React.memo(IFrame)
+
 interface Props {
   collapseClick?: boolean
 }
@@ -187,16 +208,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
       {transparency && <TransparentStyle />}
 
       <IFrameStyle>
-        <iframe
-          title='Shell iFrame'
-          src={iFrameUrl}
-          style={{
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            marginLeft: '0.5rem',
-          }}
-        />
+        <MemoizedIFrame iFrameUrl={iFrameUrl} />
       </IFrameStyle>
     </ShellStyle>
   )
