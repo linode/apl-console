@@ -54,12 +54,13 @@ const HandleBarStyle = styled(Box)<HandleBarStyleProps>(({ transparency, theme }
   cursor: 'ns-resize',
   padding: '4px 0 0',
   position: 'absolute',
-  top: '8px',
+  top: '3px',
   left: 'calc(50% - 50px)',
   right: 'calc(50% - 50px)',
   zIndex: 100,
   backgroundColor: transparency ? theme.palette.primary.main : '#f4f7f9',
-  borderRadius: '4px',
+  borderRadius: '8px',
+  border: '5px solid #2b2b2b',
 }))
 
 const TransparentStyle = styled(Box)(() => ({
