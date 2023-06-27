@@ -87,7 +87,7 @@ function ShellButton({ tooltip, src, onClick }: ShellButtonProps): React.ReactEl
   return (
     <Tooltip title={tooltip}>
       <Box onClick={onClick}>
-        <SvgIconStyle src={src} sx={{ width: '16px', height: 1, ml: '6px', mr: '6px' }} />
+        <SvgIconStyle src={src} sx={{ width: '16px', height: 1, ml: '6px', mr: '6px', color: '#f4f7f9' }} />
       </Box>
     </Tooltip>
   )
@@ -195,7 +195,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   return (
     <ShellStyle isDesktop={isDesktop} collapseClick={collapseClick} drawerHeight={shellHeight}>
       <ShellBarStyle>
-        <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center', color: '#f4f7f9' }}>
           {isLoading ? (
             <CircularProgress size={16} thickness={8} />
           ) : (
