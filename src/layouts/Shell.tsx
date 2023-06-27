@@ -114,6 +114,18 @@ function IFrame({ iFrameUrl }: IFrameProps): React.ReactElement {
 
 const MemoizedIFrame = React.memo(IFrame)
 
+export const getDomain = (hostname: string) => {
+  return hostname.split('.').slice(1).join('.') || hostname
+}
+
+export const getEmailNoSymbols = (email: string) => {
+  return email.replaceAll('@', '-').replaceAll('.', '-')
+}
+
+export const getUserTeams = (user: any) => {
+  return user?.groups.filter((group: string) => group.startsWith('team-')) || []
+}
+
 interface Props {
   collapseClick?: boolean
 }
@@ -137,16 +149,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
 
   const teamId = oboTeamId
   const hostname = window.location.hostname
-  const domain = hostname.split('.').slice(1).join('.') || hostname
-  const emailNoSymbols = user.email.replaceAll('@', '-').replaceAll('.', '-')
-
-  const getUserTeams = (user: any) => {
-    return user?.groups.filter((group: string) => group.startsWith('team-')) || []
-  }
+  const domain = getDomain(hostname)
+  const emailNoSymbols = getEmailNoSymbols(user.email)
+  const userTeams = getUserTeams(user)
 
   useEffect(() => {
     if (isShell && !iFrameUrl) {
-      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } }).then(
+      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)
         },
@@ -180,7 +189,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams: getUserTeams(user) } })
+    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams } })
   }
 
   return (
