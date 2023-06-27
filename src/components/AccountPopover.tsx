@@ -1,7 +1,6 @@
 import { Avatar, Box, Divider, MenuItem, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import React, { useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import { useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { getDomain, getEmailNoSymbols, getUserTeams } from 'layouts/Shell'
@@ -17,7 +16,6 @@ export default function AccountPopover({ email }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [open, setOpen] = useState<HTMLElement | null>(null)
 
-  const history = useHistory()
   const [del] = useDeleteCloudttyMutation()
   const { user, oboTeamId } = useSession()
   const hostname = window.location.hostname
@@ -45,7 +43,7 @@ export default function AccountPopover({ email }: Props) {
     await del({
       body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams },
     })
-    history.push('/logout-otomi')
+    window.location.href = '/logout-otomi'
   }
 
   return (
