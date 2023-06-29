@@ -352,7 +352,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -448,7 +448,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -545,7 +545,7 @@ export type CreateTeamApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
       drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
@@ -641,7 +641,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -740,7 +740,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -839,7 +839,7 @@ export type EditTeamApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
       drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
@@ -3796,7 +3796,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -3885,7 +3885,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   home?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
     drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
@@ -4212,7 +4212,7 @@ export type EditSettingsApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
       drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
@@ -4301,7 +4301,7 @@ export type EditSettingsApiArg = {
     home?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email')[]
+      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
       drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
