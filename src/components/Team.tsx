@@ -64,7 +64,7 @@ export default function ({ team, diffReceivers, setDiffReceivers, ...other }: Pr
   const { appsEnabled, settings, user } = useSession()
   const [data, setData] = useState<GetTeamApiResponse>(team)
   useEffect(() => {
-    setData(team)
+    setData({ ...team, alerts: { receivers: formData?.alerts?.receivers || ['none'] } })
   }, [team])
   useEffect(() => {
     const { receivers } = schema.properties.alerts.properties
