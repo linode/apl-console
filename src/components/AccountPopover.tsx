@@ -1,6 +1,9 @@
-import { Avatar, Box, Divider, Link, MenuItem, Typography } from '@mui/material'
+import { Avatar, Box, Divider, MenuItem, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import React, { useState } from 'react'
+import { useDeleteCloudttyMutation } from 'redux/otomiApi'
+import { useSession } from 'providers/Session'
+import { getDomain, getEmailNoSymbols, getUserTeams } from 'layouts/Shell'
 import MenuPopover from './MenuPopover'
 import { IconButtonAnimate } from './animate'
 import SettingMode from './SettingMode'
@@ -12,6 +15,13 @@ type Props = {
 export default function AccountPopover({ email }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [open, setOpen] = useState<HTMLElement | null>(null)
+
+  const [del] = useDeleteCloudttyMutation()
+  const { user, oboTeamId } = useSession()
+  const hostname = window.location.hostname
+  const domain = getDomain(hostname)
+  const emailNoSymbols = getEmailNoSymbols(user.email)
+  const userTeams = getUserTeams(user)
 
   const notifications = [{ type: 'PLATFORM', content: 'Coming soon', status: 'STICKY' }]
   const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
@@ -28,6 +38,12 @@ export default function AccountPopover({ email }: Props) {
   }
   const toggleTheme = (): void => {
     // setThemeMode(toggleThemeMode())
+  }
+  const handleLogout = async () => {
+    await del({
+      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams },
+    })
+    window.location.href = '/logout-otomi'
   }
 
   return (
@@ -77,7 +93,7 @@ export default function AccountPopover({ email }: Props) {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem component={Link} href='/logout-otomi' sx={{ m: 1, color: 'red' }}>
+        <MenuItem onClick={handleLogout} sx={{ m: 1, color: 'red' }}>
           Sign out
         </MenuItem>
       </MenuPopover>
