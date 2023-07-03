@@ -235,6 +235,7 @@ export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
   body?: {
     version: number
     key: string
+    envType?: 'dev' | 'prod' | 'local'
     type: 'community' | 'professional' | 'enterprise'
     capabilities: {
       teams: number
@@ -3760,6 +3761,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     body?: {
       version: number
       key: string
+      envType?: 'dev' | 'prod' | 'local'
       type: 'community' | 'professional' | 'enterprise'
       capabilities: {
         teams: number
@@ -4078,6 +4080,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
+    showPassword?: boolean
     additionalClusters?: {
       domainSuffix: string
       name: string
@@ -4088,6 +4091,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       password?: string
       email?: string
       server?: string
+      showPassword?: boolean
     } | null
     hasCloudLB?: boolean
     hasExternalDNS?: boolean
@@ -4494,6 +4498,7 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
+      showPassword?: boolean
       additionalClusters?: {
         domainSuffix: string
         name: string
@@ -4504,6 +4509,7 @@ export type EditSettingsApiArg = {
         password?: string
         email?: string
         server?: string
+        showPassword?: boolean
       } | null
       hasCloudLB?: boolean
       hasExternalDNS?: boolean

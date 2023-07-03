@@ -25,6 +25,12 @@ export const getSettingSchema = (
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
       set(schema, 'properties.adminPassword.readOnly', true)
+      set(schema, 'properties.adminPassword.x-formtype', formData.showPassword ? 'text' : 'password')
+      set(
+        schema,
+        'properties.globalPullSecret.properties.password.x-formtype',
+        formData?.globalPullSecret?.showPassword ? 'text' : 'password',
+      )
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
@@ -162,6 +168,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
     setSchema(schema)
     setUiSchema(getDynamicUiSchema(data))
   }
+
   return (
     <>
       {disabledMessage && <InformationBanner message={disabledMessage} />}
