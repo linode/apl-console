@@ -40,12 +40,12 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   }
 
   const handleFocus = (elementId: string) => {
-    const element = document.getElementById(elementId) as any
+    const element = document.getElementById(elementId) as HTMLInputElement
     if (isPasswordField(elementId)) element.type = 'text'
   }
 
   const handleBlur = (elementId: string) => {
-    const element = document.getElementById(elementId) as any
+    const element = document.getElementById(elementId) as HTMLInputElement
     if (isPasswordField(elementId)) element.type = 'password'
   }
 
