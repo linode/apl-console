@@ -3843,45 +3843,54 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sContext?: string
   }
   platformBackups?: {
-    gitea?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
+    database?: {
+      harbor?: {
+        enabled?: boolean
+        retentionPolicy?: string
+        schedule?: string
+      }
     }
-    drone?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    keycloak?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    harbor?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    vault?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    argo?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    kubeapps?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
-    }
-    minio?: {
-      enabled?: boolean
-      ttl?: string
-      schedule?: string
+    persistentVolumes?: {
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      drone?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      harbor?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      vault?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      argo?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      kubeapps?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
+      minio?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
     }
   }
   home?: {
@@ -4261,45 +4270,54 @@ export type EditSettingsApiArg = {
       k8sContext?: string
     }
     platformBackups?: {
-      gitea?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
+      database?: {
+        harbor?: {
+          enabled?: boolean
+          retentionPolicy?: string
+          schedule?: string
+        }
       }
-      drone?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      keycloak?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      harbor?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      vault?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      argo?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      kubeapps?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      minio?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
+      persistentVolumes?: {
+        gitea?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        drone?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        keycloak?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        harbor?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        vault?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        argo?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        kubeapps?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
+        minio?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
       }
     }
     home?: {

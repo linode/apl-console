@@ -69,6 +69,10 @@ export const getSettingSchema = (
         unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
       }
       break
+    case 'platformBackups':
+      if (!appsEnabled.velero) set(schema, 'properties.persistentVolumes.readOnly', true)
+      if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
+      break
     default:
       break
   }
@@ -147,7 +151,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         setDisabledMessage('Please enable Alertmanager to activate Co-monitoring')
 
       if (!appsEnabled.velero && settingId === 'platformBackups')
-        setDisabledMessage('Please enable Velero to activate Backups')
+        setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
     }
   }, [settingId])
   // END HOOKS
@@ -169,6 +173,11 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
     setUiSchema(getDynamicUiSchema(data))
   }
 
+  const isDisabled = () => {
+    if (settingId === 'platformBackups' && schema.properties.persistentVolumes.readOnly) return false
+    return !!disabledMessage
+  }
+
   return (
     <>
       {disabledMessage && <InformationBanner message={disabledMessage} />}
@@ -178,7 +187,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         schema={schema}
         uiSchema={uiSchema}
         data={setting}
-        disabled={!!disabledMessage}
+        disabled={isDisabled()}
         resourceType='Settings'
         onChange={onChangeHandler}
         idProp={null}
