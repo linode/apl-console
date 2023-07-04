@@ -34,8 +34,30 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       else newSchema.default = schema.enum[0]
     }
   }
+  const isPasswordField = (elementId: string) => {
+    const regex = /password/i
+    return regex.test(elementId)
+  }
+
+  const handleFocus = (elementId: string) => {
+    const element = document.getElementById(elementId) as any
+    if (isPasswordField(elementId)) element.type = 'text'
+  }
+
+  const handleBlur = (elementId: string) => {
+    const element = document.getElementById(elementId) as any
+    if (isPasswordField(elementId)) element.type = 'password'
+  }
+
   return (
-    <StringField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema}>
+    <StringField
+      {...props}
+      formData={formData}
+      schema={newSchema}
+      uiSchema={newUiSchema}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    >
       {children}
     </StringField>
   )

@@ -1628,9 +1628,6 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
       }
   repoAccess?: {
     otomiGit?: boolean
-    privateGit?: boolean
-    repoUserName?: string
-    repoPassword?: string
   }
 }[]
 export type GetAllBuildsApiArg = void
@@ -1658,9 +1655,6 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
       }
   repoAccess?: {
     otomiGit?: boolean
-    privateGit?: boolean
-    repoUserName?: string
-    repoPassword?: string
   }
 }[]
 export type GetTeamBuildsApiArg = {
@@ -1691,9 +1685,6 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
       }
   repoAccess?: {
     otomiGit?: boolean
-    privateGit?: boolean
-    repoUserName?: string
-    repoPassword?: string
   }
 }
 export type CreateBuildApiArg = {
@@ -1724,9 +1715,6 @@ export type CreateBuildApiArg = {
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
 }
@@ -1761,9 +1749,6 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
       }
   repoAccess?: {
     otomiGit?: boolean
-    privateGit?: boolean
-    repoUserName?: string
-    repoPassword?: string
   }
 }
 export type GetBuildApiArg = {
@@ -1796,9 +1781,6 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
       }
   repoAccess?: {
     otomiGit?: boolean
-    privateGit?: boolean
-    repoUserName?: string
-    repoPassword?: string
   }
 }
 export type EditBuildApiArg = {
@@ -1831,9 +1813,6 @@ export type EditBuildApiArg = {
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
 }
@@ -1899,9 +1878,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
   workload?: {
@@ -2087,9 +2063,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
   workload?: {
@@ -2278,9 +2251,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
   workload?: {
@@ -2469,9 +2439,6 @@ export type CreateProjectApiArg = {
           }
       repoAccess?: {
         otomiGit?: boolean
-        privateGit?: boolean
-        repoUserName?: string
-        repoPassword?: string
       }
     }
     workload?: {
@@ -2664,9 +2631,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
   workload?: {
@@ -2857,9 +2821,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
         }
     repoAccess?: {
       otomiGit?: boolean
-      privateGit?: boolean
-      repoUserName?: string
-      repoPassword?: string
     }
   }
   workload?: {
@@ -3050,9 +3011,6 @@ export type EditProjectApiArg = {
           }
       repoAccess?: {
         otomiGit?: boolean
-        privateGit?: boolean
-        repoUserName?: string
-        repoPassword?: string
       }
     }
     workload?: {
@@ -4089,7 +4047,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
-    showPassword?: boolean
     additionalClusters?: {
       domainSuffix: string
       name: string
@@ -4100,7 +4057,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       password?: string
       email?: string
       server?: string
-      showPassword?: boolean
     } | null
     hasCloudLB?: boolean
     hasExternalDNS?: boolean
@@ -4516,7 +4472,6 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
-      showPassword?: boolean
       additionalClusters?: {
         domainSuffix: string
         name: string
@@ -4527,7 +4482,6 @@ export type EditSettingsApiArg = {
         password?: string
         email?: string
         server?: string
-        showPassword?: boolean
       } | null
       hasCloudLB?: boolean
       hasExternalDNS?: boolean
