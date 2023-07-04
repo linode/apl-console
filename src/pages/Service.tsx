@@ -20,7 +20,7 @@ import { getRole } from 'utils/data'
 export const getIngressClassNames = (ingressSettings) => {
   const ingressClassNames: string[] = ['platform']
   if (ingressSettings) {
-    ingressSettings.ingress.classes.forEach((obj: { className: string }) => {
+    ingressSettings?.ingress?.classes?.forEach((obj: { className: string }) => {
       ingressClassNames.push(obj.className)
     })
   }
