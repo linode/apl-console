@@ -51,7 +51,7 @@ export const getWorkloadValuesUiSchema = (
     'servicePorts',
     'serviceMonitor',
     'resources.limits',
-    'containerSecurityContext',
+    'podSecurityContext',
   ]
   const hiddenAdvancedUiSchema = advancedFields.reduce((acc: any, item: string) => {
     const properties = item.split('.')
