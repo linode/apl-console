@@ -141,6 +141,8 @@ export const getAppUiSchema = (
       set(uiSchema, 'registry.ui:widget', 'hidden')
       set(uiSchema, 'jobservice.ui:widget', 'hidden')
       set(uiSchema, 'secretKey.ui:widget', 'hidden')
+      set(uiSchema, 'database.ui:widget', 'hidden')
+
       break
     case 'grafana':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
