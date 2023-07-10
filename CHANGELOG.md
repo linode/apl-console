@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.1](https://github.com/redkubes/otomi-stack-web/compare/v0.9.0...v0.9.1) (2023-07-10)
+
+
+### Features
+
+* hide harbor internal property ([#307](https://github.com/redkubes/otomi-stack-web/issues/307)) ([8de32dd](https://github.com/redkubes/otomi-stack-web/commit/8de32ddbbba5fc73d3d936a323b1e34c81e9858e))
+* show and hide passwords onFocus change([#302](https://github.com/redkubes/otomi-stack-web/issues/302)) ([8cb0b9b](https://github.com/redkubes/otomi-stack-web/commit/8cb0b9bbd61cfef5a66bfada9037fe86fab5fcf8))
+
+
+### Bug Fixes
+
+* remove podSecurityContext for basic workload values ([#306](https://github.com/redkubes/otomi-stack-web/issues/306)) ([02070e3](https://github.com/redkubes/otomi-stack-web/commit/02070e3bc619e2fe867d62851f37fb097dea39d4))
+* update getWorkloadValuesUiSchema ([#305](https://github.com/redkubes/otomi-stack-web/issues/305)) ([5b098ed](https://github.com/redkubes/otomi-stack-web/commit/5b098ede4ce170b883b2daac993e08d326db3060))
+
 ## [0.9.0](https://github.com/redkubes/otomi-stack-web/compare/v0.8.0...v0.9.0) (2023-07-04)
 
 
