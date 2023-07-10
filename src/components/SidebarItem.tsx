@@ -26,6 +26,7 @@ const ListItem = forwardRef<HTMLDivElement & HTMLAnchorElement, ListItemStylePro
 ))
 
 export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen }: NavItemProps) {
+  console.log('item', item)
   const { title, path, icon, info, children, disabled, caption, roles, isDownload } = item
 
   const renderContent = (
@@ -78,6 +79,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
       activeRoot={active}
       disabled={disabled}
       roles={roles}
+      data-cy={`menu-item-${title.toLowerCase()}`}
     >
       {renderContent}
     </ListItem>
