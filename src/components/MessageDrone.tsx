@@ -31,8 +31,8 @@ export default function ({
   const drone = { ...props, color, datetime, domainSuffix, id }
   const data = { datetime, id, sha, status }
   return (
-    <div style={{ whiteSpace: 'pre-wrap' }}>
-      <MessageTrans data-cy={`drone-${status}-message`} i18nKey='DRONE_MESSAGE' t={t} {...data}>
+    <div data-cy={`drone-${status}-message`} style={{ whiteSpace: 'pre-wrap' }}>
+      <MessageTrans i18nKey='DRONE_MESSAGE' t={t} {...data}>
         Drone <LinkDrone {...drone}>build {{ id }}</LinkDrone> <strong>{{ status }}</strong> for commit{' '}
         <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ datetime }}.
       </MessageTrans>
