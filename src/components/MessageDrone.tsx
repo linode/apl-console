@@ -32,7 +32,7 @@ export default function ({
   const data = { datetime, id, sha, status }
   return (
     <div style={{ whiteSpace: 'pre-wrap' }}>
-      <MessageTrans i18nKey='DRONE_MESSAGE' t={t} {...data}>
+      <MessageTrans data-cy={`drone-${status}-message`} i18nKey='DRONE_MESSAGE' t={t} {...data}>
         Drone <LinkDrone {...drone}>build {{ id }}</LinkDrone> <strong>{{ status }}</strong> for commit{' '}
         <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ datetime }}.
       </MessageTrans>
