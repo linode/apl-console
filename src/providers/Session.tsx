@@ -154,6 +154,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
             })}`,
           )
         }
+        if (reason === 'conflict')
+          snack.info(<MessageTrans defaults='DB updated to commit <0></0>' components={[linkCommit]} />)
+        if (reason === 'restored')
+          snack.info(<MessageTrans defaults='DB restored to commit <0></0>' components={[linkCommit]} />)
       }
     }
 
