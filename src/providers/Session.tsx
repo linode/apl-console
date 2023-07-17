@@ -135,14 +135,17 @@ export default function SessionProvider({ children }: Props): React.ReactElement
 
     // initiated by self
     if (isMsgEditor) {
+      console.log('Editor is User')
       if (state === 'clean' && reason === 'revert')
         snack.success(<MessageTrans defaults='DB reverted to commit <0></0>' components={[linkCommit]} />)
     }
 
     // initiated by others
     if (!isMsgEditor) {
+      console.log('Editor is System')
       if (state === 'dirty') snack.warning(`${t('User {{editor}} started editing.', { editor: msgEditor })}`)
       if (state === 'clean') {
+        console.log('State is Clean')
         if (reason === 'deploy')
           if (editor) snack.warning(`${t('You have undeployed changes. Potential conflict upon deploy!')}`)
 
@@ -154,10 +157,24 @@ export default function SessionProvider({ children }: Props): React.ReactElement
             })}`,
           )
         }
-        if (reason === 'conflict')
-          snack.info(<MessageTrans defaults='DB updated to commit <0></0>' components={[linkCommit]} />)
-        if (reason === 'restored')
-          snack.info(<MessageTrans defaults='DB restored to commit <0></0>' components={[linkCommit]} />)
+        if (reason === 'conflict') {
+          console.log('Reason is Conflict')
+          snack.info(
+            `${t('Database updated to latest commit (reason: {{reason}}).', {
+              editor: 'system',
+              reason,
+            })}`,
+          )
+        }
+        if (reason === 'restored') {
+          console.log('Reason is Restored')
+          snack.info(
+            `${t('DB restored to commit (reason: {{reason}}).', {
+              editor: 'system',
+              reason,
+            })}`,
+          )
+        }
       }
     }
 
