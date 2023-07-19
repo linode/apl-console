@@ -156,7 +156,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         }
         if (reason === 'conflict') {
           snack.info(
-            `${t('Database updated to latest commit (reason: {{reason}}).', {
+            `${t('DB updated to latest commit (reason: {{reason}}).', {
               editor: 'system',
               reason,
             })}`,
