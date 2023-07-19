@@ -52,7 +52,11 @@ export const addServiceNameEnumField = (
   if (k8sService?.length === 0 && formData?.name) return
 
   const k8sServiceNames = k8sServices?.map((item) => item.name)
-  set(schema, 'properties.name.enum', k8sServiceNames)
+  set(
+    schema,
+    'properties.name.enum',
+    k8sServiceNames.filter((item: string) => !item.includes('grafana') && !item.includes('prometheus')),
+  )
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
     set(schema, 'properties.port.enum', k8sService?.[0].ports)
