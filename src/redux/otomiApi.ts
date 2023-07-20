@@ -1824,6 +1824,7 @@ export type ConnectCloudttyApiResponse = /** status 200 Successfully stored clou
   iFrameUrl?: string
   isAdmin: boolean
   userTeams?: string[]
+  sub?: string
 }
 export type ConnectCloudttyApiArg = {
   /** Cloudtty object */
@@ -1835,6 +1836,7 @@ export type ConnectCloudttyApiArg = {
     iFrameUrl?: string
     isAdmin: boolean
     userTeams?: string[]
+    sub?: string
   }
 }
 export type DeleteCloudttyApiResponse = unknown
@@ -1848,6 +1850,7 @@ export type DeleteCloudttyApiArg = {
     iFrameUrl?: string
     isAdmin: boolean
     userTeams?: string[]
+    sub?: string
   }
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
@@ -3741,6 +3744,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     }
     teams: string[]
     roles: string[]
+    sub?: string
   }
   versions?: {
     core?: string
@@ -3793,7 +3797,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.23' | '1.24'
+    k8sVersion?: '1.23' | '1.24' | '1.25'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4218,7 +4222,7 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.23' | '1.24'
+      k8sVersion?: '1.23' | '1.24' | '1.25'
       apiName?: string
       apiServer?: string
       owner?: string
