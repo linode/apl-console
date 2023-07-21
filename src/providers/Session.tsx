@@ -154,6 +154,22 @@ export default function SessionProvider({ children }: Props): React.ReactElement
             })}`,
           )
         }
+        if (reason === 'conflict') {
+          snack.info(
+            `${t('DB updated to latest commit (reason: {{reason}}).', {
+              editor: 'system',
+              reason,
+            })}`,
+          )
+        }
+        if (reason === 'restored') {
+          snack.info(
+            `${t('DB restored to commit (reason: {{reason}}).', {
+              editor: 'system',
+              reason,
+            })}`,
+          )
+        }
       }
     }
 
