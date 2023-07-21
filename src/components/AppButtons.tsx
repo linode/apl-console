@@ -42,7 +42,7 @@ export default function ({
   const isAdminApps = teamId === 'admin'
   const handleAppsToggle = () => {
     const { deps } = getAppData(session, teamId, id)
-    setAppState([[id], !enabled])
+    setAppState([(deps || []).concat([id]), enabled])
   }
 
   return (
