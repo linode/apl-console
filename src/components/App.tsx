@@ -286,9 +286,11 @@ export default function ({
 
   const prefixedDeps = () => {
     let dependencies: string
-    deps.forEach((dep) => {
-      if (!dependencies) dependencies = dep
-      else dependencies += `, ${dep}`
+    if (!deps) return 'None'
+    deps.forEach((dep: string) => {
+      const preFixedDep = dep.charAt(0).toUpperCase() + dep.slice(1)
+      if (!dependencies) dependencies = preFixedDep
+      else dependencies += `, ${preFixedDep}`
     })
     return dependencies
   }
