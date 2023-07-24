@@ -4,6 +4,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RLink } from 'react-router-dom'
 import { GetAppApiResponse } from 'redux/otomiApi'
+import { getAppData } from 'utils/data'
 import Iconify from './Iconify'
 
 // const useAppButtonStyles = makeStyles()((theme) => ({
@@ -15,6 +16,7 @@ import Iconify from './Iconify'
 interface Props extends GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
+  setDeps: CallableFunction
   hideEnabled?: boolean
   hideSettings?: boolean
   toggleApp?: any
@@ -27,6 +29,7 @@ export default function ({
   teamId,
   enabled,
   setAppState,
+  setDeps,
   hideEnabled = true,
   hideSettings = false,
   toggleApp,
@@ -41,9 +44,10 @@ export default function ({
   const isAdminApps = teamId === 'admin'
   const handleAppsToggle = () => {
     toggleApp()
-    // const { deps } = getAppData(session, teamId, id)
-    // setAppState([(deps || []).concat([id]), enabled])
-    // setAppState([[id], !enabled])
+    const { deps } = getAppData(session, teamId, id)
+    console.log('id: ', id)
+    setAppState([[id], !enabled])
+    if (deps) setAppState([(deps || []).concat([id]), true])
   }
 
   return (
@@ -58,7 +62,7 @@ export default function ({
         paddingBottom: '10px',
       }}
     >
-      {!isHostedByOtomi && !enabled && (
+      {!isHostedByOtomi && enabled && (
         <IconButton
           onClick={() => {
             handleAppsToggle()

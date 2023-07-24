@@ -109,7 +109,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     const { deps, appInfo } = getAppData(session, teamId, name)
     console.log(deps)
     console.log(appInfo)
-    console.log(appInfo.dependencies)
     // we only allow turning on
     setAppState([(appInfo.dependencies || []).concat([name])])
     setDeps(undefined)

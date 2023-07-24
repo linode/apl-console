@@ -143,11 +143,13 @@ export const getAppData = (
   // const mode = getThemeMode()
   const logoSuffix = ''
   const logoAltSuffix = ''
+  const deps = coreApp.deps
   return {
     ...coreApp,
     ...app,
     id: appId,
     baseUrl,
+    deps,
     logo: `${coreAppId}_logo${logoSuffix}.svg`,
     logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
     appInfo: appsInfo[coreAppId],
