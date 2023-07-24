@@ -4,7 +4,6 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RLink } from 'react-router-dom'
 import { GetAppApiResponse } from 'redux/otomiApi'
-import { getAppData } from 'utils/data'
 import Iconify from './Iconify'
 
 // const useAppButtonStyles = makeStyles()((theme) => ({
@@ -41,8 +40,10 @@ export default function ({
   // END HOOKS
   const isAdminApps = teamId === 'admin'
   const handleAppsToggle = () => {
-    const { deps } = getAppData(session, teamId, id)
-    setAppState([(deps || []).concat([id]), enabled])
+    toggleApp()
+    // const { deps } = getAppData(session, teamId, id)
+    // setAppState([(deps || []).concat([id]), enabled])
+    // setAppState([[id], !enabled])
   }
 
   return (

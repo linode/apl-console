@@ -111,7 +111,7 @@ export const getAppData = (
   }
   let app = {}
   if (typeof appOrId !== 'string') {
-    appId = appOrId.id ?? appOrId.name
+    appId = appOrId?.id ?? appOrId?.name
     app = appOrId
   }
 
