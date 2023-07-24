@@ -145,7 +145,6 @@ export default function ({
           enabled={enabled}
           externalUrl={externalUrl}
           setAppState={setAppState}
-          setDeps={setDeps}
           toggleApp={toggleApp}
           appTitle={title}
           isHostedByOtomi={hostedByOtomi}

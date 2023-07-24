@@ -105,10 +105,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
   const toggleApp = (name: string) => {
-    console.log('NAME:', name)
     const { deps, appInfo } = getAppData(session, teamId, name)
-    console.log(deps)
-    console.log(appInfo)
     // we only allow turning on
     setAppState([(appInfo.dependencies || []).concat([name])])
     setDeps(undefined)

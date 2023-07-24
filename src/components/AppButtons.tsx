@@ -16,7 +16,6 @@ import Iconify from './Iconify'
 interface Props extends GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
-  setDeps: CallableFunction
   hideEnabled?: boolean
   hideSettings?: boolean
   toggleApp?: any
@@ -29,7 +28,6 @@ export default function ({
   teamId,
   enabled,
   setAppState,
-  setDeps,
   hideEnabled = true,
   hideSettings = false,
   toggleApp,
@@ -45,7 +43,6 @@ export default function ({
   const handleAppsToggle = () => {
     toggleApp()
     const { deps } = getAppData(session, teamId, id)
-    console.log('id: ', id)
     setAppState([[id], !enabled])
     if (deps) setAppState([(deps || []).concat([id]), true])
   }
