@@ -9,10 +9,16 @@ import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { cloneDeep, omit } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
-import { GetSessionApiResponse, useGetSecretsQuery, useGetTeamK8SServicesQuery } from 'redux/otomiApi'
+import {
+  GetSessionApiResponse,
+  useGetSecretsQuery,
+  useGetSettingsQuery,
+  useGetTeamK8SServicesQuery,
+} from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
+import { getIngressClassNames } from 'pages/Service'
 import Form from './rjsf/Form'
 import { getServiceSchema, getServiceUiSchema, getSubdomain, updateIngressField } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
@@ -113,7 +119,17 @@ export default function ({
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsQuery({ teamId })
-  const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
+  const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
+  const ingressClassNames = getIngressClassNames(ingressSettings)
+  const serviceSchema = getServiceSchema(
+    appsEnabled,
+    settings,
+    formData?.service,
+    teamId,
+    secrets,
+    k8sServices,
+    ingressClassNames,
+  )
   const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 

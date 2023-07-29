@@ -22,9 +22,11 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       set(newUiSchema, 'ui:options.autocomplete', 'off')
     }
 
-    if (schema['x-formtype'] === 'SelectWidget' && schema.enum?.length > 0)
-      newUiSchema['ui:widget'] = schema['x-formtype']
-    if (schema['x-formtype'] !== 'SelectWidget') newUiSchema['ui:widget'] = schema['x-formtype']
+    if (schema['x-formtype'] !== undefined) {
+      if (schema['x-formtype'] === 'SelectWidget' && schema.enum?.length > 0)
+        newUiSchema['ui:widget'] = schema['x-formtype']
+      if (schema['x-formtype'] !== 'SelectWidget') newUiSchema['ui:widget'] = schema['x-formtype']
+    }
 
     if (renderedPlaceholder) newUiSchema['ui:placeholder'] = renderedPlaceholder
 
@@ -34,8 +36,30 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       else newSchema.default = schema.enum[0]
     }
   }
+  const isPasswordField = (elementId: string) => {
+    const regex = /password/i
+    return regex.test(elementId)
+  }
+
+  const handleFocus = (elementId: string) => {
+    const element = document.getElementById(elementId) as HTMLInputElement
+    if (isPasswordField(elementId)) element.type = 'text'
+  }
+
+  const handleBlur = (elementId: string) => {
+    const element = document.getElementById(elementId) as HTMLInputElement
+    if (isPasswordField(elementId)) element.type = 'password'
+  }
+
   return (
-    <StringField {...props} formData={formData} schema={newSchema} uiSchema={newUiSchema}>
+    <StringField
+      {...props}
+      formData={formData}
+      schema={newSchema}
+      uiSchema={newUiSchema}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+    >
       {children}
     </StringField>
   )

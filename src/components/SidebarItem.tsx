@@ -11,6 +11,7 @@ import Iconify from './Iconify'
 import { ListItemIconStyle, ListItemStyle, ListItemStyleProps, ListItemTextStyle } from './SidebarStyle'
 import SidebarDeployButton from './SidebarDeployButton'
 import SidebarRevertButton from './SidebarRevertButton'
+import SidebarShellButton from './SidebarShellButton'
 
 // ----------------------------------------------------------------------
 
@@ -66,6 +67,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
 
   if (title === 'Deploy Changes') return <SidebarDeployButton item={item}>{renderContent}</SidebarDeployButton>
   if (title === 'Revert Changes') return <SidebarRevertButton item={item}>{renderContent}</SidebarRevertButton>
+  if (title === 'Shell') return <SidebarShellButton item={item}>{renderContent}</SidebarShellButton>
 
   return (
     <ListItem
@@ -76,6 +78,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
       activeRoot={active}
       disabled={disabled}
       roles={roles}
+      data-cy={`menu-item-${title.toLowerCase()}`}
     >
       {renderContent}
     </ListItem>

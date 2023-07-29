@@ -1,6 +1,6 @@
 /* eslint-disable react/button-has-type */
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
@@ -29,6 +29,7 @@ export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, 
     schema.properties.values.properties.autoscaling.properties.minReplicas.default = 0
     delete schema.properties.values.properties.servicePorts
   }
+  if (valuesType === 'Basic') unset(schema, 'properties.values.properties.podSecurityContext')
   schema.properties.values.properties.secrets.items.enum = tlsSecretNames
   schema.properties.values.title = `${valuesType} values`
   return schema
@@ -51,7 +52,7 @@ export const getWorkloadValuesUiSchema = (
     'servicePorts',
     'serviceMonitor',
     'resources.limits',
-    'containerSecurityContext',
+    'podSecurityContext',
   ]
   const hiddenAdvancedUiSchema = advancedFields.reduce((acc: any, item: string) => {
     const properties = item.split('.')

@@ -52,7 +52,11 @@ export const addServiceNameEnumField = (
   if (k8sService?.length === 0 && formData?.name) return
 
   const k8sServiceNames = k8sServices?.map((item) => item.name)
-  set(schema, 'properties.name.enum', k8sServiceNames)
+  set(
+    schema,
+    'properties.name.enum',
+    k8sServiceNames.filter((item: string) => !item.includes('grafana') && !item.includes('prometheus')),
+  )
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
     set(schema, 'properties.port.enum', k8sService?.[0].ports)
@@ -68,6 +72,7 @@ export const getServiceSchema = (
   teamId,
   secrets: Array<any>,
   k8sServices: GetTeamK8SServicesApiResponse,
+  ingressClassNames: string[],
 ): any => {
   const { cluster } = settings
   const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
@@ -76,6 +81,7 @@ export const getServiceSchema = (
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
+  set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', ingressClassNames)
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
     const ingressSchema = getStrict(schema, ingressSchemaPath)
@@ -181,9 +187,17 @@ interface Props extends CrudProps {
   k8sServices?: GetTeamK8SServicesApiResponse
   secrets: GetSecretsApiResponse
   teamId: string
+  ingressClassNames: string[]
 }
 
-export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
+export default function ({
+  service,
+  k8sServices,
+  secrets,
+  teamId,
+  ingressClassNames,
+  ...other
+}: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
   const [data, setData] = useState<GetServiceApiResponse>(service)
   useEffect(() => {
@@ -196,7 +210,7 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData, defaultSubdomain)
   // pass to the schema getters that manipulate the schemas based on form data
-  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
+  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices, ingressClassNames)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
