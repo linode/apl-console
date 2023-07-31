@@ -78,6 +78,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
       activeRoot={active}
       disabled={disabled}
       roles={roles}
+      data-cy={`menu-item-${title.toLowerCase()}`}
     >
       {renderContent}
     </ListItem>
