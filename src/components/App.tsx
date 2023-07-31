@@ -211,6 +211,7 @@ export default function ({
   const {
     appInfo,
     baseUrl,
+    deps,
     hasShortcuts,
     logo,
     logoAlt,
@@ -281,6 +282,17 @@ export default function ({
         )}
       </ListItem>
     )
+  }
+
+  const prefixedDeps = () => {
+    let dependencies: string
+    if (!deps) return 'None'
+    deps.forEach((dep: string) => {
+      const preFixedDep = dep.charAt(0).toUpperCase() + dep.slice(1)
+      if (!dependencies) dependencies = preFixedDep
+      else dependencies += `, ${preFixedDep}`
+    })
+    return dependencies
   }
 
   return (
@@ -382,7 +394,7 @@ export default function ({
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Dependencies:')} />
                       </TableCell>
-                      <TableCell align='left'>{appInfo.dependencies}</TableCell>
+                      <TableCell align='left'>{prefixedDeps()}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
