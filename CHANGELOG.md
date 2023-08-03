@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.11.0](https://github.com/redkubes/otomi-stack-web/compare/v0.8.0...v0.11.0) (2023-08-03)
+
+
+### Features
+
+* activate page styling ([282f0ef](https://github.com/redkubes/otomi-stack-web/commit/282f0efd849439f2171714362dee051205477df1))
+* add cypress locators ([#311](https://github.com/redkubes/otomi-stack-web/issues/311)) ([2ec817f](https://github.com/redkubes/otomi-stack-web/commit/2ec817fe63b99a9ba9e23354130a0d0002aa18e4))
+* add dependencies to app info ([#297](https://github.com/redkubes/otomi-stack-web/issues/297)) ([14aea5d](https://github.com/redkubes/otomi-stack-web/commit/14aea5d27c94a9b33d7f6f157975ce8720b49877))
+* add dropdown for ingress class names ([#301](https://github.com/redkubes/otomi-stack-web/issues/301)) ([d9c02a3](https://github.com/redkubes/otomi-stack-web/commit/d9c02a38d8ee0bb567c254bd2826726da8abdcea))
+* add license overview ([01b7930](https://github.com/redkubes/otomi-stack-web/commit/01b793058ed37df1910509cab94fe77b2b558285))
+* add sub value for user ([#313](https://github.com/redkubes/otomi-stack-web/issues/313)) ([4c0bc5b](https://github.com/redkubes/otomi-stack-web/commit/4c0bc5bd673615e6a92b137604e827373bb063af))
+* added alerts and checks for if license capabilities are exceeded ([ee805d9](https://github.com/redkubes/otomi-stack-web/commit/ee805d90e429e188b642c0cbeb5ff62c6367aeea))
+* added messages for when git values are synced up ([#310](https://github.com/redkubes/otomi-stack-web/issues/310)) ([fff12ea](https://github.com/redkubes/otomi-stack-web/commit/fff12ea35adcf634540c24e58d322985531fb806))
+* advanced workload feature ([#295](https://github.com/redkubes/otomi-stack-web/issues/295)) ([ce932cb](https://github.com/redkubes/otomi-stack-web/commit/ce932cb5521c49e23609c08ea8a7d95ac296ecdb))
+* **cloudnative-pg:** add cloudnative-pg app to configure backup storage ([#294](https://github.com/redkubes/otomi-stack-web/issues/294)) ([a2fe3e6](https://github.com/redkubes/otomi-stack-web/commit/a2fe3e6e77ca32543b58d42f1a19ab60c22018c4))
+* cloudtty shell ([#298](https://github.com/redkubes/otomi-stack-web/issues/298)) ([56cdc81](https://github.com/redkubes/otomi-stack-web/commit/56cdc813ff45bf22f3b9bca43bace141de1facdd))
+* delete button ([8de7f16](https://github.com/redkubes/otomi-stack-web/commit/8de7f1624029b1b125667950dc528779a86e2fd1))
+* filter new service names ([#309](https://github.com/redkubes/otomi-stack-web/issues/309)) ([acf2d48](https://github.com/redkubes/otomi-stack-web/commit/acf2d48f92f0e4222e90fc225b68783c68eb419a))
+* hide harbor internal property ([#307](https://github.com/redkubes/otomi-stack-web/issues/307)) ([737b913](https://github.com/redkubes/otomi-stack-web/commit/737b9132082d4a17d4a5e690c1fd68f458599733))
+* show and hide passwords onFocus change([#302](https://github.com/redkubes/otomi-stack-web/issues/302)) ([476554c](https://github.com/redkubes/otomi-stack-web/commit/476554cb67991525aff20fe2d1dfd3e82a796fdc))
+* styling for activate page, not final ([fd7887d](https://github.com/redkubes/otomi-stack-web/commit/fd7887ddb61f775b0b2a51281750154c3a6ef03d))
+* team projects ([#289](https://github.com/redkubes/otomi-stack-web/issues/289)) ([c727f40](https://github.com/redkubes/otomi-stack-web/commit/c727f408d0a84e1d532ab959227a629103a1c0e1))
+* update otomi-charts version ([#290](https://github.com/redkubes/otomi-stack-web/issues/290)) ([4904fa1](https://github.com/redkubes/otomi-stack-web/commit/4904fa1e0b3ea0c6a7c98cb59d864287c572673c))
+* use metrics endpoint for license limits ([#292](https://github.com/redkubes/otomi-stack-web/issues/292)) ([56057a3](https://github.com/redkubes/otomi-stack-web/commit/56057a30fb55a7ff9bc77230dd77075918d6b81d))
+
+
+### Bug Fixes
+
+* activation text ([2dbdecb](https://github.com/redkubes/otomi-stack-web/commit/2dbdecb4de4e0448373e7e7cb4ad3174b7f9df99))
+* app dependencies ([#312](https://github.com/redkubes/otomi-stack-web/issues/312)) ([37c7840](https://github.com/redkubes/otomi-stack-web/commit/37c7840254570debfcb97481c45980e9ecff3dd8))
+* capital ([ccc81a6](https://github.com/redkubes/otomi-stack-web/commit/ccc81a60abd6982e57629ae25eabbbd796c8d4cd))
+* final fix for links :) ([867a983](https://github.com/redkubes/otomi-stack-web/commit/867a98304ae64c46421716532c9801c2ea3166dc))
+* fixed capabilities calcalations ([a4a1a13](https://github.com/redkubes/otomi-stack-web/commit/a4a1a13b2fb4098e140e4e92d4737075cced05b0))
+* get all workloads and services ([27ddc1a](https://github.com/redkubes/otomi-stack-web/commit/27ddc1a3b97e0c42099ca19e3d54cebbc8308098))
+* ingressClassnames ([#303](https://github.com/redkubes/otomi-stack-web/issues/303)) ([40cddb7](https://github.com/redkubes/otomi-stack-web/commit/40cddb7979cb1828b128474c777d7617f74e910e))
+* license redirect ([04ec758](https://github.com/redkubes/otomi-stack-web/commit/04ec758ffdaf3068750bf0900efeafcf3efd3a95))
+* license upload fix not working 1 ([478c168](https://github.com/redkubes/otomi-stack-web/commit/478c168358d771b7a3adf4744b0a53d2f025865c))
+* link color ([46ca648](https://github.com/redkubes/otomi-stack-web/commit/46ca648f2389733330aecade7687ac1b6208e290))
+* link recolour ([ba8cc7d](https://github.com/redkubes/otomi-stack-web/commit/ba8cc7d592be95740904b14694d834f26c8f6fd1))
+* make none receiver default for team ([#300](https://github.com/redkubes/otomi-stack-web/issues/300)) ([3a6c8c7](https://github.com/redkubes/otomi-stack-web/commit/3a6c8c74d3957df0aae0f96b0c55eecacc89ab2f))
+* remove beta menu labels ([#299](https://github.com/redkubes/otomi-stack-web/issues/299)) ([227d3c4](https://github.com/redkubes/otomi-stack-web/commit/227d3c4de7da66d40d93425dcd8834e4893d6ec5))
+* remove podSecurityContext for basic workload values ([#306](https://github.com/redkubes/otomi-stack-web/issues/306)) ([026dc18](https://github.com/redkubes/otomi-stack-web/commit/026dc18a668fabb5a1df6f899c0de48feeacf030))
+* remove secrets item from platform menu ([a26ef13](https://github.com/redkubes/otomi-stack-web/commit/a26ef13252abf9f7ad3c2c62683c3b98ef2706c8))
+* removed extra code ([ca05bd6](https://github.com/redkubes/otomi-stack-web/commit/ca05bd6948bee8a74f807a08d44e74131ae97cec))
+* removed teaser image ([b477a70](https://github.com/redkubes/otomi-stack-web/commit/b477a70b43d6445fecfc7bbe1dd58cf5ca5c3caa))
+* revert to previous commit ([730b1ce](https://github.com/redkubes/otomi-stack-web/commit/730b1ce0b2bfe896c2ed7e3fb33ce2fee9fa22b7))
+* team settings page and alerts data ([#287](https://github.com/redkubes/otomi-stack-web/issues/287)) ([921b3b7](https://github.com/redkubes/otomi-stack-web/commit/921b3b7a73e6cb6e88460b868cfbc7c5854baf0a))
+* update getWorkloadValuesUiSchema ([#305](https://github.com/redkubes/otomi-stack-web/issues/305)) ([68b1252](https://github.com/redkubes/otomi-stack-web/commit/68b12520e5f3fb308eb22fa8cc7bec7c5a9b9e74))
+* update kubeclarity logo ([#296](https://github.com/redkubes/otomi-stack-web/issues/296)) ([8ea1aba](https://github.com/redkubes/otomi-stack-web/commit/8ea1aba0ea40e854e9bff1e5033a4e1196c0568e))
+* update subdomain renderer functions for team-admin ([886969f](https://github.com/redkubes/otomi-stack-web/commit/886969f8d009855b36b7ec3addf84ea2884baccd))
+* update workloadUiSchema for team members ([#288](https://github.com/redkubes/otomi-stack-web/issues/288)) ([fc05a3e](https://github.com/redkubes/otomi-stack-web/commit/fc05a3ec1e0ab7ac5bde2268c557fb68c41dc338))
+
+
+### Others
+
+* allow to release from main ([d8d49cc](https://github.com/redkubes/otomi-stack-web/commit/d8d49ccccb2d473d47a82e7184d303af017e1904))
+* **release:** 0.10.0 ([1d6a1a6](https://github.com/redkubes/otomi-stack-web/commit/1d6a1a6ac1b68edf2b3f1fcdddf108db378a4014))
+* **release:** 0.9.0 ([#304](https://github.com/redkubes/otomi-stack-web/issues/304)) ([c3fea41](https://github.com/redkubes/otomi-stack-web/commit/c3fea4194ada9e1e9c50eae14c7235fd38f2e0c3))
+
 ## [0.10.0](https://github.com/redkubes/otomi-stack-web/compare/v0.8.0...v0.10.0) (2023-08-03)
 
 
