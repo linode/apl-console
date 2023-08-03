@@ -104,10 +104,10 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const [orderBy, setOrderBy] = useState('enabled')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
 
-  const toggleApp = (appData, name: string) => {
-    const { deps } = getAppData(session, teamId, name)
+  const toggleApp = (name: string) => {
+    const { deps, appInfo } = getAppData(session, teamId, name)
     // we only allow turning on
-    setAppState([(deps || []).concat([name])])
+    setAppState([(appInfo.dependencies || []).concat([name])])
     setDeps(undefined)
   }
 
@@ -166,7 +166,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             title={id}
             setAppState={setAppState}
             hostedByOtomi={item.enabled === undefined}
-            toggleApp={toggleApp}
+            toggleApp={() => toggleApp(id)}
           />
         </Grid>
       )
