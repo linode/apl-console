@@ -48,7 +48,7 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
 
   const handleOpenShell = () => {
     setShell((shell) => {
-      return { ...shell, isShell: true }
+      return { ...shell, isShell: true, shellHeight: defaultShellHeight, isMinimized: false }
     })
   }
   const handleCloseShell = () => {
