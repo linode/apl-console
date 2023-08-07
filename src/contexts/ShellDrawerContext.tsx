@@ -21,7 +21,7 @@ const initialState: ShellDrawerContextProps = {
   isShell: false,
   isMinimized: false,
   iFrameUrl: '',
-  shellHeight: 20,
+  shellHeight: 250,
   onOpenShell: () => {},
   onCloseShell: () => {},
   onSetIFrameUrl: () => {},
@@ -41,9 +41,9 @@ function ShellDrawerProvider({ children }: ShellDrawerProviderProps) {
   const defaultShellHeight = 250
   const [shell, setShell] = useState({
     isShell: false,
-    isMinimized: true,
+    isMinimized: false,
     iFrameUrl: '',
-    shellHeight: minShellHeight,
+    shellHeight: defaultShellHeight,
   })
 
   const handleOpenShell = () => {
