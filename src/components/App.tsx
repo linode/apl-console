@@ -20,7 +20,7 @@ import TableRow from '@mui/material/TableRow'
 import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, isEqual, set } from 'lodash'
+import { cloneDeep, get, isEqual, set, unset } from 'lodash'
 import Markdown from 'markdown-to-jsx'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
@@ -114,7 +114,27 @@ export const getAppUiSchema = (
   }
   switch (appId) {
     case 'cert-manager':
-      if (formData.issuer === 'custom-ca') set(uiSchema, 'stage.ui:widget', 'hidden')
+      set(uiSchema, 'customRootCA.ui:widget', 'hidden')
+      set(uiSchema, 'customRootCAKey.ui:widget', 'hidden')
+      set(uiSchema, 'byoWildcardCert.ui:widget', 'hidden')
+      set(uiSchema, 'byoWildcardCertKey.ui:widget', 'hidden')
+      set(uiSchema, 'stage.ui:widget', 'hidden')
+      set(uiSchema, 'email.ui:widget', 'hidden')
+      if (formData.issuer === 'letsencrypt') {
+        unset(uiSchema, 'stage.ui:widget')
+        unset(uiSchema, 'email.ui:widget')
+      }
+
+      if (formData.issuer === 'byo-wildcard-cert') {
+        unset(uiSchema, 'byoWildcardCert.ui:widget')
+        set(uiSchema, 'byoWildcardCert.ui:widget', 'TextareaWidget')
+        unset(uiSchema, 'byoWildcardCertKey.ui:widget')
+      }
+      if (formData.issuer === 'custom-ca') {
+        unset(uiSchema, 'customRootCA.ui:widget')
+        unset(uiSchema, 'customRootCAKey.ui:widget')
+        set(uiSchema, 'customRootCA.ui:widget', 'TextareaWidget')
+      }
       break
     case 'drone':
       const provider = get(formData, 'sourceControl.provider')
