@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { Box, CircularProgress, Tooltip, styled } from '@mui/material'
+import { Box, CircularProgress, Tooltip, Typography, styled } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
 import { ConnectCloudttyApiResponse, useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
@@ -73,6 +73,17 @@ const TransparentStyle = styled(Box)(() => ({
 const IFrameStyle = styled(Box)(() => ({
   borderTop: '1px dashed #919eab3d',
   height: '100%',
+}))
+
+const LoadingMessageStyle = styled(Box)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  height: '100%',
+  textAlign: 'center',
+  padding: '1.5rem',
 }))
 
 // ----------------------------------------------------------------------
@@ -196,11 +207,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     <ShellStyle isDesktop={isDesktop} collapseClick={collapseClick} drawerHeight={shellHeight}>
       <ShellBarStyle>
         <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center', color: '#f4f7f9' }}>
-          {isLoading ? (
-            <CircularProgress size={16} thickness={8} />
-          ) : (
-            <Box>{`team-${user.isAdmin ? 'admin' : teamId}`}</Box>
-          )}
+          {!isLoading && <Box>{`team-${user.isAdmin ? 'admin' : teamId}`}</Box>}
         </Box>
         <HandleBarStyle transparency={transparency} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
         <ShellButton tooltip='Open shell in a new tab' src='/assets/openInNew_icon.svg' onClick={handleOpenInNew} />
@@ -215,9 +222,15 @@ function Shell({ collapseClick }: Props): React.ReactElement {
       {/* By adding an absolute transparent div overlay, we ensure that the onmouseup event remains active even when the mouse is over the iframe. 
       This allows us to capture mouse release events reliably and perform necessary actions within our Shell component. */}
       {transparency && <TransparentStyle />}
-
       <IFrameStyle>
-        <MemoizedIFrame iFrameUrl={iFrameUrl} />
+        {isLoading ? (
+          <LoadingMessageStyle>
+            <CircularProgress sx={{ mb: '1rem' }} />
+            <Typography>We are preparing your shell session, we will be ready in a minute!</Typography>
+          </LoadingMessageStyle>
+        ) : (
+          <MemoizedIFrame iFrameUrl={iFrameUrl} />
+        )}
       </IFrameStyle>
     </ShellStyle>
   )
