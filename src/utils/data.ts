@@ -134,7 +134,7 @@ export const getAppData = (
   const baseUrl = useHost
     ? getAppData(session, teamId, useHost).baseUrl
     : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin') ? `.team-${teamId}` : ''
+        !(isShared || teamId === 'admin') ? `-${teamId}` : ''
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
