@@ -130,6 +130,7 @@ export const getServiceUiSchema = (
   const ing = formData?.ingress as Record<string, any>
   // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
   const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
+  const cnameWidget = formData?.ingress?.useCname ? undefined : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
@@ -140,6 +141,7 @@ export const getServiceUiSchema = (
       subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
+      cname: cnameWidget,
     },
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
