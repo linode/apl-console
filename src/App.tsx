@@ -49,6 +49,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import Project from 'pages/Project'
+import Grafana from 'pages/Grafana'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -98,6 +99,7 @@ function App() {
                                   <Route path='/services' component={Services} exact />
                                   <Route path='/secrets' component={Secrets} exact />
                                   <Route path='/workloads' component={Workloads} exact />
+                                  <Route path='/grafana' component={Grafana} exact />
                                   <Route path='/settings' component={SettingsOverview} exact />
                                   <Route path='/projects' component={Projects} exact />
                                   <Route path='/builds' component={Builds} exact />
