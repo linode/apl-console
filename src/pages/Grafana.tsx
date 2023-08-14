@@ -20,8 +20,32 @@ export default function (): React.ReactElement {
         src={iFrameUrl}
         style={{
           width: '100%',
-          height: '100%',
+          height: '200px',
           border: 'none',
+          marginTop: '10px',
+          marginBottom: '10px',
+        }}
+      />
+      <iframe
+        title='Grafana iFrame'
+        src={iFrameUrl}
+        style={{
+          width: '100%',
+          height: '200px',
+          border: 'none',
+          marginTop: '10px',
+          marginBottom: '10px',
+        }}
+      />
+      <iframe
+        title='Grafana iFrame'
+        src={iFrameUrl}
+        style={{
+          width: '100%',
+          height: '200px',
+          border: 'none',
+          marginTop: '10px',
+          marginBottom: '10px',
         }}
       />
     </div>
