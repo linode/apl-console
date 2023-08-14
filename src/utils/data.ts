@@ -111,7 +111,7 @@ export const getAppData = (
   }
   let app = {}
   if (typeof appOrId !== 'string') {
-    appId = appOrId.id ?? appOrId.name
+    appId = appOrId?.id ?? appOrId?.name
     app = appOrId
   }
 
@@ -134,7 +134,7 @@ export const getAppData = (
   const baseUrl = useHost
     ? getAppData(session, teamId, useHost).baseUrl
     : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin') ? `.team-${teamId}` : ''
+        !(isShared || teamId === 'admin') ? `-${teamId}` : ''
       }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
   // also get schema info such as title, desc
   const spec = getSpec()
@@ -143,11 +143,13 @@ export const getAppData = (
   // const mode = getThemeMode()
   const logoSuffix = ''
   const logoAltSuffix = ''
+  const deps = coreApp.deps
   return {
     ...coreApp,
     ...app,
     id: appId,
     baseUrl,
+    deps,
     logo: `${coreAppId}_logo${logoSuffix}.svg`,
     logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
     appInfo: appsInfo[coreAppId],
