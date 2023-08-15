@@ -8,7 +8,7 @@ export default function (): React.ReactElement {
   // const iframes = params?.get('iframes')?.split(',')
   const iframes = [
     'https://grafana.51.158.129.24.nip.io/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&from=1692080796524&to=1692084396524&panelId=35',
-    'https://grafana.51.158.129.24.nip.io/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&from=1692080796524&to=1692084396524&panelId=34',
+    'https://grafana.51.158.129.24.nip.io/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&panelId=34',
   ]
   console.log('iframes', iframes)
 
