@@ -205,7 +205,7 @@ export default function ({
         ? { ...formData.workload, name: formData?.name }
         : {
             name: formData?.name,
-            url: 'https://github.com/redkubes/otomi-charts.git',
+            url: 'https://gitea.dev.d2-otomi.net/otomi/charts.git',
             path: selectedChart,
             revision: 'HEAD',
           }

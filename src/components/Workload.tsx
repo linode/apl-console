@@ -84,7 +84,7 @@ export default function ({
         ? data
         : {
             name: data?.name,
-            url: 'https://github.com/redkubes/otomi-charts.git',
+            url: 'https://gitea.dev.d2-otomi.net/otomi/charts.git',
             path: selectedChart,
             revision: 'HEAD',
           }
