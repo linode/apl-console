@@ -65,7 +65,7 @@ export default function (): React.ReactElement {
           }}
         />
       </div>
-      <iframe
+      {/* <iframe
         title='Grafana iFrame'
         src='https://grafana.51.158.210.29.nip.io/d-solo/f3ba4283-2d4d-4363-8114-efd6d1908d42/logs-test?orgId=1&from=1692088278825&to=1692109878825&panelId=1'
         style={{
@@ -75,7 +75,7 @@ export default function (): React.ReactElement {
           marginTop: '10px',
           marginBottom: '10px',
         }}
-      />
+      /> */}
     </div>
   )
   return <PaperLayout comp={comp} />
