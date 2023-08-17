@@ -86,7 +86,7 @@ export default function ({
             name: data?.name,
             url: 'https://gitea.dev.d2-otomi.net/otomi/charts.git',
             path: selectedChart,
-            revision: 'HEAD',
+            revision: 'main',
           }
     if (workloadId) {
       await updateWorkload({

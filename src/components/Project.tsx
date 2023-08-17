@@ -207,7 +207,7 @@ export default function ({
             name: formData?.name,
             url: 'https://gitea.dev.d2-otomi.net/otomi/charts.git',
             path: selectedChart,
-            revision: 'HEAD',
+            revision: 'main',
           }
 
     if (selectedChart === 'custom' && activeStepWL === 0) {
