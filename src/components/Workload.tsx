@@ -129,8 +129,10 @@ export default function ({
         id: workloadId,
         values: omit(valuesData.values, ['id', 'teamId', 'selectedChart']),
       } as any,
+    }).then((res: any) => {
+      if (res.error) return
+      history.push(`/teams/${teamId}/workloads`)
     })
-    history.push(`/teams/${teamId}/workloads`)
   }
 
   const handleNext = async () => {
