@@ -20,7 +20,7 @@ import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mu
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
 import Form from './rjsf/Form'
-import { getServiceSchema, getServiceUiSchema, getSubdomain, updateIngressField } from './Service'
+import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
 import WorkloadValues from './WorkloadValues'
 import { getWorkloadSchema, getWorkloadUiSchema } from './WorkloadDefine'
@@ -133,7 +133,7 @@ export default function ({
   const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const teamSubdomain = getSubdomain(formData?.service?.name, teamId)
+  const teamSubdomain = getHost(formData?.service?.name, teamId)
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData?.service, defaultSubdomain)
 
