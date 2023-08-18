@@ -94,6 +94,7 @@ export const getServiceSchema = (
       unset(ingressSchema, `certArn`)
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
+      set(ingressSchema, `cname.required`, ['domain'])
     }
     if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
@@ -130,7 +131,7 @@ export const getServiceUiSchema = (
   const ing = formData?.ingress as Record<string, any>
   // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
   const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
-  const cnameWidget = ing?.useCname ? undefined : { 'ui:widget': 'hidden' }
+  const cnameWidget = ing?.useCname ? { tlsSecretName: { 'ui:readonly': ing?.tlsPass } } : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
