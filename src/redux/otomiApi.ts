@@ -296,7 +296,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
         | ({
             ingressClassName?: string
             tlsPass?: boolean
-            useDefaultSubdomain?: boolean
+            useDefaultHost?: boolean
             subdomain: string
             domain: string
             paths?: string[]
@@ -948,7 +948,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
         | ({
             ingressClassName?: string
             tlsPass?: boolean
-            useDefaultSubdomain?: boolean
+            useDefaultHost?: boolean
             subdomain: string
             domain: string
             paths?: string[]
@@ -1015,7 +1015,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
         | ({
             ingressClassName?: string
             tlsPass?: boolean
-            useDefaultSubdomain?: boolean
+            useDefaultHost?: boolean
             subdomain: string
             domain: string
             paths?: string[]
@@ -1082,7 +1082,7 @@ export type CreateServiceApiArg = {
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -1155,7 +1155,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
         | ({
             ingressClassName?: string
             tlsPass?: boolean
-            useDefaultSubdomain?: boolean
+            useDefaultHost?: boolean
             subdomain: string
             domain: string
             paths?: string[]
@@ -1224,7 +1224,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
         | ({
             ingressClassName?: string
             tlsPass?: boolean
-            useDefaultSubdomain?: boolean
+            useDefaultHost?: boolean
             subdomain: string
             domain: string
             paths?: string[]
@@ -1293,7 +1293,7 @@ export type EditServiceApiArg = {
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -1990,7 +1990,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -2175,7 +2175,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -2363,7 +2363,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -2551,7 +2551,7 @@ export type CreateProjectApiArg = {
             | ({
                 ingressClassName?: string
                 tlsPass?: boolean
-                useDefaultSubdomain?: boolean
+                useDefaultHost?: boolean
                 subdomain: string
                 domain: string
                 paths?: string[]
@@ -2743,7 +2743,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -2933,7 +2933,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | ({
               ingressClassName?: string
               tlsPass?: boolean
-              useDefaultSubdomain?: boolean
+              useDefaultHost?: boolean
               subdomain: string
               domain: string
               paths?: string[]
@@ -3123,7 +3123,7 @@ export type EditProjectApiArg = {
             | ({
                 ingressClassName?: string
                 tlsPass?: boolean
-                useDefaultSubdomain?: boolean
+                useDefaultHost?: boolean
                 subdomain: string
                 domain: string
                 paths?: string[]
