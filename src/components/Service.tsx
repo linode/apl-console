@@ -171,6 +171,7 @@ export const updateIngressField = (formData, defaultSubdomain) => {
       ing.subdomain = defaultSubdomain
       formData.ingress = ing
     }
+    if (ing?.tlsPass) unset(ing, 'cname.tlsSecretName')
     if (ing?.type === 'tlsPass') {
       // we don't expect some props when choosing tlsPass
       ing = { ...ing }
