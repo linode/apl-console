@@ -94,6 +94,28 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllSources: build.query<GetAllSourcesApiResponse, GetAllSourcesApiArg>({
+      query: () => ({ url: `/sources` }),
+    }),
+    getTeamSources: build.query<GetTeamSourcesApiResponse, GetTeamSourcesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sources` }),
+    }),
+    createSource: build.mutation<CreateSourceApiResponse, CreateSourceApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sources`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteSource: build.mutation<DeleteSourceApiResponse, DeleteSourceApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sources/${queryArg.sourceId}`, method: 'DELETE' }),
+    }),
+    getSource: build.query<GetSourceApiResponse, GetSourceApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sources/${queryArg.sourceId}` }),
+    }),
+    editSource: build.mutation<EditSourceApiResponse, EditSourceApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/sources/${queryArg.sourceId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
       query: () => ({ url: `/builds` }),
     }),
@@ -254,6 +276,7 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_backups: number
   otomi_builds: number
   otomi_secrets: number
+  otomi_sources: number
   otomi_services: number
   otomi_teams: number
   otomi_workloads: number
@@ -1602,6 +1625,251 @@ export type EditBackupApiArg = {
       value?: string
     }[]
     ttl?: string
+  }
+}
+export type GetAllSourcesApiResponse = /** status 200 Successfully obtained all sources configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  description?: string
+  sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+}[]
+export type GetAllSourcesApiArg = void
+export type GetTeamSourcesApiResponse = /** status 200 Successfully obtained team sources */ {
+  id?: string
+  teamId?: string
+  name: string
+  description?: string
+  sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+
+}[]
+export type GetTeamSourcesApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateSourceApiResponse = /** status 200 Successfully stored sources configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  description?: string
+  sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+
+}
+export type CreateSourceApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Source object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    description?: string
+    sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+
+  }
+}
+export type DeleteSourceApiResponse = /** status 200 Successfully deleted a source */ undefined
+export type DeleteSourceApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the source */
+  sourceId: string
+}
+export type GetSourceApiResponse = /** status 200 Successfully obtained source configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  description?: string
+  sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+
+}
+export type GetSourceApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the backup */
+  sourceId: string
+}
+export type EditSourceApiResponse = /** status 200 Successfully edited a team source */ {
+  id?: string
+  teamId?: string
+  name: string
+  description?: string
+  sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
+
+}
+export type EditSourceApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the source */
+  sourceId: string
+  /** Source object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    description?: string
+    sourceType?:
+    | {
+        git: {
+          url: string
+          path?: string
+          revision?: string
+        }
+        type: 'git'
+      }
+    | {
+        image: {
+          repository: string
+          tag?: string
+        }
+        type: 'image'
+      }
+    | {
+        helm: {
+          url: string
+          revision?: string
+          chart?: string
+        }
+        type: 'helm'
+    }
   }
 }
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
@@ -3716,20 +3984,20 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   editor?: string
   inactivityTimeout?: number
   license?: {
-    isValid: boolean
-    hasLicense: boolean
-    jwt?: string
     body?: {
-      version: number
-      key: string
-      envType?: 'dev' | 'prod' | 'local'
-      type: 'community' | 'professional' | 'enterprise'
       capabilities: {
         teams: number
         services: number
         workloads: number
       }
+      envType?: 'dev' | 'prod' | 'local'
+      key: string
+      type: 'community' | 'professional' | 'enterprise'
+      version: number
     }
+    hasLicense: boolean
+    isValid: boolean
+    jwt?: string
   }
   user?: {
     name: string
@@ -4680,6 +4948,12 @@ export const {
   useDeleteBackupMutation,
   useGetBackupQuery,
   useEditBackupMutation,
+  useCreateSourceMutation,
+  useDeleteSourceMutation,
+  useEditSourceMutation,
+  useGetSourceQuery,
+  useGetAllSourcesQuery,
+  useGetTeamSourcesQuery,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
   useCreateBuildMutation,

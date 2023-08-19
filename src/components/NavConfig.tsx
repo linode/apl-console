@@ -36,6 +36,7 @@ export default function NavConfig() {
         { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
+        { title: 'Sources', path: '/sources', icon: getIcon('source_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
@@ -62,8 +63,9 @@ export default function NavConfig() {
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
         },
-        { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
+        { title: 'Sources', path: `/teams/${oboTeamId}/sources`, icon: getIcon('source_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
+        { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Backups', path: `/teams/${oboTeamId}/backups`, icon: getIcon('backup_icon.svg') }, // replace .svg

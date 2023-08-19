@@ -34,6 +34,7 @@ it('team can not doSomething', () => {
 
 const metrics: GetMetricsApiResponse = {
   otomi_backups: 2,
+  otomi_sources: 100,
   otomi_builds: 3,
   otomi_secrets: 6,
   otomi_services: 8,

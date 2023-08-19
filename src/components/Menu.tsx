@@ -278,6 +278,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Teams')} />
           </StyledMenuItem>
+          <StyledMenuItem to='/sources' selected={pathname === '/sources'} data-cy='menu-item-sources'>
+            <ListItemIcon>
+              <AddToDriveIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Sources')} />
+          </StyledMenuItem>
           <StyledMenuItem to='/builds' selected={pathname === '/builds'} data-cy='menu-item-builds'>
             <ListItemIcon>
               <AddToDriveIcon />
@@ -378,6 +384,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <ListItemText primary={t('Shortcuts')} />
             </StyledMenuItem>
           )}
+          <StyledMenuItem
+            to={`/teams/${teamId}/sources`}
+            selected={pathname.indexOf(`/teams/${teamId}/sources`) === 0}
+            data-cy='menu-item-team-sources'
+          >
+            <ListItemIcon>
+              <AddToDriveIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('sources')} />
+          </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/builds`}
             selected={pathname.indexOf(`/teams/${teamId}/builds`) === 0}
