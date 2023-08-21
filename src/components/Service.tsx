@@ -38,7 +38,7 @@ export const addDomainEnumField = (
     ingressSchema.subdomain.maxLength = 64 - length
   }
   // we only need to create an enum if we have more than one option
-  if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
+  if (ing.useDefaultHost && !ing.domain) ing.domain = zones[0]
   if (zones.length > 1) ingressSchema.domain.enum = zones
   else if (!ing.domain) ing.domain = zones[0]
 }
@@ -136,8 +136,8 @@ export const getServiceUiSchema = (
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
-      domain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      domain: { 'ui:readonly': true },
+      subdomain: { 'ui:readonly': ing?.useDefaultHost },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
     },
@@ -149,10 +149,10 @@ export const getServiceUiSchema = (
   return uiSchema
 }
 
-export function getSubdomain(serviceName: string | undefined, teamId): string {
+export function getHost(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
   if (teamId === 'admin') return serviceName
-  return `${serviceName}.team-${teamId}`
+  return `${serviceName}-${teamId}`
 }
 
 export const updateIngressField = (formData, defaultSubdomain) => {
@@ -160,7 +160,7 @@ export const updateIngressField = (formData, defaultSubdomain) => {
     let ing = formData.ingress as Record<string, any>
     if (
       !['cluster'].includes(ing.type as string) &&
-      (!(formData.ingress as Record<string, any>)?.domain || ing.useDefaultSubdomain)
+      (!(formData.ingress as Record<string, any>)?.domain || ing.useDefaultHost)
     ) {
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
@@ -206,7 +206,7 @@ export default function ({
   // END HOOKS
   // manipulate form data and set derived stuff:
   const formData = cloneDeep(data)
-  const teamSubdomain = getSubdomain(formData?.name, teamId)
+  const teamSubdomain = getHost(formData?.name, teamId)
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData, defaultSubdomain)
   // pass to the schema getters that manipulate the schemas based on form data
