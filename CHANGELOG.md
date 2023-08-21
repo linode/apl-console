@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.12.0](https://github.com/redkubes/otomi-stack-web/compare/v0.11.0...v0.12.0) (2023-08-21)
+
+
+### Features
+
+* default host instead of subdomain ([#319](https://github.com/redkubes/otomi-stack-web/issues/319)) ([820a236](https://github.com/redkubes/otomi-stack-web/commit/820a23688a22fd2e5edf34b8ff329ac34dab642d))
+* support wildcard cert ([#315](https://github.com/redkubes/otomi-stack-web/issues/315)) ([6804713](https://github.com/redkubes/otomi-stack-web/commit/6804713a59185344e458b97838ebfa417878bd7c))
+* update tty shell ui ([#314](https://github.com/redkubes/otomi-stack-web/issues/314)) ([e252027](https://github.com/redkubes/otomi-stack-web/commit/e25202773034ba0ab3ec645834f3066ba2d766f6))
+
+
+### Bug Fixes
+
+* disables to proceed when error exists in workload values ([#317](https://github.com/redkubes/otomi-stack-web/issues/317)) ([cc372bc](https://github.com/redkubes/otomi-stack-web/commit/cc372bc51e9e4612a66bf590ff76a6321f38eabd))
+* update-actions ([#318](https://github.com/redkubes/otomi-stack-web/issues/318)) ([3128c8d](https://github.com/redkubes/otomi-stack-web/commit/3128c8deb1ffdbd02314cef622f4cf4f314e7eb6))
+
 ## [0.11.0](https://github.com/redkubes/otomi-stack-web/compare/v0.8.0...v0.11.0) (2023-08-03)
 
 
