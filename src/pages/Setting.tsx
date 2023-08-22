@@ -16,7 +16,12 @@ export default function ({
     params: { settingId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchSettings } = useSession()
+  const {
+    refetchSettings,
+    settings: {
+      cluster: { k8sVersion },
+    },
+  } = useSession()
   const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
   const { data, isLoading, isFetching, refetch } = useGetSettingsQuery({ ids: [settingId] })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -32,6 +37,8 @@ export default function ({
       .then(refetchSettings)
   }
   const settings = data?.[settingId] || {}
-  const comp = <Setting onSubmit={handleSubmit} settings={settings} settingId={settingId} mutating={mutating} />
+  const comp = (
+    <Setting onSubmit={handleSubmit} settings={{ ...settings, k8sVersion }} settingId={settingId} mutating={mutating} />
+  )
   return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_SETTINGS', { settingId })} />
 }
