@@ -3760,7 +3760,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.23' | '1.24' | '1.25'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4185,7 +4184,6 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.23' | '1.24' | '1.25'
       apiName?: string
       apiServer?: string
       owner?: string
