@@ -95,6 +95,8 @@ export const getServiceSchema = (
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
+    if (ing?.useCname) set(ingressSchema, `cname.required`, ['domain', 'tlsSecretName'])
+    if (ing?.useCname && ing?.tlsPass) set(ingressSchema, `cname.required`, ['domain'])
     if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
     if (!ing?.hasCert) {
@@ -130,6 +132,9 @@ export const getServiceUiSchema = (
   const ing = formData?.ingress as Record<string, any>
   // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
   const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
+  const cnameWidget = ing?.useCname
+    ? { tlsSecretName: ing?.tlsPass && { 'ui:widget': 'hidden' } }
+    : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
@@ -140,6 +145,8 @@ export const getServiceUiSchema = (
       subdomain: { 'ui:readonly': ing?.useDefaultHost },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
+
+      cname: cnameWidget,
     },
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
@@ -167,6 +174,7 @@ export const updateIngressField = (formData, defaultSubdomain) => {
       ing.subdomain = defaultSubdomain
       formData.ingress = ing
     }
+    if (ing?.tlsPass) unset(ing, 'cname.tlsSecretName')
     if (ing?.type === 'tlsPass') {
       // we don't expect some props when choosing tlsPass
       ing = { ...ing }

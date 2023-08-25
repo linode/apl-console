@@ -302,6 +302,11 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             useDefaultHost?: boolean
             subdomain: string
             domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
             paths?: string[]
             forwardPath?: boolean
             hasCert?: boolean
@@ -954,6 +959,11 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             useDefaultHost?: boolean
             subdomain: string
             domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
             paths?: string[]
             forwardPath?: boolean
             hasCert?: boolean
@@ -1021,6 +1031,11 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             useDefaultHost?: boolean
             subdomain: string
             domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
             paths?: string[]
             forwardPath?: boolean
             hasCert?: boolean
@@ -1088,6 +1103,11 @@ export type CreateServiceApiArg = {
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -1161,6 +1181,11 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             useDefaultHost?: boolean
             subdomain: string
             domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
             paths?: string[]
             forwardPath?: boolean
             hasCert?: boolean
@@ -1230,6 +1255,11 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             useDefaultHost?: boolean
             subdomain: string
             domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
             paths?: string[]
             forwardPath?: boolean
             hasCert?: boolean
@@ -1299,6 +1329,11 @@ export type EditServiceApiArg = {
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -1974,6 +2009,11 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -2156,6 +2196,11 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -2341,6 +2386,11 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -2526,6 +2576,11 @@ export type CreateProjectApiArg = {
                 useDefaultHost?: boolean
                 subdomain: string
                 domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
                 paths?: string[]
                 forwardPath?: boolean
                 hasCert?: boolean
@@ -2715,6 +2770,11 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -2902,6 +2962,11 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
               useDefaultHost?: boolean
               subdomain: string
               domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
               paths?: string[]
               forwardPath?: boolean
               hasCert?: boolean
@@ -3089,6 +3154,11 @@ export type EditProjectApiArg = {
                 useDefaultHost?: boolean
                 subdomain: string
                 domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
                 paths?: string[]
                 forwardPath?: boolean
                 hasCert?: boolean
