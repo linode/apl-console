@@ -35,7 +35,6 @@ export default function (): React.ReactElement {
   const { classes } = useStyles()
   const { t } = useTranslation()
   const { data: k8sVersion } = useGetK8SVersionQuery()
-  console.log('k8sVersion', k8sVersion)
   // END HOOKS
   // TODO: create from git config, which is now in otomi-api values. Move?
   const clusterLegend = {
