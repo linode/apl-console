@@ -4,6 +4,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
+import { useGetK8SVersionQuery } from 'redux/otomiApi'
 import LinkCommit from './LinkCommit'
 
 const useStyles = makeStyles()((theme) => ({
@@ -27,12 +28,13 @@ const useStyles = makeStyles()((theme) => ({
 export default function (): React.ReactElement {
   const {
     settings: {
-      cluster: { domainSuffix, k8sVersion },
+      cluster: { domainSuffix },
     },
     versions,
   } = useSession()
   const { classes } = useStyles()
   const { t } = useTranslation()
+  const { data: k8sVersion } = useGetK8SVersionQuery()
   // END HOOKS
   // TODO: create from git config, which is now in otomi-api values. Move?
   const clusterLegend = {

@@ -116,6 +116,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
+      query: () => ({ url: `/k8sVersion` }),
+    }),
     connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
       query: (queryArg) => ({ url: `/cloudtty`, method: 'POST', body: queryArg.body }),
     }),
@@ -1661,9 +1664,6 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
         }
         type: 'buildpacks'
       }
-  repoAccess?: {
-    otomiGit?: boolean
-  }
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1688,9 +1688,6 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
         }
         type: 'buildpacks'
       }
-  repoAccess?: {
-    otomiGit?: boolean
-  }
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -1718,9 +1715,6 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
         }
         type: 'buildpacks'
       }
-  repoAccess?: {
-    otomiGit?: boolean
-  }
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1748,9 +1742,6 @@ export type CreateBuildApiArg = {
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -1782,9 +1773,6 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
         }
         type: 'buildpacks'
       }
-  repoAccess?: {
-    otomiGit?: boolean
-  }
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -1814,9 +1802,6 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
         }
         type: 'buildpacks'
       }
-  repoAccess?: {
-    otomiGit?: boolean
-  }
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -1846,11 +1831,10 @@ export type EditBuildApiArg = {
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
 }
+export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
+export type GetK8SVersionApiArg = void
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   id?: string
   teamId: string
@@ -1914,9 +1898,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
   workload?: {
     id?: string
@@ -2104,9 +2085,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
   workload?: {
     id?: string
@@ -2297,9 +2275,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
   workload?: {
     id?: string
@@ -2490,9 +2465,6 @@ export type CreateProjectApiArg = {
             }
             type: 'buildpacks'
           }
-      repoAccess?: {
-        otomiGit?: boolean
-      }
     }
     workload?: {
       id?: string
@@ -2687,9 +2659,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
   workload?: {
     id?: string
@@ -2882,9 +2851,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           }
           type: 'buildpacks'
         }
-    repoAccess?: {
-      otomiGit?: boolean
-    }
   }
   workload?: {
     id?: string
@@ -3077,9 +3043,6 @@ export type EditProjectApiArg = {
             }
             type: 'buildpacks'
           }
-      repoAccess?: {
-        otomiGit?: boolean
-      }
     }
     workload?: {
       id?: string
@@ -3867,7 +3830,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     name?: string
     domainSuffix?: string
     provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-    k8sVersion?: '1.23' | '1.24' | '1.25'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4292,7 +4254,6 @@ export type EditSettingsApiArg = {
       name?: string
       domainSuffix?: string
       provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
-      k8sVersion?: '1.23' | '1.24' | '1.25'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4756,6 +4717,7 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,
   useGetAllProjectsQuery,
