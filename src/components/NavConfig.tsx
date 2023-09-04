@@ -66,7 +66,6 @@ export default function NavConfig() {
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
-        { title: 'Backups', path: `/teams/${oboTeamId}/backups`, icon: getIcon('backup_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
