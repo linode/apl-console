@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/redkubes/otomi-stack-web/compare/v0.12.0...v1.0.0) (2023-09-04)
+
+
+### Features
+
+* added CNAME support ([#321](https://github.com/redkubes/otomi-stack-web/issues/321)) ([e63bdca](https://github.com/redkubes/otomi-stack-web/commit/e63bdca08783c8428ed005ca214c8891979bc6b5))
+* remove k8s version ([#322](https://github.com/redkubes/otomi-stack-web/issues/322)) ([a552900](https://github.com/redkubes/otomi-stack-web/commit/a552900d7c67957b5bc26b09025932ffd1dc2f6c))
+
+
+### Bug Fixes
+
+* team project filter error ([#323](https://github.com/redkubes/otomi-stack-web/issues/323)) ([57e5cee](https://github.com/redkubes/otomi-stack-web/commit/57e5ceee3bb72b61e0e52bcc39e36204c285e25f))
+
 ## [0.12.0](https://github.com/redkubes/otomi-stack-web/compare/v0.11.0...v0.12.0) (2023-08-21)
 
 
