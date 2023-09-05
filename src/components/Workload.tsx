@@ -18,6 +18,7 @@ import { GetWorkloadApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiAp
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
+import YAML from 'yaml'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
 import WorkloadDefine from './WorkloadDefine'
@@ -101,6 +102,8 @@ export default function ({
       teamId,
       body: { ...body, selectedChart },
     }).then((res: any) => {
+      const load = YAML.parse(res.data.content)
+      setValuesData({ values: load })
       if (res.error) return
       setNextStep()
     })

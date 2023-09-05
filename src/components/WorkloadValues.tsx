@@ -67,6 +67,7 @@ export default function ({
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
   const [rawValues, setRawValues] = useState(workloadValues?.values)
+  console.log('rawValues:', rawValues)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
