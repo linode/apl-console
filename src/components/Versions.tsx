@@ -25,7 +25,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-function isRelease(version: string): boolean {
+function isRelease(version: any): boolean {
   const pattern = /^[0-9]/
   return pattern.test(version)
 }
@@ -61,7 +61,7 @@ export default function (): React.ReactElement {
                 <Chip size='small' label={title} />
               </TableCell>
               <TableCell className={classes.tableCellRight} align='left'>
-                {isRelease(v.toString()) && title === 'Otomi Core' ? (
+                {title === 'Otomi Core' && isRelease(v) ? (
                   <MuiLink
                     href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${version}/CHANGELOG.md`)}
                     target='_blank'
