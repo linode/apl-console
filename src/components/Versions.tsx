@@ -5,6 +5,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
 import LinkCommit from './LinkCommit'
+import MuiLink from './MuiLink'
 
 const useStyles = makeStyles()((theme) => ({
   listSubheader: {
@@ -52,7 +53,18 @@ export default function (): React.ReactElement {
                 <Chip size='small' label={title} />
               </TableCell>
               <TableCell className={classes.tableCellRight} align='left'>
-                {v}
+                {v !== 'x.x.x' && title === 'Otomi Core' ? (
+                  <MuiLink
+                    href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${v}`)}
+                    target='_blank'
+                    rel='noopener'
+                    title='go to github'
+                  >
+                    {v}
+                  </MuiLink>
+                ) : (
+                  v
+                )}
               </TableCell>
             </TableRow>
           </TableBody>
