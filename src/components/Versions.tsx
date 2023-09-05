@@ -43,6 +43,10 @@ export default function (): React.ReactElement {
     [t('Otomi Console')]: versions.console,
     [t('Otomi Values')]: <LinkCommit domainSuffix={domainSuffix} sha={versions.values} color='primary' short />,
   }
+  console.log(clusterLegend['Otomi Core'])
+  const version = /^\d/.test(clusterLegend['Otomi Core'])
+    ? `v${clusterLegend['Otomi Core']}`
+    : clusterLegend['Otomi Core']
   return (
     <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
       <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
@@ -55,7 +59,7 @@ export default function (): React.ReactElement {
               <TableCell className={classes.tableCellRight} align='left'>
                 {v !== 'x.x.x' && title === 'Otomi Core' ? (
                   <MuiLink
-                    href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${v}`)}
+                    href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${version}/CHANGELOG.md`)}
                     target='_blank'
                     rel='noopener'
                     title='go to github'
