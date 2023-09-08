@@ -67,12 +67,17 @@ export default function ({
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
   const [rawValues, setRawValues] = useState(workloadValues?.values)
-  console.log('rawValues:', rawValues)
+  const [customChartVersion, setCustomChartVersion]: any = useState(workloadValues?.customChartVersion)
+  const [customChartDescription, setCustomChartDescription]: any = useState(workloadValues?.customChartDescription)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
   useEffect(() => {
-    setRawValues(workloadValues?.values)
+    if (workloadValues?.values) {
+      setRawValues(workloadValues?.values)
+      setCustomChartVersion(workloadValues?.customChartVersion)
+      setCustomChartDescription(workloadValues?.customChartDescription)
+    }
   }, [workloadValues])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
@@ -88,6 +93,10 @@ export default function ({
           resourceType='WorkloadValues'
         />
       )}
+      <div>
+        {customChartVersion && <div>Version: {`${customChartVersion}`}</div>}
+        {customChartDescription && <div>Description: {`${customChartDescription}`}</div>}
+      </div>
       <div className={classes.buffer}> </div>{' '}
       <CodeEditor
         code={yaml}

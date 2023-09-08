@@ -18,7 +18,6 @@ import { GetWorkloadApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiAp
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
-import YAML from 'yaml'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
 import WorkloadDefine from './WorkloadDefine'
@@ -64,7 +63,7 @@ export default function ({
   const { oboTeamId } = useSession()
   const [activeStep, setActiveStep] = useState(0)
   const [data, setData]: any = useState(workload)
-  const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const { data: WLvaluesData, refetch } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
   const [valuesData, setValuesData]: any = useState(WLvaluesData)
   const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
   const resourceType = activeStep ? 'Workload values' : 'Workload'
@@ -98,15 +97,13 @@ export default function ({
       setNextStep()
       return
     }
-    createWorkload({
-      teamId,
-      body: { ...body, selectedChart },
-    }).then((res: any) => {
-      const load = YAML.parse(res.data.content)
-      setValuesData({ values: load })
-      if (res.error) return
-      setNextStep()
-    })
+    const res = await createWorkload({ teamId, body: { ...body, selectedChart } })
+    if (selectedChart === 'custom') {
+      const { values, customChartVersion, customChartDescription } = res.data.wv
+      setValuesData({ values, customChartVersion, customChartDescription })
+    }
+    if (res.error) return
+    setNextStep()
   }
 
   const handleUpdateWorkloadValues = async () => {

@@ -1988,6 +1988,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
   service?: {
     id?: string
@@ -2175,6 +2177,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
   service?: {
     id?: string
@@ -2365,6 +2369,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
   service?: {
     id?: string
@@ -2555,6 +2561,8 @@ export type CreateProjectApiArg = {
             | null
         }
       }
+      customChartVersion?: string
+      customChartDescription?: string
     }
     service?: {
       id?: string
@@ -2749,6 +2757,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
   service?: {
     id?: string
@@ -2941,6 +2951,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
   service?: {
     id?: string
@@ -3133,6 +3145,8 @@ export type EditProjectApiArg = {
             | null
         }
       }
+      customChartVersion?: string
+      customChartDescription?: string
     }
     service?: {
       id?: string
@@ -3389,6 +3403,8 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
         | null
     }
   }
+  customChartVersion?: string
+  customChartDescription?: string
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3474,6 +3490,8 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
         | null
     }
   }
+  customChartVersion?: string
+  customChartDescription?: string
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3559,6 +3577,8 @@ export type EditWorkloadValuesApiArg = {
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
@@ -3639,6 +3659,8 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
         | null
     }
   }
+  customChartVersion?: string
+  customChartDescription?: string
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3724,6 +3746,8 @@ export type UpdateWorkloadValuesApiArg = {
           | null
       }
     }
+    customChartVersion?: string
+    customChartDescription?: string
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
