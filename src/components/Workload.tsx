@@ -63,7 +63,7 @@ export default function ({
   const { oboTeamId } = useSession()
   const [activeStep, setActiveStep] = useState(0)
   const [data, setData]: any = useState(workload)
-  const { data: WLvaluesData, refetch } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
   const [valuesData, setValuesData]: any = useState(WLvaluesData)
   const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
   const resourceType = activeStep ? 'Workload values' : 'Workload'
