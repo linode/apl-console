@@ -99,7 +99,7 @@ export default function ({
     }
     const res = await createWorkload({ teamId, body: { ...body, selectedChart } })
     if (selectedChart === 'custom') {
-      const { values, customChartVersion, customChartDescription } = res.data.wv
+      const { values, customChartVersion, customChartDescription } = res.data.workloadValues
       setValuesData({ values, customChartVersion, customChartDescription })
     }
     if (res.error) return
