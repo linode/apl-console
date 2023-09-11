@@ -133,9 +133,9 @@ export const getAppData = (
   // compose the derived ingress props
   const baseUrl = useHost
     ? getAppData(session, teamId, useHost).baseUrl
-    : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin') ? `-${teamId}` : ''
-      }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
+    : `https://${`${appId}${!(isShared || teamId === 'admin') ? `-${teamId}` : ''}.${cluster.domainSuffix}${
+        isShared || ownHost ? '' : `/${useHost || appId}`
+      }`}`
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = getAppSchemaName(appId)
