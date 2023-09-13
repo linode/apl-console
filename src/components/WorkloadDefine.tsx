@@ -13,13 +13,14 @@ export const getWorkloadSchema = (): any => {
   return schema
 }
 
-export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isGitea = false): any => {
   const custom = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     selectedChart: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    autoUpdate: { 'ui:readonly': !isGitea, strategy: { 'ui:readonly': !isGitea } },
   }
   const preDefined = {
     id: { 'ui:widget': 'hidden' },
@@ -31,6 +32,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     revision: { 'ui:widget': 'hidden' },
     namespace: { 'ui:widget': 'hidden' },
     selectedChart: { 'ui:widget': 'hidden' },
+    autoUpdate: { 'ui:widget': 'hidden' },
   }
   const uiSchema = { custom, preDefined }
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')
@@ -53,7 +55,8 @@ export default function ({ workload, teamId, data, setData, selectedChart, ...ot
   // END HOOKS
   const schema = getWorkloadSchema()
   if (workload?.selectedChart !== 'custom') schema.required.push('url')
-  const uiSchema = getWorkloadUiSchema(user, teamId)
+  const isGitea: boolean = data?.url?.includes('gitea')
+  const uiSchema = getWorkloadUiSchema(user, teamId, isGitea)
 
   return (
     <Form

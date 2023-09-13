@@ -114,7 +114,8 @@ export default function ({
 
   const workloadSchema = getWorkloadSchema()
   if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
-  const workloadUiSchema = getWorkloadUiSchema(user, teamId)
+  const isGitea: boolean = formData?.workload?.url?.includes('gitea')
+  const workloadUiSchema = getWorkloadUiSchema(user, teamId, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
@@ -142,8 +143,10 @@ export default function ({
 
   const setNextStepWL = () => setActiveStepWL((prev) => prev + 1)
   const setPreviousStepWL = () => {
-    if (activeStepWL === 0) setPreviousStep()
-    else setActiveStepWL((prev) => prev - 1)
+    if (activeStepWL === 0) {
+      setSelectedChart('')
+      setPreviousStep()
+    } else setActiveStepWL((prev) => prev - 1)
   }
 
   const handleCreateProject = () => {
@@ -334,11 +337,7 @@ export default function ({
                       {activeStepWL === 0 && selectedChart === 'custom' && (
                         <Form
                           schema={workloadSchema}
-                          uiSchema={
-                            selectedChart === 'deployment' || selectedChart === 'ksvc'
-                              ? workloadUiSchema.preDefined
-                              : workloadUiSchema.custom
-                          }
+                          uiSchema={workloadUiSchema.custom}
                           data={formData.workload}
                           onChange={(data: any) => setData({ ...formData, workload: data })}
                           disabled={
