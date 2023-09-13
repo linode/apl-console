@@ -133,7 +133,8 @@ export const getAppData = (
   // compose the derived ingress props
   const hostSuffix = `${!(isShared || teamId === 'admin') ? `-${teamId}` : ''}`
   const host = `${useHost || appId}${hostSuffix}`
-  const baseUrl = `https://${host}.${cluster.domainSuffix}}`
+  const baseUrl = `https://${host}.${cluster.domainSuffix}`
+
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = getAppSchemaName(appId)
