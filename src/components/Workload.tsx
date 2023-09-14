@@ -18,6 +18,7 @@ import { GetWorkloadApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiAp
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
+import { getEmailNoSymbols } from 'layouts/Shell'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
 import WorkloadDefine from './WorkloadDefine'
@@ -60,7 +61,7 @@ export default function ({
 }: Props): React.ReactElement {
   const history = useHistory()
   const { t } = useTranslation()
-  const { oboTeamId } = useSession()
+  const { user, oboTeamId } = useSession()
   const [activeStep, setActiveStep] = useState(0)
   const [data, setData]: any = useState(workload)
   const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
@@ -70,6 +71,7 @@ export default function ({
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
+  const emailNoSymbols = getEmailNoSymbols(user.email)
 
   useEffect(() => {
     setValuesData(WLvaluesData)
@@ -97,7 +99,7 @@ export default function ({
       setNextStep()
       return
     }
-    const res = await createWorkload({ teamId, body: { ...body, selectedChart } })
+    const res = await createWorkload({ teamId, body: { ...body, selectedChart, emailNoSymbols } })
     if (selectedChart === 'custom') {
       const { values, customChartVersion, customChartDescription } = res.data.workloadValues
       setValuesData({ values, customChartVersion, customChartDescription })
