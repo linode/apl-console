@@ -23,7 +23,7 @@ import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
 import WorkloadValues from './WorkloadValues'
-import { getWorkloadSchema, getWorkloadUiSchema } from './WorkloadDefine'
+import { getWorkloadSchema, getWorkloadUiSchema, isGiteaURL } from './WorkloadDefine'
 import { getBuildSchema, getBuildUiSchema } from './Build'
 import DeleteButton from './DeleteButton'
 
@@ -114,7 +114,7 @@ export default function ({
 
   const workloadSchema = getWorkloadSchema()
   if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
-  const isGitea: boolean = formData?.workload?.url?.startsWith('https://gitea')
+  const isGitea = isGiteaURL(formData?.workload?.url)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
 

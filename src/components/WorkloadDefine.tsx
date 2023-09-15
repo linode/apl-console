@@ -39,6 +39,20 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
   return uiSchema
 }
 
+export const isGiteaURL = (url: string) => {
+  let hostname = ''
+  if (url) {
+    try {
+      hostname = new URL(url).hostname
+    } catch (e) {
+      // ignore
+      return false
+    }
+  }
+  const giteaPattern = /^gitea\..+/i
+  return giteaPattern.test(hostname)
+}
+
 interface Props extends CrudProps {
   workload?: GetWorkloadApiResponse
   teamId: string
@@ -55,7 +69,7 @@ export default function ({ workload, teamId, data, setData, selectedChart, ...ot
   // END HOOKS
   const schema = getWorkloadSchema()
   if (workload?.selectedChart !== 'custom') schema.required.push('url')
-  const isGitea: boolean = data?.url?.startsWith('https://gitea')
+  const isGitea = isGiteaURL(data?.url)
   const uiSchema = getWorkloadUiSchema(user, teamId, isGitea)
 
   return (
