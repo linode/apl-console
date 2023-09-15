@@ -114,7 +114,7 @@ export default function ({
 
   const workloadSchema = getWorkloadSchema()
   if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
-  const isGitea: boolean = formData?.workload?.url?.includes('gitea')
+  const isGitea: boolean = formData?.workload?.url?.startsWith('https://gitea')
   const workloadUiSchema = getWorkloadUiSchema(user, teamId, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
 

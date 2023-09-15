@@ -55,7 +55,7 @@ export default function ({ workload, teamId, data, setData, selectedChart, ...ot
   // END HOOKS
   const schema = getWorkloadSchema()
   if (workload?.selectedChart !== 'custom') schema.required.push('url')
-  const isGitea: boolean = data?.url?.includes('gitea')
+  const isGitea: boolean = data?.url?.startsWith('https://gitea')
   const uiSchema = getWorkloadUiSchema(user, teamId, isGitea)
 
   return (
