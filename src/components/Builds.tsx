@@ -8,6 +8,7 @@ import ListTable from './ListTable'
 
 interface Row {
   teamId: string
+  tag: string
   id: string
   name: string
   mode: { type: string }
@@ -19,6 +20,19 @@ const getBuildLink = (row: Row) => {
     <RLink to={path} label={row.name}>
       {row.name}
     </RLink>
+  )
+}
+
+const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
+  const app = `team-${row.teamId}-${row.name}`
+  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode}-build-${row.teamId}-${row.tag}`
+  const host = `https://tekton-${row.teamId}.${domainSuffix}`
+  const externalUrl = `${host}/${path}`
+
+  return (
+    <Link to={{ pathname: externalUrl }} target='_blank'>
+      PipelineRun
+    </Link>
   )
 }
 
@@ -51,6 +65,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'mode',
       label: t('Type'),
       renderer: (row) => row.mode.type,
+    },
+    {
+      id: 'tekton',
+      label: t('Tekton'),
+      renderer: (row: Row) => getTektonTaskRunLink(row, domainSuffix),
     },
   ]
 
