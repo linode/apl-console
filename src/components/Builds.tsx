@@ -37,9 +37,6 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-https://tekton-test.dev.d2-otomi.net/#/namespaces/team-test/pipelineruns/[object%20Object]-build-test-latest
-https://tekton-test.dev.d2-otomi.net/#/namespaces/team-test/pipelineruns/docker-build-test-latest?pipelineTask=fetch-source&step=clone
-
 interface Props {
   builds: GetTeamBuildsApiResponse
   teamId?: string
