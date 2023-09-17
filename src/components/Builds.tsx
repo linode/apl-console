@@ -26,7 +26,7 @@ const getBuildLink = (row: Row) => {
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   const app = `team-${row.teamId}-${row.name}`
-  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode}-build-${row.teamId}-${row.tag}`
+  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.teamId}-${row.tag}`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
 
@@ -36,6 +36,9 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
     </Link>
   )
 }
+
+https://tekton-test.dev.d2-otomi.net/#/namespaces/team-test/pipelineruns/[object%20Object]-build-test-latest
+https://tekton-test.dev.d2-otomi.net/#/namespaces/team-test/pipelineruns/docker-build-test-latest?pipelineTask=fetch-source&step=clone
 
 interface Props {
   builds: GetTeamBuildsApiResponse
