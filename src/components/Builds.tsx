@@ -25,7 +25,6 @@ const getBuildLink = (row: Row) => {
 }
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
-  const app = `team-${row.teamId}-${row.name}`
   const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${row.tag}`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
@@ -38,7 +37,6 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
 }
 
 const getHarborImageLink = (row: Row, domainSuffix: string) => {
-  const app = `team-${row.teamId}-${row.name}`
   const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
   const host = `https://harbor.${domainSuffix}`
   const externalUrl = `${host}/${path}`
