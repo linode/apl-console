@@ -14,7 +14,7 @@ import {
 import { omit } from 'lodash'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
-import { GetWorkloadApiResponse, useGetWorkloadValuesQuery } from 'redux/otomiApi'
+import { GetWorkloadApiResponse, useCustomWorkloadValuesMutation, useGetWorkloadValuesQuery } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
@@ -72,6 +72,7 @@ export default function ({
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
   const emailNoSymbols = getEmailNoSymbols(user.email)
+  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
 
   useEffect(() => {
     setValuesData(WLvaluesData)
@@ -101,8 +102,9 @@ export default function ({
     }
     const res = await createWorkload({ teamId, body: { ...body, selectedChart, emailNoSymbols } })
     if (selectedChart === 'custom') {
-      const { values, customChartVersion, customChartDescription } = res.data.workloadValues
-      setValuesData({ values, customChartVersion, customChartDescription })
+      const res = (await getCustomWorkloadValues({ body: { ...body, emailNoSymbols } })) as any
+      const { values, chartVersion, chartDescription } = res.data
+      setValuesData({ values, chartVersion, chartDescription })
     }
     if (res.error) return
     setNextStep()
@@ -130,6 +132,8 @@ export default function ({
       body: {
         id: workloadId,
         values: omit(valuesData.values, ['id', 'teamId', 'selectedChart']),
+        chartVersion: valuesData?.chartVersion,
+        chartDescription: valuesData?.chartDescription,
       } as any,
     }).then((res: any) => {
       if (res.error) return

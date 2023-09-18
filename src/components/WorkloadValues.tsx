@@ -67,17 +67,15 @@ export default function ({
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
   const [rawValues, setRawValues] = useState(workloadValues?.values)
-  const [customChartVersion, setCustomChartVersion]: any = useState(workloadValues?.customChartVersion)
-  const [customChartDescription, setCustomChartDescription]: any = useState(workloadValues?.customChartDescription)
+  const [chartVersion, setChartVersion]: any = useState(workloadValues?.chartVersion)
+  const [chartDescription, setChartDescription]: any = useState(workloadValues?.chartDescription)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
   useEffect(() => {
-    if (workloadValues?.values) {
-      setRawValues(workloadValues?.values)
-      setCustomChartVersion(workloadValues?.customChartVersion)
-      setCustomChartDescription(workloadValues?.customChartDescription)
-    }
+    setRawValues(workloadValues?.values)
+    setChartVersion(workloadValues?.chartVersion)
+    setChartDescription(workloadValues?.chartDescription)
   }, [workloadValues])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
@@ -94,8 +92,8 @@ export default function ({
         />
       )}
       <div>
-        {customChartVersion && <div>Version: {`${customChartVersion}`}</div>}
-        {customChartDescription && <div>Description: {`${customChartDescription}`}</div>}
+        {chartVersion && <div>Version: {`${chartVersion}`}</div>}
+        {chartDescription && <div>Description: {`${chartDescription}`}</div>}
       </div>
       <div className={classes.buffer}> </div>{' '}
       <CodeEditor
