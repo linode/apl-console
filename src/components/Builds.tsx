@@ -37,6 +37,19 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
+const getHarborImageLink = (row: Row, domainSuffix: string) => {
+  const app = `team-${row.teamId}-${row.name}`
+  const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
+  const host = `https://harbor.${domainSuffix}`
+  const externalUrl = `${host}/${path}`
+
+  return (
+    <Link to={{ pathname: externalUrl }} target='_blank'>
+      Image
+    </Link>
+  )
+}
+
 interface Props {
   builds: GetTeamBuildsApiResponse
   teamId?: string
@@ -71,6 +84,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'tekton',
       label: t('Tekton'),
       renderer: (row: Row) => getTektonTaskRunLink(row, domainSuffix),
+    },
+    {
+      id: 'harbor',
+      label: t('Harbor'),
+      renderer: (row: Row) => getHarborImageLink(row, domainSuffix),
     },
   ]
 
