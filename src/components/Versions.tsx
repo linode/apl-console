@@ -4,7 +4,9 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from 'tss-react/mui'
+import { useGetK8SVersionQuery } from 'redux/otomiApi'
 import LinkCommit from './LinkCommit'
+import MuiLink from './MuiLink'
 
 const useStyles = makeStyles()((theme) => ({
   listSubheader: {
@@ -24,15 +26,21 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
+function isRelease(version: any): boolean {
+  const pattern = /^[0-9]/
+  return pattern.test(version)
+}
+
 export default function (): React.ReactElement {
   const {
     settings: {
-      cluster: { domainSuffix, k8sVersion },
+      cluster: { domainSuffix },
     },
     versions,
   } = useSession()
   const { classes } = useStyles()
   const { t } = useTranslation()
+  const { data: k8sVersion } = useGetK8SVersionQuery()
   // END HOOKS
   // TODO: create from git config, which is now in otomi-api values. Move?
   const clusterLegend = {
@@ -42,6 +50,9 @@ export default function (): React.ReactElement {
     [t('Otomi Console')]: versions.console,
     [t('Otomi Values')]: <LinkCommit domainSuffix={domainSuffix} sha={versions.values} color='primary' short />,
   }
+  const version = /^\d/.test(clusterLegend['Otomi Core'])
+    ? `v${clusterLegend['Otomi Core']}`
+    : clusterLegend['Otomi Core']
   return (
     <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
       <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
@@ -52,7 +63,18 @@ export default function (): React.ReactElement {
                 <Chip size='small' label={title} />
               </TableCell>
               <TableCell className={classes.tableCellRight} align='left'>
-                {v}
+                {title === 'Otomi Core' && isRelease(v) ? (
+                  <MuiLink
+                    href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${version}/CHANGELOG.md`)}
+                    target='_blank'
+                    rel='noopener'
+                    title='go to github'
+                  >
+                    {v}
+                  </MuiLink>
+                ) : (
+                  v
+                )}
               </TableCell>
             </TableRow>
           </TableBody>

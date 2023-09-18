@@ -38,7 +38,7 @@ export const addDomainEnumField = (
     ingressSchema.subdomain.maxLength = 64 - length
   }
   // we only need to create an enum if we have more than one option
-  if (ing.useDefaultSubdomain && !ing.domain) ing.domain = zones[0]
+  if (ing.useDefaultHost && !ing.domain) ing.domain = zones[0]
   if (zones.length > 1) ingressSchema.domain.enum = zones
   else if (!ing.domain) ing.domain = zones[0]
 }
@@ -55,7 +55,7 @@ export const addServiceNameEnumField = (
   set(
     schema,
     'properties.name.enum',
-    k8sServiceNames.filter((item: string) => !item.includes('grafana') && !item.includes('prometheus')),
+    k8sServiceNames?.filter((item: string) => !item.includes('grafana') && !item.includes('prometheus')),
   )
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
@@ -95,6 +95,8 @@ export const getServiceSchema = (
       unset(ingressSchema, `certName`)
       unset(ingressSchema, `certSelect`)
     }
+    if (ing?.useCname) set(ingressSchema, `cname.required`, ['domain', 'tlsSecretName'])
+    if (ing?.useCname && ing?.tlsPass) set(ingressSchema, `cname.required`, ['domain'])
     if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
     if (!ing?.hasCert) {
@@ -130,16 +132,21 @@ export const getServiceUiSchema = (
   const ing = formData?.ingress as Record<string, any>
   // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
   const ksvcWidget = teamId === 'admin' ? undefined : 'hidden'
+  const cnameWidget = ing?.useCname
+    ? { tlsSecretName: ing?.tlsPass && { 'ui:widget': 'hidden' } }
+    : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
-      domain: { 'ui:readonly': ing?.useDefaultSubdomain },
-      subdomain: { 'ui:readonly': ing?.useDefaultSubdomain },
+      domain: { 'ui:readonly': true },
+      subdomain: { 'ui:readonly': ing?.useDefaultHost },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
+
+      cname: cnameWidget,
     },
   }
   // TODO: Not working yet, see bug: https://github.com/rjsf-team/react-jsonschema-form/issues/2776
@@ -149,10 +156,10 @@ export const getServiceUiSchema = (
   return uiSchema
 }
 
-export function getSubdomain(serviceName: string | undefined, teamId): string {
+export function getHost(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
   if (teamId === 'admin') return serviceName
-  return `${serviceName}.team-${teamId}`
+  return `${serviceName}-${teamId}`
 }
 
 export const updateIngressField = (formData, defaultSubdomain) => {
@@ -160,13 +167,14 @@ export const updateIngressField = (formData, defaultSubdomain) => {
     let ing = formData.ingress as Record<string, any>
     if (
       !['cluster'].includes(ing.type as string) &&
-      (!(formData.ingress as Record<string, any>)?.domain || ing.useDefaultSubdomain)
+      (!(formData.ingress as Record<string, any>)?.domain || ing.useDefaultHost)
     ) {
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
       ing.subdomain = defaultSubdomain
       formData.ingress = ing
     }
+    if (ing?.tlsPass) unset(ing, 'cname.tlsSecretName')
     if (ing?.type === 'tlsPass') {
       // we don't expect some props when choosing tlsPass
       ing = { ...ing }
@@ -206,7 +214,7 @@ export default function ({
   // END HOOKS
   // manipulate form data and set derived stuff:
   const formData = cloneDeep(data)
-  const teamSubdomain = getSubdomain(formData?.name, teamId)
+  const teamSubdomain = getHost(formData?.name, teamId)
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData, defaultSubdomain)
   // pass to the schema getters that manipulate the schemas based on form data

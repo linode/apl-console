@@ -119,7 +119,7 @@ export const getAppData = (
   const apps = getApps(session, teamId)
   const coreAppId = getCoreAppId(appId)
   const coreApp = find(apps, { name: coreAppId })
-  const { useHost, ingress, isShared, ownHost, path } = coreApp
+  const { useHost, ingress, isShared, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
@@ -131,11 +131,10 @@ export const getAppData = (
     }))
   }
   // compose the derived ingress props
-  const baseUrl = useHost
-    ? getAppData(session, teamId, useHost).baseUrl
-    : `https://${`${isShared || ownHost ? useHost || appId : 'apps'}${
-        !(isShared || teamId === 'admin') ? `-${teamId}` : ''
-      }.${cluster.domainSuffix}${isShared || ownHost ? '' : `/${useHost || appId}`}`}`
+  const hostSuffix = `${!(isShared || teamId === 'admin') ? `-${teamId}` : ''}`
+  const host = `${useHost || appId}${hostSuffix}`
+  const baseUrl = `https://${host}.${cluster.domainSuffix}`
+
   // also get schema info such as title, desc
   const spec = getSpec()
   const modelName = getAppSchemaName(appId)

@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/redkubes/otomi-stack-web/compare/v0.12.0...v1.0.0) (2023-09-04)
+
+
+### Features
+
+* added CNAME support ([#321](https://github.com/redkubes/otomi-stack-web/issues/321)) ([e63bdca](https://github.com/redkubes/otomi-stack-web/commit/e63bdca08783c8428ed005ca214c8891979bc6b5))
+* remove k8s version ([#322](https://github.com/redkubes/otomi-stack-web/issues/322)) ([a552900](https://github.com/redkubes/otomi-stack-web/commit/a552900d7c67957b5bc26b09025932ffd1dc2f6c))
+
+
+### Bug Fixes
+
+* team project filter error ([#323](https://github.com/redkubes/otomi-stack-web/issues/323)) ([57e5cee](https://github.com/redkubes/otomi-stack-web/commit/57e5ceee3bb72b61e0e52bcc39e36204c285e25f))
+
+## [0.12.0](https://github.com/redkubes/otomi-stack-web/compare/v0.11.0...v0.12.0) (2023-08-21)
+
+
+### Features
+
+* default host instead of subdomain ([#319](https://github.com/redkubes/otomi-stack-web/issues/319)) ([820a236](https://github.com/redkubes/otomi-stack-web/commit/820a23688a22fd2e5edf34b8ff329ac34dab642d))
+* support wildcard cert ([#315](https://github.com/redkubes/otomi-stack-web/issues/315)) ([6804713](https://github.com/redkubes/otomi-stack-web/commit/6804713a59185344e458b97838ebfa417878bd7c))
+* update tty shell ui ([#314](https://github.com/redkubes/otomi-stack-web/issues/314)) ([e252027](https://github.com/redkubes/otomi-stack-web/commit/e25202773034ba0ab3ec645834f3066ba2d766f6))
+
+
+### Bug Fixes
+
+* disables to proceed when error exists in workload values ([#317](https://github.com/redkubes/otomi-stack-web/issues/317)) ([cc372bc](https://github.com/redkubes/otomi-stack-web/commit/cc372bc51e9e4612a66bf590ff76a6321f38eabd))
+* update-actions ([#318](https://github.com/redkubes/otomi-stack-web/issues/318)) ([3128c8d](https://github.com/redkubes/otomi-stack-web/commit/3128c8deb1ffdbd02314cef622f4cf4f314e7eb6))
+
 ## [0.11.0](https://github.com/redkubes/otomi-stack-web/compare/v0.8.0...v0.11.0) (2023-08-03)
 
 
