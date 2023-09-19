@@ -117,6 +117,7 @@ export default function ({
   const isGitea = isGiteaURL(formData?.workload?.url)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
+  if (selectedPath === 'createBuild') workloadUiSchema.custom.autoUpdate.build = { 'ui:widget': 'hidden' }
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsQuery({ teamId })
@@ -205,7 +206,13 @@ export default function ({
   const handleNextWL = () => {
     const body =
       selectedChart === 'custom'
-        ? { ...formData.workload, name: formData?.name }
+        ? {
+            ...formData.workload,
+            name: formData?.name,
+            ...(selectedPath === 'createBuild' && {
+              autoUpdate: { ...formData.workload.autoUpdate, build: formData?.name },
+            }),
+          }
         : {
             name: formData?.name,
             url: 'https://github.com/redkubes/otomi-charts.git',
