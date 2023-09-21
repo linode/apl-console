@@ -1,6 +1,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
@@ -8,6 +9,7 @@ import ListTable from './ListTable'
 
 interface Row {
   teamId: string
+  tag: string
   id: string
   name: string
   mode: { type: string }
@@ -19,6 +21,30 @@ const getBuildLink = (row: Row) => {
     <RLink to={path} label={row.name}>
       {row.name}
     </RLink>
+  )
+}
+
+const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
+  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${row.tag}`
+  const host = `https://tekton-${row.teamId}.${domainSuffix}`
+  const externalUrl = `${host}/${path}`
+
+  return (
+    <Link to={{ pathname: externalUrl }} target='_blank'>
+      PipelineRun
+    </Link>
+  )
+}
+
+const getHarborImageLink = (row: Row, domainSuffix: string) => {
+  const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
+  const host = `https://harbor.${domainSuffix}`
+  const externalUrl = `${host}/${path}`
+
+  return (
+    <Link to={{ pathname: externalUrl }} target='_blank'>
+      Image
+    </Link>
   )
 }
 
@@ -51,6 +77,16 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'mode',
       label: t('Type'),
       renderer: (row) => row.mode.type,
+    },
+    {
+      id: 'tekton',
+      label: t('Tekton'),
+      renderer: (row: Row) => getTektonTaskRunLink(row, domainSuffix),
+    },
+    {
+      id: 'harbor',
+      label: t('Harbor'),
+      renderer: (row: Row) => getHarborImageLink(row, domainSuffix),
     },
   ]
 

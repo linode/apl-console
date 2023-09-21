@@ -11,6 +11,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import {
   GetSessionApiResponse,
+  useCustomWorkloadValuesMutation,
   useGetSecretsQuery,
   useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
@@ -19,6 +20,7 @@ import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, FormLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
+import { getEmailNoSymbols } from 'layouts/Shell'
 import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadEssentialValues from './WorkloadEssentialValues'
@@ -98,6 +100,8 @@ export default function ({
   const [selectedChart, setSelectedChart] = useState(project?.workload?.selectedChart || '')
   const [valuesData, setValuesData]: any = useState(project?.workloadValues || {})
   const [data, setData] = useState<any>(project || {})
+  const emailNoSymbols = getEmailNoSymbols(user.email)
+  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
 
   useEffect(() => {
     setData(project)
@@ -173,11 +177,12 @@ export default function ({
   }
 
   const handleUpdateProject = async () => {
-    await update({
+    const res = await update({
       teamId,
       projectId,
       body: { ...formData, service: formData.service },
     })
+    if (res.error) return
     history.push(`/projects`)
   }
 
@@ -190,7 +195,8 @@ export default function ({
     if (activeStep === 0) handleCreateProject()
     if (activeStep === 1) {
       const registry = `harbor.${domainSuffix}/team-${teamId}/${formData?.name}`
-      setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
+      if (!data?.workloadValues?.id)
+        setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
       setNextStep()
     }
     if (activeStep === 3) await handleUpdateProject()
@@ -203,7 +209,7 @@ export default function ({
     setSelectedChart(chart)
   }
 
-  const handleNextWL = () => {
+  const handleNextWL = async () => {
     const body =
       selectedChart === 'custom'
         ? {
@@ -221,7 +227,12 @@ export default function ({
           }
 
     if (selectedChart === 'custom' && activeStepWL === 0) {
-      setValuesData({})
+      if (!data?.workloadValues?.id) {
+        const res = (await getCustomWorkloadValues({ body: { ...body, emailNoSymbols } })) as any
+        const { values, chartVersion, chartDescription } = res.data
+        setValuesData({ values, chartVersion, chartDescription })
+      }
+
       setData({
         ...formData,
         workload: { ...body, selectedChart },
@@ -231,11 +242,16 @@ export default function ({
     }
 
     if (selectedChart === 'custom' && activeStepWL === 1) {
-      setValuesData({ values: valuesData?.values })
+      setValuesData({ ...valuesData })
       setData({
         ...formData,
         workload: { ...formData?.workload, ...body, selectedChart },
-        workloadValues: { ...formData.workloadValues, values: valuesData?.values },
+        workloadValues: {
+          ...formData.workloadValues,
+          values: valuesData?.values,
+          chartVersion: valuesData?.chartVersion,
+          chartDescription: valuesData?.chartDescription,
+        },
       })
       setNextStep()
       return
