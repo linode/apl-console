@@ -158,7 +158,6 @@ export const getServiceUiSchema = (
 
 export function getHost(serviceName: string | undefined, teamId): string {
   if (!serviceName) return ''
-  if (teamId === 'admin') return serviceName
   return `${serviceName}-${teamId}`
 }
 
