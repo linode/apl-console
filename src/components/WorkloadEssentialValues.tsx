@@ -20,6 +20,8 @@ export const getWorkloadValuesSchema = (selectedChart: any, valuesType: string, 
       protocol: 'TCP',
     },
   ]
+  unset(schema, 'properties.chartVersion')
+  unset(schema, 'properties.chartDescription')
   if (selectedChart === 'deployment') {
     schema.properties.values.properties.servicePorts.default = defaultServicePorts
     schema.properties.values.properties.containerPorts.default = defaultDeploymentContainerPorts

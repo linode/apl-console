@@ -150,6 +150,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
+    customWorkloadValues: build.mutation<CustomWorkloadValuesApiResponse, CustomWorkloadValuesApiArg>({
+      query: (queryArg) => ({ url: `/customWorkloadValues`, method: 'POST', body: queryArg.body }),
+    }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
     }),
@@ -1988,6 +1991,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2175,6 +2180,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2365,6 +2372,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2555,6 +2564,8 @@ export type CreateProjectApiArg = {
             | null
         }
       }
+      chartVersion?: string
+      chartDescription?: string
     }
     service?: {
       id?: string
@@ -2749,6 +2760,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2941,6 +2954,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
   service?: {
     id?: string
@@ -3133,6 +3148,8 @@ export type EditProjectApiArg = {
             | null
         }
       }
+      chartVersion?: string
+      chartDescription?: string
     }
     service?: {
       id?: string
@@ -3216,6 +3233,11 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetAllWorkloadsApiArg = void
+export type CustomWorkloadValuesApiResponse = /** status 200 Successfully updated a team project */ object
+export type CustomWorkloadValuesApiArg = {
+  /** Project object that contains updated values */
+  body: object
+}
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
   id?: string
   teamId?: string
@@ -3389,6 +3411,8 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
         | null
     }
   }
+  chartVersion?: string
+  chartDescription?: string
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3474,6 +3498,8 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
         | null
     }
   }
+  chartVersion?: string
+  chartDescription?: string
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3559,6 +3585,8 @@ export type EditWorkloadValuesApiArg = {
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
@@ -3639,6 +3667,8 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
         | null
     }
   }
+  chartVersion?: string
+  chartDescription?: string
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3724,6 +3754,8 @@ export type UpdateWorkloadValuesApiArg = {
           | null
       }
     }
+    chartVersion?: string
+    chartDescription?: string
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
@@ -4727,6 +4759,7 @@ export const {
   useGetProjectQuery,
   useEditProjectMutation,
   useGetAllWorkloadsQuery,
+  useCustomWorkloadValuesMutation,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
