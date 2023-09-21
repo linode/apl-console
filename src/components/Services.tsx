@@ -24,8 +24,7 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
   if (!ingress) return ''
   if (ingress.type === 'cluster') return `${name}.team-${teamId}`
   const { subdomain, domain, paths } = ingress
-  let url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0] || ''}`
-  if (teamId === 'admin') url = `${name}.${domain}${paths?.[0] || ''}`
+  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0] || ''}`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
