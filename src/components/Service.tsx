@@ -137,7 +137,6 @@ export const getServiceUiSchema = (
     : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
