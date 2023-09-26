@@ -30,10 +30,11 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
+  const externalUrlTrigger = `${host}/${triggerPath}`
 
   if (row.trigger) {
     return (
-      <Link to={{ pathname: triggerPath }} target='_blank'>
+      <Link to={{ pathname: externalUrlTrigger }} target='_blank'>
         PipelineRun
       </Link>
     )
