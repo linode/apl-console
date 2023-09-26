@@ -92,7 +92,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     {
       id: 'trigger',
       label: t('Trigger'),
-      renderer: (row) => row.trigger ?'Yes':"No",
+      renderer: (row) => (row.trigger ? 'Yes' : 'No'),
     },
     {
       id: 'tekton',
