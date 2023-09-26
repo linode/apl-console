@@ -90,6 +90,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       renderer: (row) => row.mode.type,
     },
     {
+      id: 'trigger',
+      label: t('Trigger'),
+      renderer: (row) => row.trigger,
+    },
+    {
       id: 'tekton',
       label: t('Tekton'),
       renderer: (row: Row) => getTektonTaskRunLink(row, domainSuffix),
