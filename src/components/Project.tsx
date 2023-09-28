@@ -38,7 +38,6 @@ export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: 
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
     build: { 'ui:widget': 'hidden' },
     workload: { 'ui:widget': 'hidden' },
     workloadValues: { 'ui:widget': 'hidden' },

@@ -131,7 +131,7 @@ export default function ({
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
         formData={state}
-        key={`${resourceType}-${resourceName}`}
+        key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}
         liveValidate={liveValidate || false}
         showErrorList={false}

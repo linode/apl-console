@@ -15,7 +15,6 @@ export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: st
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
 

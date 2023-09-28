@@ -15,7 +15,6 @@ export const getSecretSchema = (teamId: string): any => {
 export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'secret')
