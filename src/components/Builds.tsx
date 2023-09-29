@@ -12,6 +12,7 @@ interface Row {
   tag: string
   id: string
   name: string
+  trigger: boolean
   mode: { type: string }
 }
 
@@ -26,8 +27,18 @@ const getBuildLink = (row: Row) => {
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${row.tag}`
+  const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
+  const externalUrlTrigger = `${host}/${triggerPath}`
+
+  if (row.trigger) {
+    return (
+      <Link to={{ pathname: externalUrlTrigger }} target='_blank'>
+        PipelineRun
+      </Link>
+    )
+  }
 
   return (
     <Link to={{ pathname: externalUrl }} target='_blank'>
@@ -77,6 +88,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'mode',
       label: t('Type'),
       renderer: (row) => row.mode.type,
+    },
+    {
+      id: 'trigger',
+      label: t('Trigger'),
+      renderer: (row) => (row.trigger ? 'Yes' : 'No'),
     },
     {
       id: 'tekton',
