@@ -234,8 +234,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
-    // eslint-disable-next-line no-console
-    if (process.env.NODE_ENV !== 'production') console.log('lastDroneMessage: ', lastDroneMessage)
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('lastDroneMessage: ', lastDroneMessage)
+    }
     const domainSuffix = settings?.cluster?.domainSuffix
     const { action, build } = lastDroneMessage
     const { after: sha, created, id, status, updated } = build

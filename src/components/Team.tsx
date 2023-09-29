@@ -34,7 +34,7 @@ export const getTeamUiSchema = (
 ): any => {
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
-    name: { 'ui:autofocus': true, 'ui:readonly': action !== 'create' },
+    name: { 'ui:readonly': action !== 'create' },
     password: { 'ui:widget': 'hidden' },
     alerts: {
       receivers: {
