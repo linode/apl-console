@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/redkubes/otomi-stack-web/compare/v1.1.0...v1.2.0) (2023-10-03)
+
+
+### Bug Fixes
+
+* mitigate ENAMETOOLONG issue at release-action@v1.12.0 ([1bf34d1](https://github.com/redkubes/otomi-stack-web/commit/1bf34d1edeceb1c444cc00b47d2575b509ffd2f9))
+
 ## [1.1.0](https://github.com/redkubes/otomi-stack-web/compare/v1.0.0...v1.1.0) (2023-10-03)
 
 ### Features
