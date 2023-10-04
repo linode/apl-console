@@ -1534,27 +1534,27 @@ export type DeleteSecretApiArg = {
 export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
   id?: string
   teamId?: string
-  name?: string
-  schedule?: string
+  name: string
+  schedule: string
   snapshotVolumes?: boolean
   labelSelector?: {
     name?: string
     value?: string
   }[]
-  ttl?: string
+  ttl: string
 }[]
 export type GetAllBackupsApiArg = void
 export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ {
   id?: string
   teamId?: string
-  name?: string
-  schedule?: string
+  name: string
+  schedule: string
   snapshotVolumes?: boolean
   labelSelector?: {
     name?: string
     value?: string
   }[]
-  ttl?: string
+  ttl: string
 }[]
 export type GetTeamBackupsApiArg = {
   /** ID of team to return */
@@ -1563,14 +1563,14 @@ export type GetTeamBackupsApiArg = {
 export type CreateBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
   id?: string
   teamId?: string
-  name?: string
-  schedule?: string
+  name: string
+  schedule: string
   snapshotVolumes?: boolean
   labelSelector?: {
     name?: string
     value?: string
   }[]
-  ttl?: string
+  ttl: string
 }
 export type CreateBackupApiArg = {
   /** ID of team to return */
@@ -1579,14 +1579,14 @@ export type CreateBackupApiArg = {
   body: {
     id?: string
     teamId?: string
-    name?: string
-    schedule?: string
+    name: string
+    schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
       name?: string
       value?: string
     }[]
-    ttl?: string
+    ttl: string
   }
 }
 export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
@@ -1599,14 +1599,14 @@ export type DeleteBackupApiArg = {
 export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
   id?: string
   teamId?: string
-  name?: string
-  schedule?: string
+  name: string
+  schedule: string
   snapshotVolumes?: boolean
   labelSelector?: {
     name?: string
     value?: string
   }[]
-  ttl?: string
+  ttl: string
 }
 export type GetBackupApiArg = {
   /** ID of team to return */
@@ -1617,14 +1617,14 @@ export type GetBackupApiArg = {
 export type EditBackupApiResponse = /** status 200 Successfully edited a team backup */ {
   id?: string
   teamId?: string
-  name?: string
-  schedule?: string
+  name: string
+  schedule: string
   snapshotVolumes?: boolean
   labelSelector?: {
     name?: string
     value?: string
   }[]
-  ttl?: string
+  ttl: string
 }
 export type EditBackupApiArg = {
   /** ID of team to return */
@@ -1635,14 +1635,14 @@ export type EditBackupApiArg = {
   body: {
     id?: string
     teamId?: string
-    name?: string
-    schedule?: string
+    name: string
+    schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
       name?: string
       value?: string
     }[]
-    ttl?: string
+    ttl: string
   }
 }
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
@@ -1667,6 +1667,7 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
         }
         type: 'buildpacks'
       }
+  trigger?: boolean
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1691,6 +1692,7 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
         }
         type: 'buildpacks'
       }
+  trigger?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -1718,6 +1720,7 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
         }
         type: 'buildpacks'
       }
+  trigger?: boolean
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1745,6 +1748,7 @@ export type CreateBuildApiArg = {
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -1776,6 +1780,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
         }
         type: 'buildpacks'
       }
+  trigger?: boolean
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -1805,6 +1810,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
         }
         type: 'buildpacks'
       }
+  trigger?: boolean
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -1834,6 +1840,7 @@ export type EditBuildApiArg = {
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -1901,16 +1908,48 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
   workload?: {
     id?: string
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
@@ -2090,16 +2129,48 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
   workload?: {
     id?: string
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
@@ -2282,16 +2353,48 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
   workload?: {
     id?: string
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
@@ -2474,16 +2577,48 @@ export type CreateProjectApiArg = {
             }
             type: 'buildpacks'
           }
+      trigger?: boolean
     }
     workload?: {
       id?: string
       teamId?: string
       name: string
       url: string
-      path?: string
-      chart?: string
+      chartProvider?:
+        | {
+            chart?: {
+              chart: string
+            }
+            type?: 'chart'
+          }
+        | {
+            gitea?: {
+              path: string
+            }
+            type?: 'gitea'
+          }
       revision?: string
       namespace?: string
+      autoUpdate?: {
+        enabled?: boolean
+        build?: string
+        strategy?:
+          | {
+              type?: 'latest'
+            }
+          | {
+              digest?: {
+                tag: string
+              }
+              type?: 'digest'
+            }
+          | {
+              semver?: {
+                versionConstraint: string
+              }
+              type?: 'semver'
+            }
+      }
       selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
@@ -2670,16 +2805,48 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
   workload?: {
     id?: string
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
@@ -2864,16 +3031,48 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           }
           type: 'buildpacks'
         }
+    trigger?: boolean
   }
   workload?: {
     id?: string
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
@@ -3058,16 +3257,48 @@ export type EditProjectApiArg = {
             }
             type: 'buildpacks'
           }
+      trigger?: boolean
     }
     workload?: {
       id?: string
       teamId?: string
       name: string
       url: string
-      path?: string
-      chart?: string
+      chartProvider?:
+        | {
+            chart?: {
+              chart: string
+            }
+            type?: 'chart'
+          }
+        | {
+            gitea?: {
+              path: string
+            }
+            type?: 'gitea'
+          }
       revision?: string
       namespace?: string
+      autoUpdate?: {
+        enabled?: boolean
+        build?: string
+        strategy?:
+          | {
+              type?: 'latest'
+            }
+          | {
+              digest?: {
+                tag: string
+              }
+              type?: 'digest'
+            }
+          | {
+              semver?: {
+                versionConstraint: string
+              }
+              type?: 'semver'
+            }
+      }
       selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
@@ -3226,10 +3457,41 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   teamId?: string
   name: string
   url: string
-  path?: string
-  chart?: string
+  chartProvider?:
+    | {
+        chart?: {
+          chart: string
+        }
+        type?: 'chart'
+      }
+    | {
+        gitea?: {
+          path: string
+        }
+        type?: 'gitea'
+      }
   revision?: string
   namespace?: string
+  autoUpdate?: {
+    enabled?: boolean
+    build?: string
+    strategy?:
+      | {
+          type?: 'latest'
+        }
+      | {
+          digest?: {
+            tag: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            versionConstraint: string
+          }
+          type?: 'semver'
+        }
+  }
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetAllWorkloadsApiArg = void
@@ -3243,10 +3505,41 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   teamId?: string
   name: string
   url: string
-  path?: string
-  chart?: string
+  chartProvider?:
+    | {
+        chart?: {
+          chart: string
+        }
+        type?: 'chart'
+      }
+    | {
+        gitea?: {
+          path: string
+        }
+        type?: 'gitea'
+      }
   revision?: string
   namespace?: string
+  autoUpdate?: {
+    enabled?: boolean
+    build?: string
+    strategy?:
+      | {
+          type?: 'latest'
+        }
+      | {
+          digest?: {
+            tag: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            versionConstraint: string
+          }
+          type?: 'semver'
+        }
+  }
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetTeamWorkloadsApiArg = {
@@ -3258,10 +3551,41 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   teamId?: string
   name: string
   url: string
-  path?: string
-  chart?: string
+  chartProvider?:
+    | {
+        chart?: {
+          chart: string
+        }
+        type?: 'chart'
+      }
+    | {
+        gitea?: {
+          path: string
+        }
+        type?: 'gitea'
+      }
   revision?: string
   namespace?: string
+  autoUpdate?: {
+    enabled?: boolean
+    build?: string
+    strategy?:
+      | {
+          type?: 'latest'
+        }
+      | {
+          digest?: {
+            tag: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            versionConstraint: string
+          }
+          type?: 'semver'
+        }
+  }
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type CreateWorkloadApiArg = {
@@ -3273,10 +3597,41 @@ export type CreateWorkloadApiArg = {
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
@@ -3292,10 +3647,41 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   teamId?: string
   name: string
   url: string
-  path?: string
-  chart?: string
+  chartProvider?:
+    | {
+        chart?: {
+          chart: string
+        }
+        type?: 'chart'
+      }
+    | {
+        gitea?: {
+          path: string
+        }
+        type?: 'gitea'
+      }
   revision?: string
   namespace?: string
+  autoUpdate?: {
+    enabled?: boolean
+    build?: string
+    strategy?:
+      | {
+          type?: 'latest'
+        }
+      | {
+          digest?: {
+            tag: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            versionConstraint: string
+          }
+          type?: 'semver'
+        }
+  }
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type GetWorkloadApiArg = {
@@ -3309,10 +3695,41 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   teamId?: string
   name: string
   url: string
-  path?: string
-  chart?: string
+  chartProvider?:
+    | {
+        chart?: {
+          chart: string
+        }
+        type?: 'chart'
+      }
+    | {
+        gitea?: {
+          path: string
+        }
+        type?: 'gitea'
+      }
   revision?: string
   namespace?: string
+  autoUpdate?: {
+    enabled?: boolean
+    build?: string
+    strategy?:
+      | {
+          type?: 'latest'
+        }
+      | {
+          digest?: {
+            tag: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            versionConstraint: string
+          }
+          type?: 'semver'
+        }
+  }
   selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type EditWorkloadApiArg = {
@@ -3326,10 +3743,41 @@ export type EditWorkloadApiArg = {
     teamId?: string
     name: string
     url: string
-    path?: string
-    chart?: string
+    chartProvider?:
+      | {
+          chart?: {
+            chart: string
+          }
+          type?: 'chart'
+        }
+      | {
+          gitea?: {
+            path: string
+          }
+          type?: 'gitea'
+        }
     revision?: string
     namespace?: string
+    autoUpdate?: {
+      enabled?: boolean
+      build?: string
+      strategy?:
+        | {
+            type?: 'latest'
+          }
+        | {
+            digest?: {
+              tag: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              versionConstraint: string
+            }
+            type?: 'semver'
+          }
+    }
     selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
@@ -3861,7 +4309,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4118,7 +4566,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -4285,7 +4733,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4542,7 +4990,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'custom'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
