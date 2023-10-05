@@ -1,31 +1,48 @@
 /* eslint-disable react/button-has-type */
 
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { GetSessionApiResponse, GetWorkloadApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getWorkloadSchema = (): any => {
+export const getWorkloadSchema = (data?: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
+  if (data?.chartProvider === 'helm') {
+    unset(data, 'path')
+    unset(schema, 'properties.path')
+  }
+  if (data?.chartProvider === 'git') {
+    unset(data, 'chart')
+    unset(schema, 'properties.chart')
+  }
   return schema
 }
 
-export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isGitea = false): any => {
+export const getWorkloadUiSchema = (
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  chartProvider?: string,
+  isGitea = false,
+): any => {
   const custom = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     selectedChart: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
     autoUpdate: { 'ui:readonly': !isGitea, strategy: { 'ui:readonly': !isGitea } },
+    path: { 'ui:widget': chartProvider === 'helm' ? 'hidden' : 'text' },
+    chart: { 'ui:widget': chartProvider === 'git' ? 'hidden' : 'text' },
+    chartProvider: { 'ui:title': ' ' },
   }
   const preDefined = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     url: { 'ui:widget': 'hidden' },
-    chartProvider: { 'ui:widget': 'hidden' },
+    path: { 'ui:widget': 'hidden' },
+    chart: { 'ui:widget': 'hidden' },
     revision: { 'ui:widget': 'hidden' },
     namespace: { 'ui:widget': 'hidden' },
     selectedChart: { 'ui:widget': 'hidden' },
@@ -64,10 +81,11 @@ export default function ({ workload, teamId, data, setData, selectedChart, ...ot
     setData(workload)
   }, [workload])
   // END HOOKS
-  const schema = getWorkloadSchema()
+  const schema = data ? getWorkloadSchema(data) : getWorkloadSchema()
   if (workload?.selectedChart !== 'custom') schema.required.push('url')
   const isGitea = isGiteaURL(data?.url)
-  const uiSchema = getWorkloadUiSchema(user, teamId, isGitea)
+  const chartProvider = data ? data.chartProvider : 'helm'
+  const uiSchema = getWorkloadUiSchema(user, teamId, chartProvider, isGitea)
 
   return (
     <Form

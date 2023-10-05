@@ -118,7 +118,7 @@ export default function ({
   const workloadSchema = getWorkloadSchema()
   if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
   const isGitea = isGiteaURL(formData?.workload?.url)
-  const workloadUiSchema = getWorkloadUiSchema(user, teamId, isGitea)
+  const workloadUiSchema = getWorkloadUiSchema(user, teamId, undefined, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
   if (selectedPath === 'createBuild') workloadUiSchema.custom.autoUpdate.build = { 'ui:widget': 'hidden' }
 

@@ -1915,19 +1915,9 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -2136,19 +2126,9 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -2360,19 +2340,9 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -2584,19 +2554,9 @@ export type CreateProjectApiArg = {
       teamId?: string
       name: string
       url: string
-      chartProvider?:
-        | {
-            chart?: {
-              chart: string
-            }
-            type?: 'chart'
-          }
-        | {
-            gitea?: {
-              path: string
-            }
-            type?: 'gitea'
-          }
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
       revision?: string
       namespace?: string
       autoUpdate?: {
@@ -2812,19 +2772,9 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -3038,19 +2988,9 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -3264,19 +3204,9 @@ export type EditProjectApiArg = {
       teamId?: string
       name: string
       url: string
-      chartProvider?:
-        | {
-            chart?: {
-              chart: string
-            }
-            type?: 'chart'
-          }
-        | {
-            gitea?: {
-              path: string
-            }
-            type?: 'gitea'
-          }
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
       revision?: string
       namespace?: string
       autoUpdate?: {
@@ -3457,19 +3387,9 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   teamId?: string
   name: string
   url: string
-  chartProvider?:
-    | {
-        chart?: {
-          chart: string
-        }
-        type?: 'chart'
-      }
-    | {
-        gitea?: {
-          path: string
-        }
-        type?: 'gitea'
-      }
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
   revision?: string
   namespace?: string
   autoUpdate?: {
@@ -3505,19 +3425,9 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   teamId?: string
   name: string
   url: string
-  chartProvider?:
-    | {
-        chart?: {
-          chart: string
-        }
-        type?: 'chart'
-      }
-    | {
-        gitea?: {
-          path: string
-        }
-        type?: 'gitea'
-      }
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
   revision?: string
   namespace?: string
   autoUpdate?: {
@@ -3551,19 +3461,9 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   teamId?: string
   name: string
   url: string
-  chartProvider?:
-    | {
-        chart?: {
-          chart: string
-        }
-        type?: 'chart'
-      }
-    | {
-        gitea?: {
-          path: string
-        }
-        type?: 'gitea'
-      }
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
   revision?: string
   namespace?: string
   autoUpdate?: {
@@ -3597,19 +3497,9 @@ export type CreateWorkloadApiArg = {
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
@@ -3647,19 +3537,9 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   teamId?: string
   name: string
   url: string
-  chartProvider?:
-    | {
-        chart?: {
-          chart: string
-        }
-        type?: 'chart'
-      }
-    | {
-        gitea?: {
-          path: string
-        }
-        type?: 'gitea'
-      }
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
   revision?: string
   namespace?: string
   autoUpdate?: {
@@ -3695,19 +3575,9 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   teamId?: string
   name: string
   url: string
-  chartProvider?:
-    | {
-        chart?: {
-          chart: string
-        }
-        type?: 'chart'
-      }
-    | {
-        gitea?: {
-          path: string
-        }
-        type?: 'gitea'
-      }
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
   revision?: string
   namespace?: string
   autoUpdate?: {
@@ -3743,19 +3613,9 @@ export type EditWorkloadApiArg = {
     teamId?: string
     name: string
     url: string
-    chartProvider?:
-      | {
-          chart?: {
-            chart: string
-          }
-          type?: 'chart'
-        }
-      | {
-          gitea?: {
-            path: string
-          }
-          type?: 'gitea'
-        }
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
     revision?: string
     namespace?: string
     autoUpdate?: {
