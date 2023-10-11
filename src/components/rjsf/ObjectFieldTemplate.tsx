@@ -144,6 +144,15 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         </Grid>
       )
     }
+
+    if (schema.enum?.length > 7 && o?.content?.key === 'name') {
+      return (
+        <Grid key={id} className={classes.grid} item xs={3}>
+          {o.content}
+        </Grid>
+      )
+    }
+
     return (
       <Grid key={id} className={classes.grid} item>
         {o.content}
