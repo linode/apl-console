@@ -51,6 +51,7 @@ export const getWorkloadUiSchema = (
     namespace: { 'ui:widget': 'hidden' },
     selectedChart: { 'ui:widget': 'hidden' },
     autoUpdate: { 'ui:widget': 'hidden' },
+    chartProvider: { 'ui:widget': 'hidden' },
   }
   const uiSchema = { custom, preDefined }
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')
