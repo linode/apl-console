@@ -134,7 +134,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         </Grid>
       )
     }
-    if (schema.type === 'array' || schema.enum?.length < 8) {
+    if (schema.type === 'array' || schema.enum) {
       return (
         <Grid key={id} className={classes.grid} container>
           <Grid key={id} item xs={12} className={classes.grid}>
