@@ -32,7 +32,11 @@ export const getWorkloadUiSchema = (
     teamId: { 'ui:widget': 'hidden' },
     selectedChart: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
-    autoUpdate: { 'ui:readonly': !isGitea, strategy: { 'ui:readonly': !isGitea } },
+    autoUpdate: {
+      'ui:readonly': !isGitea,
+      'ui:widget': chartProvider === 'helm' ? 'hidden' : 'text',
+      strategy: { 'ui:readonly': !isGitea, 'ui:widget': chartProvider === 'helm' ? 'hidden' : 'text' },
+    },
     path: { 'ui:widget': chartProvider === 'helm' ? 'hidden' : 'text' },
     chart: { 'ui:widget': chartProvider === 'git' ? 'hidden' : 'text' },
     chartProvider: { 'ui:title': ' ' },
@@ -83,8 +87,8 @@ export default function ({ workload, teamId, data, setData, selectedChart, ...ot
   // END HOOKS
   const schema = data ? getWorkloadSchema(data) : getWorkloadSchema()
   if (workload?.selectedChart !== 'custom') schema.required.push('url')
-  const isGitea = isGiteaURL(data?.url)
   const chartProvider = data ? data.chartProvider : 'helm'
+  const isGitea = isGiteaURL(data?.url) && chartProvider === 'git'
   const uiSchema = getWorkloadUiSchema(user, teamId, chartProvider, isGitea)
 
   return (

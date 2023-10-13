@@ -115,10 +115,11 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const workloadSchema = getWorkloadSchema()
+  const workloadSchema = getWorkloadSchema(formData?.workload)
   if (formData?.workload?.selectedChart !== 'custom') workloadSchema.required.push('url')
-  const isGitea = isGiteaURL(formData?.workload?.url)
-  const workloadUiSchema = getWorkloadUiSchema(user, teamId, undefined, isGitea)
+  const chartProvider = formData?.workload ? formData?.workload?.chartProvider : 'helm'
+  const isGitea = isGiteaURL(formData?.workload?.url) && chartProvider === 'git'
+  const workloadUiSchema = getWorkloadUiSchema(user, teamId, chartProvider, isGitea)
   workloadUiSchema.custom.name = { 'ui:widget': 'hidden' }
   if (selectedPath === 'createBuild') workloadUiSchema.custom.autoUpdate.build = { 'ui:widget': 'hidden' }
 
