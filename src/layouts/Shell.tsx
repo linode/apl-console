@@ -165,7 +165,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const userTeams = getUserTeams(user)
 
   useEffect(() => {
-    if (isShell && !iFrameUrl) {
+    if (isShell) {
       connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams, sub: user.sub } }).then(
         ({ data }: { data: ConnectCloudttyApiResponse }) => {
           onSetIFrameUrl(data.iFrameUrl)

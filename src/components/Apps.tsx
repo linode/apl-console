@@ -119,32 +119,25 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   // END HOOKS
   if (!apps || loading) return <LoadingScreen />
   // we visualize drag state for all app dependencies
-  const isAdminApps = teamId === 'admin'
-  const sorter = (a, b) => (a.id > b.id ? 1 : -1)
-  const disabledByMonitoringStackApps = {
-    alertmanager: true,
-    prometheus: true,
-    loki: true,
-    grafana: true,
-  }
+  // should this be implemented still?
+  // const disabledByMonitoringStackApps = {
+  //   alertmanager: true,
+  //   prometheus: true,
+  //   loki: true,
+  //   grafana: true,
+  // }
 
   const disabledByProviderApps = {
     falco: true,
   }
+  const provider = session.settings.cluster?.provider
+  if (provider !== 'azure') apps = apps.filter((app) => !disabledByProviderApps[app.id])
 
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
     filterName,
   })
-  // const staticApps = apps.filter((app) => app.enabled === undefined).sort(sorter)
-  let enabledApps = apps.filter((app) => app.enabled !== false).sort(sorter)
-  if (!(teamSettings?.monitoringStack?.enabled ?? true) && !isAdminApps)
-    enabledApps = enabledApps.filter((app) => !disabledByMonitoringStackApps[app.id])
-  let disabledApps = apps.filter((app) => app.enabled === false).sort(sorter)
-  const provider = session.settings.cluster?.provider
-  if (provider !== 'azure' && provider !== 'aws')
-    disabledApps = disabledApps.filter((app) => !disabledByProviderApps[app.id])
 
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
@@ -172,27 +165,11 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
       )
     })
 
-  return isAdminApps ? (
+  return (
     <div className={cx(classes.root)}>
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {out(dataFiltered.sort(sortArray))}
-      </Grid>
-    </div>
-  ) : (
-    <div className={cx(classes.root)}>
-      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
-      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(
-          dataFiltered
-            .filter(
-              (app) =>
-                (app.enabled === true || app.id === 'gitea' || app.id === 'drone') &&
-                app.id !== 'kubeclarity' &&
-                app.id !== 'falco',
-            )
-            .sort(sortArray),
-        )}
       </Grid>
     </div>
   )
