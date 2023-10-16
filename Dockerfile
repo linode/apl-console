@@ -47,7 +47,7 @@ COPY nginx/ ./
 RUN chmod +x /app/run.sh
 
 COPY --from=ci /app/build build
-COPY keycloak /app/keycloak
+COPY otomi.jar /app/
 
 RUN chown -R app:app /app
 
