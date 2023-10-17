@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/redkubes/otomi-stack-web/compare/v1.3.0...v1.4.0) (2023-10-17)
+
+
+### Features
+
+* update iFrameUrl request ([#337](https://github.com/redkubes/otomi-stack-web/issues/337)) ([77e6024](https://github.com/redkubes/otomi-stack-web/commit/77e6024099aa3a4e03c88b3cf6a2e705cf706959))
+* workload improvements ([#338](https://github.com/redkubes/otomi-stack-web/issues/338)) ([dccec54](https://github.com/redkubes/otomi-stack-web/commit/dccec5408759a741b717df688af733de2878cb87))
+
+
+### Bug Fixes
+
+* provide otomi theme for keycloak as a jar ([#341](https://github.com/redkubes/otomi-stack-web/issues/341)) ([24ba600](https://github.com/redkubes/otomi-stack-web/commit/24ba600157a35cdf63abb84a87d6dbc151716911))
+* removed falco from non azure providers ([#339](https://github.com/redkubes/otomi-stack-web/issues/339)) ([2ddc4ee](https://github.com/redkubes/otomi-stack-web/commit/2ddc4eeb952ea78526f2bd88a6bb503d34561304))
+* service name field ([#340](https://github.com/redkubes/otomi-stack-web/issues/340)) ([804a2b6](https://github.com/redkubes/otomi-stack-web/commit/804a2b642c4e422946f0725536a36cf0c0bc77f3))
+
 ## [1.3.0](https://github.com/redkubes/otomi-stack-web/compare/v1.2.0...v1.3.0) (2023-10-03)
 
 
