@@ -17,6 +17,7 @@ import DeleteButton from './DeleteButton'
 export const getWorkloadSchema = (url?: string, helmCharts?: string[]): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
   set(schema, 'properties.chart.properties.helmChartCatalog.enum', [url])
+  set(schema, 'properties.chart.properties.helmChartCatalog.readOnly', true)
   set(schema, 'properties.chart.properties.helmChartCatalog.listNotShort', true)
   set(schema, 'properties.chart.properties.helmChart.enum', helmCharts)
   set(schema, 'properties.chart.properties.helmChart.default', helmCharts?.[0])
@@ -78,18 +79,16 @@ export default function ({
 
   const setValuesForEditor = () => {
     setShow(false)
-    const myItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
-    setValuesData(myItem)
-    if (myItem) wait(500).then(() => setShow(true))
+    const catalogItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
+    setValuesData({ ...catalogItem, values: { ...catalogItem?.values, fullnameOverride: data?.name || '' } })
+    if (catalogItem) wait(500).then(() => setShow(true))
   }
 
   useEffect(() => {
     if (!workload?.id) {
-      if (process.env.NODE_ENV === 'production') {
-        const hostname = window.location.hostname
-        const domain = getDomain(hostname)
-        setUrl(`https://gitea.${domain}/otomi-charts.git`)
-      }
+      const hostname = window.location.hostname
+      const domain = getDomain(hostname)
+      if (domain !== 'localhost') setUrl(`https://gitea.${domain}/otomi-charts.git`)
       getCustomWorkloadValues({ body: { url } }).then((res: any) => {
         const { helmCharts, catalog } = res.data
         setHelmCharts(helmCharts)
@@ -104,6 +103,7 @@ export default function ({
 
   const handleCreateUpdateWorkload = async () => {
     const workload = data
+    console.log('data', data)
     const workloadValues = {
       values: valuesData.values,
     }
@@ -111,10 +111,9 @@ export default function ({
     if (workloadId) {
       res = await updateWorkload({ teamId, workloadId, body: workload })
       res = await updateWorkloadValues({ teamId, workloadId, body: workloadValues })
-    } else {
-      res = await createWorkload({ teamId, body: workload })
-      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
-    }
+    } else res = await createWorkload({ teamId, body: workload })
+    // res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
+
     if (res.error) return
     history.push(`/teams/${teamId}/workloads`)
   }
