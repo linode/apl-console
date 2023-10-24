@@ -9,11 +9,12 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const newUiSchema = { ...uiSchema }
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7
+  const listNotShort = schema.listNotShort
   const shortList = schema.enum?.length < 5
   // eslint-disable-next-line no-param-reassign
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
-    if (schema.enum && schema.enum.length > 1 && !listTooLong) {
+    if (schema.enum && schema.enum.length > 1 && !listTooLong && !listNotShort) {
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
       set(newUiSchema, 'ui:options.hasLabel', true)
@@ -32,8 +33,9 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
 
     if (schema.enum && schema.enum.length === 1) {
       // hide one item enum that was set to its default value, as those are used for selectors
-      if (schema.default) newUiSchema['ui:widget'] = 'hidden'
-      else newSchema.default = schema.enum[0]
+      // if (schema.default) newUiSchema['ui:widget'] = 'hidden'
+      // else newSchema.default = schema.enum[0]
+      newSchema.default = schema.enum[0]
     }
   }
   const isPasswordField = (elementId: string) => {

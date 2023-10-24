@@ -1914,15 +1914,15 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -1940,7 +1940,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2125,15 +2124,15 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2151,7 +2150,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2339,15 +2337,15 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2365,7 +2363,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2553,15 +2550,15 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name: string
-      url: string
-      chartProvider?: 'helm' | 'git'
-      path?: string
-      chart?: string
-      revision?: string
-      namespace?: string
+      chart?: {
+        helmChartCatalog?: null
+        helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+        chartVersion?: null
+        chartDescription?: null
+      }
       autoUpdate?: {
         enabled?: boolean
-        build?: string
+        imageRegistry?: string
         strategy?:
           | {
               type?: 'latest'
@@ -2579,7 +2576,6 @@ export type CreateProjectApiArg = {
               type?: 'semver'
             }
       }
-      selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
       id?: string
@@ -2771,15 +2767,15 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2797,7 +2793,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2987,15 +2982,15 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3013,7 +3008,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -3203,15 +3197,15 @@ export type EditProjectApiArg = {
       id?: string
       teamId?: string
       name: string
-      url: string
-      chartProvider?: 'helm' | 'git'
-      path?: string
-      chart?: string
-      revision?: string
-      namespace?: string
+      chart?: {
+        helmChartCatalog?: null
+        helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+        chartVersion?: null
+        chartDescription?: null
+      }
       autoUpdate?: {
         enabled?: boolean
-        build?: string
+        imageRegistry?: string
         strategy?:
           | {
               type?: 'latest'
@@ -3229,7 +3223,6 @@ export type EditProjectApiArg = {
               type?: 'semver'
             }
       }
-      selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
       id?: string
@@ -3386,15 +3379,15 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   id?: string
   teamId?: string
   name: string
-  url: string
-  chartProvider?: 'helm' | 'git'
-  path?: string
-  chart?: string
-  revision?: string
-  namespace?: string
+  chart?: {
+    helmChartCatalog?: null
+    helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+    chartVersion?: null
+    chartDescription?: null
+  }
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3412,7 +3405,6 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetAllWorkloadsApiArg = void
 export type CustomWorkloadValuesApiResponse = /** status 200 Successfully updated a team project */ object
@@ -3424,15 +3416,15 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   id?: string
   teamId?: string
   name: string
-  url: string
-  chartProvider?: 'helm' | 'git'
-  path?: string
-  chart?: string
-  revision?: string
-  namespace?: string
+  chart?: {
+    helmChartCatalog?: null
+    helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+    chartVersion?: null
+    chartDescription?: null
+  }
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3450,7 +3442,6 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -3460,15 +3451,15 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   id?: string
   teamId?: string
   name: string
-  url: string
-  chartProvider?: 'helm' | 'git'
-  path?: string
-  chart?: string
-  revision?: string
-  namespace?: string
+  chart?: {
+    helmChartCatalog?: null
+    helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+    chartVersion?: null
+    chartDescription?: null
+  }
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3486,7 +3477,6 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -3496,15 +3486,15 @@ export type CreateWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3522,7 +3512,6 @@ export type CreateWorkloadApiArg = {
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -3536,15 +3525,15 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   id?: string
   teamId?: string
   name: string
-  url: string
-  chartProvider?: 'helm' | 'git'
-  path?: string
-  chart?: string
-  revision?: string
-  namespace?: string
+  chart?: {
+    helmChartCatalog?: null
+    helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+    chartVersion?: null
+    chartDescription?: null
+  }
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3562,7 +3551,6 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -3574,15 +3562,15 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   id?: string
   teamId?: string
   name: string
-  url: string
-  chartProvider?: 'helm' | 'git'
-  path?: string
-  chart?: string
-  revision?: string
-  namespace?: string
+  chart?: {
+    helmChartCatalog?: null
+    helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+    chartVersion?: null
+    chartDescription?: null
+  }
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3600,7 +3588,6 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -3612,15 +3599,15 @@ export type EditWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
-    url: string
-    chartProvider?: 'helm' | 'git'
-    path?: string
-    chart?: string
-    revision?: string
-    namespace?: string
+    chart?: {
+      helmChartCatalog?: null
+      helmChart?: 'deployment' | 'ksvc' | 'test1' | 'test2' | 'test3' | 'test4' | 'test5' | 'test6'
+      chartVersion?: null
+      chartDescription?: null
+    }
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3638,7 +3625,6 @@ export type EditWorkloadApiArg = {
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
@@ -4169,7 +4155,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4340,6 +4326,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
+          civo: {
+            apiToken?: string
+          }
+        }
+      | {
           google: {
             serviceAccountKey?: string
             project: string
@@ -4426,7 +4417,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -4593,7 +4584,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4764,6 +4755,11 @@ export type EditSettingsApiArg = {
             }
           }
         | {
+            civo: {
+              apiToken?: string
+            }
+          }
+        | {
             google: {
               serviceAccountKey?: string
               project: string
@@ -4850,7 +4846,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string

@@ -1,45 +1,41 @@
 /* eslint-disable react/button-has-type */
-import {
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Step,
-  StepLabel,
-  Stepper,
-} from '@mui/material'
-import { omit } from 'lodash'
+import { Box, Button, CircularProgress } from '@mui/material'
+import { cloneDeep, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
-import { GetWorkloadApiResponse, useCustomWorkloadValuesMutation, useGetWorkloadValuesQuery } from 'redux/otomiApi'
+import { GetSessionApiResponse, useCustomWorkloadValuesMutation, useGetWorkloadValuesQuery } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
-import { getEmailNoSymbols } from 'layouts/Shell'
+import { getDomain, getEmailNoSymbols } from 'layouts/Shell'
+import { applyAclToUiSchema, getSpec } from 'common/api-spec'
+import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
-import WorkloadDefine from './WorkloadDefine'
-import WorkloadEssentialValues from './WorkloadEssentialValues'
 import DeleteButton from './DeleteButton'
 
-const radioValues = [
-  { value: 'deployment', label: 'Regular application (deployment chart)' },
-  { value: 'ksvc', label: 'Function as a Service (ksvc chart)' },
-  { value: 'custom', label: 'Bring your own Helm chart' },
-]
+export const getWorkloadSchema = (url?: string, helmCharts?: string[]): any => {
+  const schema = cloneDeep(getSpec().components.schemas.Workload)
+  set(schema, 'properties.chart.properties.helmChartCatalog.enum', [url])
+  set(schema, 'properties.chart.properties.helmChartCatalog.listNotShort', true)
+  set(schema, 'properties.chart.properties.helmChart.enum', helmCharts)
+  set(schema, 'properties.chart.properties.helmChart.default', helmCharts?.[0])
+  set(schema, 'properties.chart.properties.helmChart.listNotShort', true)
+  return schema
+}
 
-const steps = {
-  deployment: ['Define workload name', 'Define chart values', 'Review and adjust values'],
-  ksvc: ['Define workload name', 'Define chart values', 'Review and adjust values'],
-  custom: ['Define workload name', 'Review and adjust values'],
+export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+  const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
+    teamId: { 'ui:widget': 'hidden' },
+  }
+  applyAclToUiSchema(uiSchema, user, teamId, 'workload')
+  return uiSchema
 }
 
 interface Props extends CrudProps {
   teamId: string
-  workload?: GetWorkloadApiResponse
+  workload?: any
   workloadId?: string
   createWorkload: any
   updateWorkload: any
@@ -61,100 +57,70 @@ export default function ({
 }: Props): React.ReactElement {
   const history = useHistory()
   const { t } = useTranslation()
-  const { user, oboTeamId } = useSession()
-  const [activeStep, setActiveStep] = useState(0)
+  const { appsEnabled, user, oboTeamId } = useSession()
   const [data, setData]: any = useState(workload)
   const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
   const [valuesData, setValuesData]: any = useState(WLvaluesData)
-  const [selectedChart, setSelectedChart] = useState(workload?.selectedChart || (workloadId && 'custom') || '')
-  const resourceType = activeStep ? 'Workload values' : 'Workload'
+  const [helmCharts, setHelmCharts] = useState<any[]>([])
+  const [catalog, setCatalog] = useState<any[]>([])
+  const [show, setShow] = useState(false)
+
+  const [url, setUrl] = useState('https://github.com/redkubes/otomi-charts.git')
+  const resourceType = 'Workload'
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
   const emailNoSymbols = getEmailNoSymbols(user.email)
-  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
+
+  // eslint-disable-next-line no-promise-executor-return
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const setValuesForEditor = () => {
+    setShow(false)
+    const myItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
+    setValuesData(myItem)
+    if (myItem) wait(500).then(() => setShow(true))
+  }
 
   useEffect(() => {
-    setValuesData(WLvaluesData)
-  }, [WLvaluesData])
+    if (!workload?.id) {
+      if (process.env.NODE_ENV === 'production') {
+        const hostname = window.location.hostname
+        const domain = getDomain(hostname)
+        setUrl(`https://gitea.${domain}/otomi-charts.git`)
+      }
+      getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+        const { helmCharts, catalog } = res.data
+        setHelmCharts(helmCharts)
+        setCatalog(catalog)
+      })
+    }
+  }, [])
 
-  const setNextStep = () => setActiveStep((prev) => prev + 1)
-  const setPreviousStep = () => setActiveStep((prev) => prev - 1)
+  useEffect(() => {
+    setValuesForEditor()
+  }, [data?.chart?.helmChart, helmCharts, catalog])
 
   const handleCreateUpdateWorkload = async () => {
-    const body =
-      selectedChart === 'custom'
-        ? data
-        : {
-            name: data?.name,
-            url: 'https://github.com/redkubes/otomi-charts.git',
-            path: selectedChart,
-            revision: 'HEAD',
-          }
-    if (workloadId) {
-      await updateWorkload({
-        teamId,
-        workloadId,
-        body: { ...body, selectedChart },
-      })
-      setNextStep()
-      return
+    const workload = data
+    const workloadValues = {
+      values: valuesData.values,
     }
-    const res = await createWorkload({ teamId, body: { ...body, selectedChart, emailNoSymbols } })
-    if (selectedChart === 'custom') {
-      const res = (await getCustomWorkloadValues({ body: { ...body, emailNoSymbols } })) as any
-      const { values, chartVersion, chartDescription } = res.data
-      setValuesData({ values, chartVersion, chartDescription })
+    let res
+    if (workloadId) {
+      res = await updateWorkload({ teamId, workloadId, body: workload })
+      res = await updateWorkloadValues({ teamId, workloadId, body: workloadValues })
+    } else {
+      res = await createWorkload({ teamId, body: workload })
+      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
     }
     if (res.error) return
-    setNextStep()
+    history.push(`/teams/${teamId}/workloads`)
   }
 
-  const handleUpdateWorkloadValues = async () => {
-    const values =
-      selectedChart === 'custom' ? valuesData?.values : { ...valuesData?.values, fullnameOverride: workload?.name }
-    const res = await updateWorkloadValues({
-      teamId,
-      workloadId,
-      body: {
-        id: workloadId,
-        values: omit(values, ['id', 'teamId', 'selectedChart']),
-      } as any,
-    })
-    setValuesData({ ...res.data, name: workload?.name, teamId })
-    setNextStep()
-  }
-
-  const handleEditWorkloadValues = async () => {
-    await editWorkloadValues({
-      teamId,
-      workloadId,
-      body: {
-        id: workloadId,
-        values: omit(valuesData.values, ['id', 'teamId', 'selectedChart']),
-        chartVersion: valuesData?.chartVersion,
-        chartDescription: valuesData?.chartDescription,
-      } as any,
-    }).then((res: any) => {
-      if (res.error) return
-      history.push(`/teams/${teamId}/workloads`)
-    })
-  }
-
-  const handleNext = async () => {
-    if (activeStep === 0) await handleCreateUpdateWorkload()
-    if (activeStep === 1 && selectedChart !== 'custom') await handleUpdateWorkloadValues()
-    else if (activeStep === steps[selectedChart].length - 1) await handleEditWorkloadValues()
-  }
-
-  const isDisabled = () => {
-    if (activeStep === 0) return !data?.name || (selectedChart === 'custom' && !data?.url)
-    if (activeStep === 1) {
-      const values = valuesData?.values
-      return !values?.image?.repository || !values?.image?.tag
-    }
-    return false
-  }
+  const schema = getWorkloadSchema(url, helmCharts)
+  const uiSchema = getWorkloadUiSchema(user, teamId)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -169,75 +135,44 @@ export default function ({
           />
         )}
       </Box>
-      {!selectedChart && !workloadId ? (
-        <FormControl sx={{ mt: 1 }}>
-          <FormLabel sx={{ mb: 1 }}>Choose one of the following helm charts.</FormLabel>
-          <RadioGroup onChange={(e) => setSelectedChart(e.target.value)} value={selectedChart}>
-            {radioValues.map(({ value, label }: { value: string; label: string }) => (
-              <FormControlLabel key={value} value={value} control={<Radio />} label={label} />
-            ))}
-          </RadioGroup>
-        </FormControl>
-      ) : (
-        <>
-          <Stepper activeStep={activeStep} sx={{ mt: 1, mb: 1 }}>
-            {steps[selectedChart].map((step: string) => {
-              return (
-                <Step key={step}>
-                  <StepLabel>{step}</StepLabel>
-                </Step>
-              )
-            })}
-          </Stepper>
 
-          {activeStep === 0 && (
-            <WorkloadDefine
-              workload={workload}
-              teamId={teamId}
-              data={data}
-              setData={setData}
-              selectedChart={selectedChart}
-              {...other}
-            />
-          )}
-
-          {activeStep === 1 && selectedChart !== 'custom' && (
-            <WorkloadEssentialValues
-              teamId={teamId}
-              valuesData={valuesData}
-              setValuesData={setValuesData}
-              selectedChart={selectedChart}
-              {...other}
-            />
-          )}
-
-          {activeStep === steps[selectedChart].length - 1 && (
-            <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
-          )}
-
-          <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-            <Button
-              variant='contained'
-              color='inherit'
-              disabled={activeStep === 0}
-              onClick={setPreviousStep}
-              sx={{ mr: 1 }}
-            >
-              Back
-            </Button>
-            <Box sx={{ flex: '1 1 auto' }} />
-            {activeStep === steps[selectedChart].length - 1 ? (
-              <Button variant='contained' onClick={() => handleNext()}>
-                Submit
-              </Button>
-            ) : (
-              <Button variant='contained' disabled={isDisabled()} onClick={() => handleNext()}>
-                Next
-              </Button>
-            )}
+      <Box>
+        {valuesData?.chartVersion && (
+          <Box>
+            <b>Helm Chart Version:</b> {`${valuesData?.chartVersion}`}
           </Box>
-        </>
+        )}
+        {valuesData?.chartDescription && (
+          <Box>
+            <b>Helm Chart Description:</b> {`${valuesData?.chartDescription}`}
+          </Box>
+        )}
+      </Box>
+
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        data={data}
+        onChange={setData}
+        disabled={!appsEnabled.argocd || !!workload?.id}
+        resourceType='Workload'
+        children
+        hideHelp
+        {...other}
+      />
+
+      {show ? (
+        <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
+      ) : (
+        <CircularProgress sx={{ mb: '1rem' }} />
       )}
+
+      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box sx={{ flex: '1 1 auto' }} />
+        <Button variant='contained' onClick={handleCreateUpdateWorkload}>
+          Submit
+        </Button>
+      </Box>
     </Box>
   )
 }
