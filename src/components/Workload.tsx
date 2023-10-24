@@ -87,7 +87,7 @@ export default function ({
     if (!url) {
       const hostname = window.location.hostname
       const domain = getDomain(hostname)
-      setUrl(`https://gitea.${domain}/otomi-charts.git`)
+      setUrl(`https://gitea.${domain}/otomi/charts.git`)
       if (domain === 'localhost') setUrl('https://github.com/redkubes/otomi-charts.git')
     }
   }, [])
