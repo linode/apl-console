@@ -7,7 +7,7 @@ import { GetSessionApiResponse, useCustomWorkloadValuesMutation, useGetWorkloadV
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
-import { getDomain, getEmailNoSymbols } from 'layouts/Shell'
+import { getDomain } from 'layouts/Shell'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
@@ -67,12 +67,11 @@ export default function ({
   const [catalog, setCatalog] = useState<any[]>([])
   const [show, setShow] = useState(false)
 
-  const [url, setUrl] = useState('https://github.com/redkubes/otomi-charts.git')
+  const [url, setUrl] = useState('')
   const resourceType = 'Workload'
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
-  const emailNoSymbols = getEmailNoSymbols(user.email)
 
   // eslint-disable-next-line no-promise-executor-return
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -85,19 +84,23 @@ export default function ({
   }
 
   useEffect(() => {
-    if (!workload?.id) {
+    if (!url) {
       const hostname = window.location.hostname
       const domain = getDomain(hostname)
-      if (domain !== 'localhost') setUrl(`https://gitea.${domain}/otomi-charts.git`)
-      console.log('domain', domain)
-      console.log('url', url)
+      setUrl(`https://gitea.${domain}/otomi-charts.git`)
+      if (domain === 'localhost') setUrl('https://github.com/redkubes/otomi-charts.git')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!workload?.id && url) {
       getCustomWorkloadValues({ body: { url } }).then((res: any) => {
         const { helmCharts, catalog } = res.data
         setHelmCharts(helmCharts)
         setCatalog(catalog)
       })
     }
-  }, [])
+  }, [url])
 
   useEffect(() => {
     setValuesForEditor()
@@ -113,9 +116,10 @@ export default function ({
     if (workloadId) {
       res = await updateWorkload({ teamId, workloadId, body: workload })
       res = await updateWorkloadValues({ teamId, workloadId, body: workloadValues })
-    } else res = await createWorkload({ teamId, body: workload })
-    // res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
-
+    } else {
+      res = await createWorkload({ teamId, body: workload })
+      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
+    }
     if (res.error) return
     history.push(`/teams/${teamId}/workloads`)
   }

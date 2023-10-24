@@ -20,7 +20,7 @@ import { useHistory } from 'react-router-dom'
 import { CircularProgress, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
-import { getEmailNoSymbols } from 'layouts/Shell'
+import { getDomain } from 'layouts/Shell'
 import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadValues from './WorkloadValues'
@@ -82,17 +82,55 @@ export default function ({
   } = settings
   const [activeStep, setActiveStep] = useState(0)
   const [selectedPath, setSelectedPath] = useState('createBuild')
-  const [valuesData, setValuesData]: any = useState(project?.workloadValues || {})
-  const [data, setData] = useState<any>(project || {})
-  const emailNoSymbols = getEmailNoSymbols(user.email)
   const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
+  const [valuesData, setValuesData]: any = useState(project?.workloadValues || {})
+  console.log('valuesData', valuesData)
+  const [helmCharts, setHelmCharts] = useState<any[]>([])
+  const [catalog, setCatalog] = useState<any[]>([])
+  const [show, setShow] = useState(false)
+  const [url, setUrl] = useState('https://github.com/redkubes/otomi-charts.git')
+  console.log('url', url)
+  const [data, setData] = useState<any>(project || {})
+
+  const formData = cloneDeep(data)
+
+  // eslint-disable-next-line no-promise-executor-return
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+  const setValuesForEditor = () => {
+    setShow(false)
+    const catalogItem = catalog?.find((item: any) => item.name === data?.workload?.chart?.helmChart)
+    console.log('catalogItem', catalogItem)
+    setValuesData({ ...catalogItem, values: { ...catalogItem?.values, fullnameOverride: data?.name || '' } })
+    if (catalogItem) wait(500).then(() => setShow(true))
+  }
+
+  useEffect(() => {
+    if (!url) {
+      const hostname = window.location.hostname
+      const domain = getDomain(hostname)
+      setUrl(`https://gitea.${domain}/otomi-charts.git`)
+      if (domain === 'localhost') setUrl('https://github.com/redkubes/otomi-charts.git')
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!formData?.workload?.id && url) {
+      getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+        const { helmCharts, catalog } = res.data
+        setHelmCharts(helmCharts)
+        setCatalog(catalog)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    setValuesForEditor()
+  }, [formData?.workload?.chart?.helmChart, helmCharts, catalog])
 
   useEffect(() => {
     setData(project)
   }, [project])
-
-  const formData = cloneDeep(data)
-  console.log('formData', formData)
 
   const projectSchema = getProjectSchema(teamId)
   const projectUiSchema = getProjectUiSchema(user, teamId)
@@ -101,7 +139,7 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const workloadSchema = getWorkloadSchema()
+  const workloadSchema = getWorkloadSchema(url, helmCharts)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
@@ -169,8 +207,8 @@ export default function ({
     if (activeStep === 0) handleCreateProject()
     if (activeStep === 1) {
       const registry = `harbor.${domainSuffix}/team-${teamId}/${formData?.name}`
-      if (!data?.workloadValues?.id)
-        setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
+      // if (!data?.workloadValues?.id)
+      //   setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
       setNextStep()
     }
     if (activeStep === 2) {
@@ -245,6 +283,19 @@ export default function ({
 
               {activeStep === 2 && (
                 <Box sx={{ width: '100%', mb: '1rem' }}>
+                  <Box>
+                    {valuesData?.chartVersion && (
+                      <Box>
+                        <b>Helm Chart Version:</b> {`${valuesData?.chartVersion}`}
+                      </Box>
+                    )}
+                    {valuesData?.chartDescription && (
+                      <Box>
+                        <b>Helm Chart Description:</b> {`${valuesData?.chartDescription}`}
+                      </Box>
+                    )}
+                  </Box>
+
                   <Form
                     schema={workloadSchema}
                     uiSchema={workloadUiSchema}
@@ -257,7 +308,7 @@ export default function ({
                     {...other}
                   />
 
-                  {true ? (
+                  {show ? (
                     <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
                   ) : (
                     <CircularProgress sx={{ mb: '1rem' }} />
