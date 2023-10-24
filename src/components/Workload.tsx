@@ -89,6 +89,8 @@ export default function ({
       const hostname = window.location.hostname
       const domain = getDomain(hostname)
       if (domain !== 'localhost') setUrl(`https://gitea.${domain}/otomi-charts.git`)
+      console.log('domain', domain)
+      console.log('url', url)
       getCustomWorkloadValues({ body: { url } }).then((res: any) => {
         const { helmCharts, catalog } = res.data
         setHelmCharts(helmCharts)
