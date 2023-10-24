@@ -4215,11 +4215,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         ttl?: string
         schedule?: string
       }
-      kubeapps?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
       minio?: {
         enabled?: boolean
         ttl?: string
@@ -4635,11 +4630,6 @@ export type EditSettingsApiArg = {
           schedule?: string
         }
         argo?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        kubeapps?: {
           enabled?: boolean
           ttl?: string
           schedule?: string

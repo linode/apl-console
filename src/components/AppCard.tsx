@@ -106,9 +106,9 @@ export default function ({
         classes.img,
         // this is ofcourse not good code, but it'll do for the time being
         // eslint-disable-next-line no-nested-ternary
-        (id === 'vault' || id === 'kubeapps') && !enabled
+        (id === 'vault') && !enabled
           ? classes.contrastDark
-          : id === 'vault' || id === 'kubeapps'
+          : id === 'vault'
           ? classes.contrast
           : '',
       )}
