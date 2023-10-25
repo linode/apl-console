@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import { getSpec } from 'common/api-spec'
 import { cloneDeep } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -55,6 +55,7 @@ interface Props {
   workloadValues?: GetWorkloadValuesApiResponse
   setWorkloadValues?: (formData: any) => void
   hideTitle?: boolean
+  helmChart?: string
 }
 
 export default function ({
@@ -63,16 +64,27 @@ export default function ({
   workloadValues,
   setWorkloadValues,
   hideTitle = false,
+  helmChart,
   ...other
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
-  const [rawValues, setRawValues] = useState(workloadValues?.values)
+  const [rawValues, setRawValues] = useState(workloadValues)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
+  // eslint-disable-next-line no-promise-executor-return
+  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+  const [show, setShow] = useState(false)
+
   useEffect(() => {
-    setRawValues(workloadValues?.values)
+    setRawValues(workloadValues)
   }, [workloadValues])
+
+  // re-render the CodeEditor component with the new helm chart values
+  useEffect(() => {
+    setShow(false)
+    wait(1000).then(() => setShow(true))
+  }, [helmChart])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
   const handleSubmit = () => {
@@ -89,17 +101,19 @@ export default function ({
         />
       )}
       <div className={classes.buffer}> </div>{' '}
-      <CodeEditor
-        code={yaml}
-        onChange={(data) => {
-          setRawValues(data || {})
-          setWorkloadValues?.((prev: any) => {
-            return { ...prev, values: data }
-          })
-        }}
-        disabled={!isEdit}
-        setValid={setValidRaw}
-      />
+      {show && workloadValues !== undefined ? (
+        <CodeEditor
+          code={yaml}
+          onChange={(data) => {
+            setRawValues(data || {})
+            setWorkloadValues?.(data)
+          }}
+          disabled={!isEdit}
+          setValid={setValidRaw}
+        />
+      ) : (
+        <CircularProgress sx={{ mb: '1rem' }} />
+      )}
       {!editable && (
         <Box display='flex' flexDirection='row-reverse' m={1}>
           <Button

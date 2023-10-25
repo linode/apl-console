@@ -1915,8 +1915,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -2017,8 +2019,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2123,8 +2123,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -2225,8 +2227,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2334,8 +2334,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -2436,8 +2438,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2545,8 +2545,10 @@ export type CreateProjectApiArg = {
       teamId?: string
       name: string
       chart?: {
-        helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-        helmChart?: 'deployment' | 'ksvc'
+        helmChartCatalog?: string
+        helmChart?: string
+        helmChartVersion?: string
+        helmChartDescription?: string
       }
       autoUpdate?: {
         enabled?: boolean
@@ -2647,8 +2649,6 @@ export type CreateProjectApiArg = {
             | null
         }
       }
-      chartVersion?: string
-      chartDescription?: string
     }
     service?: {
       id?: string
@@ -2760,8 +2760,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -2862,8 +2864,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2973,8 +2973,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -3075,8 +3077,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -3186,8 +3186,10 @@ export type EditProjectApiArg = {
       teamId?: string
       name: string
       chart?: {
-        helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-        helmChart?: 'deployment' | 'ksvc'
+        helmChartCatalog?: string
+        helmChart?: string
+        helmChartVersion?: string
+        helmChartDescription?: string
       }
       autoUpdate?: {
         enabled?: boolean
@@ -3288,8 +3290,6 @@ export type EditProjectApiArg = {
             | null
         }
       }
-      chartVersion?: string
-      chartDescription?: string
     }
     service?: {
       id?: string
@@ -3366,8 +3366,10 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-    helmChart?: 'deployment' | 'ksvc'
+    helmChartCatalog?: string
+    helmChart?: string
+    helmChartVersion?: string
+    helmChartDescription?: string
   }
   autoUpdate?: {
     enabled?: boolean
@@ -3401,8 +3403,10 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-    helmChart?: 'deployment' | 'ksvc'
+    helmChartCatalog?: string
+    helmChart?: string
+    helmChartVersion?: string
+    helmChartDescription?: string
   }
   autoUpdate?: {
     enabled?: boolean
@@ -3434,8 +3438,10 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-    helmChart?: 'deployment' | 'ksvc'
+    helmChartCatalog?: string
+    helmChart?: string
+    helmChartVersion?: string
+    helmChartDescription?: string
   }
   autoUpdate?: {
     enabled?: boolean
@@ -3467,8 +3473,10 @@ export type CreateWorkloadApiArg = {
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -3504,8 +3512,10 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-    helmChart?: 'deployment' | 'ksvc'
+    helmChartCatalog?: string
+    helmChart?: string
+    helmChartVersion?: string
+    helmChartDescription?: string
   }
   autoUpdate?: {
     enabled?: boolean
@@ -3539,8 +3549,10 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-    helmChart?: 'deployment' | 'ksvc'
+    helmChartCatalog?: string
+    helmChart?: string
+    helmChartVersion?: string
+    helmChartDescription?: string
   }
   autoUpdate?: {
     enabled?: boolean
@@ -3574,8 +3586,10 @@ export type EditWorkloadApiArg = {
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: 'https://github.com/redkubes/otomi-charts.git'
-      helmChart?: 'deployment' | 'ksvc'
+      helmChartCatalog?: string
+      helmChart?: string
+      helmChartVersion?: string
+      helmChartDescription?: string
     }
     autoUpdate?: {
       enabled?: boolean
@@ -3677,8 +3691,6 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3764,8 +3776,6 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3851,8 +3861,6 @@ export type EditWorkloadValuesApiArg = {
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
@@ -3933,8 +3941,6 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -4020,8 +4026,6 @@ export type UpdateWorkloadValuesApiArg = {
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined

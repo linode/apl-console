@@ -1,9 +1,14 @@
 /* eslint-disable react/button-has-type */
-import { Box, Button, CircularProgress } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { cloneDeep, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, useCustomWorkloadValuesMutation, useGetWorkloadValuesQuery } from 'redux/otomiApi'
+import {
+  GetSessionApiResponse,
+  GetWorkloadApiResponse,
+  useCustomWorkloadValuesMutation,
+  useGetWorkloadValuesQuery,
+} from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
@@ -48,7 +53,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
 
 interface Props extends CrudProps {
   teamId: string
-  workload?: any
+  workload?: GetWorkloadApiResponse
   workloadId?: string
   createWorkload: any
   updateWorkload: any
@@ -70,76 +75,77 @@ export default function ({
   const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const { appsEnabled, user, oboTeamId } = useSession()
-  const [data, setData]: any = useState(workload)
-  const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [data, setData] = useState<GetWorkloadApiResponse>(workload)
+  const { data: valuesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [workloadValues, setWorkloadValues] = useState<any>(valuesData?.values)
   const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
-  const [valuesData, setValuesData]: any = useState(WLvaluesData)
-  const [helmCharts, setHelmCharts] = useState<any[]>([])
+  const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
-  const [show, setShow] = useState(false)
   const [url, setUrl] = useState(workload?.chart?.helmChartCatalog)
-  console.log('url', url)
+  const [chartVersion, setChartVersion] = useState(workload?.chart?.helmChartVersion)
+  const [chartDescription, setChartDescription] = useState(workload?.chart?.helmChartDescription)
+
   const resourceType = 'Workload'
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
 
-  // eslint-disable-next-line no-promise-executor-return
-  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
+  // set the helm chart catalog url based on the domain
   useEffect(() => {
-    if (!url) {
-      const hostname = window.location.hostname
-      const domain = getDomain(hostname)
-      setUrl(`https://gitea.${domain}/otomi/charts.git`)
-      if (domain === 'localhost') setUrl('https://github.com/redkubes/otomi-charts.git')
-    }
+    if (url) return
+    const hostname = window.location.hostname
+    const domain = getDomain(hostname)
+    const defaultUrl =
+      domain === 'localhost'
+        ? 'https://github.com/redkubes/otomi-charts.git'
+        : `https://gitea.${domain}/otomi/charts.git`
+    setUrl(defaultUrl)
   }, [])
 
+  // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (url) {
-      getCustomWorkloadValues({ body: { url } }).then((res: any) => {
-        const { helmCharts, catalog } = res.data
-        setHelmCharts(helmCharts)
-        setCatalog(catalog)
-      })
-    }
+    if (!url) return
+    getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+      const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
+      setHelmCharts(helmCharts)
+      setCatalog(catalog)
+    })
   }, [url])
 
+  // set the workload values based on the helm chart
   useEffect(() => {
-    setShow(false)
-    const catalogItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
-    setValuesData(WLvaluesData || catalogItem)
-    if (catalogItem) wait(500).then(() => setShow(true))
-  }, [data?.chart?.helmChart, helmCharts, catalog])
+    if (valuesData?.id) {
+      setWorkloadValues(valuesData?.values)
+      return
+    }
+    if (!catalog || !data?.chart?.helmChart) return
+    const catalogItem = catalog.find((item: any) => item.name === data.chart.helmChart)
+    if (!catalogItem) return
+    setWorkloadValues(catalogItem.values)
+    setChartVersion(catalogItem.chartVersion)
+    setChartDescription(catalogItem.chartDescription)
+  }, [data?.chart?.helmChart, catalog])
 
   const handleCreateUpdateWorkload = async () => {
-    const workload = data
-    const workloadValues = {
-      values: valuesData.values,
-    }
     let res
     if (workloadId) {
       dispatch(setError(undefined))
-      res = await updateWorkload({ teamId, workloadId, body: workload })
-      res = await updateWorkloadValues({ teamId, workloadId, body: workloadValues })
+      res = await updateWorkload({ teamId, workloadId, body: data })
+      res = await updateWorkloadValues({ teamId, workloadId, body: { values: workloadValues } })
     } else {
-      res = await createWorkload({ teamId, body: workload })
-      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: workloadValues })
+      res = await createWorkload({ teamId, body: data })
+      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: { values: workloadValues } })
     }
     if (res.error) return
     history.push(`/teams/${teamId}/workloads`)
   }
 
-  const helmChart = data?.chart?.helmChart || helmCharts?.[0]
-  const helmChartVersion = data?.chart?.helmChartVersion || valuesData?.chartVersion
-  const helmChartDescription = data?.chart?.helmChartDescription || valuesData?.chartDescription
+  const helmChart: string = data?.chart?.helmChart || helmCharts?.[0]
+  const helmChartVersion: string = data?.chart?.helmChartVersion || chartVersion
+  const helmChartDescription: string = data?.chart?.helmChartDescription || chartDescription
 
   const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const uiSchema = getWorkloadUiSchema(user, teamId)
-
-  console.log('workload', workload)
-  console.log('workloadValues', valuesData)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -167,11 +173,13 @@ export default function ({
         {...other}
       />
 
-      {show ? (
-        <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
-      ) : (
-        <CircularProgress sx={{ mb: '1rem' }} />
-      )}
+      <WorkloadValues
+        editable
+        hideTitle
+        workloadValues={workloadValues}
+        setWorkloadValues={setWorkloadValues}
+        helmChart={helmChart}
+      />
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
         <Box sx={{ flex: '1 1 auto' }} />

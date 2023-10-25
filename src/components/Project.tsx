@@ -17,10 +17,12 @@ import {
   useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
-import { CircularProgress, FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
 import { getDomain } from 'layouts/Shell'
+import { useAppDispatch } from 'redux/hooks'
+import { setError } from 'redux/reducers'
 import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadValues from './WorkloadValues'
@@ -77,49 +79,56 @@ export default function ({
   const history = useHistory()
   const { t } = useTranslation()
   const { appsEnabled, settings, user } = useSession()
-  const {
-    cluster: { domainSuffix },
-  } = settings
+  const dispatch = useAppDispatch()
   const [activeStep, setActiveStep] = useState(0)
   const [selectedPath, setSelectedPath] = useState('createBuild')
+  const [workloadValues, setWorkloadValues] = useState<any>(project?.workloadValues?.values || {})
   const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
-  const [valuesData, setValuesData]: any = useState(project?.workloadValues || {})
-  const [helmCharts, setHelmCharts] = useState<any[]>([])
-  const [catalog, setCatalog] = useState<any[]>([])
-  const [show, setShow] = useState(false)
-  const [url, setUrl] = useState('')
-  const [data, setData] = useState<any>(project || {})
 
+  const [helmCharts, setHelmCharts] = useState<string[]>([])
+  const [catalog, setCatalog] = useState<any[]>([])
+  const [url, setUrl] = useState<string>(project?.workload?.chart?.helmChartCatalog)
+  const [chartVersion, setChartVersion] = useState(project?.workload?.chart?.helmChartVersion)
+  const [chartDescription, setChartDescription] = useState(project?.workload?.chart?.helmChartDescription)
+
+  const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
-  // eslint-disable-next-line no-promise-executor-return
-  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
+  // set the helm chart catalog url based on the domain
   useEffect(() => {
-    if (!url) {
-      const hostname = window.location.hostname
-      const domain = getDomain(hostname)
-      setUrl(`https://gitea.${domain}/otomi/charts.git`)
-      if (domain === 'localhost') setUrl('https://github.com/redkubes/otomi-charts.git')
-    }
+    if (url) return
+    const hostname = window.location.hostname
+    const domain = getDomain(hostname)
+    const defaultUrl =
+      domain === 'localhost'
+        ? 'https://github.com/redkubes/otomi-charts.git'
+        : `https://gitea.${domain}/otomi/charts.git`
+    setUrl(defaultUrl)
   }, [])
 
+  // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (!formData?.workload?.id && url) {
-      getCustomWorkloadValues({ body: { url } }).then((res: any) => {
-        const { helmCharts, catalog } = res.data
-        setHelmCharts(helmCharts)
-        setCatalog(catalog)
-      })
-    }
+    if (!url) return
+    getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+      const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
+      setHelmCharts(helmCharts)
+      setCatalog(catalog)
+    })
   }, [url])
 
+  // set the workload values based on the helm chart
   useEffect(() => {
-    setShow(false)
-    const catalogItem = catalog?.find((item: any) => item.name === data?.workload?.chart?.helmChart)
-    setValuesData(project?.workloadValues || catalogItem)
-    if (catalogItem) wait(500).then(() => setShow(true))
-  }, [formData?.workload?.chart?.helmChart, helmCharts, catalog])
+    if (project?.workloadValues?.id) {
+      setWorkloadValues(project?.workloadValues?.values)
+      return
+    }
+    if (!catalog || !formData?.workload?.chart?.helmChart) return
+    const catalogItem = catalog.find((item: any) => item.name === formData.workload.chart.helmChart)
+    if (!catalogItem) return
+    setWorkloadValues(catalogItem.values)
+    setChartVersion(catalogItem.chartVersion)
+    setChartDescription(catalogItem.chartDescription)
+  }, [formData?.workload?.chart?.helmChart, catalog])
 
   useEffect(() => {
     setData(project)
@@ -132,9 +141,9 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const helmChart = data?.workload?.chart?.helmChart || helmCharts?.[0]
-  const helmChartVersion = data?.workload?.chart?.helmChartVersion || valuesData?.chartVersion
-  const helmChartDescription = data?.workload?.chart?.helmChartDescription || valuesData?.chartDescription
+  const helmChart: string = data?.workload?.chart?.helmChart || helmCharts?.[0]
+  const helmChartVersion: string = data?.workload?.chart?.helmChartVersion || chartVersion
+  const helmChartDescription: string = data?.workload?.chart?.helmChartDescription || chartDescription
 
   const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
@@ -178,7 +187,6 @@ export default function ({
     create({ teamId, body: omit(formData, ['id', 'build', 'workload', 'workloadValues', 'service']) }).then(
       (res: any) => {
         if (res.error) return
-        setData({ ...res.data, build: { name }, workload: { name }, service: { name } })
         if (selectedPath === 'useExisting') setActiveStep(2)
         else setNextStep()
       },
@@ -186,10 +194,18 @@ export default function ({
   }
 
   const handleUpdateProject = async () => {
+    dispatch(setError(undefined))
+    const { name, build, workload, service } = formData
     const res = await update({
       teamId,
       projectId,
-      body: { ...formData, service: formData.service },
+      body: {
+        ...formData,
+        build: { ...build, name },
+        workload: { ...workload, name },
+        workloadValues: { ...formData.workloadValues, values: workloadValues },
+        service: { ...service, name },
+      },
     })
     if (res.error) return
     history.push(`/projects`)
@@ -202,17 +218,8 @@ export default function ({
 
   const handleNext = async () => {
     if (activeStep === 0) handleCreateProject()
-    if (activeStep === 1) {
-      const registry = `harbor.${domainSuffix}/team-${teamId}/${formData?.name}`
-      // if (!data?.workloadValues?.id)
-      //   setValuesData({ values: { image: { repository: registry, tag: formData.build.tag } } })
-      setNextStep()
-    }
-    if (activeStep === 2) {
-      console.log('workload', data.workload)
-      console.log('valuesData', valuesData)
-      setNextStep()
-    }
+    if (activeStep === 1) setNextStep()
+    if (activeStep === 2) setNextStep()
     if (activeStep === 3) await handleUpdateProject()
   }
 
@@ -222,9 +229,6 @@ export default function ({
     if (activeStep === 2) return !formData?.workload?.chart?.helmChart
     return false
   }
-
-  console.log('project workload', data.workload)
-  console.log('project workloadValues', valuesData)
 
   return (
     <Box>
@@ -295,11 +299,13 @@ export default function ({
                     {...other}
                   />
 
-                  {show ? (
-                    <WorkloadValues editable hideTitle workloadValues={valuesData} setWorkloadValues={setValuesData} />
-                  ) : (
-                    <CircularProgress sx={{ mb: '1rem' }} />
-                  )}
+                  <WorkloadValues
+                    editable
+                    hideTitle
+                    workloadValues={workloadValues}
+                    setWorkloadValues={setWorkloadValues}
+                    helmChart={helmChart}
+                  />
                 </Box>
               )}
 
