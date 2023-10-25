@@ -9,19 +9,31 @@ import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
 import { getDomain } from 'layouts/Shell'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
+import { useAppDispatch } from 'redux/hooks'
+import { setError } from 'redux/reducers'
 import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
 import HeaderTitle from './HeaderTitle'
 import DeleteButton from './DeleteButton'
 
-export const getWorkloadSchema = (url?: string, helmCharts?: string[]): any => {
+export const getWorkloadSchema = (
+  url?: string,
+  helmCharts?: string[],
+  helmChart?: string,
+  helmChartVersion?: string,
+  helmChartDescription?: string,
+): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
-  set(schema, 'properties.chart.properties.helmChartCatalog.enum', [url])
-  set(schema, 'properties.chart.properties.helmChartCatalog.readOnly', true)
+  set(schema, 'properties.chart.properties.helmChartCatalog.default', url)
+  set(schema, 'properties.chart.properties.helmChartCatalog.type', 'null')
   set(schema, 'properties.chart.properties.helmChartCatalog.listNotShort', true)
   set(schema, 'properties.chart.properties.helmChart.enum', helmCharts)
-  set(schema, 'properties.chart.properties.helmChart.default', helmCharts?.[0])
+  set(schema, 'properties.chart.properties.helmChart.default', helmChart)
   set(schema, 'properties.chart.properties.helmChart.listNotShort', true)
+  set(schema, 'properties.chart.properties.helmChartVersion.type', 'null')
+  set(schema, 'properties.chart.properties.helmChartVersion.default', helmChartVersion)
+  set(schema, 'properties.chart.properties.helmChartDescription.type', 'null')
+  set(schema, 'properties.chart.properties.helmChartDescription.default', helmChartDescription)
   return schema
 }
 
@@ -40,7 +52,6 @@ interface Props extends CrudProps {
   workloadId?: string
   createWorkload: any
   updateWorkload: any
-  editWorkloadValues: any
   updateWorkloadValues: any
   deleteWorkload: any
 }
@@ -51,13 +62,13 @@ export default function ({
   workloadId,
   createWorkload,
   updateWorkload,
-  editWorkloadValues,
   updateWorkloadValues,
   deleteWorkload,
   ...other
 }: Props): React.ReactElement {
   const history = useHistory()
   const { t } = useTranslation()
+  const dispatch = useAppDispatch()
   const { appsEnabled, user, oboTeamId } = useSession()
   const [data, setData]: any = useState(workload)
   const { data: WLvaluesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
@@ -66,8 +77,8 @@ export default function ({
   const [helmCharts, setHelmCharts] = useState<any[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
   const [show, setShow] = useState(false)
-
-  const [url, setUrl] = useState('')
+  const [url, setUrl] = useState(workload?.chart?.helmChartCatalog)
+  console.log('url', url)
   const resourceType = 'Workload'
   let title: string
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
@@ -75,13 +86,6 @@ export default function ({
 
   // eslint-disable-next-line no-promise-executor-return
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-  const setValuesForEditor = () => {
-    setShow(false)
-    const catalogItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
-    setValuesData({ ...catalogItem, values: { ...catalogItem?.values, fullnameOverride: data?.name || '' } })
-    if (catalogItem) wait(500).then(() => setShow(true))
-  }
 
   useEffect(() => {
     if (!url) {
@@ -93,7 +97,7 @@ export default function ({
   }, [])
 
   useEffect(() => {
-    if (!workload?.id && url) {
+    if (url) {
       getCustomWorkloadValues({ body: { url } }).then((res: any) => {
         const { helmCharts, catalog } = res.data
         setHelmCharts(helmCharts)
@@ -103,17 +107,20 @@ export default function ({
   }, [url])
 
   useEffect(() => {
-    setValuesForEditor()
+    setShow(false)
+    const catalogItem = catalog?.find((item: any) => item.name === data?.chart?.helmChart)
+    setValuesData(WLvaluesData || catalogItem)
+    if (catalogItem) wait(500).then(() => setShow(true))
   }, [data?.chart?.helmChart, helmCharts, catalog])
 
   const handleCreateUpdateWorkload = async () => {
     const workload = data
-    console.log('data', data)
     const workloadValues = {
       values: valuesData.values,
     }
     let res
     if (workloadId) {
+      dispatch(setError(undefined))
       res = await updateWorkload({ teamId, workloadId, body: workload })
       res = await updateWorkloadValues({ teamId, workloadId, body: workloadValues })
     } else {
@@ -124,8 +131,15 @@ export default function ({
     history.push(`/teams/${teamId}/workloads`)
   }
 
-  const schema = getWorkloadSchema(url, helmCharts)
+  const helmChart = data?.chart?.helmChart || helmCharts?.[0]
+  const helmChartVersion = data?.chart?.helmChartVersion || valuesData?.chartVersion
+  const helmChartDescription = data?.chart?.helmChartDescription || valuesData?.chartDescription
+
+  const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const uiSchema = getWorkloadUiSchema(user, teamId)
+
+  console.log('workload', workload)
+  console.log('workloadValues', valuesData)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -138,19 +152,6 @@ export default function ({
             resourceType='workload'
             data-cy='button-delete-workload'
           />
-        )}
-      </Box>
-
-      <Box>
-        {valuesData?.chartVersion && (
-          <Box>
-            <b>Helm Chart Version:</b> {`${valuesData?.chartVersion}`}
-          </Box>
-        )}
-        {valuesData?.chartDescription && (
-          <Box>
-            <b>Helm Chart Description:</b> {`${valuesData?.chartDescription}`}
-          </Box>
         )}
       </Box>
 

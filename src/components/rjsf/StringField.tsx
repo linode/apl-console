@@ -33,9 +33,8 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
 
     if (schema.enum && schema.enum.length === 1) {
       // hide one item enum that was set to its default value, as those are used for selectors
-      // if (schema.default) newUiSchema['ui:widget'] = 'hidden'
-      // else newSchema.default = schema.enum[0]
-      newSchema.default = schema.enum[0]
+      if (schema.default) newUiSchema['ui:widget'] = 'hidden'
+      else newSchema.default = schema.enum[0]
     }
   }
   const isPasswordField = (elementId: string) => {

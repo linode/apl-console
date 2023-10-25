@@ -84,26 +84,16 @@ export default function ({
   const [selectedPath, setSelectedPath] = useState('createBuild')
   const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
   const [valuesData, setValuesData]: any = useState(project?.workloadValues || {})
-  console.log('valuesData', valuesData)
   const [helmCharts, setHelmCharts] = useState<any[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
   const [show, setShow] = useState(false)
-  const [url, setUrl] = useState('https://github.com/redkubes/otomi-charts.git')
-  console.log('url', url)
+  const [url, setUrl] = useState('')
   const [data, setData] = useState<any>(project || {})
 
   const formData = cloneDeep(data)
 
   // eslint-disable-next-line no-promise-executor-return
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-  const setValuesForEditor = () => {
-    setShow(false)
-    const catalogItem = catalog?.find((item: any) => item.name === data?.workload?.chart?.helmChart)
-    console.log('catalogItem', catalogItem)
-    setValuesData({ ...catalogItem, values: { ...catalogItem?.values, fullnameOverride: data?.name || '' } })
-    if (catalogItem) wait(500).then(() => setShow(true))
-  }
 
   useEffect(() => {
     if (!url) {
@@ -122,10 +112,13 @@ export default function ({
         setCatalog(catalog)
       })
     }
-  }, [])
+  }, [url])
 
   useEffect(() => {
-    setValuesForEditor()
+    setShow(false)
+    const catalogItem = catalog?.find((item: any) => item.name === data?.workload?.chart?.helmChart)
+    setValuesData(project?.workloadValues || catalogItem)
+    if (catalogItem) wait(500).then(() => setShow(true))
   }, [formData?.workload?.chart?.helmChart, helmCharts, catalog])
 
   useEffect(() => {
@@ -139,7 +132,11 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const workloadSchema = getWorkloadSchema(url, helmCharts)
+  const helmChart = data?.workload?.chart?.helmChart || helmCharts?.[0]
+  const helmChartVersion = data?.workload?.chart?.helmChartVersion || valuesData?.chartVersion
+  const helmChartDescription = data?.workload?.chart?.helmChartDescription || valuesData?.chartDescription
+
+  const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
@@ -226,6 +223,9 @@ export default function ({
     return false
   }
 
+  console.log('project workload', data.workload)
+  console.log('project workloadValues', valuesData)
+
   return (
     <Box>
       <Box sx={{ position: 'absolute', right: '24px' }}>
@@ -283,19 +283,6 @@ export default function ({
 
               {activeStep === 2 && (
                 <Box sx={{ width: '100%', mb: '1rem' }}>
-                  <Box>
-                    {valuesData?.chartVersion && (
-                      <Box>
-                        <b>Helm Chart Version:</b> {`${valuesData?.chartVersion}`}
-                      </Box>
-                    )}
-                    {valuesData?.chartDescription && (
-                      <Box>
-                        <b>Helm Chart Description:</b> {`${valuesData?.chartDescription}`}
-                      </Box>
-                    )}
-                  </Box>
-
                   <Form
                     schema={workloadSchema}
                     uiSchema={workloadUiSchema}
