@@ -87,6 +87,8 @@ export default function ({
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
   const [url, setUrl] = useState<string>(project?.workload?.chart?.helmChartCatalog)
+  const [chartVersion, setChartVersion] = useState<string>(project?.workload?.chart?.helmChartVersion)
+  const [chartDescription, setChartDescription] = useState<string>(project?.workload?.chart?.helmChartDescription)
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
@@ -122,17 +124,8 @@ export default function ({
     const catalogItem = catalog.find((item: any) => item.name === formData.workload.chart.helmChart)
     if (!catalogItem) return
     setWorkloadValues(catalogItem.values)
-    setData((prev) => ({
-      ...prev,
-      workload: {
-        ...prev.workload,
-        chart: {
-          ...prev.chart,
-          helmChartVersion: catalogItem.chartVersion,
-          helmChartDescription: catalogItem.chartDescription,
-        },
-      },
-    }))
+    setChartVersion(catalogItem.chartVersion)
+    setChartDescription(catalogItem.chartDescription)
   }, [formData?.workload?.chart?.helmChart, catalog])
 
   useEffect(() => {
@@ -147,8 +140,8 @@ export default function ({
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
   const helmChart: string = data?.workload?.chart?.helmChart || helmCharts?.[0]
-  const helmChartVersion: string = data?.workload?.chart?.helmChartVersion
-  const helmChartDescription: string = data?.workload?.chart?.helmChartDescription
+  const helmChartVersion: string = chartVersion
+  const helmChartDescription: string = chartDescription
 
   const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
@@ -207,7 +200,16 @@ export default function ({
       body: {
         ...formData,
         build: { ...build, name },
-        workload: { ...workload, name, chart: { ...workload.chart, helmChartCatalog: url } },
+        workload: {
+          ...workload,
+          name,
+          chart: {
+            ...workload.chart,
+            helmChartCatalog: url,
+            helmChartVersion: chartVersion,
+            helmChartDescription: chartDescription,
+          },
+        },
         workloadValues: { ...formData.workloadValues, values: workloadValues },
         service: { ...service, name },
       },
