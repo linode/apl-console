@@ -11,7 +11,7 @@ interface Row {
   teamId: string
   id: string
   name: string
-  selectedChart: string
+  chart: { helmChart: string }
 }
 
 const getWorkloadLink = (row: Row) => {
@@ -36,7 +36,7 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
 }
 
 const getWorkloadType = (row: Row) => {
-  return row.selectedChart ? row.selectedChart : 'custom'
+  return row?.chart?.helmChart ?? 'custom'
 }
 
 interface Props {
