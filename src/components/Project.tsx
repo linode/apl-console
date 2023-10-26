@@ -11,10 +11,10 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import {
   GetSessionApiResponse,
-  useCustomWorkloadValuesMutation,
   useGetSecretsQuery,
   useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
+  useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
@@ -83,7 +83,7 @@ export default function ({
   const [activeStep, setActiveStep] = useState(0)
   const [selectedPath, setSelectedPath] = useState('createBuild')
   const [workloadValues, setWorkloadValues] = useState<any>(project?.workloadValues?.values || {})
-  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
+  const [getWorkloadCatalog] = useWorkloadCatalogMutation()
 
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
@@ -109,7 +109,7 @@ export default function ({
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
     if (!url) return
-    getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+    getWorkloadCatalog({ body: { url } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)

@@ -6,8 +6,8 @@ import React, { useEffect, useState } from 'react'
 import {
   GetSessionApiResponse,
   GetWorkloadApiResponse,
-  useCustomWorkloadValuesMutation,
   useGetWorkloadValuesQuery,
+  useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
@@ -78,7 +78,7 @@ export default function ({
   const [data, setData] = useState<GetWorkloadApiResponse>(workload)
   const { data: valuesData } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
   const [workloadValues, setWorkloadValues] = useState<any>(valuesData?.values)
-  const [getCustomWorkloadValues] = useCustomWorkloadValuesMutation()
+  const [getWorkloadCatalog] = useWorkloadCatalogMutation()
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
   const [url, setUrl] = useState(workload?.chart?.helmChartCatalog)
@@ -105,7 +105,7 @@ export default function ({
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
     if (!url) return
-    getCustomWorkloadValues({ body: { url } }).then((res: any) => {
+    getWorkloadCatalog({ body: { url } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)
