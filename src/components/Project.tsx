@@ -84,11 +84,8 @@ export default function ({
   const [selectedPath, setSelectedPath] = useState('createBuild')
   const [workloadValues, setWorkloadValues] = useState<any>(project?.workloadValues?.values || {})
   const [getWorkloadCatalog] = useWorkloadCatalogMutation()
-
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
-  const [url, setUrl] = useState<string>(project?.workload?.chart?.helmChartCatalog)
-
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
@@ -241,8 +238,7 @@ export default function ({
 
   const handleNext = async () => {
     if (activeStep === 0) handleCreateProject()
-    if (activeStep === 1) setNextStep()
-    if (activeStep === 2) setNextStep()
+    if (activeStep === 1 || activeStep === 2) setNextStep()
     if (activeStep === 3) await handleUpdateProject()
   }
 
