@@ -72,8 +72,6 @@ export default function ({
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
-  // eslint-disable-next-line no-promise-executor-return
-  const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
   const [show, setShow] = useState(false)
 
   useEffect(() => {
@@ -83,7 +81,7 @@ export default function ({
   // re-render the CodeEditor component with the new helm chart values
   useEffect(() => {
     setShow(false)
-    wait(1000).then(() => setShow(true))
+    setTimeout(() => setShow(true), 1000)
   }, [helmChart])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
