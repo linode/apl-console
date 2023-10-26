@@ -86,39 +86,31 @@ export default function ({
   const [getWorkloadCatalog] = useWorkloadCatalogMutation()
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
+  const [url, setUrl] = useState<string>(project?.workload?.chart?.helmChartCatalog)
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
   // set the helm chart catalog url based on the domain
   useEffect(() => {
-    if (data?.workload?.chart?.helmChartCatalog) return
+    if (url) return
     const hostname = window.location.hostname
     const domain = getDomain(hostname)
     const defaultUrl =
       domain === 'localhost'
         ? 'https://github.com/redkubes/otomi-charts.git'
         : `https://gitea.${domain}/otomi/charts.git`
-    setData((prev) => ({
-      ...prev,
-      workload: {
-        ...prev.workload,
-        chart: {
-          ...prev.chart,
-          helmChartCatalog: defaultUrl,
-        },
-      },
-    }))
+    setUrl(defaultUrl)
   }, [])
 
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (!data?.workload?.chart?.helmChartCatalog) return
-    getWorkloadCatalog({ body: { url: data?.workload?.chart?.helmChartCatalog, sub: user.sub } }).then((res: any) => {
+    if (!url) return
+    getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)
     })
-  }, [data?.workload?.chart?.helmChartCatalog])
+  }, [url])
 
   // set the workload values based on the helm chart
   useEffect(() => {
@@ -154,18 +146,11 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const helmChartCatalog: string = data?.workload?.chart?.helmChartCatalog
   const helmChart: string = data?.workload?.chart?.helmChart || helmCharts?.[0]
   const helmChartVersion: string = data?.workload?.chart?.helmChartVersion
   const helmChartDescription: string = data?.workload?.chart?.helmChartDescription
 
-  const workloadSchema = getWorkloadSchema(
-    helmChartCatalog,
-    helmCharts,
-    helmChart,
-    helmChartVersion,
-    helmChartDescription,
-  )
+  const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
@@ -222,7 +207,7 @@ export default function ({
       body: {
         ...formData,
         build: { ...build, name },
-        workload: { ...workload, name },
+        workload: { ...workload, name, chart: { ...workload.chart, helmChartCatalog: url } },
         workloadValues: { ...formData.workloadValues, values: workloadValues },
         service: { ...service, name },
       },

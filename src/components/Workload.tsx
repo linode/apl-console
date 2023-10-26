@@ -81,6 +81,7 @@ export default function ({
   const [getWorkloadCatalog] = useWorkloadCatalogMutation()
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
+  const [url, setUrl] = useState(workload?.chart?.helmChartCatalog)
 
   const resourceType = 'Workload'
   let title: string
@@ -89,31 +90,25 @@ export default function ({
 
   // set the helm chart catalog url based on the domain
   useEffect(() => {
-    if (data?.chart?.helmChartCatalog) return
+    if (url) return
     const hostname = window.location.hostname
     const domain = getDomain(hostname)
     const defaultUrl =
       domain === 'localhost'
         ? 'https://github.com/redkubes/otomi-charts.git'
         : `https://gitea.${domain}/otomi/charts.git`
-    setData((prev) => ({
-      ...prev,
-      chart: {
-        ...prev.chart,
-        helmChartCatalog: defaultUrl,
-      },
-    }))
+    setUrl(defaultUrl)
   }, [])
 
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (!data?.chart?.helmChartCatalog) return
-    getWorkloadCatalog({ body: { url: data?.chart?.helmChartCatalog, sub: user.sub } }).then((res: any) => {
+    if (!url) return
+    getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)
     })
-  }, [data?.chart?.helmChartCatalog])
+  }, [url])
 
   // set the workload values based on the helm chart
   useEffect(() => {
@@ -149,12 +144,11 @@ export default function ({
     history.push(`/teams/${teamId}/workloads`)
   }
 
-  const helmChartCatalog: string = data?.chart?.helmChartCatalog
   const helmChart: string = data?.chart?.helmChart || helmCharts?.[0]
   const helmChartVersion: string = data?.chart?.helmChartVersion
   const helmChartDescription: string = data?.chart?.helmChartDescription
 
-  const schema = getWorkloadSchema(helmChartCatalog, helmCharts, helmChart, helmChartVersion, helmChartDescription)
+  const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const uiSchema = getWorkloadUiSchema(user, teamId)
 
   return (
