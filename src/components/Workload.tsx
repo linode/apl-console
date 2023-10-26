@@ -105,7 +105,7 @@ export default function ({
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
     if (!url) return
-    getWorkloadCatalog({ body: { url } }).then((res: any) => {
+    getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)

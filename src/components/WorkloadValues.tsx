@@ -99,7 +99,7 @@ export default function ({
         />
       )}
       <div className={classes.buffer}> </div>{' '}
-      {show && workloadValues !== undefined ? (
+      {show && workloadValues ? (
         <CodeEditor
           code={yaml}
           onChange={(data) => {

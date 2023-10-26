@@ -30,7 +30,7 @@ import { getWorkloadSchema, getWorkloadUiSchema } from './Workload'
 import { getBuildSchema, getBuildUiSchema } from './Build'
 import DeleteButton from './DeleteButton'
 
-export const getProjectSchema = (teamId: string): any => {
+export const getProjectSchema = (): any => {
   const schema = cloneDeep(getSpec().components.schemas.Project)
   return schema
 }
@@ -109,7 +109,7 @@ export default function ({
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
     if (!url) return
-    getWorkloadCatalog({ body: { url } }).then((res: any) => {
+    getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
       const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
       setHelmCharts(helmCharts)
       setCatalog(catalog)
@@ -134,7 +134,7 @@ export default function ({
     setData(project)
   }, [project])
 
-  const projectSchema = getProjectSchema(teamId)
+  const projectSchema = getProjectSchema()
   const projectUiSchema = getProjectUiSchema(user, teamId)
 
   const buildSchema = getBuildSchema(teamId)
