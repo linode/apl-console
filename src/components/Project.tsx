@@ -20,7 +20,6 @@ import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
-import { getDomain } from 'layouts/Shell'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import Form from './rjsf/Form'
@@ -92,27 +91,15 @@ export default function ({
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
-  // set the helm chart catalog url based on the domain
-  useEffect(() => {
-    if (url) return
-    const hostname = window.location.hostname
-    const domain = getDomain(hostname)
-    const defaultUrl =
-      domain === 'localhost'
-        ? 'https://github.com/redkubes/otomi-charts.git'
-        : `https://gitea.${domain}/otomi/charts.git`
-    setUrl(defaultUrl)
-  }, [])
-
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (!url) return
     getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
-      const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
+      const { url, helmCharts, catalog }: { url: string; helmCharts: string[]; catalog: any[] } = res.data
+      setUrl(url)
       setHelmCharts(helmCharts)
       setCatalog(catalog)
     })
-  }, [url])
+  }, [])
 
   // set the workload values based on the helm chart
   useEffect(() => {
