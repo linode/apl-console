@@ -79,7 +79,7 @@ export default function ({
     <>
       <MonacoEditor
         className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
-        height='500px'
+        height='900px'
         theme='vs-dark'
         value={startCode}
         language={lang}
