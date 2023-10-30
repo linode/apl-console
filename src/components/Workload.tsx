@@ -12,7 +12,6 @@ import {
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
-import { getDomain } from 'layouts/Shell'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
@@ -88,27 +87,15 @@ export default function ({
   if (workloadId) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: workload.name, teamId: oboTeamId })
   if (!workloadId) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
 
-  // set the helm chart catalog url based on the domain
-  useEffect(() => {
-    if (url) return
-    const hostname = window.location.hostname
-    const domain = getDomain(hostname)
-    const defaultUrl =
-      domain === 'localhost'
-        ? 'https://github.com/redkubes/otomi-charts.git'
-        : `https://gitea.${domain}/otomi/charts.git`
-    setUrl(defaultUrl)
-  }, [])
-
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
-    if (!url) return
     getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
-      const { helmCharts, catalog }: { helmCharts: string[]; catalog: any[] } = res.data
+      const { url, helmCharts, catalog }: { url: string; helmCharts: string[]; catalog: any[] } = res.data
+      setUrl(url)
       setHelmCharts(helmCharts)
       setCatalog(catalog)
     })
-  }, [url])
+  }, [])
 
   // set the workload values based on the helm chart
   useEffect(() => {
