@@ -1915,8 +1915,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -2123,8 +2123,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -2334,8 +2334,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -2545,8 +2545,8 @@ export type CreateProjectApiArg = {
       teamId?: string
       name: string
       chart?: {
-        helmChartCatalog?: string
-        helmChart?: string
+        helmChartCatalog: string
+        helmChart: string
         helmChartVersion?: string
         helmChartDescription?: string
       }
@@ -2760,8 +2760,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -2973,8 +2973,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -3186,8 +3186,8 @@ export type EditProjectApiArg = {
       teamId?: string
       name: string
       chart?: {
-        helmChartCatalog?: string
-        helmChart?: string
+        helmChartCatalog: string
+        helmChart: string
         helmChartVersion?: string
         helmChartDescription?: string
       }
@@ -3366,8 +3366,8 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: string
-    helmChart?: string
+    helmChartCatalog: string
+    helmChart: string
     helmChartVersion?: string
     helmChartDescription?: string
   }
@@ -3403,8 +3403,8 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: string
-    helmChart?: string
+    helmChartCatalog: string
+    helmChart: string
     helmChartVersion?: string
     helmChartDescription?: string
   }
@@ -3438,8 +3438,8 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: string
-    helmChart?: string
+    helmChartCatalog: string
+    helmChart: string
     helmChartVersion?: string
     helmChartDescription?: string
   }
@@ -3473,8 +3473,8 @@ export type CreateWorkloadApiArg = {
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
@@ -3512,8 +3512,8 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: string
-    helmChart?: string
+    helmChartCatalog: string
+    helmChart: string
     helmChartVersion?: string
     helmChartDescription?: string
   }
@@ -3549,8 +3549,8 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   teamId?: string
   name: string
   chart?: {
-    helmChartCatalog?: string
-    helmChart?: string
+    helmChartCatalog: string
+    helmChart: string
     helmChartVersion?: string
     helmChartDescription?: string
   }
@@ -3586,8 +3586,8 @@ export type EditWorkloadApiArg = {
     teamId?: string
     name: string
     chart?: {
-      helmChartCatalog?: string
-      helmChart?: string
+      helmChartCatalog: string
+      helmChart: string
       helmChartVersion?: string
       helmChartDescription?: string
     }
