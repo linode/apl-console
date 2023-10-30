@@ -129,7 +129,6 @@ export default function ({
   const helmChart: string = data?.workload?.chart?.helmChart || helmCharts?.[0]
   const helmChartVersion: string = chartVersion
   const helmChartDescription: string = chartDescription
-
   const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
