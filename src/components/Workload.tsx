@@ -135,7 +135,6 @@ export default function ({
   const helmChart: string = data?.chart?.helmChart || helmCharts?.[0]
   const helmChartVersion: string = data?.chart?.helmChartVersion
   const helmChartDescription: string = data?.chart?.helmChartDescription
-
   const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const uiSchema = getWorkloadUiSchema(user, teamId)
 
