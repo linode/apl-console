@@ -11,7 +11,6 @@ interface Row {
   teamId: string
   id: string
   name: string
-  selectedChart: string
 }
 
 const getWorkloadLink = (row: Row) => {
@@ -33,10 +32,6 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
       Application
     </Link>
   )
-}
-
-const getWorkloadType = (row: Row) => {
-  return row.selectedChart ? row.selectedChart : 'custom'
 }
 
 interface Props {
@@ -63,11 +58,6 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
       id: 'name',
       label: t('Name'),
       renderer: (row: Row) => getWorkloadLink(row),
-    },
-    {
-      id: 'type',
-      label: 'Type',
-      renderer: (row: Row) => getWorkloadType(row),
     },
     {
       id: 'argocd',

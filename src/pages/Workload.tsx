@@ -10,7 +10,6 @@ import {
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
   useEditWorkloadMutation,
-  useEditWorkloadValuesMutation,
   useGetWorkloadQuery,
   useUpdateWorkloadValuesMutation,
 } from 'redux/otomiApi'
@@ -36,7 +35,6 @@ export default function ({
     isError,
     refetch,
   } = useGetWorkloadQuery({ teamId, workloadId: workloadId || createWLData?.id }, { skip: !workloadId })
-  const [editWLValues] = useEditWorkloadValuesMutation()
   const [updateWLValues] = useUpdateWorkloadValuesMutation()
   const [deleteWL, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -56,7 +54,6 @@ export default function ({
       mutating={mutating}
       createWorkload={createWL}
       updateWorkload={updateWL}
-      editWorkloadValues={editWLValues}
       updateWorkloadValues={updateWLValues}
       deleteWorkload={deleteWL}
     />

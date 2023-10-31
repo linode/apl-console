@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import { getSpec } from 'common/api-spec'
 import { cloneDeep } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -55,6 +55,7 @@ interface Props {
   workloadValues?: GetWorkloadValuesApiResponse
   setWorkloadValues?: (formData: any) => void
   hideTitle?: boolean
+  helmChart?: string
 }
 
 export default function ({
@@ -63,25 +64,31 @@ export default function ({
   workloadValues,
   setWorkloadValues,
   hideTitle = false,
+  helmChart,
   ...other
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
-  const [rawValues, setRawValues] = useState(workloadValues?.values)
-  const [chartVersion, setChartVersion]: any = useState(workloadValues?.chartVersion)
-  const [chartDescription, setChartDescription]: any = useState(workloadValues?.chartDescription)
+  const [rawValues, setRawValues] = useState(workloadValues)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   const { classes } = useStyles()
+  const [show, setShow] = useState(false)
+
   useEffect(() => {
-    setRawValues(workloadValues?.values)
-    setChartVersion(workloadValues?.chartVersion)
-    setChartDescription(workloadValues?.chartDescription)
+    setRawValues(workloadValues)
   }, [workloadValues])
+
+  // re-render the CodeEditor component with the new helm chart values
+  useEffect(() => {
+    setShow(false)
+    setTimeout(() => setShow(true), 1000)
+  }, [helmChart])
   // END HOOKS
   const yaml = YAML.stringify(rawValues)
   const handleSubmit = () => {
     if (validRaw) onSubmit(rawValues)
   }
+
   return (
     <>
       {!hideTitle && (
@@ -91,22 +98,20 @@ export default function ({
           resourceType='WorkloadValues'
         />
       )}
-      <div>
-        {chartVersion && <div>Version: {`${chartVersion}`}</div>}
-        {chartDescription && <div>Description: {`${chartDescription}`}</div>}
-      </div>
       <div className={classes.buffer}> </div>{' '}
-      <CodeEditor
-        code={yaml}
-        onChange={(data) => {
-          setRawValues(data || {})
-          setWorkloadValues?.((prev: any) => {
-            return { ...prev, values: data }
-          })
-        }}
-        disabled={!isEdit}
-        setValid={setValidRaw}
-      />
+      {show && workloadValues ? (
+        <CodeEditor
+          code={yaml}
+          onChange={(data) => {
+            setRawValues(data || {})
+            setWorkloadValues?.(data)
+          }}
+          disabled={!isEdit}
+          setValid={setValidRaw}
+        />
+      ) : (
+        <CircularProgress sx={{ mb: '1rem' }} />
+      )}
       {!editable && (
         <Box display='flex' flexDirection='row-reverse' m={1}>
           <Button

@@ -144,6 +144,17 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
         </Grid>
       )
     }
+
+    if (schema.type === 'null') {
+      return (
+        <Grid key={id} className={classes.grid} container>
+          <Grid key={id} item xs={12} className={classes.grid}>
+            <b>{schema.title}: </b>
+            <span>{schema.default}</span>
+          </Grid>
+        </Grid>
+      )
+    }
     return (
       <Grid key={id} className={classes.grid} item>
         {o.content}
