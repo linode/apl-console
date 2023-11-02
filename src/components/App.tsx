@@ -174,9 +174,6 @@ export const getAppUiSchema = (
     case 'kubeapps':
       set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
       break
-    case 'kubeclarity':
-      set(uiSchema, 'databasePassword.ui:widget', 'hidden')
-      break
     case 'loki':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       break
