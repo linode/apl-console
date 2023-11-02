@@ -85,9 +85,7 @@ export default function ({
   const [getWorkloadCatalog] = useWorkloadCatalogMutation()
   const [helmCharts, setHelmCharts] = useState<string[]>([])
   const [catalog, setCatalog] = useState<any[]>([])
-  const [url, setUrl] = useState<string>(project?.workload?.chart?.helmChartCatalog)
-  const [chartVersion, setChartVersion] = useState<string>(project?.workload?.chart?.helmChartVersion)
-  const [chartDescription, setChartDescription] = useState<string>(project?.workload?.chart?.helmChartDescription)
+  const [url, setUrl] = useState<string>(project?.workload?.url)
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
 
@@ -107,13 +105,23 @@ export default function ({
       setWorkloadValues(project?.workloadValues?.values)
       return
     }
-    if (!catalog || !formData?.workload?.chart?.helmChart) return
-    const catalogItem = catalog.find((item: any) => item.name === formData.workload.chart.helmChart)
+    if (!catalog || !formData?.workload?.path) return
+    const catalogItem = catalog.find((item: any) => item.name === formData.workload.path)
     if (!catalogItem) return
     setWorkloadValues(catalogItem.values)
-    setChartVersion(catalogItem.chartVersion)
-    setChartDescription(catalogItem.chartDescription)
-  }, [formData?.workload?.chart?.helmChart, catalog])
+    setData((prev: any) => ({
+      ...prev,
+      workload: {
+        ...prev.workload,
+        path: data?.workload?.chartMetadata?.helmChart,
+        chartMetadata: {
+          ...prev.workload.chartMetadata,
+          helmChartVersion: catalogItem.chartVersion,
+          helmChartDescription: catalogItem.chartDescription,
+        },
+      },
+    }))
+  }, [formData?.workload?.path, formData?.workload?.chartMetadata?.helmChart, catalog])
 
   useEffect(() => {
     setData(project)
@@ -126,9 +134,9 @@ export default function ({
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const helmChart: string = data?.workload?.chart?.helmChart || helmCharts?.[0]
-  const helmChartVersion: string = chartVersion
-  const helmChartDescription: string = chartDescription
+  const helmChart: string = data?.workload?.chartMetadata?.helmChart || data?.workload?.path || helmCharts?.[0]
+  const helmChartVersion: string = data?.workload?.chartMetadata?.helmChartVersion
+  const helmChartDescription: string = data?.workload?.chartMetadata?.helmChartDescription
   const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
@@ -180,6 +188,8 @@ export default function ({
   const handleUpdateProject = async () => {
     dispatch(setError(undefined))
     const { name, build, workload, service } = formData
+    const workloadBody = omit(workload, ['chartProvider', 'chart', 'revision'])
+    const chartMetadata = omit(workload?.chartMetadata, ['helmChartCatalog', 'helmChart'])
     const res = await update({
       teamId,
       projectId,
@@ -187,14 +197,9 @@ export default function ({
         ...formData,
         build: { ...build, name },
         workload: {
-          ...workload,
+          ...workloadBody,
           name,
-          chart: {
-            ...workload.chart,
-            helmChartCatalog: url,
-            helmChartVersion: chartVersion,
-            helmChartDescription: chartDescription,
-          },
+          chartMetadata,
         },
         workloadValues: { ...formData.workloadValues, values: workloadValues },
         service: { ...service, name },
@@ -218,7 +223,7 @@ export default function ({
   const isDisabled = () => {
     if (activeStep === 0) return !formData?.name
     if (activeStep === 1) return !formData?.build?.mode?.docker?.repoUrl && !formData?.build?.mode?.buildpacks?.repoUrl
-    if (activeStep === 2) return !formData?.workload?.chart?.helmChart
+    if (activeStep === 2) return !formData?.workload?.path
     return false
   }
 

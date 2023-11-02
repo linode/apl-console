@@ -1914,12 +1914,16 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -2122,12 +2126,16 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -2333,12 +2341,16 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -2544,12 +2556,16 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name: string
-      chart?: {
-        helmChartCatalog: string
-        helmChart: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
         helmChartVersion?: string
         helmChartDescription?: string
       }
+      namespace?: string
       autoUpdate?: {
         enabled?: boolean
         imageRegistry?: string
@@ -2759,12 +2775,16 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -2972,12 +2992,16 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -3185,12 +3209,16 @@ export type EditProjectApiArg = {
       id?: string
       teamId?: string
       name: string
-      chart?: {
-        helmChartCatalog: string
-        helmChart: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
         helmChartVersion?: string
         helmChartDescription?: string
       }
+      namespace?: string
       autoUpdate?: {
         enabled?: boolean
         imageRegistry?: string
@@ -3365,12 +3393,16 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   id?: string
   teamId?: string
   name: string
-  chart?: {
-    helmChartCatalog: string
-    helmChart: string
+  url: string
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
+  revision?: string
+  chartMetadata?: {
     helmChartVersion?: string
     helmChartDescription?: string
   }
+  namespace?: string
   autoUpdate?: {
     enabled?: boolean
     imageRegistry?: string
@@ -3402,12 +3434,16 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   id?: string
   teamId?: string
   name: string
-  chart?: {
-    helmChartCatalog: string
-    helmChart: string
+  url: string
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
+  revision?: string
+  chartMetadata?: {
     helmChartVersion?: string
     helmChartDescription?: string
   }
+  namespace?: string
   autoUpdate?: {
     enabled?: boolean
     imageRegistry?: string
@@ -3437,12 +3473,16 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   id?: string
   teamId?: string
   name: string
-  chart?: {
-    helmChartCatalog: string
-    helmChart: string
+  url: string
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
+  revision?: string
+  chartMetadata?: {
     helmChartVersion?: string
     helmChartDescription?: string
   }
+  namespace?: string
   autoUpdate?: {
     enabled?: boolean
     imageRegistry?: string
@@ -3472,12 +3512,16 @@ export type CreateWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
@@ -3511,12 +3555,16 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   id?: string
   teamId?: string
   name: string
-  chart?: {
-    helmChartCatalog: string
-    helmChart: string
+  url: string
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
+  revision?: string
+  chartMetadata?: {
     helmChartVersion?: string
     helmChartDescription?: string
   }
+  namespace?: string
   autoUpdate?: {
     enabled?: boolean
     imageRegistry?: string
@@ -3548,12 +3596,16 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   id?: string
   teamId?: string
   name: string
-  chart?: {
-    helmChartCatalog: string
-    helmChart: string
+  url: string
+  chartProvider?: 'helm' | 'git'
+  path?: string
+  chart?: string
+  revision?: string
+  chartMetadata?: {
     helmChartVersion?: string
     helmChartDescription?: string
   }
+  namespace?: string
   autoUpdate?: {
     enabled?: boolean
     imageRegistry?: string
@@ -3585,12 +3637,16 @@ export type EditWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
-    chart?: {
-      helmChartCatalog: string
-      helmChart: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
       helmChartVersion?: string
       helmChartDescription?: string
     }
+    namespace?: string
     autoUpdate?: {
       enabled?: boolean
       imageRegistry?: string
