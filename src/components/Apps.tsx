@@ -9,6 +9,8 @@ import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
 import LoadingScreen from './LoadingScreen'
 import TableToolbar from './TableToolbar'
+import Modal from './Modal'
+import DeprecatedModalInfo from './DeprecatedModalInfo'
 
 // -- Styles -------------------------------------------------------------
 
@@ -103,6 +105,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const [filterName, setFilterName] = useState('')
   const [orderBy, setOrderBy] = useState('enabled')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [openModal, setOpenModal] = useState(false)
 
   const toggleApp = (name: string) => {
     const { deps, appInfo } = getAppData(session, teamId, name)
@@ -144,6 +147,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const out = (items) =>
     items.map((item) => {
       const { enabled, externalUrl, id, logo, logoAlt, deps: coreDeps } = getAppData(session, teamId, item)
+      const isDeprecated = id === 'drone'
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
           <AppCard
@@ -160,6 +164,8 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             setAppState={setAppState}
             hostedByOtomi={item.enabled === undefined}
             toggleApp={() => toggleApp(id)}
+            isDeprecated={isDeprecated}
+            openModal={() => setOpenModal(true)}
           />
         </Grid>
       )
@@ -171,6 +177,15 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {out(dataFiltered.sort(sortArray))}
       </Grid>
+      <Modal
+        title='My modal'
+        open={openModal}
+        noHeader
+        children={<DeprecatedModalInfo id='drone' img='/logos/drone_logo.svg' imgAlt='drone' title='Drone' />}
+        handleClose={() => setOpenModal(false)}
+        handleAction={() => setOpenModal(false)}
+        actionButtonText='I understand!'
+      />
     </div>
   )
 }

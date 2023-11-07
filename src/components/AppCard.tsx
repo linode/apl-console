@@ -97,6 +97,8 @@ export default function ({
   externalUrl,
   hostedByOtomi,
   toggleApp,
+  isDeprecated,
+  openModal,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const image = (
@@ -127,16 +129,43 @@ export default function ({
     enabled && externalUrl
       ? { textDecoration: 'none' }
       : ({ pointerEvents: 'none', textDecoration: 'none' } as CSSProperties)
+
+  const handleClickModal = () => {
+    console.log('drone clicked')
+    openModal()
+  }
+
   return (
     <Box className={cx(classes.root, !enabled && classes.disabled)}>
       {/* {hostedByOtomi && <Ribbon>core</Ribbon>} */}
 
-      <Link to={{ pathname: externalUrl }} style={linkStyle} target='_blank'>
-        {image}
-        <Typography className={cx(classes.title)} variant='h6'>
-          {title}
-        </Typography>
-      </Link>
+      {isDeprecated ? (
+        <Box style={linkStyle} onClick={handleClickModal}>
+          {image}
+          <Box
+            component='img'
+            sx={{
+              position: 'absolute',
+              transform: 'rotate(-15deg)',
+              top: '30%',
+              m: 'auto',
+              width: 'calc(100% - 20px)',
+            }}
+            src='/assets/deprecated_text.svg'
+            alt='deprecated_text'
+          />
+          <Typography className={cx(classes.title)} variant='h6'>
+            {title}
+          </Typography>{' '}
+        </Box>
+      ) : (
+        <Link to={{ pathname: externalUrl }} style={linkStyle} target='_blank'>
+          {image}
+          <Typography className={cx(classes.title)} variant='h6'>
+            {title}
+          </Typography>
+        </Link>
+      )}
 
       <Box className='hidden-button'>
         <AppButtons
@@ -148,6 +177,8 @@ export default function ({
           toggleApp={toggleApp}
           appTitle={title}
           isHostedByOtomi={hostedByOtomi}
+          isDeprecated={isDeprecated}
+          handleClickModal={handleClickModal}
         />
       </Box>
     </Box>
