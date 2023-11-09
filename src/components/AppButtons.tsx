@@ -74,14 +74,7 @@ export default function ({
       )}
 
       {enabled && externalUrl && (
-        <IconButton
-          component={!isDeprecated && RLink}
-          to={{ pathname: externalUrl }}
-          target='_blank'
-          onClick={() => {
-            if (isDeprecated) handleClickModal()
-          }}
-        >
+        <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank' onClick={handleClickModal}>
           <Iconify icon='ri:share-forward-fill' />
         </IconButton>
       )}

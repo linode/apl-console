@@ -130,18 +130,22 @@ export default function ({
       ? { textDecoration: 'none' }
       : ({ pointerEvents: 'none', textDecoration: 'none' } as CSSProperties)
 
-  const handleClickModal = () => {
-    console.log('drone clicked')
-    openModal()
+  const isDeprecatedLocalStorage = localStorage.getItem(`deprecatedApp_${id}`)
+
+  const handleClickModal = (e) => {
+    if (!isDeprecatedLocalStorage) {
+      e.preventDefault()
+      openModal()
+    }
   }
 
   return (
     <Box className={cx(classes.root, !enabled && classes.disabled)}>
       {/* {hostedByOtomi && <Ribbon>core</Ribbon>} */}
 
-      {isDeprecated ? (
-        <Box style={linkStyle} onClick={handleClickModal}>
-          {image}
+      <Link to={{ pathname: externalUrl }} onClick={handleClickModal} style={linkStyle} target='_blank'>
+        {image}
+        {isDeprecated && (
           <Box
             component='img'
             sx={{
@@ -154,18 +158,11 @@ export default function ({
             src='/assets/deprecated_text.svg'
             alt='deprecated_text'
           />
-          <Typography className={cx(classes.title)} variant='h6'>
-            {title}
-          </Typography>{' '}
-        </Box>
-      ) : (
-        <Link to={{ pathname: externalUrl }} style={linkStyle} target='_blank'>
-          {image}
-          <Typography className={cx(classes.title)} variant='h6'>
-            {title}
-          </Typography>
-        </Link>
-      )}
+        )}
+        <Typography className={cx(classes.title)} variant='h6'>
+          {title}
+        </Typography>
+      </Link>
 
       <Box className='hidden-button'>
         <AppButtons

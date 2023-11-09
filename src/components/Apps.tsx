@@ -88,6 +88,16 @@ function sortArray(a, b) {
   return 0
 }
 
+function getDeprecatedApps(apps, session, teamId) {
+  return apps
+    .map((app) => {
+      const { id, isDeprecated, deprecationInfo, externalUrl, replacementUrl } = getAppData(session, teamId, app)
+      if (isDeprecated) return { id, deprecationInfo, externalUrl, replacementUrl }
+      return null
+    })
+    .filter((app) => app !== null)
+}
+
 // ---- JSX -------------------------------------------------------------
 
 interface Props {
@@ -142,12 +152,22 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     filterName,
   })
 
+  const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
+  console.log('deprecatedApps', deprecatedApps)
+
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
     items.map((item) => {
-      const { enabled, externalUrl, id, logo, logoAlt, deps: coreDeps } = getAppData(session, teamId, item)
-      const isDeprecated = id === 'drone'
+      const {
+        enabled,
+        externalUrl,
+        id,
+        logo,
+        logoAlt,
+        deps: coreDeps,
+        isDeprecated,
+      } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
           <AppCard
@@ -171,21 +191,42 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
       )
     })
 
+  const deprecatedAppModals = () => {
+    return deprecatedApps.map((app) => {
+      const handleCancel = () => {
+        setOpenModal(false)
+        window.open(app.externalUrl, '_blank')
+      }
+
+      const handleAction = () => {
+        setOpenModal(false)
+        console.log('Tekton Url: ', `${app.replacementUrl}/#/namespaces/otomi-pipelines/pipelineruns`)
+        window.open(`${app.replacementUrl}/#/namespaces/otomi-pipelines/pipelineruns`, '_blank')
+      }
+      return (
+        <div key={`deprecated-${app.id}-modal`}>
+          <Modal
+            noHeader
+            children={<DeprecatedModalInfo deprecatedApp={app} />}
+            open={openModal}
+            handleClose={() => setOpenModal(false)}
+            handleCancel={handleCancel}
+            cancelButtonText='I understand!'
+            handleAction={handleAction}
+            actionButtonText='Go to Tekton Dashboard'
+          />
+        </div>
+      )
+    })
+  }
+
   return (
     <div className={cx(classes.root)}>
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {out(dataFiltered.sort(sortArray))}
       </Grid>
-      <Modal
-        title='My modal'
-        open={openModal}
-        noHeader
-        children={<DeprecatedModalInfo id='drone' img='/logos/drone_logo.svg' imgAlt='drone' title='Drone' />}
-        handleClose={() => setOpenModal(false)}
-        handleAction={() => setOpenModal(false)}
-        actionButtonText='I understand!'
-      />
+      {deprecatedAppModals()}
     </div>
   )
 }

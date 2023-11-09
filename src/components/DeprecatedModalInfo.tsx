@@ -1,6 +1,7 @@
-import { Box } from '@mui/material'
+import { Box, Checkbox, FormControlLabel } from '@mui/material'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
+import ForwardIcon from '@mui/icons-material/Forward'
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -57,61 +58,97 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 interface Props {
-  id: string
-  title: string
-  img: string
-  imgAlt: string
+  deprecatedApp: any
 }
 
-export default function ({ id, title, img, imgAlt }: Props): React.ReactElement {
+export default function ({ deprecatedApp }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
-  const image = (
-    <img
-      draggable={false}
-      className={cx(
-        classes.img,
-        // this is ofcourse not good code, but it'll do for the time being
-        // eslint-disable-next-line no-nested-ternary
-        id === 'vault' || id === 'kubeapps'
-          ? classes.contrastDark
-          : id === 'vault' || id === 'kubeapps'
-          ? classes.contrast
-          : '',
-      )}
-      src={img}
-      onError={({ currentTarget }) => {
-        // eslint-disable-next-line no-param-reassign
-        currentTarget.onerror = null // prevents looping
-        // eslint-disable-next-line no-param-reassign
-        currentTarget.src = imgAlt
-      }}
-      alt={`Logo for deprecated ${title} app`}
-    />
-  )
+  const {
+    id,
+    deprecationInfo: { replacement, message, reasons, replacementAdvantages, options },
+  } = deprecatedApp
+  const image = (id, img) => {
+    return (
+      <img
+        draggable={false}
+        className={cx(
+          classes.img,
+          // this is ofcourse not good code, but it'll do for the time being
+          // eslint-disable-next-line no-nested-ternary
+          id === 'vault' || id === 'kubeapps'
+            ? classes.contrastDark
+            : id === 'vault' || id === 'kubeapps'
+            ? classes.contrast
+            : '',
+        )}
+        src={img}
+        onError={({ currentTarget }) => {
+          // eslint-disable-next-line no-param-reassign
+          currentTarget.onerror = null // prevents looping
+          // eslint-disable-next-line no-param-reassign
+          currentTarget.src = id
+        }}
+        alt={`Logo for ${id} app`}
+      />
+    )
+  }
+
+  const toggleDontShowAgain = (e) => {
+    const { checked } = e.target
+    if (checked) localStorage.setItem(`deprecatedApp_${id}`, 'true')
+    else localStorage.removeItem(`deprecatedApp_${id}`)
+  }
+
   return (
     <Box>
-      <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
-        {image}
-        <Box
-          component='img'
-          sx={{
-            position: 'absolute',
-            transform: 'rotate(-15deg)',
-            top: '30%',
-            m: 'auto',
-            width: 'calc(100% - 20px)',
-          }}
-          src='/assets/deprecated_text.svg'
-          alt='deprecated_text'
-        />
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
+          {image(id, `/logos/${id}_logo.svg`)}
+          <Box
+            component='img'
+            sx={{
+              position: 'absolute',
+              transform: 'rotate(-15deg)',
+              top: '30%',
+              m: 'auto',
+              width: 'calc(100% - 20px)',
+            }}
+            src='/assets/deprecated_text.svg'
+            alt='deprecated_text'
+          />
+        </Box>
+        <ForwardIcon sx={{ fontSize: '2rem', color: 'red' }} />
+        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
+          {image(replacement, `/logos/${replacement}_logo.svg`)}
+        </Box>
       </Box>
-      <Box sx={{ mt: '2rem', mb: '1rem' }}>Drone is deprecated!</Box>
+      <Box sx={{ mt: '2rem', mb: '1rem' }}>{message}</Box>
       <Box>
-        <ul>
-          <li>Why?</li>
-          <li>What to do?</li>
-          <li>How to?</li>
-        </ul>
+        <Box sx={{ fontWeight: 'bold' }}>Reasons:</Box>
+        <Box>
+          {reasons.map((reason) => (
+            <Box sx={{ ml: '1rem' }}>{reason}</Box>
+          ))}
+        </Box>
+      </Box>
+      <Box sx={{ mt: '1rem' }}>
+        <Box sx={{ fontWeight: 'bold' }}>Advantages of replacement:</Box>
+        <Box>
+          {replacementAdvantages.map((advantage) => (
+            <Box sx={{ ml: '1rem' }}>{advantage}</Box>
+          ))}
+        </Box>
+      </Box>
+      <Box sx={{ mt: '1rem' }}>
+        <Box sx={{ fontWeight: 'bold' }}>Options:</Box>
+        <Box>
+          {options.map((option) => (
+            <Box sx={{ ml: '1rem' }}>{option}</Box>
+          ))}
+        </Box>
+      </Box>
+      <Box sx={{ mt: '1rem' }}>
+        <FormControlLabel control={<Checkbox onChange={toggleDontShowAgain} />} label="Don't show me again" />
       </Box>
     </Box>
   )
