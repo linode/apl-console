@@ -9,11 +9,12 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
   const newUiSchema = { ...uiSchema }
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
   const listTooLong = schema.enum?.length > 7
+  const listNotShort = schema.listNotShort
   const shortList = schema.enum?.length < 5
   // eslint-disable-next-line no-param-reassign
   if (isHidden({ schema })) uiSchema['ui:widget'] = 'hidden'
   if (uiSchema['ui:widget'] !== 'hidden') {
-    if (schema.enum && schema.enum.length > 1 && !listTooLong) {
+    if (schema.enum && schema.enum.length > 1 && !listTooLong && !listNotShort) {
       newUiSchema['ui:widget'] = RadioWidget
       set(newUiSchema, 'ui:options.inline', shortList)
       set(newUiSchema, 'ui:options.hasLabel', true)

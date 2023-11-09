@@ -150,8 +150,8 @@ const injectedRtkApi = api.injectEndpoints({
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
-    customWorkloadValues: build.mutation<CustomWorkloadValuesApiResponse, CustomWorkloadValuesApiArg>({
-      query: (queryArg) => ({ url: `/customWorkloadValues`, method: 'POST', body: queryArg.body }),
+    workloadCatalog: build.mutation<WorkloadCatalogApiResponse, WorkloadCatalogApiArg>({
+      query: (queryArg) => ({ url: `/workloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
@@ -1919,10 +1919,14 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -1940,7 +1944,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2020,8 +2023,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2130,10 +2131,14 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2151,7 +2156,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2231,8 +2235,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2344,10 +2346,14 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2365,7 +2371,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2445,8 +2450,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2558,10 +2561,14 @@ export type CreateProjectApiArg = {
       path?: string
       chart?: string
       revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
       namespace?: string
       autoUpdate?: {
         enabled?: boolean
-        build?: string
+        imageRegistry?: string
         strategy?:
           | {
               type?: 'latest'
@@ -2579,7 +2586,6 @@ export type CreateProjectApiArg = {
               type?: 'semver'
             }
       }
-      selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
       id?: string
@@ -2659,8 +2665,6 @@ export type CreateProjectApiArg = {
             | null
         }
       }
-      chartVersion?: string
-      chartDescription?: string
     }
     service?: {
       id?: string
@@ -2776,10 +2780,14 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -2797,7 +2805,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -2877,8 +2884,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -2992,10 +2997,14 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3013,7 +3022,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
   workloadValues?: {
     id?: string
@@ -3093,8 +3101,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
   service?: {
     id?: string
@@ -3208,10 +3214,14 @@ export type EditProjectApiArg = {
       path?: string
       chart?: string
       revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
       namespace?: string
       autoUpdate?: {
         enabled?: boolean
-        build?: string
+        imageRegistry?: string
         strategy?:
           | {
               type?: 'latest'
@@ -3229,7 +3239,6 @@ export type EditProjectApiArg = {
               type?: 'semver'
             }
       }
-      selectedChart?: 'deployment' | 'ksvc' | 'custom'
     }
     workloadValues?: {
       id?: string
@@ -3309,8 +3318,6 @@ export type EditProjectApiArg = {
             | null
         }
       }
-      chartVersion?: string
-      chartDescription?: string
     }
     service?: {
       id?: string
@@ -3391,10 +3398,14 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   path?: string
   chart?: string
   revision?: string
+  chartMetadata?: {
+    helmChartVersion?: string
+    helmChartDescription?: string
+  }
   namespace?: string
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3412,11 +3423,10 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetAllWorkloadsApiArg = void
-export type CustomWorkloadValuesApiResponse = /** status 200 Successfully updated a team project */ object
-export type CustomWorkloadValuesApiArg = {
+export type WorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
+export type WorkloadCatalogApiArg = {
   /** Project object that contains updated values */
   body: object
 }
@@ -3429,10 +3439,14 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   path?: string
   chart?: string
   revision?: string
+  chartMetadata?: {
+    helmChartVersion?: string
+    helmChartDescription?: string
+  }
   namespace?: string
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3450,7 +3464,6 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -3465,10 +3478,14 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   path?: string
   chart?: string
   revision?: string
+  chartMetadata?: {
+    helmChartVersion?: string
+    helmChartDescription?: string
+  }
   namespace?: string
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3486,7 +3503,6 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -3501,10 +3517,14 @@ export type CreateWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3522,7 +3542,6 @@ export type CreateWorkloadApiArg = {
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -3541,10 +3560,14 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   path?: string
   chart?: string
   revision?: string
+  chartMetadata?: {
+    helmChartVersion?: string
+    helmChartDescription?: string
+  }
   namespace?: string
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3562,7 +3585,6 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -3579,10 +3601,14 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   path?: string
   chart?: string
   revision?: string
+  chartMetadata?: {
+    helmChartVersion?: string
+    helmChartDescription?: string
+  }
   namespace?: string
   autoUpdate?: {
     enabled?: boolean
-    build?: string
+    imageRegistry?: string
     strategy?:
       | {
           type?: 'latest'
@@ -3600,7 +3626,6 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
           type?: 'semver'
         }
   }
-  selectedChart?: 'deployment' | 'ksvc' | 'custom'
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -3617,10 +3642,14 @@ export type EditWorkloadApiArg = {
     path?: string
     chart?: string
     revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
     namespace?: string
     autoUpdate?: {
       enabled?: boolean
-      build?: string
+      imageRegistry?: string
       strategy?:
         | {
             type?: 'latest'
@@ -3638,7 +3667,6 @@ export type EditWorkloadApiArg = {
             type?: 'semver'
           }
     }
-    selectedChart?: 'deployment' | 'ksvc' | 'custom'
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
@@ -3719,8 +3747,6 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3806,8 +3832,6 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3893,8 +3917,6 @@ export type EditWorkloadValuesApiArg = {
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
@@ -3975,8 +3997,6 @@ export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully update
         | null
     }
   }
-  chartVersion?: string
-  chartDescription?: string
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -4062,8 +4082,6 @@ export type UpdateWorkloadValuesApiArg = {
           | null
       }
     }
-    chartVersion?: string
-    chartDescription?: string
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
@@ -4169,7 +4187,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -4335,6 +4353,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
+          civo: {
+            apiToken?: string
+          }
+        }
+      | {
           google: {
             serviceAccountKey?: string
             project: string
@@ -4421,7 +4444,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -4588,7 +4611,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4754,6 +4777,11 @@ export type EditSettingsApiArg = {
             }
           }
         | {
+            civo: {
+              apiToken?: string
+            }
+          }
+        | {
             google: {
               serviceAccountKey?: string
               project: string
@@ -4840,7 +4868,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'custom'
+        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -5057,7 +5085,7 @@ export const {
   useGetProjectQuery,
   useEditProjectMutation,
   useGetAllWorkloadsQuery,
-  useCustomWorkloadValuesMutation,
+  useWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,

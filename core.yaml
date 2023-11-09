@@ -39,8 +39,6 @@ k8s:
     - name: knative-serving
       disablePolicyChecks: true
       disableIstioInjection: true
-    - name: kubeclarity
-      disableIstioInjection: true
     - name: kured
       app: kured
     - name: tekton
@@ -235,15 +233,6 @@ adminApps:
   - name: knative
     tags: [serverless, functions]
     deps: [istio]
-  - name: kubeclarity
-    tags: [security]
-    ownHost: true
-    ingress:
-      - svc: kubeclarity
-        namespace: kubeclarity
-        port: 8080
-        type: public
-        auth: true
   - name: loki
     tags: [logging, telemetry, observability]
     deps: [grafana, prometheus]
