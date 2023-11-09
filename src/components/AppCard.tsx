@@ -106,11 +106,7 @@ export default function ({
         classes.img,
         // this is ofcourse not good code, but it'll do for the time being
         // eslint-disable-next-line no-nested-ternary
-        (id === 'vault') && !enabled
-          ? classes.contrastDark
-          : id === 'vault'
-          ? classes.contrast
-          : '',
+        id === 'vault' && !enabled ? classes.contrastDark : id === 'vault' ? classes.contrast : '',
       )}
       src={img}
       onError={({ currentTarget }) => {
