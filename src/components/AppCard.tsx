@@ -129,7 +129,7 @@ export default function ({
   const isDeprecatedLocalStorage = localStorage.getItem(`deprecatedApp_${id}`)
 
   const handleClickModal = (e) => {
-    if (!isDeprecatedLocalStorage) {
+    if (!isDeprecatedLocalStorage && isDeprecated) {
       e.preventDefault()
       openModal()
     }
