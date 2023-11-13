@@ -25,6 +25,15 @@ const getBuildLink = (row: Row) => {
   )
 }
 
+const getBuildTag = (row: Row) => {
+  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.id)}`
+  return (
+    <RLink to={path} label={row.tag}>
+      {row.tag}
+    </RLink>
+  )
+}
+
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${row.tag}`
   const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
@@ -51,10 +60,11 @@ const getHarborImageLink = (row: Row, domainSuffix: string) => {
   const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
   const host = `https://harbor.${domainSuffix}`
   const externalUrl = `${host}/${path}`
+  const registry = `${domainSuffix}/${row.teamId}/${row.name}`
 
   return (
     <Link to={{ pathname: externalUrl }} target='_blank'>
-      Image
+      {registry}
     </Link>
   )
 }
@@ -101,8 +111,13 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
     {
       id: 'harbor',
-      label: t('Harbor'),
+      label: t('Repository'),
       renderer: (row: Row) => getHarborImageLink(row, domainSuffix),
+    },
+    {
+      id: 'harbor',
+      label: t('Tag'),
+      renderer: (row) => row.mode.tag,
     },
   ]
 
