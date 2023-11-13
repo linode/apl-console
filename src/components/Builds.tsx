@@ -51,7 +51,7 @@ const getHarborImageLink = (row: Row, domainSuffix: string) => {
   const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
   const host = `https://harbor.${domainSuffix}`
   const externalUrl = `${host}/${path}`
-  const registry = `harbor.${domainSuffix}/${row.teamId}/${row.name}`
+  const registry = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
 
   return (
     <Link to={{ pathname: externalUrl }} target='_blank'>
