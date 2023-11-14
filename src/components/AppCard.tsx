@@ -148,8 +148,8 @@ export default function ({
               position: 'absolute',
               transform: 'rotate(-15deg)',
               top: '30%',
-              m: 'auto',
-              width: 'calc(100% - 20px)',
+              left: '15%',
+              width: 'calc(100% - 60px)',
             }}
             src='/assets/deprecated_text.svg'
             alt='deprecated_text'

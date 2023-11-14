@@ -5,35 +5,6 @@ import ForwardIcon from '@mui/icons-material/Forward'
 
 const useStyles = makeStyles()((theme) => {
   return {
-    root: {
-      position: 'relative',
-      textAlign: 'center',
-      paddingLeft: theme.spacing(1),
-      paddingRight: theme.spacing(1),
-      paddingBottom: theme.spacing(2),
-      paddingTop: theme.spacing(4),
-      border: `1px solid ${theme.palette.divider}`,
-      margin: '5px',
-      borderRadius: '8px',
-      maxHeight: '200px',
-      height: '200px',
-      '& .hidden-button': {
-        visibility: 'hidden',
-        position: 'absolute',
-        bottom: '0',
-        transform: 'translateX(-50%)',
-        left: '50%',
-        width: '100%',
-      },
-      '&:hover .hidden-button': {
-        visibility: 'visible',
-      },
-    },
-    disabled: {
-      filter: 'grayscale(1)',
-      backgroundColor: theme.palette.divider,
-      border: 'none',
-    },
     img: {
       height: theme.spacing(8),
       maxWidth: theme.spacing(8),
@@ -45,15 +16,9 @@ const useStyles = makeStyles()((theme) => {
     contrastDark: {
       filter: 'grayscale(1) contrast(0.3)',
     },
-    title: {
-      textAlign: 'center',
-      verticalAlign: 'bottom',
-      color: theme.palette.text.primary,
-      fontWeight: '200',
-      marginTop: '5px',
-    },
-    notDragging: {
-      opacity: 0.2,
+    arrow: {
+      fontSize: '2rem',
+      color: theme.palette.grey[500],
     },
   }
 })
@@ -75,11 +40,7 @@ export default function ({ deprecatedApp }: Props): React.ReactElement {
           classes.img,
           // this is ofcourse not good code, but it'll do for the time being
           // eslint-disable-next-line no-nested-ternary
-          id === 'vault' || id === 'kubeapps'
-            ? classes.contrastDark
-            : id === 'vault' || id === 'kubeapps'
-            ? classes.contrast
-            : '',
+          id === 'vault' ? classes.contrastDark : id === 'vault' ? classes.contrast : '',
         )}
         src={img}
         onError={({ currentTarget }) => {
@@ -110,14 +71,14 @@ export default function ({ deprecatedApp }: Props): React.ReactElement {
               position: 'absolute',
               transform: 'rotate(-15deg)',
               top: '30%',
-              m: 'auto',
-              width: 'calc(100% - 20px)',
+              left: '15%',
+              width: 'calc(100% - 60px)',
             }}
             src='/assets/deprecated_text.svg'
             alt='deprecated_text'
           />
         </Box>
-        <ForwardIcon sx={{ fontSize: '2rem', color: 'red' }} />
+        <ForwardIcon className={classes.arrow} />
         <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
           {image(replacement, `/logos/${replacement}_logo.svg`)}
         </Box>
