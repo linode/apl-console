@@ -263,8 +263,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   useEffect(() => {
     if (!lastTektonMessage) return
     const domainSuffix = settings?.cluster?.domainSuffix
-    const { completionTime, conditions } = lastTektonMessage
-    keys.tekton = snack.info(<MessageTrans defaults={`Tekton ${completionTime}`} />, { key: keys.tekton })
+    const { datetime, id, sha, status } = lastTektonMessage
+    keys.tekton = snack.info(<MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />, { key: keys.tekton })
   }, [lastTektonMessage])
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
