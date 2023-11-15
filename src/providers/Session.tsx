@@ -104,13 +104,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
   const { socket, error: errorSocket } = useSocket({ url, path })
-  console.log('socket', socket)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
-  console.log('lastDbMessage', lastDbMessage)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
-  console.log('lastDroneMessage', lastDroneMessage)
   const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
   console.log('lastTektonMessage', lastTektonMessage)
   const appsEnabled = (apps || []).reduce((memo, a) => {
