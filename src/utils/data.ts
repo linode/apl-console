@@ -161,7 +161,7 @@ export const getAppData = (
   const deps = coreApp.deps
   const isDeprecated = getDeprecatedApp(session, appId)
   const deprecationInfo = getDeprecationInfo(session, appId)
-  const replacementUrl = `https://${deprecationInfo?.replacement}.${cluster.domainSuffix}`
+  const replacementUrl = `https://${deprecationInfo?.replacement}.${cluster.domainSuffix}${deprecationInfo?.path ?? ''}`
   return {
     ...coreApp,
     ...app,

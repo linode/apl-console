@@ -199,8 +199,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
 
       const handleAction = () => {
         setOpenModal(false)
-        console.log('Tekton Url: ', `${app.replacementUrl}/#/namespaces/otomi-pipelines/pipelineruns`)
-        window.open(`${app.replacementUrl}/#/namespaces/otomi-pipelines/pipelineruns`, '_blank')
+        window.open(app.replacementUrl, '_blank')
       }
       return (
         <div key={`deprecated-${app.id}-modal`}>

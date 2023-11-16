@@ -110,7 +110,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
-  console.log('lastTektonMessage', lastTektonMessage)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -237,10 +236,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('lastDroneMessage: ', lastDroneMessage)
-    }
     const domainSuffix = settings?.cluster?.domainSuffix
     const { action, build } = lastDroneMessage
     const { after: sha, created, id, status, updated } = build
