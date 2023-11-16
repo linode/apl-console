@@ -31,10 +31,10 @@ export default function ({
   const color: LinkProps['color'] = 'secondary'
   const commit = { ...props, color, domainSuffix, repo, sha, short }
   const tekton = { ...props, color, completionTime, domainSuffix, order, name }
-  const data = { datetime: completionTime, id: order, sha, status }
+  const data = { completionTime, order, sha, status }
   return (
     <div data-cy={`drone-${status}-message`} style={{ whiteSpace: 'pre-wrap' }}>
-      <MessageTrans i18nKey='DRONE_MESSAGE' t={t} {...data}>
+      <MessageTrans i18nKey='TEKTON_MESSAGE' t={t} {...data}>
         Tekton <LinkTekton {...tekton}>build {{ order }}</LinkTekton> <strong>{{ status }}</strong> for commit{' '}
         <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ completionTime }}.
       </MessageTrans>
