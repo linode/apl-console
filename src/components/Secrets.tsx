@@ -71,7 +71,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.vault) return <p>Admin needs to enable the Vault app to activate this feature.</p>
+  if (!appsEnabled.vault) return <p>Admin needs to enable Vault to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
 }

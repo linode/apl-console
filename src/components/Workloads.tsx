@@ -73,7 +73,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     })
   }
 
-  if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
+  if (!appsEnabled.argocd) return <p>Admin needs to enable Argo CD to activate this feature.</p>
 
   return (
     <ListTable

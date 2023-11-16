@@ -61,7 +61,7 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.velero) return <p>Admin needs to enable the Velero app to activate this feature.</p>
+  if (!appsEnabled.velero) return <p>Admin needs to enable Velero to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={backups} resourceType='Backup' />
 }
