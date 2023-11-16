@@ -6,7 +6,7 @@ import MessageTrans from './MessageTrans'
 import LinkTekton from './LinkTekton'
 
 interface LinkExtendedProps extends LinkProps {
-  completionTime: string
+  datetime: string
   domainSuffix: string
   order: string
   name: string
@@ -17,7 +17,7 @@ interface LinkExtendedProps extends LinkProps {
 }
 
 export default function ({
-  completionTime,
+  datetime,
   domainSuffix,
   order,
   name,
@@ -30,13 +30,13 @@ export default function ({
   const { t } = useTranslation()
   const color: LinkProps['color'] = 'secondary'
   const commit = { ...props, color, domainSuffix, repo, sha, short }
-  const tekton = { ...props, color, completionTime, domainSuffix, order, name }
-  const data = { completionTime, order, sha, status }
+  const tekton = { ...props, color, datetime, domainSuffix, order, name }
+  const data = { datetime, order, sha, status }
   return (
     <div data-cy={`drone-${status}-message`} style={{ whiteSpace: 'pre-wrap' }}>
       <MessageTrans i18nKey='TEKTON_MESSAGE' t={t} {...data}>
         Tekton <LinkTekton {...tekton}>build {{ order }}</LinkTekton> <strong>{{ status }}</strong> for commit{' '}
-        <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ completionTime }}.
+        <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ datetime }}.
       </MessageTrans>
     </div>
   )

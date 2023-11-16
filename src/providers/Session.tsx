@@ -265,10 +265,21 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (!lastTektonMessage) return
     const domainSuffix = settings?.cluster?.domainSuffix
     const { order, name, completionTime, sha, status } = lastTektonMessage
-    keys.tekton = snack.info(<MessageTekton {...{ completionTime, domainSuffix, order, name, sha, status }} />, {
-      key: keys.tekton,
+    const interest = [
+      { type: 'error', cond: status === 'failed', time: completionTime },
+      { type: 'success', cond: status === 'succeeded', time: completionTime },
+    ]
+    interest.forEach((msg) => {
+      const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
+      if (!msg.cond) return
+      keys[`tekton-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
+        <MessageTekton {...{ datetime, domainSuffix, order, name, sha, status }} />,
+      )
+      // pull in latest state as it might have changed
+      if (status !== 'pending') refetchSession()
     })
   }, [lastTektonMessage])
+
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // if an error occured we keep rendering and let the error component show what happened
