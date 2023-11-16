@@ -1,8 +1,11 @@
 import { useSession } from 'providers/Session'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
+import { Box, Tooltip } from '@mui/material'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import DoneIcon from '@mui/icons-material/Done'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -47,15 +50,37 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-const getHarborImageLink = (row: Row, domainSuffix: string) => {
+function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
+  const [copied, setCopied] = useState(false)
   const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
   const host = `https://harbor.${domainSuffix}`
   const externalUrl = `${host}/${path}`
+  const registry = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
 
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(externalUrl)
+    setCopied(true)
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
   return (
-    <Link to={{ pathname: externalUrl }} target='_blank'>
-      Image
-    </Link>
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Link to={{ pathname: externalUrl }} target='_blank'>
+        {registry}
+      </Link>
+      <Box sx={{ width: '30px' }}>
+        {!copied ? (
+          <Tooltip title='Copy to clipboard'>
+            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
+          </Tooltip>
+        ) : (
+          <Tooltip title='Copied!'>
+            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
+          </Tooltip>
+        )}
+      </Box>
+    </Box>
   )
 }
 
@@ -101,8 +126,13 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
     {
       id: 'harbor',
-      label: t('Harbor'),
-      renderer: (row: Row) => getHarborImageLink(row, domainSuffix),
+      label: t('Repository'),
+      renderer: (row: Row) => <RepositoryRenderer row={row} domainSuffix={domainSuffix} />,
+    },
+    {
+      id: 'tag',
+      label: t('Tag'),
+      renderer: (row) => row.tag,
     },
   ]
 
