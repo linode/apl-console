@@ -3,6 +3,7 @@ import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
 import MessageDrone from 'components/MessageDrone'
+import MessageTekton from 'components/MessageTekton'
 import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
@@ -263,8 +264,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   useEffect(() => {
     if (!lastTektonMessage) return
     const domainSuffix = settings?.cluster?.domainSuffix
-    const { datetime, id, sha, status } = lastTektonMessage
-    keys.tekton = snack.info(<MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />, { key: keys.tekton })
+    const { order, name, completionTime, sha, status } = lastTektonMessage
+    keys.tekton = snack.info(<MessageTekton {...{ completionTime, domainSuffix, order, name, sha, status }} />, {
+      key: keys.tekton,
+    })
   }, [lastTektonMessage])
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
