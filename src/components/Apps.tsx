@@ -153,7 +153,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   })
 
   const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
-  console.log('deprecatedApps', deprecatedApps)
 
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 

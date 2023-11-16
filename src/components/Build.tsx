@@ -38,15 +38,5 @@ export default function ({ build, teamId, ...other }: Props): React.ReactElement
   const formData = cloneDeep(data)
   const schema = getBuildSchema(teamId)
   const uiSchema = getBuildUiSchema(user, teamId)
-  return (
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      data={formData}
-      onChange={setData}
-      disabled={!appsEnabled.tekton}
-      resourceType='Build'
-      {...other}
-    />
-  )
+  return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Build' {...other} />
 }
