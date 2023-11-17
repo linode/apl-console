@@ -82,10 +82,7 @@ function WebhookUrlRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
     )
   }
 
-  return (
-    `'-'`
-  )
-
+  return `'-'`
 }
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
