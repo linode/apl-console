@@ -3,6 +3,7 @@ import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
 import MessageDrone from 'components/MessageDrone'
+import MessageTekton from 'components/MessageTekton'
 import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
@@ -108,6 +109,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
+  const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -234,10 +236,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // Drone events
   useEffect(() => {
     if (!lastDroneMessage) return
-    if (process.env.NODE_ENV !== 'production') {
-      // eslint-disable-next-line no-console
-      console.log('lastDroneMessage: ', lastDroneMessage)
-    }
     const domainSuffix = settings?.cluster?.domainSuffix
     const { action, build } = lastDroneMessage
     const { after: sha, created, id, status, updated } = build
@@ -256,6 +254,27 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       if (status !== 'pending') refetchSession()
     })
   }, [lastDroneMessage])
+
+  // Tekton events
+  useEffect(() => {
+    if (!lastTektonMessage) return
+    const domainSuffix = settings?.cluster?.domainSuffix
+    const { order, name, completionTime, sha, status } = lastTektonMessage
+    const interest = [
+      { type: 'error', cond: status === 'failed', time: completionTime },
+      { type: 'success', cond: status === 'succeeded', time: completionTime },
+    ]
+    interest.forEach((msg) => {
+      const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
+      if (!msg.cond) return
+      keys[`tekton-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
+        <MessageTekton {...{ datetime, domainSuffix, order, name, sha, status }} />,
+      )
+      // pull in latest state as it might have changed
+      if (status !== 'pending') refetchSession()
+    })
+  }, [lastTektonMessage])
+
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // if an error occured we keep rendering and let the error component show what happened

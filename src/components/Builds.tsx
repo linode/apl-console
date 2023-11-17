@@ -58,7 +58,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   const registry = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(externalUrl)
+    navigator.clipboard.writeText(registry)
     setCopied(true)
     setTimeout(() => {
       setCopied(false)
@@ -66,7 +66,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: externalUrl }} target='_blank'>
+      <Link to={{ pathname: registry }} target='_blank'>
         {registry}
       </Link>
       <Box sx={{ width: '30px' }}>
