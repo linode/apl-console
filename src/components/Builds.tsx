@@ -58,7 +58,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   const registry = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(externalUrl)
+    navigator.clipboard.writeText(registry)
     setCopied(true)
     setTimeout(() => {
       setCopied(false)
@@ -66,7 +66,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: externalUrl }} target='_blank'>
+      <Link to={{ pathname: registry }} target='_blank'>
         {registry}
       </Link>
       <Box sx={{ width: '30px' }}>
@@ -143,8 +143,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.tekton || !appsEnabled.harbor)
-    return <p>Admin needs to enable the Tekton and Harbor apps to activate this feature.</p>
+  if (!appsEnabled.harbor) return <p>Admin needs to enable the Harbor app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
 }

@@ -93,6 +93,22 @@ export const getApps = (session, teamId) => {
 
 const rePlace = (path, teamId) => path.replaceAll('#NS#', `team-${teamId}`).replaceAll('#TEAM#', teamId)
 
+const getDeprecatedApp = (session, appId) => {
+  const {
+    core: { appsInfo },
+  }: any = session
+  const app = appsInfo[appId]
+  return app?.isDeprecated
+}
+
+const getDeprecationInfo = (session, appId) => {
+  const {
+    core: { appsInfo },
+  }: any = session
+  const app = appsInfo[appId]
+  return app?.deprecationInfo
+}
+
 export const getAppData = (
   session: GetSessionApiResponse,
   teamId,
@@ -143,6 +159,9 @@ export const getAppData = (
   const logoSuffix = ''
   const logoAltSuffix = ''
   const deps = coreApp.deps
+  const isDeprecated = getDeprecatedApp(session, appId)
+  const deprecationInfo = getDeprecationInfo(session, appId)
+  const replacementUrl = `https://${deprecationInfo?.replacement}.${cluster.domainSuffix}${deprecationInfo?.path ?? ''}`
   return {
     ...coreApp,
     ...app,
@@ -156,6 +175,9 @@ export const getAppData = (
     externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
     hasShortcuts: !!ingress || useHost,
+    isDeprecated,
+    deprecationInfo,
+    replacementUrl,
   }
 }
 

@@ -22,6 +22,8 @@ interface Props extends GetAppApiResponse {
   appTitle?: string
   isHostedByOtomi?: boolean
   externalUrl?: string
+  isDeprecated?: boolean
+  handleClickModal?: any
 }
 export default function ({
   id,
@@ -34,6 +36,8 @@ export default function ({
   appTitle,
   isHostedByOtomi,
   externalUrl,
+  isDeprecated,
+  handleClickModal,
 }: Props): React.ReactElement {
   const session = useAuthzSession()
 
@@ -70,7 +74,7 @@ export default function ({
       )}
 
       {enabled && externalUrl && (
-        <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank'>
+        <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank' onClick={handleClickModal}>
           <Iconify icon='ri:share-forward-fill' />
         </IconButton>
       )}

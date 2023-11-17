@@ -9,6 +9,8 @@ import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
 import LoadingScreen from './LoadingScreen'
 import TableToolbar from './TableToolbar'
+import Modal from './Modal'
+import DeprecatedModalInfo from './DeprecatedModalInfo'
 
 // -- Styles -------------------------------------------------------------
 
@@ -86,6 +88,16 @@ function sortArray(a, b) {
   return 0
 }
 
+function getDeprecatedApps(apps, session, teamId) {
+  return apps
+    .map((app) => {
+      const { id, isDeprecated, deprecationInfo, externalUrl, replacementUrl } = getAppData(session, teamId, app)
+      if (isDeprecated) return { id, deprecationInfo, externalUrl, replacementUrl }
+      return null
+    })
+    .filter((app) => app !== null)
+}
+
 // ---- JSX -------------------------------------------------------------
 
 interface Props {
@@ -103,6 +115,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const [filterName, setFilterName] = useState('')
   const [orderBy, setOrderBy] = useState('enabled')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [openModal, setOpenModal] = useState('')
 
   const toggleApp = (name: string) => {
     const { deps, appInfo } = getAppData(session, teamId, name)
@@ -139,11 +152,21 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     filterName,
   })
 
+  const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
+
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
     items.map((item) => {
-      const { enabled, externalUrl, id, logo, logoAlt, deps: coreDeps } = getAppData(session, teamId, item)
+      const {
+        enabled,
+        externalUrl,
+        id,
+        logo,
+        logoAlt,
+        deps: coreDeps,
+        isDeprecated,
+      } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
           <AppCard
@@ -160,10 +183,40 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             setAppState={setAppState}
             hostedByOtomi={item.enabled === undefined}
             toggleApp={() => toggleApp(id)}
+            isDeprecated={isDeprecated}
+            openModal={() => setOpenModal(id)}
           />
         </Grid>
       )
     })
+
+  const deprecatedAppModals = () => {
+    return deprecatedApps.map((app) => {
+      const handleCancel = () => {
+        setOpenModal('')
+        window.open(app.externalUrl, '_blank')
+      }
+
+      const handleAction = () => {
+        setOpenModal('')
+        window.open(app.replacementUrl, '_blank')
+      }
+      return (
+        <div key={`deprecated-${app.id}-modal`}>
+          <Modal
+            noHeader
+            children={<DeprecatedModalInfo deprecatedApp={app} />}
+            open={openModal === app.id}
+            handleClose={() => setOpenModal('')}
+            handleCancel={handleCancel}
+            cancelButtonText='I understand!'
+            handleAction={handleAction}
+            actionButtonText={`Go to ${app.deprecationInfo.replacement}`}
+          />
+        </div>
+      )
+    })
+  }
 
   return (
     <div className={cx(classes.root)}>
@@ -171,6 +224,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {out(dataFiltered.sort(sortArray))}
       </Grid>
+      {deprecatedAppModals()}
     </div>
   )
 }
