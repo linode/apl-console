@@ -178,8 +178,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.harbor)
-    return <p>Admin needs to enable the Harbor app to activate this feature.</p>
+  if (!appsEnabled.harbor) return <p>Admin needs to enable the Harbor app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={builds} resourceType='Build' />
 }
