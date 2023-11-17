@@ -21,6 +21,7 @@ export const getWorkloadSchema = (
   helmChart?: string,
   helmChartVersion?: string,
   helmChartDescription?: string,
+  workloadId?: string,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
   const chartMetadata = {
@@ -33,9 +34,9 @@ export const getWorkloadSchema = (
     helmChart: {
       type: 'string',
       title: 'Helm chart',
-      enum: helmCharts,
       default: helmChart,
       listNotShort: true,
+      ...(!workloadId && { enum: helmCharts }),
     },
     helmChartVersion: {
       type: 'null',
@@ -108,6 +109,7 @@ export default function ({
 
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
+    if (workloadId) return
     getWorkloadCatalog({ body: { url, sub: user.sub, teamId } }).then((res: any) => {
       const { url, helmCharts, catalog }: { url: string; helmCharts: string[]; catalog: any[] } = res.data
       setUrl(url)
@@ -135,7 +137,7 @@ export default function ({
         helmChartDescription: catalogItem.chartDescription,
       },
     }))
-  }, [data?.path, data?.chartMetadata?.helmChart, catalog])
+  }, [valuesData, data?.path, data?.chartMetadata?.helmChart, catalog])
 
   const handleCreateUpdateWorkload = async () => {
     const workloadBody = omit(data, ['chartProvider', 'chart', 'revision'])
@@ -157,7 +159,7 @@ export default function ({
   const helmChart: string = data?.chartMetadata?.helmChart || data?.path || helmCharts?.[0]
   const helmChartVersion: string = data?.chartMetadata?.helmChartVersion
   const helmChartDescription: string = data?.chartMetadata?.helmChartDescription
-  const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
+  const schema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription, workloadId)
   const uiSchema = getWorkloadUiSchema(user, teamId)
 
   return (
