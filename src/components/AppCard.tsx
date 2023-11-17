@@ -141,20 +141,6 @@ export default function ({
 
       <Link to={{ pathname: externalUrl }} onClick={handleClickModal} style={linkStyle} target='_blank'>
         {image}
-        {isDeprecated && (
-          <Box
-            component='img'
-            sx={{
-              position: 'absolute',
-              transform: 'rotate(-15deg)',
-              top: '30%',
-              left: '15%',
-              width: 'calc(100% - 60px)',
-            }}
-            src='/assets/deprecated_text.svg'
-            alt='deprecated_text'
-          />
-        )}
         <Typography className={cx(classes.title)} variant='h6'>
           {title}
         </Typography>

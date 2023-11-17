@@ -63,21 +63,7 @@ export default function ({ deprecatedApp }: Props): React.ReactElement {
   return (
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
-          {image(id, `/logos/${id}_logo.svg`)}
-          <Box
-            component='img'
-            sx={{
-              position: 'absolute',
-              transform: 'rotate(-15deg)',
-              top: '30%',
-              left: '15%',
-              width: 'calc(100% - 60px)',
-            }}
-            src='/assets/deprecated_text.svg'
-            alt='deprecated_text'
-          />
-        </Box>
+        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>{image(id, `/logos/${id}_logo.svg`)}</Box>
         <ForwardIcon className={classes.arrow} />
         <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
           {image(replacement, `/logos/${replacement}_logo.svg`)}
