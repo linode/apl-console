@@ -83,7 +83,7 @@ function WebhookUrlRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   }
 
   return (
-    '-'
+    `'-'`
   )
 
 }
