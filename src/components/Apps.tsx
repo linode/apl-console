@@ -115,7 +115,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const [filterName, setFilterName] = useState('')
   const [orderBy, setOrderBy] = useState('enabled')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState('')
 
   const toggleApp = (name: string) => {
     const { deps, appInfo } = getAppData(session, teamId, name)
@@ -184,7 +184,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             hostedByOtomi={item.enabled === undefined}
             toggleApp={() => toggleApp(id)}
             isDeprecated={isDeprecated}
-            openModal={() => setOpenModal(true)}
+            openModal={() => setOpenModal(id)}
           />
         </Grid>
       )
@@ -193,12 +193,12 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   const deprecatedAppModals = () => {
     return deprecatedApps.map((app) => {
       const handleCancel = () => {
-        setOpenModal(false)
+        setOpenModal('')
         window.open(app.externalUrl, '_blank')
       }
 
       const handleAction = () => {
-        setOpenModal(false)
+        setOpenModal('')
         window.open(app.replacementUrl, '_blank')
       }
       return (
@@ -206,12 +206,12 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
           <Modal
             noHeader
             children={<DeprecatedModalInfo deprecatedApp={app} />}
-            open={openModal}
-            handleClose={() => setOpenModal(false)}
+            open={openModal === app.id}
+            handleClose={() => setOpenModal('')}
             handleCancel={handleCancel}
             cancelButtonText='I understand!'
             handleAction={handleAction}
-            actionButtonText='Go to Tekton Dashboard'
+            actionButtonText={`Go to ${app.deprecationInfo.replacement}`}
           />
         </div>
       )
