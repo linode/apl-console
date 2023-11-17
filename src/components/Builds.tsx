@@ -50,6 +50,44 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
+function WebhookUrlRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
+  const [copied, setCopied] = useState(false)
+  const webhookUrl = `http://el-gitea-webhook-${row.name}.team-${row.teamId}.svc.cluster.local:8080`
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(webhookUrl)
+    setCopied(true)
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
+  if (row.trigger) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Link to={{ pathname: webhookUrl }} target='_blank'>
+          {webhookUrl}
+        </Link>
+        <Box sx={{ width: '30px' }}>
+          {!copied ? (
+            <Tooltip title='Copy to clipboard'>
+              <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
+            </Tooltip>
+          ) : (
+            <Tooltip title='Copied!'>
+              <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
+            </Tooltip>
+          )}
+        </Box>
+      </Box>
+    )
+  }
+
+  return (
+    '-'
+  )
+
+}
+
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [copied, setCopied] = useState(false)
   const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
@@ -116,8 +154,8 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
     {
       id: 'trigger',
-      label: t('Trigger'),
-      renderer: (row) => (row.trigger ? 'Yes' : 'No'),
+      label: t('Webhook URL'),
+      renderer: (row: Row) => WebhookUrlRenderer,
     },
     {
       id: 'tekton',
