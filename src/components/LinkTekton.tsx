@@ -15,7 +15,7 @@ export default function ({ domainSuffix, order, name, label, ...props }: LinkExt
   const href =
     props.href ??
     `https://tekton.${domainSuffix}/#/namespaces/otomi-pipelines/pipelineruns/${name}?pipelineTask=otomi-git-clone`
-  const title = props.title ?? t(`Follow to view build with {{order}}`, { order })
+  const title = props.title ?? t(`Follow to view build {{order}}`, { order })
   const color = props.color ?? 'secondary'
   const insert = { ...props, color, href, title }
   if (label) insert['data-cy'] = `link-drone-${label}`
