@@ -40,27 +40,31 @@ const ModalFooter = styled('div')({
 
 // interface and component -----------------------------------------------
 interface Props {
-  title: string
-  open: boolean
-  children: ReactNode
-  handleClose: any
-  actionButtonText?: string
-  handleAction?: any
-  actionButtonColor?: string
+  title?: string
   noHeader?: boolean
   noFooter?: boolean
+  children: ReactNode
+  open: boolean
+  handleClose: any
+  handleCancel?: any
+  cancelButtonText?: string
+  handleAction?: any
+  actionButtonText?: string
+  actionButtonColor?: string
   actionButtonEndIcon?: ReactElement
   actionButtonFrontIcon?: ReactElement
 }
 
 export default function StyledModal({
-  open,
-  children,
   title,
-  handleClose,
-  handleAction,
   noHeader,
   noFooter,
+  children,
+  open,
+  handleClose,
+  handleCancel,
+  cancelButtonText,
+  handleAction,
   actionButtonText,
   actionButtonColor,
   actionButtonEndIcon,
@@ -80,13 +84,13 @@ export default function StyledModal({
         <ModalContent>{children}</ModalContent>
         {!noFooter && (
           <ModalFooter>
-            <Button variant='text' color='inherit' onClick={handleClose}>
-              Cancel
+            <Button variant='text' color='inherit' onClick={handleCancel ?? handleClose}>
+              {cancelButtonText ?? 'Cancel'}
             </Button>
             <Button
               variant='contained'
               color='error'
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, bgcolor: actionButtonColor }}
               onClick={handleAction}
               startIcon={actionButtonFrontIcon && actionButtonFrontIcon}
               endIcon={actionButtonEndIcon && actionButtonEndIcon}

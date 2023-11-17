@@ -37,6 +37,7 @@ import HeaderTitle from './HeaderTitle'
 import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
+import InformationBanner from './InformationBanner'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -311,6 +312,7 @@ export default function ({
 
   return (
     <Box>
+      {appInfo.isDeprecated && <InformationBanner message={appInfo.deprecationInfo.message} />}
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>

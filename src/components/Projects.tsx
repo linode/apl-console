@@ -50,8 +50,7 @@ export default function ({ projects, teamId, canCreateResource }: Props): React.
     })
   }
 
-  if (!appsEnabled.tekton || !appsEnabled.harbor)
-    return <p>Admin needs to enable the Tekton and Harbor apps to activate this feature.</p>
+  if (!appsEnabled.harbor) return <p>Admin needs to enable the Harbor app to activate this feature.</p>
 
   return (
     <ListTable

@@ -252,7 +252,7 @@ export default function ({
                     uiSchema={projectUiSchema}
                     data={formData}
                     onChange={(data: any) => setData({ ...formData, ...data })}
-                    disabled={!appsEnabled.tekton || !!formData?.id}
+                    disabled={!!formData?.id}
                     resourceType='Project'
                     {...other}
                     children
@@ -274,7 +274,6 @@ export default function ({
                   uiSchema={buildUiSchema}
                   data={formData.build}
                   onChange={(data: any) => setData({ ...formData, build: data })}
-                  disabled={!appsEnabled.tekton}
                   resourceType='Build'
                   {...other}
                   children

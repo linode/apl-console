@@ -97,6 +97,8 @@ export default function ({
   externalUrl,
   hostedByOtomi,
   toggleApp,
+  isDeprecated,
+  openModal,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
   const image = (
@@ -123,11 +125,21 @@ export default function ({
     enabled && externalUrl
       ? { textDecoration: 'none' }
       : ({ pointerEvents: 'none', textDecoration: 'none' } as CSSProperties)
+
+  const isDeprecatedLocalStorage = localStorage.getItem(`deprecatedApp_${id}`)
+
+  const handleClickModal = (e) => {
+    if (!isDeprecatedLocalStorage && isDeprecated) {
+      e.preventDefault()
+      openModal()
+    }
+  }
+
   return (
     <Box className={cx(classes.root, !enabled && classes.disabled)}>
       {/* {hostedByOtomi && <Ribbon>core</Ribbon>} */}
 
-      <Link to={{ pathname: externalUrl }} style={linkStyle} target='_blank'>
+      <Link to={{ pathname: externalUrl }} onClick={handleClickModal} style={linkStyle} target='_blank'>
         {image}
         <Typography className={cx(classes.title)} variant='h6'>
           {title}
@@ -144,6 +156,8 @@ export default function ({
           toggleApp={toggleApp}
           appTitle={title}
           isHostedByOtomi={hostedByOtomi}
+          isDeprecated={isDeprecated}
+          handleClickModal={handleClickModal}
         />
       </Box>
     </Box>
