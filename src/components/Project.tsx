@@ -91,6 +91,7 @@ export default function ({
 
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
+    if (project?.workload?.id) return
     getWorkloadCatalog({ body: { url, sub: user.sub } }).then((res: any) => {
       const { url, helmCharts, catalog }: { url: string; helmCharts: string[]; catalog: any[] } = res.data
       setUrl(url)
@@ -121,7 +122,7 @@ export default function ({
         },
       },
     }))
-  }, [formData?.workload?.path, formData?.workload?.chartMetadata?.helmChart, catalog])
+  }, [project?.workloadValues, formData?.workload?.path, formData?.workload?.chartMetadata?.helmChart, catalog])
 
   useEffect(() => {
     setData(project)
@@ -137,7 +138,14 @@ export default function ({
   const helmChart: string = data?.workload?.chartMetadata?.helmChart || data?.workload?.path || helmCharts?.[0]
   const helmChartVersion: string = data?.workload?.chartMetadata?.helmChartVersion
   const helmChartDescription: string = data?.workload?.chartMetadata?.helmChartDescription
-  const workloadSchema = getWorkloadSchema(url, helmCharts, helmChart, helmChartVersion, helmChartDescription)
+  const workloadSchema = getWorkloadSchema(
+    url,
+    helmCharts,
+    helmChart,
+    helmChartVersion,
+    helmChartDescription,
+    data?.workload?.id,
+  )
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
@@ -157,7 +165,7 @@ export default function ({
   const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
-  const teamSubdomain = getHost(formData?.service?.name, teamId)
+  const teamSubdomain = getHost(formData?.name, teamId)
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData?.service, defaultSubdomain)
 
