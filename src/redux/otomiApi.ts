@@ -1947,6 +1947,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
   service?: {
     id?: string
@@ -2083,6 +2084,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
   service?: {
     id?: string
@@ -2222,6 +2224,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
   service?: {
     id?: string
@@ -2361,6 +2364,7 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name?: string
+      values: object
     }
     service?: {
       id?: string
@@ -2504,6 +2508,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
   service?: {
     id?: string
@@ -2645,6 +2650,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
   service?: {
     id?: string
@@ -2786,6 +2792,7 @@ export type EditProjectApiArg = {
       id?: string
       teamId?: string
       name?: string
+      values: object
     }
     service?: {
       id?: string
@@ -3127,6 +3134,7 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
   id?: string
   teamId?: string
   name?: string
+  values: object
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3138,6 +3146,7 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
   id?: string
   teamId?: string
   name?: string
+  values: object
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3149,12 +3158,14 @@ export type EditWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
   id?: string
   teamId?: string
   name?: string
+  values: object
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3166,6 +3177,7 @@ export type UpdateWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
+    values: object
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
