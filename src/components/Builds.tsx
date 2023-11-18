@@ -81,12 +81,10 @@ function WebhookUrlRenderer({ row }: { row: Row }) {
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [copied, setCopied] = useState(false)
-  const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
-  const host = `https://harbor.${domainSuffix}`
-  const externalUrl = `${host}/${path}`
+  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(externalUrl)
+    navigator.clipboard.writeText(repository)
     setCopied(true)
     setTimeout(() => {
       setCopied(false)
@@ -94,7 +92,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: externalUrl }} target='_blank' />
+      <Link to={{ pathname: repository }} target='_blank' />
       <Box sx={{ width: '30px' }}>
         {!copied ? (
           <Tooltip title='Copy to clipboard'>
