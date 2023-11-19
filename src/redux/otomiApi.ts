@@ -1924,105 +1924,30 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
   workloadValues?: {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
   service?: {
     id?: string
@@ -2136,105 +2061,30 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
   workloadValues?: {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
   service?: {
     id?: string
@@ -2351,105 +2201,30 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
   workloadValues?: {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
   service?: {
     id?: string
@@ -2566,105 +2341,30 @@ export type CreateProjectApiArg = {
         helmChartDescription?: string
       }
       namespace?: string
-      autoUpdate?: {
-        enabled?: boolean
-        imageRegistry?: string
-        strategy?:
-          | {
-              type?: 'latest'
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
             }
-          | {
-              digest?: {
-                tag: string
-              }
-              type?: 'digest'
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
             }
-          | {
-              semver?: {
-                versionConstraint: string
-              }
-              type?: 'semver'
-            }
-      }
+            type?: 'semver'
+          }
     }
     workloadValues?: {
       id?: string
       teamId?: string
       name?: string
-      values: {
-        fullnameOverride?: string
-        image?: {
-          repository: string
-          tag: string
-        }
-        containerPorts?: {
-          name?: string
-          containerPort?: number
-          protocol?: string
-        }[]
-        resources?: {
-          requests?: {
-            cpu?: string
-            memory?: string
-          }
-          limits?: {
-            cpu?: string
-            memory?: string
-          }
-        }
-        autoscaling?: {
-          minReplicas?: number
-          maxReplicas?: number
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        args?: string[]
-        labels?: {
-          name?: string
-          value?: string
-        }[]
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-        secrets?: string[]
-        podSecurityContext?: {
-          runAsUser?: number
-          runAsNonRoot?: boolean
-          readOnlyRootFilesystem?: boolean
-        }
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        servicePorts?:
-          | {
-              name: string
-              port: number
-              targetPort: string
-              protocol: 'TCP' | 'UDP'
-            }[]
-          | null
-        serviceMonitor?: {
-          create?: boolean
-          endpoints?:
-            | {
-                port: number
-                path: string
-              }[]
-            | null
-        }
-      }
+      values: object
     }
     service?: {
       id?: string
@@ -2785,105 +2485,30 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
   workloadValues?: {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
   service?: {
     id?: string
@@ -3002,105 +2627,30 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
   workloadValues?: {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
   service?: {
     id?: string
@@ -3219,105 +2769,30 @@ export type EditProjectApiArg = {
         helmChartDescription?: string
       }
       namespace?: string
-      autoUpdate?: {
-        enabled?: boolean
-        imageRegistry?: string
-        strategy?:
-          | {
-              type?: 'latest'
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
             }
-          | {
-              digest?: {
-                tag: string
-              }
-              type?: 'digest'
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
             }
-          | {
-              semver?: {
-                versionConstraint: string
-              }
-              type?: 'semver'
-            }
-      }
+            type?: 'semver'
+          }
     }
     workloadValues?: {
       id?: string
       teamId?: string
       name?: string
-      values: {
-        fullnameOverride?: string
-        image?: {
-          repository: string
-          tag: string
-        }
-        containerPorts?: {
-          name?: string
-          containerPort?: number
-          protocol?: string
-        }[]
-        resources?: {
-          requests?: {
-            cpu?: string
-            memory?: string
-          }
-          limits?: {
-            cpu?: string
-            memory?: string
-          }
-        }
-        autoscaling?: {
-          minReplicas?: number
-          maxReplicas?: number
-        }
-        env?:
-          | {
-              name: string
-              value: string
-            }[]
-          | null
-        args?: string[]
-        labels?: {
-          name?: string
-          value?: string
-        }[]
-        annotations?: {
-          name?: string
-          value?: string
-        }[]
-        secrets?: string[]
-        podSecurityContext?: {
-          runAsUser?: number
-          runAsNonRoot?: boolean
-          readOnlyRootFilesystem?: boolean
-        }
-        files?:
-          | {
-              path: string
-              content: string
-            }[]
-          | null
-        secretMounts?: {
-          name: string
-          path: string
-        }[]
-        servicePorts?:
-          | {
-              name: string
-              port: number
-              targetPort: string
-              protocol: 'TCP' | 'UDP'
-            }[]
-          | null
-        serviceMonitor?: {
-          create?: boolean
-          endpoints?:
-            | {
-                port: number
-                path: string
-              }[]
-            | null
-        }
-      }
+      values: object
     }
     service?: {
       id?: string
@@ -3403,26 +2878,24 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
     helmChartDescription?: string
   }
   namespace?: string
-  autoUpdate?: {
-    enabled?: boolean
-    imageRegistry?: string
-    strategy?:
-      | {
-          type?: 'latest'
+  imageUpdateStrategy?:
+    | {
+        type?: 'disabled'
+      }
+    | {
+        digest?: {
+          imageRepository: string
+          tag: string
         }
-      | {
-          digest?: {
-            tag: string
-          }
-          type?: 'digest'
+        type?: 'digest'
+      }
+    | {
+        semver?: {
+          imageRepository: string
+          versionConstraint: string
         }
-      | {
-          semver?: {
-            versionConstraint: string
-          }
-          type?: 'semver'
-        }
-  }
+        type?: 'semver'
+      }
 }[]
 export type GetAllWorkloadsApiArg = void
 export type WorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
@@ -3444,26 +2917,24 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
     helmChartDescription?: string
   }
   namespace?: string
-  autoUpdate?: {
-    enabled?: boolean
-    imageRegistry?: string
-    strategy?:
-      | {
-          type?: 'latest'
+  imageUpdateStrategy?:
+    | {
+        type?: 'disabled'
+      }
+    | {
+        digest?: {
+          imageRepository: string
+          tag: string
         }
-      | {
-          digest?: {
-            tag: string
-          }
-          type?: 'digest'
+        type?: 'digest'
+      }
+    | {
+        semver?: {
+          imageRepository: string
+          versionConstraint: string
         }
-      | {
-          semver?: {
-            versionConstraint: string
-          }
-          type?: 'semver'
-        }
-  }
+        type?: 'semver'
+      }
 }[]
 export type GetTeamWorkloadsApiArg = {
   /** ID of team to return */
@@ -3483,26 +2954,24 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
     helmChartDescription?: string
   }
   namespace?: string
-  autoUpdate?: {
-    enabled?: boolean
-    imageRegistry?: string
-    strategy?:
-      | {
-          type?: 'latest'
+  imageUpdateStrategy?:
+    | {
+        type?: 'disabled'
+      }
+    | {
+        digest?: {
+          imageRepository: string
+          tag: string
         }
-      | {
-          digest?: {
-            tag: string
-          }
-          type?: 'digest'
+        type?: 'digest'
+      }
+    | {
+        semver?: {
+          imageRepository: string
+          versionConstraint: string
         }
-      | {
-          semver?: {
-            versionConstraint: string
-          }
-          type?: 'semver'
-        }
-  }
+        type?: 'semver'
+      }
 }
 export type CreateWorkloadApiArg = {
   /** ID of team to return */
@@ -3522,26 +2991,24 @@ export type CreateWorkloadApiArg = {
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
@@ -3565,26 +3032,24 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
     helmChartDescription?: string
   }
   namespace?: string
-  autoUpdate?: {
-    enabled?: boolean
-    imageRegistry?: string
-    strategy?:
-      | {
-          type?: 'latest'
+  imageUpdateStrategy?:
+    | {
+        type?: 'disabled'
+      }
+    | {
+        digest?: {
+          imageRepository: string
+          tag: string
         }
-      | {
-          digest?: {
-            tag: string
-          }
-          type?: 'digest'
+        type?: 'digest'
+      }
+    | {
+        semver?: {
+          imageRepository: string
+          versionConstraint: string
         }
-      | {
-          semver?: {
-            versionConstraint: string
-          }
-          type?: 'semver'
-        }
-  }
+        type?: 'semver'
+      }
 }
 export type GetWorkloadApiArg = {
   /** ID of team to return */
@@ -3606,26 +3071,24 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
     helmChartDescription?: string
   }
   namespace?: string
-  autoUpdate?: {
-    enabled?: boolean
-    imageRegistry?: string
-    strategy?:
-      | {
-          type?: 'latest'
+  imageUpdateStrategy?:
+    | {
+        type?: 'disabled'
+      }
+    | {
+        digest?: {
+          imageRepository: string
+          tag: string
         }
-      | {
-          digest?: {
-            tag: string
-          }
-          type?: 'digest'
+        type?: 'digest'
+      }
+    | {
+        semver?: {
+          imageRepository: string
+          versionConstraint: string
         }
-      | {
-          semver?: {
-            versionConstraint: string
-          }
-          type?: 'semver'
-        }
-  }
+        type?: 'semver'
+      }
 }
 export type EditWorkloadApiArg = {
   /** ID of team to return */
@@ -3647,106 +3110,31 @@ export type EditWorkloadApiArg = {
       helmChartDescription?: string
     }
     namespace?: string
-    autoUpdate?: {
-      enabled?: boolean
-      imageRegistry?: string
-      strategy?:
-        | {
-            type?: 'latest'
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
           }
-        | {
-            digest?: {
-              tag: string
-            }
-            type?: 'digest'
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
           }
-        | {
-            semver?: {
-              versionConstraint: string
-            }
-            type?: 'semver'
-          }
-    }
+          type?: 'semver'
+        }
   }
 }
 export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained all workload values */ {
   id?: string
   teamId?: string
   name?: string
-  values: {
-    fullnameOverride?: string
-    image?: {
-      repository: string
-      tag: string
-    }
-    containerPorts?: {
-      name?: string
-      containerPort?: number
-      protocol?: string
-    }[]
-    resources?: {
-      requests?: {
-        cpu?: string
-        memory?: string
-      }
-      limits?: {
-        cpu?: string
-        memory?: string
-      }
-    }
-    autoscaling?: {
-      minReplicas?: number
-      maxReplicas?: number
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    args?: string[]
-    labels?: {
-      name?: string
-      value?: string
-    }[]
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-    secrets?: string[]
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsNonRoot?: boolean
-      readOnlyRootFilesystem?: boolean
-    }
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    servicePorts?:
-      | {
-          name: string
-          port: number
-          targetPort: string
-          protocol: 'TCP' | 'UDP'
-        }[]
-      | null
-    serviceMonitor?: {
-      create?: boolean
-      endpoints?:
-        | {
-            port: number
-            path: string
-          }[]
-        | null
-    }
-  }
+  values: object
 }
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3758,80 +3146,7 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
   id?: string
   teamId?: string
   name?: string
-  values: {
-    fullnameOverride?: string
-    image?: {
-      repository: string
-      tag: string
-    }
-    containerPorts?: {
-      name?: string
-      containerPort?: number
-      protocol?: string
-    }[]
-    resources?: {
-      requests?: {
-        cpu?: string
-        memory?: string
-      }
-      limits?: {
-        cpu?: string
-        memory?: string
-      }
-    }
-    autoscaling?: {
-      minReplicas?: number
-      maxReplicas?: number
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    args?: string[]
-    labels?: {
-      name?: string
-      value?: string
-    }[]
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-    secrets?: string[]
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsNonRoot?: boolean
-      readOnlyRootFilesystem?: boolean
-    }
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    servicePorts?:
-      | {
-          name: string
-          port: number
-          targetPort: string
-          protocol: 'TCP' | 'UDP'
-        }[]
-      | null
-    serviceMonitor?: {
-      create?: boolean
-      endpoints?:
-        | {
-            port: number
-            path: string
-          }[]
-        | null
-    }
-  }
+  values: object
 }
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -3843,160 +3158,14 @@ export type EditWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
 }
 export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
   id?: string
   teamId?: string
   name?: string
-  values: {
-    fullnameOverride?: string
-    image?: {
-      repository: string
-      tag: string
-    }
-    containerPorts?: {
-      name?: string
-      containerPort?: number
-      protocol?: string
-    }[]
-    resources?: {
-      requests?: {
-        cpu?: string
-        memory?: string
-      }
-      limits?: {
-        cpu?: string
-        memory?: string
-      }
-    }
-    autoscaling?: {
-      minReplicas?: number
-      maxReplicas?: number
-    }
-    env?:
-      | {
-          name: string
-          value: string
-        }[]
-      | null
-    args?: string[]
-    labels?: {
-      name?: string
-      value?: string
-    }[]
-    annotations?: {
-      name?: string
-      value?: string
-    }[]
-    secrets?: string[]
-    podSecurityContext?: {
-      runAsUser?: number
-      runAsNonRoot?: boolean
-      readOnlyRootFilesystem?: boolean
-    }
-    files?:
-      | {
-          path: string
-          content: string
-        }[]
-      | null
-    secretMounts?: {
-      name: string
-      path: string
-    }[]
-    servicePorts?:
-      | {
-          name: string
-          port: number
-          targetPort: string
-          protocol: 'TCP' | 'UDP'
-        }[]
-      | null
-    serviceMonitor?: {
-      create?: boolean
-      endpoints?:
-        | {
-            port: number
-            path: string
-          }[]
-        | null
-    }
-  }
+  values: object
 }
 export type UpdateWorkloadValuesApiArg = {
   /** ID of team to return */
@@ -4008,80 +3177,7 @@ export type UpdateWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
-    values: {
-      fullnameOverride?: string
-      image?: {
-        repository: string
-        tag: string
-      }
-      containerPorts?: {
-        name?: string
-        containerPort?: number
-        protocol?: string
-      }[]
-      resources?: {
-        requests?: {
-          cpu?: string
-          memory?: string
-        }
-        limits?: {
-          cpu?: string
-          memory?: string
-        }
-      }
-      autoscaling?: {
-        minReplicas?: number
-        maxReplicas?: number
-      }
-      env?:
-        | {
-            name: string
-            value: string
-          }[]
-        | null
-      args?: string[]
-      labels?: {
-        name?: string
-        value?: string
-      }[]
-      annotations?: {
-        name?: string
-        value?: string
-      }[]
-      secrets?: string[]
-      podSecurityContext?: {
-        runAsUser?: number
-        runAsNonRoot?: boolean
-        readOnlyRootFilesystem?: boolean
-      }
-      files?:
-        | {
-            path: string
-            content: string
-          }[]
-        | null
-      secretMounts?: {
-        name: string
-        path: string
-      }[]
-      servicePorts?:
-        | {
-            name: string
-            port: number
-            targetPort: string
-            protocol: 'TCP' | 'UDP'
-          }[]
-        | null
-      serviceMonitor?: {
-        create?: boolean
-        endpoints?:
-          | {
-              port: number
-              path: string
-            }[]
-          | null
-      }
-    }
+    values: object
   }
 }
 export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
