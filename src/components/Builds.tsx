@@ -50,15 +50,12 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
+function WebhookUrlRenderer({ row }: { row: Row }) {
   const [copied, setCopied] = useState(false)
-  const path = `harbor/projects/team-${row.teamId}/repositories/${row.name}/artifacts-tab`
-  const host = `https://harbor.${domainSuffix}`
-  const externalUrl = `${host}/${path}`
-  const registry = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
+  const webhookUrl = `http://el-gitea-webhook-${row.name}.team-${row.teamId}.svc.cluster.local:8080`
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(registry)
+    navigator.clipboard.writeText(webhookUrl)
     setCopied(true)
     setTimeout(() => {
       setCopied(false)
@@ -66,9 +63,36 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: registry }} target='_blank'>
-        {registry}
-      </Link>
+      <Link to={{ pathname: webhookUrl }} target='_blank' />
+      <Box sx={{ width: '30px' }}>
+        {!copied ? (
+          <Tooltip title='Copy to clipboard'>
+            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
+          </Tooltip>
+        ) : (
+          <Tooltip title='Copied!'>
+            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
+          </Tooltip>
+        )}
+      </Box>
+    </Box>
+  )
+}
+
+function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
+  const [copied, setCopied] = useState(false)
+  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
+
+  const handleCopyToClipboard = () => {
+    navigator.clipboard.writeText(repository)
+    setCopied(true)
+    setTimeout(() => {
+      setCopied(false)
+    }, 3000)
+  }
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Link to={{ pathname: repository }} target='_blank' />
       <Box sx={{ width: '30px' }}>
         {!copied ? (
           <Tooltip title='Copy to clipboard'>
@@ -116,8 +140,8 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
     {
       id: 'trigger',
-      label: t('Trigger'),
-      renderer: (row) => (row.trigger ? 'Yes' : 'No'),
+      label: t('Webhook URL'),
+      renderer: (row: Row) => (row.trigger ? <WebhookUrlRenderer row={row} /> : ''),
     },
     {
       id: 'tekton',
