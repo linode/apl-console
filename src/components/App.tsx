@@ -21,7 +21,6 @@ import { getSpec } from 'common/api-spec'
 import useAuthzSession from 'hooks/useAuthzSession'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEqual, set, unset } from 'lodash'
-import Markdown from 'markdown-to-jsx'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
@@ -424,8 +423,6 @@ export default function ({
                 description={appInfo.about}
                 resourceType='App'
               />
-              <HeaderTitle title={t('FORM_HEAD_ABOUT', { title: appInfo.title })} resourceType='App' />
-              <Markdown>{appInfo.integration || `No info defined yet for ${appInfo.title}`}</Markdown>
             </Box>
           </Grid>
         </Grid>
