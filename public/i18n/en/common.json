@@ -14,7 +14,6 @@
   "Dashboard": "Dashboard",
   "Deploy changes": "Deploy changes",
   "FORM_ABOUT": "About {{title}}",
-  "FORM_HEAD_ABOUT": "How did Otomi integrate {{title}}?",
   "FORM_HEAD_APP_EDIT": "Edit the configuration values of {{title}}.",
   "FORM_SHORTCUTS": "Shortcuts ({{teamId}})",
   "FORM_SHORTCUTS_DESC": "Manage shortcuts to open {{title}} at a target path.",
