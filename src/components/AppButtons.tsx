@@ -63,7 +63,7 @@ export default function ({
         paddingBottom: '10px',
       }}
     >
-      {!isHostedByOtomi && !enabled && (
+      {!isHostedByOtomi && !enabled && isAdminApps && (
         <IconButton
           onClick={() => {
             handleAppsToggle()
