@@ -52,6 +52,11 @@ export default function NavConfig() {
       items: [
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
         {
+          title: 'Developer Catalog',
+          path: `/catalogs/${oboTeamId}`,
+          icon: getIcon('developer_guide_icon.svg'),
+        },
+        {
           title: 'Shortcuts',
           path: `/shortcuts/${oboTeamId}`,
           icon: getIcon('shortcuts_icon.svg'),

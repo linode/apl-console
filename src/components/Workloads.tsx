@@ -46,6 +46,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
   //   user: { isAdmin },
   // } = useSession()
   const {
+    oboTeamId,
     appsEnabled,
     settings: {
       cluster: { domainSuffix },
@@ -82,6 +83,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
+      to={`/catalogs/${teamId || oboTeamId}`}
     />
   )
 }
