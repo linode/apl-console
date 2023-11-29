@@ -26,16 +26,16 @@ const useStyles = makeStyles()((theme) => {
 
 const developerCatalogInfo = [
   {
-    title: 'What is it and what can I do with it?',
-    text: 'Discover a diverse range of pre-built workloads tailored for your projects. Easily deploy and customize these solutions to accelerate your development process.',
+    title: 'What is the Developer Catalog?',
+    text: 'The Developer Catalog offers golden path templates for your projects. Choose the template to use, customize the values and submit to accelerate your developer workflow.',
   },
   {
-    title: 'Who is creating this curated list?',
-    text: 'Otomi experts curates this catalog, ensuring you have access to high-quality, industry-relevant workloads. You can also add your own workloads to the catalog using your gitea charts repository.',
+    title: 'Who is maintaining the Catalog?',
+    text: 'The templates in the Developer Catalog are maintained by the platform administrator.',
   },
   {
     title: 'Why use the Developer Catalog?',
-    text: 'Save time and effort by leveraging tried-and-tested workloads. Whether you’re a beginner or an experienced developer, the catalog streamlines your workflow, making development smoother and more efficient.',
+    text: 'Whether you’re a beginner or an experienced developer, the catalog streamlines your workflow and makes deploying applications on Kubernetes a smooth and efficient proces.',
   },
 ]
 
