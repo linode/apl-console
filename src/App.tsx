@@ -99,6 +99,7 @@ function App() {
                                   <Route path='/policies/:policyId' component={Policy} exact />
                                   <Route path='/catalogs/:teamId' component={Catalogs} exact />
                                   <Route path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
+                                  <Route path='/catalogs/:teamId/:catalogName/:workloadId' component={Catalog} exact />
                                   <Route path='/services' component={Services} exact />
                                   <Route path='/secrets' component={Secrets} exact />
                                   <Route path='/workloads' component={Workloads} exact />

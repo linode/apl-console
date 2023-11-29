@@ -14,7 +14,7 @@ interface Row {
 }
 
 const getWorkloadLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/workloads/${encodeURIComponent(row.id)}`
+  const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}

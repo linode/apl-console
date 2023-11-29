@@ -3,6 +3,7 @@ import {
   AppBar,
   Box,
   Button,
+  ButtonGroup,
   Chip,
   Grid,
   Link,
@@ -27,20 +28,31 @@ import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
+import cssStyles from 'utils/cssStyles'
 import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
 import DeleteButton from './DeleteButton'
 import TabPanel from './TabPanel'
+import InformationBanner from './InformationBanner'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
+    ...cssStyles(theme).bgBlur({ color: theme.palette.background.paper }),
     display: 'flex',
     flex: 1,
     alignItems: 'center',
+    paddingTop: theme.spacing(3),
+    width: '100%',
+    left: 0,
+    paddingLeft: theme.spacing(3),
+    paddingRight: theme.spacing(3),
+    borderRadius: '8px',
   },
   headerText: {},
   headerButtons: {
-    marginLeft: 'auto',
+    padding: theme.spacing(3),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: '8px',
   },
   legend: {
     paddingTop: theme.spacing(3),
@@ -77,6 +89,13 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
+const checkImageFields = (data: any) => {
+  if (data?.repository && data?.tag) return ''
+  if (data?.repository) return "The 'tag' field for the image should be filled in!"
+  if (data?.tag) return "The 'repository' field for the image should be filled in!"
+  return "The 'repository' and 'tag' fields for the image should be filled in!"
+}
+
 export const getWorkloadSchema = (): any => {
   return cloneDeep(getSpec().components.schemas.Workload)
 }
@@ -102,31 +121,29 @@ interface Props extends CrudProps {
   teamId: string
   workload?: any
   workloadId?: string
+  values?: any
   createWorkload: any
   updateWorkload: any
   updateWorkloadValues: any
   deleteWorkload: any
-  item?: any
 }
 
 export default function ({
   teamId,
   workload,
   workloadId,
+  values,
   createWorkload,
   updateWorkload,
   updateWorkloadValues,
   deleteWorkload,
-  item,
   ...other
 }: Props): React.ReactElement {
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
     info: 0,
-    shortcuts: 1,
-    values: 2,
-    rawvalues: 3,
+    values: 1,
   }
   const { classes } = useStyles()
 
@@ -144,50 +161,57 @@ export default function ({
   const dispatch = useAppDispatch()
   const { appsEnabled, user } = useSession()
   const [data, setData] = useState<any>(workload)
-  const [workloadValues, setWorkloadValues] = useState<any>(item?.values)
+  const [workloadValues, setWorkloadValues] = useState<any>(values)
+  const [scrollPosition, setScrollPosition] = useState(0)
+
+  const handleScroll = () => {
+    const position = window.scrollY
+    setScrollPosition(position)
+  }
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
 
   useEffect(() => {
-    if (!item) return
-    setWorkloadValues(item?.values)
-    setData((prev) => ({
-      ...prev,
-      path: item?.name,
-      chartMetadata: {
-        ...prev?.chartMetadata,
-        helmChartVersion: item?.chartVersion,
-        helmChartDescription: item?.chartDescription,
-      },
-    }))
-  }, [item])
-
-  const send = true
+    if (!workload) return
+    setWorkloadValues(values)
+    setData(workload)
+  }, [workload, values])
 
   const handleCreateUpdateWorkload = async () => {
     const workloadBody = omit(data, ['chartProvider', 'chart', 'revision'])
     const chartMetadata = omit(data?.chartMetadata, ['helmChartCatalog', 'helmChart'])
-    const body = { ...workloadBody, chartMetadata, url: item?.url }
+    const path = workload?.path
+    const body = { ...workloadBody, chartMetadata, url: workload?.url, path }
     let res
-    if (send) {
-      if (workloadId) {
-        dispatch(setError(undefined))
-        res = await updateWorkload({ teamId, workloadId, body })
-        res = await updateWorkloadValues({ teamId, workloadId, body: { values: workloadValues } })
-      } else {
-        res = await createWorkload({ teamId, body })
-        res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: { values: workloadValues } })
-      }
-      if (res.error) return
-      history.push(`/teams/${teamId}/workloads`)
+    if (workloadId) {
+      dispatch(setError(undefined))
+      res = await updateWorkload({ teamId, workloadId, body })
+      res = await updateWorkloadValues({ teamId, workloadId, body: { values: workloadValues } })
+    } else {
+      res = await createWorkload({ teamId, body })
+      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: { values: workloadValues } })
     }
+    if (res.error) return
+    history.push(`/teams/${teamId}/workloads`)
   }
 
-  const helmChart: string = item?.name || ''
   const schema = getWorkloadSchema()
   const uiSchema = getWorkloadUiSchema(user, teamId)
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box className={classes.header}>
+      <Box
+        className={classes.header}
+        sx={{
+          position: 'absolute',
+          top: `${scrollPosition > 90 ? scrollPosition - 72 : 0}px`,
+          zIndex: 1000,
+        }}
+      >
         <Box className={classes.imgHolder}>
           <img
             className={classes.img}
@@ -198,20 +222,56 @@ export default function ({
               // eslint-disable-next-line no-param-reassign
               currentTarget.src = `/logos/${logoAlt}`
             }}
-            alt={`Logo for ${logo} app`}
+            alt={`Logo for ${logo}`}
           />
         </Box>
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
-            {item.name}
+            {workload?.name ? `${workload.name} (${workload.path})` : workload.path}
           </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            ml: 'auto',
+          }}
+        >
+          <ButtonGroup>
+            {tab === 1 && (
+              <Button variant='contained' onClick={handleCreateUpdateWorkload}>
+                Submit
+              </Button>
+            )}
+            {workloadId && (
+              <DeleteButton
+                onDelete={() => deleteWorkload({ teamId, workloadId })}
+                resourceName={workload?.name}
+                resourceType='workload'
+                data-cy='button-delete-workload'
+              />
+            )}
+          </ButtonGroup>
         </Box>
       </Box>
 
-      <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
+      <AppBar position='relative' color='default' sx={{ borderRadius: '8px', mt: '64px' }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
+          {tab !== 1 && (
+            <Box
+              sx={{
+                position: 'absolute',
+                width: '45px',
+                left: '90px',
+                bottom: '0px',
+                transform: 'scale(1)',
+                animation: 'pulse 2s infinite',
+                boxShadow: '0 0 0 0 rgba(255, 0, 0, 1)',
+              }}
+            />
+          )}
           <Tab href='#info' label='Info' value={hashMap.info} />
-          <Tab href='#rawvalues' label={t('Values')} value={hashMap.rawvalues} />
+          <Tab href='#values' label={t('Values')} value={hashMap.values} />
         </Tabs>
       </AppBar>
 
@@ -226,14 +286,14 @@ export default function ({
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Version:')} />
                       </TableCell>
-                      <TableCell align='left'>{item?.chartVersion}</TableCell>
+                      <TableCell align='left'>{workload?.chartMetadata?.helmChartVersion}</TableCell>
                     </TableRow>
 
                     <TableRow key='description' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Description:')} />
                       </TableCell>
-                      <TableCell align='left'>{item?.chartDescription}</TableCell>
+                      <TableCell align='left'>{workload?.chartMetadata?.helmChartDescription}</TableCell>
                     </TableRow>
 
                     <TableRow key='repo' className={classes.tableRow}>
@@ -241,8 +301,8 @@ export default function ({
                         <Chip label={t('Repo:')} />
                       </TableCell>
                       <TableCell align='left'>
-                        <Link href={item?.url} target='_blank' rel='noopener'>
-                          {item?.url && cleanLink(item.url as string)}
+                        <Link href={workload?.url} target='_blank' rel='noopener'>
+                          {workload?.url && cleanLink(workload.url as string)}
                         </Link>
                       </TableCell>
                     </TableRow>
@@ -251,28 +311,13 @@ export default function ({
               </TableContainer>
             </Box>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Box className={classes.content}>
-              <Button variant='contained' href='#rawvalues' onClick={() => handleTabChange(undefined, 3)}>
-                Start
-              </Button>
-            </Box>
-          </Grid>
         </Grid>
       </TabPanel>
 
-      <TabPanel value={tab} index={hashMap.rawvalues}>
-        <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          {workloadId && (
-            <DeleteButton
-              onDelete={() => deleteWorkload({ teamId, workloadId })}
-              resourceName={workload?.name}
-              resourceType='workload'
-              data-cy='button-delete-workload'
-            />
-          )}
-        </Box>
-
+      <TabPanel value={tab} index={hashMap.values}>
+        {checkImageFields(workloadValues?.image) && (
+          <InformationBanner message={checkImageFields(workloadValues?.image)} />
+        )}
         <Form
           schema={schema}
           uiSchema={uiSchema}
@@ -285,20 +330,7 @@ export default function ({
           {...other}
         />
 
-        <WorkloadValues
-          editable
-          hideTitle
-          workloadValues={workloadValues}
-          setWorkloadValues={setWorkloadValues}
-          helmChart={helmChart}
-        />
-
-        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
-          <Box sx={{ flex: '1 1 auto' }} />
-          <Button variant='contained' onClick={handleCreateUpdateWorkload}>
-            Submit
-          </Button>
-        </Box>
+        <WorkloadValues editable hideTitle workloadValues={workloadValues} setWorkloadValues={setWorkloadValues} />
       </TabPanel>
     </Box>
   )

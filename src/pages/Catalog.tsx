@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Catalog from 'components/Catalog'
-import LoadingScreen from 'components/LoadingScreen'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
@@ -13,6 +12,7 @@ import {
   useDeleteWorkloadMutation,
   useEditWorkloadMutation,
   useGetWorkloadQuery,
+  useGetWorkloadValuesQuery,
   useUpdateWorkloadValuesMutation,
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
@@ -30,50 +30,73 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
   const { t } = useTranslation()
-  const session = useSession()
-  const [createWL, { isLoading: isLoadingCWL, data: createWLData }] = useCreateWorkloadMutation()
-  const [updateWL] = useEditWorkloadMutation()
+  const { user } = useSession()
   const {
-    data: WLData,
-    isLoading,
-    isFetching,
-    isError,
-    refetch,
-  } = useGetWorkloadQuery({ teamId, workloadId: workloadId || createWLData?.id }, { skip: !workloadId })
-  const [updateWLValues] = useUpdateWorkloadValuesMutation()
-  const [deleteWL, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
+    data: workload,
+    isLoading: isLoadingWorkload,
+    isFetching: isFetchingWorkload,
+    isError: isErrorWorkload,
+    refetch: refetchWorkload,
+  } = useGetWorkloadQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [createWorkload] = useCreateWorkloadMutation()
+  const [updateWorkload] = useEditWorkloadMutation()
+  const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
+
+  const {
+    data: values,
+    isLoading: isLoadingValues,
+    isFetching: isFetchingValues,
+    isError: isErrorValues,
+    refetch: refetchValues,
+  } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  const [updateValues] = useUpdateWorkloadValuesMutation()
+
+  const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
+  const [catalogItem, setCatalogItem] = useState<any>({})
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
-  const [getWorkloadCatalog, { isLoading: isLoadingItem }] = useWorkloadCatalogMutation()
-  const [item, setItem] = useState<any>({})
+
   useEffect(() => {
-    getWorkloadCatalog({ body: { url: '', sub: session.user.sub, teamId } }).then((res: any) => {
+    if (workloadId) return
+    getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
       const { url, catalog }: { url: string; catalog: any[] } = res.data
       const item = catalog.find((item) => item.name === catalogName)
-      setItem({ ...item, url })
+      const { chartVersion: helmChartVersion, chartDescription: helmChartDescription, name: path, values } = item
+      const chartMetadata = { helmChartVersion, helmChartDescription }
+      setCatalogItem({ chartMetadata, path, values, url })
     })
   }, [])
+
+  const workloadData = workloadId ? workload : catalogItem
+  const valuesData = workloadId ? values?.values : catalogItem?.values
+
   useEffect(() => {
     if (isDirty !== false) return
-    if (!isFetching) refetch()
+    if (!isFetchingWorkload) refetchWorkload()
+    if (!isFetchingValues) refetchValues()
   }, [isDirty])
   // END HOOKS
-  const mutating = isLoadingCWL || isLoadingDWL
+  const mutating = isLoadingDWL
   if (!mutating && isSuccessDWL) return <Redirect to={`/teams/${teamId}/workloads`} />
 
-  if (isLoadingItem || !item) return <LoadingScreen />
-
-  const comp = !isError && (
+  const comp = !isErrorWorkload && !isErrorValues && (
     <Catalog
       teamId={teamId}
-      workload={WLData || createWLData}
-      workloadId={workloadId || createWLData?.id}
+      workload={workloadData}
+      workloadId={workloadId}
+      values={valuesData}
+      createWorkload={createWorkload}
+      updateWorkload={updateWorkload}
+      deleteWorkload={deleteWorkload}
+      updateWorkloadValues={updateValues}
       mutating={mutating}
-      createWorkload={createWL}
-      updateWorkload={updateWL}
-      updateWorkloadValues={updateWLValues}
-      deleteWorkload={deleteWL}
-      item={item}
     />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_WORKLOAD', { workloadId, role: 'team' })} />
+  return (
+    <PaperLayout
+      loading={isLoadingWorkload || isLoadingValues || isLoadingCatalog}
+      comp={comp}
+      title={t('TITLE_WORKLOAD', { workloadId, role: 'team' })}
+    />
+  )
 }

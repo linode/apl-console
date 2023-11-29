@@ -1,9 +1,7 @@
-import { Box, ButtonGroup, IconButton, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
-import { useTranslation } from 'react-i18next'
-import Iconify from './Iconify'
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -46,13 +44,19 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 
-export default function ({ img, imgAlt, teamId, catalogItem }: any): React.ReactElement {
-  const { classes, cx } = useStyles()
-  const { t } = useTranslation()
+interface Props {
+  img: string
+  imgAlt: string
+  teamId: string
+  name: string
+}
+
+export default function ({ img, imgAlt, teamId, name }: Props): React.ReactElement {
+  const { classes } = useStyles()
   const image = (
     <img
       draggable={false}
-      className={cx(classes.img)}
+      className={classes.img}
       src={img}
       onError={({ currentTarget }) => {
         // eslint-disable-next-line no-param-reassign
@@ -60,55 +64,18 @@ export default function ({ img, imgAlt, teamId, catalogItem }: any): React.React
         // eslint-disable-next-line no-param-reassign
         currentTarget.src = imgAlt
       }}
-      alt={`Logo for ${catalogItem.name}`}
+      alt={`Logo for ${name}`}
     />
   )
 
-  const linkStyle = { textDecoration: 'none' }
-
   return (
-    <Box className={cx(classes.root)}>
-      <Link to={`/catalogs/${teamId}/${catalogItem.name}`} style={linkStyle}>
+    <Box className={classes.root}>
+      <Link to={`/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
         {image}
-        <Typography className={cx(classes.title)} variant='h6'>
-          {catalogItem.name.replace('otomi-quickstart-', '')}
+        <Typography className={classes.title} variant='h6'>
+          {name.replace('otomi-quickstart-', '')}
         </Typography>
       </Link>
-
-      <Box className='hidden-button'>
-        <ButtonGroup
-          variant='text'
-          color='primary'
-          size='large'
-          disableElevation
-          sx={{
-            borderColor: 'primary.main',
-            backgroundColor: 'transparent',
-            paddingBottom: '10px',
-          }}
-        >
-          {false && (
-            <IconButton
-              component={Link}
-              to={`/teams/${teamId}/create-workload`}
-              title={t('Click to create a workload chart')}
-            >
-              <Iconify icon='ri:share-forward-fill' />
-            </IconButton>
-          )}
-
-          <IconButton
-            component={Link}
-            to={{
-              pathname: `/catalogs/${teamId}/${catalogItem.name}`,
-              state: catalogItem,
-            }}
-            title={t('Click to edit workload chart')}
-          >
-            <Iconify icon='material-symbols:settings' />
-          </IconButton>
-        </ButtonGroup>
-      </Box>
     </Box>
   )
 }
