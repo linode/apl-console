@@ -144,7 +144,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
     falco: true,
   }
   const provider = session.settings.cluster?.provider
-  if (provider !== 'azure') apps = apps.filter((app) => !disabledByProviderApps[app.id])
+  if (provider !== 'azure' || provider !== 'google') apps = apps.filter((app) => !disabledByProviderApps[app.id])
 
   const dataFiltered = applySortFilter({
     tableData: apps,
