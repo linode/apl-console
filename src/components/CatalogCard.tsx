@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -46,12 +46,12 @@ const useStyles = makeStyles()((theme) => {
 
 interface Props {
   img: string
-  imgAlt: string
   teamId: string
   name: string
+  disabled: boolean
 }
 
-export default function ({ img, imgAlt, teamId, name }: Props): React.ReactElement {
+export default function ({ img, teamId, name, disabled }: Props): React.ReactElement {
   const { classes } = useStyles()
   const image = (
     <img
@@ -62,20 +62,25 @@ export default function ({ img, imgAlt, teamId, name }: Props): React.ReactEleme
         // eslint-disable-next-line no-param-reassign
         currentTarget.onerror = null // prevents looping
         // eslint-disable-next-line no-param-reassign
-        currentTarget.src = imgAlt
+        currentTarget.src = img
       }}
       alt={`Logo for ${name}`}
     />
   )
+  const toolTip = disabled
+    ? 'Your license does not allow to create an additional workload'
+    : 'Click to create a workload'
 
   return (
-    <Box className={classes.root}>
-      <Link to={`/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
-        {image}
-        <Typography className={classes.title} variant='h6'>
-          {name.replace('otomi-quickstart-', '')}
-        </Typography>
-      </Link>
+    <Box className={classes.root} style={{ filter: disabled && 'grayscale(1)' }}>
+      <Tooltip title={toolTip}>
+        <Link to={!disabled && `/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
+          {image}
+          <Typography className={classes.title} variant='h6'>
+            {name.replace('otomi-quickstart-', '')}
+          </Typography>
+        </Link>
+      </Tooltip>
     </Box>
   )
 }

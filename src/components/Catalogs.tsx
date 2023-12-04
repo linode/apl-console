@@ -44,9 +44,10 @@ const developerCatalogInfo = [
 interface Props {
   teamId: string
   catalogs: any[]
+  canCreateResource?: boolean
 }
 
-export default function ({ teamId, catalogs }: Props): React.ReactElement {
+export default function ({ teamId, catalogs, canCreateResource }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
@@ -83,10 +84,10 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search chart' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {filteredCatalog.map((item) => {
-          const img = item?.logo || '/logos/otomi_logo.svg'
+          const img = item?.icon || '/logos/otomi_logo.svg'
           return (
             <Grid item xs={12} sm={4} md={3} lg={2} key={item.name}>
-              <CatalogCard img={img} imgAlt={img} teamId={teamId} name={item.name} />
+              <CatalogCard img={img} teamId={teamId} name={item.name} disabled={!canCreateResource} />
             </Grid>
           )
         })}

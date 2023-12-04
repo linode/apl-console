@@ -61,9 +61,9 @@ export default function ({
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
       const { url, catalog }: { url: string; catalog: any[] } = res.data
       const item = catalog.find((item) => item.name === catalogName)
-      const { chartVersion: helmChartVersion, chartDescription: helmChartDescription, name: path, values } = item
+      const { chartVersion: helmChartVersion, chartDescription: helmChartDescription, name: path, values, icon } = item
       const chartMetadata = { helmChartVersion, helmChartDescription }
-      setCatalogItem({ chartMetadata, path, values, url })
+      setCatalogItem({ chartMetadata, path, values, url, icon })
     })
   }, [])
 

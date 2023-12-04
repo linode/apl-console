@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSession } from 'providers/Session'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { useAppDispatch } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
@@ -96,6 +96,11 @@ const checkImageFields = (data: any) => {
   return "The 'repository' and 'tag' fields for the image should be filled in!"
 }
 
+const calculateTop = (scrollPosition: number, globalError: boolean): string => {
+  if (globalError) return `${scrollPosition > 140 ? scrollPosition - 72 : 88}px`
+  return `${scrollPosition > 90 ? scrollPosition - 72 : 0}px`
+}
+
 export const getWorkloadSchema = (): any => {
   return cloneDeep(getSpec().components.schemas.Workload)
 }
@@ -105,6 +110,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     'ui:description': ' ',
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
+    icon: { 'ui:widget': 'hidden' },
     url: { 'ui:widget': 'hidden' },
     chartProvider: { 'ui:widget': 'hidden' },
     chartMetadata: { 'ui:widget': 'hidden' },
@@ -139,30 +145,27 @@ export default function ({
   deleteWorkload,
   ...other
 }: Props): React.ReactElement {
+  const history = useHistory()
   const location = useLocation()
+  const { t } = useTranslation()
+  const { classes } = useStyles()
+  const dispatch = useAppDispatch()
+  const { appsEnabled, user } = useSession()
+  const globalError = useAppSelector(({ global: { error } }) => error)
   const hash = location.hash.substring(1)
   const hashMap = {
     info: 0,
     values: 1,
   }
-  const { classes } = useStyles()
-
-  const logo = 'otomi_logo.svg'
-  const logoAlt = 'otomi_logo.svg'
-
   const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
     setTab(tab)
   }
-
-  const history = useHistory()
-  const { t } = useTranslation()
-  const dispatch = useAppDispatch()
-  const { appsEnabled, user } = useSession()
   const [data, setData] = useState<any>(workload)
   const [workloadValues, setWorkloadValues] = useState<any>(values)
   const [scrollPosition, setScrollPosition] = useState(0)
+  const icon = data?.icon || '/logos/otomi_logo.svg'
 
   const handleScroll = () => {
     const position = window.scrollY
@@ -208,21 +211,21 @@ export default function ({
         className={classes.header}
         sx={{
           position: 'absolute',
-          top: `${scrollPosition > 90 ? scrollPosition - 72 : 0}px`,
-          zIndex: 1000,
+          top: calculateTop(scrollPosition, globalError),
+          zIndex: 10,
         }}
       >
         <Box className={classes.imgHolder}>
           <img
             className={classes.img}
-            src={`/logos/${logo}`}
+            src={icon}
             onError={({ currentTarget }) => {
               // eslint-disable-next-line no-param-reassign
               currentTarget.onerror = null // prevents looping
               // eslint-disable-next-line no-param-reassign
-              currentTarget.src = `/logos/${logoAlt}`
+              currentTarget.src = `${icon}`
             }}
-            alt={`Logo for ${logo}`}
+            alt={`Logo for ${icon}`}
           />
         </Box>
         <Box className={classes.headerText}>
@@ -255,7 +258,7 @@ export default function ({
         </Box>
       </Box>
 
-      <AppBar position='relative' color='default' sx={{ borderRadius: '8px', mt: '64px' }}>
+      <AppBar position='relative' color='default' sx={{ borderRadius: '8px', mt: globalError ? '90px' : '66px' }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           {tab !== 1 && (
             <Box
@@ -315,7 +318,7 @@ export default function ({
       </TabPanel>
 
       <TabPanel value={tab} index={hashMap.values}>
-        {checkImageFields(workloadValues?.image) && (
+        {workloadValues?.image && checkImageFields(workloadValues?.image) && (
           <InformationBanner message={checkImageFields(workloadValues?.image)} />
         )}
         <Form
