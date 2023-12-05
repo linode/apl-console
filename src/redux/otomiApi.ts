@@ -294,6 +294,11 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
   ksvc?: {
     predeployed?: boolean
   }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -951,6 +956,11 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
   ksvc?: {
     predeployed?: boolean
   }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1023,6 +1033,11 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
   ksvc?: {
     predeployed?: boolean
   }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1094,6 +1109,11 @@ export type CreateServiceApiArg = {
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -1173,6 +1193,11 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
   ksvc?: {
     predeployed?: boolean
   }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1247,6 +1272,11 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
   ksvc?: {
     predeployed?: boolean
   }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
   ingress:
     | ({
         type?: 'cluster'
@@ -1320,6 +1350,11 @@ export type EditServiceApiArg = {
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -1914,6 +1949,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -1932,6 +1968,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -1939,6 +1977,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -1957,6 +1997,11 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -2051,6 +2096,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -2069,6 +2115,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -2076,6 +2124,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -2094,6 +2144,11 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -2191,6 +2246,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -2209,6 +2265,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -2216,6 +2274,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -2234,6 +2294,11 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -2331,6 +2396,7 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name: string
+      icon?: string
       url: string
       chartProvider?: 'helm' | 'git'
       path?: string
@@ -2349,6 +2415,8 @@ export type CreateProjectApiArg = {
             digest?: {
               imageRepository: string
               tag: string
+              imageParameter?: string
+              tagParameter?: string
             }
             type?: 'digest'
           }
@@ -2356,6 +2424,8 @@ export type CreateProjectApiArg = {
             semver?: {
               imageRepository: string
               versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
             }
             type?: 'semver'
           }
@@ -2374,6 +2444,11 @@ export type CreateProjectApiArg = {
       port?: number
       ksvc?: {
         predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
       }
       ingress:
         | ({
@@ -2475,6 +2550,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -2493,6 +2569,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -2500,6 +2578,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -2518,6 +2598,11 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -2617,6 +2702,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -2635,6 +2721,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -2642,6 +2730,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -2660,6 +2750,11 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     port?: number
     ksvc?: {
       predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
     }
     ingress:
       | ({
@@ -2759,6 +2854,7 @@ export type EditProjectApiArg = {
       id?: string
       teamId?: string
       name: string
+      icon?: string
       url: string
       chartProvider?: 'helm' | 'git'
       path?: string
@@ -2777,6 +2873,8 @@ export type EditProjectApiArg = {
             digest?: {
               imageRepository: string
               tag: string
+              imageParameter?: string
+              tagParameter?: string
             }
             type?: 'digest'
           }
@@ -2784,6 +2882,8 @@ export type EditProjectApiArg = {
             semver?: {
               imageRepository: string
               versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
             }
             type?: 'semver'
           }
@@ -2802,6 +2902,11 @@ export type EditProjectApiArg = {
       port?: number
       ksvc?: {
         predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
       }
       ingress:
         | ({
@@ -2868,6 +2973,7 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
   id?: string
   teamId?: string
   name: string
+  icon?: string
   url: string
   chartProvider?: 'helm' | 'git'
   path?: string
@@ -2886,6 +2992,8 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
         digest?: {
           imageRepository: string
           tag: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'digest'
       }
@@ -2893,6 +3001,8 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
         semver?: {
           imageRepository: string
           versionConstraint: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'semver'
       }
@@ -2907,6 +3017,7 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
   id?: string
   teamId?: string
   name: string
+  icon?: string
   url: string
   chartProvider?: 'helm' | 'git'
   path?: string
@@ -2925,6 +3036,8 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
         digest?: {
           imageRepository: string
           tag: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'digest'
       }
@@ -2932,6 +3045,8 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
         semver?: {
           imageRepository: string
           versionConstraint: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'semver'
       }
@@ -2944,6 +3059,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
   id?: string
   teamId?: string
   name: string
+  icon?: string
   url: string
   chartProvider?: 'helm' | 'git'
   path?: string
@@ -2962,6 +3078,8 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
         digest?: {
           imageRepository: string
           tag: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'digest'
       }
@@ -2969,6 +3087,8 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
         semver?: {
           imageRepository: string
           versionConstraint: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'semver'
       }
@@ -2981,6 +3101,7 @@ export type CreateWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -2999,6 +3120,8 @@ export type CreateWorkloadApiArg = {
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -3006,6 +3129,8 @@ export type CreateWorkloadApiArg = {
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
@@ -3022,6 +3147,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
   id?: string
   teamId?: string
   name: string
+  icon?: string
   url: string
   chartProvider?: 'helm' | 'git'
   path?: string
@@ -3040,6 +3166,8 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
         digest?: {
           imageRepository: string
           tag: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'digest'
       }
@@ -3047,6 +3175,8 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
         semver?: {
           imageRepository: string
           versionConstraint: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'semver'
       }
@@ -3061,6 +3191,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
   id?: string
   teamId?: string
   name: string
+  icon?: string
   url: string
   chartProvider?: 'helm' | 'git'
   path?: string
@@ -3079,6 +3210,8 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
         digest?: {
           imageRepository: string
           tag: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'digest'
       }
@@ -3086,6 +3219,8 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
         semver?: {
           imageRepository: string
           versionConstraint: string
+          imageParameter?: string
+          tagParameter?: string
         }
         type?: 'semver'
       }
@@ -3100,6 +3235,7 @@ export type EditWorkloadApiArg = {
     id?: string
     teamId?: string
     name: string
+    icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
     path?: string
@@ -3118,6 +3254,8 @@ export type EditWorkloadApiArg = {
           digest?: {
             imageRepository: string
             tag: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'digest'
         }
@@ -3125,6 +3263,8 @@ export type EditWorkloadApiArg = {
           semver?: {
             imageRepository: string
             versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
           }
           type?: 'semver'
         }
