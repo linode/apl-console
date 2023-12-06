@@ -166,7 +166,7 @@ export default function ({
   }, [workload, values])
 
   const handleCreateUpdateWorkload = async () => {
-    const workloadBody = omit(data, ['chartProvider', 'chart', 'revision'])
+    const workloadBody = omit(data, ['chartProvider', 'chart', 'revision', 'values'])
     const chartMetadata = omit(data?.chartMetadata, ['helmChartCatalog', 'helmChart'])
     const path = workload?.path
     const body = { ...workloadBody, chartMetadata, url: workload?.url, path }
