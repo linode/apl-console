@@ -48,12 +48,6 @@ const useStyles = makeStyles()((theme) => ({
     paddingRight: theme.spacing(3),
     borderRadius: '8px',
   },
-  headerText: {},
-  headerButtons: {
-    padding: theme.spacing(3),
-    backgroundColor: theme.palette.background.paper,
-    borderRadius: '8px',
-  },
   legend: {
     paddingTop: theme.spacing(3),
   },
@@ -71,21 +65,8 @@ const useStyles = makeStyles()((theme) => ({
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
-  paragraph: {
-    paddingBottom: theme.spacing(1),
-    paddingTop: theme.spacing(1),
-  },
-  noTabs: {
-    padding: theme.spacing(3),
-  },
-  buffer: {
-    height: theme.spacing(2),
-  },
   tableRow: {
     '&:last-child td, &:last-child th': { border: 0 },
-  },
-  tableHead: {
-    // minWidth: theme.spacing(12),
   },
 }))
 
@@ -228,10 +209,8 @@ export default function ({
             alt={`Logo for ${icon}`}
           />
         </Box>
-        <Box className={classes.headerText}>
-          <Typography className={classes.headerText} variant='h6'>
-            {workload?.name ? `${workload.name} (${workload.path})` : workload.path}
-          </Typography>
+        <Box>
+          <Typography variant='h6'>{workload?.name ? `${workload.name} (${workload.path})` : workload.path}</Typography>
         </Box>
         <Box
           sx={{
@@ -286,21 +265,21 @@ export default function ({
                 <Table size='small' aria-label='simple table'>
                   <TableBody>
                     <TableRow key='version' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Version:')} />
                       </TableCell>
                       <TableCell align='left'>{workload?.chartMetadata?.helmChartVersion}</TableCell>
                     </TableRow>
 
                     <TableRow key='description' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Description:')} />
                       </TableCell>
                       <TableCell align='left'>{workload?.chartMetadata?.helmChartDescription}</TableCell>
                     </TableRow>
 
                     <TableRow key='repo' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Repo:')} />
                       </TableCell>
                       <TableCell align='left'>

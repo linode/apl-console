@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography } from '@mui/material'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import React, { useEffect, useState } from 'react'

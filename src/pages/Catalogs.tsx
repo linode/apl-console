@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import Catalogs from 'components/Catalogs'
 import LoadingScreen from 'components/LoadingScreen'
 import MainLayout from 'layouts/Empty'
