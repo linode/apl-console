@@ -14,7 +14,7 @@ interface Row {
 }
 
 const getWorkloadLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/workloads/${encodeURIComponent(row.id)}`
+  const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -46,6 +46,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
   //   user: { isAdmin },
   // } = useSession()
   const {
+    oboTeamId,
     appsEnabled,
     settings: {
       cluster: { domainSuffix },
@@ -82,6 +83,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
+      to={`/catalogs/${teamId || oboTeamId}`}
     />
   )
 }

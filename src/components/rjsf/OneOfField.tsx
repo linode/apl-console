@@ -7,6 +7,7 @@ export default function (props: any): React.ReactElement {
   const { idSchema, schema, uiSchema, ...rest } = props
   const newUiSchema = { ...uiSchema }
   if (uiSchema['ui:widget'] !== 'hidden' && schema.oneOf.length < 8) newUiSchema['ui:widget'] = 'radio'
+  newUiSchema['ui:readonly'] = props?.disabled
 
   const { classes } = useStyles()
   return (
