@@ -17,6 +17,7 @@ interface ListTableProps extends EnhancedTableProps {
   canCreateResource?: boolean
   idKey?: string
   collection?: string
+  to?: string
 }
 export default function ({
   teamId,
@@ -27,6 +28,7 @@ export default function ({
   noCrud = false,
   canCreateResource = true,
   idKey = 'id',
+  to,
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -44,6 +46,7 @@ export default function ({
   const toolTip = !canCreateResource
     ? `Your license does not allow to create an additional ${resourceType.toLowerCase()}`
     : ''
+  const redirect = to || (adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`)
   return (
     <>
       <Box sx={{ ml: 2, mr: 2 }}>
@@ -58,7 +61,7 @@ export default function ({
                   disabled={!canCreateResource}
                   variant='contained'
                   component={Link}
-                  to={adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`}
+                  to={redirect}
                   startIcon={<AddCircleIcon />}
                   // disabled={!adminOnly && isAdmin && !oboTeamId}
                   data-cy={`button-create-${resourceType}`}

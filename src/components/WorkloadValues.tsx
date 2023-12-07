@@ -65,7 +65,6 @@ export default function ({
   setWorkloadValues,
   hideTitle = false,
   helmChart,
-  ...other
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
   const [rawValues, setRawValues] = useState(workloadValues)
