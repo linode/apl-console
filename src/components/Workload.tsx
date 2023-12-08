@@ -59,6 +59,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
+    icon: { 'ui:widget': 'hidden' },
     url: { 'ui:widget': 'hidden' },
     chartProvider: { 'ui:widget': 'hidden' },
     path: { 'ui:widget': 'hidden' },
