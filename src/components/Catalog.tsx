@@ -312,7 +312,13 @@ export default function ({
           {...other}
         />
 
-        <WorkloadValues editable hideTitle workloadValues={workloadValues} setWorkloadValues={setWorkloadValues} />
+        <WorkloadValues
+          editable
+          hideTitle
+          workloadValues={workloadValues}
+          setWorkloadValues={setWorkloadValues}
+          showComments
+        />
       </TabPanel>
     </Box>
   )

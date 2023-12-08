@@ -309,6 +309,7 @@ export default function ({
                     workloadValues={workloadValues}
                     setWorkloadValues={setWorkloadValues}
                     helmChart={helmChart}
+                    showComments={!project?.workload?.id}
                   />
                 </Box>
               )}
