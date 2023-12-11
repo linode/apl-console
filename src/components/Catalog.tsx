@@ -322,7 +322,7 @@ export default function ({
         />
 
         {workload?.url && (
-          <Tooltip title={`Documentation for ${workload.path}`}>
+          <Tooltip title={`Chart values file for ${workload.path}`}>
             <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
               <Iconify icon='majesticons:open' />
               <Link
@@ -331,7 +331,7 @@ export default function ({
                 target='_blank'
                 rel='noopener'
               >
-                Documentation
+                Chart values file
               </Link>
             </Box>
           </Tooltip>
