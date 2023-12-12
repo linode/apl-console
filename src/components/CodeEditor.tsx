@@ -1,9 +1,10 @@
+/* eslint-disable no-nested-ternary */
 import MonacoEditor, { MonacoEditorProps } from '@uiw/react-monacoeditor'
 import { isEmpty } from 'lodash'
 import { Box } from '@mui/material'
 import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
-import YAML from 'yaml'
+import YAML, { ParsedNode, YAMLMap, YAMLSeq, parseDocument } from 'yaml'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
@@ -31,12 +32,20 @@ const useStyles = makeStyles()((theme) => {
   }
 })
 
+function sortDeep(node: ParsedNode | null): void {
+  if (node instanceof YAMLMap) {
+    node.items.sort((itemA, itemB) => (itemA.key < itemB.key ? -1 : itemA.key > itemB.key ? 1 : 0))
+    node.items.forEach((item) => sortDeep(item.value))
+  } else if (node instanceof YAMLSeq) node.items.forEach((item) => sortDeep(item))
+}
+
 interface Props extends MonacoEditorProps {
   lang?: string
   code?: string
   onChange?: any
   disabled?: boolean
   setValid?: CallableFunction
+  showComments?: boolean
 }
 
 const toYaml = (obj) => YAML.stringify(obj, { blockQuote: 'literal' })
@@ -47,9 +56,13 @@ export default function ({
   onChange,
   setValid,
   disabled,
+  showComments = false,
   ...props
 }: Props): React.ReactElement {
   const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
+  const document = parseDocument(startCode)
+  sortDeep(document.contents)
+  const modifiedCode = showComments ? document.toJSON() : startCode
   const [valid, setLocalValid] = useState(true)
   const [error, setError] = useState('')
   const { classes } = useStyles()
@@ -81,7 +94,7 @@ export default function ({
         className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
         height='900px'
         theme='vs-dark'
-        value={startCode}
+        value={modifiedCode}
         language={lang}
         placeholder={`Please enter ${lang.toUpperCase()} code.`}
         onChange={onChangeHandler}

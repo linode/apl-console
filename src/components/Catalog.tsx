@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableRow,
   Tabs,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import { cloneDeep, omit } from 'lodash'
@@ -34,6 +35,7 @@ import WorkloadValues from './WorkloadValues'
 import DeleteButton from './DeleteButton'
 import TabPanel from './TabPanel'
 import InformationBanner from './InformationBanner'
+import Iconify from './Iconify'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -80,6 +82,11 @@ const checkImageFields = (data: any) => {
 const calculateTop = (scrollPosition: number, globalError: boolean): string => {
   if (globalError) return `${scrollPosition > 140 ? scrollPosition - 72 : 88}px`
   return `${scrollPosition > 90 ? scrollPosition - 72 : 0}px`
+}
+
+export const getValuesDocLink = (url: string, path: string): string => {
+  if (process.env.NODE_ENV === 'development') return `${url.replace('.git', '')}/blob/main/${path}/values.yaml`
+  return `${url.replace('.git', '')}/src/branch/main/${path}/values.yaml`
 }
 
 export const getWorkloadSchema = (): any => {
@@ -141,6 +148,8 @@ export default function ({
   const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
+    // on the values tab, reset the values to see the comments in the code editor
+    if (tab === 1 && !workloadId) setWorkloadValues(values)
     setTab(tab)
   }
   const [data, setData] = useState<any>(workload)
@@ -192,7 +201,7 @@ export default function ({
         className={classes.header}
         sx={{
           position: 'absolute',
-          top: calculateTop(scrollPosition, globalError),
+          top: calculateTop(scrollPosition, !!globalError),
           zIndex: 10,
         }}
       >
@@ -312,7 +321,29 @@ export default function ({
           {...other}
         />
 
-        <WorkloadValues editable hideTitle workloadValues={workloadValues} setWorkloadValues={setWorkloadValues} />
+        {workload?.url && (
+          <Tooltip title={`Chart values file for ${workload.path}`}>
+            <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+              <Iconify icon='majesticons:open' />
+              <Link
+                sx={{ ml: '8px', fontSize: '14px' }}
+                href={getValuesDocLink(workload.url as string, workload.path as string)}
+                target='_blank'
+                rel='noopener'
+              >
+                Chart values file
+              </Link>
+            </Box>
+          </Tooltip>
+        )}
+
+        <WorkloadValues
+          editable
+          hideTitle
+          workloadValues={workloadValues}
+          setWorkloadValues={setWorkloadValues}
+          showComments={!workload?.id}
+        />
       </TabPanel>
     </Box>
   )

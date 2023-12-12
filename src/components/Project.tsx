@@ -17,7 +17,7 @@ import {
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
-import { FormControl, FormControlLabel, Radio, RadioGroup } from '@mui/material'
+import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
 import { useAppDispatch } from 'redux/hooks'
@@ -28,6 +28,8 @@ import WorkloadValues from './WorkloadValues'
 import { getWorkloadSchema, getWorkloadUiSchema } from './Workload'
 import { getBuildSchema, getBuildUiSchema } from './Build'
 import DeleteButton from './DeleteButton'
+import Iconify from './Iconify'
+import { getValuesDocLink } from './Catalog'
 
 export const getProjectSchema = (): any => {
   const schema = cloneDeep(getSpec().components.schemas.Project)
@@ -102,6 +104,7 @@ export default function ({
 
   // set the workload values based on the helm chart
   useEffect(() => {
+    if (activeStep !== 2) return
     if (project?.workloadValues?.id) {
       setWorkloadValues(project?.workloadValues?.values)
       return
@@ -122,7 +125,13 @@ export default function ({
         },
       },
     }))
-  }, [project?.workloadValues, formData?.workload?.path, formData?.workload?.chartMetadata?.helmChart, catalog])
+  }, [
+    project?.workloadValues,
+    formData?.workload?.path,
+    formData?.workload?.chartMetadata?.helmChart,
+    catalog,
+    activeStep,
+  ])
 
   useEffect(() => {
     setData(project)
@@ -303,12 +312,29 @@ export default function ({
                     {...other}
                   />
 
+                  {formData.workload?.url && (
+                    <Tooltip title={`Chart values file for ${formData.workload.path}`}>
+                      <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Iconify icon='majesticons:open' />
+                        <Link
+                          sx={{ ml: '8px', fontSize: '14px' }}
+                          href={getValuesDocLink(formData.workload.url as string, formData.workload.path as string)}
+                          target='_blank'
+                          rel='noopener'
+                        >
+                          Chart values file
+                        </Link>
+                      </Box>
+                    </Tooltip>
+                  )}
+
                   <WorkloadValues
                     editable
                     hideTitle
                     workloadValues={workloadValues}
                     setWorkloadValues={setWorkloadValues}
                     helmChart={helmChart}
+                    showComments={!project?.workload?.id}
                   />
                 </Box>
               )}

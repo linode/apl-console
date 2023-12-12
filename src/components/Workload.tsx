@@ -195,6 +195,7 @@ export default function ({
         workloadValues={workloadValues}
         setWorkloadValues={setWorkloadValues}
         helmChart={helmChart}
+        showComments={!workloadId}
       />
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
