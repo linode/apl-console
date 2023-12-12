@@ -59,6 +59,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
+    icon: { 'ui:widget': 'hidden' },
     url: { 'ui:widget': 'hidden' },
     chartProvider: { 'ui:widget': 'hidden' },
     path: { 'ui:widget': 'hidden' },
@@ -194,6 +195,7 @@ export default function ({
         workloadValues={workloadValues}
         setWorkloadValues={setWorkloadValues}
         helmChart={helmChart}
+        showComments={!workloadId}
       />
 
       <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>

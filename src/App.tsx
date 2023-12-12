@@ -13,6 +13,8 @@ import Activate from 'pages/Activate'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
 import Clusters from 'pages/Clusters'
+import Catalogs from 'pages/Catalogs'
+import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
 import Policies from 'pages/Policies'
 import Policy from 'pages/Policy'
@@ -95,6 +97,9 @@ function App() {
                                   <Route path='/create-team' component={Team} exact />
                                   <Route path='/policies' component={Policies} exact />
                                   <Route path='/policies/:policyId' component={Policy} exact />
+                                  <Route path='/catalogs/:teamId' component={Catalogs} exact />
+                                  <Route path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
+                                  <Route path='/catalogs/:teamId/:catalogName/:workloadId' component={Catalog} exact />
                                   <Route path='/services' component={Services} exact />
                                   <Route path='/secrets' component={Secrets} exact />
                                   <Route path='/workloads' component={Workloads} exact />

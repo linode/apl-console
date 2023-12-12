@@ -56,6 +56,7 @@ interface Props {
   setWorkloadValues?: (formData: any) => void
   hideTitle?: boolean
   helmChart?: string
+  showComments?: boolean
 }
 
 export default function ({
@@ -65,6 +66,7 @@ export default function ({
   setWorkloadValues,
   hideTitle = false,
   helmChart,
+  showComments = false,
   ...other
 }: Props): React.ReactElement {
   const [isEdit, setIsEdit] = useState(editable)
@@ -108,6 +110,7 @@ export default function ({
           }}
           disabled={!isEdit}
           setValid={setValidRaw}
+          showComments={showComments}
         />
       ) : (
         <CircularProgress sx={{ mb: '1rem' }} />
