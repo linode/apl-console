@@ -140,12 +140,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   //   grafana: true,
   // }
 
-  const disabledByProviderApps = {
-    falco: true,
-  }
-  const provider = session.settings.cluster?.provider
-  if (provider !== 'azure' && provider !== 'google') apps = apps.filter((app) => !disabledByProviderApps[app.id])
-
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
