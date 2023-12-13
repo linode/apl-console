@@ -66,7 +66,7 @@ export default function ({ teamId, catalogs, canCreateResource }: Props): React.
     <div className={cx(classes.root)}>
       <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary>
-          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Developer Catalog!</Box>
+          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Otomi Catalog!</Box>
           <HelpRoundedIcon />
         </AccordionSummary>
         <AccordionDetails>
