@@ -52,19 +52,36 @@ export default function ({
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
+  const [readme, setReadme] = useState<string>('')
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
   useEffect(() => {
-    if (workloadId) return
+    if (workloadId) {
+      getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
+        const { catalog }: { catalog: any[] } = res.data
+        const item = catalog.find((item) => item.name === workload.path)
+        const { readme } = item
+        setReadme(readme)
+      })
+      return
+    }
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
       const { url, catalog }: { url: string; catalog: any[] } = res.data
       const item = catalog.find((item) => item.name === catalogName)
-      const { chartVersion: helmChartVersion, chartDescription: helmChartDescription, name: path, values, icon } = item
+      const {
+        chartVersion: helmChartVersion,
+        chartDescription: helmChartDescription,
+        name: path,
+        values,
+        icon,
+        readme,
+      } = item
       const chartMetadata = { helmChartVersion, helmChartDescription }
       setCatalogItem({ chartMetadata, path, values, url, icon })
+      setReadme(readme)
     })
-  }, [])
+  }, [workload])
 
   const workloadData = workloadId ? workload : catalogItem
   const valuesData = workloadId ? values?.values : catalogItem?.values
@@ -89,6 +106,7 @@ export default function ({
       deleteWorkload={deleteWorkload}
       updateWorkloadValues={updateValues}
       mutating={mutating}
+      readme={readme}
     />
   )
   return (
