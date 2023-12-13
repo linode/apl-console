@@ -140,7 +140,7 @@ export const getServiceUiSchema = (
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
-      domain: { 'ui:readonly': true },
+      domain: { 'ui:readonly': ing?.useDefaultHost },
       subdomain: { 'ui:readonly': ing?.useDefaultHost },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
