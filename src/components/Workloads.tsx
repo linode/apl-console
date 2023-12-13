@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
+import { CircularProgress } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import Iconify from './Iconify'
 
 interface Row {
   teamId: string
@@ -17,12 +19,9 @@ interface Row {
 const getWorkloadLink = (row: Row) => {
   const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
   return (
-    <>
-      <RLink to={path} label={row.name}>
-        {row.name}
-      </RLink>
-      {/* {name === row.name && <span>{status}</span>} */}
-    </>
+    <RLink to={path} label={row.name}>
+      {row.name}
+    </RLink>
   )
 }
 const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
@@ -40,7 +39,18 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
 
 const getStatus = (row: Row, statuses: any) => {
   const status = statuses?.[row.name]
-  return status ? status.status : 'Unknown'
+  if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
+
+  switch (status.status) {
+    case 'Unknown':
+      return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
+    case 'OutOfSync':
+      return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
+    case 'Synced':
+      return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
+    default:
+      return <CircularProgress size='22px' />
+  }
 }
 
 interface Props {
