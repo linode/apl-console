@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
+import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -13,12 +14,15 @@ interface Row {
   name: string
 }
 
-const getWorkloadLink = (row: Row) => {
+const getWorkloadLink = (row: Row, name: string, status: string) => {
   const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
   return (
-    <RLink to={path} label={row.name}>
-      {row.name}
-    </RLink>
+    <>
+      <RLink to={path} label={row.name}>
+        {row.name}
+      </RLink>
+      {name === row.name && <span>{status}</span>}
+    </>
   )
 }
 const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
@@ -41,6 +45,11 @@ interface Props {
 }
 
 export default function ({ workloads, teamId, canCreateResource }: Props): React.ReactElement {
+  const url = `${window.location.origin.replace(/^http/, 'ws')}`
+  const path = '/api/ws'
+  const { socket, error: errorSocket } = useSocket({ url, path })
+  const { lastMessage } = useSocketEvent<any>(socket, 'workload')
+  const { name, status }: { name: string; status: string } = lastMessage || {}
   // const {
   //   oboTeamId,
   //   user: { isAdmin },
@@ -58,7 +67,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'name',
       label: t('Name'),
-      renderer: (row: Row) => getWorkloadLink(row),
+      renderer: (row: Row) => getWorkloadLink(row, name, status),
     },
     {
       id: 'argocd',
