@@ -34,7 +34,7 @@ const developerCatalogInfo = [
   },
   {
     title: 'Why use the Catalog?',
-    text: 'The catalog streamlines your workflow and makes deploying workloads a smooth and efficient proces.',
+    text: 'The catalog streamlines your workflow and makes deploying workloads a smooth and efficient process.',
   },
 ]
 
