@@ -14,14 +14,14 @@ interface Row {
   name: string
 }
 
-const getWorkloadLink = (row: Row, name: string, status: string) => {
+const getWorkloadLink = (row: Row) => {
   const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
   return (
     <>
       <RLink to={path} label={row.name}>
         {row.name}
       </RLink>
-      {name === row.name && <span>{status}</span>}
+      {/* {name === row.name && <span>{status}</span>} */}
     </>
   )
 }
@@ -38,6 +38,11 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
   )
 }
 
+const getStatus = (row: Row, statuses: any) => {
+  const status = statuses?.[row.name]
+  return status ? status.status : 'Unknown'
+}
+
 interface Props {
   workloads: GetAllWorkloadsApiResponse
   teamId?: string
@@ -48,8 +53,8 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
   const { socket, error: errorSocket } = useSocket({ url, path })
-  const { lastMessage } = useSocketEvent<any>(socket, 'workload')
-  const { name, status }: { name: string; status: string } = lastMessage || {}
+  const { lastMessage } = useSocketEvent<any>(socket, 'workloads')
+  console.log('lastMessage:', lastMessage)
   // const {
   //   oboTeamId,
   //   user: { isAdmin },
@@ -67,12 +72,17 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'name',
       label: t('Name'),
-      renderer: (row: Row) => getWorkloadLink(row, name, status),
+      renderer: (row: Row) => getWorkloadLink(row),
     },
     {
       id: 'argocd',
       label: t('Argocd'),
       renderer: (row: Row) => getArgocdApplicationLink(row, domainSuffix),
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row: Row) => getStatus(row, lastMessage),
     },
   ]
 
