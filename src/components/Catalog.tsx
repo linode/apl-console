@@ -30,6 +30,7 @@ import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
 import cssStyles from 'utils/cssStyles'
+import Markdown from './Markdown'
 import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
 import DeleteButton from './DeleteButton'
@@ -120,6 +121,7 @@ interface Props extends CrudProps {
   updateWorkload: any
   updateWorkloadValues: any
   deleteWorkload: any
+  readme: string
 }
 
 export default function ({
@@ -131,6 +133,7 @@ export default function ({
   updateWorkload,
   updateWorkloadValues,
   deleteWorkload,
+  readme,
   ...other
 }: Props): React.ReactElement {
   const history = useHistory()
@@ -302,6 +305,11 @@ export default function ({
               </TableContainer>
             </Box>
           </Grid>
+          {readme && (
+            <Grid item xs={12} md={12}>
+              <Markdown readme={readme} />
+            </Grid>
+          )}
         </Grid>
       </TabPanel>
 
