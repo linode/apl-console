@@ -31,7 +31,7 @@ export default function ({
   if (!catalogs || isLoading || isLoadingMetrics) return <LoadingScreen />
 
   return (
-    <MainLayout title={`Developer Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`}>
+    <MainLayout title={`Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`}>
       <Catalogs
         teamId={teamId}
         catalogs={catalogs}
