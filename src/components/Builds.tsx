@@ -3,13 +3,14 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetTeamBuildsApiResponse, useStatusMutation } from 'redux/otomiApi'
-import { Box, Tooltip } from '@mui/material'
+import { Box, CircularProgress, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import Iconify from './Iconify'
 
 interface Row {
   teamId: string
@@ -109,6 +110,22 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   )
 }
 
+const getStatus = (row: Row, statuses: any) => {
+  const status = statuses?.[row.name]
+  if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
+
+  switch (status.status) {
+    case 'Failed':
+      return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
+    // case 'OutOfSync':
+    //   return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
+    case 'Succeeded':
+      return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
+    default:
+      return <CircularProgress size='22px' />
+  }
+}
+
 interface Props {
   builds: GetTeamBuildsApiResponse
   teamId?: string
@@ -174,6 +191,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'tag',
       label: t('Tag'),
       renderer: (row) => row.tag,
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row: Row) => getStatus(row, lastMessage),
     },
   ]
 
