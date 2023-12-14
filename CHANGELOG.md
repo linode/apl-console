@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.0.1](https://github.com/redkubes/otomi-console/compare/v1.4.0...v2.0.1) (2023-12-14)
+
+
+### Features
+
+* drone 2 tekton ([#349](https://github.com/redkubes/otomi-console/issues/349)) ([ca3c579](https://github.com/redkubes/otomi-console/commit/ca3c57946ba6b45ed3bb6e99f122cb84a04a161d))
+* show full repository name in list of builds ([#348](https://github.com/redkubes/otomi-console/issues/348)) ([aca2be5](https://github.com/redkubes/otomi-console/commit/aca2be596bf362feb7f3881fc92374c5bc857a8c))
+* specific workload catalog for teamId ([#347](https://github.com/redkubes/otomi-console/issues/347)) ([b7799d0](https://github.com/redkubes/otomi-console/commit/b7799d0fde0911593f70caec5b2367366b68944f))
+* template catalog ([#346](https://github.com/redkubes/otomi-console/issues/346)) ([76e64a7](https://github.com/redkubes/otomi-console/commit/76e64a79913ac1475b7572d731b2fc5684d715a0))
+* workload template catalog ([#345](https://github.com/redkubes/otomi-console/issues/345)) ([3d96db2](https://github.com/redkubes/otomi-console/commit/3d96db27c0c5f27261eea1e93173bafb2168bd54))
+
+
+### Bug Fixes
+
+* clipboard links ([#353](https://github.com/redkubes/otomi-console/issues/353)) ([f439e8b](https://github.com/redkubes/otomi-console/commit/f439e8bd5793952d5f881529b377b105558a92e3))
+* hide power button for team apps in AppCard ([#354](https://github.com/redkubes/otomi-console/issues/354)) ([05b8777](https://github.com/redkubes/otomi-console/commit/05b877711d2770999b970881ce55e533843e6ca5))
+* rm integration from app info tab ([#352](https://github.com/redkubes/otomi-console/issues/352)) ([df5bdcc](https://github.com/redkubes/otomi-console/commit/df5bdcc93dbe666518040d9adc26020ff5a0b01a))
+* rm kubeapps ([#343](https://github.com/redkubes/otomi-console/issues/343)) ([c53080c](https://github.com/redkubes/otomi-console/commit/c53080c5e8607e6da303715c081527ffe8f93779))
+* rm kubeclarity ([#344](https://github.com/redkubes/otomi-console/issues/344)) ([39ec6dd](https://github.com/redkubes/otomi-console/commit/39ec6dde28d2117833477420130655748f677f4a))
+* workload and project bugs ([#351](https://github.com/redkubes/otomi-console/issues/351)) ([059017e](https://github.com/redkubes/otomi-console/commit/059017e13ac7e47d67d1a426e0b9c82e5af5a6cc))
+
+
+### Others
+
+* release branch [ci skip] ([e815902](https://github.com/redkubes/otomi-console/commit/e815902fd12a06da1f5e5ef0214ec17c06cab723))
+
+
+### Tests
+
+* domain readonly ([#364](https://github.com/redkubes/otomi-console/issues/364)) ([e88bdfa](https://github.com/redkubes/otomi-console/commit/e88bdfa7f58c627f6a0ad1fcf1e7885a607212ae))
+
 ## [2.0.0](https://github.com/redkubes/otomi-stack-web/compare/v1.4.0...v2.0.0) (2023-11-21)
 
 
