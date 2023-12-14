@@ -1,11 +1,12 @@
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
+import { GetTeamBuildsApiResponse, useStatusMutation } from 'redux/otomiApi'
 import { Box, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
+import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -114,6 +115,22 @@ interface Props {
 }
 
 export default function ({ builds, teamId }: Props): React.ReactElement {
+  const url = `${window.location.origin.replace(/^http/, 'ws')}`
+  const path = '/api/ws'
+  const { socket } = useSocket({ url, path })
+  const { lastMessage } = useSocketEvent<any>(socket, 'builds')
+  console.log('builds:', lastMessage)
+  const [startStopStatus] = useStatusMutation()
+
+  useEffect(() => {
+    let intervalId: number
+    startStopStatus({ body: { resource: 'builds', operation: 'start' } }).then((res: any) => {
+      intervalId = res.data
+    })
+    return () => {
+      startStopStatus({ body: { resource: 'builds', operation: 'stop', intervalId } })
+    }
+  }, [])
   // const {
   //   oboTeamId,
   //   user: { isAdmin },

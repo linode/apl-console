@@ -1,8 +1,8 @@
 import { useSession } from 'providers/Session'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
+import { GetAllWorkloadsApiResponse, useStatusMutation } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { CircularProgress } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
@@ -62,9 +62,21 @@ interface Props {
 export default function ({ workloads, teamId, canCreateResource }: Props): React.ReactElement {
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
-  const { socket, error: errorSocket } = useSocket({ url, path })
+  const { socket } = useSocket({ url, path })
   const { lastMessage } = useSocketEvent<any>(socket, 'workloads')
-  console.log('lastMessage:', lastMessage)
+  console.log('workloads:', lastMessage)
+  const [startStopStatus] = useStatusMutation()
+
+  useEffect(() => {
+    let intervalId: number
+    startStopStatus({ body: { resource: 'workloads', operation: 'start' } }).then((res: any) => {
+      intervalId = res.data
+    })
+    return () => {
+      startStopStatus({ body: { resource: 'workloads', operation: 'stop', intervalId } })
+    }
+  }, [])
+
   // const {
   //   oboTeamId,
   //   user: { isAdmin },
