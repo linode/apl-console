@@ -52,7 +52,7 @@ export default function NavConfig() {
       items: [
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
         {
-          title: 'Developer Catalog',
+          title: 'Catalog',
           path: `/catalogs/${oboTeamId}`,
           icon: getIcon('developer_guide_icon.svg'),
         },

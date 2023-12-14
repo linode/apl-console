@@ -25,16 +25,16 @@ const useStyles = makeStyles()((theme) => {
 
 const developerCatalogInfo = [
   {
-    title: 'What is the Developer Catalog?',
-    text: 'The Developer Catalog offers golden path templates for your projects. Choose the template to use, customize the values and submit to accelerate your developer workflow.',
+    title: 'What is the Catalog?',
+    text: 'The Catalog offers golden path templates for your projects. Choose the template to use, customize the values and submit to create a workload.',
   },
   {
     title: 'Who is maintaining the Catalog?',
-    text: 'The templates in the Developer Catalog are maintained by the platform administrator.',
+    text: 'The templates in the Catalog are maintained by the platform administrator.',
   },
   {
-    title: 'Why use the Developer Catalog?',
-    text: 'Whether you’re a beginner or an experienced developer, the catalog streamlines your workflow and makes deploying applications on Kubernetes a smooth and efficient proces.',
+    title: 'Why use the Catalog?',
+    text: 'The catalog streamlines your workflow and makes deploying workloads a smooth and efficient process.',
   },
 ]
 
@@ -66,7 +66,7 @@ export default function ({ teamId, catalogs, canCreateResource }: Props): React.
     <div className={cx(classes.root)}>
       <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary>
-          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Developer Catalog!</Box>
+          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Otomi Catalog!</Box>
           <HelpRoundedIcon />
         </AccordionSummary>
         <AccordionDetails>
