@@ -68,11 +68,11 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
 
   useEffect(() => {
     let intervalId: number
-    startStopStatus({ body: { resource: 'builds', operation: 'start' } }).then((res: any) => {
+    startStopStatus({ body: { resource: 'services', operation: 'start' } }).then((res: any) => {
       intervalId = res.data
     })
     return () => {
-      startStopStatus({ body: { resource: 'builds', operation: 'stop', intervalId } })
+      startStopStatus({ body: { resource: 'services', operation: 'stop', intervalId } })
     }
   }, [])
   const {
