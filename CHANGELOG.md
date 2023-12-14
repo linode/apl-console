@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/redkubes/otomi-console/compare/v1.1.0...v1.2.1) (2023-12-14)
+
+
+### Bug Fixes
+
+* mitigate ENAMETOOLONG issue at release-action@v1.12.0 ([1bf34d1](https://github.com/redkubes/otomi-console/commit/1bf34d1edeceb1c444cc00b47d2575b509ffd2f9))
+
+
+### Others
+
+* release branch [ci skip] ([9c71191](https://github.com/redkubes/otomi-console/commit/9c711912b36c5607a0b8a7a17c5d9a43593a9e35))
+
+
+### Tests
+
+* domain readonly ([#364](https://github.com/redkubes/otomi-console/issues/364)) ([88b5cc3](https://github.com/redkubes/otomi-console/commit/88b5cc3f43c5f5afeaeb0db0279893803c15b2a6))
+
 ## [1.2.0](https://github.com/redkubes/otomi-stack-web/compare/v1.1.0...v1.2.0) (2023-10-03)
 
 
