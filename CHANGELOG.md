@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/redkubes/otomi-stack-web/compare/v2.0.0...v2.1.0) (2023-12-15)
+
+
+### Features
+
+* developer catalog chart readme files ([#361](https://github.com/redkubes/otomi-stack-web/issues/361)) ([ce61b11](https://github.com/redkubes/otomi-stack-web/commit/ce61b117a86efac47a0798c5de203ed4e68fc5e8))
+* developer catalog page ([#355](https://github.com/redkubes/otomi-stack-web/issues/355)) ([d73b7e6](https://github.com/redkubes/otomi-stack-web/commit/d73b7e63b4adf12d63a7de4436252c6b832ca1cf))
+* rm disabled apps logic Falco ([#357](https://github.com/redkubes/otomi-stack-web/issues/357)) ([ba7e529](https://github.com/redkubes/otomi-stack-web/commit/ba7e529336c2f6477632bd7b80c85c8a37580ff5))
+* workload values yaml comments ([#360](https://github.com/redkubes/otomi-stack-web/issues/360)) ([d722f7c](https://github.com/redkubes/otomi-stack-web/commit/d722f7c56fea912e9add8d8103d70fa0dfb79d2d))
+
+
+### Bug Fixes
+
+* change catalog name ([#362](https://github.com/redkubes/otomi-stack-web/issues/362)) ([fb9b56b](https://github.com/redkubes/otomi-stack-web/commit/fb9b56bbd82ec7bd1a844a639e6e599fab748452))
+* hide the icon field in workload for projects page ([#359](https://github.com/redkubes/otomi-stack-web/issues/359)) ([5ee9ee0](https://github.com/redkubes/otomi-stack-web/commit/5ee9ee0ec5d4f49cbbc1e872bf1cde03088a86be))
+* welcome message ([#363](https://github.com/redkubes/otomi-stack-web/issues/363)) ([4b4fbfe](https://github.com/redkubes/otomi-stack-web/commit/4b4fbfeb49cbec54674fb721d0645d87acaa9064))
+
+
+### Tests
+
+* domain readonly ([#364](https://github.com/redkubes/otomi-stack-web/issues/364)) ([34a13dc](https://github.com/redkubes/otomi-stack-web/commit/34a13dc8f60496043b9b826c3b59b9565d0a09bb))
+
 ## [2.0.0](https://github.com/redkubes/otomi-stack-web/compare/v1.4.0...v2.0.0) (2023-11-21)
 
 
