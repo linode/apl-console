@@ -115,10 +115,10 @@ const getStatus = (row: Row, statuses: any) => {
   if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
 
   switch (status.status) {
-    case 'Failed':
+    case 'Unknown':
       return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
-    // case 'OutOfSync':
-    //   return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
+    case 'Pending':
+      return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
     case 'Succeeded':
       return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
     default:
