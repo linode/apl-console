@@ -1,9 +1,8 @@
 import { useSession } from 'providers/Session'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { GetAllWorkloadsApiResponse, useStatusMutation } from 'redux/otomiApi'
-import { useSocket, useSocketEvent } from 'socket.io-react-hook'
+import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
 import { CircularProgress } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
@@ -60,34 +59,15 @@ interface Props {
 }
 
 export default function ({ workloads, teamId, canCreateResource }: Props): React.ReactElement {
-  const url = `${window.location.origin.replace(/^http/, 'ws')}`
-  const path = '/api/ws'
-  const { socket } = useSocket({ url, path })
-  const { lastMessage } = useSocketEvent<any>(socket, 'workloads')
-  console.log('workloads:', lastMessage)
-  const [startStopStatus] = useStatusMutation()
-
-  useEffect(() => {
-    let intervalId: number
-    startStopStatus({ body: { resource: 'workloads', operation: 'start' } }).then((res: any) => {
-      intervalId = res.data
-    })
-    return () => {
-      startStopStatus({ body: { resource: 'workloads', operation: 'stop', intervalId } })
-    }
-  }, [])
-
-  // const {
-  //   oboTeamId,
-  //   user: { isAdmin },
-  // } = useSession()
   const {
     oboTeamId,
     appsEnabled,
     settings: {
       cluster: { domainSuffix },
     },
+    status,
   } = useSession()
+  console.log('status', status)
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -104,7 +84,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(row, lastMessage),
+      renderer: (row: Row) => getStatus(row, status.workloads),
     },
   ]
 

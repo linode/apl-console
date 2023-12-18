@@ -1,10 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import { useSession } from 'providers/Session'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAllServicesApiResponse, GetTeamServicesApiResponse, useStatusMutation } from 'redux/otomiApi'
+import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
 import { CircularProgress } from '@mui/material'
-import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -59,25 +58,10 @@ interface Props {
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
 export default function ({ services, teamId, canCreateResource }: Props): React.ReactElement {
-  const url = `${window.location.origin.replace(/^http/, 'ws')}`
-  const path = '/api/ws'
-  const { socket } = useSocket({ url, path })
-  const { lastMessage } = useSocketEvent<any>(socket, 'services')
-  console.log('services:', lastMessage)
-  const [startStopStatus] = useStatusMutation()
-
-  useEffect(() => {
-    let intervalId: number
-    startStopStatus({ body: { resource: 'services', operation: 'start' } }).then((res: any) => {
-      intervalId = res.data
-    })
-    return () => {
-      startStopStatus({ body: { resource: 'services', operation: 'stop', intervalId } })
-    }
-  }, [])
   const {
     user: { isAdmin },
     oboTeamId,
+    status,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -101,7 +85,7 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(row, lastMessage),
+      renderer: (row) => getStatus(row, status.services),
     },
   ]
   if (!teamId) {
