@@ -36,11 +36,10 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-const getStatus = (row: Row, statuses: any) => {
-  const status = statuses?.[row.name]
-  if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
+const getStatus = (status: any) => {
+  if (!status || status === 'NotFound') return <CircularProgress size='22px' />
 
-  switch (status.status) {
+  switch (status) {
     case 'Unknown':
       return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
     case 'OutOfSync':
@@ -84,7 +83,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(row, status.workloads),
+      renderer: (row: Row) => getStatus(status?.workloads?.[row.name]),
     },
   ]
 

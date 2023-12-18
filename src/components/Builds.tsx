@@ -109,11 +109,9 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   )
 }
 
-const getStatus = (row: Row, statuses: any) => {
-  const status = statuses?.[row.name]
-  if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
-
-  switch (status.status) {
+const getStatus = (status: any) => {
+  if (!status || status === 'NotFound') return <CircularProgress size='22px' />
+  switch (status) {
     case 'Unknown':
       return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
     case 'Pending':
@@ -175,7 +173,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(row, status.builds),
+      renderer: (row: Row) => getStatus(status?.builds?.[row.name]),
     },
   ]
 

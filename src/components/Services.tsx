@@ -34,11 +34,9 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
   )
 }
 
-const getStatus = (row: any, statuses: any) => {
-  const status = statuses?.[row.name]
-  if (!status || status.status === 'NotFound') return <CircularProgress size='22px' />
-
-  switch (status.status) {
+const getStatus = (status: any) => {
+  if (!status || status === 'NotFound') return <CircularProgress size='22px' />
+  switch (status) {
     case 'Failed':
       return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
     // case 'OutOfSync':
@@ -85,7 +83,7 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(row, status.services),
+      renderer: (row) => getStatus(status?.services?.[row.name]),
     },
   ]
   if (!teamId) {
