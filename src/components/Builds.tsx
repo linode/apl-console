@@ -3,13 +3,13 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
-import { Box, CircularProgress, Tooltip } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
-import Iconify from './Iconify'
+import { getStatus } from './Workloads'
 
 interface Row {
   teamId: string
@@ -107,20 +107,6 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
       </Box>
     </Box>
   )
-}
-
-const getStatus = (status: any) => {
-  if (!status || status === 'NotFound') return <CircularProgress size='22px' />
-  switch (status) {
-    case 'Unknown':
-      return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
-    case 'Pending':
-      return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
-    case 'Succeeded':
-      return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
-    default:
-      return <CircularProgress size='22px' />
-  }
 }
 
 interface Props {
