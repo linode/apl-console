@@ -68,7 +68,7 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(status?.services?.[row.name]),
+      renderer: (row) => getStatus(status?.services?.[row.id]),
     },
   ]
   if (!teamId) {

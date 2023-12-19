@@ -159,7 +159,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.builds?.[row.name]),
+      renderer: (row: Row) => getStatus(status?.builds?.[row.id]),
     },
   ]
 

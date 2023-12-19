@@ -82,7 +82,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.workloads?.[row.name]),
+      renderer: (row: Row) => getStatus(status?.workloads?.[row.id]),
     },
   ]
 
