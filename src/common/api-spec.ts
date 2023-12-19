@@ -31,6 +31,7 @@ export interface OpenApi {
   }
 }
 export interface Schema extends JSONSchema7 {
+  secretName: any
   'x-acl'?: Acl
   properties?: {
     [propertyName: string]: JSONSchema7

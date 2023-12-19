@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -8,21 +8,21 @@ import Form from './rjsf/Form'
 
 export const getBuildSchema = (teamId: string, secrets: Array<any>, formData: GetBuildApiResponse): any => {
   const schema = cloneDeep(getSpec().components.schemas.Build)
-  const bld = formData?.mode.type['docker'] as Record<string, any>
-  if (!bld?.externalRepo) {
-    if (bld.secretSelect) {
-      const tlsSecretNames = secrets.filter((s) => s.secret.type === 'generic').map((s) => s.name)
-      if (secrets.length === 1) bld.secretName = tlsSecretNames[0]
-    }
+  if (formData?.secretSelect) {
+    const genSecretNames = secrets.filter((s) => s.secret.type === 'tls').map((s) => s.name)
+    set(schema, `secretName.enum`, genSecretNames)
+    if (secrets.length === 1) schema.secretName = genSecretNames[0]
   }
   return schema
 }
 
-export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData?: any): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    secretSelect: !formData?.externalRepo && { 'ui:widget': 'hidden' },
+    secretName: !formData?.externalRepo && { 'ui:widget': 'hidden' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'build')
@@ -45,6 +45,6 @@ export default function ({ build, teamId, secrets, ...other }: Props): React.Rea
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getBuildSchema(teamId, secrets, formData)
-  const uiSchema = getBuildUiSchema(user, teamId)
+  const uiSchema = getBuildUiSchema(user, teamId, formData)
   return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Build' {...other} />
 }
