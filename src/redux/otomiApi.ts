@@ -1691,6 +1691,9 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'docker'
       }
@@ -1699,6 +1702,9 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'buildpacks'
       }
@@ -1716,6 +1722,9 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'docker'
       }
@@ -1724,6 +1733,9 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'buildpacks'
       }
@@ -1744,6 +1756,9 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'docker'
       }
@@ -1752,6 +1767,9 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'buildpacks'
       }
@@ -1772,6 +1790,9 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -1780,6 +1801,9 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -1804,6 +1828,9 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'docker'
       }
@@ -1812,6 +1839,9 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'buildpacks'
       }
@@ -1834,6 +1864,9 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'docker'
       }
@@ -1842,6 +1875,9 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          externalRepo?: boolean
+          secretSelect?: boolean
+          secretName?: string
         }
         type: 'buildpacks'
       }
@@ -1864,6 +1900,9 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -1872,6 +1911,9 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -1932,6 +1974,9 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -1940,6 +1985,9 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -2079,6 +2127,9 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -2087,6 +2138,9 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -2229,6 +2283,9 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -2237,6 +2294,9 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -2379,6 +2439,9 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              externalRepo?: boolean
+              secretSelect?: boolean
+              secretName?: string
             }
             type: 'docker'
           }
@@ -2387,6 +2450,9 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              externalRepo?: boolean
+              secretSelect?: boolean
+              secretName?: string
             }
             type: 'buildpacks'
           }
@@ -2533,6 +2599,9 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -2541,6 +2610,9 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -2685,6 +2757,9 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'docker'
         }
@@ -2693,6 +2768,9 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            externalRepo?: boolean
+            secretSelect?: boolean
+            secretName?: string
           }
           type: 'buildpacks'
         }
@@ -2837,6 +2915,9 @@ export type EditProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              externalRepo?: boolean
+              secretSelect?: boolean
+              secretName?: string
             }
             type: 'docker'
           }
@@ -2845,6 +2926,9 @@ export type EditProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              externalRepo?: boolean
+              secretSelect?: boolean
+              secretName?: string
             }
             type: 'buildpacks'
           }

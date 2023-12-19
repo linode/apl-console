@@ -139,8 +139,8 @@ export default function ({
 
   const projectSchema = getProjectSchema()
   const projectUiSchema = getProjectUiSchema(user, teamId)
-
-  const buildSchema = getBuildSchema(teamId)
+  const { data: secrets } = useGetSecretsQuery({ teamId })
+  const buildSchema = getBuildSchema(teamId, secrets, formData?.build)
   const buildUiSchema = getBuildUiSchema(user, teamId)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
@@ -159,7 +159,6 @@ export default function ({
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
-  const { data: secrets } = useGetSecretsQuery({ teamId })
   const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
   const ingressClassNames = getIngressClassNames(ingressSettings)
   const serviceSchema = getServiceSchema(
