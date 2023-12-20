@@ -11,7 +11,7 @@ export const getBuildSchema = (teamId: string): any => {
   return schema
 }
 
-export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData?: any): any => {
+export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
