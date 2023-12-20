@@ -5,6 +5,8 @@ import { cookiesKey, defaultSettings } from '../config'
 // ----------------------------------------------------------------------
 
 export const getSettings = (cookies) => {
+  const themeView = getData(cookies[cookiesKey.themeView] as string) || defaultSettings.themeView
+
   const themeMode = getData(cookies[cookiesKey.themeMode] as string) || defaultSettings.themeMode
 
   const themeColorPresets =
@@ -17,6 +19,7 @@ export const getSettings = (cookies) => {
   const themeStretch = getData(cookies[cookiesKey.themeStretch] as string) || defaultSettings.themeStretch
 
   return {
+    themeView,
     themeMode,
     themeLayout,
     themeStretch,
