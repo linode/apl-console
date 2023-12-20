@@ -11,11 +11,12 @@ export const getBuildSchema = (teamId: string): any => {
   return schema
 }
 
-export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    secretName: !formData?.externalRepo && { 'ui:widget': 'hidden' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'build')
@@ -37,6 +38,6 @@ export default function ({ build, teamId, ...other }: Props): React.ReactElement
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getBuildSchema(teamId)
-  const uiSchema = getBuildUiSchema(user, teamId)
+  const uiSchema = getBuildUiSchema(user, teamId, formData)
   return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Build' {...other} />
 }
