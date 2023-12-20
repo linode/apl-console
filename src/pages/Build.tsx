@@ -7,13 +7,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import {
-  useCreateBuildMutation,
-  useDeleteBuildMutation,
-  useEditBuildMutation,
-  useGetBuildQuery,
-  useGetSecretsQuery,
-} from 'redux/otomiApi'
+import { useCreateBuildMutation, useDeleteBuildMutation, useEditBuildMutation, useGetBuildQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -31,13 +25,6 @@ export default function ({
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBuildMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteBuildMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetBuildQuery({ teamId, buildId }, { skip: !buildId })
-  const {
-    data: secrets,
-    isLoading: isLoadingSecrets,
-    isFetching: isFetchingSecrets,
-    isError: isErrorSecrets,
-    refetch: refetchSecrets,
-  } = useGetSecretsQuery({ teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -55,14 +42,7 @@ export default function ({
   }
   const handleDelete = (deleteId) => del({ teamId, buildId: deleteId })
   const comp = !isError && (
-    <Build
-      onSubmit={handleSubmit}
-      build={data}
-      secrets={secrets}
-      onDelete={handleDelete}
-      teamId={teamId}
-      mutating={mutating}
-    />
+    <Build onSubmit={handleSubmit} build={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
   return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { buildId, role: 'team' })} />
 }
