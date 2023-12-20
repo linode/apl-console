@@ -1,13 +1,10 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle'
 import CloudIcon from '@mui/icons-material/Cloud'
 import PeopleIcon from '@mui/icons-material/People'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
-import Link from '@mui/material/Link'
+import { Box, Divider, Grid, Typography } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link as RouterLink } from 'react-router-dom'
 import {
   GetAllServicesApiResponse,
   GetTeamApiResponse,
@@ -15,7 +12,7 @@ import {
   GetTeamsApiResponse,
 } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
-import MessageTrans from './MessageTrans'
+import { getDomain } from 'layouts/Shell'
 
 type Panel = {
   name: string
@@ -81,51 +78,69 @@ const useStyles = makeStyles()((theme) => ({
     transform: 'rotate(180deg)',
   },
 }))
+// interface DashboardCardProps {
+//   item: Panel
+//   teamId?: string
+//   classes: any
+// }
+
+// function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
+//   const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
+//   return (
+//     <Grid item xs={12} sm={6} md={4}>
+//       <Card>
+//         <CardHeader
+//           className={classes.card}
+//           data-cy={`card-${item.name}`}
+//           avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
+//           title={`${item.name}s`}
+//           subheader={
+//             <Link
+//               component={RouterLink}
+//               to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
+//               data-cy={`link-${item.name}-count`}
+//             >
+//               {item.data && item.data.length}
+//             </Link>
+//           }
+//           action={
+//             item.canCreate && (
+//               <Tooltip title={item.tooltip} aria-label={item.tooltip}>
+//                 <span>
+//                   <IconButton
+//                     aria-label={`Create ${item.name}`}
+//                     component={RouterLink}
+//                     to={`${prefix}/create-${item.name}`}
+//                     className={classes.iconBtn}
+//                     disabled={item.disabled}
+//                     data-cy={`button-create-${item.name}`}
+//                   >
+//                     <AddCircleIcon />
+//                   </IconButton>
+//                 </span>
+//               </Tooltip>
+//             )
+//           }
+//         />
+//       </Card>
+//     </Grid>
+//   )
+// }
 interface DashboardCardProps {
-  item: Panel
-  teamId?: string
-  classes: any
+  title: string
+  children: any
 }
 
-function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
-  const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
+function DashboardCard({ title, children }: DashboardCardProps): React.ReactElement {
   return (
-    <Grid item xs={12} sm={6} md={4}>
-      <Card>
-        <CardHeader
-          className={classes.card}
-          data-cy={`card-${item.name}`}
-          avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
-          title={`${item.name}s`}
-          subheader={
-            <Link
-              component={RouterLink}
-              to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
-              data-cy={`link-${item.name}-count`}
-            >
-              {item.data && item.data.length}
-            </Link>
-          }
-          action={
-            item.canCreate && (
-              <Tooltip title={item.tooltip} aria-label={item.tooltip}>
-                <span>
-                  <IconButton
-                    aria-label={`Create ${item.name}`}
-                    component={RouterLink}
-                    to={`${prefix}/create-${item.name}`}
-                    className={classes.iconBtn}
-                    disabled={item.disabled}
-                    data-cy={`button-create-${item.name}`}
-                  >
-                    <AddCircleIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            )
-          }
-        />
-      </Card>
+    <Grid item xs={12} mb={2}>
+      <Box sx={{ border: '1px solid #ccc' }}>
+        <Typography variant='h5' sx={{ borderBottom: '1px solid #ccc', textAlign: 'center', padding: '12px' }}>
+          {title}
+        </Typography>
+        <Divider />
+        <Box>{children}</Box>
+      </Box>
     </Grid>
   )
 }
@@ -170,19 +185,110 @@ export default function Dashboard({ team, services, teams }: Props): React.React
     },
   ]
   const teamName = isAdmin ? 'admin' : team.name
+  const hostname = window.location.hostname
+  const domain = getDomain(hostname)
+  const iFrameBaseLink =
+    'https://grafana.51.158.131.127.nip.io/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&from=1703100530861&to=1703104130861&panelId='
+  const iFrameSmall =
+    'https://grafana.51.158.131.127.nip.io/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=10s&from=1703099228776&to=1703102828777&panelId='
+  const myArray = ['test1', 'test2', 'test3']
+  const data = [
+    { name: 'Teams', value: 1 },
+    { name: 'Workloads', value: 4 },
+    { name: 'Projects', value: 5 },
+    { name: 'Services', value: 1 },
+    { name: 'Builds', value: 4 },
+    { name: 'Secrets', value: 5 },
+  ]
   return (
-    <Grid container className={classes.grid}>
-      <Grid item xs={12}>
-        <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
-          <MessageTrans i18nKey='WELCOME_DASHBOARD'>
-            Team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard
-          </MessageTrans>
-        </Typography>
-        <Divider />
-      </Grid>
-      {panels.map((panel) => (
-        <DashboardCard classes={classes} teamId={team?.id} item={panel} key={panel.name} />
-      ))}
-    </Grid>
+    <Box>
+      <DashboardCard title='Inventory'>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            margin: '12px',
+            px: 8,
+          }}
+        >
+          {data.map(({ name, value }) => (
+            <Box
+              sx={{
+                padding: '12px 48px',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '45%',
+              }}
+            >
+              <Typography variant='h6'>{name}</Typography>
+              <Typography variant='h6' sx={{ color: 'blue' }}>
+                {value}
+              </Typography>
+            </Box>
+          ))}
+        </Box>
+      </DashboardCard>
+      <DashboardCard title='Cluster Resource Utilization'>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'nowrap',
+            justifyContent: 'space-between',
+            px: '12px',
+          }}
+        >
+          {[1, 2, 3, 4, 5, 6].map((item) => (
+            <iframe
+              title='Grafana iFrame'
+              src={`${iFrameSmall}${item}`}
+              style={{
+                width: '16%',
+                height: '100px',
+                border: 'none',
+                marginTop: '10px',
+                marginBottom: '10px',
+              }}
+            />
+          ))}
+        </Box>
+      </DashboardCard>
+      <DashboardCard title='Cluster Capacity'>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}
+        >
+          <iframe
+            title='Grafana iFrame'
+            src={`${iFrameBaseLink}12`}
+            style={{
+              width: '50%',
+              height: '200px',
+              border: 'none',
+              marginTop: '10px',
+              marginBottom: '10px',
+            }}
+          />
+          <iframe
+            title='Grafana iFrame'
+            src={`${iFrameBaseLink}13`}
+            style={{
+              width: '50%',
+              height: '200px',
+              border: 'none',
+              marginTop: '10px',
+              marginBottom: '10px',
+            }}
+          />
+        </Box>
+      </DashboardCard>
+    </Box>
   )
 }
