@@ -65,7 +65,6 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     },
     status,
   } = useSession()
-  console.log('status', status)
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
