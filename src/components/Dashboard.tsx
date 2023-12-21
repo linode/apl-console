@@ -1,7 +1,7 @@
 import CloudIcon from '@mui/icons-material/Cloud'
 import PeopleIcon from '@mui/icons-material/People'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Box, Divider, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -134,11 +134,13 @@ interface DashboardCardProps {
 function DashboardCard({ title, children }: DashboardCardProps): React.ReactElement {
   return (
     <Grid item xs={12} mb={2}>
-      <Box sx={{ border: '1px solid #ccc', borderRadius: '8px' }}>
-        <Typography variant='h5' sx={{ borderBottom: '1px solid #ccc', textAlign: 'center', padding: '12px' }}>
+      <Box sx={{}}>
+        <Typography
+          variant='h5'
+          sx={{ border: '1px solid #ccc', borderRadius: '8px', textAlign: 'center', padding: '12px' }}
+        >
           {title}
         </Typography>
-        <Divider />
         <Box>{children}</Box>
       </Box>
     </Grid>
@@ -190,7 +192,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   const domain = getDomain(hostname)
 
   const iFrameBaseLink = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const iFrameSmall = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=10s&theme=${theme.palette.mode}&panelId=`
+  const iFrameSmall = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const data = [
     { name: 'Teams', value: 1 },
     { name: 'Workloads', value: 4 },
@@ -201,12 +203,12 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   ]
   const [iframeOrder, setIframeOrder] = React.useState(0)
   const iframeSources = [
-    `${iFrameSmall}1`,
-    `${iFrameSmall}2`,
-    `${iFrameSmall}3`,
-    `${iFrameSmall}4`,
-    `${iFrameSmall}5`,
-    `${iFrameSmall}6`,
+    { id: 0, src: `${iFrameSmall}1` },
+    { id: 1, src: `${iFrameSmall}3` },
+    { id: 2, src: `${iFrameSmall}4` },
+    { id: 3, src: `${iFrameSmall}6` },
+    { id: 4, src: `${iFrameBaseLink}12` },
+    { id: 5, src: `${iFrameBaseLink}13` },
   ]
   const handleIframeLoad = () => {
     // Move to the next iframe
@@ -216,7 +218,9 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   React.useEffect(() => {
     if (iframeOrder < iframeSources.length) {
       const iframe = document.getElementById(`iframe-${iframeOrder}`)
-      if (iframe instanceof HTMLIFrameElement) iframe.src = iframeSources[iframeOrder]
+      setTimeout(() => {
+        if (iframe instanceof HTMLIFrameElement) iframe.src = iframeSources[iframeOrder].src
+      }, 300)
     }
   }, [iframeOrder, iframeSources])
   return (
@@ -257,17 +261,15 @@ export default function Dashboard({ team, services, teams }: Props): React.React
             flexDirection: 'row',
             flexWrap: 'nowrap',
             justifyContent: 'space-between',
-            px: '12px',
           }}
         >
-          {iframeSources.map((src, index) => (
+          {iframeSources.slice(0, 4).map((item) => (
             <iframe
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-              id={`iframe-${index}`}
-              title={`iframe-${index}`}
+              key={`iframe-${item.id}`}
+              id={`iframe-${item.id}`}
+              title={`iframe-${item.id}`}
               style={{
-                width: '16%',
+                width: '25%',
                 height: '100px',
                 border: 'none',
                 marginTop: '10px',
@@ -278,7 +280,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
           ))}
         </Box>
       </DashboardCard>
-      {/* <DashboardCard title='Cluster Capacity'>
+      <DashboardCard title='Cluster Capacity'>
         <Box
           sx={{
             display: 'flex',
@@ -287,30 +289,23 @@ export default function Dashboard({ team, services, teams }: Props): React.React
             justifyContent: 'space-between',
           }}
         >
-          <iframe
-            title='Grafana iFrame'
-            src={`${iFrameBaseLink}12`}
-            style={{
-              width: '50%',
-              height: '200px',
-              border: 'none',
-              marginTop: '10px',
-              marginBottom: '10px',
-            }}
-          />
-          <iframe
-            title='Grafana iFrame'
-            src={`${iFrameBaseLink}13`}
-            style={{
-              width: '50%',
-              height: '200px',
-              border: 'none',
-              marginTop: '10px',
-              marginBottom: '10px',
-            }}
-          />
+          {iframeSources.slice(4, 6).map((item) => (
+            <iframe
+              key={`iframe-${item.id}`}
+              id={`iframe-${item.id}`}
+              title={`iframe-${item.id}`}
+              style={{
+                width: '50%',
+                height: '200px',
+                border: 'none',
+                marginTop: '10px',
+                marginBottom: '10px',
+              }}
+              onLoad={handleIframeLoad}
+            />
+          ))}
         </Box>
-      </DashboardCard> */}
+      </DashboardCard>
     </Box>
   )
 }

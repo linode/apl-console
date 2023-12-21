@@ -1,8 +1,9 @@
-import { Card, Container } from '@mui/material'
+import { Card, Container, useTheme } from '@mui/material'
 import Error from 'components/Error'
 import LoadingScreen from 'components/LoadingScreen'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
+import { useLocation } from 'react-router-dom'
 import MainLayout from './Base'
 
 const useStyles = makeStyles()((theme) => ({
@@ -49,10 +50,14 @@ interface Props {
 
 export default function ({ loading, comp, title }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
+  const theme = useTheme()
+  const location = useLocation()
+  const dashboardStyle =
+    location.pathname === '/' ? { backgroundColor: theme.palette.mode === 'dark' ? '#181B1F' : '#FFF' } : {}
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>
-        <Card sx={{ p: 3 }}>
+        <Card sx={{ p: 3, ...dashboardStyle }}>
           <Error />
           {loading && <LoadingScreen />}
           {!loading && comp}
