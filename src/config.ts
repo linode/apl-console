@@ -30,6 +30,7 @@ export const ICON = {
 export const cookiesExpires = 3
 
 export const cookiesKey = {
+  themeView: 'themeView',
   themeMode: 'themeMode',
   themeLayout: 'themeLayout',
   themeStretch: 'themeStretch',
@@ -38,6 +39,7 @@ export const cookiesKey = {
 }
 
 export const defaultSettings: SettingsValueProps = {
+  themeView: 'platform',
   themeMode: 'dark',
   themeContrast: 'default',
   themeLayout: 'horizontal',

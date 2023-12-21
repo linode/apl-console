@@ -50,6 +50,7 @@ export default function NavConfig() {
     {
       subheader: `Team ${oboTeamId}`,
       items: [
+        { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
         {
           title: 'Catalog',

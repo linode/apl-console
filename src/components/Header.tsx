@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
 import cssStyles from 'utils/cssStyles'
+import useSettings from 'hooks/useSettings'
 import AccountPopover from './AccountPopover'
 import { IconButtonAnimate } from './animate'
 import Iconify from './Iconify'
@@ -56,6 +57,7 @@ const RootStyle = styled(AppBar, {
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenSidebar, isCollapse = false, verticalLayout = false }: Props) {
+  const { themeView, onChangeView } = useSettings()
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout
   const isDesktop = useResponsive('up', 'lg')
   const history = useHistory()
@@ -81,6 +83,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     teams = (userTeams as any).map((id) => ({
       id,
     }))
+  }
+
+  const handleChangeView = (event) => {
+    onChangeView(event)
+    history.push('/')
+    event.preventDefault()
   }
 
   const handleChangeTeam = (event) => {
@@ -124,6 +132,16 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         )}
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
+          {isAdmin && (
+            <>
+              <Typography>view:</Typography>
+              <Select color='secondary' value={themeView} onChange={handleChangeView} data-cy='select-view'>
+                <MenuItem value='platform'>platform</MenuItem>
+                <MenuItem value='team'>team</MenuItem>
+              </Select>
+            </>
+          )}
+
           <Typography>cluster:</Typography>
           <Select
             color='secondary'
