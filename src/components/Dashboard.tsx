@@ -230,7 +230,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
           ))}
         </Box>
       </DashboardCard>
-      {/* <DashboardCard title='Cluster Resource Utilization'>
+      <DashboardCard title='Cluster Resource Utilization'>
         <Box
           sx={{
             display: 'flex',
@@ -254,7 +254,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
             />
           ))}
         </Box>
-      </DashboardCard> */}
+      </DashboardCard>
       <DashboardCard title='Cluster Capacity'>
         <Box
           sx={{
@@ -275,7 +275,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
               marginBottom: '10px',
             }}
           />
-          {/* <iframe
+          <iframe
             title='Grafana iFrame'
             src={`${iFrameBaseLink}13`}
             style={{
@@ -285,7 +285,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
               marginTop: '10px',
               marginBottom: '10px',
             }}
-          /> */}
+          />
         </Box>
       </DashboardCard>
     </Box>
