@@ -199,6 +199,26 @@ export default function Dashboard({ team, services, teams }: Props): React.React
     { name: 'Builds', value: 4 },
     { name: 'Secrets', value: 5 },
   ]
+  const [iframeOrder, setIframeOrder] = React.useState(0)
+  const iframeSources = [
+    `${iFrameSmall}1`,
+    `${iFrameSmall}2`,
+    `${iFrameSmall}3`,
+    `${iFrameSmall}4`,
+    `${iFrameSmall}5`,
+    `${iFrameSmall}6`,
+  ]
+  const handleIframeLoad = () => {
+    // Move to the next iframe
+    setIframeOrder((prevOrder) => prevOrder + 1)
+  }
+
+  React.useEffect(() => {
+    if (iframeOrder < iframeSources.length) {
+      const iframe = document.getElementById(`iframe-${iframeOrder}`)
+      if (iframe instanceof HTMLIFrameElement) iframe.src = iframeSources[iframeOrder]
+    }
+  }, [iframeOrder, iframeSources])
   return (
     <Box>
       <DashboardCard title='Inventory'>
@@ -240,10 +260,12 @@ export default function Dashboard({ team, services, teams }: Props): React.React
             px: '12px',
           }}
         >
-          {[1, 2, 3, 4, 5, 6].map((item) => (
+          {iframeSources.map((src, index) => (
             <iframe
-              title='Grafana iFrame'
-              src={`${iFrameSmall}${item}`}
+              // eslint-disable-next-line react/no-array-index-key
+              key={index}
+              id={`iframe-${index}`}
+              title={`iframe-${index}`}
               style={{
                 width: '16%',
                 height: '100px',
@@ -251,11 +273,12 @@ export default function Dashboard({ team, services, teams }: Props): React.React
                 marginTop: '10px',
                 marginBottom: '10px',
               }}
+              onLoad={handleIframeLoad}
             />
           ))}
         </Box>
       </DashboardCard>
-      <DashboardCard title='Cluster Capacity'>
+      {/* <DashboardCard title='Cluster Capacity'>
         <Box
           sx={{
             display: 'flex',
@@ -287,7 +310,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
             }}
           />
         </Box>
-      </DashboardCard>
+      </DashboardCard> */}
     </Box>
   )
 }
