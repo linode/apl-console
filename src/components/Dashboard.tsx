@@ -1,7 +1,7 @@
 import CloudIcon from '@mui/icons-material/Cloud'
 import PeopleIcon from '@mui/icons-material/People'
 import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Box, Divider, Grid, Typography } from '@mui/material'
+import { Box, Divider, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -134,7 +134,7 @@ interface DashboardCardProps {
 function DashboardCard({ title, children }: DashboardCardProps): React.ReactElement {
   return (
     <Grid item xs={12} mb={2}>
-      <Box sx={{ border: '1px solid #ccc' }}>
+      <Box sx={{ border: '1px solid #ccc', borderRadius: '8px' }}>
         <Typography variant='h5' sx={{ borderBottom: '1px solid #ccc', textAlign: 'center', padding: '12px' }}>
           {title}
         </Typography>
@@ -146,6 +146,7 @@ function DashboardCard({ title, children }: DashboardCardProps): React.ReactElem
 }
 
 export default function Dashboard({ team, services, teams }: Props): React.ReactElement {
+  const theme = useTheme()
   const {
     user: { isAdmin },
     settings: {
@@ -187,11 +188,9 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   const teamName = isAdmin ? 'admin' : team.name
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
-  const iFrameBaseLink =
-    'https://grafana.51.158.131.127.nip.io/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&from=1703100530861&to=1703104130861&panelId='
-  const iFrameSmall =
-    'https://grafana.51.158.131.127.nip.io/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=10s&from=1703099228776&to=1703102828777&panelId='
-  const myArray = ['test1', 'test2', 'test3']
+
+  const iFrameBaseLink = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const iFrameSmall = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=10s&theme=${theme.palette.mode}&panelId=`
   const data = [
     { name: 'Teams', value: 1 },
     { name: 'Workloads', value: 4 },
@@ -224,7 +223,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
               }}
             >
               <Typography variant='h6'>{name}</Typography>
-              <Typography variant='h6' sx={{ color: 'blue' }}>
+              <Typography variant='h6' sx={{ color: 'red' }}>
                 {value}
               </Typography>
             </Box>
