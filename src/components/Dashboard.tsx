@@ -201,7 +201,6 @@ export default function Dashboard({ team, services, teams }: Props): React.React
     { name: 'Builds', value: 4 },
     { name: 'Secrets', value: 5 },
   ]
-  const [iframeOrder, setIframeOrder] = React.useState(0)
   const iframeSources = [
     { id: 0, src: `${iFrameSmall}1` },
     { id: 1, src: `${iFrameSmall}3` },
@@ -210,19 +209,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
     { id: 4, src: `${iFrameBaseLink}12` },
     { id: 5, src: `${iFrameBaseLink}13` },
   ]
-  const handleIframeLoad = () => {
-    // Move to the next iframe
-    setIframeOrder((prevOrder) => prevOrder + 1)
-  }
 
-  React.useEffect(() => {
-    if (iframeOrder < iframeSources.length) {
-      const iframe = document.getElementById(`iframe-${iframeOrder}`)
-      setTimeout(() => {
-        if (iframe instanceof HTMLIFrameElement) iframe.src = iframeSources[iframeOrder].src
-      }, 300)
-    }
-  }, [iframeOrder, iframeSources])
   return (
     <Box>
       <DashboardCard title='Inventory'>
@@ -268,6 +255,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
               key={`iframe-${item.id}`}
               id={`iframe-${item.id}`}
               title={`iframe-${item.id}`}
+              src={item.src}
               style={{
                 width: '25%',
                 height: '100px',
@@ -275,7 +263,6 @@ export default function Dashboard({ team, services, teams }: Props): React.React
                 marginTop: '10px',
                 marginBottom: '10px',
               }}
-              onLoad={handleIframeLoad}
             />
           ))}
         </Box>
@@ -294,6 +281,7 @@ export default function Dashboard({ team, services, teams }: Props): React.React
               key={`iframe-${item.id}`}
               id={`iframe-${item.id}`}
               title={`iframe-${item.id}`}
+              src={item.src}
               style={{
                 width: '50%',
                 height: '200px',
@@ -301,7 +289,6 @@ export default function Dashboard({ team, services, teams }: Props): React.React
                 marginTop: '10px',
                 marginBottom: '10px',
               }}
-              onLoad={handleIframeLoad}
             />
           ))}
         </Box>
