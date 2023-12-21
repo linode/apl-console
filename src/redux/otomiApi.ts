@@ -1702,6 +1702,8 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
         }
         type: 'buildpacks'
       }
+  externalRepo?: boolean
+  secretName?: string
   trigger?: boolean
 }[]
 export type GetAllBuildsApiArg = void
@@ -1727,6 +1729,8 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
         }
         type: 'buildpacks'
       }
+  externalRepo?: boolean
+  secretName?: string
   trigger?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
@@ -1755,6 +1759,8 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
         }
         type: 'buildpacks'
       }
+  externalRepo?: boolean
+  secretName?: string
   trigger?: boolean
 }
 export type CreateBuildApiArg = {
@@ -1783,6 +1789,8 @@ export type CreateBuildApiArg = {
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
 }
@@ -1815,6 +1823,8 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
         }
         type: 'buildpacks'
       }
+  externalRepo?: boolean
+  secretName?: string
   trigger?: boolean
 }
 export type GetBuildApiArg = {
@@ -1845,6 +1855,8 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
         }
         type: 'buildpacks'
       }
+  externalRepo?: boolean
+  secretName?: string
   trigger?: boolean
 }
 export type EditBuildApiArg = {
@@ -1875,6 +1887,8 @@ export type EditBuildApiArg = {
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
 }
@@ -1943,6 +1957,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
   workload?: {
@@ -2090,6 +2106,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
   workload?: {
@@ -2240,6 +2258,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
   workload?: {
@@ -2390,6 +2410,8 @@ export type CreateProjectApiArg = {
             }
             type: 'buildpacks'
           }
+      externalRepo?: boolean
+      secretName?: string
       trigger?: boolean
     }
     workload?: {
@@ -2544,6 +2566,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
   workload?: {
@@ -2696,6 +2720,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           }
           type: 'buildpacks'
         }
+    externalRepo?: boolean
+    secretName?: string
     trigger?: boolean
   }
   workload?: {
@@ -2848,6 +2874,8 @@ export type EditProjectApiArg = {
             }
             type: 'buildpacks'
           }
+      externalRepo?: boolean
+      secretName?: string
       trigger?: boolean
     }
     workload?: {
