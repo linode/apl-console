@@ -85,6 +85,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     }))
   }
 
+  const handleChangeView = (event) => {
+    onChangeView(event)
+    history.push('/')
+    event.preventDefault()
+  }
+
   const handleChangeTeam = (event) => {
     const teamId = event.target.value as string
     const path = window.location.pathname
@@ -129,7 +135,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           {isAdmin && (
             <>
               <Typography>view:</Typography>
-              <Select color='secondary' value={themeView} onChange={onChangeView} data-cy='select-view'>
+              <Select color='secondary' value={themeView} onChange={handleChangeView} data-cy='select-view'>
                 <MenuItem value='platform'>platform</MenuItem>
                 <MenuItem value='team'>team</MenuItem>
               </Select>
