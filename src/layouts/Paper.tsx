@@ -52,6 +52,7 @@ export default function ({ loading, comp, title }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const theme = useTheme()
   const location = useLocation()
+  // grafana iframe background color
   const dashboardStyle =
     location.pathname === '/' ? { backgroundColor: theme.palette.mode === 'dark' ? '#181B1F' : '#FFF' } : {}
   return (
