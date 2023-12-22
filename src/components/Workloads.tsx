@@ -37,7 +37,9 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-export const getStatus = (status: any) => {
+type Status = 'Unknown' | 'Pending' | 'Succeeded' | 'NotFound'
+
+export const getStatus = (status: Status) => {
   if (!status || status === 'NotFound') return <CircularProgress size='22px' />
   switch (status) {
     case 'Unknown':
