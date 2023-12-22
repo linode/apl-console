@@ -223,6 +223,13 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   const [visibility, _setVisibility] = React.useState(false)
   const setVisibility = () => _setVisibility(true)
 
+  const [isLoad, setLoad] = React.useState(false)
+  const onLoad = () => {
+    setTimeout(() => {
+      setLoad(true)
+    }, 1000)
+  }
+
   return (
     <Box>
       <DashboardCard title='Inventory'>
@@ -254,216 +261,231 @@ export default function Dashboard({ team, services, teams }: Props): React.React
           ))}
         </Box>
       </DashboardCard>
-      {themeView === 'platform' ? (
-        <>
-          <DashboardCard title='Cluster Resource Utilization'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'nowrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              {iframeSources.slice(0, 4).map((item) => (
-                <iframe
-                  key={`iframe-${item.id}`}
-                  id={`iframe-${item.id}`}
-                  title={`iframe-${item.id}`}
-                  src={item.src}
-                  style={{
-                    width: '25%',
-                    height: '100px',
-                    border: 'none',
-                    marginTop: '10px',
-                    marginBottom: '10px',
+      <iframe
+        title='Test iFrame'
+        src={`${iFrameSmall}1`}
+        onLoad={onLoad}
+        style={{
+          position: 'absolute',
+          opacity: 0,
+          width: '10px',
+          height: '10px',
+        }}
+      />
+      {isLoad && (
+        <Box>
+          {themeView === 'platform' ? (
+            <>
+              <DashboardCard title='Cluster Resource Utilization'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'nowrap',
+                    justifyContent: 'space-between',
                   }}
-                />
-              ))}
-            </Box>
-          </DashboardCard>
-          <DashboardCard title='Cluster Capacity'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              {iframeSources.slice(4, 6).map((item) => (
-                <iframe
-                  key={`iframe-${item.id}`}
-                  id={`iframe-${item.id}`}
-                  title={`iframe-${item.id}`}
-                  src={item.src}
-                  style={{
-                    width: '50%',
-                    height: '200px',
-                    border: 'none',
-                    marginTop: '10px',
-                    marginBottom: '10px',
+                >
+                  {iframeSources.slice(0, 4).map((item) => (
+                    <iframe
+                      key={`iframe-${item.id}`}
+                      id={`iframe-${item.id}`}
+                      title={`iframe-${item.id}`}
+                      src={item.src}
+                      style={{
+                        width: '25%',
+                        height: '100px',
+                        border: 'none',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  ))}
+                </Box>
+              </DashboardCard>
+              <DashboardCard title='Cluster Capacity'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
                   }}
-                />
-              ))}
-            </Box>
-          </DashboardCard>
-        </>
-      ) : (
-        <>
-          <DashboardCard title='Resource Utilization'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <iframe
-                title='Usage iFrame'
-                src={`${iFrameUsage}3`}
-                onLoad={setVisibility}
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                  visibility: visibility ? 'visible' : 'hidden',
-                }}
-              />
-              <iframe
-                title='Usage iFrame'
-                src={`${iFrameUsage}1`}
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                }}
-              />
-            </Box>
-          </DashboardCard>
-          <DashboardCard title='Resource Status'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              <iframe
-                title='Pods iFrame'
-                src={`${iFrameBaseLink}8`}
-                style={{
-                  width: '33.3%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-              <iframe
-                title='Pods iFrame'
-                src={`${iFrameBaseLink}9`}
-                style={{
-                  width: '33.3%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-              <iframe
-                title='Pods iFrame'
-                src={`${iFrameBaseLink}10`}
-                style={{
-                  width: '33.3%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-            </Box>
-          </DashboardCard>
-          <DashboardCard title='Vulnerabilities'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              <iframe
-                title='Trivy iFrame'
-                src={`${iFrameTrivy}60`}
-                style={{
-                  width: '25%',
-                  height: '100px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-              <iframe
-                title='Trivy iFrame'
-                src={`${iFrameTrivy}49`}
-                style={{
-                  width: '25%',
-                  height: '100px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-              <iframe
-                title='Trivy iFrame'
-                src={`${iFrameTrivy}50`}
-                style={{
-                  width: '25%',
-                  height: '100px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-              <iframe
-                title='Trivy iFrame'
-                src={`${iFrameTrivy}51`}
-                style={{
-                  width: '25%',
-                  height: '100px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-            </Box>
-          </DashboardCard>
-          <DashboardCard title='Compliance'>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-              }}
-            >
-              <iframe
-                title='Compliance iFrame'
-                src={iFrameCompliance}
-                style={{
-                  width: '100%',
-                  height: '200px',
-                  border: 'none',
-                  marginTop: '10px',
-                  marginBottom: '10px',
-                }}
-              />
-            </Box>
-          </DashboardCard>
-        </>
+                >
+                  {iframeSources.slice(4, 6).map((item) => (
+                    <iframe
+                      key={`iframe-${item.id}`}
+                      id={`iframe-${item.id}`}
+                      title={`iframe-${item.id}`}
+                      src={item.src}
+                      style={{
+                        width: '50%',
+                        height: '200px',
+                        border: 'none',
+                        marginTop: '10px',
+                        marginBottom: '10px',
+                      }}
+                    />
+                  ))}
+                </Box>
+              </DashboardCard>
+            </>
+          ) : (
+            <>
+              <DashboardCard title='Resource Utilization'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <iframe
+                    title='Usage iFrame'
+                    src={`${iFrameUsage}3`}
+                    onLoad={setVisibility}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                      visibility: visibility ? 'visible' : 'hidden',
+                    }}
+                  />
+                  <iframe
+                    title='Usage iFrame'
+                    src={`${iFrameUsage}1`}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                    }}
+                  />
+                </Box>
+              </DashboardCard>
+              <DashboardCard title='Resource Status'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <iframe
+                    title='Pods iFrame'
+                    src={`${iFrameBaseLink}8`}
+                    style={{
+                      width: '33.3%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <iframe
+                    title='Pods iFrame'
+                    src={`${iFrameBaseLink}9`}
+                    style={{
+                      width: '33.3%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <iframe
+                    title='Pods iFrame'
+                    src={`${iFrameBaseLink}10`}
+                    style={{
+                      width: '33.3%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                </Box>
+              </DashboardCard>
+              <DashboardCard title='Vulnerabilities'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <iframe
+                    title='Trivy iFrame'
+                    src={`${iFrameTrivy}60`}
+                    style={{
+                      width: '25%',
+                      height: '100px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <iframe
+                    title='Trivy iFrame'
+                    src={`${iFrameTrivy}49`}
+                    style={{
+                      width: '25%',
+                      height: '100px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <iframe
+                    title='Trivy iFrame'
+                    src={`${iFrameTrivy}50`}
+                    style={{
+                      width: '25%',
+                      height: '100px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <iframe
+                    title='Trivy iFrame'
+                    src={`${iFrameTrivy}51`}
+                    style={{
+                      width: '25%',
+                      height: '100px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                </Box>
+              </DashboardCard>
+              <DashboardCard title='Compliance'>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <iframe
+                    title='Compliance iFrame'
+                    src={iFrameCompliance}
+                    style={{
+                      width: '100%',
+                      height: '200px',
+                      border: 'none',
+                      marginTop: '10px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                </Box>
+              </DashboardCard>
+            </>
+          )}
+        </Box>
       )}
     </Box>
   )
