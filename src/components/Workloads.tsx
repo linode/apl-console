@@ -13,6 +13,7 @@ interface Row {
   teamId: string
   id: string
   name: string
+  imageUpdateStrategy: { type: string }
 }
 
 const getWorkloadLink = (row: Row) => {
@@ -77,6 +78,11 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
       id: 'argocd',
       label: t('Argocd'),
       renderer: (row: Row) => getArgocdApplicationLink(row, domainSuffix),
+    },
+    {
+      id: 'type',
+      label: t('Image update strategy'),
+      renderer: (row) => row.imageUpdateStrategy.type,
     },
     {
       id: 'Status',
