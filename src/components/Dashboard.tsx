@@ -160,8 +160,8 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   // team view
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/ab4f13a9892a76a4d21ce8c2445bf4ea/kubernetes-pods?orgId=1&theme=${theme.palette.mode}&panelId=`
-  const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/trivy-operator-reports?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const compliance = `https://grafana-${oboTeamId}.${domain}/d-solo/YBgRZG6Mz/opa-gatekeeper-cluster?orgId=1&theme=${theme.palette.mode}&panelId=38`
+  const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const compliance = `https://grafana-${oboTeamId}.${domain}/d-solo/YBgRZG6Mzz/policy-violations?orgId=1&theme=${theme.palette.mode}&panelId=`
 
   const iFrameSources = {
     clusterResourceUtilization: [
@@ -175,13 +175,13 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       { id: '5', src: `${clusterCapacity}13` },
     ],
     resourceStatus: [
-      { id: '8', src: `${resourceStatus}8` },
-      { id: '9', src: `${resourceStatus}9` },
-      { id: '10', src: `${resourceStatus}10` },
+      { id: '6', src: `${resourceStatus}8` },
+      { id: '7', src: `${resourceStatus}9` },
+      { id: '8', src: `${resourceStatus}10` },
     ],
     resourceUtilization: [
-      { id: '6', src: `${resourceUtilization}2` },
-      { id: '7', src: `${resourceUtilization}3` },
+      { id: '9', src: `${resourceUtilization}2` },
+      { id: '10', src: `${resourceUtilization}3` },
     ],
     vulnerabilities: [
       { id: '11', src: `${vulnerabilities}60` },
@@ -189,7 +189,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       { id: '13', src: `${vulnerabilities}50` },
       { id: '14', src: `${vulnerabilities}51` },
     ],
-    compliance: [{ id: '15', src: `${compliance}` }],
+    compliance: [{ id: '15', src: `${compliance}41` }],
   }
 
   const [isLoad, setLoad] = React.useState(false)
@@ -207,7 +207,11 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       <iframe
         className={classes.hiddenIframe}
         title='Hidden iFrame'
-        src={iFrameSources.clusterResourceUtilization[0].src}
+        src={
+          themeView === 'platform'
+            ? iFrameSources.clusterResourceUtilization[0].src
+            : iFrameSources.resourceStatus[0].src
+        }
         onLoad={onLoad}
       />
       {isLoad && (
