@@ -26,6 +26,7 @@ export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
   editor?: string
   oboTeamId?: string
+  status?: Record<string, any>
   setOboTeamId?: CallableFunction
   refetchAppsEnabled?: () => void
   refetchSession?: () => void
@@ -39,6 +40,7 @@ const Context = React.createContext<SessionContext>({
   core: undefined,
   editor: undefined,
   oboTeamId: undefined,
+  status: undefined,
   setOboTeamId: undefined,
   settings: undefined,
   user: {
@@ -110,6 +112,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
+  const { lastMessage: status } = useSocketEvent<any>(socket, 'status')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -120,13 +123,14 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       ...(session || {}),
       appsEnabled,
       oboTeamId,
+      status,
       refetchAppsEnabled,
       refetchSession,
       refetchSettings,
       setOboTeamId,
       settings,
     }),
-    [appsEnabled, oboTeamId, session, settings],
+    [appsEnabled, oboTeamId, session, settings, status],
   )
   const { corrupt, editor, user } = ctx
   const { email, isAdmin, teams } = user || {}

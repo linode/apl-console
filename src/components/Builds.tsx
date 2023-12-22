@@ -9,6 +9,7 @@ import DoneIcon from '@mui/icons-material/Done'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import { getStatus } from './Workloads'
 
 interface Row {
   teamId: string
@@ -114,15 +115,12 @@ interface Props {
 }
 
 export default function ({ builds, teamId }: Props): React.ReactElement {
-  // const {
-  //   oboTeamId,
-  //   user: { isAdmin },
-  // } = useSession()
   const {
     appsEnabled,
     settings: {
       cluster: { domainSuffix },
     },
+    status,
   } = useSession()
 
   const { t } = useTranslation()
@@ -157,6 +155,11 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       id: 'tag',
       label: t('Tag'),
       renderer: (row) => row.tag,
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row: Row) => getStatus(status?.builds?.[row.id]),
     },
   ]
 
