@@ -366,6 +366,11 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     groupMapping?: string
   }
   password?: string
+  managedMonitoring?: {
+    grafana?: boolean
+    prometheus?: boolean
+    alertmanager?: boolean
+  }
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
@@ -432,9 +437,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
           }
       )
     | null
-  monitoringStack?: {
-    enabled?: boolean
-  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -462,6 +464,11 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     groupMapping?: string
   }
   password?: string
+  managedMonitoring?: {
+    grafana?: boolean
+    prometheus?: boolean
+    alertmanager?: boolean
+  }
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
@@ -528,9 +535,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
           }
       )
     | null
-  monitoringStack?: {
-    enabled?: boolean
-  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -559,6 +563,11 @@ export type CreateTeamApiArg = {
       groupMapping?: string
     }
     password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      prometheus?: boolean
+      alertmanager?: boolean
+    }
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
@@ -625,9 +634,6 @@ export type CreateTeamApiArg = {
             }
         )
       | null
-    monitoringStack?: {
-      enabled?: boolean
-    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -655,6 +661,11 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     groupMapping?: string
   }
   password?: string
+  managedMonitoring?: {
+    grafana?: boolean
+    prometheus?: boolean
+    alertmanager?: boolean
+  }
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
@@ -721,9 +732,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
           }
       )
     | null
-  monitoringStack?: {
-    enabled?: boolean
-  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -754,6 +762,11 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     groupMapping?: string
   }
   password?: string
+  managedMonitoring?: {
+    grafana?: boolean
+    prometheus?: boolean
+    alertmanager?: boolean
+  }
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
@@ -820,9 +833,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
           }
       )
     | null
-  monitoringStack?: {
-    enabled?: boolean
-  }
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -853,6 +863,11 @@ export type EditTeamApiArg = {
       groupMapping?: string
     }
     password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      prometheus?: boolean
+      alertmanager?: boolean
+    }
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
@@ -919,9 +934,6 @@ export type EditTeamApiArg = {
             }
         )
       | null
-    monitoringStack?: {
-      enabled?: boolean
-    }
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
