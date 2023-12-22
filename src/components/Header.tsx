@@ -86,8 +86,10 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   }
 
   const handleChangeView = (event) => {
+    const view = event.target.value
     onChangeView(event)
-    history.push('/')
+    if (view === 'team' && oboTeamId === 'admin') history.push('/teams/admin/services')
+    else history.push('/')
     event.preventDefault()
   }
 

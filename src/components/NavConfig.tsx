@@ -18,6 +18,8 @@ export default function NavConfig() {
     filename: 'ca.crt',
   }
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
+  const dashboard =
+    oboTeamId !== 'admin' ? [{ title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') }] : []
 
   return [
     {
@@ -50,7 +52,7 @@ export default function NavConfig() {
     {
       subheader: `Team ${oboTeamId}`,
       items: [
-        { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
+        ...dashboard,
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
         {
           title: 'Catalog',
