@@ -192,13 +192,12 @@ export default function Dashboard({ team, services, teams }: Props): React.React
   const teamName = isAdmin ? 'admin' : team.name
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
-  const domainTest = '51.158.129.230.nip.io'
 
-  const iFrameBaseLink = `https://grafana.${domainTest}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const iFrameSmall = `https://grafana.${domainTest}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const iFrameUsage = `https://grafana.${domainTest}/d-solo/a87fb0d919ec0ea5f6543124e16c42a5/kubernetes-compute-resources-namespace-workloads?orgId=1&refresh=10s&theme=${theme.palette.mode}&panelId=`
-  const iFrameTrivy = `https://grafana.${domainTest}/d-solo/trivy_operator/trivy-operator-reports?orgId=1&refresh=30s&from=1703197681320&to=1703201281320&theme=${theme.palette.mode}&panelId=`
-  const iFrameCompliance = `https://grafana.${domainTest}/d-solo/YBgRZG6Mz/opa-gatekeeper-cluster?orgId=1&from=1703200224771&to=1703202024772&theme=${theme.palette.mode}&panelId=38`
+  const iFrameBaseLink = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const iFrameSmall = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const iFrameUsage = `https://grafana.${domain}/d-solo/a87fb0d919ec0ea5f6543124e16c42a5/kubernetes-compute-resources-namespace-workloads?orgId=1&refresh=10s&theme=${theme.palette.mode}&panelId=`
+  const iFrameTrivy = `https://grafana.${domain}/d-solo/trivy_operator/trivy-operator-reports?orgId=1&refresh=30s&from=1703197681320&to=1703201281320&theme=${theme.palette.mode}&panelId=`
+  const iFrameCompliance = `https://grafana.${domain}/d-solo/YBgRZG6Mz/opa-gatekeeper-cluster?orgId=1&from=1703200224771&to=1703202024772&theme=${theme.palette.mode}&panelId=38`
 
   // from=1703196305474&to=1703199905474
   // from=1703196336382&to=1703199936382
