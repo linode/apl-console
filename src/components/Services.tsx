@@ -7,6 +7,7 @@ import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 import MuiLink from './MuiLink'
+import { getStatus } from './Workloads'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
   function (row): string | React.ReactElement {
@@ -43,6 +44,7 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
   const {
     user: { isAdmin },
     oboTeamId,
+    status,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -62,6 +64,11 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
       label: t('URL'),
       renderer: renderHost,
       component: MuiLink,
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row) => getStatus(status?.services?.[row.id]),
     },
   ]
   if (!teamId) {
