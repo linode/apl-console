@@ -141,7 +141,7 @@ export default function ({
   const projectUiSchema = getProjectUiSchema(user, teamId)
 
   const buildSchema = getBuildSchema(teamId)
-  const buildUiSchema = getBuildUiSchema(user, teamId)
+  const buildUiSchema = getBuildUiSchema(user, teamId, formData?.build)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
   const helmChart: string = data?.workload?.chartMetadata?.helmChart || data?.workload?.path || helmCharts?.[0]
