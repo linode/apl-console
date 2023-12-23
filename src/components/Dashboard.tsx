@@ -113,7 +113,6 @@ interface IFramesCardProps {
   classes: any
   title: string
   iframeSources: any[]
-  boxClass?: string
   iframeClass: string
   show?: boolean
 }
@@ -159,14 +158,8 @@ function IFrame({ id, src, className }: IFrameProps) {
   return <iframe key={`iframe-${id}`} id={`iframe-${id}`} title={`iframe-${id}`} src={src} className={className} />
 }
 
-function IFramesCard({
-  classes,
-  title,
-  iframeSources,
-  boxClass = classes.iframeRow,
-  iframeClass,
-  show = false,
-}: IFramesCardProps) {
+function IFramesCard({ classes, title, iframeSources, iframeClass, show = false }: IFramesCardProps) {
+  const boxClass = iframeClass.includes('iframeFullWidth') ? classes.iframeColumn : classes.iframeRow
   if (!show) return null
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
