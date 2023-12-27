@@ -189,6 +189,9 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       setCookiesLoaded(true)
     }, 500)
   }
+  React.useEffect(() => {
+    setCookiesLoaded(false)
+  }, [themeView])
 
   // platform view base iframe urls
   const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
