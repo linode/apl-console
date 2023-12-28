@@ -94,6 +94,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getDashboard: build.query<GetDashboardApiResponse, GetDashboardApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/dashboard` }),
+    }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
       query: () => ({ url: `/builds` }),
     }),
@@ -1691,6 +1694,11 @@ export type EditBackupApiArg = {
     }[]
     ttl: string
   }
+}
+export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ object
+export type GetDashboardApiArg = {
+  /** ID of team to return */
+  teamId: string
 }
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   id?: string
@@ -4345,6 +4353,7 @@ export const {
   useDeleteBackupMutation,
   useGetBackupQuery,
   useEditBackupMutation,
+  useGetDashboardQuery,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
   useCreateBuildMutation,

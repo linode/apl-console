@@ -10,6 +10,7 @@ import {
   ThemeContrast,
   ThemeLayout,
   ThemeMode,
+  ThemeView,
 } from 'components/SettingsType'
 import { cookiesExpires, cookiesKey, defaultSettings } from '../config'
 
@@ -17,6 +18,9 @@ import { cookiesExpires, cookiesKey, defaultSettings } from '../config'
 
 const initialState: SettingsContextProps = {
   ...defaultSettings,
+  // View
+  onToggleView: () => {},
+  onChangeView: () => {},
   // Mode
   onToggleMode: () => {},
   onChangeMode: () => {},
@@ -52,6 +56,22 @@ type SettingsProviderProps = {
 
 function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) {
   const [settings, setSettings] = useSettingCookies(defaultSettings)
+
+  // View
+
+  const onToggleView = () => {
+    setSettings({
+      ...settings,
+      themeView: settings.themeView === 'platform' ? 'team' : 'platform',
+    })
+  }
+
+  const onChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSettings({
+      ...settings,
+      themeView: (event.target as HTMLInputElement).value as ThemeView,
+    })
+  }
 
   // Mode
 
@@ -123,6 +143,7 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
 
   const onResetSetting = () => {
     setSettings({
+      themeView: initialState.themeView,
       themeMode: initialState.themeMode,
       themeLayout: initialState.themeLayout,
       themeStretch: initialState.themeStretch,
@@ -135,6 +156,10 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
     <SettingsContext.Provider
       value={{
         ...settings,
+
+        // View
+        onToggleView,
+        onChangeView,
 
         // Mode
         onToggleMode,
@@ -178,6 +203,8 @@ function useSettingCookies(
   const [settings, setSettings] = useState<SettingsValueProps>(defaultSettings)
 
   const onChangeSetting = () => {
+    Cookies.set(cookiesKey.themeView, settings.themeView, { expires: cookiesExpires })
+
     Cookies.set(cookiesKey.themeMode, settings.themeMode, { expires: cookiesExpires })
 
     Cookies.set(cookiesKey.themeColorPresets, settings.themeColorPresets, {

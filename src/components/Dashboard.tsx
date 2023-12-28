@@ -1,188 +1,299 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import CloudIcon from '@mui/icons-material/Cloud'
-import PeopleIcon from '@mui/icons-material/People'
-import SwapVerticalCircleIcon from '@mui/icons-material/SwapVerticalCircle'
-import { Avatar, Card, CardHeader, Divider, Grid, IconButton, Tooltip, Typography } from '@mui/material'
-import Link from '@mui/material/Link'
+import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link as RouterLink } from 'react-router-dom'
-import {
-  GetAllServicesApiResponse,
-  GetTeamApiResponse,
-  GetTeamServicesApiResponse,
-  GetTeamsApiResponse,
-} from 'redux/otomiApi'
+import { GetTeamApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
-import MessageTrans from './MessageTrans'
+import { getDomain } from 'layouts/Shell'
+import useSettings from 'hooks/useSettings'
+import Link from '@mui/material/Link'
+import { Link as RouterLink } from 'react-router-dom'
 
-type Panel = {
-  name: string
-  data: any
-  icon: any
-  canCreate: boolean
-  disabled: boolean
-  tooltip: string
-}
-interface Props {
-  team?: GetTeamApiResponse
-  services: GetTeamServicesApiResponse | GetAllServicesApiResponse
-  teams: GetTeamsApiResponse
-}
-
+// styles -----------------------------------------------------------
 const useStyles = makeStyles()((theme) => ({
-  grid: {
-    '&>.MuiGrid-item': {
-      padding: theme.spacing(1),
-    },
-  },
   card: {
-    backgroundColor: theme.palette.primary.light,
-    color: '#fff',
-    boxShadow: 'none',
-    padding: '10px 20px',
-  },
-  cardSubHeader: {
-    fontSize: 20,
-    fontWeight: 700,
-  },
-  cardActionBtn: {
-    marginTop: 0,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(1),
   },
   cardHeaderTitle: {
+    textAlign: 'center',
+    color: theme.palette.grey[500],
+  },
+  inventoryItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: theme.spacing(1.5),
+  },
+  inventoryName: {
     textTransform: 'capitalize',
+    color: theme.palette.grey[500],
   },
-  iconBtn: {
-    color: theme.palette.primary.main,
-    marginTop: '10px',
+  inventoryCard: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    margin: theme.spacing(1),
   },
-  title: {
-    paddingTop: 30,
-    paddingBottom: 20,
+  inventoryColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '30%',
   },
-  teamName: {
-    '& > :first-letter': {
-      textTransform: 'capitalize',
-    },
+  hiddenIframe: {
+    position: 'absolute',
+    opacity: 0,
+    visibility: 'hidden',
+    width: '10px',
+    height: '10px',
   },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
+  iframeRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+  iframeColumn: {
+    display: 'flex',
+    flexDirection: 'column',
   },
-  expandOpen: {
-    transform: 'rotate(180deg)',
+  iframeSmall: {
+    width: '25%',
+    height: '100px',
+    border: 'none',
+    margin: '10px 0px',
+  },
+  iframeMedium: {
+    width: '33.3%',
+    height: '200px',
+    border: 'none',
+    margin: '10px 0px',
+  },
+  iframeLarge: {
+    width: '50%',
+    height: '200px',
+    border: 'none',
+    margin: '10px 0px',
+  },
+  iframeFullWidth: {
+    width: '100%',
+    height: '200px',
+    border: 'none',
+    margin: '10px 0px',
   },
 }))
-interface DashboardCardProps {
-  item: Panel
-  teamId?: string
-  classes: any
+
+// types -----------------------------------------------------------
+interface Props {
+  team?: GetTeamApiResponse
+  inventory: any
 }
 
-function DashboardCard({ classes, teamId, item }: DashboardCardProps): React.ReactElement {
-  const prefix = item.name === 'service' && teamId ? `/teams/${teamId}` : ''
+interface InventoryItemProps {
+  classes: any
+  item: { name: string; count: number }
+  themeView: string
+  teamId: string
+}
+
+interface InventoryCardProps {
+  classes: any
+  title: string
+  inventory: any
+  themeView: string
+  teamId: string
+}
+
+interface IFrameProps {
+  id: string
+  src: string
+  className: string
+}
+
+interface IFramesCardProps {
+  classes: any
+  title: string
+  iframeSources: any[]
+  iframeClass: string
+  show?: boolean
+}
+
+// components ------------------------------------------------------
+function InventoryItem({ classes, item, themeView, teamId }: InventoryItemProps): React.ReactElement {
+  const prefix = themeView === 'team' ? `/teams/${teamId}` : ''
   return (
-    <Grid item xs={12} sm={6} md={4}>
-      <Card>
-        <CardHeader
-          className={classes.card}
-          data-cy={`card-${item.name}`}
-          avatar={<Avatar aria-label='recipe'>{item.icon}</Avatar>}
-          title={`${item.name}s`}
-          subheader={
-            <Link
-              component={RouterLink}
-              to={item.name === 'service' ? `${prefix}/${item.name}s` : `/${item.name}s`}
-              data-cy={`link-${item.name}-count`}
-            >
-              {item.data && item.data.length}
-            </Link>
-          }
-          action={
-            item.canCreate && (
-              <Tooltip title={item.tooltip} aria-label={item.tooltip}>
-                <span>
-                  <IconButton
-                    aria-label={`Create ${item.name}`}
-                    component={RouterLink}
-                    to={`${prefix}/create-${item.name}`}
-                    className={classes.iconBtn}
-                    disabled={item.disabled}
-                    data-cy={`button-create-${item.name}`}
-                  >
-                    <AddCircleIcon />
-                  </IconButton>
-                </span>
-              </Tooltip>
-            )
-          }
-        />
-      </Card>
+    <Link component={RouterLink} to={`${prefix}/${item.name}`} data-cy={`link-${item.name}-count`}>
+      <Box className={classes.inventoryItem}>
+        <Typography className={classes.inventoryName} variant='h5'>
+          {item.name}
+        </Typography>
+        <Typography variant='h5'>{item.count}</Typography>
+      </Box>
+    </Link>
+  )
+}
+
+function InventoryCard({ classes, title, inventory, themeView, teamId }: InventoryCardProps): React.ReactElement {
+  return (
+    <Grid item xs={12} mb={2} className={classes.card}>
+      <Typography variant='h5' className={classes.cardHeaderTitle}>
+        {title}
+      </Typography>
+      <Box className={classes.inventoryCard}>
+        <Box className={classes.inventoryColumn}>
+          {inventory.slice(0, 3).map((panel) => (
+            <InventoryItem key={panel.name} item={panel} teamId={teamId} themeView={themeView} classes={classes} />
+          ))}
+        </Box>
+        <Box className={classes.inventoryColumn}>
+          {inventory.slice(3).map((panel) => (
+            <InventoryItem key={panel.name} item={panel} teamId={teamId} themeView={themeView} classes={classes} />
+          ))}
+        </Box>
+      </Box>
     </Grid>
   )
 }
 
-export default function Dashboard({ team, services, teams }: Props): React.ReactElement {
-  const {
-    user: { isAdmin },
-    settings: {
-      cluster,
-      otomi: { additionalClusters = [] },
-    },
-  } = useSession()
-  const { classes } = useStyles()
-  const isServiceDisabled = isAdmin && !team
-  const { t } = useTranslation()
-  const panels = [
-    {
-      name: 'cluster',
-      data: [cluster, ...additionalClusters],
-      icon: <CloudIcon />,
-      canCreate: false,
-      disabled: false,
-      tooltip: '',
-    },
-    {
-      name: 'team',
-      data: teams,
-      icon: <PeopleIcon />,
-      canCreate: isAdmin,
-      disabled: false,
-      tooltip: t('CREATE_MODEL', { model: 'team' }),
-    },
-    {
-      name: 'service',
-      data: services,
-      icon: <SwapVerticalCircleIcon />,
-      canCreate: true,
-      disabled: isServiceDisabled,
-      tooltip: isServiceDisabled
-        ? t('SELECT_TEAM', { model: 'service' })
-        : t('CREATE_MODEL_FOR_TEAM', { model: 'service', teamName: team.name }),
-    },
-  ]
-  const teamName = isAdmin ? 'admin' : team.name
+function IFrame({ id, src, className }: IFrameProps) {
+  return <iframe key={`iframe-${id}`} id={`iframe-${id}`} title={`iframe-${id}`} src={src} className={className} />
+}
+
+function IFramesCard({ classes, title, iframeSources, iframeClass, show = false }: IFramesCardProps) {
+  const boxClass = iframeClass.includes('iframeFullWidth') ? classes.iframeColumn : classes.iframeRow
+  if (!show) return null
   return (
-    <Grid container className={classes.grid}>
-      <Grid item xs={12}>
-        <Typography variant='h5' gutterBottom className={classes.title} data-cy='text-welcome'>
-          <MessageTrans i18nKey='WELCOME_DASHBOARD'>
-            Team <strong className={classes.teamName}>{{ teamName }}</strong> dashboard
-          </MessageTrans>
-        </Typography>
-        <Divider />
-      </Grid>
-      {panels.map((panel) => (
-        <DashboardCard classes={classes} teamId={team?.id} item={panel} key={panel.name} />
-      ))}
+    <Grid item xs={12} mb={2} className={classes.card}>
+      <Typography variant='h5' className={classes.cardHeaderTitle}>
+        {title}
+      </Typography>
+      <Box className={boxClass}>
+        {iframeSources.map((item) => (
+          <IFrame id={item.id} src={item.src} className={iframeClass} />
+        ))}
+      </Box>
     </Grid>
+  )
+}
+
+// main jsx --------------------------------------------------------
+export default function Dashboard({ team, inventory }: Props): React.ReactElement {
+  const theme = useTheme()
+  const { classes } = useStyles()
+  const { themeView } = useSettings()
+  const { oboTeamId, appsEnabled } = useSession()
+  const hostname = window.location.hostname
+  const domain = getDomain(hostname)
+  const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
+  const onLoad = () => {
+    setTimeout(() => {
+      setCookiesLoaded(true)
+    }, 500)
+  }
+  React.useEffect(() => {
+    setCookiesLoaded(false)
+  }, [themeView])
+
+  // platform view base iframe urls
+  const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const clusterCapacity = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  // team view base iframe urls
+  const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/ab4f13a9892a76a4d21ce8c2445bf4ea/kubernetes-pods?orgId=1&theme=${theme.palette.mode}&panelId=`
+  const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const compliance = `https://grafana-${oboTeamId}.${domain}/d-solo/YBgRZG6Mzz/policy-violations?orgId=1&theme=${theme.palette.mode}&panelId=`
+
+  const views = {
+    platform: [
+      {
+        title: 'Cluster Resource Utilization',
+        iframeClass: classes.iframeSmall,
+        iframeSources: [
+          { id: '0', src: `${clusterResourceUtilization}1` },
+          { id: '1', src: `${clusterResourceUtilization}3` },
+          { id: '2', src: `${clusterResourceUtilization}4` },
+          { id: '3', src: `${clusterResourceUtilization}6` },
+        ],
+        show: appsEnabled.grafana,
+      },
+      {
+        title: 'Cluster Capacity',
+        iframeClass: classes.iframeLarge,
+        iframeSources: [
+          { id: '4', src: `${clusterCapacity}12` },
+          { id: '5', src: `${clusterCapacity}13` },
+        ],
+        show: appsEnabled.grafana,
+      },
+    ],
+    team: [
+      {
+        title: 'Resource Status',
+        iframeClass: classes.iframeMedium,
+        iframeSources: [
+          { id: '6', src: `${resourceStatus}8` },
+          { id: '7', src: `${resourceStatus}9` },
+          { id: '8', src: `${resourceStatus}10` },
+        ],
+        show: team?.managedMonitoring?.grafana,
+      },
+      {
+        title: 'Resource Utilization',
+        iframeClass: classes.iframeFullWidth,
+        iframeSources: [
+          { id: '9', src: `${resourceUtilization}2` },
+          { id: '10', src: `${resourceUtilization}3` },
+        ],
+        show: team?.managedMonitoring?.grafana,
+      },
+      {
+        title: 'Vulnerabilities',
+        iframeClass: classes.iframeSmall,
+        iframeSources: [
+          { id: '11', src: `${vulnerabilities}60` },
+          { id: '12', src: `${vulnerabilities}49` },
+          { id: '13', src: `${vulnerabilities}50` },
+          { id: '14', src: `${vulnerabilities}51` },
+        ],
+        show: team?.managedMonitoring?.grafana && appsEnabled.trivy,
+      },
+      {
+        title: 'Compliance',
+        iframeClass: classes.iframeFullWidth,
+        iframeSources: [{ id: '15', src: `${compliance}41` }],
+        show: team?.managedMonitoring?.grafana && appsEnabled.gatekeeper,
+      },
+    ],
+  }
+
+  return (
+    <Box>
+      <InventoryCard
+        classes={classes}
+        inventory={inventory}
+        teamId={team?.id}
+        themeView={themeView}
+        title='Inventory'
+      />
+      {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
+      <iframe
+        className={classes.hiddenIframe}
+        title='Hidden iFrame'
+        src={views[themeView][0].iframeSources[0].src}
+        onLoad={onLoad}
+      />
+      {isCookiesLoaded && (
+        <Box>
+          {views[themeView].map((item) => (
+            <IFramesCard
+              classes={classes}
+              title={item.title}
+              iframeSources={item.iframeSources}
+              iframeClass={item.iframeClass}
+              show={item.show}
+            />
+          ))}
+        </Box>
+      )}
+    </Box>
   )
 }
