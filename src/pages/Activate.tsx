@@ -20,12 +20,15 @@ const StyledPage = styled(Container)({
 const StyledCard = styled(Card)({
   display: 'flex',
   flexDirection: 'column',
-  height: '36vh',
-  width: '40vh',
   alignItems: 'center',
   padding: '4vh',
+  boxSizing: 'border-box', // Ensures padding is included in width/height calculations
+  minWidth: '300px', // Minimum width to ensure content visibility
+  width: '50%', // Use 100% of the parent container's width
+  minHeight: '370px', // Minimum height to ensure content visibility at different zoom levels
+  maxHeight: '90vh', // Use a high percentage of the viewport height to ensure visibility at different zoom levels
+  overflow: 'auto', // Enable scroll if the content overflows
 })
-
 export default function Activate() {
   const [create] = useActivateLicenseMutation()
   const [del] = useDeleteLicenseMutation()
@@ -109,7 +112,7 @@ export default function Activate() {
                   onChange={(event) => setJwt(event.target.value)}
                 />
 
-                <Box marginTop={3}>
+                <Box marginTop={6}>
                   <LoadingButton
                     fullWidth
                     color='primary'
