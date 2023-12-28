@@ -1,6 +1,7 @@
 import { Box, List, ListSubheader } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useSession } from 'providers/Session'
+import useSettings from 'hooks/useSettings'
 import { SidebarListRoot } from './SidebarList'
 import { NavSectionProps } from './SidebarTypes'
 
@@ -23,9 +24,16 @@ export const ListSubheaderStyle = styled((props) => <ListSubheader disableSticky
 
 export default function SidebarContent({ navConfig, isCollapse = false, ...other }: NavSectionProps) {
   const { oboTeamId, user } = useSession()
+  const { themeView } = useSettings()
+
   const { isAdmin } = user
 
   if (!isAdmin) navConfig = navConfig.filter((group) => group.subheader !== 'platform')
+  else {
+    navConfig = navConfig.filter(
+      (group) => group.subheader.toLowerCase() === 'actions' || group.subheader.toLowerCase().includes(themeView),
+    )
+  }
 
   return (
     <Box {...other}>

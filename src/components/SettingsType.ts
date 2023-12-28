@@ -11,6 +11,7 @@ type ColorVariants = {
   contrastText: string
 }
 
+export type ThemeView = 'platform' | 'team'
 export type ThemeMode = 'light' | 'dark'
 export type ThemeContrast = 'default' | 'bold'
 export type ThemeLayout = 'vertical' | 'horizontal'
@@ -18,6 +19,7 @@ export type ThemeColorPresets = 'default' | 'purple' | 'cyan' | 'blue' | 'orange
 export type ThemeStretch = boolean
 
 export type SettingsValueProps = {
+  themeView: ThemeView
   themeMode: ThemeMode
   themeLayout: ThemeLayout
   themeStretch: ThemeStretch
@@ -26,6 +28,7 @@ export type SettingsValueProps = {
 }
 
 export type SettingsContextProps = {
+  themeView: ThemeView
   themeMode: ThemeMode
   themeLayout: ThemeLayout
   themeContrast: ThemeContrast
@@ -36,6 +39,10 @@ export type SettingsContextProps = {
     name: string
     value: string
   }[]
+
+  // View
+  onToggleView: VoidFunction
+  onChangeView: (event: React.ChangeEvent<HTMLInputElement>) => void
 
   // Mode
   onToggleMode: VoidFunction
