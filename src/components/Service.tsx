@@ -55,7 +55,13 @@ export const addServiceNameEnumField = (
   set(
     schema,
     'properties.name.enum',
-    k8sServiceNames?.filter((item: string) => !item.includes('grafana') && !item.includes('prometheus')),
+    k8sServiceNames?.filter(
+      (item: string) =>
+        !item.includes('grafana') &&
+        !item.includes('prometheus') &&
+        !item.includes('alertmanager') &&
+        !item.includes('tekton-dashboard'),
+    ),
   )
   set(formData, 'ksvc.predeployed', false)
   if (formData && formData?.name) {
