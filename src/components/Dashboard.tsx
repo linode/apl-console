@@ -198,7 +198,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const clusterCapacity = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   // team view base iframe urls
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/ab4f13a9892a76a4d21ce8c2445bf4ea/kubernetes-pods?orgId=1&theme=${theme.palette.mode}&panelId=`
+  const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/JcVjFgdZz/kubernetes-deployment?orgId=1&theme=${theme.palette.mode}&panelId=`
   const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const compliance = `https://grafana-${oboTeamId}.${domain}/d-solo/YBgRZG6Mzz/policy-violations?orgId=1&theme=${theme.palette.mode}&panelId=`
 
@@ -238,10 +238,10 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       },
       {
         title: 'Resource Utilization',
-        iframeClass: classes.iframeFullWidth,
+        iframeClass: classes.iframeLarge,
         iframeSources: [
-          { id: '9', src: `${resourceUtilization}2` },
-          { id: '10', src: `${resourceUtilization}3` },
+          { id: '9', src: `${resourceUtilization}8` },
+          { id: '10', src: `${resourceUtilization}9` },
         ],
         show: team?.managedMonitoring?.grafana,
       },
