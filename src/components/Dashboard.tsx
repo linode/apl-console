@@ -206,21 +206,19 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
     platform: [
       {
         title: 'Cluster Resource Utilization',
-        iframeClass: classes.iframeSmall,
+        iframeClass: classes.iframeLarge,
         iframeSources: [
           { id: '0', src: `${clusterResourceUtilization}1` },
-          { id: '1', src: `${clusterResourceUtilization}3` },
           { id: '2', src: `${clusterResourceUtilization}4` },
-          { id: '3', src: `${clusterResourceUtilization}6` },
         ],
         show: appsEnabled.grafana,
       },
       {
-        title: 'Cluster Capacity',
+        title: 'Cluster Resource Request Commitments',
         iframeClass: classes.iframeLarge,
         iframeSources: [
-          { id: '4', src: `${clusterCapacity}12` },
-          { id: '5', src: `${clusterCapacity}13` },
+          { id: '4', src: `${clusterResourceUtilization}2` },
+          { id: '5', src: `${clusterResourceUtilization}5` },
         ],
         show: appsEnabled.grafana,
       },
