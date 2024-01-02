@@ -18,16 +18,18 @@ const useStyles = makeStyles()((theme) => ({
   cardHeaderTitle: {
     textAlign: 'center',
     color: theme.palette.grey[500],
+    fontSize: '14px',
   },
   inventoryItem: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: theme.spacing(1.5),
+    padding: theme.spacing(1),
   },
   inventoryName: {
     textTransform: 'capitalize',
     color: theme.palette.grey[500],
+    fontSize: '14px',
   },
   inventoryCard: {
     display: 'flex',
@@ -123,10 +125,10 @@ function InventoryItem({ classes, item, themeView, teamId }: InventoryItemProps)
   return (
     <Link component={RouterLink} to={`${prefix}/${item.name}`} data-cy={`link-${item.name}-count`}>
       <Box className={classes.inventoryItem}>
-        <Typography className={classes.inventoryName} variant='h5'>
+        <Typography className={classes.inventoryName} variant='h6'>
           {item.name}
         </Typography>
-        <Typography variant='h5'>{item.count}</Typography>
+        <Typography fontSize={14}>{item.count}</Typography>
       </Box>
     </Link>
   )
