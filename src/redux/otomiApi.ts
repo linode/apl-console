@@ -338,6 +338,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
         | null
       )
   networkPolicy?: {
+    podSelector?: string
     ingressPrivate?:
       | {
           mode: 'DenyAll'
@@ -1012,6 +1013,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
         | null
       )
   networkPolicy?: {
+    podSelector?: string
     ingressPrivate?:
       | {
           mode: 'DenyAll'
@@ -1089,6 +1091,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
         | null
       )
   networkPolicy?: {
+    podSelector?: string
     ingressPrivate?:
       | {
           mode: 'DenyAll'
@@ -1166,6 +1169,7 @@ export type CreateServiceApiArg = {
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -1249,6 +1253,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
         | null
       )
   networkPolicy?: {
+    podSelector?: string
     ingressPrivate?:
       | {
           mode: 'DenyAll'
@@ -1328,6 +1333,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
         | null
       )
   networkPolicy?: {
+    podSelector?: string
     ingressPrivate?:
       | {
           mode: 'DenyAll'
@@ -1407,6 +1413,7 @@ export type EditServiceApiArg = {
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2075,6 +2082,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2224,6 +2232,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2376,6 +2385,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2528,6 +2538,7 @@ export type CreateProjectApiArg = {
             | null
           )
       networkPolicy?: {
+        podSelector?: string
         ingressPrivate?:
           | {
               mode: 'DenyAll'
@@ -2684,6 +2695,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2838,6 +2850,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           | null
         )
     networkPolicy?: {
+      podSelector?: string
       ingressPrivate?:
         | {
             mode: 'DenyAll'
@@ -2868,154 +2881,7 @@ export type EditProjectApiArg = {
   /** ID of the build */
   projectId: string
   /** Project object that contains updated values */
-  body: {
-    id?: string
-    teamId?: string
-    name: string
-    build?: {
-      id?: string
-      teamId?: string
-      name: string
-      tag?: string
-      mode?:
-        | {
-            docker: {
-              repoUrl: string
-              path?: string
-              revision?: string
-            }
-            type: 'docker'
-          }
-        | {
-            buildpacks: {
-              repoUrl: string
-              path?: string
-              revision?: string
-            }
-            type: 'buildpacks'
-          }
-      externalRepo?: boolean
-      secretName?: string
-      trigger?: boolean
-    }
-    workload?: {
-      id?: string
-      teamId?: string
-      name: string
-      icon?: string
-      url: string
-      chartProvider?: 'helm' | 'git'
-      path?: string
-      chart?: string
-      revision?: string
-      chartMetadata?: {
-        helmChartVersion?: string
-        helmChartDescription?: string
-      }
-      namespace?: string
-      imageUpdateStrategy?:
-        | {
-            type?: 'disabled'
-          }
-        | {
-            digest?: {
-              imageRepository: string
-              tag: string
-              imageParameter?: string
-              tagParameter?: string
-            }
-            type?: 'digest'
-          }
-        | {
-            semver?: {
-              imageRepository: string
-              versionConstraint: string
-              imageParameter?: string
-              tagParameter?: string
-            }
-            type?: 'semver'
-          }
-    }
-    workloadValues?: {
-      id?: string
-      teamId?: string
-      name?: string
-      values: object
-    }
-    service?: {
-      id?: string
-      teamId?: string
-      name: string
-      namespace?: string
-      port?: number
-      ksvc?: {
-        predeployed?: boolean
-      }
-      trafficControl?: {
-        enabled?: boolean
-        weightV1?: number
-        weightV2?: number
-      }
-      ingress:
-        | ({
-            type?: 'cluster'
-          } | null)
-        | (
-            | ({
-                ingressClassName?: string
-                tlsPass?: boolean
-                useDefaultHost?: boolean
-                subdomain: string
-                domain: string
-                useCname?: boolean
-                cname?: {
-                  domain?: string
-                  tlsSecretName?: string
-                }
-                paths?: string[]
-                forwardPath?: boolean
-                hasCert?: boolean
-                certSelect?: boolean
-                certName?: string
-                certArn?: string
-                headers?: {
-                  response?: {
-                    set?: {
-                      name: string
-                      value: string
-                    }[]
-                  }
-                }
-              } & {
-                type?: 'public'
-              })
-            | null
-          )
-      networkPolicy?: {
-        ingressPrivate?:
-          | {
-              mode: 'DenyAll'
-            }
-          | {
-              mode: 'AllowOnly'
-              allow: {
-                team: string
-                service?: string
-              }[]
-            }
-          | {
-              mode: 'AllowAll'
-            }
-        egressPublic?: {
-          domain: string
-          ports?: {
-            number: number
-            protocol: 'HTTPS' | 'HTTP' | 'TCP'
-          }[]
-        }[]
-      }
-    }
-  }
+  body: object
 }
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
