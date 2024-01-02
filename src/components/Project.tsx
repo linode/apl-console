@@ -119,7 +119,7 @@ export default function ({
     if (selectedPath === 'createBuild') {
       const repository = `harbor.${domain}/team-${teamId}/${formData?.name}`
       values = values.replace('repository: ""', `repository: ${repository}`)
-      values = values.replace('tag: ""', 'tag: latest')
+      values = values.replace('tag: ""', `tag: ${formData?.build?.tag}`)
     }
     setWorkloadValues(values)
     setData((prev: any) => ({
