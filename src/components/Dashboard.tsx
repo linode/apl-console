@@ -181,11 +181,10 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, show = false 
 export default function Dashboard({ team, inventory }: Props): React.ReactElement {
   const theme = useTheme()
   const { classes } = useStyles()
-  const { themeView } = useSettings()
-  const { oboTeamId, appsEnabled } = useSession()
+  const { themeView, onChangeView } = useSettings()
+  const { oboTeamId, appsEnabled, user } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
-  const [view, setView] = React.useState(themeView)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
   const onLoad = () => {
     setTimeout(() => {
@@ -194,8 +193,12 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   }
   React.useEffect(() => {
     setCookiesLoaded(false)
-    setView(themeView)
   }, [themeView])
+  // reset themeView to team if user is not admin
+  React.useEffect(() => {
+    const { isAdmin } = user
+    if (!isAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
+  }, [])
 
   // platform view base iframe urls
   const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
@@ -269,17 +272,23 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
 
   return (
     <Box>
-      <InventoryCard classes={classes} inventory={inventory} teamId={team?.id} themeView={view} title='Inventory' />
+      <InventoryCard
+        classes={classes}
+        inventory={inventory}
+        teamId={team?.id}
+        themeView={themeView}
+        title='Inventory'
+      />
       {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
       <iframe
         className={classes.hiddenIframe}
         title='Hidden iFrame'
-        src={views[view][0].iframeSources[0].src}
+        src={views[themeView][0].iframeSources[0].src}
         onLoad={onLoad}
       />
       {isCookiesLoaded && (
         <Box>
-          {views[view].map((item) => (
+          {views[themeView].map((item) => (
             <IFramesCard
               classes={classes}
               title={item.title}
