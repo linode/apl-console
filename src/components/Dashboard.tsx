@@ -181,8 +181,9 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, show = false 
 export default function Dashboard({ team, inventory }: Props): React.ReactElement {
   const theme = useTheme()
   const { classes } = useStyles()
-  const { themeView } = useSettings()
-  const { oboTeamId, appsEnabled } = useSession()
+  const { themeView, onChangeView } = useSettings()
+  console.log('themeView', themeView)
+  const { oboTeamId, appsEnabled, user } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
@@ -194,6 +195,10 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   React.useEffect(() => {
     setCookiesLoaded(false)
   }, [themeView])
+  React.useEffect(() => {
+    const { isAdmin } = user
+    if (!isAdmin) onChangeView({ target: { value: 'team' } } as any)
+  }, [user])
 
   // platform view base iframe urls
   const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
