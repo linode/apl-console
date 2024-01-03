@@ -53,6 +53,16 @@ export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: 
   return uiSchema
 }
 
+const setImageUpdateStrategy = (strategy: any, repository: string) => {
+  if (strategy.type === 'digest' || strategy.type === 'semver') {
+    return {
+      ...strategy,
+      [strategy.type]: { ...strategy[strategy.type], imageRepository: repository },
+    }
+  }
+  return strategy
+}
+
 const projectSteps = ['Create Project', 'Create Build', 'Create Workload', 'Create Service']
 
 const pathValues = [
@@ -105,7 +115,7 @@ export default function ({
     })
   }, [])
 
-  // set the workload values based on the helm chart
+  // set the workload values based on the helm chart and manipulate the image update strategy
   useEffect(() => {
     if (activeStep !== 2) return
     if (project?.workloadValues?.id) {
@@ -114,12 +124,14 @@ export default function ({
     }
     if (!catalog || !formData?.workload?.path) return
     const catalogItem = catalog.find((item: any) => item.name === formData.workload.path)
-    let values = catalogItem?.values
     if (!catalogItem) return
+    let values = catalogItem?.values
+    let imageUpdateStrategy = formData?.workload?.imageUpdateStrategy
     if (selectedPath === 'createBuild') {
       const repository = `harbor.${domain}/team-${teamId}/${formData?.name}`
       values = values.replace('repository: ""', `repository: ${repository}`)
       values = values.replace('tag: ""', `tag: ${formData?.build?.tag}`)
+      imageUpdateStrategy = setImageUpdateStrategy(imageUpdateStrategy, repository)
     }
     setWorkloadValues(values)
     setData((prev: any) => ({
@@ -132,12 +144,14 @@ export default function ({
           helmChartVersion: catalogItem.chartVersion,
           helmChartDescription: catalogItem.chartDescription,
         },
+        imageUpdateStrategy,
       },
     }))
   }, [
     project?.workloadValues,
     formData?.workload?.path,
     formData?.workload?.chartMetadata?.helmChart,
+    formData?.workload?.imageUpdateStrategy?.type,
     catalog,
     activeStep,
   ])
