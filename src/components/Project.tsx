@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { getIngressClassNames } from 'pages/Service'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
+import { getDomain } from 'layouts/Shell'
 import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadValues from './WorkloadValues'
@@ -50,6 +51,16 @@ export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: 
   applyAclToUiSchema(uiSchema, user, teamId, 'build')
 
   return uiSchema
+}
+
+const setImageUpdateStrategy = (strategy: any, repository: string) => {
+  if (strategy.type === 'digest' || strategy.type === 'semver') {
+    return {
+      ...strategy,
+      [strategy.type]: { ...strategy[strategy.type], imageRepository: repository },
+    }
+  }
+  return strategy
 }
 
 const projectSteps = ['Create Project', 'Create Build', 'Create Workload', 'Create Service']
@@ -90,6 +101,8 @@ export default function ({
   const [url, setUrl] = useState<string>(project?.workload?.url)
   const [data, setData] = useState<any>(project || {})
   const formData = cloneDeep(data)
+  const hostname = window.location.hostname
+  const domain = getDomain(hostname)
 
   // get the helm charts and catalog based on the helm chart catalog url
   useEffect(() => {
@@ -102,7 +115,7 @@ export default function ({
     })
   }, [])
 
-  // set the workload values based on the helm chart
+  // set the workload values based on the helm chart and manipulate the image update strategy
   useEffect(() => {
     if (activeStep !== 2) return
     if (project?.workloadValues?.id) {
@@ -112,7 +125,15 @@ export default function ({
     if (!catalog || !formData?.workload?.path) return
     const catalogItem = catalog.find((item: any) => item.name === formData.workload.path)
     if (!catalogItem) return
-    setWorkloadValues(catalogItem.values)
+    let values = catalogItem?.values
+    let imageUpdateStrategy = formData?.workload?.imageUpdateStrategy
+    if (selectedPath === 'createBuild') {
+      const repository = `harbor.${domain}/team-${teamId}/${formData?.name}`
+      values = values.replace('repository: ""', `repository: ${repository}`)
+      values = values.replace('tag: ""', `tag: ${formData?.build?.tag}`)
+      imageUpdateStrategy = setImageUpdateStrategy(imageUpdateStrategy, repository)
+    }
+    setWorkloadValues(values)
     setData((prev: any) => ({
       ...prev,
       workload: {
@@ -123,12 +144,14 @@ export default function ({
           helmChartVersion: catalogItem.chartVersion,
           helmChartDescription: catalogItem.chartDescription,
         },
+        imageUpdateStrategy,
       },
     }))
   }, [
     project?.workloadValues,
     formData?.workload?.path,
     formData?.workload?.chartMetadata?.helmChart,
+    formData?.workload?.imageUpdateStrategy?.type,
     catalog,
     activeStep,
   ])
@@ -205,22 +228,24 @@ export default function ({
   const handleUpdateProject = async () => {
     dispatch(setError(undefined))
     const { name, build, workload, service } = formData
+    if (selectedPath === 'useExisting') delete formData.build
     const workloadBody = omit(workload, ['chartProvider', 'chart', 'revision'])
     const chartMetadata = omit(workload?.chartMetadata, ['helmChartCatalog', 'helmChart'])
+    const body = {
+      ...formData,
+      ...(formData?.build && { build: { ...build, name } }),
+      workload: {
+        ...workloadBody,
+        name,
+        chartMetadata,
+      },
+      workloadValues: { ...formData.workloadValues, values: workloadValues },
+      service: { ...service, name },
+    }
     const res = await update({
       teamId,
       projectId,
-      body: {
-        ...formData,
-        build: { ...build, name },
-        workload: {
-          ...workloadBody,
-          name,
-          chartMetadata,
-        },
-        workloadValues: { ...formData.workloadValues, values: workloadValues },
-        service: { ...service, name },
-      },
+      body,
     })
     if (res.error) return
     history.push(`/projects`)

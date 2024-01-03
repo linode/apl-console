@@ -84,7 +84,7 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     {
       id: 'type',
       label: t('Image update strategy'),
-      renderer: (row) => row.imageUpdateStrategy.type,
+      renderer: (row) => row?.imageUpdateStrategy?.type,
     },
     {
       id: 'Status',
