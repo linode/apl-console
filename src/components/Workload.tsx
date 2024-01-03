@@ -182,7 +182,7 @@ export default function ({
         uiSchema={uiSchema}
         data={data}
         onChange={setData}
-        disabled={!appsEnabled.argocd || !!workload?.id}
+        disabled={!appsEnabled.argocd}
         resourceType='Workload'
         children
         hideHelp
