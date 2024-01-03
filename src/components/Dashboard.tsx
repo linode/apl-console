@@ -198,7 +198,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   React.useEffect(() => {
     const { isAdmin } = user
     if (!isAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
-    else onChangeView({ target: { value: 'platform' } } as React.ChangeEvent<HTMLInputElement>)
   }, [])
 
   // platform view base iframe urls

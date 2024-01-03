@@ -258,9 +258,7 @@ export default function ({
                 width: '45px',
                 left: '90px',
                 bottom: '0px',
-                transform: 'scale(1)',
                 animation: 'pulse 2s infinite',
-                boxShadow: '0 0 0 0 rgba(255, 0, 0, 1)',
               }}
             />
           )}
@@ -322,7 +320,7 @@ export default function ({
           uiSchema={uiSchema}
           data={data}
           onChange={setData}
-          disabled={!appsEnabled.argocd || !!workload?.id}
+          disabled={!appsEnabled.argocd}
           resourceType='Workload'
           children
           hideHelp
