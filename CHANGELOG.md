@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/redkubes/otomi-stack-web/compare/v2.1.0...v2.2.0) (2024-01-04)
+
+
+### Features
+
+* add strategy to list ([#365](https://github.com/redkubes/otomi-stack-web/issues/365)) ([4e23ef1](https://github.com/redkubes/otomi-stack-web/commit/4e23ef15afc5c696e92d75e90cf0e51ef9658acb))
+* byo secret for external private repo  ([#366](https://github.com/redkubes/otomi-stack-web/issues/366)) ([1d08c98](https://github.com/redkubes/otomi-stack-web/commit/1d08c984f88a5153ce54b94caa9811d7a414a13f))
+* status mvp1 ([#369](https://github.com/redkubes/otomi-stack-web/issues/369)) ([d63e906](https://github.com/redkubes/otomi-stack-web/commit/d63e90670baf83048fb32589a6af8dc4130ee9e9))
+* team and platform dashboard and viewer switch ([#370](https://github.com/redkubes/otomi-stack-web/issues/370)) ([e7ad3b1](https://github.com/redkubes/otomi-stack-web/commit/e7ad3b153fecf59682cdc83e43e95bb42b18844d))
+
+
+### Bug Fixes
+
+* adjusted activation page scaling ([#372](https://github.com/redkubes/otomi-stack-web/issues/372)) ([f0f0b66](https://github.com/redkubes/otomi-stack-web/commit/f0f0b669dfb93e0ce8ef3f745b2c349ca120e66f))
+* auto image updater ([#376](https://github.com/redkubes/otomi-stack-web/issues/376)) ([0356115](https://github.com/redkubes/otomi-stack-web/commit/035611500848aca6e1d52923a1c4479c7fa2fd75))
+* create project ([#375](https://github.com/redkubes/otomi-stack-web/issues/375)) ([a7d7d1a](https://github.com/redkubes/otomi-stack-web/commit/a7d7d1ab2ec0c345d1d1f631ef43154994b6be26))
+* more svc filters ([#371](https://github.com/redkubes/otomi-stack-web/issues/371)) ([fc81482](https://github.com/redkubes/otomi-stack-web/commit/fc81482227da8a4974c62ac663fde5c3728aa42b))
+* team and platform Console dashboards ([#373](https://github.com/redkubes/otomi-stack-web/issues/373)) ([4a05cab](https://github.com/redkubes/otomi-stack-web/commit/4a05cabf42869e55a7b8fd0368d3be3caa18599a))
+
 ## [2.1.0](https://github.com/redkubes/otomi-stack-web/compare/v2.0.0...v2.1.0) (2023-12-15)
 
 
