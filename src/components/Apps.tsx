@@ -132,18 +132,13 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   // END HOOKS
   if (!apps || loading) return <LoadingScreen />
   // we visualize drag state for all app dependencies
-  // should this be implemented still?
-  // const disabledByMonitoringStackApps = {
-  //   alertmanager: true,
-  //   prometheus: true,
-  //   loki: true,
-  //   grafana: true,
-  // }
-
+  const isAdmin = teamId === 'admin'
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
     filterName,
+    managedMonitoringApps: teamSettings?.managedMonitoring || undefined,
+    isAdmin,
   })
 
   const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
@@ -229,10 +224,14 @@ function applySortFilter({
   tableData,
   comparator,
   filterName,
+  managedMonitoringApps,
+  isAdmin,
 }: {
   tableData: any
   comparator: (a: any, b: any) => number
   filterName: string
+  managedMonitoringApps: any
+  isAdmin: boolean
 }) {
   const stabilizedThis = tableData.map((el, index) => [el, index] as const)
 
@@ -249,6 +248,11 @@ function applySortFilter({
       (item: Record<string, any>) => item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     )
   }
+
+  if (managedMonitoringApps)
+    tableData = tableData.filter((item: Record<string, any>) => managedMonitoringApps[item.id.toLowerCase()] !== false)
+
+  if (!isAdmin) tableData = tableData.filter((item: Record<string, any>) => item.enabled !== false)
 
   return tableData
 }
