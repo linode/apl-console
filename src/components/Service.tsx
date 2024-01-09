@@ -149,7 +149,7 @@ export const getServiceUiSchema = (
     ingress: {
       domain: { 'ui:readonly': ing?.useDefaultHost },
       subdomain: { 'ui:readonly': ing?.useDefaultHost },
-      useDefaultHost: { 'ui:readonly': isKsvc },
+      useDefaultHost: { 'ui:readonly': false },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
 
