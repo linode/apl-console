@@ -53,6 +53,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
     }),
+    getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
+      query: () => ({ url: `/sealedsecrets` }),
+    }),
+    getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
+    }),
+    createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+    }),
+    getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}` }),
+    }),
+    editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`, method: 'DELETE' }),
+    }),
     getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
     }),
@@ -449,7 +471,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -547,7 +568,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -646,7 +666,6 @@ export type CreateTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -744,7 +763,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -845,7 +863,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -946,7 +963,6 @@ export type EditTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -1445,6 +1461,64 @@ export type DeleteServiceApiArg = {
   /** ID of the service */
   serviceId: string
 }
+export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
+  name?: string
+  namespace?: string
+}[]
+export type GetAllSealedSecretsApiArg = void
+export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+  name?: string
+  namespace?: string
+}[]
+export type GetSealedSecretsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  name?: string
+  namespace?: string
+}
+export type CreateSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** SealedSecret object */
+  body: {
+    name?: string
+    namespace?: string
+  }
+}
+export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  name?: string
+  namespace?: string
+}
+export type GetSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
+export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  name?: string
+  namespace?: string
+}
+export type EditSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    name?: string
+    namespace?: string
+  }
+}
+export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
+export type DeleteSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
 export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
   id?: string
   name: string
@@ -1718,6 +1792,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1726,6 +1804,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1745,6 +1827,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1753,6 +1839,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1775,6 +1865,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1783,6 +1877,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1805,6 +1903,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1813,6 +1915,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -1839,6 +1945,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1847,6 +1957,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1871,6 +1985,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1879,6 +1997,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1903,6 +2025,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1911,6 +2037,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -1973,6 +2103,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1981,6 +2115,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2123,6 +2261,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2131,6 +2273,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2276,6 +2422,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2284,6 +2434,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2429,6 +2583,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'docker'
           }
@@ -2437,6 +2595,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'buildpacks'
           }
@@ -2586,6 +2748,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2594,6 +2760,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2741,6 +2911,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2749,6 +2923,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -4208,6 +4386,12 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useGetAllSealedSecretsQuery,
+  useGetSealedSecretsQuery,
+  useCreateSealedSecretMutation,
+  useGetSealedSecretQuery,
+  useEditSealedSecretMutation,
+  useDeleteSealedSecretMutation,
   useGetSecretsQuery,
   useCreateSecretMutation,
   useGetSecretQuery,
