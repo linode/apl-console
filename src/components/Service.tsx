@@ -134,6 +134,7 @@ export const getServiceUiSchema = (
   formData: GetServiceApiResponse,
   user: GetSessionApiResponse['user'],
   teamId: string,
+  isKsvc = false,
 ): any => {
   const ing = formData?.ingress as Record<string, any>
   // Since admin team does not obtain service list with dropdown we need to let a user to indicate of as service is knative
@@ -148,6 +149,7 @@ export const getServiceUiSchema = (
     ingress: {
       domain: { 'ui:readonly': ing?.useDefaultHost },
       subdomain: { 'ui:readonly': ing?.useDefaultHost },
+      useDefaultHost: { 'ui:readonly': isKsvc },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
 
@@ -161,8 +163,9 @@ export const getServiceUiSchema = (
   return uiSchema
 }
 
-export function getHost(serviceName: string | undefined, teamId): string {
+export function getHost(serviceName: string | undefined, teamId: string, isKsvc = false): string {
   if (!serviceName) return ''
+  if (isKsvc) return `${serviceName}-team-${teamId}`
   return `${serviceName}-${teamId}`
 }
 
@@ -218,12 +221,13 @@ export default function ({
   // END HOOKS
   // manipulate form data and set derived stuff:
   const formData = cloneDeep(data)
-  const teamSubdomain = getHost(formData?.name, teamId)
+  const isKsvc = formData?.ksvc?.predeployed
+  const teamSubdomain = getHost(formData?.name, teamId, isKsvc)
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData, defaultSubdomain)
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices, ingressClassNames)
-  const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId)
+  const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId, isKsvc)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
   )
