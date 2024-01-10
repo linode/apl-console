@@ -49,8 +49,8 @@ export default function ({ policies, teamId }: Props): React.ReactElement {
       renderer: (row) => (row.enabled ? 'true' : 'false'),
     },
     {
-      id: 'actionOverride',
-      label: t('Custom Action'),
+      id: 'action',
+      label: t('Action'),
       renderer: (row) => row.actionOverride,
     },
   ]
