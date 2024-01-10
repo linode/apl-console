@@ -16,7 +16,6 @@ import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import HistoryIcon from '@mui/icons-material/History'
 import HubIcon from '@mui/icons-material/Hub'
-import ShortcutIcon from '@mui/icons-material/Link'
 import LockIcon from '@mui/icons-material/Lock'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import MailIcon from '@mui/icons-material/Mail'
@@ -379,7 +378,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             data-cy='menu-item-team-policies'
           >
             <ListItemIcon>
-              <AddToDriveIcon />
+              <PolicyIcon />
             </ListItemIcon>
             <ListItemText primary={t('Policies')} />
           </StyledMenuItem>
