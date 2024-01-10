@@ -147,9 +147,9 @@ export const getServiceUiSchema = (
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
-      domain: { 'ui:readonly': ing?.useDefaultHost },
-      subdomain: { 'ui:readonly': ing?.useDefaultHost },
-      useDefaultHost: { 'ui:readonly': false },
+      domain: { 'ui:readonly': ing?.useDefaultHost || isKsvc },
+      subdomain: { 'ui:readonly': ing?.useDefaultHost || isKsvc },
+      useDefaultHost: { 'ui:readonly': isKsvc },
       // @ts-ignore
       certArn: { 'ui:readonly': formData?.ingress?.certSelect },
 
@@ -169,7 +169,7 @@ export function getHost(serviceName: string | undefined, teamId: string, isKsvc 
   return `${serviceName}-${teamId}`
 }
 
-export const updateIngressField = (formData, defaultSubdomain) => {
+export const updateIngressField = (formData, defaultSubdomain, isKsvc = false) => {
   if (formData?.ingress) {
     let ing = formData.ingress as Record<string, any>
     if (
@@ -179,6 +179,7 @@ export const updateIngressField = (formData, defaultSubdomain) => {
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
       ing.subdomain = defaultSubdomain
+      if (isKsvc) ing.useDefaultHost = false
       formData.ingress = ing
     }
     if (ing?.tlsPass) unset(ing, 'cname.tlsSecretName')
@@ -224,7 +225,7 @@ export default function ({
   const isKsvc = formData?.ksvc?.predeployed
   const teamSubdomain = getHost(formData?.name, teamId, isKsvc)
   const defaultSubdomain = teamSubdomain
-  updateIngressField(formData, defaultSubdomain)
+  updateIngressField(formData, defaultSubdomain, isKsvc)
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices, ingressClassNames)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId, isKsvc)
