@@ -179,7 +179,11 @@ export const updateIngressField = (formData, defaultSubdomain, isKsvc = false) =
       // Set default domain and subdomain if ingress type not is 'cluster'
       ing = { ...ing }
       ing.subdomain = defaultSubdomain
-      if (isKsvc) ing.useDefaultHost = false
+      formData.ingress = ing
+    }
+    if (isKsvc && ing.useDefaultHost) {
+      ing = { ...ing }
+      ing.subdomain = defaultSubdomain
       formData.ingress = ing
     }
     if (ing?.tlsPass) unset(ing, 'cname.tlsSecretName')
