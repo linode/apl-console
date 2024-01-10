@@ -238,34 +238,11 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemText primary={t('Apps')} />
           </StyledMenuItem>
 
-          <StyledMenuItem
-            to='/shortcuts/admin'
-            selected={pathname === '/shortcuts/admin'}
-            data-cy='menu-item-otomishortcuts'
-          >
-            <ListItemIcon>
-              <ShortcutIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Shortcuts')} />
-          </StyledMenuItem>
-
           <StyledMenuItem to='/clusters' selected={pathname === '/clusters'} data-cy='menu-item-clusters'>
             <ListItemIcon>
               <CloudIcon />
             </ListItemIcon>
             <ListItemText primary={t('Clusters')} />
-          </StyledMenuItem>
-
-          <StyledMenuItem
-            to='/policies'
-            selected={pathname.indexOf(`/policies`) === 0}
-            data-cy='menu-item-policies'
-            disabled={!appsEnabled.gatekeeper}
-          >
-            <ListItemIcon>
-              <PolicyIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('Policies')} />
           </StyledMenuItem>
 
           <StyledMenuItem
@@ -366,18 +343,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <ListItemText primary={t('Apps')} />
             </StyledMenuItem>
           )}
-          {oboTeamId !== 'admin' && (
-            <StyledMenuItem
-              to={`/shortcuts/${teamId}`}
-              selected={pathname === `/shortcuts/${teamId}`}
-              data-cy='menu-item-otomishortcuts'
-            >
-              <ListItemIcon>
-                <ShortcutIcon />
-              </ListItemIcon>
-              <ListItemText primary={t('Shortcuts')} />
-            </StyledMenuItem>
-          )}
           <StyledMenuItem
             to={`/teams/${teamId}/builds`}
             selected={pathname.indexOf(`/teams/${teamId}/builds`) === 0}
@@ -407,6 +372,16 @@ export default function ({ className, teamId }: Props): React.ReactElement {
               <SwapVerticalCircleIcon />
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
+          </StyledMenuItem>
+          <StyledMenuItem
+            to={`/teams/${teamId}/policies`}
+            selected={pathname.indexOf(`/teams/${teamId}/policies`) === 0}
+            data-cy='menu-item-team-policies'
+          >
+            <ListItemIcon>
+              <AddToDriveIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Policies')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}

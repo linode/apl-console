@@ -16,8 +16,6 @@ import Clusters from 'pages/Clusters'
 import Catalogs from 'pages/Catalogs'
 import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
-import Policies from 'pages/Policies'
-import Policy from 'pages/Policy'
 import Secret from 'pages/Secret'
 import Secrets from 'pages/Secrets'
 import Service from 'pages/Service'
@@ -27,6 +25,7 @@ import SettingsOverview from 'pages/SettingsOverview'
 import Shortcuts from 'pages/Shortcuts'
 import Team from 'pages/Team'
 import Teams from 'pages/Teams'
+import Policies from 'pages/Policies'
 import SessionProvider from 'providers/Session'
 import ThemeProvider from 'theme'
 import { Suspense } from 'react'
@@ -51,6 +50,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import Project from 'pages/Project'
+import Policy from 'pages/Policy'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -95,8 +95,6 @@ function App() {
                                   <Route path='/clusters/:clusterId' component={Cluster} exact />
                                   <Route path='/clusters' component={Clusters} exact />
                                   <Route path='/create-team' component={Team} exact />
-                                  <Route path='/policies' component={Policies} exact />
-                                  <Route path='/policies/:policyId' component={Policy} exact />
                                   <Route path='/catalogs/:teamId' component={Catalogs} exact />
                                   <Route path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
                                   <Route path='/catalogs/:teamId/:catalogName/:workloadId' component={Catalog} exact />
@@ -124,6 +122,8 @@ function App() {
                                   <Route path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                   <Route path='/teams/:teamId/builds' component={Builds} exact />
                                   <Route path='/teams/:teamId/builds/:buildId' component={Build} exact />
+                                  <Route path='/teams/:teamId/policies' component={Policies} exact />
+                                  <Route path='/teams/:teamId/policies/:policyId' component={Policy} exact />
                                   <Route path='/teams/:teamId/workloads' component={Workloads} exact />
                                   <Route path='/teams/:teamId/workloads/:workloadId' component={Workload} exact />
                                   <Route

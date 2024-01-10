@@ -1,74 +1,66 @@
-/* eslint-disable no-nested-ternary */
-import { Typography } from '@mui/material'
-import { getSpec } from 'common/api-spec'
-import { get, map } from 'lodash'
-import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetSettingsApiResponse } from 'redux/otomiApi'
+import { GetTeamPoliciesApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 
-interface RowProps {
-  policyId: string
-}
-
-const getPolicyLink = (): CallableFunction =>
-  function ({ policyId }: RowProps): React.ReactElement {
-    const path = `/policies/${policyId}`
-    const { title } = get(getSpec(), `components.schemas.Settings.properties.policies.properties[${policyId}]`)
-    return (
-      <RLink to={path} label={policyId}>
-        {title}
-      </RLink>
-    )
-  }
-
-interface EnabledProps {
+interface Row {
+  teamId: string
+  id: string
+  name: string
   enabled: boolean
-}
-const getEnabled = (gatekeeperEnabled) =>
-  function ({ enabled }: EnabledProps) {
-    const str = enabled ? 'yes' : 'no'
-    return gatekeeperEnabled ? (
-      str
-    ) : (
-      <Typography variant='body2' color='action.disabled'>
-        {str}
-      </Typography>
-    )
-  }
-interface Props {
-  policies: GetSettingsApiResponse['policies']
+  profile: string
+  severity: string
+  actionOverride: string
 }
 
-export default function ({ policies }: Props): React.ReactElement {
-  const { appsEnabled } = useSession()
+const getPolicyLink = (row: Row) => {
+  const path = `/teams/${row.teamId}/policies/${encodeURIComponent(row.id)}`
+  return (
+    <RLink to={path} label={row.name}>
+      {row.name}
+    </RLink>
+  )
+}
+
+interface Props {
+  policies: GetTeamPoliciesApiResponse
+  teamId?: string
+}
+
+export default function ({ policies, teamId }: Props): React.ReactElement {
   const { t } = useTranslation()
   // END HOOKS
-  const policyEntries = map(policies, (pol, policyId) => ({ policyId, ...pol }))
   const headCells: HeadCell[] = [
     {
-      id: 'policyId',
-      label: t('Policy'),
-      renderer: getPolicyLink(),
+      id: 'name',
+      label: t('Name'),
+      renderer: (row: Row) => getPolicyLink(row),
+    },
+    {
+      id: 'profile',
+      label: t('Profile'),
+      renderer: (row) => row.profile,
     },
     {
       id: 'enabled',
       label: t('Enabled'),
-      renderer: getEnabled(appsEnabled.gatekeeper),
+      renderer: (row) => (row.enabled ? 'true' : 'false'),
+    },
+    {
+      id: 'actionOverride',
+      label: t('Custom Action'),
+      renderer: (row) => row.actionOverride,
     },
   ]
-  return (
-    <ListTable
-      headCells={headCells}
-      orderByStart='enabled'
-      rows={policyEntries}
-      idKey='policyId'
-      resourceType='Policy'
-      hasTeamScope={false}
-      noCrud
-    />
-  )
+
+  if (!teamId) {
+    headCells.push({
+      id: 'teamId',
+      label: t('Team'),
+    })
+  }
+
+  return <ListTable teamId={teamId} headCells={headCells} rows={policies} resourceType='Policy' />
 }

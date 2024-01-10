@@ -119,6 +119,22 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllPolicies: build.query<GetAllPoliciesApiResponse, GetAllPoliciesApiArg>({
+      query: () => ({ url: `/policies` }),
+    }),
+    getTeamPolicies: build.query<GetTeamPoliciesApiResponse, GetTeamPoliciesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies` }),
+    }),
+    getPolicy: build.query<GetPolicyApiResponse, GetPolicyApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}` }),
+    }),
+    editPolicy: build.mutation<EditPolicyApiResponse, EditPolicyApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/k8sVersion` }),
     }),
@@ -445,17 +461,34 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
+  policyProfile?: {
+    baseline?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    restricted?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    bestPractice?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    otomi?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    other?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
+      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -543,17 +576,34 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
+  policyProfile?: {
+    baseline?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    restricted?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    bestPractice?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    otomi?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    other?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
+      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -642,17 +692,34 @@ export type CreateTeamApiArg = {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
+    policyProfile?: {
+      baseline?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      restricted?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      bestPractice?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      otomi?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      other?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+    }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
         | 'downloadKubeConfig'
         | 'downloadDockerConfig'
         | 'networkPolicy'
+        | 'policyProfile'
       )[]
       apps?: ('argocd' | 'gitea')[]
     }
@@ -740,17 +807,34 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
+  policyProfile?: {
+    baseline?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    restricted?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    bestPractice?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    otomi?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    other?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
+      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -841,17 +925,34 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
+  policyProfile?: {
+    baseline?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    restricted?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    bestPractice?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    otomi?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+    other?: {
+      defaultAction?: 'Audit' | 'Enforce'
+    }
+  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
+      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -942,17 +1043,34 @@ export type EditTeamApiArg = {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
+    policyProfile?: {
+      baseline?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      restricted?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      bestPractice?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      otomi?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+      other?: {
+        defaultAction?: 'Audit' | 'Enforce'
+      }
+    }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
         | 'downloadKubeConfig'
         | 'downloadDockerConfig'
         | 'networkPolicy'
+        | 'policyProfile'
       )[]
       apps?: ('argocd' | 'gitea')[]
     }
@@ -1718,6 +1836,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1726,6 +1848,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1745,6 +1871,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1753,6 +1883,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1775,6 +1909,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1783,6 +1921,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1805,6 +1947,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1813,6 +1959,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -1839,6 +1989,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1847,6 +2001,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1871,6 +2029,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1879,6 +2041,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
@@ -1903,6 +2069,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1911,12 +2081,89 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+  }
+}
+export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  profile?: string
+  description?: string
+  severity?: 'low' | 'medium' | 'high'
+  actionOverride?: 'Audit' | 'Enforce'
+  enabled?: boolean
+  customValues?: string[]
+}[]
+export type GetAllPoliciesApiArg = void
+export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  profile?: string
+  description?: string
+  severity?: 'low' | 'medium' | 'high'
+  actionOverride?: 'Audit' | 'Enforce'
+  enabled?: boolean
+  customValues?: string[]
+}[]
+export type GetTeamPoliciesApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type GetPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
+  id?: string
+  teamId?: string
+  name?: string
+  profile?: string
+  description?: string
+  severity?: 'low' | 'medium' | 'high'
+  actionOverride?: 'Audit' | 'Enforce'
+  enabled?: boolean
+  customValues?: string[]
+}
+export type GetPolicyApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the policy */
+  policyId: string
+}
+export type EditPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
+  id?: string
+  teamId?: string
+  name?: string
+  profile?: string
+  description?: string
+  severity?: 'low' | 'medium' | 'high'
+  actionOverride?: 'Audit' | 'Enforce'
+  enabled?: boolean
+  customValues?: string[]
+}
+export type EditPolicyApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the policy */
+  policyId: string
+  /** Policy object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name?: string
+    profile?: string
+    description?: string
+    severity?: 'low' | 'medium' | 'high'
+    actionOverride?: 'Audit' | 'Enforce'
+    enabled?: boolean
+    customValues?: string[]
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -1973,6 +2220,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1981,6 +2232,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2123,6 +2378,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2131,6 +2390,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2276,6 +2539,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2284,6 +2551,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2429,6 +2700,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'docker'
           }
@@ -2437,6 +2712,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'buildpacks'
           }
@@ -2568,7 +2847,7 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the projec */
   projectId: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
@@ -2586,6 +2865,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2594,6 +2877,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2723,7 +3010,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the projec */
   projectId: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
@@ -2741,6 +3028,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2749,6 +3040,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
@@ -2878,7 +3173,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the projec */
   projectId: string
   /** Project object that contains updated values */
   body: object
@@ -3613,95 +3908,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }[]
     version: string
   }
-  policies?: {
-    'banned-image-tags'?: {
-      tags?: string[]
-      enabled: boolean
-    }
-    'container-limits'?: {
-      cpu?: string
-      memory?: string
-      enabled: boolean
-    }
-    'psp-allowed-repos'?: {
-      repos?: string[]
-      enabled: boolean
-    }
-    'psp-host-filesystem'?: {
-      allowedHostPaths?: {
-        pathPrefix: string
-        readOnly: boolean
-      }[]
-      enabled: boolean
-    }
-    'psp-allowed-users'?: {
-      runAsUser?: {
-        rule: 'RunAsAny' | 'MustRunAsNonRoot' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      runAsGroup?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      supplementalGroups?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      fsGroup?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      enabled: boolean
-    }
-    'psp-host-security'?: {
-      enabled: boolean
-    }
-    'psp-host-networking-ports'?: {
-      enabled: boolean
-    }
-    'psp-privileged'?: {
-      enabled: boolean
-    }
-    'psp-capabilities'?: {
-      enabled: boolean
-      allowedCapabilities?: string[]
-      requiredDropCapabilities?: string[]
-    }
-    'psp-forbidden-sysctls'?: {
-      enabled: boolean
-      forbiddenSysctls?: string[]
-    }
-    'psp-apparmor'?: {
-      enabled: boolean
-      allowedProfiles?: string[]
-    }
-    'psp-seccomp'?: {
-      enabled: boolean
-      allowedProfiles?: string[]
-    }
-    'psp-selinux'?: {
-      enabled: boolean
-      seLinuxContext?: 'MustRunAs' | 'RunAsAny'
-      allowedSELinuxOptions?: {
-        level?: string
-        role?: string
-        type?: string
-        user?: string
-      }[]
-    }
-  }
   smtp?: {
     auth_identity?: string
     auth_password?: string
@@ -4037,95 +4243,6 @@ export type EditSettingsApiArg = {
       }[]
       version: string
     }
-    policies?: {
-      'banned-image-tags'?: {
-        tags?: string[]
-        enabled: boolean
-      }
-      'container-limits'?: {
-        cpu?: string
-        memory?: string
-        enabled: boolean
-      }
-      'psp-allowed-repos'?: {
-        repos?: string[]
-        enabled: boolean
-      }
-      'psp-host-filesystem'?: {
-        allowedHostPaths?: {
-          pathPrefix: string
-          readOnly: boolean
-        }[]
-        enabled: boolean
-      }
-      'psp-allowed-users'?: {
-        runAsUser?: {
-          rule: 'RunAsAny' | 'MustRunAsNonRoot' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        runAsGroup?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        supplementalGroups?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        fsGroup?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        enabled: boolean
-      }
-      'psp-host-security'?: {
-        enabled: boolean
-      }
-      'psp-host-networking-ports'?: {
-        enabled: boolean
-      }
-      'psp-privileged'?: {
-        enabled: boolean
-      }
-      'psp-capabilities'?: {
-        enabled: boolean
-        allowedCapabilities?: string[]
-        requiredDropCapabilities?: string[]
-      }
-      'psp-forbidden-sysctls'?: {
-        enabled: boolean
-        forbiddenSysctls?: string[]
-      }
-      'psp-apparmor'?: {
-        enabled: boolean
-        allowedProfiles?: string[]
-      }
-      'psp-seccomp'?: {
-        enabled: boolean
-        allowedProfiles?: string[]
-      }
-      'psp-selinux'?: {
-        enabled: boolean
-        seLinuxContext?: 'MustRunAs' | 'RunAsAny'
-        allowedSELinuxOptions?: {
-          level?: string
-          role?: string
-          type?: string
-          user?: string
-        }[]
-      }
-    }
     smtp?: {
       auth_identity?: string
       auth_password?: string
@@ -4226,6 +4343,10 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useGetAllPoliciesQuery,
+  useGetTeamPoliciesQuery,
+  useGetPolicyQuery,
+  useEditPolicyMutation,
   useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,

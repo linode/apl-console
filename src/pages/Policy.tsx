@@ -1,24 +1,27 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Policy from 'components/Policy'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
+import { omit } from 'lodash'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { useEditPolicyMutation, useGetPolicyQuery } from 'redux/otomiApi'
 
 interface Params {
+  teamId: string
   policyId?: string
 }
 
 export default function ({
   match: {
-    params: { policyId },
+    params: { teamId, policyId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const settingId = 'policies'
-  const { data: settings, isLoading, isFetching, isError, refetch } = useGetSettingsQuery({ ids: [settingId] })
-  const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
+  useAuthzSession(teamId)
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
+  const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -27,10 +30,10 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingUpdate
-  const handleSubmit = (formData) => edit({ settingId, body: { policies: { [policyId]: formData } } }).then(refetch)
-  const policies = settings?.policies
-  const comp = !isError && (
-    <Policy onSubmit={handleSubmit} policies={policies} policyId={policyId} mutating={mutating} />
-  )
-  return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_POLICY', { policyId })} />
+  if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
+  const handleSubmit = (formData) => {
+    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'teamId']) as any })
+  }
+  const comp = !isError && <Policy onSubmit={handleSubmit} policy={data} teamId={teamId} mutating={mutating} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
 }
