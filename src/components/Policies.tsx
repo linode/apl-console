@@ -1,3 +1,4 @@
+import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetTeamPoliciesApiResponse } from 'redux/otomiApi'
@@ -12,7 +13,7 @@ interface Row {
   enabled: boolean
   profile: string
   severity: string
-  actionOverride: string
+  action: string
 }
 
 const getPolicyLink = (row: Row) => {
@@ -30,6 +31,8 @@ interface Props {
 }
 
 export default function ({ policies, teamId }: Props): React.ReactElement {
+  const { appsEnabled } = useSession()
+
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -61,6 +64,7 @@ export default function ({ policies, teamId }: Props): React.ReactElement {
       label: t('Team'),
     })
   }
+  if (!appsEnabled.kyverno) return <p>Admin needs to enable the Kyverno app to activate this feature.</p>
 
   return <ListTable teamId={teamId} headCells={headCells} rows={policies} resourceType='Policy' />
 }

@@ -461,23 +461,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
-  policyProfile?: {
-    baseline?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    restricted?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    bestPractice?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    otomi?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    other?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
@@ -575,23 +558,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
-  }
-  policyProfile?: {
-    baseline?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    restricted?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    bestPractice?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    otomi?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    other?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
@@ -692,23 +658,6 @@ export type CreateTeamApiArg = {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
-    policyProfile?: {
-      baseline?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      restricted?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      bestPractice?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      otomi?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      other?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-    }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
@@ -806,23 +755,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
-  }
-  policyProfile?: {
-    baseline?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    restricted?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    bestPractice?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    otomi?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    other?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
@@ -925,23 +857,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
-  policyProfile?: {
-    baseline?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    restricted?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    bestPractice?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    otomi?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-    other?: {
-      defaultAction?: 'Audit' | 'Enforce'
-    }
-  }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
@@ -1042,23 +957,6 @@ export type EditTeamApiArg = {
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
-    }
-    policyProfile?: {
-      baseline?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      restricted?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      bestPractice?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      otomi?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
-      other?: {
-        defaultAction?: 'Audit' | 'Enforce'
-      }
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
@@ -2096,24 +1994,24 @@ export type EditBuildApiArg = {
 export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
   id?: string
   teamId?: string
-  name?: string
+  name: string
+  enabled?: boolean
   profile?: string
   description?: string
   severity?: 'low' | 'medium' | 'high'
-  actionOverride?: 'Audit' | 'Enforce'
-  enabled?: boolean
+  action?: 'Audit' | 'Enforce'
   customValues?: string[]
 }[]
 export type GetAllPoliciesApiArg = void
 export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
   id?: string
   teamId?: string
-  name?: string
+  name: string
+  enabled?: boolean
   profile?: string
   description?: string
   severity?: 'low' | 'medium' | 'high'
-  actionOverride?: 'Audit' | 'Enforce'
-  enabled?: boolean
+  action?: 'Audit' | 'Enforce'
   customValues?: string[]
 }[]
 export type GetTeamPoliciesApiArg = {
@@ -2123,12 +2021,12 @@ export type GetTeamPoliciesApiArg = {
 export type GetPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
   id?: string
   teamId?: string
-  name?: string
+  name: string
+  enabled?: boolean
   profile?: string
   description?: string
   severity?: 'low' | 'medium' | 'high'
-  actionOverride?: 'Audit' | 'Enforce'
-  enabled?: boolean
+  action?: 'Audit' | 'Enforce'
   customValues?: string[]
 }
 export type GetPolicyApiArg = {
@@ -2140,12 +2038,12 @@ export type GetPolicyApiArg = {
 export type EditPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
   id?: string
   teamId?: string
-  name?: string
+  name: string
+  enabled?: boolean
   profile?: string
   description?: string
   severity?: 'low' | 'medium' | 'high'
-  actionOverride?: 'Audit' | 'Enforce'
-  enabled?: boolean
+  action?: 'Audit' | 'Enforce'
   customValues?: string[]
 }
 export type EditPolicyApiArg = {
@@ -2157,12 +2055,12 @@ export type EditPolicyApiArg = {
   body: {
     id?: string
     teamId?: string
-    name?: string
+    name: string
+    enabled?: boolean
     profile?: string
     description?: string
     severity?: 'low' | 'medium' | 'high'
-    actionOverride?: 'Audit' | 'Enforce'
-    enabled?: boolean
+    action?: 'Audit' | 'Enforce'
     customValues?: string[]
   }
 }
