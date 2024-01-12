@@ -471,7 +471,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
-      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -569,7 +568,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
-      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -668,7 +666,6 @@ export type CreateTeamApiArg = {
         | 'downloadKubeConfig'
         | 'downloadDockerConfig'
         | 'networkPolicy'
-        | 'policyProfile'
       )[]
       apps?: ('argocd' | 'gitea')[]
     }
@@ -766,7 +763,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
-      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -867,7 +863,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       | 'downloadKubeConfig'
       | 'downloadDockerConfig'
       | 'networkPolicy'
-      | 'policyProfile'
     )[]
     apps?: ('argocd' | 'gitea')[]
   }
@@ -968,7 +963,6 @@ export type EditTeamApiArg = {
         | 'downloadKubeConfig'
         | 'downloadDockerConfig'
         | 'networkPolicy'
-        | 'policyProfile'
       )[]
       apps?: ('argocd' | 'gitea')[]
     }
