@@ -17,9 +17,9 @@ export const getPolicyUiSchema = (user: GetSessionApiResponse['user'], teamId: s
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
-    name: { 'ui:readonly': true },
-    profile: { 'ui:readonly': true },
-    description: { 'ui:readonly': true },
+    name: { 'ui:widget': 'hidden' },
+    profile: { 'ui:widget': 'hidden' },
+    description: { 'ui:readonly': true, 'ui:widget': 'textarea' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'policy')

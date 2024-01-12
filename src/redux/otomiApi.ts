@@ -1989,9 +1989,9 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
   id?: string
   teamId?: string
   name: string
-  enabled?: boolean
   profile?: string
   description?: string
+  enabled?: boolean
   severity?: 'low' | 'medium' | 'high'
   action?: 'Audit' | 'Enforce'
   customValues?: string[]
@@ -2001,9 +2001,9 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
   id?: string
   teamId?: string
   name: string
-  enabled?: boolean
   profile?: string
   description?: string
+  enabled?: boolean
   severity?: 'low' | 'medium' | 'high'
   action?: 'Audit' | 'Enforce'
   customValues?: string[]
@@ -2016,9 +2016,9 @@ export type GetPolicyApiResponse = /** status 200 Successfully obtained policy c
   id?: string
   teamId?: string
   name: string
-  enabled?: boolean
   profile?: string
   description?: string
+  enabled?: boolean
   severity?: 'low' | 'medium' | 'high'
   action?: 'Audit' | 'Enforce'
   customValues?: string[]
@@ -2033,9 +2033,9 @@ export type EditPolicyApiResponse = /** status 200 Successfully edited a team po
   id?: string
   teamId?: string
   name: string
-  enabled?: boolean
   profile?: string
   description?: string
+  enabled?: boolean
   severity?: 'low' | 'medium' | 'high'
   action?: 'Audit' | 'Enforce'
   customValues?: string[]
@@ -2050,9 +2050,9 @@ export type EditPolicyApiArg = {
     id?: string
     teamId?: string
     name: string
-    enabled?: boolean
     profile?: string
     description?: string
+    enabled?: boolean
     severity?: 'low' | 'medium' | 'high'
     action?: 'Audit' | 'Enforce'
     customValues?: string[]
