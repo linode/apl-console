@@ -207,7 +207,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/JcVjFgdZz/kubernetes-deployment?orgId=1&theme=${theme.palette.mode}&panelId=`
   const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const compliance = `https://grafana-${oboTeamId}.${domain}/d-solo/YBgRZG6Mzz/policy-violations?orgId=1&theme=${theme.palette.mode}&panelId=`
 
   const views = {
     platform: [
@@ -260,12 +259,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '14', src: `${vulnerabilities}51` },
         ],
         show: team?.managedMonitoring?.grafana && appsEnabled.trivy,
-      },
-      {
-        title: 'Compliance',
-        iframeClass: classes.iframeFullWidth,
-        iframeSources: [{ id: '15', src: `${compliance}41` }],
-        show: team?.managedMonitoring?.grafana && appsEnabled.gatekeeper,
       },
     ],
   }
