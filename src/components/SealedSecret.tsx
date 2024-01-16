@@ -1,25 +1,57 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSealedSecretApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getSecretSchema = (teamId: string): any => {
+export const getSecretSchema = (teamId: string, formData: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.SealedSecret)
   if (teamId !== 'admin') delete schema.properties.namespace
+  set(schema, 'properties.type.listNotShort', true)
+  set(
+    schema,
+    'properties.encryptedData.items.properties.key.readOnly',
+    formData?.type && formData?.type !== 'kubernetes.io/opaque',
+  )
   return schema
 }
 
-export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
+  const addable = formData?.type ? formData?.type === 'kubernetes.io/opaque' : true
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    encryptedData: {
+      'ui:options': {
+        removable: formData?.type === 'kubernetes.io/opaque' && formData?.encryptedData?.length > 1,
+        addable,
+      },
+    },
   }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'secret')
 
   return uiSchema
+}
+
+const typeToEncryptedDataMap = {
+  'kubernetes.io/opaque': [{ key: '' }],
+  'kubernetes.io/service-account-token': [{ key: 'extra' }],
+  'kubernetes.io/dockercfg': [{ key: '.dockercfg' }],
+  'kubernetes.io/dockerconfigjson': [
+    { key: 'docker-server' },
+    { key: 'docker-username' },
+    { key: 'docker-password' },
+    { key: 'docker-email' },
+  ],
+  'kubernetes.io/basic-auth': [{ key: 'username' }, { key: 'password' }],
+  'kubernetes.io/ssh-auth': [{ key: 'ssh-privatekey' }],
+  'kubernetes.io/tls': [{ key: 'tls.crt' }, { key: 'tls.key' }],
+}
+
+const updateEncryptedDataFields = (formData: any): any => {
+  if (!formData?.type) return
+  formData.encryptedData = typeToEncryptedDataMap[formData.type] || [{ key: '' }]
 }
 
 interface Props extends CrudProps {
@@ -35,8 +67,11 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   }, [secret])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getSecretSchema(teamId)
-  const uiSchema = getSecretUiSchema(user, teamId)
+  useEffect(() => {
+    updateEncryptedDataFields(formData)
+  }, [formData?.type])
+  const schema = getSecretSchema(teamId, formData)
+  const uiSchema = getSecretUiSchema(user, teamId, formData)
   return (
     <Form
       schema={schema}

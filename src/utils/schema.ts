@@ -86,4 +86,4 @@ export const extract = (o: JSONSchema7, f: CallableFunction) => {
   return leafs
 }
 
-export const propsToAccordion = ['resources', 'persistence', 'template']
+export const propsToAccordion = ['resources', 'persistence', 'metadata']

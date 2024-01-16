@@ -5,7 +5,6 @@ import { GetSealedSecretsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
-import MuiLink from './MuiLink'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
@@ -18,19 +17,8 @@ const getSecretLink = (isAdmin, ownerId) =>
         : `/teams/${teamId}/sealed-secrets/${encodeURIComponent(id)}`
     return (
       <RLink to={path} label={name}>
-        {id}
+        {name}
       </RLink>
-    )
-  }
-
-const getVaultSecretLink = (clusterDomain) =>
-  function (row) {
-    const { teamId, name } = row
-    const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
-    return (
-      <MuiLink href={`${url}`} target='_blank' rel='noopener'>
-        vault:{name}
-      </MuiLink>
     )
   }
 
@@ -43,7 +31,6 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     appsEnabled,
     oboTeamId,
-    settings: { cluster },
     user: { isAdmin },
   } = useSession()
   const { t } = useTranslation()
@@ -57,12 +44,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'type',
       label: t('Type'),
-      renderer: (row) => row?.secret?.type,
-    },
-    {
-      id: 'vaultLink',
-      label: 'Vault',
-      renderer: getVaultSecretLink(cluster.domainSuffix),
+      renderer: (row) => row?.type,
     },
   ]
   if (!teamId) {
