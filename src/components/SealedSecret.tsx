@@ -71,7 +71,7 @@ interface Props extends CrudProps {
 }
 
 export default function ({ secret, teamId, ...other }: Props): React.ReactElement {
-  const { appsEnabled, user } = useSession()
+  const { user } = useSession()
   const [data, setData]: any = useState(secret)
   useEffect(() => {
     setData(secret)
@@ -89,7 +89,7 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.vault}
+      disabled={formData?.isDisabled}
       resourceType='SealedSecret'
       {...other}
     />
