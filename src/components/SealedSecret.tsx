@@ -20,6 +20,17 @@ export const getSecretSchema = (teamId: string, formData: any): any => {
 
 export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
   const addable = formData?.type ? formData?.type === 'kubernetes.io/opaque' : true
+  const dockerconfigjson = formData?.type === 'kubernetes.io/dockerconfigjson'
+  const jsonexample = {
+    auths: {
+      'my-registry.example:5000': {
+        username: 'tiger',
+        password: 'pass1234',
+        email: 'tiger@acme.example',
+        auth: 'dGlnZXI6cGFzczEyMzQ=',
+      },
+    },
+  }
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     encryptedData: {
@@ -27,6 +38,11 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
         removable: formData?.type === 'kubernetes.io/opaque' && formData?.encryptedData?.length > 1,
         addable,
       },
+      ...(dockerconfigjson && {
+        items: {
+          value: { 'ui:widget': 'textarea', 'ui:description': `${JSON.stringify(jsonexample)}` },
+        },
+      }),
     },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'secret')
@@ -38,12 +54,7 @@ const typeToEncryptedDataMap = {
   'kubernetes.io/opaque': [{ key: '' }],
   'kubernetes.io/service-account-token': [{ key: 'extra' }],
   'kubernetes.io/dockercfg': [{ key: '.dockercfg' }],
-  'kubernetes.io/dockerconfigjson': [
-    { key: 'docker-server' },
-    { key: 'docker-username' },
-    { key: 'docker-password' },
-    { key: 'docker-email' },
-  ],
+  'kubernetes.io/dockerconfigjson': [{ key: 'dockerconfigjson' }],
   'kubernetes.io/basic-auth': [{ key: 'username' }, { key: 'password' }],
   'kubernetes.io/ssh-auth': [{ key: 'ssh-privatekey' }],
   'kubernetes.io/tls': [{ key: 'tls.crt' }, { key: 'tls.key' }],
