@@ -51,7 +51,7 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
   return uiSchema
 }
 
-const typeToEncryptedDataMap = {
+const encryptedDataMap = {
   'kubernetes.io/opaque': [{ key: '' }],
   'kubernetes.io/service-account-token': [{ key: 'extra' }],
   'kubernetes.io/dockercfg': [{ key: '.dockercfg' }],
@@ -59,11 +59,6 @@ const typeToEncryptedDataMap = {
   'kubernetes.io/basic-auth': [{ key: 'username' }, { key: 'password' }],
   'kubernetes.io/ssh-auth': [{ key: 'ssh-privatekey' }],
   'kubernetes.io/tls': [{ key: 'tls.crt' }, { key: 'tls.key' }],
-}
-
-const updateEncryptedDataFields = (formData: any): any => {
-  if (!formData?.type) return
-  formData.encryptedData = typeToEncryptedDataMap[formData.type] || [{ key: '' }]
 }
 
 interface Props extends CrudProps {
@@ -77,11 +72,17 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   useEffect(() => {
     setData(secret)
   }, [secret])
+
+  useEffect(() => {
+    setData((prev: any) => {
+      if (!prev?.type) return prev
+      const data = { ...prev }
+      data.encryptedData = encryptedDataMap[data.type] || [{ key: '' }]
+      return data
+    })
+  }, [data?.type])
   // END HOOKS
   const formData = cloneDeep(data)
-  useEffect(() => {
-    updateEncryptedDataFields(formData)
-  }, [formData?.type])
   const schema = getSecretSchema(teamId, formData)
   const uiSchema = getSecretUiSchema(user, teamId, formData)
   return (
