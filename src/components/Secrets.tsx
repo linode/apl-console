@@ -2,10 +2,12 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetSecretsApiResponse } from 'redux/otomiApi'
+import { Box } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 import MuiLink from './MuiLink'
+import InformationBanner from './InformationBanner'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
@@ -73,5 +75,10 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
 
   if (!appsEnabled.vault) return <p>Admin needs to enable the Vault app to activate this feature.</p>
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
+  return (
+    <Box>
+      <InformationBanner message='Hashicorp Vault being deprecated!' />
+      <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
+    </Box>
+  )
 }

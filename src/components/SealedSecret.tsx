@@ -33,6 +33,7 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
   }
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    // name: { 'ui:readonly': formData?.id },
     encryptedData: {
       'ui:options': {
         removable: formData?.type === 'kubernetes.io/opaque' && formData?.encryptedData?.length > 1,
