@@ -33,7 +33,8 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
   }
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
-    // name: { 'ui:readonly': formData?.id },
+    name: { 'ui:readonly': formData?.id },
+    type: { 'ui:readonly': formData?.id },
     encryptedData: {
       'ui:options': {
         removable: formData?.type === 'kubernetes.io/opaque' && formData?.encryptedData?.length > 1,
@@ -74,6 +75,7 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   }, [secret])
 
   useEffect(() => {
+    if (data?.id) return
     setData((prev: any) => {
       if (!prev?.type) return prev
       const data = { ...prev }
