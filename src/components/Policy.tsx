@@ -1,14 +1,17 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep, unset } from 'lodash'
+import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetPolicyApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getPolicySchema = (teamId: string, hasCustomValues: boolean): any => {
+export const getPolicySchema = (teamId: string, hasCustomValues: boolean, formData: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.Policy)
   if (!hasCustomValues) unset(schema, 'properties.customValues')
+  set(schema, 'properties.description.type', 'null')
+  set(schema, 'properties.description.title', 'Description')
+  set(schema, 'properties.description.default', formData?.description)
   return schema
 }
 
@@ -41,7 +44,7 @@ export default function ({ policy, teamId, ...other }: Props): React.ReactElemen
   // END HOOKS
   const formData = cloneDeep(data)
   const hasCustomValues = formData?.customValues?.length > 0
-  const schema = getPolicySchema(teamId, hasCustomValues)
+  const schema = getPolicySchema(teamId, hasCustomValues, formData)
   const uiSchema = getPolicyUiSchema(user, teamId)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Policy' {...other} />
