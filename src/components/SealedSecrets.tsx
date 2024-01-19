@@ -5,6 +5,7 @@ import { GetSealedSecretsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import { getStatus } from './Workloads'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
@@ -31,6 +32,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
     user: { isAdmin },
+    status,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -44,6 +46,11 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
       id: 'type',
       label: t('Type'),
       renderer: (row) => row?.type,
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row) => getStatus(status?.sealedSecrets?.[row.id]),
     },
   ]
   if (!teamId) {
