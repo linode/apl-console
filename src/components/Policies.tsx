@@ -66,5 +66,5 @@ export default function ({ policies, teamId }: Props): React.ReactElement {
   }
   if (!appsEnabled.kyverno) return <p>Admin needs to enable the Kyverno app to activate this feature.</p>
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={policies} resourceType='Policy' />
+  return <ListTable teamId={teamId} headCells={headCells} rows={policies} resourceType='Policy' noCrud />
 }

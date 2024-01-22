@@ -4,6 +4,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetPolicyApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
+import { Box, Button } from '@mui/material'
 import Form from './rjsf/Form'
 
 export const getPolicySchema = (teamId: string, hasCustomValues: boolean, formData: any): any => {
@@ -33,9 +34,11 @@ export const getPolicyUiSchema = (user: GetSessionApiResponse['user'], teamId: s
 interface Props extends CrudProps {
   teamId: string
   policy?: GetPolicyApiResponse
+  onSubmit: (formData: any) => void
+  editPolicies: boolean
 }
 
-export default function ({ policy, teamId, ...other }: Props): React.ReactElement {
+export default function ({ policy, teamId, onSubmit, editPolicies, ...other }: Props): React.ReactElement {
   const { appsEnabled, user } = useSession()
   const [data, setData]: any = useState(policy)
   useEffect(() => {
@@ -43,10 +46,27 @@ export default function ({ policy, teamId, ...other }: Props): React.ReactElemen
   }, [policy])
   // END HOOKS
   const formData = cloneDeep(data)
+  // console.log('formData', formData)
   const hasCustomValues = formData?.customValues?.length > 0
   const schema = getPolicySchema(teamId, hasCustomValues, formData)
   const uiSchema = getPolicyUiSchema(user, teamId)
   return (
-    <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Policy' {...other} />
+    <Box>
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        data={formData}
+        onChange={setData}
+        resourceType='Policy'
+        children
+        {...other}
+      />
+      <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
+        <Box sx={{ flex: '1 1 auto' }} />
+        <Button variant='contained' onClick={() => onSubmit(formData)} disabled={!editPolicies}>
+          Submit
+        </Button>
+      </Box>
+    </Box>
   )
 }

@@ -2,12 +2,12 @@
 import Policy from 'components/Policy'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { omit } from 'lodash'
+import { find, omit } from 'lodash'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditPolicyMutation, useGetPolicyQuery } from 'redux/otomiApi'
+import { useEditPolicyMutation, useGetPolicyQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -22,18 +22,31 @@ export default function ({
   useAuthzSession(teamId)
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
+  const {
+    data: teams,
+    isLoading: isLoadingTeams,
+    isFetching: isFetchingTeams,
+    refetch: refetchTeams,
+  } = useGetTeamsQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
+    if (teamId && !isFetchingTeams) refetchTeams()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
+  const team = !isLoadingTeams && find(teams, { id: teamId })
+  const editPolicies = team?.selfService?.policies?.includes('edit policies')
+  const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
   const handleSubmit = (formData) => {
-    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'teamId']) as any })
+    if (!editPolicies) return
+    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'teamId', 'description']) as any })
   }
-  const comp = !isError && <Policy onSubmit={handleSubmit} policy={data} teamId={teamId} mutating={mutating} />
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
+  const comp = teams && !isError && (
+    <Policy onSubmit={handleSubmit} editPolicies={editPolicies} policy={data} teamId={teamId} mutating={mutating} />
+  )
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
 }

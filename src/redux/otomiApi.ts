@@ -463,6 +463,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
     team?: (
       | 'alerts'
       | 'billingAlertQuotas'
@@ -560,6 +561,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
     team?: (
       | 'alerts'
       | 'billingAlertQuotas'
@@ -658,6 +660,7 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
+      policies?: 'edit policies'[]
       team?: (
         | 'alerts'
         | 'billingAlertQuotas'
@@ -755,6 +758,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
     team?: (
       | 'alerts'
       | 'billingAlertQuotas'
@@ -855,6 +859,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
     team?: (
       | 'alerts'
       | 'billingAlertQuotas'
@@ -955,6 +960,7 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
+      policies?: 'edit policies'[]
       team?: (
         | 'alerts'
         | 'billingAlertQuotas'
