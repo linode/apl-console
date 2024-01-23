@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://github.com/redkubes/otomi-stack-web/compare/v2.2.0...v2.3.0) (2024-01-12)
+
+
+### Bug Fixes
+
+* apps filtering for team apps page ([#377](https://github.com/redkubes/otomi-stack-web/issues/377)) ([2b5a30f](https://github.com/redkubes/otomi-stack-web/commit/2b5a30f323a8ecc89d4ecbd51d237d9eab7a1f22))
+* knative services ([#378](https://github.com/redkubes/otomi-stack-web/issues/378)) ([6b6c27c](https://github.com/redkubes/otomi-stack-web/commit/6b6c27c6918c95d6b82b731fbec4d02167e29560))
+
 ## [2.2.0](https://github.com/redkubes/otomi-stack-web/compare/v2.1.0...v2.2.0) (2024-01-04)
 
 ### Features
