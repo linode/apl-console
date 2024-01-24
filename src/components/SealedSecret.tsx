@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { GetSealedSecretApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getSecretSchema = (teamId: string, formData: any): any => {
+export const getSecretSchema = (teamId: string, formData: SealedSecret): any => {
   const schema = cloneDeep(getSpec().components.schemas.SealedSecret)
   if (teamId !== 'admin') delete schema.properties.namespace
   set(schema, 'properties.type.listNotShort', true)
@@ -18,8 +18,8 @@ export const getSecretSchema = (teamId: string, formData: any): any => {
   return schema
 }
 
-export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
-  const addable = formData?.type ? formData?.type === 'kubernetes.io/opaque' : true
+export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: SealedSecret): any => {
+  const addable = formData?.type ? formData.type === 'kubernetes.io/opaque' : true
   const dockerconfigjson = formData?.type === 'kubernetes.io/dockerconfigjson'
   const jsonexample = {
     auths: {
@@ -67,9 +67,13 @@ interface Props extends CrudProps {
   secret?: GetSealedSecretApiResponse
 }
 
+interface SealedSecret extends GetSealedSecretApiResponse {
+  isDisabled?: boolean
+}
+
 export default function ({ secret, teamId, ...other }: Props): React.ReactElement {
   const { user } = useSession()
-  const [data, setData]: any = useState(secret)
+  const [data, setData] = useState<SealedSecret>(secret)
   useEffect(() => {
     setData(secret)
   }, [secret])

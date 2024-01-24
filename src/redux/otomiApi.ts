@@ -1462,6 +1462,7 @@ export type DeleteServiceApiArg = {
   serviceId: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
+  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1473,12 +1474,11 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
-    | 'kubernetes.io/ssh-auth2'
   encryptedData: {
     key: string
     value: string
   }[]
-  metadata: {
+  metadata?: {
     annotations?: {
       key: string
       value: string
@@ -1492,6 +1492,7 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
 }[]
 export type GetAllSealedSecretsApiArg = void
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1503,12 +1504,11 @@ export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained s
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
-    | 'kubernetes.io/ssh-auth2'
   encryptedData: {
     key: string
     value: string
   }[]
-  metadata: {
+  metadata?: {
     annotations?: {
       key: string
       value: string
@@ -1525,6 +1525,7 @@ export type GetSealedSecretsApiArg = {
   teamId: string
 }
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1536,12 +1537,11 @@ export type CreateSealedSecretApiResponse = /** status 200 Successfully stored s
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
-    | 'kubernetes.io/ssh-auth2'
   encryptedData: {
     key: string
     value: string
   }[]
-  metadata: {
+  metadata?: {
     annotations?: {
       key: string
       value: string
@@ -1558,6 +1558,7 @@ export type CreateSealedSecretApiArg = {
   teamId: string
   /** SealedSecret object */
   body: {
+    id?: string
     name: string
     namespace?: string
     immutable?: boolean
@@ -1569,12 +1570,11 @@ export type CreateSealedSecretApiArg = {
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
-      | 'kubernetes.io/ssh-auth2'
     encryptedData: {
       key: string
       value: string
     }[]
-    metadata: {
+    metadata?: {
       annotations?: {
         key: string
         value: string
@@ -1588,6 +1588,7 @@ export type CreateSealedSecretApiArg = {
   }
 }
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1599,12 +1600,11 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
-    | 'kubernetes.io/ssh-auth2'
   encryptedData: {
     key: string
     value: string
   }[]
-  metadata: {
+  metadata?: {
     annotations?: {
       key: string
       value: string
@@ -1623,6 +1623,7 @@ export type GetSealedSecretApiArg = {
   secretId: string
 }
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1634,12 +1635,11 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
-    | 'kubernetes.io/ssh-auth2'
   encryptedData: {
     key: string
     value: string
   }[]
-  metadata: {
+  metadata?: {
     annotations?: {
       key: string
       value: string
@@ -1658,6 +1658,7 @@ export type EditSealedSecretApiArg = {
   secretId: string
   /** SealedSecret object that contains updated values */
   body: {
+    id?: string
     name: string
     namespace?: string
     immutable?: boolean
@@ -1669,12 +1670,11 @@ export type EditSealedSecretApiArg = {
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
-      | 'kubernetes.io/ssh-auth2'
     encryptedData: {
       key: string
       value: string
     }[]
-    metadata: {
+    metadata?: {
       annotations?: {
         key: string
         value: string
@@ -3861,6 +3861,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
+          linode: {
+            apiToken?: string
+          }
+        }
+      | {
           google: {
             serviceAccountKey?: string
             project: string
@@ -4281,6 +4286,11 @@ export type EditSettingsApiArg = {
           }
         | {
             civo: {
+              apiToken?: string
+            }
+          }
+        | {
+            linode: {
               apiToken?: string
             }
           }
