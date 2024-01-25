@@ -5,7 +5,10 @@ import { cloneDeep, each, get, set, unset } from 'lodash'
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
 export const getCoreAppId = (appId): string => {
-  return appId.startsWith('ingress-nginx-') ? 'ingress-nginx' : appId
+  let id: string = appId
+  if (appId.startsWith('rabbitmq')) id = 'rabbitmq'
+  if (appId.startsWith('ingress-nginx')) id = 'ingress-nginx'
+  return id
 }
 
 export const getAppSchemaName = (appId: string): string => {

@@ -69,7 +69,7 @@ k8s:
     - name: overprovisioner
       disableIstioInjection: true
     - name: prometheus
-    - name: rabbitmq-cluster-operator
+    - name: rabbitmq
       disableIstioInjection: true
     - name: shared
     - name: team-admin
@@ -307,7 +307,7 @@ adminApps:
         # namespace: prometheus
         type: public
         auth: true
-  - name: rabbitmq-cluster-operator
+  - name: rabbitmq
     tags: [messaging]
   - name: tempo
     tags: [tracing]
