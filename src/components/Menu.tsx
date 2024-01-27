@@ -380,7 +380,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemIcon>
               <PolicyIcon />
             </ListItemIcon>
-            <ListItemText primary={t('Policies')} />
+            <ListItemText primary={t('Security Policies')} />
           </StyledMenuItem>
           <StyledMenuItem
             to={`/teams/${teamId}/secrets`}
