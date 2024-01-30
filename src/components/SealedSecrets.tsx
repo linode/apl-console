@@ -2,10 +2,13 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetSealedSecretsApiResponse } from 'redux/otomiApi'
+import { Box } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
 import { getStatus } from './Workloads'
+import MuiLink from './MuiLink'
+import InformationBanner from './InformationBanner'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
@@ -61,5 +64,14 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     })
   }
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+  return (
+    <Box>
+      <InformationBanner message='Download and be sure to securely store your sealed secrets keys for future access!'>
+        <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
+          Download Keys
+        </MuiLink>
+      </InformationBanner>
+      <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+    </Box>
+  )
 }

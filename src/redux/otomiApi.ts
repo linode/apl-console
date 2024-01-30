@@ -56,6 +56,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
       query: () => ({ url: `/sealedsecrets` }),
     }),
+    downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
+      query: () => ({ url: `/sealedsecretskeys` }),
+    }),
     getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
     }),
@@ -1491,6 +1494,8 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
   }
 }[]
 export type GetAllSealedSecretsApiArg = void
+export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
+export type DownloadSealedSecretKeysApiArg = void
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   id?: string
   name: string
@@ -1989,6 +1994,7 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -2024,6 +2030,7 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -2062,6 +2069,7 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -2100,6 +2108,7 @@ export type CreateBuildApiArg = {
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -2142,6 +2151,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -2182,6 +2192,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -2222,6 +2233,7 @@ export type EditBuildApiArg = {
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -2300,6 +2312,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2458,6 +2471,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2619,6 +2633,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2780,6 +2795,7 @@ export type CreateProjectApiArg = {
       externalRepo?: boolean
       secretName?: string
       trigger?: boolean
+      scanSource?: boolean
     }
     workload?: {
       id?: string
@@ -2945,6 +2961,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -3108,6 +3125,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -4572,6 +4590,7 @@ export const {
   useEditServiceMutation,
   useDeleteServiceMutation,
   useGetAllSealedSecretsQuery,
+  useDownloadSealedSecretKeysQuery,
   useGetSealedSecretsQuery,
   useCreateSealedSecretMutation,
   useGetSealedSecretQuery,

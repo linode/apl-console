@@ -1,4 +1,5 @@
 import { Box, Typography, styled } from '@mui/material'
+import React from 'react'
 import Iconify from './Iconify'
 
 const StyledInfoBanner = styled(Box)({
@@ -12,13 +13,15 @@ const StyledInfoBanner = styled(Box)({
 
 interface Props {
   message: string
+  children?: React.ReactNode
 }
 
-export default function InformationBanner({ message }: Props) {
+export default function InformationBanner({ message, children }: Props) {
   return (
     <StyledInfoBanner>
       <Iconify icon='material-symbols:info' width={40} height={28} color='#c7d030d9' />
       <Typography>{message}</Typography>
+      {children}
     </StyledInfoBanner>
   )
 }
