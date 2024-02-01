@@ -66,7 +66,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
 
   return (
     <Box>
-      <InformationBanner message='Download and be sure to securely store your sealed secrets keys for future access!'>
+      <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
         <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
           Download Keys
         </MuiLink>
