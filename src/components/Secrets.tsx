@@ -73,12 +73,14 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.vault) return <p>Admin needs to enable the Vault app to activate this feature.</p>
-
   return (
     <Box>
       <InformationBanner message='Secrets with Hashicorp Vault are going to be removed in Otomi v3.0.0. Otomi provides Sealed Secrets as a replacement.' />
-      <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
+      {!appsEnabled.vault ? (
+        <p>Admin needs to enable the Vault app to activate this feature.</p>
+      ) : (
+        <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
+      )}
     </Box>
   )
 }
