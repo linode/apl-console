@@ -59,6 +59,9 @@ const injectedRtkApi = api.injectEndpoints({
     downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
       query: () => ({ url: `/sealedsecretskeys` }),
     }),
+    getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/k8sSecrets` }),
+    }),
     getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
     }),
@@ -1496,6 +1499,11 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
 export type DownloadSealedSecretKeysApiArg = void
+export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained all secrets from k8s */ string[]
+export type GetSecretsFromK8SApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   id?: string
   name: string
@@ -4591,6 +4599,7 @@ export const {
   useDeleteServiceMutation,
   useGetAllSealedSecretsQuery,
   useDownloadSealedSecretKeysQuery,
+  useGetSecretsFromK8SQuery,
   useGetSealedSecretsQuery,
   useCreateSealedSecretMutation,
   useGetSealedSecretQuery,
