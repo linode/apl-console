@@ -37,6 +37,7 @@ const metrics: GetMetricsApiResponse = {
   otomi_builds: 3,
   otomi_secrets: 6,
   otomi_services: 8,
+  otomi_netpols: 8,
   otomi_teams: 2,
   otomi_workloads: 9,
 }

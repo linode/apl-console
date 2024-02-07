@@ -72,6 +72,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
+      query: () => ({ url: `/netpols` }),
+    }),
+    getTeamNetpols: build.query<GetTeamNetpolsApiResponse, GetTeamNetpolsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols` }),
+    }),
+    createNetpol: build.mutation<CreateNetpolApiResponse, CreateNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
+    }),
+    getNetpol: build.query<GetNetpolApiResponse, GetNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}` }),
+    }),
+    editNetpol: build.mutation<EditNetpolApiResponse, EditNetpolApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteNetpol: build.mutation<DeleteNetpolApiResponse, DeleteNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`, method: 'DELETE' }),
+    }),
     getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
       query: () => ({ url: `/backups` }),
     }),
@@ -263,6 +285,7 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_backups: number
   otomi_builds: number
   otomi_secrets: number
+  otomi_netpols: number
   otomi_services: number
   otomi_teams: number
   otomi_workloads: number
@@ -337,30 +360,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetAllServicesApiArg = void
 export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
@@ -449,7 +448,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -547,7 +545,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -646,7 +643,6 @@ export type CreateTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -744,7 +740,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -845,7 +840,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -946,7 +940,6 @@ export type EditTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -1012,30 +1005,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetTeamServicesApiArg = {
   /** ID of team to return */
@@ -1090,30 +1059,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type CreateServiceApiArg = {
   /** ID of team to return */
@@ -1168,30 +1113,6 @@ export type CreateServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
@@ -1252,30 +1173,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type GetServiceApiArg = {
   /** ID of team to return */
@@ -1332,30 +1229,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type EditServiceApiArg = {
   /** ID of team to return */
@@ -1412,30 +1285,6 @@ export type EditServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type DeleteServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
@@ -1588,6 +1437,71 @@ export type DeleteSecretApiArg = {
   /** ID of the secret */
   secretId: string
 }
+export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetAllNetpolsApiArg = void
+export type GetTeamNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetTeamNetpolsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type CreateNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Network policy object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type GetNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type GetNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+}
+export type EditNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type EditNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+  /** Netwok policy object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
+export type DeleteNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+}
 export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
   id?: string
   teamId?: string
@@ -1718,6 +1632,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1726,12 +1644,17 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1745,6 +1668,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1753,12 +1680,17 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -1775,6 +1707,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1783,12 +1719,17 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1805,6 +1746,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1813,12 +1758,17 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -1839,6 +1789,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1847,12 +1801,17 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -1871,6 +1830,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1879,12 +1842,17 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -1903,6 +1871,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1911,12 +1883,17 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -1973,6 +1950,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1981,12 +1962,17 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2081,30 +2067,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetAllProjectsApiArg = void
@@ -2123,6 +2085,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2131,12 +2097,17 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2231,30 +2202,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetTeamProjectsApiArg = {
@@ -2276,6 +2223,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2284,12 +2235,17 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2384,30 +2340,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type CreateProjectApiArg = {
@@ -2429,6 +2361,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'docker'
           }
@@ -2437,12 +2373,17 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'buildpacks'
           }
       externalRepo?: boolean
       secretName?: string
       trigger?: boolean
+      scanSource?: boolean
     }
     workload?: {
       id?: string
@@ -2537,30 +2478,6 @@ export type CreateProjectApiArg = {
               })
             | null
           )
-      networkPolicy?: {
-        podSelector?: string
-        ingressPrivate?:
-          | {
-              mode: 'DenyAll'
-            }
-          | {
-              mode: 'AllowOnly'
-              allow: {
-                team: string
-                service?: string
-              }[]
-            }
-          | {
-              mode: 'AllowAll'
-            }
-        egressPublic?: {
-          domain: string
-          ports?: {
-            number: number
-            protocol: 'HTTPS' | 'HTTP' | 'TCP'
-          }[]
-        }[]
-      }
     }
   }
 }
@@ -2568,7 +2485,7 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
@@ -2586,6 +2503,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2594,12 +2515,17 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2694,36 +2620,12 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
@@ -2741,6 +2643,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2749,12 +2655,17 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2849,36 +2760,12 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
   /** Project object that contains updated values */
   body: object
@@ -3101,7 +2988,7 @@ export type GetWorkloadApiArg = {
   /** ID of the workload */
   workloadId: string
 }
-export type EditWorkloadApiResponse = /** status 200 Successfully edited a team secret */ {
+export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   id?: string
   teamId?: string
   name: string
@@ -3504,6 +3391,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         }
       | {
           civo: {
+            apiToken?: string
+          }
+        }
+      | {
+          linode: {
             apiToken?: string
           }
         }
@@ -3932,6 +3824,11 @@ export type EditSettingsApiArg = {
             }
           }
         | {
+            linode: {
+              apiToken?: string
+            }
+          }
+        | {
             google: {
               serviceAccountKey?: string
               project: string
@@ -4213,6 +4110,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllNetpolsQuery,
+  useGetTeamNetpolsQuery,
+  useCreateNetpolMutation,
+  useGetNetpolQuery,
+  useEditNetpolMutation,
+  useDeleteNetpolMutation,
   useGetAllBackupsQuery,
   useGetTeamBackupsQuery,
   useCreateBackupMutation,
