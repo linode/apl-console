@@ -11,7 +11,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import {
   GetSessionApiResponse,
-  useGetSecretsQuery,
+  useGetSecretsFromK8SQuery,
   useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
   useWorkloadCatalogMutation,
@@ -182,7 +182,7 @@ export default function ({
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
-  const { data: secrets } = useGetSecretsQuery({ teamId })
+  const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
   const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
   const ingressClassNames = getIngressClassNames(ingressSettings)
   const serviceSchema = getServiceSchema(
