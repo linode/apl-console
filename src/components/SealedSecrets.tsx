@@ -33,6 +33,7 @@ interface Props {
 
 export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
+    appsEnabled,
     oboTeamId,
     user: { isAdmin },
     status,
@@ -66,14 +67,20 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
 
   return (
     <Box>
-      <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
-        {isAdmin && (
-          <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
-            Download Keys
-          </MuiLink>
-        )}
-      </InformationBanner>
-      <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+      {!appsEnabled['sealed-secrets'] ? (
+        <p>Admin needs to enable the Sealed Secrets app to activate this feature.</p>
+      ) : (
+        <>
+          <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
+            {isAdmin && (
+              <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
+                Download Keys
+              </MuiLink>
+            )}
+          </InformationBanner>
+          <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+        </>
+      )}
     </Box>
   )
 }
