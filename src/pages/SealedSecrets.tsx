@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import SealedSecrets from 'components/SealedSecrets'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -23,7 +24,7 @@ export default function ({
     isLoading: isLoadingAllSecrets,
     isFetching: isFetchingAllSecrets,
     refetch: refetchAllSecrets,
-  } = useGetAllSealedSecretsQuery()
+  } = useGetAllSealedSecretsQuery(teamId ? skipToken : undefined)
   const {
     data: teamSecrets,
     isLoading: isLoadingTeamSecrets,
