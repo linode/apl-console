@@ -155,6 +155,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
         logoAlt,
         deps: coreDeps,
         isDeprecated,
+        isBeta,
       } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
@@ -173,6 +174,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
             hostedByOtomi={item.enabled === undefined}
             toggleApp={() => toggleApp(id)}
             isDeprecated={isDeprecated}
+            isBeta={isBeta}
             openModal={() => setOpenModal(id)}
           />
         </Grid>

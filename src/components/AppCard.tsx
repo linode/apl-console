@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import React, { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -29,6 +29,16 @@ const useStyles = makeStyles()((theme) => {
       },
       '&:hover .hidden-button': {
         visibility: 'visible',
+      },
+      '& .beta-label': {
+        visibility: 'visible',
+        position: 'absolute',
+        transform: 'translateX(-50%) translateY(50%)',
+        left: '50%',
+        width: '100%',
+      },
+      '&:hover .beta-label': {
+        visibility: 'hidden',
       },
     },
     disabled: {
@@ -98,6 +108,7 @@ export default function ({
   hostedByOtomi,
   toggleApp,
   isDeprecated,
+  isBeta,
   openModal,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
@@ -160,6 +171,11 @@ export default function ({
           handleClickModal={handleClickModal}
         />
       </Box>
+      {isBeta && (
+        <Box className='beta-label'>
+          <Chip label='BETA' variant='outlined' />
+        </Box>
+      )}
     </Box>
   )
 }
