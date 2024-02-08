@@ -1499,7 +1499,9 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
 export type DownloadSealedSecretKeysApiArg = void
-export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained all secrets from k8s */ string[]
+export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained secrets from k8s */ {
+  name?: string
+}[]
 export type GetSecretsFromK8SApiArg = {
   /** ID of team to return */
   teamId: string
