@@ -226,7 +226,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Dashboard')} data-cy='menu-item-dashboard' />
           </StyledMenuItem>
-
           <StyledMenuItem
             to='/apps/admin'
             selected={pathname.indexOf(`/apps/admin`) === 0}
@@ -255,7 +254,6 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Clusters')} />
           </StyledMenuItem>
-
           <StyledMenuItem
             to='/policies'
             selected={pathname.indexOf(`/policies`) === 0}
@@ -302,7 +300,12 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             </ListItemIcon>
             <ListItemText primary={t('Services')} />
           </StyledMenuItem>
-
+          <StyledMenuItem to='/maintenance' selected={pathname === `/maintenance`}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('Maintenance')} data-cy='menu-item-maintenance' />
+          </StyledMenuItem>
           <MenuItem selected={pathname === '/settings'} data-cy='menu-item-settings' onClick={handleSettingsCollapse}>
             <ListItemIcon>
               <SettingsIcon />
@@ -310,6 +313,7 @@ export default function ({ className, teamId }: Props): React.ReactElement {
             <ListItemText primary={t('Settings')} />
             {collapseSettings ? <ExpandLess /> : <ExpandMore />}
           </MenuItem>
+
           <Collapse component='li' in={collapseSettings} timeout='auto' unmountOnExit>
             <List disablePadding>
               {Object.keys(settingIds).map((id) => {
