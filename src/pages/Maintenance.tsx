@@ -3,7 +3,8 @@ import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { Box, Link } from '@mui/material'
+import { Link, Typography } from '@mui/material'
+import HeaderTitle from 'components/HeaderTitle'
 
 interface Params {
   teamId: string
@@ -17,18 +18,16 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   const comp = (
     <>
-      <h1>Maintenance</h1>
-      <h2>Actions:</h2>
-      <Box sx={{ width: '600px' }}>
-        <Link href='/api/v1/otomi/values?excludeSecrets=false' target='_blank' rel='noopener' title='Otomi Values'>
-          Download Otomi values
-        </Link>
-      </Box>
-      <Box sx={{ width: '600px' }}>
-        <Link href='/api/v1/otomi/values' target='_blank' rel='noopener' title='Otomi Values'>
-          Download Otomi values (secrets redacted)
-        </Link>
-      </Box>
+      <HeaderTitle title='Maintenance' resourceType='maintenance' />
+      <Typography variant='h6'>Actions</Typography>
+
+      <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=false'>
+        Download Otomi values
+      </Link>
+
+      <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=true'>
+        Download Otomi values (secrets redacted)
+      </Link>
     </>
   )
   // title is set in component as it knows more to put in the url (like tab chosen)
