@@ -2,7 +2,7 @@
 import Netpol from 'components/Netpol'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { omit } from 'lodash'
+import { omit, unset } from 'lodash'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -40,6 +40,11 @@ export default function ({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/netpols`} />
   const handleSubmit = (formData) => {
+    const type = formData.ruleType.type
+    const mode = formData?.ruleType?.ingress?.mode
+    if (mode === 'AllowAll' && type === 'ingress') unset(formData, 'ruleType.ingress.allow')
+    if (type === 'ingress') unset(formData, 'ruleType.egress')
+    else unset(formData, 'ruleType.ingress')
     if (netpolId) update({ teamId, netpolId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
