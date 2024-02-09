@@ -344,8 +344,6 @@ export default function ({
         )}
 
         <WorkloadValues
-          editable
-          hideTitle
           workloadValues={workloadValues}
           setWorkloadValues={setWorkloadValues}
           showComments={!workload?.id}
