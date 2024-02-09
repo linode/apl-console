@@ -6,7 +6,7 @@ import StepLabel from '@mui/material/StepLabel'
 import StepContent from '@mui/material/StepContent'
 import Button from '@mui/material/Button'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep, omit } from 'lodash'
+import { cloneDeep, omit, set } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import {
@@ -26,18 +26,17 @@ import { getDomain } from 'layouts/Shell'
 import Form from './rjsf/Form'
 import { getHost, getServiceSchema, getServiceUiSchema, updateIngressField } from './Service'
 import WorkloadValues from './WorkloadValues'
-import { getWorkloadSchema, getWorkloadUiSchema } from './Workload'
 import { getBuildSchema, getBuildUiSchema } from './Build'
 import DeleteButton from './DeleteButton'
 import Iconify from './Iconify'
 import { getValuesDocLink } from './Catalog'
 
-export const getProjectSchema = (): any => {
+const getProjectSchema = (): any => {
   const schema = cloneDeep(getSpec().components.schemas.Project)
   return schema
 }
 
-export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
@@ -47,9 +46,63 @@ export const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: 
     service: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'build')
+  return uiSchema
+}
 
+const getWorkloadSchema = (
+  url?: string,
+  helmCharts?: string[],
+  helmChart?: string,
+  helmChartVersion?: string,
+  helmChartDescription?: string,
+  workloadId?: string,
+): any => {
+  const schema = cloneDeep(getSpec().components.schemas.Workload)
+  const chartMetadata = {
+    helmChartCatalog: {
+      type: 'null',
+      title: 'Helm chart catalog',
+      default: url,
+      listNotShort: true,
+    },
+    helmChart: {
+      type: 'string',
+      title: 'Helm chart',
+      default: helmChart,
+      listNotShort: true,
+      ...(!workloadId && { enum: helmCharts }),
+    },
+    helmChartVersion: {
+      type: 'null',
+      title: 'Helm chart version',
+      default: helmChartVersion,
+    },
+    helmChartDescription: {
+      type: 'null',
+      title: 'Helm chart description',
+      default: helmChartDescription,
+    },
+  }
+  set(schema, 'properties.chartMetadata.properties', chartMetadata)
+  set(schema, 'properties.url.default', url)
+  set(schema, 'properties.path.default', helmChart)
+  return schema
+}
+
+const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+  const uiSchema = {
+    id: { 'ui:widget': 'hidden' },
+    teamId: { 'ui:widget': 'hidden' },
+    icon: { 'ui:widget': 'hidden' },
+    url: { 'ui:widget': 'hidden' },
+    chartProvider: { 'ui:widget': 'hidden' },
+    path: { 'ui:widget': 'hidden' },
+    chart: { 'ui:widget': 'hidden' },
+    revision: { 'ui:widget': 'hidden' },
+    namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+  }
+  applyAclToUiSchema(uiSchema, user, teamId, 'workload')
   return uiSchema
 }
 
@@ -180,6 +233,7 @@ export default function ({
   )
   const workloadUiSchema = getWorkloadUiSchema(user, teamId)
   workloadUiSchema.name = { 'ui:widget': 'hidden' }
+  const rerenderValues = `${helmChart}${formData?.workload?.imageUpdateStrategy?.type}`
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
@@ -354,11 +408,9 @@ export default function ({
                   )}
 
                   <WorkloadValues
-                    editable
-                    hideTitle
                     workloadValues={workloadValues}
                     setWorkloadValues={setWorkloadValues}
-                    helmChart={helmChart}
+                    rerender={rerenderValues}
                     showComments={!project?.workload?.id}
                   />
                 </Box>
