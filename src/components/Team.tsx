@@ -43,11 +43,11 @@ export const getTeamUiSchema = (
     },
     selfService: { 'ui:readonly': !user.isAdmin },
   }
-  if (permissions.length > 0 && !user.isAdmin) {
-    permissions.forEach((permission) => {
-      uiSchema[permission] = { 'ui:readonly': true }
-    })
-  }
+  // if (permissions.length > 0 && !user.isAdmin) {
+  //   permissions.forEach((permission) => {
+  //     uiSchema[permission] = { 'ui:readonly': true }
+  //   })
+  // }
   if (!appsEnabled.alertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
     uiSchema.alerts['ui:disabled'] = true

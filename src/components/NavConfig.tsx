@@ -14,6 +14,7 @@ export default function NavConfig() {
   const session = useSession()
   const { ca, appsEnabled, oboTeamId, user } = session
   const { data: team } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId })
+  console.log('team', team)
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
