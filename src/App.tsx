@@ -49,6 +49,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import Project from 'pages/Project'
+import Maintenance from 'pages/Maintenance'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -124,6 +125,8 @@ function App() {
                                   <Route path='/teams/:teamId/workloads' component={Workloads} exact />
                                   <Route path='/teams/:teamId/services' component={Services} exact />
                                   <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                                  <Route path='/maintenance' component={Maintenance} exact />
+
                                   <Route path='*'>
                                     <Error error={new HttpErrorBadRequest()} />
                                   </Route>
