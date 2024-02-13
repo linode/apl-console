@@ -1,6 +1,11 @@
 import { set } from 'lodash'
-import { ActivateLicenseApiResponse, GetMetricsApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
-import canDo, { canCreateAdditionalResource } from 'utils/permission'
+import {
+  ActivateLicenseApiResponse,
+  GetMetricsApiResponse,
+  GetSessionApiResponse,
+  GetTeamApiResponse,
+} from 'redux/otomiApi'
+import { canCreateAdditionalResource, canDo } from 'utils/permission'
 
 const userTpl: GetSessionApiResponse['user'] = {
   name: 'ok',
@@ -15,21 +20,21 @@ const userTpl: GetSessionApiResponse['user'] = {
 it('admin can download kubecfg', () => {
   const user: GetSessionApiResponse['user'] = { ...userTpl }
   user.isAdmin = true
-  expect(canDo(user, 'na', 'doSomething')).toBeTruthy()
+  expect(canDo(user, { id: 'na' } as GetTeamApiResponse, 'doSomething')).toBeTruthy()
 })
 
 it('team can doSomething', () => {
   const user: GetSessionApiResponse['user'] = { ...userTpl }
   user.isAdmin = false
   set(user, 'authz.teamA.deniedAttributes.Team', ['doSomethingElse'])
-  expect(canDo(user, 'teamA', 'doSomething')).toBeTruthy()
+  expect(canDo(user, { id: 'teamA' } as GetTeamApiResponse, 'doSomething')).toBeTruthy()
 })
 
 it('team can not doSomething', () => {
   const user: GetSessionApiResponse['user'] = { ...userTpl }
   user.isAdmin = false
   set(user, 'authz.teamA.deniedAttributes.Team', ['doSomething'])
-  expect(canDo(user, 'teamA', 'doSomething')).toBeFalsy()
+  expect(canDo(user, { id: 'teamA' } as GetTeamApiResponse, 'doSomething')).toBeFalsy()
 })
 
 const metrics: GetMetricsApiResponse = {

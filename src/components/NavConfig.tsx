@@ -1,7 +1,8 @@
 import generateDownloadLink from 'generate-download-link'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
-import canDo from 'utils/permission'
+import { canDo } from 'utils/permission'
+import { useGetTeamQuery } from 'redux/otomiApi'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -10,8 +11,9 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const { ca, appsEnabled, oboTeamId, user } = useSession()
-
+  const session = useSession()
+  const { ca, appsEnabled, oboTeamId, user } = session
+  const { data: team } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId })
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -80,30 +82,39 @@ export default function NavConfig() {
           icon: getIcon('settings_icon.svg'),
           dontShowIfAdminTeam: true,
         },
-        { title: 'Shell', path: `/cloudtty`, icon: getIcon('shell_icon.svg') },
+      ],
+    },
+    {
+      subheader: 'Access',
+      items: [
+        {
+          title: 'Shell',
+          path: `/cloudtty`,
+          icon: getIcon('shell_icon.svg'),
+          disabled: !canDo(user, team, 'shell', process.env.NODE_ENV === 'production'),
+        },
         {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig'),
+          disabled: !canDo(user, team, 'downloadKubeConfig', oboTeamId !== 'admin'),
           isDownload: true,
         },
         {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor,
+          disabled: !canDo(user, team, 'downloadDockerConfig', !!appsEnabled.harbor),
           isDownload: true,
         },
         {
           title: 'Download CA',
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !ca,
+          disabled: !canDo(user, team, 'downloadCertificateAuthority', !!ca),
           isDownload: true,
         },
       ],
     },
   ]
 }
-// export default navConfig

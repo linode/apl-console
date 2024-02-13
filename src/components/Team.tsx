@@ -3,7 +3,7 @@ import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
+import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getTeamSchema = (
@@ -27,10 +27,10 @@ export const getTeamSchema = (
 
 export const getTeamUiSchema = (
   appsEnabled: Record<string, any>,
-  { otomi }: GetSettingsApiResponse,
   user: GetSessionApiResponse['user'],
   teamId: string,
   action: string,
+  permissions: string[],
 ): any => {
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
@@ -41,6 +41,12 @@ export const getTeamUiSchema = (
         type: { 'ui:widget': 'hidden' },
       },
     },
+    selfService: { 'ui:readonly': !user.isAdmin },
+  }
+  if (permissions.length > 0 && !user.isAdmin) {
+    permissions.forEach((permission) => {
+      uiSchema[permission] = { 'ui:readonly': true }
+    })
   }
   if (!appsEnabled.alertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
@@ -73,17 +79,17 @@ export default function ({ team, diffReceivers, setDiffReceivers, ...other }: Pr
   }, [data])
   // END HOOKS
   const action = team && team.id ? 'update' : 'create'
+  const permissions = team?.selfService?.team || []
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
   const getDynamicUiSchema = () => {
-    const uiSchema = getTeamUiSchema(appsEnabled, settings, user, team?.id, action)
+    const uiSchema = getTeamUiSchema(appsEnabled, user, team?.id, action, permissions)
     diffReceivers.forEach((receiver) => {
       uiSchema.alerts[receiver] = { 'ui:widget': 'hidden' }
     })
     return uiSchema
   }
   const uiSchema = getDynamicUiSchema()
-  const teams = useGetTeamsQuery()
   return (
     <Form
       adminOnly

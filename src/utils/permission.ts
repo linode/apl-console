@@ -1,11 +1,32 @@
-import get from 'lodash/get'
-import { ActivateLicenseApiResponse, GetMetricsApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
+import { get } from 'lodash'
+import {
+  ActivateLicenseApiResponse,
+  GetMetricsApiResponse,
+  GetSessionApiResponse,
+  GetTeamApiResponse,
+} from 'redux/otomiApi'
 
-export default (user: GetSessionApiResponse['user'], teamId: string | undefined, action): boolean => {
+export function canDo(
+  user: GetSessionApiResponse['user'],
+  team: GetTeamApiResponse | undefined,
+  action: string,
+  initialPermission?: boolean | undefined,
+): boolean {
+  if (initialPermission !== undefined) return initialPermission
   if (user.isAdmin) return true
-  if (!teamId) return false
-  const deniedActions = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
-  return !deniedActions.includes(action)
+  if (!team.id) return false
+  const deniedActions = get(user, `authz.${team?.id}.deniedAttributes.Team`, [])
+  const access = team?.selfService?.access
+  switch (action) {
+    case 'shell':
+    case 'downloadKubeConfig':
+    case 'downloadDockerConfig':
+    case 'downloadCertificateAuthority':
+      if (access) return access.includes(action)
+      return !deniedActions.includes(action)
+    default:
+      return !deniedActions.includes(action)
+  }
 }
 
 export function createCapabilities(currentAmount: number, licenseCapabilites: number | undefined): boolean {

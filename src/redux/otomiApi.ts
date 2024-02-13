@@ -447,17 +447,9 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'backup'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }[]
 export type GetTeamsApiArg = void
@@ -545,17 +537,9 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'backup'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type CreateTeamApiArg = {
@@ -644,17 +628,9 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: (
-        | 'alerts'
-        | 'backup'
-        | 'billingAlertQuotas'
-        | 'oidc'
-        | 'resourceQuota'
-        | 'downloadKubeConfig'
-        | 'downloadDockerConfig'
-        | 'networkPolicy'
-      )[]
+      team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
+      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
   }
 }
@@ -742,17 +718,9 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'backup'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type GetTeamApiArg = {
@@ -843,17 +811,9 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'backup'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type EditTeamApiArg = {
@@ -944,17 +904,9 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: (
-        | 'alerts'
-        | 'backup'
-        | 'billingAlertQuotas'
-        | 'oidc'
-        | 'resourceQuota'
-        | 'downloadKubeConfig'
-        | 'downloadDockerConfig'
-        | 'networkPolicy'
-      )[]
+      team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
+      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
   }
 }
@@ -1718,6 +1670,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1726,12 +1682,17 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1745,6 +1706,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1753,12 +1718,17 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -1775,6 +1745,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1783,12 +1757,17 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1805,6 +1784,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1813,12 +1796,17 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -1839,6 +1827,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1847,12 +1839,17 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -1871,6 +1868,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1879,12 +1880,17 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -1903,6 +1909,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1911,12 +1921,17 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -1973,6 +1988,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1981,12 +2000,17 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2123,6 +2147,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2131,12 +2159,17 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2276,6 +2309,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2284,12 +2321,17 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2429,6 +2471,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'docker'
           }
@@ -2437,12 +2483,17 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'buildpacks'
           }
       externalRepo?: boolean
       secretName?: string
       trigger?: boolean
+      scanSource?: boolean
     }
     workload?: {
       id?: string
@@ -2586,6 +2637,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2594,12 +2649,17 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2741,6 +2801,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2749,12 +2813,17 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -3508,6 +3577,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
+          linode: {
+            apiToken?: string
+          }
+        }
+      | {
           google: {
             serviceAccountKey?: string
             project: string
@@ -3928,6 +4002,11 @@ export type EditSettingsApiArg = {
           }
         | {
             civo: {
+              apiToken?: string
+            }
+          }
+        | {
+            linode: {
               apiToken?: string
             }
           }
