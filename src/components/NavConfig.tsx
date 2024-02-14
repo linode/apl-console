@@ -2,7 +2,6 @@ import generateDownloadLink from 'generate-download-link'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
 import { canDo } from 'utils/permission'
-import { useGetTeamQuery } from 'redux/otomiApi'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -11,10 +10,7 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const session = useSession()
-  const { ca, appsEnabled, oboTeamId, user } = session
-  const { data: team } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId })
-  console.log('team', team)
+  const { ca, appsEnabled, oboTeamId, user } = useSession()
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -92,27 +88,27 @@ export default function NavConfig() {
           title: 'Shell',
           path: `/cloudtty`,
           icon: getIcon('shell_icon.svg'),
-          disabled: !canDo(user, team, 'shell', process.env.NODE_ENV === 'production'),
+          disabled: process.env.NODE_ENV !== 'production' || !canDo(user, oboTeamId, 'shell'),
         },
         {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !canDo(user, team, 'downloadKubeConfig', oboTeamId !== 'admin'),
+          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig'),
           isDownload: true,
         },
         {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !canDo(user, team, 'downloadDockerConfig', !!appsEnabled.harbor),
+          disabled: !appsEnabled.harbor || !canDo(user, oboTeamId, 'downloadDockerConfig'),
           isDownload: true,
         },
         {
           title: 'Download CA',
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !canDo(user, team, 'downloadCertificateAuthority', !!ca),
+          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority'),
           isDownload: true,
         },
       ],
