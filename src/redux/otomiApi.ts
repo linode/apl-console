@@ -53,6 +53,34 @@ const injectedRtkApi = api.injectEndpoints({
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
     }),
+    getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
+      query: () => ({ url: `/sealedsecrets` }),
+    }),
+    downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
+      query: () => ({ url: `/sealedsecretskeys` }),
+    }),
+    getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/k8sSecrets` }),
+    }),
+    getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
+    }),
+    createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+    }),
+    getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}` }),
+    }),
+    editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`, method: 'DELETE' }),
+    }),
     getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
     }),
@@ -449,7 +477,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -547,7 +574,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -646,7 +672,6 @@ export type CreateTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -744,7 +769,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -845,7 +869,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     service?: ('ingress' | 'networkPolicy')[]
     team?: (
       | 'alerts'
-      | 'backup'
       | 'billingAlertQuotas'
       | 'oidc'
       | 'resourceQuota'
@@ -946,7 +969,6 @@ export type EditTeamApiArg = {
       service?: ('ingress' | 'networkPolicy')[]
       team?: (
         | 'alerts'
-        | 'backup'
         | 'billingAlertQuotas'
         | 'oidc'
         | 'resourceQuota'
@@ -1445,6 +1467,248 @@ export type DeleteServiceApiArg = {
   /** ID of the service */
   serviceId: string
 }
+export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetAllSealedSecretsApiArg = void
+export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
+export type DownloadSealedSecretKeysApiArg = void
+export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained secrets from k8s */ {
+  name?: string
+}[]
+export type GetSecretsFromK8SApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetSealedSecretsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type CreateSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** SealedSecret object */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type GetSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
+export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type EditSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
+export type DeleteSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
 export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
   id?: string
   name: string
@@ -1718,6 +1982,10 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1726,12 +1994,17 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetAllBuildsApiArg = void
 export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
@@ -1745,6 +2018,10 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1753,12 +2030,17 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
   /** ID of team to return */
@@ -1775,6 +2057,10 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1783,12 +2069,17 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type CreateBuildApiArg = {
   /** ID of team to return */
@@ -1805,6 +2096,10 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1813,12 +2108,17 @@ export type CreateBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
@@ -1839,6 +2139,10 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1847,12 +2151,17 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type GetBuildApiArg = {
   /** ID of team to return */
@@ -1871,6 +2180,10 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'docker'
       }
@@ -1879,12 +2192,17 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
           repoUrl: string
           path?: string
           revision?: string
+          envVars?: {
+            name: string
+            value: string
+          }[]
         }
         type: 'buildpacks'
       }
   externalRepo?: boolean
   secretName?: string
   trigger?: boolean
+  scanSource?: boolean
 }
 export type EditBuildApiArg = {
   /** ID of team to return */
@@ -1903,6 +2221,10 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1911,12 +2233,17 @@ export type EditBuildApiArg = {
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -1973,6 +2300,10 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -1981,12 +2312,17 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2123,6 +2459,10 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2131,12 +2471,17 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2276,6 +2621,10 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2284,12 +2633,17 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2429,6 +2783,10 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'docker'
           }
@@ -2437,12 +2795,17 @@ export type CreateProjectApiArg = {
               repoUrl: string
               path?: string
               revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
             }
             type: 'buildpacks'
           }
       externalRepo?: boolean
       secretName?: string
       trigger?: boolean
+      scanSource?: boolean
     }
     workload?: {
       id?: string
@@ -2586,6 +2949,10 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2594,12 +2961,17 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -2741,6 +3113,10 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'docker'
         }
@@ -2749,12 +3125,17 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             repoUrl: string
             path?: string
             revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
           }
           type: 'buildpacks'
         }
     externalRepo?: boolean
     secretName?: string
     trigger?: boolean
+    scanSource?: boolean
   }
   workload?: {
     id?: string
@@ -3508,6 +3889,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
+          linode: {
+            apiToken?: string
+          }
+        }
+      | {
           google: {
             serviceAccountKey?: string
             project: string
@@ -3932,6 +4318,11 @@ export type EditSettingsApiArg = {
             }
           }
         | {
+            linode: {
+              apiToken?: string
+            }
+          }
+        | {
             google: {
               serviceAccountKey?: string
               project: string
@@ -4208,6 +4599,14 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useGetAllSealedSecretsQuery,
+  useDownloadSealedSecretKeysQuery,
+  useGetSecretsFromK8SQuery,
+  useGetSealedSecretsQuery,
+  useCreateSealedSecretMutation,
+  useGetSealedSecretQuery,
+  useEditSealedSecretMutation,
+  useDeleteSealedSecretMutation,
   useGetSecretsQuery,
   useCreateSecretMutation,
   useGetSecretQuery,

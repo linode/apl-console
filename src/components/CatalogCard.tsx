@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -17,16 +17,15 @@ const useStyles = makeStyles()((theme) => {
       borderRadius: '8px',
       maxHeight: '200px',
       height: '200px',
-      '& .hidden-button': {
-        visibility: 'hidden',
+      '& .beta-label': {
+        visibility: 'visible',
         position: 'absolute',
-        bottom: '0',
-        transform: 'translateX(-50%)',
+        transform: 'translateX(-50%) translateY(50%)',
         left: '50%',
         width: '100%',
       },
-      '&:hover .hidden-button': {
-        visibility: 'visible',
+      '&:hover .beta-label': {
+        visibility: 'hidden',
       },
     },
     img: {
@@ -35,6 +34,10 @@ const useStyles = makeStyles()((theme) => {
       margin: 'auto',
     },
     title: {
+      display: '-webkit-box',
+      overflow: 'hidden',
+      WebkitBoxOrient: 'vertical',
+      WebkitLineClamp: 2,
       textAlign: 'center',
       verticalAlign: 'bottom',
       color: theme.palette.text.primary,
@@ -49,9 +52,10 @@ interface Props {
   teamId: string
   name: string
   disabled: boolean
+  isBeta: boolean
 }
 
-export default function ({ img, teamId, name, disabled }: Props): React.ReactElement {
+export default function ({ img, teamId, name, disabled, isBeta }: Props): React.ReactElement {
   const { classes } = useStyles()
   const image = (
     <img
@@ -79,6 +83,11 @@ export default function ({ img, teamId, name, disabled }: Props): React.ReactEle
           <Typography className={classes.title} variant='h6'>
             {name.replace('otomi-quickstart-', '')}
           </Typography>
+          {isBeta && (
+            <Box className='beta-label'>
+              <Chip label='BETA' variant='outlined' />
+            </Box>
+          )}
         </Link>
       </Tooltip>
     </Box>
