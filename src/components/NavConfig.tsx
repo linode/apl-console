@@ -41,6 +41,7 @@ export default function NavConfig() {
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
         { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
+        { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: '/settings',
