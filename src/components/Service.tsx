@@ -5,7 +5,7 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import {
-  GetSecretsApiResponse,
+  GetSecretsFromK8SApiResponse,
   GetServiceApiResponse,
   GetSessionApiResponse,
   GetSettingsApiResponse,
@@ -112,9 +112,9 @@ export const getServiceSchema = (
     } else if (ing) {
       // Give the certName an enum selector with names of existing tls secrets
       if (ing.certSelect) {
-        const tlsSecretNames = secrets.filter((s) => s.secret.type === 'tls').map((s) => s.name)
-        set(ingressSchema, `certName.enum`, tlsSecretNames)
-        if (secrets.length === 1) ing.certName = tlsSecretNames[0]
+        set(ingressSchema, `certName.enum`, secrets)
+        set(ingressSchema, `certName.listNotShort`, true)
+        if (secrets.length === 1) ing.certName = secrets[0]
       }
     }
     if (['cluster', 'tlsPass'].includes(ing?.type as string)) {
@@ -194,7 +194,7 @@ export const updateIngressField = (formData, defaultSubdomain, isKsvc = false) =
 interface Props extends CrudProps {
   service?: GetServiceApiResponse
   k8sServices?: GetTeamK8SServicesApiResponse
-  secrets: GetSecretsApiResponse
+  secrets: GetSecretsFromK8SApiResponse
   teamId: string
   ingressClassNames: string[]
 }

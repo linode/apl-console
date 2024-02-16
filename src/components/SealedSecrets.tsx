@@ -1,11 +1,12 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetSecretsApiResponse } from 'redux/otomiApi'
+import { GetSealedSecretsApiResponse } from 'redux/otomiApi'
 import { Box } from '@mui/material'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import { getStatus } from './Workloads'
 import MuiLink from './MuiLink'
 import InformationBanner from './InformationBanner'
 
@@ -15,7 +16,9 @@ const getSecretLink = (isAdmin, ownerId) =>
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path =
-      isAdmin && !ownerId ? `/secrets/${encodeURIComponent(id)}` : `/teams/${teamId}/secrets/${encodeURIComponent(id)}`
+      isAdmin && !ownerId
+        ? `/sealed-secrets/${encodeURIComponent(id)}`
+        : `/teams/${teamId}/sealed-secrets/${encodeURIComponent(id)}`
     return (
       <RLink to={path} label={name}>
         {name}
@@ -23,19 +26,8 @@ const getSecretLink = (isAdmin, ownerId) =>
     )
   }
 
-const getVaultSecretLink = (clusterDomain) =>
-  function (row) {
-    const { teamId, name } = row
-    const url = `https://vault.${clusterDomain}/ui/vault/secrets/secret/show/teams/team-${teamId}/${name}`
-    return (
-      <MuiLink href={`${url}`} target='_blank' rel='noopener'>
-        vault:{name}
-      </MuiLink>
-    )
-  }
-
 interface Props {
-  secrets: GetSecretsApiResponse
+  secrets: GetSealedSecretsApiResponse
   teamId?: string
 }
 
@@ -43,8 +35,8 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     appsEnabled,
     oboTeamId,
-    settings: { cluster },
     user: { isAdmin },
+    status,
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -57,12 +49,12 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'type',
       label: t('Type'),
-      renderer: (row) => row.secret.type,
+      renderer: (row) => row?.type,
     },
     {
-      id: 'vaultLink',
-      label: 'Vault',
-      renderer: getVaultSecretLink(cluster.domainSuffix),
+      id: 'Status',
+      label: 'Status',
+      renderer: (row) => getStatus(status?.sealedSecrets?.[row.id]),
     },
   ]
   if (!teamId) {
@@ -75,11 +67,19 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
 
   return (
     <Box>
-      <InformationBanner message='Secrets with Hashicorp Vault are going to be removed in Otomi v3.0.0. Otomi provides Sealed Secrets as a replacement.' />
-      {!appsEnabled.vault ? (
-        <p>Admin needs to enable the Vault app to activate this feature.</p>
+      {!appsEnabled['sealed-secrets'] ? (
+        <p>Admin needs to enable the Sealed Secrets app to activate this feature.</p>
       ) : (
-        <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
+        <>
+          <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
+            {isAdmin && (
+              <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
+                Download Keys
+              </MuiLink>
+            )}
+          </InformationBanner>
+          <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+        </>
       )}
     </Box>
   )

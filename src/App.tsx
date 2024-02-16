@@ -19,7 +19,9 @@ import Error from 'pages/Error'
 import Policies from 'pages/Policies'
 import Policy from 'pages/Policy'
 import Secret from 'pages/Secret'
+import SealedSecret from 'pages/SealedSecret'
 import Secrets from 'pages/Secrets'
+import SealedSecrets from 'pages/SealedSecrets'
 import Service from 'pages/Service'
 import Services from 'pages/Services'
 import Setting from 'pages/Setting'
@@ -49,6 +51,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import Project from 'pages/Project'
+import Maintenance from 'pages/Maintenance'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -100,6 +103,7 @@ function App() {
                                   <Route path='/catalogs/:teamId/:catalogName/:workloadId' component={Catalog} exact />
                                   <Route path='/services' component={Services} exact />
                                   <Route path='/secrets' component={Secrets} exact />
+                                  <Route path='/sealed-secrets' component={SealedSecrets} exact />
                                   <Route path='/workloads' component={Workloads} exact />
                                   <Route path='/settings' component={SettingsOverview} exact />
                                   <Route path='/projects' component={Projects} exact />
@@ -110,11 +114,18 @@ function App() {
                                   <Route path='/teams/:teamId' component={Team} exact />
                                   <Route path='/teams/:teamId/create-backup' component={Backup} exact />
                                   <Route path='/teams/:teamId/create-secret' component={Secret} exact />
+                                  <Route path='/teams/:teamId/create-sealedsecret' component={SealedSecret} exact />
                                   <Route path='/teams/:teamId/create-service' component={Service} exact />
                                   <Route path='/teams/:teamId/create-project' component={Project} exact />
                                   <Route path='/teams/:teamId/create-build' component={Build} exact />
                                   <Route path='/teams/:teamId/secrets' component={Secrets} exact />
+                                  <Route path='/teams/:teamId/sealed-secrets' component={SealedSecrets} exact />
                                   <Route path='/teams/:teamId/secrets/:secretId' component={Secret} exact />
+                                  <Route
+                                    path='/teams/:teamId/sealed-secrets/:secretId'
+                                    component={SealedSecret}
+                                    exact
+                                  />
                                   <Route path='/teams/:teamId/backups' component={Backups} exact />
                                   <Route path='/teams/:teamId/backups/:backupId' component={Backup} exact />
                                   <Route path='/teams/:teamId/projects' component={Projects} exact />
@@ -124,6 +135,8 @@ function App() {
                                   <Route path='/teams/:teamId/workloads' component={Workloads} exact />
                                   <Route path='/teams/:teamId/services' component={Services} exact />
                                   <Route path='/teams/:teamId/services/:serviceId' component={Service} exact />
+                                  <Route path='/maintenance' component={Maintenance} exact />
+
                                   <Route path='*'>
                                     <Error error={new HttpErrorBadRequest()} />
                                   </Route>

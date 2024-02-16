@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.4.0](https://github.com/redkubes/otomi-stack-web/compare/v2.3.0...v2.4.0) (2024-02-13)
+
+
+### Features
+
+* download values ([#388](https://github.com/redkubes/otomi-stack-web/issues/388)) ([0e98bd1](https://github.com/redkubes/otomi-stack-web/commit/0e98bd1739043508ffed702dafaa106324ff665f))
+
+
+### Bug Fixes
+
+* workload values re-render structure & remove unnecessary files ([#385](https://github.com/redkubes/otomi-stack-web/issues/385)) ([be56ebd](https://github.com/redkubes/otomi-stack-web/commit/be56ebd67eec1f70c9661252960efea54438d644))
+
 ## [2.3.0](https://github.com/redkubes/otomi-stack-web/compare/v2.2.0...v2.3.0) (2024-01-12)
 
 
