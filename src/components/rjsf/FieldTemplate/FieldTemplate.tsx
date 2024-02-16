@@ -41,7 +41,9 @@ export default function ({
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           {/* <Box> */}
-          <Typography variant='h6'>{label}</Typography>
+          <Typography sx={{ textTransform: 'capitalize' }} variant='h6'>
+            {label}
+          </Typography>
           <Divider variant='fullWidth' />
           {/* </Box> */}
         </AccordionSummary>
@@ -61,7 +63,7 @@ export default function ({
       required={required}
       schema={schema}
     >
-      <FormControl fullWidth error={!!rawErrors.length} required={required}>
+      <FormControl fullWidth error={!!rawErrors.length} required={required} sx={{ mt: accordionize && '1rem' }}>
         {accordionize && accordionized(children)}
         {!accordionize && children}
         {!hideDescription && displayLabel && rawDescription ? (
