@@ -10,7 +10,7 @@ import {
   useCreateServiceMutation,
   useDeleteServiceMutation,
   useEditServiceMutation,
-  useGetSecretsQuery,
+  useGetSecretsFromK8SQuery,
   useGetServiceQuery,
   useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
@@ -61,7 +61,7 @@ export default function ({
     isFetching: isFetchingSecrets,
     isError: isErrorSecrets,
     refetch: refetchSecrets,
-  } = useGetSecretsQuery({ teamId })
+  } = useGetSecretsFromK8SQuery({ teamId })
   const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
   const ingressClassNames = getIngressClassNames(ingressSettings)
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)

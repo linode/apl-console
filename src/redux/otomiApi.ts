@@ -10,6 +10,16 @@ const injectedRtkApi = api.injectEndpoints({
     getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
       query: () => ({ url: `/metrics` }),
     }),
+    getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/otomi/values`,
+        params: {
+          filesOnly: queryArg.filesOnly,
+          excludeSecrets: queryArg.excludeSecrets,
+          withWorkloadValues: queryArg.withWorkloadValues,
+        },
+      }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -52,6 +62,34 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
+    }),
+    getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
+      query: () => ({ url: `/sealedsecrets` }),
+    }),
+    downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
+      query: () => ({ url: `/sealedsecretskeys` }),
+    }),
+    getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/k8sSecrets` }),
+    }),
+    getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
+    }),
+    createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+    }),
+    getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}` }),
+    }),
+    editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
     getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
@@ -268,6 +306,13 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_workloads: number
 }
 export type GetMetricsApiArg = void
+export type GetValuesApiResponse = unknown
+export type GetValuesApiArg = {
+  /** IDs of settings to return */
+  filesOnly?: 'true' | 'false'
+  excludeSecrets?: 'true' | 'false'
+  withWorkloadValues?: 'true' | 'false'
+}
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -447,7 +492,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -537,7 +582,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -628,7 +673,7 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -718,7 +763,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -811,7 +856,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -904,7 +949,7 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: ('managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'oidc' | 'resourceQuota' | 'networkPolicy')[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -1396,6 +1441,248 @@ export type DeleteServiceApiArg = {
   teamId: string
   /** ID of the service */
   serviceId: string
+}
+export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetAllSealedSecretsApiArg = void
+export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
+export type DownloadSealedSecretKeysApiArg = void
+export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained secrets from k8s */ {
+  name?: string
+}[]
+export type GetSecretsFromK8SApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetSealedSecretsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type CreateSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** SealedSecret object */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type GetSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
+export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type EditSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
+export type DeleteSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
 }
 export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
   id?: string
@@ -3406,7 +3693,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3668,7 +3955,17 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+      provider:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -3835,7 +4132,17 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+      provider?:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4097,7 +4404,17 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+        provider:
+          | 'aws'
+          | 'azure'
+          | 'digitalocean'
+          | 'google'
+          | 'ovh'
+          | 'vultr'
+          | 'scaleway'
+          | 'civo'
+          | 'linode'
+          | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -4274,6 +4591,7 @@ export const {
   useDeleteLicenseMutation,
   useActivateLicenseMutation,
   useGetMetricsQuery,
+  useGetValuesQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
@@ -4287,6 +4605,14 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useGetAllSealedSecretsQuery,
+  useDownloadSealedSecretKeysQuery,
+  useGetSecretsFromK8SQuery,
+  useGetSealedSecretsQuery,
+  useCreateSealedSecretMutation,
+  useGetSealedSecretQuery,
+  useEditSealedSecretMutation,
+  useDeleteSealedSecretMutation,
   useGetSecretsQuery,
   useCreateSecretMutation,
   useGetSecretQuery,
