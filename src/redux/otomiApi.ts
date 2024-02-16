@@ -53,6 +53,34 @@ const injectedRtkApi = api.injectEndpoints({
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
     }),
+    getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
+      query: () => ({ url: `/sealedsecrets` }),
+    }),
+    downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
+      query: () => ({ url: `/sealedsecretskeys` }),
+    }),
+    getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/k8sSecrets` }),
+    }),
+    getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
+    }),
+    createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+    }),
+    getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}` }),
+    }),
+    editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`, method: 'DELETE' }),
+    }),
     getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
     }),
@@ -1293,6 +1321,248 @@ export type DeleteServiceApiArg = {
   teamId: string
   /** ID of the service */
   serviceId: string
+}
+export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetAllSealedSecretsApiArg = void
+export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
+export type DownloadSealedSecretKeysApiArg = void
+export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained secrets from k8s */ {
+  name?: string
+}[]
+export type GetSecretsFromK8SApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}[]
+export type GetSealedSecretsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type CreateSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** SealedSecret object */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type GetSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+}
+export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  id?: string
+  name: string
+  namespace?: string
+  immutable?: boolean
+  type:
+    | 'kubernetes.io/opaque'
+    | 'kubernetes.io/service-account-token'
+    | 'kubernetes.io/dockercfg'
+    | 'kubernetes.io/dockerconfigjson'
+    | 'kubernetes.io/basic-auth'
+    | 'kubernetes.io/ssh-auth'
+    | 'kubernetes.io/tls'
+  encryptedData: {
+    key: string
+    value: string
+  }[]
+  metadata?: {
+    annotations?: {
+      key: string
+      value: string
+    }[]
+    finalizers?: string[]
+    labels?: {
+      key: string
+      value: string
+    }[]
+  }
+}
+export type EditSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    id?: string
+    name: string
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData: {
+      key: string
+      value: string
+    }[]
+    metadata?: {
+      annotations?: {
+        key: string
+        value: string
+      }[]
+      finalizers?: string[]
+      labels?: {
+        key: string
+        value: string
+      }[]
+    }
+  }
+}
+export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
+export type DeleteSealedSecretApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the secret */
+  secretId: string
 }
 export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
   id?: string
@@ -4105,6 +4375,14 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useGetAllSealedSecretsQuery,
+  useDownloadSealedSecretKeysQuery,
+  useGetSecretsFromK8SQuery,
+  useGetSealedSecretsQuery,
+  useCreateSealedSecretMutation,
+  useGetSealedSecretQuery,
+  useEditSealedSecretMutation,
+  useDeleteSealedSecretMutation,
   useGetSecretsQuery,
   useCreateSecretMutation,
   useGetSecretQuery,

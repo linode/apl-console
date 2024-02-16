@@ -86,7 +86,13 @@ export default function ({ teamId, catalogs, canCreateResource }: Props): React.
           const img = item?.icon || '/logos/otomi_logo.svg'
           return (
             <Grid item xs={12} sm={4} md={3} lg={2} key={item.name}>
-              <CatalogCard img={img} teamId={teamId} name={item.name} disabled={!canCreateResource} />
+              <CatalogCard
+                img={img}
+                teamId={teamId}
+                name={item.name}
+                disabled={!canCreateResource}
+                isBeta={item.isBeta}
+              />
             </Grid>
           )
         })}

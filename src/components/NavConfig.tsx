@@ -43,6 +43,7 @@ export default function NavConfig() {
         { title: 'Network Policies', path: '/netpols', icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
         { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
+        { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: '/settings',
@@ -73,6 +74,7 @@ export default function NavConfig() {
         },
         { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
         { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
+        { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
