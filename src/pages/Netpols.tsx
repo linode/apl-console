@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Netpols from 'components/Netpols'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -5,7 +6,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetTeamNetpolsQuery } from 'redux/otomiApi'
+import { useGetAllNetpolsQuery, useGetTeamNetpolsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
 interface Params {
@@ -18,13 +19,28 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   useAuthzSession(teamId)
-  const { data, isLoading, isFetching, refetch } = useGetTeamNetpolsQuery({ teamId })
+  const {
+    data: allNetpols,
+    isLoading: isLoadingAllNetpols,
+    isFetching: isFetchingAllNetpols,
+    refetch: refetchAllNetpols,
+  } = useGetAllNetpolsQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamNetpols,
+    isLoading: isLoadingTeamNetpols,
+    isFetching: isFetchingTeamNetpols,
+    refetch: refetchTeamNetpols,
+  } = useGetTeamNetpolsQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
-    if (isDirty !== false && !isFetching) refetch()
+    if (isDirty !== false) return
+    if (!teamId && !isFetchingAllNetpols) refetchAllNetpols()
+    else if (teamId && !isFetchingTeamNetpols) refetchTeamNetpols()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const comp = data && <Netpols teamId={teamId} netpols={data} />
-  return <PaperLayout loading={isLoading} comp={comp} title={t('Network Policies', { role: getRole(teamId) })} />
+  const loading = isLoadingAllNetpols || isLoadingTeamNetpols
+  const netpols = teamId ? teamNetpols : allNetpols
+  const comp = netpols && <Netpols teamId={teamId} netpols={netpols} />
+  return <PaperLayout loading={loading} comp={comp} title={t('Network Policies', { role: getRole(teamId) })} />
 }
