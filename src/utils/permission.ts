@@ -1,10 +1,10 @@
-import get from 'lodash/get'
+import { get } from 'lodash'
 import { ActivateLicenseApiResponse, GetMetricsApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 
-export default (user: GetSessionApiResponse['user'], teamId: string | undefined, action): boolean => {
+export function canDo(user: GetSessionApiResponse['user'], teamId: string, action: string): boolean {
   if (user.isAdmin) return true
   if (!teamId) return false
-  const deniedActions = get(user, `authz.${teamId}.deniedAttributes.Team`, [])
+  const deniedActions = get(user, `authz.${teamId}.deniedAttributes.access`, [])
   return !deniedActions.includes(action)
 }
 
