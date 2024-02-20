@@ -11,9 +11,10 @@ const ListItem = forwardRef<HTMLDivElement & HTMLAnchorElement, ListItemStylePro
 interface Props {
   item: any
   children: any
+  disabled: boolean
 }
 
-export default function SidebarShellButton({ item, children }: Props) {
+export default function SidebarShellButton({ item, children, disabled }: Props) {
   const { roles } = item
   const { isShell, onOpenShell } = useShellDrawer()
 
@@ -28,6 +29,7 @@ export default function SidebarShellButton({ item, children }: Props) {
       }}
       roles={roles}
       activeRoot={isShell}
+      disabled={disabled}
     >
       {children}
     </ListItem>

@@ -10,6 +10,16 @@ const injectedRtkApi = api.injectEndpoints({
     getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
       query: () => ({ url: `/metrics` }),
     }),
+    getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
+      query: (queryArg) => ({
+        url: `/otomi/values`,
+        params: {
+          filesOnly: queryArg.filesOnly,
+          excludeSecrets: queryArg.excludeSecrets,
+          withWorkloadValues: queryArg.withWorkloadValues,
+        },
+      }),
+    }),
     getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
       query: () => ({ url: `/secrets` }),
     }),
@@ -319,6 +329,13 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_workloads: number
 }
 export type GetMetricsApiArg = void
+export type GetValuesApiResponse = unknown
+export type GetValuesApiArg = {
+  /** IDs of settings to return */
+  filesOnly?: 'true' | 'false'
+  excludeSecrets?: 'true' | 'false'
+  withWorkloadValues?: 'true' | 'false'
+}
 export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   id?: string
   name: string
@@ -474,16 +491,9 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }[]
 export type GetTeamsApiArg = void
@@ -571,16 +581,9 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type CreateTeamApiArg = {
@@ -669,16 +672,9 @@ export type CreateTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: (
-        | 'alerts'
-        | 'billingAlertQuotas'
-        | 'oidc'
-        | 'resourceQuota'
-        | 'downloadKubeConfig'
-        | 'downloadDockerConfig'
-        | 'networkPolicy'
-      )[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
+      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
   }
 }
@@ -766,16 +762,9 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type GetTeamApiArg = {
@@ -866,16 +855,9 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   }
   selfService?: {
     service?: ('ingress' | 'networkPolicy')[]
-    team?: (
-      | 'alerts'
-      | 'billingAlertQuotas'
-      | 'oidc'
-      | 'resourceQuota'
-      | 'downloadKubeConfig'
-      | 'downloadDockerConfig'
-      | 'networkPolicy'
-    )[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
+    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
 }
 export type EditTeamApiArg = {
@@ -966,16 +948,9 @@ export type EditTeamApiArg = {
     }
     selfService?: {
       service?: ('ingress' | 'networkPolicy')[]
-      team?: (
-        | 'alerts'
-        | 'billingAlertQuotas'
-        | 'oidc'
-        | 'resourceQuota'
-        | 'downloadKubeConfig'
-        | 'downloadDockerConfig'
-        | 'networkPolicy'
-      )[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
+      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
   }
 }
@@ -3494,7 +3469,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3756,7 +3731,17 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+      provider:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -3923,7 +3908,17 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+      provider?:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4185,7 +4180,17 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'custom'
+        provider:
+          | 'aws'
+          | 'azure'
+          | 'digitalocean'
+          | 'google'
+          | 'ovh'
+          | 'vultr'
+          | 'scaleway'
+          | 'civo'
+          | 'linode'
+          | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -4362,6 +4367,7 @@ export const {
   useDeleteLicenseMutation,
   useActivateLicenseMutation,
   useGetMetricsQuery,
+  useGetValuesQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
