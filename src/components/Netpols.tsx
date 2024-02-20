@@ -27,9 +27,7 @@ interface Props {
 
 export default function ({ netpols, teamId }: Props): React.ReactElement {
   const {
-    appsEnabled,
     oboTeamId,
-    settings: { cluster },
     user: { isAdmin },
   } = useSession()
   const { t } = useTranslation()
@@ -43,7 +41,7 @@ export default function ({ netpols, teamId }: Props): React.ReactElement {
     {
       id: 'type',
       label: t('ruleType'),
-      renderer: (row) => row?.ruleType.type,
+      renderer: (row) => row?.ruleType?.type,
     },
   ]
   if (!teamId) {
