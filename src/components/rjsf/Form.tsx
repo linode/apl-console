@@ -144,7 +144,7 @@ export default function ({
         fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
         widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget, CodeEditorWidget }}
         onChange={onChangeWrapper}
-        onSubmit={onSubmitWrapper}
+        onSubmit={onSubmit && onSubmitWrapper}
         disabled={disabled || mutating}
         // noValidate
         {...other}
