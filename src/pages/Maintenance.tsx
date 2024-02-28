@@ -3,10 +3,11 @@ import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 
-import { Button, Link, Typography } from '@mui/material'
+import { Button, Link, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
-import { useMigrateSecretsMutation } from 'redux/otomiApi'
+import { MigrateSecretsApiResponse, useMigrateSecretsMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
+import snack from 'utils/snack'
 
 interface Params {
   teamId: string
@@ -18,13 +19,20 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { user, oboTeamId } = useSession()
-  const [migrateSecrets, { isLoading }] = useMigrateSecretsMutation()
+  const { oboTeamId, appsEnabled } = useSession()
+  const isAdmin = oboTeamId === 'admin'
+  const [migrateSecrets] = useMigrateSecretsMutation()
   const handleMigrate = async () => {
-    console.log('migrate')
-    const res = await migrateSecrets({ body: { teamId: oboTeamId, isAdmin: user.isAdmin } })
-    console.log('res', res)
+    console.log('Secrets migration requested, starting!')
+    await migrateSecrets({ body: { isAdmin } }).then(({ data }: { data: MigrateSecretsApiResponse }) => {
+      console.log(data)
+      snack.success(<Typography>{data.message}</Typography>)
+    })
   }
+  let migrateSecretsTooltip = ''
+  if (!isAdmin) migrateSecretsTooltip = 'Only super admin can perform this migration!'
+  if (isAdmin && !appsEnabled['sealed-secrets'])
+    migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
   const comp = (
     <>
       <HeaderTitle title='Maintenance' resourceType='maintenance' />
@@ -41,18 +49,22 @@ export default function ({
       <Typography variant='h6' mt={2}>
         Migrations
       </Typography>
-      <Button
-        variant='text'
-        color='primary'
-        sx={{
-          px: 0,
-          '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-          '&.MuiButton-root:active': { bgcolor: 'transparent', boxShadow: 'none' },
-        }}
-        onClick={handleMigrate}
-      >
-        Migrate HashiCorp Vault Secrets to Sealed Secrets
-      </Button>
+      <Tooltip title={migrateSecretsTooltip}>
+        <span>
+          <Button
+            variant='text'
+            color='primary'
+            sx={{
+              px: 0,
+              '&.MuiButton-root:hover': { bgcolor: 'transparent' },
+            }}
+            onClick={handleMigrate}
+            disabled={!isAdmin || !appsEnabled['sealed-secrets']}
+          >
+            Migrate HashiCorp Vault Secrets to Sealed Secrets
+          </Button>
+        </span>
+      </Tooltip>
     </>
   )
   // title is set in component as it knows more to put in the url (like tab chosen)
