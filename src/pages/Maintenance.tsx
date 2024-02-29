@@ -24,10 +24,9 @@ export default function ({
     appsEnabled,
   } = useSession()
   const [migrateSecrets] = useMigrateSecretsMutation()
-  const handleMigrate = async () => {
-    await migrateSecrets({ body: { isAdmin } }).then(({ data }: { data: MigrateSecretsApiResponse }) => {
-      snack[data.status](<Typography>{data.message}</Typography>)
-    })
+  const handleMigrateSecrets = async () => {
+    const { data } = (await migrateSecrets({ body: { isAdmin } })) as { data: MigrateSecretsApiResponse }
+    snack[data.status](<Typography>{data.message}</Typography>)
   }
   let migrateSecretsTooltip = ''
   if (!appsEnabled['sealed-secrets']) migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
@@ -56,7 +55,7 @@ export default function ({
               px: 0,
               '&.MuiButton-root:hover': { bgcolor: 'transparent' },
             }}
-            onClick={handleMigrate}
+            onClick={handleMigrateSecrets}
             disabled={!isAdmin || !appsEnabled['sealed-secrets']}
           >
             Migrate HashiCorp Vault Secrets to Sealed Secrets
