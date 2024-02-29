@@ -1446,6 +1446,7 @@ export type DeleteServiceApiArg = {
   serviceId: string
 }
 export type MigrateSecretsApiResponse = /** status 200 Successfully migrated secrets to sealed secrets */ {
+  status?: string
   message?: string
 }
 export type MigrateSecretsApiArg = {

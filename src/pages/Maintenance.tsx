@@ -19,20 +19,18 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { oboTeamId, appsEnabled } = useSession()
-  const isAdmin = oboTeamId === 'admin'
+  const {
+    user: { isAdmin },
+    appsEnabled,
+  } = useSession()
   const [migrateSecrets] = useMigrateSecretsMutation()
   const handleMigrate = async () => {
-    console.log('Secrets migration requested, starting!')
     await migrateSecrets({ body: { isAdmin } }).then(({ data }: { data: MigrateSecretsApiResponse }) => {
-      console.log(data)
-      snack.success(<Typography>{data.message}</Typography>)
+      snack[data.status](<Typography>{data.message}</Typography>)
     })
   }
   let migrateSecretsTooltip = ''
-  if (!isAdmin) migrateSecretsTooltip = 'Only super admin can perform this migration!'
-  if (isAdmin && !appsEnabled['sealed-secrets'])
-    migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
+  if (!appsEnabled['sealed-secrets']) migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
   const comp = (
     <>
       <HeaderTitle title='Maintenance' resourceType='maintenance' />
