@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.5.0](https://github.com/redkubes/otomi-stack-web/compare/v2.4.0...v2.5.0) (2024-02-22)
+
+
+### Features
+
+* improve team permissions ([#390](https://github.com/redkubes/otomi-stack-web/issues/390)) ([fcd303b](https://github.com/redkubes/otomi-stack-web/commit/fcd303b9c25061e7f714eefe8cca7e22fa6bed56))
+* rabbitmq ([#382](https://github.com/redkubes/otomi-stack-web/issues/382)) ([79feaed](https://github.com/redkubes/otomi-stack-web/commit/79feaede7f833b022cf7786b6f31432429f33612))
+* sealed secrets ([#381](https://github.com/redkubes/otomi-stack-web/issues/381)) ([5a85d49](https://github.com/redkubes/otomi-stack-web/commit/5a85d4935d4005b17fc47da80635799f17bb7b01))
+
 ## [2.4.0](https://github.com/redkubes/otomi-stack-web/compare/v2.3.0...v2.4.0) (2024-02-13)
 
 
