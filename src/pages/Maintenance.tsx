@@ -5,9 +5,10 @@ import { RouteComponentProps } from 'react-router-dom'
 
 import { Button, Link, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
-import { MigrateSecretsApiResponse, useMigrateSecretsMutation } from 'redux/otomiApi'
+import { MigrateSecretsApiResponse, useGetAllSecretsQuery, useMigrateSecretsMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import snack from 'utils/snack'
+import { isEmpty } from 'lodash'
 
 interface Params {
   teamId: string
@@ -23,13 +24,15 @@ export default function ({
     user: { isAdmin },
     appsEnabled,
   } = useSession()
+  const { data: secrets } = useGetAllSecretsQuery()
   const [migrateSecrets] = useMigrateSecretsMutation()
   const handleMigrateSecrets = async () => {
     const { data } = (await migrateSecrets({ body: { isAdmin } })) as { data: MigrateSecretsApiResponse }
     snack[data.status](<Typography>{data.message}</Typography>)
   }
   let migrateSecretsTooltip = ''
-  if (!appsEnabled['sealed-secrets']) migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
+  if (isEmpty(secrets)) migrateSecretsTooltip = 'There are no secrets to migrate!'
+  else if (!appsEnabled['sealed-secrets']) migrateSecretsTooltip = 'Admin needs to enable the Sealed Secrets app first!'
   const comp = (
     <>
       <HeaderTitle title='Maintenance' resourceType='maintenance' />
@@ -56,7 +59,7 @@ export default function ({
               '&.MuiButton-root:hover': { bgcolor: 'transparent' },
             }}
             onClick={handleMigrateSecrets}
-            disabled={!isAdmin || !appsEnabled['sealed-secrets']}
+            disabled={!isAdmin || !appsEnabled['sealed-secrets'] || isEmpty(secrets)}
           >
             Migrate HashiCorp Vault Secrets to Sealed Secrets
           </Button>
