@@ -70,7 +70,6 @@ export default function NavConfig() {
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('policies_icon.svg') },
-        { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
