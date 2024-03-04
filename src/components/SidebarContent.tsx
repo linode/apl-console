@@ -28,12 +28,15 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
 
   const { isAdmin } = user
 
-  if (!isAdmin) navConfig = navConfig.filter((group) => group.subheader !== 'platform')
-  else {
-    navConfig = navConfig.filter(
-      (group) => group.subheader.toLowerCase() === 'actions' || group.subheader.toLowerCase().includes(themeView),
-    )
-  }
+  navConfig = navConfig.filter((group) => {
+    const subheader = group.subheader.toLowerCase()
+    if (isAdmin) {
+      return (
+        subheader === 'actions' || subheader.includes(themeView) || (themeView === 'team' && subheader === 'access')
+      )
+    }
+    return subheader !== 'platform'
+  })
 
   return (
     <Box {...other}>
@@ -52,7 +55,6 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
           )}
           {group.items.map((list) => {
             if (oboTeamId === 'admin' && list.dontShowIfAdminTeam) return null
-
             return <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
           })}
         </List>

@@ -67,7 +67,13 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
 
   if (title === 'Deploy Changes') return <SidebarDeployButton item={item}>{renderContent}</SidebarDeployButton>
   if (title === 'Revert Changes') return <SidebarRevertButton item={item}>{renderContent}</SidebarRevertButton>
-  if (title === 'Shell') return <SidebarShellButton item={item}>{renderContent}</SidebarShellButton>
+  if (title === 'Shell') {
+    return (
+      <SidebarShellButton disabled={disabled} item={item}>
+        {renderContent}
+      </SidebarShellButton>
+    )
+  }
 
   return (
     <ListItem

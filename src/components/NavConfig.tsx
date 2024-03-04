@@ -1,7 +1,7 @@
 import generateDownloadLink from 'generate-download-link'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
-import canDo from 'utils/permission'
+import { canDo } from 'utils/permission'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -11,7 +11,6 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 
 export default function NavConfig() {
   const { ca, appsEnabled, oboTeamId, user } = useSession()
-
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -78,7 +77,17 @@ export default function NavConfig() {
           icon: getIcon('settings_icon.svg'),
           dontShowIfAdminTeam: true,
         },
-        { title: 'Shell', path: `/cloudtty`, icon: getIcon('shell_icon.svg') },
+      ],
+    },
+    {
+      subheader: 'Access',
+      items: [
+        {
+          title: 'Shell',
+          path: `/cloudtty`,
+          icon: getIcon('shell_icon.svg'),
+          disabled: process.env.NODE_ENV !== 'production' || !canDo(user, oboTeamId, 'shell'),
+        },
         {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
@@ -90,18 +99,17 @@ export default function NavConfig() {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !canDo(user, oboTeamId, 'downloadDockerConfig') || !appsEnabled.harbor,
+          disabled: !appsEnabled.harbor || !canDo(user, oboTeamId, 'downloadDockerConfig'),
           isDownload: true,
         },
         {
           title: 'Download CA',
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !ca,
+          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority'),
           isDownload: true,
         },
       ],
     },
   ]
 }
-// export default navConfig
