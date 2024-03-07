@@ -29,7 +29,7 @@ export default function ({
   const { data: secrets } = useGetAllSecretsQuery()
   const [migrateSecrets] = useMigrateSecretsMutation()
   const handleMigrateSecrets = async () => {
-    const { data } = (await migrateSecrets({ body: { isAdmin } })) as { data: MigrateSecretsApiResponse }
+    const { data } = (await migrateSecrets()) as { data: MigrateSecretsApiResponse }
     setOpen(true)
     setModalInfo(data)
   }
