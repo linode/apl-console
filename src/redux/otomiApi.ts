@@ -63,6 +63,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
     }),
+    migrateSecrets: build.mutation<MigrateSecretsApiResponse, MigrateSecretsApiArg>({
+      query: () => ({ url: `/migrateSecrets`, method: 'POST' }),
+    }),
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
       query: () => ({ url: `/sealedsecrets` }),
     }),
@@ -1442,6 +1445,14 @@ export type DeleteServiceApiArg = {
   /** ID of the service */
   serviceId: string
 }
+export type MigrateSecretsApiResponse = /** status 200 Successfully migrated secrets to sealed secrets */ {
+  status?: 'success' | 'info'
+  message?: string
+  total?: number
+  migrated?: number
+  remaining?: number
+}
+export type MigrateSecretsApiArg = void
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
   id?: string
   name: string
@@ -4605,6 +4616,7 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useMigrateSecretsMutation,
   useGetAllSealedSecretsQuery,
   useDownloadSealedSecretKeysQuery,
   useGetSecretsFromK8SQuery,
