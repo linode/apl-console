@@ -56,7 +56,7 @@ const encryptedDataMap = {
   'kubernetes.io/opaque': [{ key: '' }],
   'kubernetes.io/service-account-token': [{ key: 'extra' }],
   'kubernetes.io/dockercfg': [{ key: '.dockercfg' }],
-  'kubernetes.io/dockerconfigjson': [{ key: 'dockerconfigjson' }],
+  'kubernetes.io/dockerconfigjson': [{ key: '.dockerconfigjson' }],
   'kubernetes.io/basic-auth': [{ key: 'username' }, { key: 'password' }],
   'kubernetes.io/ssh-auth': [{ key: 'ssh-privatekey' }],
   'kubernetes.io/tls': [{ key: 'tls.crt' }, { key: 'tls.key' }],
