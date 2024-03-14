@@ -99,7 +99,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     data: settings,
     isLoading: isLoadingSettings,
     refetch: refetchSettings,
-  } = useGetSettingsQuery({ ids: ['cluster', 'dns', 'otomi'] })
+  } = useGetSettingsQuery({ ids: ['cluster', 'dns', 'otomi'] }, { skip: oboTeamId !== 'admin' })
   const {
     data: apps,
     isLoading: isLoadingApps,
