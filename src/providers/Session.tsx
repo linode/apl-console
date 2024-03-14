@@ -104,7 +104,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     data: apps,
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
-  } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
+  } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
   const { socket, error: errorSocket } = useSocket({ url, path })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
