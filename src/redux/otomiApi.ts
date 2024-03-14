@@ -113,6 +113,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
+    getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
+      query: () => ({ url: `/netpols` }),
+    }),
+    getTeamNetpols: build.query<GetTeamNetpolsApiResponse, GetTeamNetpolsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols` }),
+    }),
+    createNetpol: build.mutation<CreateNetpolApiResponse, CreateNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
+    }),
+    getNetpol: build.query<GetNetpolApiResponse, GetNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}` }),
+    }),
+    editNetpol: build.mutation<EditNetpolApiResponse, EditNetpolApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteNetpol: build.mutation<DeleteNetpolApiResponse, DeleteNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`, method: 'DELETE' }),
+    }),
     getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
       query: () => ({ url: `/backups` }),
     }),
@@ -304,6 +326,7 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_backups: number
   otomi_builds: number
   otomi_secrets: number
+  otomi_netpols: number
   otomi_services: number
   otomi_teams: number
   otomi_workloads: number
@@ -385,30 +408,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetAllServicesApiArg = void
 export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
@@ -1012,30 +1011,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetTeamServicesApiArg = {
   /** ID of team to return */
@@ -1090,30 +1065,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type CreateServiceApiArg = {
   /** ID of team to return */
@@ -1168,30 +1119,6 @@ export type CreateServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
@@ -1252,30 +1179,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type GetServiceApiArg = {
   /** ID of team to return */
@@ -1332,30 +1235,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type EditServiceApiArg = {
   /** ID of team to return */
@@ -1412,30 +1291,6 @@ export type EditServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type DeleteServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
@@ -1837,6 +1692,71 @@ export type DeleteSecretApiArg = {
   teamId: string
   /** ID of the secret */
   secretId: string
+}
+export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetAllNetpolsApiArg = void
+export type GetTeamNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetTeamNetpolsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type CreateNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Network policy object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type GetNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type GetNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+}
+export type EditNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type EditNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+  /** Netwok policy object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
+export type DeleteNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
 }
 export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
   id?: string
@@ -2403,30 +2323,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetAllProjectsApiArg = void
@@ -2562,30 +2458,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetTeamProjectsApiArg = {
@@ -2724,30 +2596,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type CreateProjectApiArg = {
@@ -2886,30 +2734,6 @@ export type CreateProjectApiArg = {
               })
             | null
           )
-      networkPolicy?: {
-        podSelector?: string
-        ingressPrivate?:
-          | {
-              mode: 'DenyAll'
-            }
-          | {
-              mode: 'AllowOnly'
-              allow: {
-                team: string
-                service?: string
-              }[]
-            }
-          | {
-              mode: 'AllowAll'
-            }
-        egressPublic?: {
-          domain: string
-          ports?: {
-            number: number
-            protocol: 'HTTPS' | 'HTTP' | 'TCP'
-          }[]
-        }[]
-      }
     }
   }
 }
@@ -2917,7 +2741,7 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
@@ -3052,36 +2876,12 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
@@ -3216,36 +3016,12 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** ID of the project */
   projectId: string
   /** Project object that contains updated values */
   body: object
@@ -3468,7 +3244,7 @@ export type GetWorkloadApiArg = {
   /** ID of the workload */
   workloadId: string
 }
-export type EditWorkloadApiResponse = /** status 200 Successfully edited a team secret */ {
+export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   id?: string
   teamId?: string
   name: string
@@ -4630,6 +4406,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllNetpolsQuery,
+  useGetTeamNetpolsQuery,
+  useCreateNetpolMutation,
+  useGetNetpolQuery,
+  useEditNetpolMutation,
+  useDeleteNetpolMutation,
   useGetAllBackupsQuery,
   useGetTeamBackupsQuery,
   useCreateBackupMutation,
