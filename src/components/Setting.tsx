@@ -4,7 +4,7 @@ import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSettingsApiResponse } from 'redux/otomiApi'
+import { GetSettingsInfoApiResponse } from 'redux/otomiApi'
 import { extract, isOf } from 'utils/schema'
 import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
@@ -12,7 +12,7 @@ import Form from './rjsf/Form'
 
 export const getSettingSchema = (
   appsEnabled: Record<string, any>,
-  settings: GetSettingsApiResponse,
+  settings: GetSettingsInfoApiResponse,
   settingId,
   formData: any,
 ): any => {
@@ -73,7 +73,7 @@ export const getSettingSchema = (
 
 export const getSettingUiSchema = (
   appsEnabled: Record<string, any>,
-  settings: GetSettingsApiResponse,
+  settings: GetSettingsInfoApiResponse,
   settingId: string,
 ): any => {
   const uiSchema: any = {
@@ -118,13 +118,13 @@ export const getSettingUiSchema = (
 }
 
 interface Props extends CrudProps {
-  settings: GetSettingsApiResponse
+  settings: GetSettingsInfoApiResponse
   settingId: string
 }
 
 export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings } = useSession()
-  const [setting, setSetting]: any = useState<GetSettingsApiResponse>(data)
+  const [setting, setSetting]: any = useState<GetSettingsInfoApiResponse>(data)
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
   const [disabledMessage, setDisabledMessage] = useState('')

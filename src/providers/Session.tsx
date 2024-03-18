@@ -12,11 +12,11 @@ import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
-  GetSettingsApiResponse,
+  GetSettingsInfoApiResponse,
   useApiDocsQuery,
   useGetAppsQuery,
   useGetSessionQuery,
-  useGetSettingsQuery,
+  useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
@@ -31,7 +31,7 @@ export interface SessionContext extends GetSessionApiResponse {
   refetchAppsEnabled?: () => void
   refetchSession?: () => void
   refetchSettings?: () => void
-  settings?: GetSettingsApiResponse
+  settings?: GetSettingsInfoApiResponse
 }
 
 const Context = React.createContext<SessionContext>({
@@ -95,11 +95,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
-  const {
-    data: settings,
-    isLoading: isLoadingSettings,
-    refetch: refetchSettings,
-  } = useGetSettingsQuery({ ids: ['cluster', 'dns', 'otomi'] }, { skip: oboTeamId !== 'admin' })
+  const { data: settings, isLoading: isLoadingSettings, refetch: refetchSettings } = useGetSettingsInfoQuery()
   const {
     data: apps,
     isLoading: isLoadingApps,

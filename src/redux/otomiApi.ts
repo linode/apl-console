@@ -254,6 +254,9 @@ const injectedRtkApi = api.injectEndpoints({
     apiDocs: build.query<ApiDocsApiResponse, ApiDocsApiArg>({
       query: () => ({ url: `/apiDocs` }),
     }),
+    getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
+      query: () => ({ url: `/settingsInfo` }),
+    }),
     getSettings: build.query<GetSettingsApiResponse, GetSettingsApiArg>({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
     }),
@@ -3664,6 +3667,37 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
 export type ApiDocsApiArg = void
+export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
+  cluster?: {
+    name?: string
+    domainSuffix?: string
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+  }
+  dns?: {
+    zones?: string[]
+  }
+  otomi?: {
+    additionalClusters?: {
+      domainSuffix: string
+      name: string
+      provider:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
+    }[]
+    hasCloudLB?: boolean
+    hasExternalDNS?: boolean
+    hasExternalIDP?: boolean
+  }
+}
+export type GetSettingsInfoApiArg = void
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
   alerts?: {
     repeatInterval?: string
@@ -4669,6 +4703,7 @@ export const {
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
   useApiDocsQuery,
+  useGetSettingsInfoQuery,
   useGetSettingsQuery,
   useEditSettingsMutation,
   useGetAppsQuery,

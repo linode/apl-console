@@ -8,7 +8,7 @@ import {
   GetSecretsFromK8SApiResponse,
   GetServiceApiResponse,
   GetSessionApiResponse,
-  GetSettingsApiResponse,
+  GetSettingsInfoApiResponse,
   GetTeamK8SServicesApiResponse,
 } from 'redux/otomiApi'
 import { getStrict } from 'utils/schema'
@@ -21,7 +21,7 @@ const idxMap: Record<string, number> = {
 
 export const addDomainEnumField = (
   schema: JSONSchema7,
-  settings: GetSettingsApiResponse,
+  settings: GetSettingsInfoApiResponse,
   formData: GetServiceApiResponse,
 ): void => {
   const { cluster, dns } = settings
@@ -73,7 +73,7 @@ export const addServiceNameEnumField = (
 
 export const getServiceSchema = (
   appsEnabled: Record<string, any>,
-  settings: GetSettingsApiResponse,
+  settings: GetSettingsInfoApiResponse,
   formData: GetServiceApiResponse,
   teamId,
   secrets: Array<any>,
