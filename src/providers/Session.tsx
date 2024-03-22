@@ -112,6 +112,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
+  console.log('lastTektonMessage', lastTektonMessage)
   const { lastMessage: status } = useSocketEvent<any>(socket, 'status')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
