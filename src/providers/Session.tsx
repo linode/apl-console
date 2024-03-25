@@ -262,7 +262,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     const { order, name, completionTime, sha, status } = lastTektonMessage
     const interest = [
       { type: 'error', cond: status === 'failed', time: completionTime },
-      { type: 'success', cond: status === 'succeeded', time: completionTime },
+      { type: 'success', cond: ['succeeded', 'completed'].includes(status), time: completionTime },
     ]
     interest.forEach((msg) => {
       const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
