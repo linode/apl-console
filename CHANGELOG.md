@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.7.0](https://github.com/redkubes/otomi-stack-web/compare/v2.6.0...v2.7.0) (2024-04-05)
+
+
+### Features
+
+* move netpols out of svc ([#386](https://github.com/redkubes/otomi-stack-web/issues/386)) ([08a7b19](https://github.com/redkubes/otomi-stack-web/commit/08a7b19f4676e69bc387ca8d0a1c5dc6e81b1f9c))
+
+
+### Bug Fixes
+
+* tekton pipeline emit message error ([#395](https://github.com/redkubes/otomi-stack-web/issues/395)) ([fe474e2](https://github.com/redkubes/otomi-stack-web/commit/fe474e2492c03b823b73982ddd6fac6c3c93a574))
+* vulnerability in settings data ([#394](https://github.com/redkubes/otomi-stack-web/issues/394)) ([d6ff5e2](https://github.com/redkubes/otomi-stack-web/commit/d6ff5e26e6161a87c5ea6db8a7f1dbfaf268bc63))
+
+## [2.6.0](https://github.com/redkubes/otomi-stack-web/compare/v2.5.0...v2.6.0) (2024-03-14)
+
+
+### Features
+
+* secrets migration ([#392](https://github.com/redkubes/otomi-stack-web/issues/392)) ([b82d6ac](https://github.com/redkubes/otomi-stack-web/commit/b82d6acf4ffe2c48e63959e8290bdd4ed9d6be17))
+
+
+### Bug Fixes
+
+* disable form submission if onSubmit doesn't exist ([#391](https://github.com/redkubes/otomi-stack-web/issues/391)) ([ca2532a](https://github.com/redkubes/otomi-stack-web/commit/ca2532ac0e4accffe431e72a0e0e0598803b99c9))
+
 ## [2.5.0](https://github.com/redkubes/otomi-stack-web/compare/v2.4.0...v2.5.0) (2024-02-22)
 
 

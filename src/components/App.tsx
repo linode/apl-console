@@ -26,7 +26,7 @@ import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import { GetAppApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
+import { GetAppApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
 import { extract, getAppSchemaName, isOf } from 'utils/schema'
@@ -97,12 +97,7 @@ export const getAppSchema = (appId: string, formData): any => {
   return schema
 }
 
-export const getAppUiSchema = (
-  appsEnabled: Record<string, any>,
-  settings: GetSettingsApiResponse,
-  appId: string,
-  formData,
-): any => {
+export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, formData): any => {
   const modelName = getAppSchemaName(appId)
   const model = getSpec().components.schemas[modelName].properties.values
   const uiSchema = {}
@@ -264,7 +259,7 @@ export default function ({
 
   // END HOOKS
   const appSchema = getAppSchema(id, values).properties?.values
-  const appUiSchema = getAppUiSchema(appsEnabled, settings, id, values)
+  const appUiSchema = getAppUiSchema(appsEnabled, id, values)
   const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
   const isAdminApps = teamId === 'admin'
 

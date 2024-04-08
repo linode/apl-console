@@ -12,11 +12,11 @@ import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
-  GetSettingsApiResponse,
+  GetSettingsInfoApiResponse,
   useApiDocsQuery,
   useGetAppsQuery,
   useGetSessionQuery,
-  useGetSettingsQuery,
+  useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
@@ -31,7 +31,7 @@ export interface SessionContext extends GetSessionApiResponse {
   refetchAppsEnabled?: () => void
   refetchSession?: () => void
   refetchSettings?: () => void
-  settings?: GetSettingsApiResponse
+  settings?: GetSettingsInfoApiResponse
 }
 
 const Context = React.createContext<SessionContext>({
@@ -95,16 +95,12 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
-  const {
-    data: settings,
-    isLoading: isLoadingSettings,
-    refetch: refetchSettings,
-  } = useGetSettingsQuery({ ids: ['cluster', 'dns', 'otomi'] })
+  const { data: settings, isLoading: isLoadingSettings, refetch: refetchSettings } = useGetSettingsInfoQuery()
   const {
     data: apps,
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
-  } = useGetAppsQuery({ teamId: 'admin', picks: ['id', 'enabled'] })
+  } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
   const { socket, error: errorSocket } = useSocket({ url, path })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -266,7 +262,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     const { order, name, completionTime, sha, status } = lastTektonMessage
     const interest = [
       { type: 'error', cond: status === 'failed', time: completionTime },
-      { type: 'success', cond: status === 'succeeded', time: completionTime },
+      { type: 'success', cond: ['succeeded', 'completed'].includes(status), time: completionTime },
     ]
     interest.forEach((msg) => {
       const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)

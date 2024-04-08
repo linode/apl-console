@@ -63,6 +63,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
     }),
+    migrateSecrets: build.mutation<MigrateSecretsApiResponse, MigrateSecretsApiArg>({
+      query: () => ({ url: `/migrateSecrets`, method: 'POST' }),
+    }),
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
       query: () => ({ url: `/sealedsecrets` }),
     }),
@@ -109,6 +112,28 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
+    }),
+    getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
+      query: () => ({ url: `/netpols` }),
+    }),
+    getTeamNetpols: build.query<GetTeamNetpolsApiResponse, GetTeamNetpolsApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols` }),
+    }),
+    createNetpol: build.mutation<CreateNetpolApiResponse, CreateNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
+    }),
+    getNetpol: build.query<GetNetpolApiResponse, GetNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}` }),
+    }),
+    editNetpol: build.mutation<EditNetpolApiResponse, EditNetpolApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteNetpol: build.mutation<DeleteNetpolApiResponse, DeleteNetpolApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`, method: 'DELETE' }),
     }),
     getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
       query: () => ({ url: `/backups` }),
@@ -267,6 +292,9 @@ const injectedRtkApi = api.injectEndpoints({
     apiDocs: build.query<ApiDocsApiResponse, ApiDocsApiArg>({
       query: () => ({ url: `/apiDocs` }),
     }),
+    getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
+      query: () => ({ url: `/settingsInfo` }),
+    }),
     getSettings: build.query<GetSettingsApiResponse, GetSettingsApiArg>({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
     }),
@@ -317,6 +345,7 @@ export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi m
   otomi_backups: number
   otomi_builds: number
   otomi_secrets: number
+  otomi_netpols: number
   otomi_services: number
   otomi_teams: number
   otomi_workloads: number
@@ -398,30 +427,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetAllServicesApiArg = void
 export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
@@ -1031,30 +1036,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }[]
 export type GetTeamServicesApiArg = {
   /** ID of team to return */
@@ -1109,30 +1090,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type CreateServiceApiArg = {
   /** ID of team to return */
@@ -1187,30 +1144,6 @@ export type CreateServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
@@ -1271,30 +1204,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type GetServiceApiArg = {
   /** ID of team to return */
@@ -1351,30 +1260,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
           })
         | null
       )
-  networkPolicy?: {
-    podSelector?: string
-    ingressPrivate?:
-      | {
-          mode: 'DenyAll'
-        }
-      | {
-          mode: 'AllowOnly'
-          allow: {
-            team: string
-            service?: string
-          }[]
-        }
-      | {
-          mode: 'AllowAll'
-        }
-    egressPublic?: {
-      domain: string
-      ports?: {
-        number: number
-        protocol: 'HTTPS' | 'HTTP' | 'TCP'
-      }[]
-    }[]
-  }
 }
 export type EditServiceApiArg = {
   /** ID of team to return */
@@ -1431,30 +1316,6 @@ export type EditServiceApiArg = {
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type DeleteServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
@@ -1464,6 +1325,14 @@ export type DeleteServiceApiArg = {
   /** ID of the service */
   serviceId: string
 }
+export type MigrateSecretsApiResponse = /** status 200 Successfully migrated secrets to sealed secrets */ {
+  status?: 'success' | 'info'
+  message?: string
+  total?: number
+  migrated?: number
+  remaining?: number
+}
+export type MigrateSecretsApiArg = void
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
   id?: string
   name: string
@@ -1848,6 +1717,71 @@ export type DeleteSecretApiArg = {
   teamId: string
   /** ID of the secret */
   secretId: string
+}
+export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetAllNetpolsApiArg = void
+export type GetTeamNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}[]
+export type GetTeamNetpolsApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type CreateNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** Network policy object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type GetNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type GetNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+}
+export type EditNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
+  id?: string
+  teamId?: string
+  name: string
+}
+export type EditNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
+  /** Netwok policy object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+  }
+}
+export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
+export type DeleteNetpolApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the network policy */
+  netpolId: string
 }
 export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
   id?: string
@@ -2487,30 +2421,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetAllProjectsApiArg = void
@@ -2646,30 +2556,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }[]
 export type GetTeamProjectsApiArg = {
@@ -2808,30 +2694,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type CreateProjectApiArg = {
@@ -2970,30 +2832,6 @@ export type CreateProjectApiArg = {
               })
             | null
           )
-      networkPolicy?: {
-        podSelector?: string
-        ingressPrivate?:
-          | {
-              mode: 'DenyAll'
-            }
-          | {
-              mode: 'AllowOnly'
-              allow: {
-                team: string
-                service?: string
-              }[]
-            }
-          | {
-              mode: 'AllowAll'
-            }
-        egressPublic?: {
-          domain: string
-          ports?: {
-            number: number
-            protocol: 'HTTPS' | 'HTTP' | 'TCP'
-          }[]
-        }[]
-      }
     }
   }
 }
@@ -3001,7 +2839,7 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the projec */
+  /** ID of the project */
   projectId: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
@@ -3136,36 +2974,12 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the projec */
+  /** ID of the project */
   projectId: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
@@ -3300,36 +3114,12 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
             })
           | null
         )
-    networkPolicy?: {
-      podSelector?: string
-      ingressPrivate?:
-        | {
-            mode: 'DenyAll'
-          }
-        | {
-            mode: 'AllowOnly'
-            allow: {
-              team: string
-              service?: string
-            }[]
-          }
-        | {
-            mode: 'AllowAll'
-          }
-      egressPublic?: {
-        domain: string
-        ports?: {
-          number: number
-          protocol: 'HTTPS' | 'HTTP' | 'TCP'
-        }[]
-      }[]
-    }
   }
 }
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the projec */
+  /** ID of the project */
   projectId: string
   /** Project object that contains updated values */
   body: object
@@ -3552,7 +3342,7 @@ export type GetWorkloadApiArg = {
   /** ID of the workload */
   workloadId: string
 }
-export type EditWorkloadApiResponse = /** status 200 Successfully edited a team secret */ {
+export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   id?: string
   teamId?: string
   name: string
@@ -3748,6 +3538,37 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
 export type ApiDocsApiArg = void
+export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
+  cluster?: {
+    name?: string
+    domainSuffix?: string
+    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+  }
+  dns?: {
+    zones?: string[]
+  }
+  otomi?: {
+    additionalClusters?: {
+      domainSuffix: string
+      name: string
+      provider:
+        | 'aws'
+        | 'azure'
+        | 'digitalocean'
+        | 'google'
+        | 'ovh'
+        | 'vultr'
+        | 'scaleway'
+        | 'civo'
+        | 'linode'
+        | 'custom'
+    }[]
+    hasCloudLB?: boolean
+    hasExternalDNS?: boolean
+    hasExternalIDP?: boolean
+  }
+}
+export type GetSettingsInfoApiArg = void
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
   alerts?: {
     repeatInterval?: string
@@ -4522,6 +4343,7 @@ export const {
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useMigrateSecretsMutation,
   useGetAllSealedSecretsQuery,
   useDownloadSealedSecretKeysQuery,
   useGetSecretsFromK8SQuery,
@@ -4535,6 +4357,12 @@ export const {
   useGetSecretQuery,
   useEditSecretMutation,
   useDeleteSecretMutation,
+  useGetAllNetpolsQuery,
+  useGetTeamNetpolsQuery,
+  useCreateNetpolMutation,
+  useGetNetpolQuery,
+  useEditNetpolMutation,
+  useDeleteNetpolMutation,
   useGetAllBackupsQuery,
   useGetTeamBackupsQuery,
   useCreateBackupMutation,
@@ -4578,6 +4406,7 @@ export const {
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
   useApiDocsQuery,
+  useGetSettingsInfoQuery,
   useGetSettingsQuery,
   useEditSettingsMutation,
   useGetAppsQuery,

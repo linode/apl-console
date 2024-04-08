@@ -3,12 +3,12 @@ import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { GetSessionApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
+import { GetSessionApiResponse, GetSettingsInfoApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getTeamSchema = (
   appsEnabled: Record<string, any>,
-  settings: GetSettingsApiResponse,
+  settings: GetSettingsInfoApiResponse,
   team: GetTeamApiResponse,
 ): any => {
   const {
