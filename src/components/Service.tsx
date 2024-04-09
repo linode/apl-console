@@ -78,7 +78,6 @@ export const getServiceSchema = (
   teamId,
   secrets: Array<any>,
   k8sServices: GetTeamK8SServicesApiResponse,
-  ingressClassNames: string[],
 ): any => {
   const { cluster } = settings
   const schema = cloneDeep(getSpec().components.schemas.Service) as JSONSchema7
@@ -87,7 +86,10 @@ export const getServiceSchema = (
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
-  set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', ingressClassNames)
+  set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', [
+    'platform',
+    settings.ingressClassNames,
+  ])
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
     const ingressSchema = getStrict(schema, ingressSchemaPath)
@@ -196,17 +198,9 @@ interface Props extends CrudProps {
   k8sServices?: GetTeamK8SServicesApiResponse
   secrets: GetSecretsFromK8SApiResponse
   teamId: string
-  ingressClassNames: string[]
 }
 
-export default function ({
-  service,
-  k8sServices,
-  secrets,
-  teamId,
-  ingressClassNames,
-  ...other
-}: Props): React.ReactElement {
+export default function ({ service, k8sServices, secrets, teamId, ...other }: Props): React.ReactElement {
   const { appsEnabled, settings, user } = useSession()
   const [data, setData] = useState<GetServiceApiResponse>(service)
   useEffect(() => {
@@ -220,7 +214,7 @@ export default function ({
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData, defaultSubdomain, isKsvc)
   // pass to the schema getters that manipulate the schemas based on form data
-  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices, ingressClassNames)
+  const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
   const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId, isKsvc)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
