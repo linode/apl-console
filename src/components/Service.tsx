@@ -88,7 +88,7 @@ export const getServiceSchema = (
   const idx = idxMap[formData?.ingress?.type]
   set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', [
     'platform',
-    settings.ingressClassNames,
+    ...settings.ingressClassNames,
   ])
   if (idx) {
     const ingressSchemaPath = getIngressSchemaPath(idx)
