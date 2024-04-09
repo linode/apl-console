@@ -12,7 +12,6 @@ import { useSession } from 'providers/Session'
 import {
   GetSessionApiResponse,
   useGetSecretsFromK8SQuery,
-  useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
@@ -236,7 +235,6 @@ export default function ({
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
-  const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
   const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
   const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
