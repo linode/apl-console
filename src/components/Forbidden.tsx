@@ -3,6 +3,7 @@ import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
+import PaperLayout from 'layouts/Paper'
 import Iconify from './Iconify'
 
 export default function (): React.ReactElement {
@@ -12,7 +13,7 @@ export default function (): React.ReactElement {
     dispatch(setError(undefined))
     history.push('/')
   }
-  return (
+  const comp = (
     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '32px' }}>
       <Typography variant='h3'>Error 403: Forbidden</Typography>
       <Iconify icon='nonicons:not-found-16' sx={{ fontSize: '100px' }} />
@@ -24,4 +25,5 @@ export default function (): React.ReactElement {
       </Button>
     </Box>
   )
+  return <PaperLayout comp={comp} />
 }

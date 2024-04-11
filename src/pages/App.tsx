@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import App from 'components/App'
+import Forbidden from 'components/Forbidden'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
-import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
@@ -17,7 +18,9 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchAppsEnabled } = useSession()
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <Forbidden />
+  const { refetchAppsEnabled } = authzSession
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
   const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetAppQuery({ teamId, appId })

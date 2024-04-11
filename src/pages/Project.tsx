@@ -25,7 +25,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
+  if (!authzSession) return <Forbidden />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
     useCreateProjectMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditProjectMutation()

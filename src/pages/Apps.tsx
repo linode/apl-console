@@ -3,7 +3,6 @@ import Apps from 'components/Apps'
 import Forbidden from 'components/Forbidden'
 import useAuthzSession from 'hooks/useAuthzSession'
 import MainLayout from 'layouts/Empty'
-import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
@@ -19,7 +18,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
+  if (!authzSession) return <Forbidden />
   const { refetchAppsEnabled } = authzSession
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState

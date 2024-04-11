@@ -19,7 +19,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
+  if (!authzSession) return <Forbidden />
   const [diffReceivers, setDiffReceivers] = useState<string[]>([])
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()

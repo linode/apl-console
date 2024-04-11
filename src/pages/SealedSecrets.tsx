@@ -20,7 +20,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
+  if (!authzSession) return <Forbidden />
   const {
     data: allSecrets,
     isLoading: isLoadingAllSecrets,
