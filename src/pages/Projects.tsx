@@ -1,10 +1,12 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
+import Forbidden from 'components/Forbidden'
 import Projects from 'components/Projects'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps, useLocation } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllProjectsQuery, useGetMetricsQuery, useGetTeamProjectsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
@@ -19,15 +21,14 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { state } = useLocation()
-
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const {
     data: allProjects,
     isLoading: isLoadingAllProjects,
     isFetching: isFetchingAllProjects,
     refetch: refetchAllProjects,
   } = useGetAllProjectsQuery(teamId ? skipToken : undefined)
-
   const {
     data: teamProjects,
     isLoading: isLoadingTeamProjects,

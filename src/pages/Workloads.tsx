@@ -1,5 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
+import Forbidden from 'components/Forbidden'
 import Workloads from 'components/Workloads'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
@@ -19,6 +21,8 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const {
     data: allWorkloads,
     isLoading: isLoadingAllWorkloads,
