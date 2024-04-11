@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import Forbidden from 'components/Forbidden'
 import SealedSecret from 'components/SealedSecret'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -24,7 +25,8 @@ export default function ({
     params: { teamId, secretId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSealedSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSealedSecretMutation()

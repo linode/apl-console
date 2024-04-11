@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
+import Forbidden from 'components/Forbidden'
 import Netpol from 'components/Netpol'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -24,7 +25,8 @@ export default function ({
     params: { teamId, netpolId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()

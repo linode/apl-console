@@ -8,7 +8,6 @@ import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import { ApiError } from '../utils/error'
-import Forbidden from './Forbidden'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -37,16 +36,8 @@ export default function ({ error }: Props): React.ReactElement {
   const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
-  console.log('err', err)
   if (!err) return null
   const code = error ? err.code : err.status
-  if (code === 403) {
-    return (
-      <Container className={classes.root}>
-        <Forbidden />
-      </Container>
-    )
-  }
   const message = error ? err.message : err.data.error
   const msgKey = message || code || 'Unknown'
   const clearError = () => {

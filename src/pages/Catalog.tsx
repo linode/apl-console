@@ -1,4 +1,5 @@
 import Catalog from 'components/Catalog'
+import Forbidden from 'components/Forbidden'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
@@ -27,7 +28,8 @@ export default function ({
     params: { teamId, workloadId, catalogName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const { t } = useTranslation()
   const { user } = useSession()
   const {

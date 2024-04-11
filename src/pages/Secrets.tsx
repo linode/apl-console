@@ -1,3 +1,4 @@
+import Forbidden from 'components/Forbidden'
 import Secrets from 'components/Secrets'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -17,7 +18,8 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const { data, isLoading, isFetching, refetch } = useGetSecretsQuery({ teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {

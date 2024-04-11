@@ -1,4 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
+import Forbidden from 'components/Forbidden'
 import Netpols from 'components/Netpols'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -18,7 +19,8 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
+  if (!authzSession) return <PaperLayout comp={<Forbidden />} />
   const {
     data: allNetpols,
     isLoading: isLoadingAllNetpols,
