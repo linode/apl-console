@@ -37,6 +37,7 @@ export default function ({ error }: Props): React.ReactElement {
   const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
+  console.log('err', err)
   if (!err) return null
   const code = error ? err.code : err.status
   if (code === 403) {
