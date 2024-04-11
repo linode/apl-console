@@ -17,6 +17,10 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const globalError = useAppSelector(({ global: { error } }) => error)
+  console.log('Error code: ', globalError.code)
+  console.log('globalError', globalError)
+  if (globalError && globalError.code === 403) return null
   const {
     data: allBuilds,
     isLoading: isLoadingAllBuilds,

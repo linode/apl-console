@@ -7,7 +7,10 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
+import { useSession } from 'providers/Session'
+import { useLocation } from 'react-router-dom'
 import { ApiError } from '../utils/error'
+import Forbidden from './Forbidden'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -33,6 +36,16 @@ export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
+  const { oboTeamId } = useSession()
+  const { pathname } = useLocation()
+  const teamId = pathname.split('/')[2]
+  if (teamId !== oboTeamId) {
+    return (
+      <Container className={classes.root}>
+        <Forbidden />
+      </Container>
+    )
+  }
   const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
