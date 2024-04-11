@@ -3,6 +3,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
+import useStatus from 'hooks/useStatus'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -44,9 +45,9 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
   const {
     user: { isAdmin },
     oboTeamId,
-    status,
   } = useSession()
   const { t } = useTranslation()
+  const status = useStatus()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
