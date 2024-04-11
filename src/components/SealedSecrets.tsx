@@ -3,6 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetSealedSecretsApiResponse } from 'redux/otomiApi'
 import { Box } from '@mui/material'
+import useStatus from 'hooks/useStatus'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -36,9 +37,9 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     appsEnabled,
     oboTeamId,
     user: { isAdmin },
-    status,
   } = useSession()
   const { t } = useTranslation()
+  const status = useStatus()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
