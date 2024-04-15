@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
 import { CircularProgress } from '@mui/material'
+import useStatus from 'hooks/useStatus'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -66,9 +67,9 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
     settings: {
       cluster: { domainSuffix },
     },
-    status,
   } = useSession()
   const { t } = useTranslation()
+  const status = useStatus()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
