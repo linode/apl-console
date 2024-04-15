@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -7,12 +7,8 @@ import { GetPolicyApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import { Box, Button } from '@mui/material'
 import Form from './rjsf/Form'
 
-export const getPolicySchema = (teamId: string, hasCustomValues: boolean, formData: any): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Policy)
-  if (!hasCustomValues) unset(schema, 'properties.customValues')
-  set(schema, 'properties.description.type', 'null')
-  set(schema, 'properties.description.title', 'Description')
-  set(schema, 'properties.description.default', formData?.description)
+export const getPolicySchema = (formData): any => {
+  const schema = cloneDeep(getSpec().components.schemas.Policies.properties[formData.name])
   return schema
 }
 
@@ -21,9 +17,6 @@ export const getPolicyUiSchema = (user: GetSessionApiResponse['user'], teamId: s
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
-    name: { 'ui:widget': 'hidden' },
-    profile: { 'ui:widget': 'hidden' },
-    description: { 'ui:readonly': true, 'ui:widget': 'textarea' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'policy')
@@ -39,16 +32,14 @@ interface Props extends CrudProps {
 }
 
 export default function ({ policy, teamId, onSubmit, editPolicies, ...other }: Props): React.ReactElement {
-  const { appsEnabled, user } = useSession()
-  const [data, setData]: any = useState(policy)
+  const { user } = useSession()
+  const [data, setData] = useState<GetPolicyApiResponse>(policy)
   useEffect(() => {
     setData(policy)
   }, [policy])
   // END HOOKS
   const formData = cloneDeep(data)
-  // console.log('formData', formData)
-  const hasCustomValues = formData?.customValues?.length > 0
-  const schema = getPolicySchema(teamId, hasCustomValues, formData)
+  const schema = getPolicySchema(formData)
   const uiSchema = getPolicyUiSchema(user, teamId)
   return (
     <Box>

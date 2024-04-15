@@ -1,7 +1,7 @@
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetTeamPoliciesApiResponse } from 'redux/otomiApi'
+import { GetPolicyApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -26,13 +26,12 @@ const getPolicyLink = (row: Row) => {
 }
 
 interface Props {
-  policies: GetTeamPoliciesApiResponse
+  policies: GetPolicyApiResponse[]
   teamId?: string
 }
 
 export default function ({ policies, teamId }: Props): React.ReactElement {
   const { appsEnabled } = useSession()
-
   const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
@@ -42,14 +41,9 @@ export default function ({ policies, teamId }: Props): React.ReactElement {
       renderer: (row: Row) => getPolicyLink(row),
     },
     {
-      id: 'profile',
-      label: t('Profile'),
-      renderer: (row) => row.profile,
-    },
-    {
-      id: 'enabled',
-      label: t('Enabled'),
-      renderer: (row) => (row.enabled ? 'true' : 'false'),
+      id: 'severity',
+      label: t('Severity'),
+      renderer: (row) => row.severity,
     },
     {
       id: 'action',

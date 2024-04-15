@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllPoliciesQuery, useGetTeamPoliciesQuery } from 'redux/otomiApi'
+import { GetPolicyApiResponse, useGetAllPoliciesQuery, useGetTeamPoliciesQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
 interface Params {
@@ -39,7 +39,7 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const loading = isLoadingAllPolicies || isLoadingTeamPolicies
-  const policies = teamId ? teamPolicies : allPolicies
+  const policies = (teamId ? teamPolicies : allPolicies) as GetPolicyApiResponse[]
   const comp = policies && <Policies policies={policies} teamId={teamId} />
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
 }

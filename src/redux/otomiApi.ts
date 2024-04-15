@@ -2324,28 +2324,232 @@ export type EditBuildApiArg = {
   }
 }
 export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  profile?: string
-  description?: string
-  enabled?: boolean
-  severity?: 'low' | 'medium' | 'high'
-  action?: 'Audit' | 'Enforce'
-  customValues?: string[]
-}[]
+  'allowed-repo'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'allowed-image-repositories'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-namespaces'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-path'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-ports'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-process'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-latest-tag'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privilege-escalation'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privileged-containers'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-proc-mount'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-selinux'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-limits'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-liveness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-non-root-groups'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-readiness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-requests'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-non-root-user'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-nonroot'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-startup-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'required-otomi-label'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-apparmor-profiles'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-sysctls'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-volume-types'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+}
 export type GetAllPoliciesApiArg = void
 export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  profile?: string
-  description?: string
-  enabled?: boolean
-  severity?: 'low' | 'medium' | 'high'
-  action?: 'Audit' | 'Enforce'
-  customValues?: string[]
-}[]
+  'allowed-repo'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'allowed-image-repositories'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-namespaces'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-path'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-ports'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-process'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-latest-tag'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privilege-escalation'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privileged-containers'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-proc-mount'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-selinux'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-limits'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-liveness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-non-root-groups'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-readiness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-requests'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-non-root-user'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-nonroot'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-startup-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'required-otomi-label'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-apparmor-profiles'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-sysctls'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-volume-types'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+}
 export type GetTeamPoliciesApiArg = {
   /** ID of team to return */
   teamId: string
@@ -2354,11 +2558,8 @@ export type GetPolicyApiResponse = /** status 200 Successfully obtained policy c
   id?: string
   teamId?: string
   name: string
-  profile?: string
-  description?: string
-  enabled?: boolean
-  severity?: 'low' | 'medium' | 'high'
-  action?: 'Audit' | 'Enforce'
+  action: 'Audit' | 'Enforce'
+  severity: 'low' | 'medium' | 'high'
   customValues?: string[]
 }
 export type GetPolicyApiArg = {
@@ -2371,11 +2572,8 @@ export type EditPolicyApiResponse = /** status 200 Successfully edited a team po
   id?: string
   teamId?: string
   name: string
-  profile?: string
-  description?: string
-  enabled?: boolean
-  severity?: 'low' | 'medium' | 'high'
-  action?: 'Audit' | 'Enforce'
+  action: 'Audit' | 'Enforce'
+  severity: 'low' | 'medium' | 'high'
   customValues?: string[]
 }
 export type EditPolicyApiArg = {
@@ -2388,11 +2586,8 @@ export type EditPolicyApiArg = {
     id?: string
     teamId?: string
     name: string
-    profile?: string
-    description?: string
-    enabled?: boolean
-    severity?: 'low' | 'medium' | 'high'
-    action?: 'Audit' | 'Enforce'
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
     customValues?: string[]
   }
 }
