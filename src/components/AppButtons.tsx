@@ -1,10 +1,10 @@
 import { ButtonGroup, IconButton } from '@mui/material'
-import useAuthzSession from 'hooks/useAuthzSession'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RLink } from 'react-router-dom'
 import { GetAppApiResponse } from 'redux/otomiApi'
 import { getAppData } from 'utils/data'
+import { useSession } from 'providers/Session'
 import Iconify from './Iconify'
 
 // const useAppButtonStyles = makeStyles()((theme) => ({
@@ -39,7 +39,7 @@ export default function ({
   isDeprecated,
   handleClickModal,
 }: Props): React.ReactElement {
-  const session = useAuthzSession()
+  const session = useSession()
 
   const { t } = useTranslation()
   // END HOOKS

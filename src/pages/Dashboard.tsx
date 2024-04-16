@@ -1,9 +1,9 @@
 /* eslint-disable no-prototype-builtins */
 import Dashboard from 'components/Dashboard'
-import useAuthzSession from 'hooks/useAuthzSession'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
 import find from 'lodash/find'
+import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
@@ -14,7 +14,7 @@ export default function (): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId: teamId,
-  } = useAuthzSession()
+  } = useSession()
 
   const {
     data: teams,

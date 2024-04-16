@@ -18,7 +18,6 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { getSpec } from 'common/api-spec'
-import useAuthzSession from 'hooks/useAuthzSession'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEqual, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
@@ -31,6 +30,7 @@ import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
 import { extract, getAppSchemaName, isOf } from 'utils/schema'
 import YAML from 'yaml'
+import { useSession } from 'providers/Session'
 import CodeEditor from './CodeEditor'
 import HeaderTitle from './HeaderTitle'
 import MuiLink from './MuiLink'
@@ -215,7 +215,7 @@ export default function ({
     rawvalues: 3,
   }
   const { classes } = useStyles()
-  const session = useAuthzSession()
+  const session = useSession()
   const { appsEnabled, settings } = session
   const {
     appInfo,

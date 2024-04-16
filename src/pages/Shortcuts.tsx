@@ -16,12 +16,12 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const session = useAuthzSession(teamId)
+  const authzSession = useAuthzSession(teamId)
   const { data: apps, isLoading } = useGetAppsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS
   const appsWithShortcuts = (apps || [])
-    .map((app) => getAppData(session, teamId, app, true))
+    .map((app) => getAppData(authzSession, teamId, app, true))
     .filter((a) => a.shortcuts?.length)
     .reduce((memo, app) => {
       // flatten
