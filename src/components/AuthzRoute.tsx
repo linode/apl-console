@@ -3,7 +3,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { Route } from 'react-router-dom'
 
-function PrivateRoute({ component: Component, ...rest }: any) {
+function PrivateRoute({ component: Component, adminRoute, ...rest }: any) {
   const session = useSession()
   const {
     user: { isAdmin },
@@ -15,7 +15,7 @@ function PrivateRoute({ component: Component, ...rest }: any) {
         params: { teamId },
       },
     } = props
-    if (!isAdmin && teamId && teamId !== oboTeamId) return false
+    if ((adminRoute && !isAdmin) || (!isAdmin && teamId && teamId !== oboTeamId)) return false
     return true
   }
   return (
