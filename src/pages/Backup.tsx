@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Backup from 'components/Backup'
-import Forbidden from 'components/Forbidden'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect } from 'react'
@@ -25,8 +23,6 @@ export default function ({
     params: { teamId, backupId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
     useCreateBackupMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBackupMutation()

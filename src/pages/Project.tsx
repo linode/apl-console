@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import Forbidden from 'components/Forbidden'
 import Project from 'components/Project'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,8 +22,6 @@ export default function ({
     params: { teamId, projectId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
     useCreateProjectMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditProjectMutation()

@@ -1,7 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Builds from 'components/Builds'
-import Forbidden from 'components/Forbidden'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,8 +17,6 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const {
     data: allBuilds,
     isLoading: isLoadingAllBuilds,

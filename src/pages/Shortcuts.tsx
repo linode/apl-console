@@ -1,4 +1,3 @@
-import Forbidden from 'components/Forbidden'
 import Shortcuts from 'components/Shortcuts'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
@@ -18,7 +17,6 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const { data: apps, isLoading } = useGetAppsQuery({ teamId })
   const { t } = useTranslation()
   // END HOOKS

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
-import Forbidden from 'components/Forbidden'
 import useAuthzSession from 'hooks/useAuthzSession'
 import MainLayout from 'layouts/Empty'
 import React, { useEffect, useState } from 'react'
@@ -17,9 +16,7 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
-  const { refetchAppsEnabled } = authzSession
+  const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()

@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import Forbidden from 'components/Forbidden'
 import Netpol from 'components/Netpol'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit, unset } from 'lodash'
 import React, { useEffect } from 'react'
@@ -25,8 +23,6 @@ export default function ({
     params: { teamId, netpolId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()

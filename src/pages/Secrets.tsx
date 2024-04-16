@@ -1,6 +1,4 @@
-import Forbidden from 'components/Forbidden'
 import Secrets from 'components/Secrets'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,8 +16,6 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const authzSession = useAuthzSession(teamId)
-  if (!authzSession) return <Forbidden />
   const { data, isLoading, isFetching, refetch } = useGetSecretsQuery({ teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
