@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import SealedSecret from 'components/SealedSecret'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect } from 'react'
@@ -24,7 +23,6 @@ export default function ({
     params: { teamId, secretId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSealedSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSealedSecretMutation()

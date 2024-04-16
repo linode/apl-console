@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import PaperLayout from 'layouts/Paper'
 import React, { useState } from 'react'
-import { RouteComponentProps } from 'react-router-dom'
-
 import { Button, Link, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { MigrateSecretsApiResponse, useGetAllSecretsQuery, useMigrateSecretsMutation } from 'redux/otomiApi'
@@ -10,16 +8,7 @@ import { useSession } from 'providers/Session'
 import { isEmpty } from 'lodash'
 import SecretsMigrationModal from '../components/SecretsMigrationModal'
 
-interface Params {
-  teamId: string
-  appId: string
-}
-
-export default function ({
-  match: {
-    params: { teamId, appId },
-  },
-}: RouteComponentProps<Params>): React.ReactElement {
+export default function (): React.ReactElement {
   const [open, setOpen] = useState(false)
   const [modalInfo, setModalInfo] = useState<MigrateSecretsApiResponse>({})
   const {

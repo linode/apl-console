@@ -1,6 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import SealedSecrets from 'components/SealedSecrets'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -18,7 +17,6 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
   const {
     data: allSecrets,
     isLoading: isLoadingAllSecrets,

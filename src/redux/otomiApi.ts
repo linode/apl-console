@@ -3908,6 +3908,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
   }
+  ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
