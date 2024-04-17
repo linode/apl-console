@@ -182,6 +182,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         onChange={onChangeHandler}
         idProp={null}
         adminOnly
+        autoComplete='new-password'
         {...other}
       />
     </>

@@ -26,6 +26,7 @@ import TitleField from './TitleField'
 const Form = withTheme(Theme5)
 
 interface Props extends CrudProps {
+  autoComplete?: string
   idProp?: string
   nameProp?: string
   description?: string
@@ -46,6 +47,7 @@ interface Props extends CrudProps {
 }
 
 export default function ({
+  autoComplete,
   idProp = 'id',
   nameProp = 'name',
   mutating,
@@ -130,6 +132,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
+        autoComplete={autoComplete}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}
