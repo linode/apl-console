@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { getDomain, getEmailNoSymbols, getUserTeams } from 'layouts/Shell'
+import { clearLocalStorage } from 'hooks/useLocalStorage'
 import MenuPopover from './MenuPopover'
 import { IconButtonAnimate } from './animate'
 import SettingMode from './SettingMode'
@@ -43,6 +44,7 @@ export default function AccountPopover({ email }: Props) {
     await del({
       body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams },
     })
+    clearLocalStorage('oboTeamId')
     window.location.href = '/logout-otomi'
   }
 

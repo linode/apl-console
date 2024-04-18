@@ -1,5 +1,4 @@
 import Service from 'components/Service'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { omit } from 'lodash'
 import React, { useEffect } from 'react'
@@ -12,20 +11,9 @@ import {
   useEditServiceMutation,
   useGetSecretsFromK8SQuery,
   useGetServiceQuery,
-  useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
-
-export const getIngressClassNames = (ingressSettings) => {
-  const ingressClassNames: string[] = ['platform']
-  if (ingressSettings) {
-    ingressSettings?.ingress?.classes?.forEach((obj: { className: string }) => {
-      ingressClassNames.push(obj.className)
-    })
-  }
-  return ingressClassNames
-}
 
 interface Params {
   teamId: string
@@ -37,7 +25,6 @@ export default function ({
     params: { teamId, serviceId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditServiceMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteServiceMutation()
@@ -62,8 +49,6 @@ export default function ({
     isError: isErrorSecrets,
     refetch: refetchSecrets,
   } = useGetSecretsFromK8SQuery({ teamId })
-  const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
-  const ingressClassNames = getIngressClassNames(ingressSettings)
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -92,7 +77,6 @@ export default function ({
       onSubmit={handleSubmit}
       onDelete={handleDelete}
       mutating={mutating}
-      ingressClassNames={ingressClassNames}
     />
   )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICE', { role: getRole(teamId) })} />
