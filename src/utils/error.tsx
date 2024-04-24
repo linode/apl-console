@@ -22,20 +22,40 @@ export class HttpErrorBadRequest extends HttpError {
   }
 }
 
-export class ApiError extends HttpError {}
+export class ApiError extends HttpError {
+  extendedMessage?: string | { title: string; message: string } | undefined
+
+  constructor(
+    message: string,
+    code?: number | undefined,
+    extendedMessage?: string | { title: string; message: string } | undefined,
+  ) {
+    super(message)
+    this.extendedMessage = extendedMessage
+    this.code = code
+    // restore prototype chain
+    Object.setPrototypeOf(this, new.target.prototype)
+  }
+}
 export class ApiErrorGatewayTimeout extends ApiError {
   constructor() {
-    super(e['The api could not be reached'], 504)
+    super('API error', 504, { title: 'API', message: 'The api could not be reached' })
   }
 }
 export class ApiErrorUnauthorized extends ApiError {
   constructor() {
-    super(e['Unauthorized. The user may not be assigned to any team.'], 403)
+    super('API error', 403, {
+      title: 'No OIDC Claim',
+      message: 'Unauthorized. The user may not be assigned to any team.',
+    })
   }
 }
 
 export class ApiErrorUnauthorizedNoGroups extends ApiError {
   constructor() {
-    super('It seems that this user does not belong to any team. Please check the groups claim of the id token.')
+    super('API error', 666, {
+      title: 'No OIDC Claim',
+      message: 'It seems that this user does not belong to any team. Please check the groups claim of the id token.',
+    })
   }
 }
