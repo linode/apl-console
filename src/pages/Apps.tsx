@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
 import useAuthzSession from 'hooks/useAuthzSession'
-import MainLayout from 'layouts/Base'
+import MainLayout from 'layouts/EmptyBase'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
