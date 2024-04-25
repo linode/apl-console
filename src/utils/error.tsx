@@ -53,9 +53,10 @@ export class ApiErrorUnauthorized extends ApiError {
 
 export class ApiErrorUnauthorizedNoGroups extends ApiError {
   constructor() {
-    super('API error', 666, {
+    super('API error', 403, {
       title: 'No OIDC Claim',
-      message: 'It seems that this user does not belong to any team. Please check the groups claim of the id token.',
+      message:
+        'It seems that this user does not belong to any team. Please check the groups claim of the id token or contact your administrator.',
     })
   }
 }
