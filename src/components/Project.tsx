@@ -12,14 +12,12 @@ import { useSession } from 'providers/Session'
 import {
   GetSessionApiResponse,
   useGetSecretsFromK8SQuery,
-  useGetSettingsQuery,
   useGetTeamK8SServicesQuery,
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
 import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { getIngressClassNames } from 'pages/Service'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { getDomain } from 'layouts/Shell'
@@ -237,17 +235,7 @@ export default function ({
 
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
-  const { data: ingressSettings } = useGetSettingsQuery({ ids: ['ingress'] })
-  const ingressClassNames = getIngressClassNames(ingressSettings)
-  const serviceSchema = getServiceSchema(
-    appsEnabled,
-    settings,
-    formData?.service,
-    teamId,
-    secrets,
-    k8sServices,
-    ingressClassNames,
-  )
+  const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
   const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
