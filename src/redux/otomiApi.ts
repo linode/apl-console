@@ -478,36 +478,10 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -515,7 +489,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   selfService?: {
     service?: 'ingress'[]
     policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -570,36 +544,10 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -607,7 +555,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   selfService?: {
     service?: 'ingress'[]
     policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -663,36 +611,10 @@ export type CreateTeamApiArg = {
         nonCritical?: string
       }
     }
-    billingAlertQuotas?: {
-      teamCpuMonthQuotaReached?: {
-        quota?: number
-      }
-      teamMemMonthQuotaReached?: {
-        quota?: number
-      }
-    }
     resourceQuota?: {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -700,7 +622,7 @@ export type CreateTeamApiArg = {
     selfService?: {
       service?: 'ingress'[]
       policies?: 'edit policies'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -755,36 +677,10 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -792,7 +688,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   selfService?: {
     service?: 'ingress'[]
     policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -850,36 +746,10 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -887,7 +757,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   selfService?: {
     service?: 'ingress'[]
     policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -945,36 +815,10 @@ export type EditTeamApiArg = {
         nonCritical?: string
       }
     }
-    billingAlertQuotas?: {
-      teamCpuMonthQuotaReached?: {
-        quota?: number
-      }
-      teamMemMonthQuotaReached?: {
-        quota?: number
-      }
-    }
     resourceQuota?: {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -982,7 +826,7 @@ export type EditTeamApiArg = {
     selfService?: {
       service?: 'ingress'[]
       policies?: 'edit policies'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -2555,9 +2399,6 @@ export type GetTeamPoliciesApiArg = {
   teamId: string
 }
 export type GetPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
-  id?: string
-  teamId?: string
-  name: string
   action: 'Audit' | 'Enforce'
   severity: 'low' | 'medium' | 'high'
   customValues?: string[]
@@ -2569,9 +2410,6 @@ export type GetPolicyApiArg = {
   policyId: string
 }
 export type EditPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
-  id?: string
-  teamId?: string
-  name: string
   action: 'Audit' | 'Enforce'
   severity: 'low' | 'medium' | 'high'
   customValues?: string[]
@@ -2583,9 +2421,6 @@ export type EditPolicyApiArg = {
   policyId: string
   /** Policy object that contains updated values */
   body: {
-    id?: string
-    teamId?: string
-    name: string
     action: 'Audit' | 'Enforce'
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
@@ -3904,7 +3739,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
         | 'linode'
         | 'custom'
     }[]
-    hasCloudLB?: boolean
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
   }
@@ -4044,24 +3878,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     appgw?: {
       isManaged?: boolean
     }
-    monitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     storageType?: {
       fast?: string
       standard?: string
@@ -4231,7 +4047,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       email?: string
       server?: string
     } | null
-    hasCloudLB?: boolean
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
     isHomeMonitored?: boolean
@@ -4404,24 +4219,6 @@ export type EditSettingsApiArg = {
       appgw?: {
         isManaged?: boolean
       }
-      monitor?:
-        | (
-            | (object | null)
-            | {
-                appInsightsApiKey?: string
-                appInsightsAppId?: string
-                azureLogAnalyticsSameAs?: boolean
-                clientId: string
-                clientSecret: string
-                logAnalyticsClientId?: string
-                logAnalyticsClientSecret?: string
-                logAnalyticsTenantId?: string
-                logAnalyticsDefaultWorkspace?: string
-                subscriptionId?: string
-                tenantId?: string
-              }
-          )
-        | null
       storageType?: {
         fast?: string
         standard?: string
@@ -4591,7 +4388,6 @@ export type EditSettingsApiArg = {
         email?: string
         server?: string
       } | null
-      hasCloudLB?: boolean
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
       isHomeMonitored?: boolean

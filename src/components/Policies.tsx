@@ -17,7 +17,7 @@ interface Row {
 }
 
 const getPolicyLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/policies/${encodeURIComponent(row.id)}`
+  const path = `/teams/${row.teamId}/policies/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}

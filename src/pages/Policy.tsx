@@ -37,7 +37,7 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const team = !isLoadingTeams && find(teams, { id: teamId })
-  const editPolicies = team?.selfService?.policies?.includes('edit policies')
+  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin'
   const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
@@ -46,7 +46,14 @@ export default function ({
     if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'teamId', 'description']) as any })
   }
   const comp = teams && !isError && (
-    <Policy onSubmit={handleSubmit} editPolicies={editPolicies} policy={data} teamId={teamId} mutating={mutating} />
+    <Policy
+      onSubmit={handleSubmit}
+      editPolicies={editPolicies}
+      policy={data}
+      teamId={teamId}
+      mutating={mutating}
+      policyId={policyId}
+    />
   )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
 }
