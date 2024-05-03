@@ -110,7 +110,6 @@ function App() {
                                     exact
                                   />
                                   <PrivateRoute path='/services' component={Services} adminRoute exact />
-                                  <PrivateRoute path='/secrets' component={Secrets} adminRoute exact />
                                   <PrivateRoute path='/sealed-secrets' component={SealedSecrets} adminRoute exact />
                                   <PrivateRoute path='/workloads' component={Workloads} adminRoute exact />
                                   <PrivateRoute path='/settings' component={SettingsOverview} adminRoute exact />

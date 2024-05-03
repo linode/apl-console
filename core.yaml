@@ -76,11 +76,6 @@ k8s:
     - name: tigera-operator
       disableIstioInjection: true
       disablePolicyChecks: true
-    - name: trivy-operator
-      app: trivy
-      disableIstioInjection: true
-      disablePolicyChecks: true
-    - name: vault
     - name: velero
       disableIstioInjection: true
       disablePolicyChecks: true
@@ -315,18 +310,6 @@ adminApps:
   - name: trivy
     tags: [security]
     deps: [prometheus, grafana]
-  - name: vault
-    tags: [secrets, security, observability]
-    deps: [kubernetes-external-secrets]
-    isShared: true
-    ownHost: true
-    path: /ui/vault/secrets/secret/list/teams/#NS#/
-    ingress:
-      - namespace: vault
-        svc: vault-0
-        port: 8200
-        type: public
-        auth: true
   - name: velero
     tags: [backup]
 
