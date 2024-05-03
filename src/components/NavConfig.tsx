@@ -71,7 +71,7 @@ export default function NavConfig() {
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
-        { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('policies_icon.svg') },
+        { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('security_icon.svg') },
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
