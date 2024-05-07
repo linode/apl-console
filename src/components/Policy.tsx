@@ -13,12 +13,8 @@ export const getPolicySchema = (policyId): any => {
 }
 
 export const getPolicyUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
-  const uiSchema = {
-    namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
-  }
-
+  const uiSchema = {}
   applyAclToUiSchema(uiSchema, user, teamId, 'policy')
-
   return uiSchema
 }
 
@@ -45,7 +41,7 @@ export default function ({ policy, teamId, onSubmit, editPolicies, policyId, ...
       <Form
         schema={schema}
         uiSchema={uiSchema}
-        data={formData}
+        data={{ ...formData, id: policyId, name: policyId }}
         onChange={setData}
         resourceType='Policy'
         children

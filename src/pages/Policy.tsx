@@ -7,7 +7,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditPolicyMutation, useGetPolicyQuery, useGetTeamsQuery } from 'redux/otomiApi'
+import { GetPolicyApiResponse, useEditPolicyMutation, useGetPolicyQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -19,7 +19,9 @@ export default function ({
     params: { teamId, policyId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
+  const {
+    user: { isAdmin },
+  } = useAuthzSession(teamId)
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
   const {
@@ -37,13 +39,13 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const team = !isLoadingTeams && find(teams, { id: teamId })
-  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin'
+  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin' || isAdmin
   const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
   const handleSubmit = (formData) => {
     if (!editPolicies) return
-    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'teamId', 'description']) as any })
+    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'name']) as GetPolicyApiResponse })
   }
   const comp = teams && !isError && (
     <Policy
