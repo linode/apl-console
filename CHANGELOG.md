@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.1](https://github.com/redkubes/otomi-stack-web/compare/v2.7.0...v2.8.1) (2024-05-07)
+
+
+### Features
+
+* update sealed secret page to support readability of the secret values ([#407](https://github.com/redkubes/otomi-stack-web/issues/407)) ([cdee42c](https://github.com/redkubes/otomi-stack-web/commit/cdee42cd4c72bc8dcfcdd6a6f8a2ec287f921f21))
+
+
+### Bug Fixes
+
+* Error 403: Forbidden ([#398](https://github.com/redkubes/otomi-stack-web/issues/398)) ([376ac06](https://github.com/redkubes/otomi-stack-web/commit/376ac06f85887da952d9f0cfb051adc80ff0bcee))
+* rerender of forms ([#397](https://github.com/redkubes/otomi-stack-web/issues/397)) ([89faa7b](https://github.com/redkubes/otomi-stack-web/commit/89faa7bff955d43776be648a773db5d3a6a2a14f))
+* tekton pipeline run link ([#396](https://github.com/redkubes/otomi-stack-web/issues/396)) ([893b0c5](https://github.com/redkubes/otomi-stack-web/commit/893b0c5ce65ca7c4787d07a0812a98a30538cac9))
+
+
+### Others
+
+* release branch [ci skip] ([cfd653c](https://github.com/redkubes/otomi-stack-web/commit/cfd653cd1a4ad86422b9fad3e069a6596e3e1013))
+
 ## [2.8.0](https://github.com/redkubes/otomi-stack-web/compare/v2.7.0...v2.8.0) (2024-04-19)
 
 
