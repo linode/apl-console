@@ -30,6 +30,7 @@ export const getTeamUiSchema = (
   user: GetSessionApiResponse['user'],
   teamId: string,
   action: string,
+  teamAlertmanager: boolean,
 ): any => {
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
@@ -41,7 +42,7 @@ export const getTeamUiSchema = (
       },
     },
   }
-  if (!appsEnabled.alertmanager) {
+  if (!appsEnabled.alertmanager || !teamAlertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
@@ -74,8 +75,9 @@ export default function ({ team, diffReceivers, setDiffReceivers, ...other }: Pr
   const action = team && team.id ? 'update' : 'create'
   const formData = cloneDeep(data)
   const schema = getTeamSchema(appsEnabled, settings, formData)
+  const teamAlertmanager = formData?.managedMonitoring?.alertmanager
   const getDynamicUiSchema = () => {
-    const uiSchema = getTeamUiSchema(appsEnabled, user, team?.id, action)
+    const uiSchema = getTeamUiSchema(appsEnabled, user, team?.id, action, teamAlertmanager)
     diffReceivers.forEach((receiver) => {
       uiSchema.alerts[receiver] = { 'ui:widget': 'hidden' }
     })
