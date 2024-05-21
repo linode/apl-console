@@ -44,7 +44,7 @@ export default function (): React.ReactElement {
   // END HOOKS
   // TODO: create from git config, which is now in otomi-api values. Move?
   const clusterLegend = {
-    [t('Kubernetes')]: k8sVersion || 'x.x.x',
+    [t('Kubernetes')]: k8sVersion,
     [t('Otomi Core')]: versions.core,
     [t('Otomi API')]: versions.api,
     [t('Otomi Console')]: versions.console,
