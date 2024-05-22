@@ -8,10 +8,9 @@ import ListTable from './ListTable'
 
 interface Props {
   teams: GetTeamsApiResponse
-  canCreateResource: boolean
 }
 
-export default function ({ teams, canCreateResource }: Props): React.ReactElement {
+export default function ({ teams }: Props): React.ReactElement {
   const {
     user: { isAdmin },
   } = useSession()
@@ -32,14 +31,5 @@ export default function ({ teams, canCreateResource }: Props): React.ReactElemen
     },
   ]
 
-  return (
-    <ListTable
-      canCreateResource={canCreateResource}
-      headCells={headCells}
-      rows={teams}
-      resourceType='Team'
-      adminOnly
-      hasTeamScope={false}
-    />
-  )
+  return <ListTable headCells={headCells} rows={teams} resourceType='Team' adminOnly hasTeamScope={false} />
 }
