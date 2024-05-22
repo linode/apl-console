@@ -57,10 +57,9 @@ export const getStatus = (status: Status) => {
 interface Props {
   workloads: GetAllWorkloadsApiResponse
   teamId?: string
-  canCreateResource: boolean
 }
 
-export default function ({ workloads, teamId, canCreateResource }: Props): React.ReactElement {
+export default function ({ workloads, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
     appsEnabled,
@@ -106,7 +105,6 @@ export default function ({ workloads, teamId, canCreateResource }: Props): React
   return (
     <ListTable
       teamId={teamId}
-      canCreateResource={canCreateResource}
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
