@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.8.2](https://github.com/redkubes/otomi-console/compare/v2.8.1...v2.8.2) (2024-05-23)
+
+
+### Features
+
+* removed license ([#408](https://github.com/redkubes/otomi-console/issues/408)) ([6f98771](https://github.com/redkubes/otomi-console/commit/6f987711e72bc7ec6f45c822a9fd1c169dd5e11a))
+
 ### [2.8.1](https://github.com/redkubes/otomi-stack-web/compare/v2.7.0...v2.8.1) (2024-05-07)
 
 
