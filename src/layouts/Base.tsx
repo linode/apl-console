@@ -1,5 +1,5 @@
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import ErrorComponent from 'components/Error'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
@@ -53,13 +53,6 @@ export default function ({ children, title }: Props): React.ReactElement {
   const [open, setOpen] = useState(false)
 
   const verticalLayout = 'vertical'
-
-  useEffect(() => {
-    if (session && !session.license?.isValid) {
-      // Redirect to /activate
-      history.push('/activate')
-    }
-  }, [session, history])
 
   return (
     <Box

@@ -394,12 +394,6 @@ export default function ({
                         ))}
                       </TableCell>
                     </TableRow>
-                    <TableRow key='license' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
-                        <Chip label={t('License:')} />
-                      </TableCell>
-                      <TableCell align='left'>{appInfo.license}</TableCell>
-                    </TableRow>
                     <TableRow key='dependencies' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
                         <Chip label={t('Dependencies:')} />

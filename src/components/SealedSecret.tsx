@@ -21,6 +21,9 @@ export const getSecretSchema = (teamId: string, formData: SealedSecret): any => 
 export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: SealedSecret): any => {
   const addable = formData?.type ? formData.type === 'kubernetes.io/opaque' : true
   const dockerconfigjson = formData?.type === 'kubernetes.io/dockerconfigjson'
+  const tls = formData?.type === 'kubernetes.io/tls'
+  const description =
+    'The secret value will only be visible at the time of creation or once it has been successfully synchronized with the cluster.'
   const jsonexample = {
     auths: {
       'my-registry.example:5000': {
@@ -40,9 +43,22 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
         removable: formData?.type === 'kubernetes.io/opaque' && formData?.encryptedData?.length > 1,
         addable,
       },
+      items: {
+        value: {
+          'ui:description': description,
+        },
+      },
       ...(dockerconfigjson && {
         items: {
           value: { 'ui:widget': 'textarea', 'ui:description': `${JSON.stringify(jsonexample)}` },
+        },
+      }),
+      ...(tls && {
+        items: {
+          value: {
+            'ui:widget': 'textarea',
+            'ui:description': description,
+          },
         },
       }),
     },

@@ -20,7 +20,6 @@ export const getTeamSchema = (
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
-  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   return schema
 }
 

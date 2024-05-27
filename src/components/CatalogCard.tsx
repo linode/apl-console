@@ -51,11 +51,10 @@ interface Props {
   img: string
   teamId: string
   name: string
-  disabled: boolean
   isBeta: boolean
 }
 
-export default function ({ img, teamId, name, disabled, isBeta }: Props): React.ReactElement {
+export default function ({ img, teamId, name, isBeta }: Props): React.ReactElement {
   const { classes } = useStyles()
   const image = (
     <img
@@ -71,14 +70,11 @@ export default function ({ img, teamId, name, disabled, isBeta }: Props): React.
       alt={`Logo for ${name}`}
     />
   )
-  const toolTip = disabled
-    ? 'Your license does not allow to create an additional workload'
-    : 'Click to create a workload'
 
   return (
-    <Box className={classes.root} style={{ filter: disabled && 'grayscale(1)' }}>
-      <Tooltip title={toolTip}>
-        <Link to={!disabled && `/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
+    <Box className={classes.root}>
+      <Tooltip title='Click to create a workload'>
+        <Link to={`/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
           {image}
           <Typography className={classes.title} variant='h6'>
             {name.replace('otomi-quickstart-', '')}
