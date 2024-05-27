@@ -1,15 +1,6 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    deleteLicense: build.mutation<DeleteLicenseApiResponse, DeleteLicenseApiArg>({
-      query: () => ({ url: `/license`, method: 'DELETE' }),
-    }),
-    activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
-      query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
-    }),
-    getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
-      query: () => ({ url: `/metrics` }),
-    }),
     getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
       query: (queryArg) => ({
         url: `/otomi/values`,
@@ -301,40 +292,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type DeleteLicenseApiResponse = unknown
-export type DeleteLicenseApiArg = void
-export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
-  isValid: boolean
-  hasLicense: boolean
-  jwt?: string
-  body?: {
-    version: number
-    key: string
-    envType?: 'dev' | 'prod' | 'local'
-    type: 'community' | 'professional' | 'enterprise'
-    capabilities: {
-      teams: number
-      services: number
-      workloads: number
-    }
-  }
-}
-export type ActivateLicenseApiArg = {
-  /** License JWT */
-  body: {
-    jwt: string
-  }
-}
-export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi metrics */ {
-  otomi_backups: number
-  otomi_builds: number
-  otomi_secrets: number
-  otomi_netpols: number
-  otomi_services: number
-  otomi_teams: number
-  otomi_workloads: number
-}
-export type GetMetricsApiArg = void
 export type GetValuesApiResponse = unknown
 export type GetValuesApiArg = {
   /** IDs of settings to return */
@@ -424,6 +381,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     grafana?: boolean
     prometheus?: boolean
     alertmanager?: boolean
+    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -496,7 +454,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     egressPublic?: boolean
   }
   selfService?: {
-    service?: ('ingress' | 'networkPolicy')[]
+    service?: 'ingress'[]
     team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -514,6 +472,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     grafana?: boolean
     prometheus?: boolean
     alertmanager?: boolean
+    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -586,7 +545,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     egressPublic?: boolean
   }
   selfService?: {
-    service?: ('ingress' | 'networkPolicy')[]
+    service?: 'ingress'[]
     team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -605,6 +564,7 @@ export type CreateTeamApiArg = {
       grafana?: boolean
       prometheus?: boolean
       alertmanager?: boolean
+      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -677,7 +637,7 @@ export type CreateTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      service?: ('ingress' | 'networkPolicy')[]
+      service?: 'ingress'[]
       team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -695,6 +655,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     grafana?: boolean
     prometheus?: boolean
     alertmanager?: boolean
+    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -767,7 +728,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    service?: ('ingress' | 'networkPolicy')[]
+    service?: 'ingress'[]
     team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -788,6 +749,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     grafana?: boolean
     prometheus?: boolean
     alertmanager?: boolean
+    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -860,7 +822,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    service?: ('ingress' | 'networkPolicy')[]
+    service?: 'ingress'[]
     team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -881,6 +843,7 @@ export type EditTeamApiArg = {
       grafana?: boolean
       prometheus?: boolean
       alertmanager?: boolean
+      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -953,7 +916,7 @@ export type EditTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      service?: ('ingress' | 'networkPolicy')[]
+      service?: 'ingress'[]
       team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
@@ -1700,12 +1663,52 @@ export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all 
   id?: string
   teamId?: string
   name: string
+  ruleType?: {
+    type?: 'ingress' | 'egress'
+    ingress?: {
+      toLabelName?: string
+      toLabelValue?: string
+      mode: 'AllowAll' | 'AllowOnly'
+      allow?: {
+        fromNamespace: string
+        fromLabelName?: string
+        fromLabelValue?: string
+      }[]
+    }
+    egress?: {
+      domain: string
+      ports?: {
+        number: number
+        protocol: 'HTTPS' | 'HTTP' | 'TCP'
+      }[]
+    }
+  }
 }[]
 export type GetAllNetpolsApiArg = void
 export type GetTeamNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ {
   id?: string
   teamId?: string
   name: string
+  ruleType?: {
+    type?: 'ingress' | 'egress'
+    ingress?: {
+      toLabelName?: string
+      toLabelValue?: string
+      mode: 'AllowAll' | 'AllowOnly'
+      allow?: {
+        fromNamespace: string
+        fromLabelName?: string
+        fromLabelValue?: string
+      }[]
+    }
+    egress?: {
+      domain: string
+      ports?: {
+        number: number
+        protocol: 'HTTPS' | 'HTTP' | 'TCP'
+      }[]
+    }
+  }
 }[]
 export type GetTeamNetpolsApiArg = {
   /** ID of team to return */
@@ -1715,6 +1718,26 @@ export type CreateNetpolApiResponse = /** status 200 Successfully stored network
   id?: string
   teamId?: string
   name: string
+  ruleType?: {
+    type?: 'ingress' | 'egress'
+    ingress?: {
+      toLabelName?: string
+      toLabelValue?: string
+      mode: 'AllowAll' | 'AllowOnly'
+      allow?: {
+        fromNamespace: string
+        fromLabelName?: string
+        fromLabelValue?: string
+      }[]
+    }
+    egress?: {
+      domain: string
+      ports?: {
+        number: number
+        protocol: 'HTTPS' | 'HTTP' | 'TCP'
+      }[]
+    }
+  }
 }
 export type CreateNetpolApiArg = {
   /** ID of team to return */
@@ -1724,12 +1747,52 @@ export type CreateNetpolApiArg = {
     id?: string
     teamId?: string
     name: string
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
   }
 }
 export type GetNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
   id?: string
   teamId?: string
   name: string
+  ruleType?: {
+    type?: 'ingress' | 'egress'
+    ingress?: {
+      toLabelName?: string
+      toLabelValue?: string
+      mode: 'AllowAll' | 'AllowOnly'
+      allow?: {
+        fromNamespace: string
+        fromLabelName?: string
+        fromLabelValue?: string
+      }[]
+    }
+    egress?: {
+      domain: string
+      ports?: {
+        number: number
+        protocol: 'HTTPS' | 'HTTP' | 'TCP'
+      }[]
+    }
+  }
 }
 export type GetNetpolApiArg = {
   /** ID of team to return */
@@ -1741,6 +1804,26 @@ export type EditNetpolApiResponse = /** status 200 Successfully edited a team ne
   id?: string
   teamId?: string
   name: string
+  ruleType?: {
+    type?: 'ingress' | 'egress'
+    ingress?: {
+      toLabelName?: string
+      toLabelValue?: string
+      mode: 'AllowAll' | 'AllowOnly'
+      allow?: {
+        fromNamespace: string
+        fromLabelName?: string
+        fromLabelValue?: string
+      }[]
+    }
+    egress?: {
+      domain: string
+      ports?: {
+        number: number
+        protocol: 'HTTPS' | 'HTTP' | 'TCP'
+      }[]
+    }
+  }
 }
 export type EditNetpolApiArg = {
   /** ID of team to return */
@@ -1752,6 +1835,26 @@ export type EditNetpolApiArg = {
     id?: string
     teamId?: string
     name: string
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
   }
 }
 export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
@@ -3402,22 +3505,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
-  license?: {
-    isValid: boolean
-    hasLicense: boolean
-    jwt?: string
-    body?: {
-      version: number
-      key: string
-      envType?: 'dev' | 'prod' | 'local'
-      type: 'community' | 'professional' | 'enterprise'
-      capabilities: {
-        teams: number
-        services: number
-        workloads: number
-      }
-    }
-  }
   user?: {
     name: string
     email: string
@@ -3472,6 +3559,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
   }
+  ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
@@ -4409,9 +4497,6 @@ export type EditAppApiArg = {
   }
 }
 export const {
-  useDeleteLicenseMutation,
-  useActivateLicenseMutation,
-  useGetMetricsQuery,
   useGetValuesQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,

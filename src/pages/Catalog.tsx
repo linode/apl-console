@@ -1,5 +1,4 @@
 import Catalog from 'components/Catalog'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -27,7 +26,6 @@ export default function ({
     params: { teamId, workloadId, catalogName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  useAuthzSession(teamId)
   const { t } = useTranslation()
   const { user } = useSession()
   const {
