@@ -21,7 +21,6 @@ export const getTeamSchema = (
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
-  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   return schema
 }
 
