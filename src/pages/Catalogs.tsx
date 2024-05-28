@@ -1,6 +1,6 @@
 import Catalogs from 'components/Catalogs'
 import LoadingScreen from 'components/LoadingScreen'
-import MainLayout from 'layouts/Empty'
+import MainLayout from 'layouts/EmptyBase'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
