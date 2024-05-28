@@ -4,8 +4,7 @@ import MainLayout from 'layouts/EmptyBase'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetMetricsQuery, useWorkloadCatalogMutation } from 'redux/otomiApi'
-import { canCreateAdditionalResource } from 'utils/permission'
+import { useWorkloadCatalogMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -16,10 +15,9 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { user, license } = useSession()
+  const { user } = useSession()
   const [getWorkloadCatalog, { isLoading }] = useWorkloadCatalogMutation()
   const [catalogs, setCatalogs] = useState<any[]>([])
-  const { data: metrics, isLoading: isLoadingMetrics } = useGetMetricsQuery()
 
   useEffect(() => {
     getWorkloadCatalog({ body: { sub: user.sub, teamId } }).then((res: any) => {
@@ -28,15 +26,11 @@ export default function ({
     })
   }, [])
 
-  if (!catalogs || isLoading || isLoadingMetrics) return <LoadingScreen />
+  if (!catalogs || isLoading) return <LoadingScreen />
 
   return (
     <MainLayout title={`Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`}>
-      <Catalogs
-        teamId={teamId}
-        catalogs={catalogs}
-        canCreateResource={canCreateAdditionalResource('workload', metrics, license)}
-      />
+      <Catalogs teamId={teamId} catalogs={catalogs} />
     </MainLayout>
   )
 }

@@ -10,7 +10,6 @@ import Netpols from 'pages/Netpols'
 import Workloads from 'pages/Workloads'
 import Builds from 'pages/Builds'
 import OtomiApp from 'pages/App'
-import Activate from 'pages/Activate'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
 import Clusters from 'pages/Clusters'
@@ -94,7 +93,6 @@ function App() {
                                   <Switch>
                                     {/* ! user && <Route path='/' component={Home} exact /> */}
                                     <Route path='/' component={Dashboard} exact />
-                                    <PrivateRoute path='/activate' component={Activate} adminRoute exact />
                                     <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                     <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
                                     <PrivateRoute path='/backups' component={Backups} adminRoute exact />

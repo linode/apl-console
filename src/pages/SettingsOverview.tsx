@@ -7,7 +7,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Box, Grid, Typography } from '@mui/material'
 import Versions from 'components/Versions'
-import LicenseOverview from 'components/LicenseOverview'
 
 export default function SettingsOverview() {
   const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
@@ -72,7 +71,6 @@ export default function SettingsOverview() {
         })}
       </Grid>
       <Versions />
-      <LicenseOverview />
     </div>
   )
 

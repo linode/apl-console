@@ -64,7 +64,7 @@
   "TITLE_SEALEDSECRET": "Sealed Secret {{secretId}} - {{role}}",
   "TITLE_NETPOL": "Network Policy {{secretId}} - {{role}}",
   "TITLE_SECRETS": "Secrets",
-  "TITLE_SEALEDSECRETS": "Network Policies",
+  "TITLE_SEALEDSECRETS": "Sealed Secrets",
   "TITLE_NETPOLS": "Sealed Secrets",
   "TITLE_SERVICE": "Service details",
   "TITLE_SERVICES": "Services - {{scope}}",
