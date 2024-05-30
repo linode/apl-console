@@ -37,11 +37,10 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
 interface Props {
   services: GetAllServicesApiResponse | GetTeamServicesApiResponse
   teamId?: string
-  canCreateResource: boolean
 }
 
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
-export default function ({ services, teamId, canCreateResource }: Props): React.ReactElement {
+export default function ({ services, teamId }: Props): React.ReactElement {
   const {
     user: { isAdmin },
     oboTeamId,
@@ -78,13 +77,5 @@ export default function ({ services, teamId, canCreateResource }: Props): React.
       label: t('Team'),
     })
   }
-  return (
-    <ListTable
-      teamId={teamId}
-      canCreateResource={canCreateResource}
-      headCells={headCells}
-      rows={services}
-      resourceType='Service'
-    />
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
 }

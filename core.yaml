@@ -87,6 +87,7 @@ k8s:
       disablePolicyChecks: true
     - name: monitoring
       disableIstioInjection: true
+      disablePolicyChecks: true
     - name: opa-exporter
       disableIstioInjection: true
       disablePolicyChecks: true

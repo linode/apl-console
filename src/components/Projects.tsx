@@ -28,10 +28,9 @@ const getProjectLink = (row: Row) => {
 interface Props {
   projects: GetTeamProjectsApiResponse
   teamId?: string
-  canCreateResource: boolean
 }
 
-export default function ({ projects, teamId, canCreateResource }: Props): React.ReactElement {
+export default function ({ projects, teamId }: Props): React.ReactElement {
   const { appsEnabled } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -52,13 +51,5 @@ export default function ({ projects, teamId, canCreateResource }: Props): React.
 
   if (!appsEnabled.harbor) return <p>Admin needs to enable the Harbor app to activate this feature.</p>
 
-  return (
-    <ListTable
-      teamId={teamId}
-      canCreateResource={canCreateResource}
-      headCells={headCells}
-      rows={projects}
-      resourceType='Project'
-    />
-  )
+  return <ListTable teamId={teamId} headCells={headCells} rows={projects} resourceType='Project' />
 }

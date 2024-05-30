@@ -43,10 +43,9 @@ const developerCatalogInfo = [
 interface Props {
   teamId: string
   catalogs: any[]
-  canCreateResource?: boolean
 }
 
-export default function ({ teamId, catalogs, canCreateResource }: Props): React.ReactElement {
+export default function ({ teamId, catalogs }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
@@ -86,13 +85,7 @@ export default function ({ teamId, catalogs, canCreateResource }: Props): React.
           const img = item?.icon || '/logos/otomi_logo.svg'
           return (
             <Grid item xs={12} sm={4} md={3} lg={2} key={item.name}>
-              <CatalogCard
-                img={img}
-                teamId={teamId}
-                name={item.name}
-                disabled={!canCreateResource}
-                isBeta={item.isBeta}
-              />
+              <CatalogCard img={img} teamId={teamId} name={item.name} isBeta={item.isBeta} />
             </Grid>
           )
         })}
