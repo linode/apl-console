@@ -1,15 +1,6 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    deleteLicense: build.mutation<DeleteLicenseApiResponse, DeleteLicenseApiArg>({
-      query: () => ({ url: `/license`, method: 'DELETE' }),
-    }),
-    activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
-      query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
-    }),
-    getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
-      query: () => ({ url: `/metrics` }),
-    }),
     getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
       query: (queryArg) => ({
         url: `/otomi/values`,
@@ -301,40 +292,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type DeleteLicenseApiResponse = unknown
-export type DeleteLicenseApiArg = void
-export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
-  isValid: boolean
-  hasLicense: boolean
-  jwt?: string
-  body?: {
-    version: number
-    key: string
-    envType?: 'dev' | 'prod' | 'local'
-    type: 'community' | 'professional' | 'enterprise'
-    capabilities: {
-      teams: number
-      services: number
-      workloads: number
-    }
-  }
-}
-export type ActivateLicenseApiArg = {
-  /** License JWT */
-  body: {
-    jwt: string
-  }
-}
-export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi metrics */ {
-  otomi_backups: number
-  otomi_builds: number
-  otomi_secrets: number
-  otomi_netpols: number
-  otomi_services: number
-  otomi_teams: number
-  otomi_workloads: number
-}
-export type GetMetricsApiArg = void
 export type GetValuesApiResponse = unknown
 export type GetValuesApiArg = {
   /** IDs of settings to return */
@@ -474,24 +431,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -565,24 +504,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -657,24 +578,6 @@ export type CreateTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -748,24 +651,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -842,24 +727,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -936,24 +803,6 @@ export type EditTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -3548,22 +3397,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
-  license?: {
-    isValid: boolean
-    hasLicense: boolean
-    jwt?: string
-    body?: {
-      version: number
-      key: string
-      envType?: 'dev' | 'prod' | 'local'
-      type: 'community' | 'professional' | 'enterprise'
-      capabilities: {
-        teams: number
-        services: number
-        workloads: number
-      }
-    }
-  }
   user?: {
     name: string
     email: string
@@ -3749,24 +3582,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     appgw?: {
       isManaged?: boolean
     }
-    monitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     storageType?: {
       fast?: string
       standard?: string
@@ -4186,24 +4001,6 @@ export type EditSettingsApiArg = {
       appgw?: {
         isManaged?: boolean
       }
-      monitor?:
-        | (
-            | (object | null)
-            | {
-                appInsightsApiKey?: string
-                appInsightsAppId?: string
-                azureLogAnalyticsSameAs?: boolean
-                clientId: string
-                clientSecret: string
-                logAnalyticsClientId?: string
-                logAnalyticsClientSecret?: string
-                logAnalyticsTenantId?: string
-                logAnalyticsDefaultWorkspace?: string
-                subscriptionId?: string
-                tenantId?: string
-              }
-          )
-        | null
       storageType?: {
         fast?: string
         standard?: string
@@ -4532,9 +4329,6 @@ export type EditAppApiArg = {
   }
 }
 export const {
-  useDeleteLicenseMutation,
-  useActivateLicenseMutation,
-  useGetMetricsQuery,
   useGetValuesQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,

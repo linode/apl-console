@@ -8,6 +8,7 @@ import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import snack from 'utils/snack'
 import { ApiError } from '../utils/error'
+import ErrorApi from './ErrorApi'
 
 const useStyles = makeStyles()((theme) => ({
   root: {
@@ -28,6 +29,7 @@ const useStyles = makeStyles()((theme) => ({
 interface Props {
   error?: ApiError
 }
+const apiCodes = [403, 504, 666]
 
 export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()
@@ -40,6 +42,8 @@ export default function ({ error }: Props): React.ReactElement {
   const code = error ? err.code : err.status
   const message = error ? err.message : err.data.error
   const msgKey = message || code || 'Unknown'
+  if (apiCodes.includes(code)) return React.createElement(ErrorApi, error)
+
   const clearError = () => {
     dispatch(setError(undefined))
   }
