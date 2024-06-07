@@ -73,6 +73,10 @@ k8s:
     - name: tigera-operator
       disableIstioInjection: true
       disablePolicyChecks: true
+    - name: trivy-operator
+      app: trivy
+      disableIstioInjection: true
+      disablePolicyChecks: true
     - name: velero
       disableIstioInjection: true
       disablePolicyChecks: true
