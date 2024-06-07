@@ -115,12 +115,7 @@ export default function ({
   const image = (
     <img
       draggable={false}
-      className={cx(
-        classes.img,
-        // this is ofcourse not good code, but it'll do for the time being
-        // eslint-disable-next-line no-nested-ternary
-        id === 'vault' && !enabled ? classes.contrastDark : id === 'vault' ? classes.contrast : '',
-      )}
+      className={classes.img}
       src={img}
       onError={({ currentTarget }) => {
         // eslint-disable-next-line no-param-reassign

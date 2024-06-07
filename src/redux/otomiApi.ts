@@ -3530,11 +3530,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         ttl?: string
         schedule?: string
       }
-      vault?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
       argo?: {
         enabled?: boolean
         ttl?: string
@@ -3714,13 +3709,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             keys: string
             accountJson: string
             project: string
-          }
-        }
-      | {
-          provider?: 'vault'
-          vault: {
-            keys: string
-            token: string
           }
         }
   }
@@ -3961,11 +3949,6 @@ export type EditSettingsApiArg = {
           ttl?: string
           schedule?: string
         }
-        vault?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
         argo?: {
           enabled?: boolean
           ttl?: string
@@ -4145,13 +4128,6 @@ export type EditSettingsApiArg = {
               keys: string
               accountJson: string
               project: string
-            }
-          }
-        | {
-            provider?: 'vault'
-            vault: {
-              keys: string
-              token: string
             }
           }
     }
