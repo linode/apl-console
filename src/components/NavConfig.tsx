@@ -66,7 +66,6 @@ export default function NavConfig() {
           icon: getIcon('projects_icon.svg'),
         },
         { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
-        { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('secrets_icon.svg') },
         { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
