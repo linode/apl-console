@@ -2211,9 +2211,10 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
   }
-  'required-otomi-label'?: {
+  'require-labels'?: {
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
   }
   'restrict-apparmor-profiles'?: {
     action?: 'Audit' | 'Enforce'
