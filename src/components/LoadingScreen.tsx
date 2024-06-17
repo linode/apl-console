@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { alpha, styled } from '@mui/material/styles'
 import { Box, Typography } from '@mui/material'
 //
-import Logo from './Logo'
+import Logo from './LogoWavesOnly'
 
 // ----------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ type Props = {
   loadingText?: string
 }
 
-export default function LoadingScreen({ loadingText = 'Loading Otomi console' }: Props) {
+export default function LoadingScreen({ loadingText = 'Loading APL console' }: Props) {
   return (
     <RootStyle>
       <motion.div
@@ -44,7 +44,7 @@ export default function LoadingScreen({ loadingText = 'Loading Otomi console' }:
           position: 'absolute',
         }}
       >
-        <Logo disabledLink sx={{ width: 64, height: 64 }} />
+        <Logo disabledLink sx={{ width: 56, height: 56 }} />
       </motion.div>
 
       <Box

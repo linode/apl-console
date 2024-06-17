@@ -2,6 +2,7 @@ import { Box, Drawer, Stack, styled, useTheme } from '@mui/material'
 import useCollapseDrawer from 'hooks/useCollapseDrawer'
 import cssStyles from 'utils/cssStyles'
 import useResponsive from 'hooks/useResponsive'
+import { makeStyles } from '@mui/styles'
 import { NAVBAR } from '../config'
 import CollapseButton from './CollapseButton'
 import Scrollbar from './Scrollbar'
@@ -10,6 +11,37 @@ import SidebarContent from './SidebarContent'
 import navConfig from './NavConfig'
 
 // --- styles -----------------------------------------------------------
+
+const useStyles = makeStyles({
+  logo: {
+    '& .akamai-logo-name': {
+      transition: 'opacity 0.1s ease-in-out',
+    },
+    // give the svg a transition so it smoothly resizes
+    transition: 'width 0.1s linear',
+  },
+  logoAkamaiCollapsed: {
+    '& .akamai-logo-name': {
+      opacity: 0,
+    },
+    marginLeft: 73,
+  },
+  logoContainer: {
+    lineHeight: 0,
+    // when the nav is collapsed, but hovered by the user, make the logo full sized
+    'nav:hover & > svg ': {
+      '& .akamai-logo-name': {
+        opacity: 1,
+      },
+      width: 83,
+    },
+  },
+  logoItemAkamai: {
+    alignItems: 'center',
+    display: 'flex',
+    height: 50,
+  },
+})
 
 const RootStyle = styled('div')(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
@@ -29,6 +61,7 @@ type Props = {
 
 export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
   const theme = useTheme()
+  const classes = useStyles()
   const isDesktop = useResponsive('up', 'lg')
   const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } = useCollapseDrawer()
 
@@ -50,14 +83,20 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
         }}
       >
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
-          <Logo
-            sx={{
-              transition: 'all .2s ease-in-out',
-              '&:hover': {
-                transform: 'scale(1.1)',
-              },
-            }}
-          />
+          <Box className={`${classes.logoItemAkamai} ${isCollapse && classes.logoAkamaiCollapsed}`}>
+            <Logo
+              className={`${classes.logo} ${isCollapse && classes.logoAkamaiCollapsed}`}
+              width={120}
+              height={60}
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                },
+              }}
+            />
+          </Box>
+
           {isDesktop && !isCollapse && (
             <CollapseButton onToggleCollapse={onToggleCollapse} collapseClick={collapseClick} />
           )}

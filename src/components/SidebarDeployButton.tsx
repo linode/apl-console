@@ -69,13 +69,13 @@ export default function SidebarDeployButton({ item, children }: Props) {
       roles={roles}
       sx={{
         mt: 3,
-        backgroundColor: !(!editor || isDeploying || corrupt) && '#fb2f30',
+        backgroundColor: !(!editor || isDeploying || corrupt) && '#01b059',
         color: !(!editor || isDeploying || corrupt) && 'white',
         transform: 'scale(1)',
         animation: !(!editor || isDeploying || corrupt) && 'pulse 2s infinite',
-        boxShadow: '0 0 0 0 rgba(255, 0, 0, 1)',
+        boxShadow: '0 0 0 0 rgba(0, 255, 0, 1)',
         '&:hover': {
-          backgroundColor: '#fb2f30',
+          backgroundColor: '#01b059',
         },
       }}
     >

@@ -86,7 +86,7 @@ function App() {
                               <SnackbarUtilsConfigurator />
                               <CssBaseline />
                               {/* <ProgressBar /> */}
-                              <Helmet titleTemplate='%s | Otomi' defaultTitle='Otomi' />
+                              <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
                               <Router basename={contextPath}>
                                 <Switch>
                                   {/* ! user && <Route path='/' component={Home} exact /> */}
