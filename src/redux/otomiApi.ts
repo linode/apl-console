@@ -431,24 +431,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -522,24 +504,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -614,24 +578,6 @@ export type CreateTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -705,24 +651,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -799,24 +727,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -893,24 +803,6 @@ export type EditTeamApiArg = {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
@@ -3638,11 +3530,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         ttl?: string
         schedule?: string
       }
-      vault?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
       argo?: {
         enabled?: boolean
         ttl?: string
@@ -3695,24 +3582,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     appgw?: {
       isManaged?: boolean
     }
-    monitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     storageType?: {
       fast?: string
       standard?: string
@@ -3840,13 +3709,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             keys: string
             accountJson: string
             project: string
-          }
-        }
-      | {
-          provider?: 'vault'
-          vault: {
-            keys: string
-            token: string
           }
         }
   }
@@ -4087,11 +3949,6 @@ export type EditSettingsApiArg = {
           ttl?: string
           schedule?: string
         }
-        vault?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
         argo?: {
           enabled?: boolean
           ttl?: string
@@ -4144,24 +4001,6 @@ export type EditSettingsApiArg = {
       appgw?: {
         isManaged?: boolean
       }
-      monitor?:
-        | (
-            | (object | null)
-            | {
-                appInsightsApiKey?: string
-                appInsightsAppId?: string
-                azureLogAnalyticsSameAs?: boolean
-                clientId: string
-                clientSecret: string
-                logAnalyticsClientId?: string
-                logAnalyticsClientSecret?: string
-                logAnalyticsTenantId?: string
-                logAnalyticsDefaultWorkspace?: string
-                subscriptionId?: string
-                tenantId?: string
-              }
-          )
-        | null
       storageType?: {
         fast?: string
         standard?: string
@@ -4289,13 +4128,6 @@ export type EditSettingsApiArg = {
               keys: string
               accountJson: string
               project: string
-            }
-          }
-        | {
-            provider?: 'vault'
-            vault: {
-              keys: string
-              token: string
             }
           }
     }
