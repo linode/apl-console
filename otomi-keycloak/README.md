@@ -3,12 +3,12 @@
 Run keycloak locally with `otomi` theme mounted.
 
 ```
-docker run -p 8084:8080 -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -v $PWD/keycloak/themes/otomi:/opt/jboss/keycloak/themes/otomi keycloak/keycloak start-dev
+docker run -p 8084:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v $PWD/keycloak/themes/otomi:/opt/keycloak/themes/otomi -v $PWD/keycloak/providers:/opt/keycloak/providers keycloak/keycloak start-dev
 ```
 
 Next:
 
-- go to http://localhost:8084/auth/admin/main/console/#/realms/main/theme-settings and login with default credentials,
+- go to http://localhost:8084/admin/master/console/#/master/realm-settings/themes and login with default credentials,
 - set login theme to `otomi`,
 - logout from keycloak in order to see login page with `otomi` theme,
 - modify code on this directory and observe changes after web page reload.

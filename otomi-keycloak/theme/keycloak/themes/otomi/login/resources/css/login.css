@@ -17,10 +17,10 @@ h1 {
   line-height: 1;
 }
 .login-pf {
-  background: #992911;
+  background: #f4f4f4;
 }
 .login-pf body {
-  background: #992911;
+  background: #f4f4f4;
   background-size: cover;
   height: 100%;
 }
@@ -94,34 +94,25 @@ a#kc-current-locale-link::after {
   color: #0099d3;
 }
 
-#kc-logo {
-  width: 100%;
-}
-
-#kc-logo-wrapper {
-  background-image: url(../img/akamai_logo.svg);
-  background-repeat: no-repeat;
-  height: 192px;
-  width: 192px;
-  margin: auto;
+#kc-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 }
 
 div.kc-logo-text {
-  background-image: url(../img/akamai_logo.svg);
+  background-image: url(../img/akamai-logo-color.svg);
   background-repeat: no-repeat;
-  height: 192px;
-  width: 192px;
+  background-size: contain;
+  background-position: center;
+  height: 120px;
+  width: 200px;
   margin: auto;
 }
 
 div.kc-logo-text span {
   display: none;
-}
-
-#kc-header {
-  color: #ededed;
-  overflow: visible;
-  white-space: nowrap;
 }
 
 #kc-header-wrapper {
@@ -383,7 +374,6 @@ a.zocial {
   #kc-header-wrapper {
     font-size: 16px;
     font-weight: bold;
-    padding: 60px 60px 0 0;
     letter-spacing: 0;
   }
 
