@@ -25,16 +25,16 @@ const useStyles = makeStyles()((theme) => {
 
 const developerCatalogInfo = [
   {
-    title: 'What is the Template Catalog?',
-    text: 'The Template Catalog offers golden path Helm templates for your projects. Choose the Helm template to use, customize the values and submit to create a Workload.',
+    title: 'What is the Catalog?',
+    text: 'The Catalog offers golden path Helm charts for your projects. Choose the chart to use, customize the values and submit to create a Workload.',
   },
   {
-    title: 'Who maintaining the Template Catalog?',
-    text: 'The templates in the Catalog are maintained by the platform administrator.',
+    title: 'Who is maintaining the Catalog?',
+    text: 'The Helm charts in the Catalog are maintained by the platform administrator.',
   },
   {
-    title: 'Why use the Template Catalog?',
-    text: 'The Template Catalog streamlines your workflow and makes deploying workloads a smooth and efficient process.',
+    title: 'Why use the Catalog?',
+    text: 'The Catalog helps to streamline your workflow and makes deploying workloads a smooth and efficient process.',
   },
 ]
 
@@ -65,7 +65,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     <div className={cx(classes.root)}>
       <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary>
-          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Template Catalog!</Box>
+          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Catalog!</Box>
           <HelpRoundedIcon />
         </AccordionSummary>
         <AccordionDetails>
