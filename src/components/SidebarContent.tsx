@@ -1,4 +1,4 @@
-import { Box, List, ListSubheader } from '@mui/material'
+import { Box, Divider, List, ListSubheader } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { useSession } from 'providers/Session'
 import useSettings from 'hooks/useSettings'
@@ -20,6 +20,15 @@ export const ListSubheaderStyle = styled((props) => <ListSubheader disableSticky
   }),
 )
 
+const SidebarDivider = styled(Divider)`
+  border-color: rgb(34, 34, 34);
+  margin: 11px 0px;
+`
+
+const FirstSidebarDivider = styled(SidebarDivider)`
+  margin-top: 0;
+`
+
 // ----------------------------------------------------------------------
 
 export default function SidebarContent({ navConfig, isCollapse = false, ...other }: NavSectionProps) {
@@ -40,19 +49,9 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
 
   return (
     <Box {...other}>
-      {navConfig.map((group) => (
-        <List key={group.subheader} disablePadding sx={{ px: 2 }}>
-          {group.subheader !== 'actions' && (
-            <ListSubheaderStyle
-              sx={{
-                ...(isCollapse && {
-                  opacity: 0,
-                }),
-              }}
-            >
-              {group.subheader}
-            </ListSubheaderStyle>
-          )}
+      {navConfig.map((group, index) => (
+        <List key={group.subheader} disablePadding>
+          {index === 0 ? <FirstSidebarDivider /> : <SidebarDivider />}
           {group.items.map((list) => {
             if (oboTeamId === 'admin' && list.dontShowIfAdminTeam) return null
             return <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />

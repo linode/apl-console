@@ -44,7 +44,7 @@ export default function Scrollbar({ children, sx, ...other }: Props) {
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
 
   return (
-    <Box sx={{ overflowX: 'auto', ...sx }} {...other}>
+    <Box sx={{ overflowX: 'hidden', ...sx }} {...other}>
       {children}
     </Box>
   )

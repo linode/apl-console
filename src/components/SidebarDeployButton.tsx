@@ -68,7 +68,7 @@ export default function SidebarDeployButton({ item, children }: Props) {
       disabled={!editor || isDeploying || corrupt}
       roles={roles}
       sx={{
-        mt: 3,
+        mt: 1.5,
         backgroundColor: !(!editor || isDeploying || corrupt) && '#01b059',
         color: !(!editor || isDeploying || corrupt) && 'white',
         transform: 'scale(1)',

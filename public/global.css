@@ -1,5 +1,5 @@
 table td a {
-  color: #009cde;
+  color: #3583dc;
   text-decoration: none;
 }
 
@@ -13,7 +13,7 @@ table td a:hover {
 
 .rjsf .MuiPaper-elevation {
   background-color: #cdcdcd14;
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 .rjsf .MuiDivider-root {

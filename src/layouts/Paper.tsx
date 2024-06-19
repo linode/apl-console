@@ -44,17 +44,17 @@ const useStyles = makeStyles()((theme) => ({
 
 interface Props {
   loading?: boolean
-  comp: React.ReactElement
+  comp?: React.ReactElement
   title?: string
+  children?: any
 }
 
-export default function ({ loading, comp, title }: Props): React.ReactElement {
+export default function ({ loading, comp, title, children }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const theme = useTheme()
   const location = useLocation()
   // grafana iframe background color
-  const dashboardStyle =
-    location.pathname === '/' ? { backgroundColor: theme.palette.mode === 'dark' ? '#181B1F' : '#FFF' } : {}
+  const dashboardStyle = location.pathname === '/' ? { backgroundColor: 'background.contrast' } : {}
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>
@@ -62,6 +62,7 @@ export default function ({ loading, comp, title }: Props): React.ReactElement {
           <Error />
           {loading && <LoadingScreen />}
           {!loading && comp}
+          {children}
         </Card>
       </Container>
     </MainLayout>

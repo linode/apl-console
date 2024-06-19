@@ -21,10 +21,10 @@ const useStyles = makeStyles({
     transition: 'width 0.1s linear',
   },
   logoAkamaiCollapsed: {
+    paddingLeft: '50px',
     '& .akamai-logo-name': {
       opacity: 0,
     },
-    marginLeft: 73,
   },
   logoContainer: {
     lineHeight: 0,
@@ -75,9 +75,7 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
       <Stack
         spacing={3}
         sx={{
-          pt: 3,
-          pb: 2,
-          px: 2.5,
+          px: 2,
           flexShrink: 0,
           ...(isCollapse && { alignItems: 'center' }),
         }}
@@ -86,8 +84,8 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
           <Box className={`${classes.logoItemAkamai} ${isCollapse && classes.logoAkamaiCollapsed}`}>
             <Logo
               className={`${classes.logo} ${isCollapse && classes.logoAkamaiCollapsed}`}
-              width={120}
-              height={60}
+              width={80}
+              height={30}
               sx={{
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
@@ -141,8 +139,8 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
           PaperProps={{
             sx: {
               width: NAVBAR.DASHBOARD_WIDTH,
-              borderRightStyle: 'dashed',
-              bgcolor: 'background.default',
+              bgcolor: 'background.sidebar',
+              borderRight: 'none',
               transition: (theme) =>
                 theme.transitions.create('width', {
                   duration: theme.transitions.duration.standard,

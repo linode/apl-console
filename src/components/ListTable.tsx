@@ -1,4 +1,3 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { Box, Button } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React from 'react'
@@ -44,7 +43,7 @@ export default function ({
   const redirect = to || (adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`)
   return (
     <>
-      <Box sx={{ ml: 2, mr: 2 }}>
+      <Box>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{ flexGrow: 1 }}>
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
@@ -55,7 +54,6 @@ export default function ({
                 variant='contained'
                 component={Link}
                 to={redirect}
-                startIcon={<AddCircleIcon />}
                 // disabled={!adminOnly && isAdmin && !oboTeamId}
                 data-cy={`button-create-${resourceType}`}
               >
