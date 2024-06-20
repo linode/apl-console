@@ -158,7 +158,7 @@ export default function ({
   const [data, setData] = useState<any>(workload)
   const [workloadValues, setWorkloadValues] = useState<any>(values)
   const [scrollPosition, setScrollPosition] = useState(0)
-  const icon = data?.icon || '/logos/otomi_logo.svg'
+  const icon = data?.icon || '/logos/akamai_logo.svg'
 
   const handleScroll = () => {
     const position = window.scrollY

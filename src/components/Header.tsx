@@ -6,7 +6,6 @@ import { useSession } from 'providers/Session'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
-import cssStyles from 'utils/cssStyles'
 import useSettings from 'hooks/useSettings'
 import AccountPopover from './AccountPopover'
 import { IconButtonAnimate } from './animate'
@@ -29,7 +28,6 @@ type RootStyleProps = {
 const RootStyle = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== 'isCollapse' && prop !== 'isOffset' && prop !== 'verticalLayout',
 })<RootStyleProps>(({ isCollapse, isOffset, verticalLayout, theme }) => ({
-  ...cssStyles(theme).bgBlur(),
   boxShadow: 'none',
   color: '#585656',
   height: HEADER.MOBILE_HEIGHT,
@@ -49,7 +47,6 @@ const RootStyle = styled(AppBar, {
     ...(verticalLayout && {
       width: '100%',
       height: HEADER.DASHBOARD_DESKTOP_OFFSET_HEIGHT,
-      backgroundColor: theme.palette.background.default,
     }),
   },
 }))
@@ -120,7 +117,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   }
 
   return (
-    <RootStyle isCollapse={isCollapse} isOffset={isOffset} verticalLayout={verticalLayout}>
+    <RootStyle
+      sx={{ backgroundColor: 'background.contrast' }}
+      isCollapse={isCollapse}
+      isOffset={isOffset}
+      verticalLayout={verticalLayout}
+    >
       <Toolbar
         sx={{
           minHeight: '100% !important',
@@ -137,7 +139,13 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           {isAdmin && (
             <>
               <Typography>view:</Typography>
-              <Select color='secondary' value={themeView} onChange={handleChangeView} data-cy='select-view'>
+              <Select
+                size='small'
+                color='secondary'
+                value={themeView}
+                onChange={handleChangeView}
+                data-cy='select-view'
+              >
                 <MenuItem value='platform'>platform</MenuItem>
                 <MenuItem value='team'>team</MenuItem>
               </Select>
@@ -146,6 +154,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
 
           <Typography>cluster:</Typography>
           <Select
+            size='small'
             color='secondary'
             value={`${cluster.provider}-${cluster.name}`}
             onChange={handleChangeCluster}
@@ -162,6 +171,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           </Select>
           <Typography variant='body1'>team:</Typography>
           <Select
+            size='small'
             color='secondary'
             value={(teams.length && oboTeamId) || ''}
             onChange={handleChangeTeam}
