@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { Grid } from '@mui/material'
+import { Card, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
@@ -27,6 +27,9 @@ const useStyles = makeStyles()((theme) => {
       color: theme.palette.text.secondary,
       fontWeight: '200',
       marginTop: '5px',
+    },
+    searchbar: {
+      backgroundColor: '#444444',
     },
     // enabled: {
     //   '& .MuiTypography-root': {
@@ -158,7 +161,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
         isBeta,
       } = getAppData(session, teamId, item)
       return (
-        <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
+        <Grid item xs={12} sm={6} md={4} lg={3} key={id}>
           <AppCard
             deps={coreDeps}
             enabled={enabled !== false}
@@ -211,11 +214,13 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
 
   return (
     <div className={cx(classes.root)}>
-      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
-      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(dataFiltered.sort(sortArray))}
-      </Grid>
-      {deprecatedAppModals()}
+      <Card sx={{ p: 5 }}>
+        <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
+        <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+          {out(dataFiltered.sort(sortArray))}
+        </Grid>
+        {deprecatedAppModals()}
+      </Card>
     </div>
   )
 }

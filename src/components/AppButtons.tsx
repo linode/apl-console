@@ -60,7 +60,6 @@ export default function ({
       sx={{
         borderColor: 'primary.main',
         backgroundColor: 'transparent',
-        paddingBottom: '10px',
       }}
     >
       {!isHostedByOtomi && !enabled && isAdminApps && (
