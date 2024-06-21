@@ -16,7 +16,7 @@ import {
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
-import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip } from '@mui/material'
+import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip, Typography } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
@@ -333,7 +333,9 @@ export default function ({
       <Stepper activeStep={activeStep} orientation='vertical'>
         {projectSteps.map((step, index) => (
           <Step key={step}>
-            <StepLabel>{step}</StepLabel>
+            <StepLabel>
+              <Typography sx={{ fontWeight: 'bold' }}>{step}</Typography>
+            </StepLabel>
             <StepContent>
               {activeStep === 0 && (
                 <Box>
