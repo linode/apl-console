@@ -1,19 +1,52 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Policies from 'components/Policies'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetSettingsQuery } from 'redux/otomiApi'
+import { useGetAllPoliciesQuery, useGetTeamPoliciesQuery } from 'redux/otomiApi'
+import { getRole } from 'utils/data'
 
-export default function (): React.ReactElement {
-  const { data, isLoading, isFetching, isError, refetch } = useGetSettingsQuery({ ids: ['policies'] })
+interface Params {
+  teamId?: string
+}
+
+export default function ({
+  match: {
+    params: { teamId },
+  },
+}: RouteComponentProps<Params>): React.ReactElement {
+  const {
+    data: allPolicies,
+    isLoading: isLoadingAllPolicies,
+    isFetching: isFetchingAllPolicies,
+    refetch: refetchAllPolicies,
+  } = useGetAllPoliciesQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamPolicies,
+    isLoading: isLoadingTeamPolicies,
+    isFetching: isFetchingTeamPolicies,
+    refetch: refetchTeamPolicies,
+  } = useGetTeamPoliciesQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
-    if (isDirty === false && !isFetching) refetch()
+    if (isDirty !== false) return
+    if (!teamId && !isFetchingAllPolicies) refetchAllPolicies()
+    else if (teamId && !isFetchingTeamPolicies) refetchTeamPolicies()
   }, [isDirty])
+
   const { t } = useTranslation()
   // END HOOKS
-  const policies = data?.policies ?? ({ policies: [] } as any)
-  const comp = !isError && <Policies policies={policies} />
-  return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_POLICIES')} />
+  const loading = isLoadingAllPolicies || isLoadingTeamPolicies
+  let policies = []
+  if (teamId && teamPolicies)
+    policies = Object.entries(teamPolicies).map(([key, value]: any) => ({ name: key, ...value, teamId }))
+  else if (allPolicies) {
+    policies = Object.entries(allPolicies).flatMap(([teamId, policies]) =>
+      Object.entries(policies).map(([key, value]: any) => ({ name: key, ...value, teamId })),
+    )
+  }
+  const comp = policies && <Policies policies={policies} teamId={teamId} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
 }
