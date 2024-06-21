@@ -290,12 +290,12 @@ export default function ({
       body,
     })
     if (res.error) return
-    history.push(`/projects`)
+    history.push(user.isAdmin ? `/projects` : `/teams/${teamId}/projects`)
   }
 
   const handleDeleteProject = () => {
     onDelete({ teamId, projectId })
-    history.push(`/projects`)
+    history.push(user.isAdmin ? `/projects` : `/teams/${teamId}/projects`)
   }
 
   const handleNext = async () => {
