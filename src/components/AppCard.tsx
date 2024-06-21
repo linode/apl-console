@@ -16,7 +16,7 @@ const useStyles = makeStyles()((theme) => {
       paddingRight: theme.spacing(1),
       paddingBottom: theme.spacing(2),
       paddingTop: theme.spacing(2),
-      backgroundColor: '#444444',
+      backgroundColor: theme.palette.divider,
       margin: '5px',
       maxHeight: '200px',
       height: '58px',
