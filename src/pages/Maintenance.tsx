@@ -31,11 +31,11 @@ export default function (): React.ReactElement {
       <Typography variant='h6'>Actions</Typography>
 
       <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=false'>
-        Download Otomi values
+        Download APL values
       </Link>
 
       <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=true'>
-        Download Otomi values (secrets redacted)
+        Download APL values (secrets redacted)
       </Link>
 
       <Typography variant='h6' mt={2}>
