@@ -243,8 +243,14 @@ export default function ({
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData?.service, defaultSubdomain)
 
-  const setNextStep = () => setActiveStep((prev) => prev + 1)
-  const setPreviousStep = () => setActiveStep((prev) => prev - 1)
+  const setNextStep = () => {
+    setActiveStep((prev) => prev + 1)
+    window.scrollTo(0, 0)
+  }
+  const setPreviousStep = () => {
+    setActiveStep((prev) => prev - 1)
+    window.scrollTo(0, 0)
+  }
 
   const handleCreateProject = () => {
     const { name } = formData
