@@ -26,15 +26,15 @@ const useStyles = makeStyles()((theme) => {
 const developerCatalogInfo = [
   {
     title: 'What is the Catalog?',
-    text: 'The Catalog offers golden path templates for your projects. Choose the template to use, customize the values and submit to create a workload.',
+    text: 'The Catalog offers golden path Helm charts for your projects. Choose the chart to use, customize the values and submit to create a Workload.',
   },
   {
     title: 'Who is maintaining the Catalog?',
-    text: 'The templates in the Catalog are maintained by the platform administrator.',
+    text: 'The Helm charts in the Catalog are maintained by the platform administrator.',
   },
   {
     title: 'Why use the Catalog?',
-    text: 'The catalog streamlines your workflow and makes deploying workloads a smooth and efficient process.',
+    text: 'The Catalog helps to streamline your workflow and makes deploying workloads a smooth and efficient process.',
   },
 ]
 
@@ -65,7 +65,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     <div className={cx(classes.root)}>
       <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary>
-          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Otomi Catalog!</Box>
+          <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Catalog!</Box>
           <HelpRoundedIcon />
         </AccordionSummary>
         <AccordionDetails>
@@ -82,7 +82,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search chart' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
         {filteredCatalog.map((item) => {
-          const img = item?.icon || '/logos/otomi_logo.svg'
+          const img = item?.icon || '/logos/akamai_logo.svg'
           return (
             <Grid item xs={12} sm={4} md={3} lg={2} key={item.name}>
               <CatalogCard img={img} teamId={teamId} name={item.name} isBeta={item.isBeta} />

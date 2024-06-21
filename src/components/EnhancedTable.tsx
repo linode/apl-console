@@ -3,9 +3,7 @@
 import {
   Box,
   Checkbox,
-  FormControlLabel,
   Paper,
-  Switch,
   Table,
   TableBody,
   TableCell,
@@ -14,7 +12,6 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  lighten,
 } from '@mui/material'
 import { sentenceCase } from 'utils/data'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -121,6 +118,7 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
         )}
         {headCells.map((headCell) => (
           <TableCell
+            sx={{ backgroundColor: 'background.contrast' }}
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -144,26 +142,6 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
     </TableHead>
   )
 }
-
-const useToolbarStyles = makeStyles()((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
-  highlight:
-    theme.palette.mode === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  title: {
-    flex: '1 1 100%',
-  },
-}))
 
 interface EnhancedTableToolbarProps {
   numSelected: number
@@ -191,7 +169,6 @@ export default function EnhancedTable({
   const [selected, setSelected] = useState<string[]>([])
   const [page, setPage] = useState(0)
   const [filterName, setFilterName] = useState('')
-  const [dense, setDense] = useLocalStorage('EnhancedTable:dense', false)
   const [rowsPerPage, setRowsPerPage] = useLocalStorage('EnhancedTable:rowsPerPage', 10)
 
   const handleRequestSort = (event: MouseEvent<unknown>, property: string) => {
@@ -232,10 +209,6 @@ export default function EnhancedTable({
     setPage(0)
   }
 
-  const handleChangeDense = (event: ChangeEvent<HTMLInputElement>) => {
-    setDense(event.target.checked)
-  }
-
   const isSelected = (name: string) => selected.includes(name)
 
   const handleFilterName = (filterName: string) => {
@@ -257,12 +230,7 @@ export default function EnhancedTable({
       <Paper className={classes.paper}>
         <TableToolbar filterName={filterName} onFilterName={handleFilterName} noPadding />
         <TableContainer>
-          <Table
-            aria-labelledby='tableTitle'
-            size={dense ? 'small' : 'medium'}
-            aria-label='enhanced table'
-            data-cy='table-enhanced'
-          >
+          <Table aria-labelledby='tableTitle' size='small' aria-label='enhanced table' data-cy='table-enhanced'>
             <EnhancedTableHead
               disableSelect={disableSelect}
               classes={classes}
@@ -309,7 +277,7 @@ export default function EnhancedTable({
                 )
               })}
               {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                <TableRow style={{ height: 33 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -325,11 +293,6 @@ export default function EnhancedTable({
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-          <FormControlLabel
-            control={<Switch checked={dense} onChange={handleChangeDense} />}
-            label='Dense padding'
-            sx={{ px: 3, py: 1.5, top: 0, position: { md: 'absolute' } }}
           />
         </Box>
       </Paper>

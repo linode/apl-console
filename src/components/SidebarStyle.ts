@@ -25,11 +25,9 @@ export const ListItemStyle = styled(ListItemButton, {
   position: 'relative',
   height: NAVBAR.DASHBOARD_ITEM_ROOT_HEIGHT,
   textTransform: 'capitalize',
-  paddingLeft: theme.spacing(2),
+  paddingLeft: theme.spacing(1.5),
   paddingRight: theme.spacing(1.5),
-  marginBottom: theme.spacing(0.5),
   color: theme.palette.text.secondary,
-  borderRadius: theme.shape.borderRadius,
   // activeRoot
   ...(activeRoot && {
     ...theme.typography.subtitle2,
