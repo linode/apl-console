@@ -43,7 +43,7 @@ export default function ({
   const redirect = to || (adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`)
   return (
     <>
-      <Box>
+      <Box sx={{ backgroundColor: 'background.default' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Box sx={{ flexGrow: 1 }}>
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />

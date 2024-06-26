@@ -75,12 +75,12 @@ export default function ({
 
       {enabled && externalUrl && (
         <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank' onClick={handleClickModal}>
-          <Iconify icon='ri:share-forward-fill' sx={{ color: theme.palette.chart.blue[0] }} />
+          <Iconify icon='ri:share-forward-fill' sx={{ color: theme.palette.text.secondary }} />
         </IconButton>
       )}
 
       <IconButton component={RLink} to={`/apps/${teamId}/${id}`} title={t('Click to edit settings')}>
-        <Iconify icon='material-symbols:settings' sx={{ color: theme.palette.chart.blue[0] }} />
+        <Iconify icon='material-symbols:settings' sx={{ color: theme.palette.text.secondary }} />
       </IconButton>
     </ButtonGroup>
   )

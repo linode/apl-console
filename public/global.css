@@ -1,5 +1,5 @@
 table td a {
-  color: #3583dc;
+  color: #74aae6;
   text-decoration: none;
 }
 
@@ -12,7 +12,6 @@ table td a:hover {
 } */
 
 .rjsf .MuiPaper-elevation {
-  background-color: #cdcdcd14;
   border-radius: 0;
 }
 
@@ -23,6 +22,10 @@ table td a:hover {
 .rjsf .MuiGrid-item {
   margin-top: 10px;
   margin-right: 10px;
+}
+
+.mui-mhc70k-MuiGrid-root > .MuiGrid-item {
+  padding-left: 0;
 }
 
 @keyframes pulse {

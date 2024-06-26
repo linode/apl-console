@@ -12,6 +12,7 @@ const useStyles = makeStyles()((theme) => ({
     '& .MuiGrid-item': {
       padding: '16px !important',
     },
+    backgroundColor: theme.palette.background.default,
   },
   paragraph: {
     paddingBottom: theme.spacing(1),
