@@ -24,6 +24,10 @@ table td a:hover {
   margin-right: 10px;
 }
 
+.mui-mhc70k-MuiGrid-root {
+  margin-top: 0;
+}
+
 .mui-mhc70k-MuiGrid-root > .MuiGrid-item {
   padding-left: 0;
 }

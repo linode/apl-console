@@ -31,6 +31,10 @@ const useStyles = makeStyles()((theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: 0,
   },
+  formAlterantive: {
+    backgroundColor: 'background.contrast',
+    borderRadius: 0,
+  },
 }))
 
 interface Props extends CrudProps {
@@ -51,6 +55,7 @@ interface Props extends CrudProps {
   setDirty?: CallableFunction
   schema: JSONSchema7
   uiSchema?: UiSchema
+  colorSchema?: string
 }
 
 export default function ({
@@ -70,6 +75,7 @@ export default function ({
   data,
   schema,
   children,
+  colorSchema,
   ...other
 }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
@@ -139,7 +145,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        className={classes.form}
+        className={colorSchema === 'alt' ? classes.formAlterantive : classes.form}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}

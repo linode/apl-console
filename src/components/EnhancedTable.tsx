@@ -51,15 +51,14 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 
 // ---------------- styles ----------------------
 
-const StyledTableHeaderCell = styled(TableCell)`
-  background-color: rgb(51, 55, 62);
-  border-width: 2px 1px;
-  border-style: solid;
-  border-color: rgb(58, 63, 70);
-  color: rgb(136, 143, 145);
-  font-family: LatoWebBold, sans-serif;
-  padding: 10px 15px;
-`
+const StyledTableHeaderCell = styled(TableCell)({
+  borderWidth: '2px 2px',
+  borderStyle: 'solid',
+  borderColor: 'background.contrastAlt',
+  color: 'rgb(136, 143, 145)',
+  fontFamily: 'LatoWebBold, sans-serif',
+  padding: '10px 15px',
+})
 
 // --------------------------------------------
 
@@ -132,6 +131,7 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
         )}
         {headCells.map((headCell) => (
           <StyledTableHeaderCell
+            sx={{ backgroundColor: 'background.contrastAlt', borderColor: 'background.default' }}
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -269,7 +269,7 @@ export default function EnhancedTable({
                     tabIndex={-1}
                     key={key}
                     selected={isItemSelected}
-                    sx={{ borderBottom: '1px solid rgb(58, 63, 70)' }}
+                    sx={{ border: '1px solid', borderColor: 'background.default' }}
                   >
                     {!disableSelect && (
                       <TableCell padding='checkbox' key='header-checkbox'>

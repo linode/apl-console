@@ -29,7 +29,6 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
-import cssStyles from 'utils/cssStyles'
 import Markdown from './Markdown'
 import Form from './rjsf/Form'
 import WorkloadValues from './WorkloadValues'
@@ -40,7 +39,6 @@ import Iconify from './Iconify'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
-    ...cssStyles(theme).bgBlur({ color: theme.palette.background.paper }),
     display: 'flex',
     flex: 1,
     alignItems: 'center',
@@ -49,7 +47,6 @@ const useStyles = makeStyles()((theme) => ({
     left: 0,
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
-    borderRadius: '8px',
   },
   legend: {
     paddingTop: theme.spacing(3),
@@ -78,11 +75,6 @@ const checkImageFields = (data: any) => {
   if (data?.repository) return "The 'tag' field for the image should be filled in!"
   if (data?.tag) return "The 'repository' field for the image should be filled in!"
   return "The 'repository' and 'tag' fields for the image should be filled in!"
-}
-
-const calculateTop = (scrollPosition: number, globalError: boolean): string => {
-  if (globalError) return `${scrollPosition > 140 ? scrollPosition - 72 : 88}px`
-  return `${scrollPosition > 90 ? scrollPosition - 72 : 0}px`
 }
 
 export const getValuesDocLink = (url: string, path: string): string => {
@@ -200,14 +192,7 @@ export default function ({
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box
-        className={classes.header}
-        sx={{
-          position: 'absolute',
-          top: calculateTop(scrollPosition, !!globalError),
-          zIndex: 10,
-        }}
-      >
+      <Box className={classes.header}>
         <Box className={classes.imgHolder}>
           <img
             className={classes.img}
@@ -249,7 +234,7 @@ export default function ({
         </Box>
       </Box>
 
-      <AppBar position='relative' color='default' sx={{ borderRadius: '8px', mt: globalError ? '90px' : '66px' }}>
+      <AppBar position='relative' color='default'>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           {tab !== 1 && (
             <Box
@@ -342,12 +327,35 @@ export default function ({
             </Box>
           </Tooltip>
         )}
-
         <WorkloadValues
           workloadValues={workloadValues}
           setWorkloadValues={setWorkloadValues}
           showComments={!workload?.id}
         />
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            ml: 'auto',
+            float: 'right',
+          }}
+        >
+          <ButtonGroup>
+            {tab === 1 && (
+              <Button variant='contained' onClick={handleCreateUpdateWorkload}>
+                Submit
+              </Button>
+            )}
+            {workloadId && (
+              <DeleteButton
+                onDelete={() => deleteWorkload({ teamId, workloadId })}
+                resourceName={workload?.name}
+                resourceType='workload'
+                data-cy='button-delete-workload'
+              />
+            )}
+          </ButtonGroup>
+        </Box>
       </TabPanel>
     </Box>
   )
