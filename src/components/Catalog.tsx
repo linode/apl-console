@@ -45,8 +45,7 @@ const useStyles = makeStyles()((theme) => ({
     paddingTop: theme.spacing(3),
     width: '100%',
     left: 0,
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
+    backgroundColor: theme.palette.background.default,
   },
   legend: {
     paddingTop: theme.spacing(3),

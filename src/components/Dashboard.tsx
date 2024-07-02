@@ -11,8 +11,6 @@ import { Link as RouterLink } from 'react-router-dom'
 // styles -----------------------------------------------------------
 const useStyles = makeStyles()((theme) => ({
   card: {
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
     padding: theme.spacing(1),
   },
   cardHeaderTitle: {

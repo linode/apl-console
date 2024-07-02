@@ -55,7 +55,7 @@ interface Props extends CrudProps {
   setDirty?: CallableFunction
   schema: JSONSchema7
   uiSchema?: UiSchema
-  colorSchema?: string
+  altColor?: boolean
 }
 
 export default function ({
@@ -75,7 +75,7 @@ export default function ({
   data,
   schema,
   children,
-  colorSchema,
+  altColor,
   ...other
 }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
@@ -145,7 +145,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        className={colorSchema === 'alt' ? classes.formAlterantive : classes.form}
+        className={altColor ? classes.formAlterantive : classes.form}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}

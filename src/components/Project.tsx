@@ -357,7 +357,7 @@ export default function ({
                     {...other}
                     children
                     hideHelp
-                    colorSchema='alt'
+                    altColor
                   />
                   <FormControl sx={{ my: 2 }}>
                     <RadioGroup onChange={(e) => setSelectedPath(e.target.value)} value={selectedPath}>
@@ -379,7 +379,7 @@ export default function ({
                   {...other}
                   children
                   hideHelp
-                  colorSchema='alt'
+                  altColor
                 />
               )}
 
@@ -394,7 +394,7 @@ export default function ({
                     resourceType='Workload'
                     children
                     hideHelp
-                    colorSchema='alt'
+                    altColor
                     {...other}
                   />
 
@@ -432,7 +432,7 @@ export default function ({
                   resourceType='Service'
                   children
                   hideHelp
-                  colorSchema='alt'
+                  altColor
                   {...other}
                 />
               )}
