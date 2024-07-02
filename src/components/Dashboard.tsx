@@ -135,6 +135,7 @@ function InventoryItem({ classes, item, themeView, teamId }: InventoryItemProps)
 }
 
 function InventoryCard({ classes, title, inventory, themeView, teamId }: InventoryCardProps): React.ReactElement {
+  const columnItemNumber = Math.round(inventory.length / 2)
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
       <Typography variant='h5' className={classes.cardHeaderTitle}>
@@ -142,12 +143,12 @@ function InventoryCard({ classes, title, inventory, themeView, teamId }: Invento
       </Typography>
       <Box className={classes.inventoryCard}>
         <Box className={classes.inventoryColumn}>
-          {inventory.slice(0, 3).map((panel) => (
+          {inventory.slice(0, columnItemNumber).map((panel) => (
             <InventoryItem key={panel.name} item={panel} teamId={teamId} themeView={themeView} classes={classes} />
           ))}
         </Box>
         <Box className={classes.inventoryColumn}>
-          {inventory.slice(3).map((panel) => (
+          {inventory.slice(columnItemNumber).map((panel) => (
             <InventoryItem key={panel.name} item={panel} teamId={teamId} themeView={themeView} classes={classes} />
           ))}
         </Box>
