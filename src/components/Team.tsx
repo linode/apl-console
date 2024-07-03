@@ -40,7 +40,7 @@ export const getTeamUiSchema = (
       },
     },
   }
-  if (!appsEnabled.alertmanager || !teamAlertmanager) {
+  if (!teamAlertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
