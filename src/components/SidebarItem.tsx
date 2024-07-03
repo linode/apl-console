@@ -30,10 +30,11 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
 
   const renderContent = (
     <>
-      {icon && <ListItemIconStyle>{icon}</ListItemIconStyle>}
+      {icon && <ListItemIconStyle sx={{ color: '#84868B' }}>{icon}</ListItemIconStyle>}
       <ListItemTextStyle
         disableTypography
         primary={title}
+        sx={{ color: '#fff', fontWeight: 'bold' }}
         secondary={
           <Tooltip title={caption} arrow>
             <Typography

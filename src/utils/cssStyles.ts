@@ -40,7 +40,6 @@ export default function cssStyles(theme?: Theme) {
       return {
         backdropFilter: `blur(${blur}px)`,
         WebkitBackdropFilter: `blur(${blur}px)`, // Fix on Mobile
-        backgroundColor: alpha(color, opacity),
       }
     },
     bgGradient: (props?: BackgroundGradientProps) => {

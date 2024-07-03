@@ -7,9 +7,8 @@ export default function Button(theme: Theme) {
     MuiButton: {
       styleOverrides: {
         root: {
-          '&:hover': {
-            boxShadow: 'none',
-          },
+          borderRadius: 0,
+          boxShadow: 'none !important',
         },
         sizeLarge: {
           height: 48,
@@ -17,7 +16,6 @@ export default function Button(theme: Theme) {
         // contained
         containedInherit: {
           color: theme.palette.grey[800],
-          boxShadow: theme.customShadows.z8,
           '&:hover': {
             backgroundColor: theme.palette.grey[400],
           },

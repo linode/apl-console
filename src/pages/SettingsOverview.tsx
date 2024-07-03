@@ -7,14 +7,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Box, Grid, Typography } from '@mui/material'
 import Versions from 'components/Versions'
-import LicenseOverview from 'components/LicenseOverview'
 
 export default function SettingsOverview() {
   const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
   const settings = [
     { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg'), color: '#ed1c7b' },
-    { title: 'Otomi', path: '/settings/otomi', icon: getIcon('otomi_icon.svg'), color: '#ef4424' },
+    { title: 'APL settings', path: '/settings/otomi', icon: getIcon('akamai_icon.svg'), color: '#ef4424' },
     { title: 'Key Management', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), color: '#f6d10c' },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg'), color: '#2c2e5b' },
     { title: 'Co-monitoring', path: '/settings/home', icon: getIcon('comonitoring_icon.svg'), color: '#50c5d6' },
@@ -72,7 +71,6 @@ export default function SettingsOverview() {
         })}
       </Grid>
       <Versions />
-      <LicenseOverview />
     </div>
   )
 

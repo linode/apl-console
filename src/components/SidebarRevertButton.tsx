@@ -59,7 +59,7 @@ export default function SidebarRevertButton({ item, children }: Props) {
       })
       if (okRevert || errorRevert) {
         snack.close(keys.revert)
-        if (errorRevert) snack.error(`${t('Reverting failed. Please contact support@redkubes.com.')}`)
+        if (errorRevert) snack.error(`${t('Reverting failed. Please contact support')}`)
         setRevert(false)
       }
     }

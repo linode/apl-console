@@ -1,36 +1,61 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Policy from 'components/Policy'
+import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
+import { find, omit } from 'lodash'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { GetPolicyApiResponse, useEditPolicyMutation, useGetPolicyQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 interface Params {
+  teamId: string
   policyId?: string
 }
 
 export default function ({
   match: {
-    params: { policyId },
+    params: { teamId, policyId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const settingId = 'policies'
-  const { data: settings, isLoading, isFetching, isError, refetch } = useGetSettingsQuery({ ids: [settingId] })
-  const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
+  const {
+    user: { isAdmin },
+  } = useAuthzSession(teamId)
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
+  const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
+  const {
+    data: teams,
+    isLoading: isLoadingTeams,
+    isFetching: isFetchingTeams,
+    refetch: refetchTeams,
+  } = useGetTeamsQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
+    if (teamId && !isFetchingTeams) refetchTeams()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
+  const team = !isLoadingTeams && find(teams, { id: teamId })
+  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin' || isAdmin
+  const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
-  const handleSubmit = (formData) => edit({ settingId, body: { policies: { [policyId]: formData } } }).then(refetch)
-  const policies = settings?.policies
-  const comp = !isError && (
-    <Policy onSubmit={handleSubmit} policies={policies} policyId={policyId} mutating={mutating} />
+  if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
+  const handleSubmit = (formData) => {
+    if (!editPolicies) return
+    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'name']) as GetPolicyApiResponse })
+  }
+  const comp = teams && !isError && (
+    <Policy
+      onSubmit={handleSubmit}
+      editPolicies={editPolicies}
+      policy={data}
+      teamId={teamId}
+      mutating={mutating}
+      policyId={policyId}
+    />
   )
-  return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_POLICY', { policyId })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
 }

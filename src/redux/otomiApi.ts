@@ -1,15 +1,6 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    deleteLicense: build.mutation<DeleteLicenseApiResponse, DeleteLicenseApiArg>({
-      query: () => ({ url: `/license`, method: 'DELETE' }),
-    }),
-    activateLicense: build.mutation<ActivateLicenseApiResponse, ActivateLicenseApiArg>({
-      query: (queryArg) => ({ url: `/activate`, method: 'PUT', body: queryArg.body }),
-    }),
-    getMetrics: build.query<GetMetricsApiResponse, GetMetricsApiArg>({
-      query: () => ({ url: `/metrics` }),
-    }),
     getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
       query: (queryArg) => ({
         url: `/otomi/values`,
@@ -182,6 +173,22 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllPolicies: build.query<GetAllPoliciesApiResponse, GetAllPoliciesApiArg>({
+      query: () => ({ url: `/policies` }),
+    }),
+    getTeamPolicies: build.query<GetTeamPoliciesApiResponse, GetTeamPoliciesApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies` }),
+    }),
+    getPolicy: build.query<GetPolicyApiResponse, GetPolicyApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}` }),
+    }),
+    editPolicy: build.mutation<EditPolicyApiResponse, EditPolicyApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/k8sVersion` }),
     }),
@@ -301,40 +308,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type DeleteLicenseApiResponse = unknown
-export type DeleteLicenseApiArg = void
-export type ActivateLicenseApiResponse = /** status 200 Uploaded license */ {
-  isValid: boolean
-  hasLicense: boolean
-  jwt?: string
-  body?: {
-    version: number
-    key: string
-    envType?: 'dev' | 'prod' | 'local'
-    type: 'community' | 'professional' | 'enterprise'
-    capabilities: {
-      teams: number
-      services: number
-      workloads: number
-    }
-  }
-}
-export type ActivateLicenseApiArg = {
-  /** License JWT */
-  body: {
-    jwt: string
-  }
-}
-export type GetMetricsApiResponse = /** status 200 Successfully obtained otomi metrics */ {
-  otomi_backups: number
-  otomi_builds: number
-  otomi_secrets: number
-  otomi_netpols: number
-  otomi_services: number
-  otomi_teams: number
-  otomi_workloads: number
-}
-export type GetMetricsApiArg = void
 export type GetValuesApiResponse = unknown
 export type GetValuesApiArg = {
   /** IDs of settings to return */
@@ -462,43 +435,18 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: 'ingress'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -553,43 +501,18 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: 'ingress'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -645,43 +568,18 @@ export type CreateTeamApiArg = {
         nonCritical?: string
       }
     }
-    billingAlertQuotas?: {
-      teamCpuMonthQuotaReached?: {
-        quota?: number
-      }
-      teamMemMonthQuotaReached?: {
-        quota?: number
-      }
-    }
     resourceQuota?: {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
     selfService?: {
       service?: 'ingress'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+      policies?: 'edit policies'[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -736,43 +634,18 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: 'ingress'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -830,43 +703,18 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
       nonCritical?: string
     }
   }
-  billingAlertQuotas?: {
-    teamCpuMonthQuotaReached?: {
-      quota?: number
-    }
-    teamMemMonthQuotaReached?: {
-      quota?: number
-    }
-  }
   resourceQuota?: {
     name: string
     value: string
   }[]
-  azureMonitor?:
-    | (
-        | (object | null)
-        | {
-            appInsightsApiKey?: string
-            appInsightsAppId?: string
-            azureLogAnalyticsSameAs?: boolean
-            clientId: string
-            clientSecret: string
-            logAnalyticsClientId?: string
-            logAnalyticsClientSecret?: string
-            logAnalyticsTenantId?: string
-            logAnalyticsDefaultWorkspace?: string
-            subscriptionId?: string
-            tenantId?: string
-          }
-      )
-    | null
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
   }
   selfService?: {
     service?: 'ingress'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+    policies?: 'edit policies'[]
+    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
     apps?: ('argocd' | 'gitea')[]
     access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
   }
@@ -924,43 +772,18 @@ export type EditTeamApiArg = {
         nonCritical?: string
       }
     }
-    billingAlertQuotas?: {
-      teamCpuMonthQuotaReached?: {
-        quota?: number
-      }
-      teamMemMonthQuotaReached?: {
-        quota?: number
-      }
-    }
     resourceQuota?: {
       name: string
       value: string
     }[]
-    azureMonitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     networkPolicy?: {
       ingressPrivate?: boolean
       egressPublic?: boolean
     }
     selfService?: {
       service?: 'ingress'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'billingAlertQuotas' | 'resourceQuota' | 'networkPolicy')[]
+      policies?: 'edit policies'[]
+      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
       apps?: ('argocd' | 'gitea')[]
       access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
     }
@@ -2301,6 +2124,266 @@ export type EditBuildApiArg = {
     scanSource?: boolean
   }
 }
+export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
+  'allowed-repo'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'allowed-image-repositories'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-namespaces'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-path'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-ports'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-process'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-latest-tag'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privilege-escalation'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privileged-containers'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-proc-mount'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-selinux'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-limits'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-liveness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-non-root-groups'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-readiness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-requests'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-non-root-user'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-nonroot'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-startup-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-labels'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'restrict-apparmor-profiles'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-sysctls'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-volume-types'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+}
+export type GetAllPoliciesApiArg = void
+export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
+  'allowed-repo'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'allowed-image-repositories'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+  'disallow-capabilities-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-namespaces'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-path'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-ports'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-host-process'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-latest-tag'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privilege-escalation'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-privileged-containers'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-proc-mount'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'disallow-selinux'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-limits'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-liveness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-non-root-groups'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-readiness-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-requests'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-non-root-user'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-run-as-nonroot'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'require-startup-probe'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'required-otomi-label'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-apparmor-profiles'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-seccomp-strict'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-sysctls'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+  }
+  'restrict-volume-types'?: {
+    action?: 'Audit' | 'Enforce'
+    severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+}
+export type GetTeamPoliciesApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type GetPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
+  action: 'Audit' | 'Enforce'
+  severity: 'low' | 'medium' | 'high'
+  customValues?: string[]
+}
+export type GetPolicyApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the policy */
+  policyId: string
+}
+export type EditPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
+  action: 'Audit' | 'Enforce'
+  severity: 'low' | 'medium' | 'high'
+  customValues?: string[]
+}
+export type EditPolicyApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the policy */
+  policyId: string
+  /** Policy object that contains updated values */
+  body: {
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+}
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
 export type GetK8SVersionApiArg = void
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
@@ -3548,22 +3631,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
-  license?: {
-    isValid: boolean
-    hasLicense: boolean
-    jwt?: string
-    body?: {
-      version: number
-      key: string
-      envType?: 'dev' | 'prod' | 'local'
-      type: 'community' | 'professional' | 'enterprise'
-      capabilities: {
-        teams: number
-        services: number
-        workloads: number
-      }
-    }
-  }
   user?: {
     name: string
     email: string
@@ -3614,7 +3681,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
         | 'linode'
         | 'custom'
     }[]
-    hasCloudLB?: boolean
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
   }
@@ -3697,11 +3763,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         ttl?: string
         schedule?: string
       }
-      vault?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
       argo?: {
         enabled?: boolean
         ttl?: string
@@ -3754,24 +3815,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     appgw?: {
       isManaged?: boolean
     }
-    monitor?:
-      | (
-          | (object | null)
-          | {
-              appInsightsApiKey?: string
-              appInsightsAppId?: string
-              azureLogAnalyticsSameAs?: boolean
-              clientId: string
-              clientSecret: string
-              logAnalyticsClientId?: string
-              logAnalyticsClientSecret?: string
-              logAnalyticsTenantId?: string
-              logAnalyticsDefaultWorkspace?: string
-              subscriptionId?: string
-              tenantId?: string
-            }
-        )
-      | null
     storageType?: {
       fast?: string
       standard?: string
@@ -3901,13 +3944,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             project: string
           }
         }
-      | {
-          provider?: 'vault'
-          vault: {
-            keys: string
-            token: string
-          }
-        }
   }
   oidc?: {
     issuer: string
@@ -3941,7 +3977,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       email?: string
       server?: string
     } | null
-    hasCloudLB?: boolean
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
     isHomeMonitored?: boolean
@@ -3951,95 +3986,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       value?: string
     }[]
     version: string
-  }
-  policies?: {
-    'banned-image-tags'?: {
-      tags?: string[]
-      enabled: boolean
-    }
-    'container-limits'?: {
-      cpu?: string
-      memory?: string
-      enabled: boolean
-    }
-    'psp-allowed-repos'?: {
-      repos?: string[]
-      enabled: boolean
-    }
-    'psp-host-filesystem'?: {
-      allowedHostPaths?: {
-        pathPrefix: string
-        readOnly: boolean
-      }[]
-      enabled: boolean
-    }
-    'psp-allowed-users'?: {
-      runAsUser?: {
-        rule: 'RunAsAny' | 'MustRunAsNonRoot' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      runAsGroup?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      supplementalGroups?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      fsGroup?: {
-        rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-        ranges?: {
-          min: number
-          max: number
-        }[]
-      }
-      enabled: boolean
-    }
-    'psp-host-security'?: {
-      enabled: boolean
-    }
-    'psp-host-networking-ports'?: {
-      enabled: boolean
-    }
-    'psp-privileged'?: {
-      enabled: boolean
-    }
-    'psp-capabilities'?: {
-      enabled: boolean
-      allowedCapabilities?: string[]
-      requiredDropCapabilities?: string[]
-    }
-    'psp-forbidden-sysctls'?: {
-      enabled: boolean
-      forbiddenSysctls?: string[]
-    }
-    'psp-apparmor'?: {
-      enabled: boolean
-      allowedProfiles?: string[]
-    }
-    'psp-seccomp'?: {
-      enabled: boolean
-      allowedProfiles?: string[]
-    }
-    'psp-selinux'?: {
-      enabled: boolean
-      seLinuxContext?: 'MustRunAs' | 'RunAsAny'
-      allowedSELinuxOptions?: {
-        level?: string
-        role?: string
-        type?: string
-        user?: string
-      }[]
-    }
   }
   smtp?: {
     auth_identity?: string
@@ -4146,11 +4092,6 @@ export type EditSettingsApiArg = {
           ttl?: string
           schedule?: string
         }
-        vault?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
         argo?: {
           enabled?: boolean
           ttl?: string
@@ -4203,24 +4144,6 @@ export type EditSettingsApiArg = {
       appgw?: {
         isManaged?: boolean
       }
-      monitor?:
-        | (
-            | (object | null)
-            | {
-                appInsightsApiKey?: string
-                appInsightsAppId?: string
-                azureLogAnalyticsSameAs?: boolean
-                clientId: string
-                clientSecret: string
-                logAnalyticsClientId?: string
-                logAnalyticsClientSecret?: string
-                logAnalyticsTenantId?: string
-                logAnalyticsDefaultWorkspace?: string
-                subscriptionId?: string
-                tenantId?: string
-              }
-          )
-        | null
       storageType?: {
         fast?: string
         standard?: string
@@ -4350,13 +4273,6 @@ export type EditSettingsApiArg = {
               project: string
             }
           }
-        | {
-            provider?: 'vault'
-            vault: {
-              keys: string
-              token: string
-            }
-          }
     }
     oidc?: {
       issuer: string
@@ -4390,7 +4306,6 @@ export type EditSettingsApiArg = {
         email?: string
         server?: string
       } | null
-      hasCloudLB?: boolean
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
       isHomeMonitored?: boolean
@@ -4400,95 +4315,6 @@ export type EditSettingsApiArg = {
         value?: string
       }[]
       version: string
-    }
-    policies?: {
-      'banned-image-tags'?: {
-        tags?: string[]
-        enabled: boolean
-      }
-      'container-limits'?: {
-        cpu?: string
-        memory?: string
-        enabled: boolean
-      }
-      'psp-allowed-repos'?: {
-        repos?: string[]
-        enabled: boolean
-      }
-      'psp-host-filesystem'?: {
-        allowedHostPaths?: {
-          pathPrefix: string
-          readOnly: boolean
-        }[]
-        enabled: boolean
-      }
-      'psp-allowed-users'?: {
-        runAsUser?: {
-          rule: 'RunAsAny' | 'MustRunAsNonRoot' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        runAsGroup?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        supplementalGroups?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        fsGroup?: {
-          rule?: 'RunAsAny' | 'MayRunAs' | 'MustRunAs'
-          ranges?: {
-            min: number
-            max: number
-          }[]
-        }
-        enabled: boolean
-      }
-      'psp-host-security'?: {
-        enabled: boolean
-      }
-      'psp-host-networking-ports'?: {
-        enabled: boolean
-      }
-      'psp-privileged'?: {
-        enabled: boolean
-      }
-      'psp-capabilities'?: {
-        enabled: boolean
-        allowedCapabilities?: string[]
-        requiredDropCapabilities?: string[]
-      }
-      'psp-forbidden-sysctls'?: {
-        enabled: boolean
-        forbiddenSysctls?: string[]
-      }
-      'psp-apparmor'?: {
-        enabled: boolean
-        allowedProfiles?: string[]
-      }
-      'psp-seccomp'?: {
-        enabled: boolean
-        allowedProfiles?: string[]
-      }
-      'psp-selinux'?: {
-        enabled: boolean
-        seLinuxContext?: 'MustRunAs' | 'RunAsAny'
-        allowedSELinuxOptions?: {
-          level?: string
-          role?: string
-          type?: string
-          user?: string
-        }[]
-      }
     }
     smtp?: {
       auth_identity?: string
@@ -4556,9 +4382,6 @@ export type EditAppApiArg = {
   }
 }
 export const {
-  useDeleteLicenseMutation,
-  useActivateLicenseMutation,
-  useGetMetricsQuery,
   useGetValuesQuery,
   useGetAllSecretsQuery,
   useGetAllServicesQuery,
@@ -4606,6 +4429,10 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useGetAllPoliciesQuery,
+  useGetTeamPoliciesQuery,
+  useGetPolicyQuery,
+  useEditPolicyMutation,
   useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,

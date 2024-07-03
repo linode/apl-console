@@ -19,9 +19,7 @@ export const getTeamSchema = (
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
-  if (provider !== 'azure') unset(schema, 'properties.azureMonitor')
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
-  if (!appsEnabled.opencost) unset(schema, 'properties.billingAlertQuotas')
   return schema
 }
 
@@ -47,8 +45,6 @@ export const getTeamUiSchema = (
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
-  if (!appsEnabled.grafana) uiSchema.azureMonitor = { 'ui:disabled': true }
-
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
 }
