@@ -125,7 +125,11 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
       }}
     >
       {!isDesktop && (
-        <Drawer open={isOpenSidebar} onClose={onCloseSidebar} PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH } }}>
+        <Drawer
+          open={isOpenSidebar}
+          onClose={onCloseSidebar}
+          PaperProps={{ sx: { width: NAVBAR.DASHBOARD_WIDTH, bgcolor: 'background.sidebar' } }}
+        >
           {renderContent}
         </Drawer>
       )}

@@ -58,7 +58,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>
-        <Card sx={{ p: 3, ...dashboardStyle }}>
+        <Card sx={{ ...dashboardStyle }}>
           <Error />
           {loading && <LoadingScreen />}
           {!loading && comp}

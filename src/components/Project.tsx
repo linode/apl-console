@@ -16,7 +16,7 @@ import {
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import { useHistory } from 'react-router-dom'
-import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip } from '@mui/material'
+import { FormControl, FormControlLabel, Link, Radio, RadioGroup, Tooltip, Typography, styled } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
@@ -120,6 +120,14 @@ const pathValues = [
   { value: 'createBuild', label: 'Create build from source' },
   { value: 'useExisting', label: 'Use existing image' },
 ]
+
+// ----------------------- styles ----------------------------
+
+const StyledStepContent = styled(StepContent)`
+  padding: 20px;
+`
+
+// -----------------------------------------------------------
 
 interface Props extends CrudProps {
   teamId: string
@@ -243,8 +251,14 @@ export default function ({
   const defaultSubdomain = teamSubdomain
   updateIngressField(formData?.service, defaultSubdomain)
 
-  const setNextStep = () => setActiveStep((prev) => prev + 1)
-  const setPreviousStep = () => setActiveStep((prev) => prev - 1)
+  const setNextStep = () => {
+    setActiveStep((prev) => prev + 1)
+    window.scrollTo(0, 0)
+  }
+  const setPreviousStep = () => {
+    setActiveStep((prev) => prev - 1)
+    window.scrollTo(0, 0)
+  }
 
   const handleCreateProject = () => {
     const { name } = formData
@@ -290,12 +304,12 @@ export default function ({
       body,
     })
     if (res.error) return
-    history.push(`/projects`)
+    history.push(user.isAdmin ? `/projects` : `/teams/${teamId}/projects`)
   }
 
   const handleDeleteProject = () => {
     onDelete({ teamId, projectId })
-    history.push(`/projects`)
+    history.push(user.isAdmin ? `/projects` : `/teams/${teamId}/projects`)
   }
 
   const handleNext = async () => {
@@ -324,11 +338,13 @@ export default function ({
           />
         )}
       </Box>
-      <Stepper activeStep={activeStep} orientation='vertical'>
+      <Stepper sx={{ p: 2 }} activeStep={activeStep} orientation='vertical'>
         {projectSteps.map((step, index) => (
           <Step key={step}>
-            <StepLabel>{step}</StepLabel>
-            <StepContent>
+            <StepLabel>
+              <Typography sx={{ fontWeight: 'bold' }}>{step}</Typography>
+            </StepLabel>
+            <StyledStepContent sx={{ padding: '20px' }}>
               {activeStep === 0 && (
                 <Box>
                   <Form
@@ -341,6 +357,7 @@ export default function ({
                     {...other}
                     children
                     hideHelp
+                    altColor
                   />
                   <FormControl sx={{ my: 2 }}>
                     <RadioGroup onChange={(e) => setSelectedPath(e.target.value)} value={selectedPath}>
@@ -362,6 +379,7 @@ export default function ({
                   {...other}
                   children
                   hideHelp
+                  altColor
                 />
               )}
 
@@ -376,6 +394,7 @@ export default function ({
                     resourceType='Workload'
                     children
                     hideHelp
+                    altColor
                     {...other}
                   />
 
@@ -413,6 +432,7 @@ export default function ({
                   resourceType='Service'
                   children
                   hideHelp
+                  altColor
                   {...other}
                 />
               )}
@@ -431,7 +451,7 @@ export default function ({
                   {index === projectSteps.length - 1 ? 'Submit' : 'Next'}
                 </Button>
               </Box>
-            </StepContent>
+            </StyledStepContent>
           </Step>
         ))}
       </Stepper>
