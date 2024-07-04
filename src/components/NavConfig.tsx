@@ -33,7 +33,6 @@ export default function NavConfig() {
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
-        { title: 'Shortcuts', path: '/shortcuts/admin', icon: getIcon('shortcuts_icon.svg') },
         // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },

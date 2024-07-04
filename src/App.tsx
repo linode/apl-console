@@ -24,7 +24,6 @@ import Service from 'pages/Service'
 import Services from 'pages/Services'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
-import Shortcuts from 'pages/Shortcuts'
 import Team from 'pages/Team'
 import Teams from 'pages/Teams'
 import Policies from 'pages/Policies'
@@ -117,7 +116,6 @@ function App() {
                                     <PrivateRoute path='/projects' component={Projects} adminRoute exact />
                                     <PrivateRoute path='/builds' component={Builds} adminRoute exact />
                                     <PrivateRoute path='/settings/:settingId' component={Setting} exact />
-                                    <PrivateRoute path='/shortcuts/:teamId' component={Shortcuts} exact />
                                     <PrivateRoute path='/teams' component={Teams} adminRoute exact />
                                     <PrivateRoute path='/teams/:teamId' component={Team} exact />
                                     <PrivateRoute path='/teams/:teamId/create-backup' component={Backup} exact />

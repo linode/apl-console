@@ -1,17 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  Chip,
-  Grid,
-  Link,
-  List,
-  ListItem,
-  ListSubheader,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material'
+import { AppBar, Box, Button, Chip, Grid, Link, Tab, Tabs, Typography } from '@mui/material'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -33,7 +20,6 @@ import YAML from 'yaml'
 import { useSession } from 'providers/Session'
 import CodeEditor from './CodeEditor'
 import HeaderTitle from './HeaderTitle'
-import MuiLink from './MuiLink'
 import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
 import InformationBanner from './InformationBanner'
@@ -202,8 +188,6 @@ export default function ({
   enabled,
   values: inValues,
   rawValues: inRawValues,
-  shortcuts: inShortcuts,
-  setAppState,
   mutating,
   onSubmit,
 }: Props): React.ReactElement {
@@ -211,23 +195,13 @@ export default function ({
   const hash = location.hash.substring(1)
   const hashMap = {
     info: 0,
-    shortcuts: 1,
-    values: 2,
-    rawvalues: 3,
+    values: 1,
+    rawvalues: 2,
   }
   const { classes } = useStyles()
   const session = useSession()
-  const { appsEnabled, settings } = session
-  const {
-    appInfo,
-    baseUrl,
-    deps,
-    hasShortcuts,
-    logo,
-    logoAlt,
-    schema,
-    shortcuts: defaultShortcuts,
-  } = getAppData(session, teamId, id)
+  const { appsEnabled } = session
+  const { appInfo, deps, logo, logoAlt } = getAppData(session, teamId, id)
   const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
@@ -235,11 +209,9 @@ export default function ({
   }
   const [isEdit, setIsEdit] = useState(false)
   // setters for the tab forms
-  const [shortcuts, setShortcuts] = useState(inShortcuts)
   const [values, setValues] = useState(inValues)
   const [rawValues, setRawValues] = useState(inRawValues)
   // validation state
-  const [validShortcuts, setValidShortcuts] = useState(true)
   const [validValues, setValidValues] = useState(true)
   const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
@@ -252,11 +224,7 @@ export default function ({
       setRawValues(inRawValues)
       setValidRaw(true)
     }
-    if (inShortcuts !== shortcuts) {
-      setShortcuts(inShortcuts)
-      setValidShortcuts(true)
-    }
-  }, [inValues, inRawValues, inShortcuts])
+  }, [inValues, inRawValues])
 
   // END HOOKS
   const appSchema = getAppSchema(id, values).properties?.values
@@ -265,33 +233,13 @@ export default function ({
   const isAdminApps = teamId === 'admin'
 
   const handleSubmit = () => {
-    const data = { id, teamId, values, rawValues, shortcuts }
-    if (validValues && validRaw && validShortcuts) onSubmit(data)
+    const data = { id, teamId, values, rawValues }
+    if (validValues && validRaw) onSubmit(data)
   }
 
-  const handleShortcutsChange = (shortcuts: Props['shortcuts'], errors: any[]) => {
-    setShortcuts(shortcuts)
-    setValidShortcuts(errors.length === 0)
-  }
   const handleValuesChange = (values: Props['values'], errors: any[]) => {
     setValues(values)
     setValidValues(errors.length === 0)
-  }
-  const renderShortcuts = (s) => {
-    const href = `${baseUrl}${s.path}`
-    return (
-      <ListItem key={`${s.teamId}-${s.title}`}>
-        {enabled !== false ? (
-          <MuiLink key={href} href={href} target='_blank' rel='noopener' title={s.title} about={s.description}>
-            <b>{s.title}</b>: {s.description}
-          </MuiLink>
-        ) : (
-          <Typography key={href} variant='body2' color='action.disabled'>
-            <b>{s.title}</b>: {s.description}
-          </Typography>
-        )}
-      </ListItem>
-    )
   }
 
   const prefixedDeps = () => {
@@ -332,12 +280,6 @@ export default function ({
       <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           <Tab href='#info' label='Info' value={hashMap.info} />
-          <Tab
-            href='#shortcuts'
-            label={t('Shortcuts')}
-            value={hashMap.shortcuts}
-            disabled={enabled === false || !hasShortcuts}
-          />
           {isAdminApps && (
             <Tab href='#values' label={t('Values')} value={hashMap.values} disabled={enabled === false || !appSchema} />
           )}
@@ -417,63 +359,6 @@ export default function ({
             </Box>
           </Grid>
         </Grid>
-      </TabPanel>
-      <TabPanel value={tab} index={hashMap.shortcuts}>
-        <HeaderTitle
-          title={t('Shortcuts')}
-          description={t('FORM_SHORTCUTS_DESC', { title: appInfo.title })}
-          resourceType='Shortcut'
-        />
-        {hasShortcuts && defaultShortcuts?.length && (
-          <List
-            subheader={
-              <ListSubheader>
-                <Typography variant='caption'>Provided by Otomi:</Typography>
-              </ListSubheader>
-            }
-          >
-            {(defaultShortcuts || []).map((s) => renderShortcuts(s))}
-          </List>
-        )}
-        <List
-          subheader={
-            hasShortcuts && defaultShortcuts?.length && shortcuts?.length ? (
-              <ListSubheader>
-                <u>User created:</u>
-              </ListSubheader>
-            ) : undefined
-          }
-        >
-          {(shortcuts || []).map((s) => renderShortcuts(s))}
-          {hasShortcuts && isEdit && (
-            <Form
-              schema={schema.properties.shortcuts}
-              onChange={handleShortcutsChange}
-              data={shortcuts}
-              hideHelp
-              clean={false}
-              liveValidate
-              disabled={enabled === false}
-              resourceType='Shortcut'
-              resourceName={id}
-              mutating={mutating}
-            >
-              <div />
-            </Form>
-          )}
-        </List>
-        <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button
-            data-cy='button-edit-values'
-            onClick={() => {
-              if (isEdit) handleSubmit()
-              setIsEdit(!isEdit)
-            }}
-            disabled={enabled === false || (isEdit && !validShortcuts)}
-          >
-            {isEdit ? t('submit') : t('edit')}
-          </Button>
-        </Box>
       </TabPanel>
       <TabPanel value={tab} index={hashMap.values}>
         {appSchema && (
