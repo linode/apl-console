@@ -8,34 +8,32 @@ const useStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
     root: {
-      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       textAlign: 'center',
       paddingLeft: theme.spacing(1),
       paddingRight: theme.spacing(1),
       paddingBottom: theme.spacing(2),
-      paddingTop: theme.spacing(4),
-      border: `1px solid ${theme.palette.divider}`,
+      paddingTop: theme.spacing(2),
+      backgroundColor: theme.palette.divider,
       margin: '5px',
-      borderRadius: '8px',
       maxHeight: '200px',
-      height: '200px',
+      height: '58px',
       '& .hidden-button': {
         visibility: 'hidden',
-        position: 'absolute',
-        bottom: '0',
-        transform: 'translateX(-50%)',
-        left: '50%',
-        width: '100%',
+        position: 'relative',
+        transform: 'translateX(0)',
+        width: 'auto',
       },
       '&:hover .hidden-button': {
         visibility: 'visible',
       },
       '& .beta-label': {
         visibility: 'visible',
-        position: 'absolute',
-        transform: 'translateX(-50%) translateY(50%)',
-        left: '50%',
-        width: '100%',
+        position: 'relative',
+        transform: 'translateX(0) translateY(0)',
+        width: 'auto',
       },
       '&:hover .beta-label': {
         visibility: 'hidden',
@@ -47,9 +45,8 @@ const useStyles = makeStyles()((theme) => {
       border: 'none',
     },
     img: {
-      height: theme.spacing(8),
-      maxWidth: theme.spacing(8),
-      margin: 'auto',
+      height: '32px',
+      width: '32px',
     },
     contrast: {
       filter: 'drop-shadow(0 0 2px white)',
@@ -57,40 +54,26 @@ const useStyles = makeStyles()((theme) => {
     contrastDark: {
       filter: 'grayscale(1) contrast(0.3)',
     },
+    link: {
+      display: 'flex',
+      marginLeft: '5px',
+      alignItems: 'center',
+    },
     title: {
       textAlign: 'center',
-      verticalAlign: 'bottom',
+      verticalAlign: 'middle',
       color: theme.palette.text.primary,
-      fontWeight: '200',
-      marginTop: '5px',
+      fontWeight: 'bold',
+      fontSize: '1rem',
+      textTransform: 'capitalize',
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
     },
     notDragging: {
       opacity: 0.2,
     },
   }
 })
-
-// const Ribbon = styled('div')`
-//   --f: 10px; /* control the folded part*/
-//   --r: 15px; /* control the ribbon shape */
-//   --t: 10px; /* the top offset */
-
-//   position: absolute;
-//   inset: var(--t) calc(-1 * var(--f)) auto auto;
-//   padding: 0 10px var(--f) calc(10px + var(--r));
-//   clip-path: polygon(
-//     0 0,
-//     100% 0,
-//     100% calc(100% - var(--f)),
-//     calc(100% - var(--f)) 100%,
-//     calc(100% - var(--f)) calc(100% - var(--f)),
-//     0 calc(100% - var(--f)),
-//     var(--r) calc(50% - var(--f) / 2)
-//   );
-//   background: #bd1550;
-//   box-shadow: 0 calc(-1 * var(--f)) 0 inset #0005;
-//   font-size: 10px;
-// `
 
 export default function ({
   deps,
@@ -118,9 +101,7 @@ export default function ({
       className={classes.img}
       src={img}
       onError={({ currentTarget }) => {
-        // eslint-disable-next-line no-param-reassign
         currentTarget.onerror = null // prevents looping
-        // eslint-disable-next-line no-param-reassign
         currentTarget.src = imgAlt
       }}
       alt={`Logo for ${title} app`}
@@ -143,15 +124,23 @@ export default function ({
 
   return (
     <Box className={cx(classes.root, !enabled && classes.disabled)}>
-      {/* {hostedByOtomi && <Ribbon>core</Ribbon>} */}
-
-      <Link to={{ pathname: externalUrl }} onClick={handleClickModal} style={linkStyle} target='_blank'>
+      <Link
+        className={cx(classes.link)}
+        to={{ pathname: externalUrl }}
+        onClick={handleClickModal}
+        style={linkStyle}
+        target='_blank'
+      >
         {image}
         <Typography className={cx(classes.title)} variant='h6'>
           {title}
         </Typography>
       </Link>
-
+      {isBeta && (
+        <Box className='beta-label'>
+          <Chip label='BETA' variant='outlined' />
+        </Box>
+      )}
       <Box className='hidden-button'>
         <AppButtons
           id={id}
@@ -166,11 +155,6 @@ export default function ({
           handleClickModal={handleClickModal}
         />
       </Box>
-      {isBeta && (
-        <Box className='beta-label'>
-          <Chip label='BETA' variant='outlined' />
-        </Box>
-      )}
     </Box>
   )
 }

@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cleanData } from 'utils/data'
 import { nullify } from 'utils/schema'
+import { makeStyles } from 'tss-react/mui'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
@@ -24,6 +25,17 @@ import StringField from './StringField'
 import TitleField from './TitleField'
 
 const Form = withTheme(Theme5)
+
+const useStyles = makeStyles()((theme) => ({
+  form: {
+    backgroundColor: theme.palette.background.default,
+    borderRadius: 0,
+  },
+  formAlternative: {
+    backgroundColor: 'background.contrast',
+    borderRadius: 0,
+  },
+}))
 
 interface Props extends CrudProps {
   idProp?: string
@@ -43,6 +55,7 @@ interface Props extends CrudProps {
   setDirty?: CallableFunction
   schema: JSONSchema7
   uiSchema?: UiSchema
+  altColor?: boolean
 }
 
 export default function ({
@@ -62,6 +75,7 @@ export default function ({
   data,
   schema,
   children,
+  altColor,
   ...other
 }: Props): React.ReactElement {
   const { oboTeamId } = useSession()
@@ -73,6 +87,7 @@ export default function ({
   }, [data])
   const [isDirty, setDirty] = useState(false)
   const { t } = useTranslation()
+  const { classes } = useStyles()
   // END HOOKS
   const id = data?.[idProp]
   const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
@@ -130,6 +145,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
+        className={altColor ? classes.formAlternative : classes.form}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}

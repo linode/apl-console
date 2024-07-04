@@ -5,6 +5,7 @@ import { Box } from '@mui/material'
 import React, { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import YAML, { ParsedNode, YAMLMap, YAMLSeq, parseDocument } from 'yaml'
+import useSettings from 'hooks/useSettings'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
@@ -65,6 +66,8 @@ export default function ({
   const modifiedCode = showComments ? document.toJSON() : startCode
   const [valid, setLocalValid] = useState(true)
   const [error, setError] = useState('')
+  const { themeMode } = useSettings()
+  const isLight = themeMode === 'light'
   const { classes } = useStyles()
   const fromYaml = (yaml: string): any | undefined => {
     try {
@@ -93,7 +96,7 @@ export default function ({
       <MonacoEditor
         className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
         height='900px'
-        theme='vs-dark'
+        theme={isLight ? 'light' : 'vs-dark'}
         value={modifiedCode}
         language={lang}
         placeholder={`Please enter ${lang.toUpperCase()} code.`}

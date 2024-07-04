@@ -24,7 +24,7 @@ export default function ({
 }: ButtonGroupProps): React.ReactElement {
   // END HOOKS
   return (
-    <Box display='flex' flexDirection='row-reverse' p={1} m={1}>
+    <Box display='flex' flexDirection='row-reverse'>
       <ButtonGroup {...other}>
         <SubmitButton disabled={disabled} data-cy={`button-submit-${resourceType}`} loading={loading} />
         {id && (

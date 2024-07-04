@@ -19,7 +19,7 @@ export default function ({ children, value, index, ...other }: any): React.React
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   )
 }

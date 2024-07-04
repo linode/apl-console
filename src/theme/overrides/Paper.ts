@@ -18,6 +18,7 @@ export default function Paper(theme: Theme) {
 
       styleOverrides: {
         root: {
+          borderRadius: 0,
           backgroundImage: 'none',
         },
       },

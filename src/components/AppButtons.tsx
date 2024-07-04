@@ -1,4 +1,4 @@
-import { ButtonGroup, IconButton } from '@mui/material'
+import { ButtonGroup, IconButton, useTheme } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RLink } from 'react-router-dom'
@@ -40,6 +40,7 @@ export default function ({
   handleClickModal,
 }: Props): React.ReactElement {
   const session = useSession()
+  const theme = useTheme()
 
   const { t } = useTranslation()
   // END HOOKS
@@ -60,7 +61,6 @@ export default function ({
       sx={{
         borderColor: 'primary.main',
         backgroundColor: 'transparent',
-        paddingBottom: '10px',
       }}
     >
       {!isHostedByOtomi && !enabled && isAdminApps && (
@@ -75,12 +75,12 @@ export default function ({
 
       {enabled && externalUrl && (
         <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank' onClick={handleClickModal}>
-          <Iconify icon='ri:share-forward-fill' />
+          <Iconify icon='ri:share-forward-fill' sx={{ color: theme.palette.text.secondary }} />
         </IconButton>
       )}
 
       <IconButton component={RLink} to={`/apps/${teamId}/${id}`} title={t('Click to edit settings')}>
-        <Iconify icon='material-symbols:settings' />
+        <Iconify icon='material-symbols:settings' sx={{ color: theme.palette.text.secondary }} />
       </IconButton>
     </ButtonGroup>
   )

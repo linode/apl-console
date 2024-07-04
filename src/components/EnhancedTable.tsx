@@ -12,13 +12,13 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  styled,
 } from '@mui/material'
 import { sentenceCase } from 'utils/data'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { get } from 'lodash'
 import React, { ChangeEvent, MouseEvent, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
-import TableToolbar from './TableToolbar'
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (get(b, orderBy) < get(a, orderBy)) return -1
@@ -48,6 +48,19 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
   })
   return stabilizedThis.map((el) => el[0])
 }
+
+// ---------------- styles ----------------------
+
+const StyledTableHeaderCell = styled(TableCell)({
+  borderWidth: '2px 2px',
+  borderStyle: 'solid',
+  borderColor: 'background.contrastAlt',
+  color: 'rgb(136, 143, 145)',
+  fontFamily: 'LatoWebBold, sans-serif',
+  padding: '10px 15px',
+})
+
+// --------------------------------------------
 
 export interface HeadCell {
   disablePadding?: boolean
@@ -117,8 +130,8 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
           </TableCell>
         )}
         {headCells.map((headCell) => (
-          <TableCell
-            sx={{ backgroundColor: 'background.contrast' }}
+          <StyledTableHeaderCell
+            sx={{ backgroundColor: 'background.contrastAlt', borderColor: 'background.default' }}
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -136,7 +149,7 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
                 </span>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </StyledTableHeaderCell>
         ))}
       </TableRow>
     </TableHead>
@@ -228,7 +241,6 @@ export default function EnhancedTable({
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
-        <TableToolbar filterName={filterName} onFilterName={handleFilterName} noPadding />
         <TableContainer>
           <Table aria-labelledby='tableTitle' size='small' aria-label='enhanced table' data-cy='table-enhanced'>
             <EnhancedTableHead
@@ -257,6 +269,7 @@ export default function EnhancedTable({
                     tabIndex={-1}
                     key={key}
                     selected={isItemSelected}
+                    sx={{ border: '1px solid', borderColor: 'background.default' }}
                   >
                     {!disableSelect && (
                       <TableCell padding='checkbox' key='header-checkbox'>
