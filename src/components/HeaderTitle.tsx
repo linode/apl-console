@@ -13,6 +13,12 @@ const useStyles = makeStyles()((theme) => ({
       padding: '16px !important',
     },
   },
+  headBackground: {
+    backgroundColor: theme.palette.background.default,
+  },
+  headBackgroundAlt: {
+    backgroundColor: theme.palette.background.paper,
+  },
   paragraph: {
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -24,15 +30,22 @@ interface HeaderProps {
   description?: string
   docUrl?: string
   resourceType: string
+  altColor?: boolean
 }
-export default function HeaderTitle({ title, description, docUrl, resourceType }: HeaderProps): React.ReactElement {
-  const { classes } = useStyles()
+export default function HeaderTitle({
+  title,
+  description,
+  docUrl,
+  resourceType,
+  altColor,
+}: HeaderProps): React.ReactElement {
+  const { classes, cx } = useStyles()
   // END HOOKS
   const resourceTypeLow = resourceType.toLowerCase()
 
   return (
     <>
-      <div className={classes.head}>
+      <div className={cx(classes.head, altColor ? classes.headBackgroundAlt : classes.headBackground)}>
         <Typography variant='h4' data-cy={`heading-${resourceTypeLow}`}>
           {title}
         </Typography>

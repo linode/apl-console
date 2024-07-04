@@ -1,5 +1,6 @@
 import { Theme } from '@mui/material/styles'
 //
+import AppBar from './AppBar'
 import Fab from './Fab'
 import Card from './Card'
 import Chip from './Chip'
@@ -40,6 +41,7 @@ import ButtonGroup from './ButtonGroup'
 import CssBaseline from './CssBaseline'
 import Autocomplete from './Autocomplete'
 import ToggleButton from './ToggleButton'
+import FormControl from './FormControl'
 import ControlLabel from './ControlLabel'
 import LoadingButton from './LoadingButton'
 
@@ -47,7 +49,9 @@ import LoadingButton from './LoadingButton'
 
 export default function ComponentsOverrides(theme: Theme) {
   return Object.assign(
+    AppBar(theme),
     Fab(theme),
+    FormControl(theme),
     Tabs(theme),
     Chip(theme),
     Card(theme),

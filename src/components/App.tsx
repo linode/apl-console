@@ -43,6 +43,7 @@ const useStyles = makeStyles()((theme) => ({
     display: 'flex',
     flex: 1,
     alignItems: 'center',
+    backgroundColor: theme.palette.background.default,
   },
   headerText: {},
   headerButtons: {
@@ -411,6 +412,7 @@ export default function ({
                 title={t('FORM_ABOUT', { title: appInfo.title })}
                 description={appInfo.about}
                 resourceType='App'
+                altColor
               />
             </Box>
           </Grid>
@@ -486,6 +488,7 @@ export default function ({
             resourceType='Values'
             idProp={null}
             mutating={mutating}
+            altColor
           />
         )}
       </TabPanel>

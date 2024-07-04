@@ -84,7 +84,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
         {filteredCatalog.map((item) => {
           const img = item?.icon || '/logos/akamai_logo.svg'
           return (
-            <Grid item xs={12} sm={4} md={3} lg={2} key={item.name}>
+            <Grid item xs={12} sm={6} md={4} lg={4} key={item.name}>
               <CatalogCard img={img} teamId={teamId} name={item.name} isBeta={item.isBeta} />
             </Grid>
           )

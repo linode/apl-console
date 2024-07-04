@@ -1,5 +1,4 @@
 import { Grid } from '@mui/material'
-import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import { FieldProps } from '@rjsf/core'
 import { sentenceCase } from 'utils/data'
@@ -18,7 +17,6 @@ export default function ({ id, title, docUrl, variant = 'h6' }: Props) {
       <Typography variant={variant}>
         {sentenceCase(`${t(title)}`)} {docUrl && <HelpButton id={`doc-${id}`} href={docUrl} icon />}
       </Typography>
-      <Divider />
     </Grid>
   )
 }

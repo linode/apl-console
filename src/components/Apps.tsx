@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { Grid } from '@mui/material'
+import { Card, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
@@ -27,6 +27,9 @@ const useStyles = makeStyles()((theme) => {
       color: theme.palette.text.secondary,
       fontWeight: '200',
       marginTop: '5px',
+    },
+    searchbar: {
+      backgroundColor: '#444444',
     },
     // enabled: {
     //   '& .MuiTypography-root': {
@@ -63,30 +66,30 @@ function getComparator<Key extends keyof any>(
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
-// function sortArray(a, b) {
-//   // Treat undefined as true
-//   const aEnabled = a.enabled === undefined ? true : a.enabled
-//   const bEnabled = b.enabled === undefined ? true : b.enabled
-
-//   // Sort by "enabled" first, then by "id"
-//   if (aEnabled === bEnabled) {
-//     if (a.id < b.id) return -1
-//     if (a.id > b.id) return 1
-//     return 0
-//   }
-
-//   // Sort disabled apps first, then enabled apps
-//   if (!aEnabled) return -1
-//   return 1
-// }
-
 function sortArray(a, b) {
   // Treat undefined as true
-  if (a.id < b.id) return -1
-  if (a.id > b.id) return 1
+  const aEnabled = a.enabled === undefined ? true : a.enabled
+  const bEnabled = b.enabled === undefined ? true : b.enabled
 
-  return 0
+  // Sort by "enabled" first, then by "id"
+  if (aEnabled === bEnabled) {
+    if (a.id < b.id) return -1
+    if (a.id > b.id) return 1
+    return 0
+  }
+
+  // Sort enabled apps first, then disabled apps
+  if (aEnabled) return -1
+  return 1
 }
+
+// function sortArray(a, b) {
+//   // Treat undefined as true
+//   if (a.id < b.id) return -1
+//   if (a.id > b.id) return 1
+
+//   return 0
+// }
 
 function getDeprecatedApps(apps, session, teamId) {
   return apps
@@ -158,7 +161,7 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
         isBeta,
       } = getAppData(session, teamId, item)
       return (
-        <Grid item xs={12} sm={4} md={3} lg={2} key={id}>
+        <Grid item xs={12} sm={6} md={4} lg={4} key={id}>
           <AppCard
             deps={coreDeps}
             enabled={enabled !== false}
@@ -211,11 +214,13 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
 
   return (
     <div className={cx(classes.root)}>
-      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
-      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(dataFiltered.sort(sortArray))}
-      </Grid>
-      {deprecatedAppModals()}
+      <Card sx={{ p: 5 }}>
+        <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
+        <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+          {out(dataFiltered.sort(sortArray))}
+        </Grid>
+        {deprecatedAppModals()}
+      </Card>
     </div>
   )
 }
