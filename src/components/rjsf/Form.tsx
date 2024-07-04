@@ -31,7 +31,7 @@ const useStyles = makeStyles()((theme) => ({
     backgroundColor: theme.palette.background.default,
     borderRadius: 0,
   },
-  formAlterantive: {
+  formAlternative: {
     backgroundColor: 'background.contrast',
     borderRadius: 0,
   },
@@ -145,7 +145,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        className={altColor ? classes.formAlterantive : classes.form}
+        className={altColor ? classes.formAlternative : classes.form}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}
