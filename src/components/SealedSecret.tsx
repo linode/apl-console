@@ -61,6 +61,15 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
           },
         },
       }),
+      // default and opaque input field type is textarea
+      ...(addable && {
+        items: {
+          value: {
+            'ui:widget': 'textarea',
+            'ui:description': description,
+          },
+        },
+      }),
     },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'secret')
