@@ -76,3 +76,4 @@ jobs:
           tag: ${{ steps.git_tag.outputs.tag }}
           name: Release ${{ steps.git_tag.outputs.tag }}
           bodyFile: 'NEW_CHANGELOG.md'
+
