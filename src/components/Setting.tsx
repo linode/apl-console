@@ -39,10 +39,6 @@ export const getSettingSchema = (
     case 'alerts':
       deleteAlertEndpoints(schema, formData)
       break
-    case 'azure':
-      if (provider !== 'azure') unset(schema, 'properties.azure')
-      if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
-      break
     case 'dns':
       break
     case 'oidc':
@@ -50,14 +46,6 @@ export const getSettingSchema = (
     case 'ingress':
       set(schema, 'properties.platformClass.allOf[0].properties.className', true)
       unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
-      if (provider !== 'azure') {
-        unset(schema, 'properties.platformClass.allOf[1].properties.network')
-        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
-        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerSubnet')
-        unset(schema, 'properties.classes.items.allOf[1].properties.network')
-        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerRG')
-        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
-      }
       break
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
@@ -90,8 +78,6 @@ export const getSettingUiSchema = (
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
   }
-
-  if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
 
   if (!settings.otomi.hasExternalDNS) {
     uiSchema.ingress.classes = {

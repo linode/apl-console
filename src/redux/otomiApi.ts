@@ -3653,7 +3653,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+    provider?: 'linode' | 'custom'
   }
   dns?: {
     zones?: string[]
@@ -3662,17 +3662,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider: 'linode' | 'custom'
     }[]
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
@@ -3720,7 +3710,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+    provider?: 'linode' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3744,6 +3734,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         retentionPolicy?: string
         schedule?: string
       }
+    }
+    persistentVolumes?: {
+      linodeApiToken?: string
     }
   }
   obj?: {
@@ -3954,17 +3947,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider: 'linode' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -4041,17 +4024,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider?: 'linode' | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4075,6 +4048,9 @@ export type EditSettingsApiArg = {
           retentionPolicy?: string
           schedule?: string
         }
+      }
+      persistentVolumes?: {
+        linodeApiToken?: string
       }
     }
     obj?: {
@@ -4285,17 +4261,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider:
-          | 'aws'
-          | 'azure'
-          | 'digitalocean'
-          | 'google'
-          | 'ovh'
-          | 'vultr'
-          | 'scaleway'
-          | 'civo'
-          | 'linode'
-          | 'custom'
+        provider: 'linode' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -4328,11 +4294,6 @@ export type GetAppsApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
   rawValues?: object
-  shortcuts?: {
-    title: string
-    description: string
-    path: string
-  }[]
   values?: object
 }[]
 export type GetAppsApiArg = {
@@ -4350,11 +4311,6 @@ export type GetAppApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
   rawValues?: object
-  shortcuts?: {
-    title: string
-    description: string
-    path: string
-  }[]
   values?: object
 }
 export type GetAppApiArg = {
@@ -4370,11 +4326,6 @@ export type EditAppApiArg = {
     enabled?: boolean
     id: string
     rawValues?: object
-    shortcuts?: {
-      title: string
-      description: string
-      path: string
-    }[]
     values?: object
   }
 }
