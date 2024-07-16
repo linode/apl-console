@@ -105,7 +105,6 @@ export const getServiceSchema = (
     }
     if (ing?.useCname) set(ingressSchema, `cname.required`, ['domain', 'tlsSecretName'])
     if (ing?.useCname && ing?.tlsPass) set(ingressSchema, `cname.required`, ['domain'])
-    if (cluster.provider !== 'aws') unset(ingressSchema, `certArn`)
 
     if (!ing?.hasCert) {
       unset(ingressSchema, `certArn`)

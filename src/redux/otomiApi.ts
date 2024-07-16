@@ -3737,6 +3737,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
     persistentVolumes?: {
       linodeApiToken?: string
+      gitea?: {
+        enabled?: boolean
+        ttl?: string
+        schedule?: string
+      }
     }
   }
   obj?: {
@@ -4051,6 +4056,11 @@ export type EditSettingsApiArg = {
       }
       persistentVolumes?: {
         linodeApiToken?: string
+        gitea?: {
+          enabled?: boolean
+          ttl?: string
+          schedule?: string
+        }
       }
     }
     obj?: {

@@ -28,10 +28,6 @@ export const getSettingSchema = (
     case 'cluster':
       unset(schema, 'properties.provider.description')
       set(schema, 'properties.provider.readOnly', true)
-      if (provider === 'aws')
-        // make region required
-        set(schema, 'required', (schema.required ?? []).concat(['region']))
-      else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
       deleteAlertEndpoints(schema, formData)
