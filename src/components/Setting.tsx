@@ -28,20 +28,12 @@ export const getSettingSchema = (
     case 'cluster':
       unset(schema, 'properties.provider.description')
       set(schema, 'properties.provider.readOnly', true)
-      if (provider === 'aws')
-        // make region required
-        set(schema, 'required', (schema.required ?? []).concat(['region']))
-      else set(schema, 'properties.region.readOnly', true)
       break
     case 'home':
       deleteAlertEndpoints(schema, formData)
       break
     case 'alerts':
       deleteAlertEndpoints(schema, formData)
-      break
-    case 'azure':
-      if (provider !== 'azure') unset(schema, 'properties.azure')
-      if (!appsEnabled.grafana) set(schema, 'properties.monitor.title', 'Azure Monitor (disabled)')
       break
     case 'dns':
       break
@@ -50,17 +42,8 @@ export const getSettingSchema = (
     case 'ingress':
       set(schema, 'properties.platformClass.allOf[0].properties.className', true)
       unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
-      if (provider !== 'azure') {
-        unset(schema, 'properties.platformClass.allOf[1].properties.network')
-        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerRG')
-        unset(schema, 'properties.platformClass.allOf[1].properties.loadBalancerSubnet')
-        unset(schema, 'properties.classes.items.allOf[1].properties.network')
-        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerRG')
-        unset(schema, 'properties.classes.items.allOf[1].properties.loadBalancerSubnet')
-      }
       break
     case 'platformBackups':
-      if (!appsEnabled.velero) set(schema, 'properties.persistentVolumes.readOnly', true)
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
       break
     default:
@@ -91,8 +74,6 @@ export const getSettingUiSchema = (
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
   }
-
-  if (!appsEnabled.grafana) uiSchema.azure = { monitor: { 'ui:disabled': true } }
 
   if (!settings.otomi.hasExternalDNS) {
     uiSchema.ingress.classes = {
@@ -161,11 +142,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
     setUiSchema(getDynamicUiSchema(data))
   }
 
-  const isDisabled = () => {
-    if (settingId === 'platformBackups' && schema.properties.persistentVolumes.readOnly) return false
-    return !!disabledMessage
-  }
-
   return (
     <>
       {disabledMessage && <InformationBanner message={disabledMessage} />}
@@ -175,7 +151,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         schema={schema}
         uiSchema={uiSchema}
         data={setting}
-        disabled={isDisabled()}
         resourceType='Settings'
         onChange={onChangeHandler}
         idProp={null}

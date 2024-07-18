@@ -22,6 +22,7 @@ export default function SettingsOverview() {
     { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg') },
     { title: 'SMTP', path: '/settings/smtp', icon: getIcon('smtp_icon.svg') },
     { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg') },
+    { title: 'Object Storage', path: '/settings/obj', icon: getIcon('cloud_upload.svg') },
   ]
   // TODO: remove inline styling and use theming
   const SettingsCard = ({ title, path, icon }) => (

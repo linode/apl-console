@@ -2125,7 +2125,7 @@ export type EditBuildApiArg = {
   }
 }
 export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
-  'allowed-repo'?: {
+  'disallow-capabilities-strict'?: {
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
   }
@@ -2138,10 +2138,6 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
     customValues?: string[]
-  }
-  'disallow-capabilities-strict'?: {
-    action?: 'Audit' | 'Enforce'
-    severity?: 'low' | 'medium' | 'high'
   }
   'disallow-host-namespaces'?: {
     action?: 'Audit' | 'Enforce'
@@ -2240,7 +2236,7 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
 }
 export type GetAllPoliciesApiArg = void
 export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
-  'allowed-repo'?: {
+  'disallow-capabilities-strict'?: {
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
   }
@@ -2253,10 +2249,6 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
     customValues?: string[]
-  }
-  'disallow-capabilities-strict'?: {
-    action?: 'Audit' | 'Enforce'
-    severity?: 'low' | 'medium' | 'high'
   }
   'disallow-host-namespaces'?: {
     action?: 'Audit' | 'Enforce'
@@ -2326,9 +2318,10 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
   }
-  'required-otomi-label'?: {
+  'require-labels'?: {
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
+    customValues?: string[]
   }
   'restrict-apparmor-profiles'?: {
     action?: 'Audit' | 'Enforce'
@@ -3660,7 +3653,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+    provider?: 'linode' | 'custom'
   }
   dns?: {
     zones?: string[]
@@ -3669,17 +3662,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider: 'linode' | 'custom'
     }[]
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
@@ -3727,7 +3710,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'aws' | 'azure' | 'digitalocean' | 'google' | 'ovh' | 'vultr' | 'scaleway' | 'civo' | 'linode' | 'custom'
+    provider?: 'linode' | 'custom'
     apiName?: string
     apiServer?: string
     owner?: string
@@ -3741,39 +3724,49 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         retentionPolicy?: string
         schedule?: string
       }
+      gitea?: {
+        enabled?: boolean
+        retentionPolicy?: string
+        schedule?: string
+      }
+      keycloak?: {
+        enabled?: boolean
+        retentionPolicy?: string
+        schedule?: string
+      }
     }
     persistentVolumes?: {
+      linodeApiToken?: string
       gitea?: {
         enabled?: boolean
         ttl?: string
         schedule?: string
       }
-      drone?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      keycloak?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      harbor?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      argo?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
-      minio?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
     }
+  }
+  obj?: {
+    bucket?: {
+      loki?: string
+      cnpg?: string
+      velero?: string
+      harbor?: string
+      tempo?: string
+    }
+    provider?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          type: 'minioLocal'
+        }
+      | {
+          linode: {
+            region: string
+            accessKeyId: string
+            secretAccessKey: string
+          }
+          type: 'linode'
+        }
   }
   home?: {
     repeatInterval?: string
@@ -3959,17 +3952,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     additionalClusters?: {
       domainSuffix: string
       name: string
-      provider:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider: 'linode' | 'custom'
     }[]
     globalPullSecret?: {
       username?: string
@@ -4046,17 +4029,7 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?:
-        | 'aws'
-        | 'azure'
-        | 'digitalocean'
-        | 'google'
-        | 'ovh'
-        | 'vultr'
-        | 'scaleway'
-        | 'civo'
-        | 'linode'
-        | 'custom'
+      provider?: 'linode' | 'custom'
       apiName?: string
       apiServer?: string
       owner?: string
@@ -4070,39 +4043,49 @@ export type EditSettingsApiArg = {
           retentionPolicy?: string
           schedule?: string
         }
+        gitea?: {
+          enabled?: boolean
+          retentionPolicy?: string
+          schedule?: string
+        }
+        keycloak?: {
+          enabled?: boolean
+          retentionPolicy?: string
+          schedule?: string
+        }
       }
       persistentVolumes?: {
+        linodeApiToken?: string
         gitea?: {
           enabled?: boolean
           ttl?: string
           schedule?: string
         }
-        drone?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        keycloak?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        harbor?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        argo?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
-        minio?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
       }
+    }
+    obj?: {
+      bucket?: {
+        loki?: string
+        cnpg?: string
+        velero?: string
+        harbor?: string
+        tempo?: string
+      }
+      provider?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            type: 'minioLocal'
+          }
+        | {
+            linode: {
+              region: string
+              accessKeyId: string
+              secretAccessKey: string
+            }
+            type: 'linode'
+          }
     }
     home?: {
       repeatInterval?: string
@@ -4288,17 +4271,7 @@ export type EditSettingsApiArg = {
       additionalClusters?: {
         domainSuffix: string
         name: string
-        provider:
-          | 'aws'
-          | 'azure'
-          | 'digitalocean'
-          | 'google'
-          | 'ovh'
-          | 'vultr'
-          | 'scaleway'
-          | 'civo'
-          | 'linode'
-          | 'custom'
+        provider: 'linode' | 'custom'
       }[]
       globalPullSecret?: {
         username?: string
@@ -4331,11 +4304,6 @@ export type GetAppsApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
   rawValues?: object
-  shortcuts?: {
-    title: string
-    description: string
-    path: string
-  }[]
   values?: object
 }[]
 export type GetAppsApiArg = {
@@ -4353,11 +4321,6 @@ export type GetAppApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
   rawValues?: object
-  shortcuts?: {
-    title: string
-    description: string
-    path: string
-  }[]
   values?: object
 }
 export type GetAppApiArg = {
@@ -4373,11 +4336,6 @@ export type EditAppApiArg = {
     enabled?: boolean
     id: string
     rawValues?: object
-    shortcuts?: {
-      title: string
-      description: string
-      path: string
-    }[]
     values?: object
   }
 }
