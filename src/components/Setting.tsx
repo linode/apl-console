@@ -121,6 +121,9 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
 
       if (!appsEnabled.velero && settingId === 'platformBackups')
         setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
+
+      if (settingId === 'obj')
+        setDisabledMessage('This page is read only, changing object storage provider will result in data loss!')
     }
   }, [settingId])
   // END HOOKS
@@ -147,6 +150,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       {disabledMessage && <InformationBanner message={disabledMessage} />}
 
       <Form
+        disabled={settingId === 'obj'}
         key={settingId}
         schema={schema}
         uiSchema={uiSchema}
