@@ -147,7 +147,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       {disabledMessage && <InformationBanner message={disabledMessage} />}
 
       <Form
-        disabled={settingId === 'obj'}
         key={settingId}
         schema={schema}
         uiSchema={uiSchema}
