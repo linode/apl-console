@@ -258,7 +258,9 @@ export default function ({
       <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           <Tab href='#info' label='Info' value={hashMap.info} />
-          {isAdminApps && appSchema && enabled && <Tab href='#values' label={t('Values')} value={hashMap.values} />}
+          {isAdminApps && appSchema && (enabled || enabled === undefined) && (
+            <Tab href='#values' label={t('Values')} value={hashMap.values} />
+          )}
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={hashMap.info}>
