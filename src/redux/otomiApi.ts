@@ -3658,6 +3658,23 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   dns?: {
     zones?: string[]
   }
+  obj?: {
+    provider?:       
+    | {
+          type?: 'disabled'
+        }
+      | {
+          type: 'minioLocal'
+        }
+      | {
+          linode: {
+            region: string
+            accessKeyId: string
+            secretAccessKey: string
+          }
+          type: 'linode'
+        }
+  },
   otomi?: {
     additionalClusters?: {
       domainSuffix: string
