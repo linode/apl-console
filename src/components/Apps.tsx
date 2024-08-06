@@ -137,13 +137,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   // we visualize drag state for all app dependencies
   const isAdmin = teamId === 'admin'
 
-  const disabledBySettingsApps = {
-    minio: true,
-  }
-
-  const objectStorageProvider = session.settings.obj?.provider?.type
-  if (objectStorageProvider === 'linode') apps = apps.filter((app) => !disabledBySettingsApps[app.id])
-
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
