@@ -136,7 +136,6 @@ export default function ({ teamId, apps, teamSettings, loading, setAppState }: P
   if (!apps || loading) return <LoadingScreen />
   // we visualize drag state for all app dependencies
   const isAdmin = teamId === 'admin'
-
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
