@@ -20,7 +20,6 @@ import YAML from 'yaml'
 import { useSession } from 'providers/Session'
 import CodeEditor from './CodeEditor'
 import HeaderTitle from './HeaderTitle'
-import Form from './rjsf/Form'
 import TabPanel from './TabPanel'
 import InformationBanner from './InformationBanner'
 
@@ -183,7 +182,6 @@ export default function ({
   const hashMap = {
     info: 0,
     values: 1,
-    rawvalues: 2,
   }
   const { classes } = useStyles()
   const session = useSession()
@@ -197,31 +195,24 @@ export default function ({
   const [isEdit, setIsEdit] = useState(false)
   // setters for the tab forms
   const [values, setValues] = useState(inValues)
-  const [rawValues, setRawValues] = useState(inRawValues)
   // validation state
   const [validValues, setValidValues] = useState(true)
-  const [validRaw, setValidRaw] = useState(true)
   const { t } = useTranslation()
   useEffect(() => {
     if (inValues !== values) {
       setValues(inValues)
       setValidValues(true)
     }
-    if (inRawValues !== rawValues) {
-      setRawValues(inRawValues)
-      setValidRaw(true)
-    }
-  }, [inValues, inRawValues])
+  }, [inValues])
 
   // END HOOKS
   const appSchema = getAppSchema(id, values).properties?.values
-  const appUiSchema = getAppUiSchema(appsEnabled, id, values)
-  const yaml = isEqual(rawValues, {}) ? '' : YAML.stringify(rawValues)
+  const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 
   const handleSubmit = () => {
-    const data = { id, teamId, values, rawValues }
-    if (validValues && validRaw) onSubmit(data)
+    const data = { id, teamId, values }
+    if (validValues) onSubmit(data)
   }
 
   const handleValuesChange = (values: Props['values'], errors: any[]) => {
@@ -267,16 +258,8 @@ export default function ({
       <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           <Tab href='#info' label='Info' value={hashMap.info} />
-          {isAdminApps && (
-            <Tab href='#values' label={t('Values')} value={hashMap.values} disabled={enabled === false || !appSchema} />
-          )}
-          {isAdminApps && (
-            <Tab
-              href='#rawvalues'
-              label={t('Raw values')}
-              value={hashMap.rawvalues}
-              disabled={enabled === false || !appSchema}
-            />
+          {isAdminApps && appSchema && (enabled || enabled === undefined) && (
+            <Tab href='#values' label={t('Values')} value={hashMap.values} />
           )}
         </Tabs>
       </AppBar>
@@ -349,46 +332,31 @@ export default function ({
       </TabPanel>
       <TabPanel value={tab} index={hashMap.values}>
         {appSchema && (
-          <Form
-            adminOnly
-            description={t('FORM_HEAD_APP_EDIT', { title: appInfo.title })}
-            data={values}
-            schema={appSchema}
-            uiSchema={appUiSchema}
-            onChange={handleValuesChange}
-            onSubmit={handleSubmit}
-            resourceType='Values'
-            idProp={null}
-            mutating={mutating}
-            altColor
-          />
+          <>
+            <CodeEditor
+              code={valuesYaml}
+              onChange={(data) => {
+                setValues(data || {})
+              }}
+              disabled={!isEdit}
+              setValid={setValidValues}
+            />
+            <Box display='flex' flexDirection='row-reverse' m={1}>
+              <Button
+                color='primary'
+                variant='contained'
+                data-cy='button-edit-values'
+                onClick={() => {
+                  if (isEdit) handleSubmit()
+                  setIsEdit(!isEdit)
+                }}
+                disabled={!validValues}
+              >
+                {isEdit ? t('Submit') : t('Edit')}
+              </Button>
+            </Box>
+          </>
         )}
-      </TabPanel>
-      <TabPanel value={tab} index={hashMap.rawvalues}>
-        <HeaderTitle title={t('Raw values')} description={t('FORM_WARNING_RAW_VALUES', { id })} resourceType='Values' />
-        <div className={classes.buffer}> </div>
-        <CodeEditor
-          code={yaml}
-          onChange={(data) => {
-            setRawValues(data || {})
-          }}
-          disabled={!isEdit}
-          setValid={setValidRaw}
-        />
-        <Box display='flex' flexDirection='row-reverse' m={1}>
-          <Button
-            color='primary'
-            variant='contained'
-            data-cy='button-edit-rawvalues'
-            onClick={() => {
-              if (isEdit) handleSubmit()
-              setIsEdit(!isEdit)
-            }}
-            disabled={!validRaw}
-          >
-            {isEdit ? t('Submit') : t('Edit')}
-          </Button>
-        </Box>
       </TabPanel>
     </Box>
   )
