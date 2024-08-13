@@ -100,8 +100,6 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.argocd) return <p>Admin needs to enable the ArgoCD app to activate this feature.</p>
-
   return (
     <ListTable
       teamId={teamId}

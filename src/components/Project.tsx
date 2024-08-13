@@ -390,7 +390,7 @@ export default function ({
                     uiSchema={workloadUiSchema}
                     data={formData.workload}
                     onChange={(data: any) => setData({ ...formData, workload: data })}
-                    disabled={!appsEnabled.argocd || !!project?.workload?.id}
+                    disabled={!!project?.workload?.id}
                     resourceType='Workload'
                     children
                     hideHelp
