@@ -132,7 +132,7 @@ export default function ({
   const { t } = useTranslation()
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
-  const { appsEnabled, user } = useSession()
+  const { user } = useSession()
   const globalError = useAppSelector(({ global: { error } }) => error)
   const hash = location.hash.substring(1)
   const hashMap = {
@@ -304,7 +304,6 @@ export default function ({
           uiSchema={uiSchema}
           data={data}
           onChange={setData}
-          disabled={!appsEnabled.argocd}
           resourceType='Workload'
           children
           hideHelp
