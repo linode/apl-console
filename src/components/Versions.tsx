@@ -47,7 +47,7 @@ export default function (): React.ReactElement {
     [t('Kubernetes')]: k8sVersion,
     [t('Otomi Core')]: versions.core,
     [t('Otomi API')]: versions.api,
-    [t('Otomi Console')]: versions.console,
+    [t('Otomi Console')]: `apl-${versions.console}`,
     [t('Otomi Values')]: <LinkCommit domainSuffix={domainSuffix} sha={versions.values} color='primary' short />,
   }
   const version = /^\d/.test(clusterLegend['Otomi Core'])
