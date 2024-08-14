@@ -46,13 +46,9 @@ jobs:
       - name: Retag from cache and push
         run: |
           set -u
-          echo "Starting docker login"
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          echo "Retagging"
           docker tag $CACHE_REGISTRY/$CACHE_REPO:$TAG $REPO:$TAG
-          echo "Pushing"
           docker push $REPO:$TAG
-          echo "Pushed"
       - if: (startsWith(github.ref, 'refs/heads/releases/') || startsWith(github.ref, 'refs/heads/main'))&& startsWith(github.event.head_commit.message, 'chore(release)')
         name: Docker tag and push. Git tag and push.
         id: git_tag
