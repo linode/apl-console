@@ -3645,6 +3645,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     console?: string
     values?: string
   }
+  valuesSchema?: any
 }
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
