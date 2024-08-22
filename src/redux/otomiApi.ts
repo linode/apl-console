@@ -370,7 +370,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -829,7 +828,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -883,7 +881,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -937,7 +934,6 @@ export type CreateServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -997,7 +993,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1053,7 +1048,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1109,7 +1103,6 @@ export type EditServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2534,7 +2527,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2669,7 +2661,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2807,7 +2798,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2945,7 +2935,6 @@ export type CreateProjectApiArg = {
                 hasCert?: boolean
                 certSelect?: boolean
                 certName?: string
-                certArn?: string
                 headers?: {
                   response?: {
                     set?: {
@@ -3087,7 +3076,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3227,7 +3215,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3645,7 +3632,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     console?: string
     values?: string
   }
-  valuesSchema?: any
+  valuesSchema?: object
 }
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
@@ -3711,12 +3698,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'linode' | 'custom'
-    apiName?: string
     apiServer?: string
-    owner?: string
-    region?: string
     k8sContext?: string
+    provider?: 'linode' | 'custom'
   }
   platformBackups?: {
     database?: {
@@ -3746,13 +3730,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   obj?: {
-    bucket?: {
-      loki?: string
-      cnpg?: string
-      velero?: string
-      harbor?: string
-      tempo?: string
-    }
     provider?:
       | {
           type?: 'disabled'
@@ -3768,6 +3745,14 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
           type: 'linode'
         }
+    buckets?: {
+      loki?: string
+      cnpg?: string
+      velero?: string
+      harbor?: string
+      tempo?: string
+      thanos?: string
+    }
   }
   home?: {
     repeatInterval?: string
@@ -3803,15 +3788,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     email?: {
       critical?: string
       nonCritical?: string
-    }
-  }
-  azure?: {
-    appgw?: {
-      isManaged?: boolean
-    }
-    storageType?: {
-      fast?: string
-      standard?: string
     }
   }
   dns?: {
@@ -4030,12 +4006,9 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'linode' | 'custom'
-      apiName?: string
       apiServer?: string
-      owner?: string
-      region?: string
       k8sContext?: string
+      provider?: 'linode' | 'custom'
     }
     platformBackups?: {
       database?: {
@@ -4065,13 +4038,6 @@ export type EditSettingsApiArg = {
       }
     }
     obj?: {
-      bucket?: {
-        loki?: string
-        cnpg?: string
-        velero?: string
-        harbor?: string
-        tempo?: string
-      }
       provider?:
         | {
             type?: 'disabled'
@@ -4087,6 +4053,14 @@ export type EditSettingsApiArg = {
             }
             type: 'linode'
           }
+      buckets?: {
+        loki?: string
+        cnpg?: string
+        velero?: string
+        harbor?: string
+        tempo?: string
+        thanos?: string
+      }
     }
     home?: {
       repeatInterval?: string
@@ -4122,15 +4096,6 @@ export type EditSettingsApiArg = {
       email?: {
         critical?: string
         nonCritical?: string
-      }
-    }
-    azure?: {
-      appgw?: {
-        isManaged?: boolean
-      }
-      storageType?: {
-        fast?: string
-        standard?: string
       }
     }
     dns?: {
