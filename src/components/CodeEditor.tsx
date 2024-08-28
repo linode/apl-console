@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-nested-ternary */
-import MonacoEditor, { MonacoEditorProps } from '@uiw/react-monacoeditor'
-import { isEmpty } from 'lodash'
-import { Box } from '@mui/material'
 import React, { useState } from 'react'
+import { Editor, useMonaco } from '@monaco-editor/react'
+import { isEmpty } from 'lodash'
+import { Box, Button } from '@mui/material'
+import Ajv from 'ajv'
+import yaml from 'js-yaml'
 import { makeStyles } from 'tss-react/mui'
 import YAML, { ParsedNode, YAMLMap, YAMLSeq, parseDocument } from 'yaml'
 import useSettings from 'hooks/useSettings'
@@ -40,26 +43,29 @@ function sortDeep(node: ParsedNode | null): void {
   } else if (node instanceof YAMLSeq) node.items.forEach((item) => sortDeep(item))
 }
 
-interface Props extends MonacoEditorProps {
+interface Props {
   lang?: string
   code?: string
   onChange?: any
   disabled?: boolean
   setValid?: CallableFunction
   showComments?: boolean
+  validationSchema?: any
 }
 
 const toYaml = (obj) => YAML.stringify(obj, { blockQuote: 'literal' })
 
-export default function ({
+export default function CodeEditor({
   code: inCode,
   lang = 'yaml',
   onChange,
   setValid,
   disabled,
   showComments = false,
+  validationSchema,
   ...props
 }: Props): React.ReactElement {
+  const monaco = useMonaco()
   const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
   const document = parseDocument(startCode)
   sortDeep(document.contents)
@@ -69,6 +75,8 @@ export default function ({
   const { themeMode } = useSettings()
   const isLight = themeMode === 'light'
   const { classes } = useStyles()
+  const ajv = new Ajv({ allErrors: true, strict: false })
+
   const fromYaml = (yaml: string): any | undefined => {
     try {
       const obj = YAML.parse(yaml)
@@ -91,15 +99,56 @@ export default function ({
     if (onChange && obj) onChange(obj)
   }
 
+  const validateCode = () => {
+    let parsedYaml
+    try {
+      parsedYaml = yaml.load(inCode)
+    } catch (e) {
+      if (monaco) {
+        monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', [
+          {
+            severity: monaco.MarkerSeverity.Error,
+            startLineNumber: e.mark.line + 1,
+            startColumn: e.mark.column + 1,
+            endLineNumber: e.mark.line + 1,
+            endColumn: e.mark.column + 1,
+            message: e.message,
+          },
+        ])
+      }
+      return
+    }
+
+    console.log('halo validaiton schema', validationSchema)
+    const validate = ajv.compile(validationSchema)
+    const valid = validate(parsedYaml)
+
+    if (!valid) {
+      console.log('validate erros', validate.errors)
+      const markers = validate.errors.map((error) => ({
+        severity: monaco.MarkerSeverity.Error,
+        startLineNumber: 1, // <- this needs to be fixed
+        startColumn: 1, // <- this needs to be fixed
+        endLineNumber: 1,
+        endColumn: 1,
+        message: error.message,
+      }))
+
+      if (monaco) monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', markers)
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (monaco) monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', [])
+    }
+  }
+
   return (
     <>
-      <MonacoEditor
+      <Editor
         className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
         height='600px'
         theme={isLight ? 'light' : 'vs-dark'}
-        value={modifiedCode}
+        defaultValue={modifiedCode}
         language={lang}
-        placeholder={`Please enter ${lang.toUpperCase()} code.`}
         onChange={onChangeHandler}
         options={{
           readOnly: disabled,
@@ -112,6 +161,9 @@ export default function ({
           <p className={classes.errorMessage}>{error}</p>
         </Box>
       )}
+      <Button sx={{ w: '100px' }} onClick={validateCode}>
+        Validate
+      </Button>
     </>
   )
 }
