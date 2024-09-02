@@ -11,7 +11,7 @@ export const getCoreAppId = (appId): string => {
 }
 
 export const getAppSchemaName = (appId: string): string => {
-  return `App${pascalCase(getCoreAppId(appId))}`
+  return `${pascalCase(getCoreAppId(appId))}`
 }
 
 export function getStrict(obj: Record<string, any>, path: string, def: any = undefined) {

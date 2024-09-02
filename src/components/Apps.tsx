@@ -111,7 +111,7 @@ interface Props {
   setAppState: CallableFunction
 }
 
-export default function ({ teamId, apps, teamSettings, loading, setAppState }: Props): React.ReactElement {
+export default function Apps({ teamId, apps, teamSettings, loading, setAppState }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
   const [deps, setDeps] = useState(undefined)
