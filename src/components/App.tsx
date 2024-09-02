@@ -207,10 +207,6 @@ export default function App({
 
   // END HOOKS
   const appSchema = session.valuesSchema.properties.apps.properties[id]
-  console.log('halo values schema all apps', session.valuesSchema.properties.apps)
-  console.log('halo app id', id)
-  console.log('halo app schema app specific', appSchema)
-  console.log('halo values', values)
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 
