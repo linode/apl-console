@@ -16,7 +16,6 @@ export default function SettingsOverview() {
     { title: 'APL settings', path: '/settings/otomi', icon: getIcon('akamai_icon.svg') },
     { title: 'Key Management', path: '/settings/kms', icon: getIcon('secrets_icon.svg') },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg') },
-    { title: 'Co-monitoring', path: '/settings/home', icon: getIcon('comonitoring_icon.svg') },
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg') },
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg') },
     { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg') },
