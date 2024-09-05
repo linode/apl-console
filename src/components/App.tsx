@@ -168,7 +168,7 @@ interface Props extends CrudProps, GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
 }
-export default function ({
+export default function App({
   id,
   teamId,
   enabled,
@@ -206,7 +206,7 @@ export default function ({
   }, [inValues])
 
   // END HOOKS
-  const appSchema = getAppSchema(id, values).properties?.values
+  const appSchema = session.valuesSchema.properties.apps.properties[id]
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 
