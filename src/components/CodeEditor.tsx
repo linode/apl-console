@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Editor, useMonaco } from '@monaco-editor/react'
 import { isEmpty } from 'lodash'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import Ajv from 'ajv'
 import yaml from 'js-yaml'
 import { makeStyles } from 'tss-react/mui'
@@ -27,7 +27,7 @@ const useStyles = makeStyles()((theme) => {
       backgroundColor: '#feefef',
       border: '1px solid red',
       color: 'red',
-      borderRadius: theme.spacing(1),
+      padding: '0px 5px',
     },
     errorMessage: {
       whiteSpace: 'pre-wrap',
@@ -72,10 +72,11 @@ export default function CodeEditor({
   const modifiedCode = showComments ? document.toJSON() : startCode
   const [valid, setLocalValid] = useState(true)
   const [error, setError] = useState('')
+  const [validationErrors, setValidationErrors] = useState([])
   const { themeMode } = useSettings()
   const isLight = themeMode === 'light'
   const { classes } = useStyles()
-  const ajv = new Ajv({ allErrors: true, strict: false })
+  const ajv = new Ajv({ allErrors: true, strict: false, strictTypes: false, verbose: true })
 
   const fromYaml = (yaml: string): any | undefined => {
     try {
@@ -86,6 +87,7 @@ export default function CodeEditor({
       if (setValid) setValid(true)
       return obj
     } catch (e) {
+      console.log('error', e)
       setError(e.message)
       setLocalValid(false)
       if (setValid) setValid(false)
@@ -93,58 +95,32 @@ export default function CodeEditor({
     }
   }
 
+  const validateCode = (newValue: string) => {
+    let parsedYaml
+    try {
+      parsedYaml = yaml.load(newValue)
+    } catch (e) {
+      console.error('something went wrong with parsing yaml, please notify administrator')
+      return
+    }
+    const validate = ajv.compile(validationSchema)
+    const valid = validate(parsedYaml)
+
+    setValidationErrors(!valid ? validate.errors : [])
+    setValid(valid)
+  }
+
   const onChangeHandler = (newValue: any) => {
     const code = newValue as string
     const obj = fromYaml(code)
     if (onChange && obj) onChange(obj)
-  }
-
-  const validateCode = () => {
-    let parsedYaml
-    try {
-      parsedYaml = yaml.load(inCode)
-    } catch (e) {
-      if (monaco) {
-        monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', [
-          {
-            severity: monaco.MarkerSeverity.Error,
-            startLineNumber: e.mark.line + 1,
-            startColumn: e.mark.column + 1,
-            endLineNumber: e.mark.line + 1,
-            endColumn: e.mark.column + 1,
-            message: e.message,
-          },
-        ])
-      }
-      return
-    }
-
-    console.log('halo validaiton schema', validationSchema)
-    const validate = ajv.compile(validationSchema)
-    const valid = validate(parsedYaml)
-
-    if (!valid) {
-      console.log('validate erros', validate.errors)
-      const markers = validate.errors.map((error) => ({
-        severity: monaco.MarkerSeverity.Error,
-        startLineNumber: 1, // <- this needs to be fixed
-        startColumn: 1, // <- this needs to be fixed
-        endLineNumber: 1,
-        endColumn: 1,
-        message: error.message,
-      }))
-
-      if (monaco) monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', markers)
-    } else {
-      // eslint-disable-next-line no-lonely-if
-      if (monaco) monaco.editor.setModelMarkers(monaco.editor.getModels()[0], 'owner', [])
-    }
+    validateCode(newValue)
   }
 
   return (
     <>
       <Editor
-        className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
+        className={`${classes.root}${!valid || validationErrors.length > 0 ? ` ${classes.invalid}` : ''}`}
         height='600px'
         theme={isLight ? 'light' : 'vs-dark'}
         defaultValue={modifiedCode}
@@ -161,9 +137,20 @@ export default function CodeEditor({
           <p className={classes.errorMessage}>{error}</p>
         </Box>
       )}
-      <Button sx={{ w: '100px' }} onClick={validateCode}>
-        Validate
-      </Button>
+      {validationErrors &&
+        validationErrors.map((err, index) => {
+          const lastInstancePathSegment = err.instancePath.split('/').pop() // Get the last segment of the path
+          const errorMessage =
+            err.keyword === 'additionalProperties'
+              ? `Additional property "${err.params.additionalProperty}" is not allowed at ${err.instancePath}`
+              : `"${lastInstancePathSegment}" ${err.message} at ${err.instancePath}`
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <Box key={index} className={classes.errorMessageWrapper} display='flex'>
+              <p>{errorMessage}</p>
+            </Box>
+          )
+        })}
     </>
   )
 }
