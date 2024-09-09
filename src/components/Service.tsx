@@ -15,7 +15,7 @@ import { getStrict } from 'utils/schema'
 import Form from './rjsf/Form'
 
 const idxMap: Record<string, number> = {
-  public: 1,
+  public: 0,
   tlsPass: 2,
 }
 
@@ -86,7 +86,7 @@ export const getServiceSchema = (
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
   const idx = idxMap[formData?.ingress?.type]
-  set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', [
+  set(schema, 'properties.ingress.oneOf[0].allOf[0].properties.ingressClassName.enum', [
     'platform',
     ...settings.ingressClassNames,
   ])
