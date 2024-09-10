@@ -70,6 +70,10 @@ export const getSettingUiSchema = (
         google: {
           accountJson: { 'ui:widget': 'textarea' },
         },
+        age: {
+          publicKey: { 'ui:disabled': true },
+          privateKey: { 'ui:disabled': true },
+        },
       },
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },

@@ -14,7 +14,7 @@ export default function SettingsOverview() {
   const settings = [
     { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg') },
     { title: 'APL settings', path: '/settings/otomi', icon: getIcon('akamai_icon.svg') },
-    { title: 'Key Management', path: '/settings/kms', icon: getIcon('secrets_icon.svg') },
+    { title: 'Platform Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg') },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg') },
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg') },
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg') },
