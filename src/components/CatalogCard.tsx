@@ -80,7 +80,7 @@ export default function ({ img, teamId, name, isBeta }: Props): React.ReactEleme
         <Link className={classes.link} to={`/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
           {image}
           <Typography className={classes.title} variant='h6'>
-            {name.replace('otomi-quickstart-', '')}
+            {name.replace('quickstart-', '')}
           </Typography>
           {isBeta && (
             <Box className='beta-label'>
