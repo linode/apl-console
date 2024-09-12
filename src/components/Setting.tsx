@@ -116,9 +116,6 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       if (!appsEnabled.alertmanager && settingId === 'alerts')
         setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
 
-      if (!appsEnabled.alertmanager && settingId === 'home')
-        setDisabledMessage('Please enable Alertmanager to activate Co-monitoring')
-
       if (!appsEnabled.velero && settingId === 'platformBackups')
         setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
     }
