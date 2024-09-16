@@ -118,7 +118,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
 
   return (
     <RootStyle
-      sx={{ backgroundColor: 'background.contrast' }}
+      sx={{ backgroundColor: 'background.header' }}
       isCollapse={isCollapse}
       isOffset={isOffset}
       verticalLayout={verticalLayout}
