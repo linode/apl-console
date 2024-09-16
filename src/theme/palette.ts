@@ -27,6 +27,11 @@ interface ChartPaletteOptions {
 
 declare module '@mui/material/styles/createPalette' {
   interface TypeBackground {
+    paper: string
+    default: string
+    contrast: string
+    contrastAlt: string
+    sidebar: string
     neutral: string
   }
   interface SimplePaletteColorOptions {
@@ -121,9 +126,11 @@ const GREY = {
   300: '#DFE3E8',
   400: '#C4CDD5',
   500: '#919EAB',
-  600: '#3A3F46',
+  520: '#515157',
+  550: '#3d3d42',
+  600: '#343438',
   700: '#33373e',
-  800: '#2E3238',
+  800: '#222222',
   900: '#161C24',
   500_8: alpha('#919EAB', 0.08),
   500_12: alpha('#919EAB', 0.12),
@@ -134,7 +141,6 @@ const GREY = {
   500_56: alpha('#919EAB', 0.56),
   500_80: alpha('#919EAB', 0.8),
 }
-
 const GRADIENTS = {
   primary: createGradient(PRIMARY.light, PRIMARY.main),
   cyan: createGradient(CYAN.light, CYAN.main),
@@ -164,7 +170,6 @@ const COMMON = {
   grey: GREY,
   gradients: GRADIENTS,
   chart: CHART_COLORS,
-  divider: GREY[500_24],
   action: {
     hover: GREY[500_8],
     selected: GREY[500_16],
@@ -181,11 +186,13 @@ const palette = {
     ...COMMON,
     mode: 'light',
     text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
+    divider: GREY[500_24],
     background: {
-      paper: '#fff',
+      paper: GREY[0],
       default: GREY[100],
-      contrast: '#fff',
+      contrast: GREY[0],
       contrastAlt: GREY[50],
+      header: GREY[0],
       sidebar: GREY[600],
       neutral: GREY[200],
     },
@@ -195,11 +202,13 @@ const palette = {
     ...COMMON,
     mode: 'dark',
     text: { primary: '#fff', secondary: GREY[500], disabled: GREY[300] },
+    divider: GREY[520],
     background: {
-      paper: GREY[800],
+      paper: GREY[550],
       default: GREY[600],
-      contrast: GREY[800],
-      contrastAlt: GREY[700],
+      contrast: GREY[550],
+      contrastAlt: GREY[600],
+      header: GREY[800],
       sidebar: GREY[800],
       neutral: GREY[500],
     },

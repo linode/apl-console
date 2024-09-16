@@ -51,14 +51,17 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 
 // ---------------- styles ----------------------
 
-const StyledTableHeaderCell = styled(TableCell)({
-  borderWidth: '2px 2px',
-  borderStyle: 'solid',
-  borderColor: 'background.contrastAlt',
+const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  backgroundColor: theme.palette.background.contrastAlt,
   color: 'rgb(136, 143, 145)',
   fontFamily: 'LatoWebBold, sans-serif',
   padding: '10px 15px',
-})
+}))
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+}))
 
 // --------------------------------------------
 
@@ -131,7 +134,6 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
         )}
         {headCells.map((headCell) => (
           <StyledTableHeaderCell
-            sx={{ backgroundColor: 'background.contrastAlt', borderColor: 'background.default' }}
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -260,7 +262,7 @@ export default function EnhancedTable({
                 const labelId = `enhanced-table-checkbox-${index}`
                 const key = `row-${typeof idKey === 'function' ? idKey(row) : row[idKey]}`
                 return (
-                  <TableRow
+                  <StyledTableRow
                     hover
                     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
                     onClick={(event) => handleClick(event, row.name as string)}
@@ -269,7 +271,6 @@ export default function EnhancedTable({
                     tabIndex={-1}
                     key={key}
                     selected={isItemSelected}
-                    sx={{ border: '1px solid', borderColor: 'background.default' }}
                   >
                     {!disableSelect && (
                       <TableCell padding='checkbox' key='header-checkbox'>
@@ -286,7 +287,7 @@ export default function EnhancedTable({
                         {c.renderer ? c.renderer(row) : row[c.id]}
                       </TableCell>
                     ))}
-                  </TableRow>
+                  </StyledTableRow>
                 )
               })}
               {emptyRows > 0 && (
