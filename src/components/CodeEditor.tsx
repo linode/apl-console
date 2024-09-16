@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-nested-ternary */
 import React, { useState } from 'react'
-import { Editor, useMonaco } from '@monaco-editor/react'
+import { Editor } from '@monaco-editor/react'
 import { isEmpty } from 'lodash'
 import { Box } from '@mui/material'
 import Ajv from 'ajv'
@@ -65,7 +65,6 @@ export default function CodeEditor({
   validationSchema,
   ...props
 }: Props): React.ReactElement {
-  const monaco = useMonaco()
   const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
   const document = parseDocument(startCode)
   sortDeep(document.contents)

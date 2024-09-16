@@ -6,7 +6,6 @@ const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) 
 
 export const getCoreAppId = (appId): string => {
   let id: string = appId
-  // console.log('halo get core app', id)
   if (appId.startsWith('ingress-nginx')) id = 'ingress-nginx'
   return id
 }
