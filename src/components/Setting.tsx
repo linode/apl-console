@@ -41,7 +41,6 @@ export const getSettingSchema = (
       break
     case 'ingress':
       set(schema, 'properties.platformClass.allOf[0].properties.className', true)
-      unset(schema, 'properties.platformClass.allOf[1].properties.sourceIpAddressFiltering')
       break
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
