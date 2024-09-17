@@ -342,6 +342,7 @@ export default function App({
               }}
               disabled={!isEdit}
               setValid={setValidValues}
+              validationSchema={appSchema}
             />
             <Box display='flex' flexDirection='row-reverse' m={1}>
               <Button

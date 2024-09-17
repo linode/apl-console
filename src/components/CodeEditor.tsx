@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-nested-ternary */
-import MonacoEditor, { MonacoEditorProps } from '@uiw/react-monacoeditor'
+import React, { useState } from 'react'
+import { Editor } from '@monaco-editor/react'
 import { isEmpty } from 'lodash'
 import { Box } from '@mui/material'
-import React, { useState } from 'react'
+import Ajv from 'ajv'
+import yaml from 'js-yaml'
 import { makeStyles } from 'tss-react/mui'
 import YAML, { ParsedNode, YAMLMap, YAMLSeq, parseDocument } from 'yaml'
 import useSettings from 'hooks/useSettings'
@@ -24,7 +27,7 @@ const useStyles = makeStyles()((theme) => {
       backgroundColor: '#feefef',
       border: '1px solid red',
       color: 'red',
-      borderRadius: theme.spacing(1),
+      padding: '0px 5px',
     },
     errorMessage: {
       whiteSpace: 'pre-wrap',
@@ -40,24 +43,26 @@ function sortDeep(node: ParsedNode | null): void {
   } else if (node instanceof YAMLSeq) node.items.forEach((item) => sortDeep(item))
 }
 
-interface Props extends MonacoEditorProps {
+interface Props {
   lang?: string
   code?: string
   onChange?: any
   disabled?: boolean
   setValid?: CallableFunction
   showComments?: boolean
+  validationSchema?: any
 }
 
 const toYaml = (obj) => YAML.stringify(obj, { blockQuote: 'literal' })
 
-export default function ({
+export default function CodeEditor({
   code: inCode,
   lang = 'yaml',
   onChange,
   setValid,
   disabled,
   showComments = false,
+  validationSchema,
   ...props
 }: Props): React.ReactElement {
   const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
@@ -66,9 +71,12 @@ export default function ({
   const modifiedCode = showComments ? document.toJSON() : startCode
   const [valid, setLocalValid] = useState(true)
   const [error, setError] = useState('')
+  const [validationErrors, setValidationErrors] = useState([])
   const { themeMode } = useSettings()
   const isLight = themeMode === 'light'
   const { classes } = useStyles()
+  const ajv = new Ajv({ allErrors: true, strict: false, strictTypes: false, verbose: true })
+
   const fromYaml = (yaml: string): any | undefined => {
     try {
       const obj = YAML.parse(yaml)
@@ -78,6 +86,7 @@ export default function ({
       if (setValid) setValid(true)
       return obj
     } catch (e) {
+      console.log('error', e)
       setError(e.message)
       setLocalValid(false)
       if (setValid) setValid(false)
@@ -85,21 +94,36 @@ export default function ({
     }
   }
 
+  const validateCode = (newValue: string) => {
+    let parsedYaml
+    try {
+      parsedYaml = yaml.load(newValue)
+    } catch (e) {
+      console.error('something went wrong with parsing yaml, please notify administrator')
+      return
+    }
+    const validate = ajv.compile(validationSchema)
+    const valid = validate(parsedYaml)
+
+    setValidationErrors(!valid ? validate.errors : [])
+    setValid(valid)
+  }
+
   const onChangeHandler = (newValue: any) => {
     const code = newValue as string
     const obj = fromYaml(code)
     if (onChange && obj) onChange(obj)
+    validateCode(newValue)
   }
 
   return (
     <>
-      <MonacoEditor
-        className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
+      <Editor
+        className={`${classes.root}${!valid || validationErrors.length > 0 ? ` ${classes.invalid}` : ''}`}
         height='600px'
         theme={isLight ? 'light' : 'vs-dark'}
-        value={modifiedCode}
+        defaultValue={modifiedCode}
         language={lang}
-        placeholder={`Please enter ${lang.toUpperCase()} code.`}
         onChange={onChangeHandler}
         options={{
           readOnly: disabled,
@@ -112,6 +136,21 @@ export default function ({
           <p className={classes.errorMessage}>{error}</p>
         </Box>
       )}
+      {validationErrors &&
+        validationErrors.map((err, index) => {
+          const lastInstancePathSegment = err.instancePath.split('/').pop() // Get the last segment of the path
+          const instancePath = err.instancePath ? `at ${err.instancePath}` : ''
+          const errorMessage =
+            err.keyword === 'additionalProperties'
+              ? `Additional property "${err.params.additionalProperty}" is not allowed ${instancePath}`
+              : `"${lastInstancePathSegment}" ${err.message} at ${instancePath}`
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <Box key={index} className={classes.errorMessageWrapper} display='flex'>
+              <p>{errorMessage}</p>
+            </Box>
+          )
+        })}
     </>
   )
 }
