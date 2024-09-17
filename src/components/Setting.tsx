@@ -122,11 +122,11 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   // END HOOKS
   const getDynamicUiSchema = (data) => {
     if (settingId !== 'alerts') return getSettingUiSchema(appsEnabled, settings, settingId)
-    const { receivers, drone } = schema.properties
-    const allItems = [...new Set([...receivers.items.enum, ...drone.items.enum])]
+    const { receivers } = schema.properties
+    const allReceivers = receivers?.items?.enum || []
     const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
-    const diff = allItems.filter((receiver) => !data.receivers?.includes(receiver) && !data.drone?.includes(receiver))
-    diff.forEach((receiver) => {
+    const hiddenReceivers = allReceivers.filter((receiver) => !data.receivers?.includes(receiver))
+    hiddenReceivers.forEach((receiver) => {
       uiSchema[receiver] = { 'ui:widget': 'hidden' }
     })
     return uiSchema
