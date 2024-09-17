@@ -57,28 +57,24 @@ const useStyles = makeStyles()((theme) => ({
     flexDirection: 'column',
   },
   iframeSmall: {
-    width: '25%',
-    height: '100px',
+    width: '100%',
+    height: '100%',
     border: 'none',
-    margin: '10px 0px',
   },
   iframeMedium: {
-    width: '33.3%',
-    height: '200px',
+    width: '100%',
+    height: '100%',
     border: 'none',
-    margin: '10px 0px',
   },
   iframeLarge: {
-    width: '50%',
-    height: '200px',
+    width: '100%',
+    height: '100%',
     border: 'none',
-    margin: '10px 0px',
   },
   iframeFullWidth: {
     width: '100%',
-    height: '200px',
+    height: '100%',
     border: 'none',
-    margin: '10px 0px',
   },
 }))
 
@@ -281,13 +277,28 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
       {isCookiesLoaded && (
         <Box>
           {views[themeView].map((item) => (
-            <IFramesCard
-              classes={classes}
-              title={item.title}
-              iframeSources={item.iframeSources}
-              iframeClass={item.iframeClass}
-              show={item.show}
-            />
+            <Box sx={{ position: 'relative', width: '100%' }}>
+              <IFramesCard
+                classes={classes}
+                title={item.title}
+                iframeSources={item.iframeSources}
+                iframeClass={item.iframeClass}
+                show={item.show}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: '1px solid white',
+                  pointerEvents: 'none',
+                  background: 'transparent',
+                  zIndex: 1,
+                }}
+              />
+            </Box>
           ))}
         </Box>
       )}
