@@ -139,10 +139,11 @@ export default function CodeEditor({
       {validationErrors &&
         validationErrors.map((err, index) => {
           const lastInstancePathSegment = err.instancePath.split('/').pop() // Get the last segment of the path
+          const instancePath = err.instancePath ? `at ${err.instancePath}` : ''
           const errorMessage =
             err.keyword === 'additionalProperties'
-              ? `Additional property "${err.params.additionalProperty}" is not allowed at ${err.instancePath}`
-              : `"${lastInstancePathSegment}" ${err.message} at ${err.instancePath}`
+              ? `Additional property "${err.params.additionalProperty}" is not allowed ${instancePath}`
+              : `"${lastInstancePathSegment}" ${err.message} at ${instancePath}`
           return (
             // eslint-disable-next-line react/no-array-index-key
             <Box key={index} className={classes.errorMessageWrapper} display='flex'>
