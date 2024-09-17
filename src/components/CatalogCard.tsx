@@ -1,4 +1,4 @@
-import { Box, Chip, Tooltip, Typography } from '@mui/material'
+import { Box, Chip, Tooltip, Typography, useTheme } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -14,23 +14,29 @@ const useStyles = makeStyles()((theme) => {
       paddingRight: theme.spacing(1),
       paddingBottom: theme.spacing(2),
       paddingTop: theme.spacing(2),
-      backgroundColor: theme.palette.divider,
+      backgroundColor: theme.palette.background.default,
+      border: `1px solid ${theme.palette.divider}`,
       margin: '5px',
       maxHeight: '200px',
       height: '58px',
-      '& .beta-label': {
-        visibility: 'visible',
-        position: 'relative',
-        transform: 'translateX(0) translateY(0)',
-        width: 'auto',
-      },
-      '&:hover .beta-label': {
-        visibility: 'hidden',
-      },
     },
     img: {
       height: '32px',
       width: '32px',
+    },
+    chip: {
+      height: '20px',
+      fontSize: '0.65rem',
+      border: 'none',
+      borderRadius: '5px',
+    },
+    chipDark: {
+      color: 'rgb(174, 192, 245)',
+      backgroundColor: 'lch(77.7 28.7 275 / 0.12)',
+    },
+    chipLight: {
+      color: '#696970',
+      backgroundColor: 'rgba(0, 0, 0, 0.08)',
     },
     link: {
       display: 'flex',
@@ -58,7 +64,9 @@ interface Props {
 }
 
 export default function ({ img, teamId, name, isBeta }: Props): React.ReactElement {
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
+  const theme = useTheme()
+  const isLight = theme.palette.mode === 'light'
   const image = (
     <img
       draggable={false}
@@ -83,8 +91,12 @@ export default function ({ img, teamId, name, isBeta }: Props): React.ReactEleme
             {name}
           </Typography>
           {isBeta && (
-            <Box className='beta-label'>
-              <Chip label='BETA' variant='outlined' />
+            <Box>
+              <Chip
+                className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
+                label='BETA'
+                variant='outlined'
+              />
             </Box>
           )}
         </Link>
