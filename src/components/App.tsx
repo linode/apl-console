@@ -206,7 +206,9 @@ export default function App({
   }, [inValues])
 
   // END HOOKS
-  const appSchema = session.valuesSchema.properties.apps.properties[id]
+  const appSchema = id.startsWith('ingress-nginx')
+    ? session.valuesSchema.properties.apps.properties['ingress-nginx-platform']
+    : session.valuesSchema.properties.apps.properties[id]
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 
