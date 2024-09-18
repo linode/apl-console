@@ -30,9 +30,6 @@ export default function Table(theme: Theme) {
           backgroundImage: `linear-gradient(to bottom, ${theme.palette.background.neutral} 0%, ${theme.palette.background.neutral} 100%)`,
         },
         body: {
-          '&:first-of-type': {
-            paddingLeft: theme.spacing(3),
-          },
           '&:last-of-type': {
             paddingRight: theme.spacing(3),
           },
