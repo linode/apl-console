@@ -59,26 +59,38 @@ const useStyles = makeStyles()((theme) => ({
   iframeSmall: {
     width: '25%',
     height: '100px',
-    border: 'none',
     margin: '10px 0px',
   },
   iframeMedium: {
     width: '33.3%',
     height: '200px',
-    border: 'none',
     margin: '10px 0px',
   },
   iframeLarge: {
     width: '50%',
     height: '200px',
-    border: 'none',
     margin: '10px 0px',
   },
   iframeFullWidth: {
     width: '100%',
     height: '200px',
-    border: 'none',
     margin: '10px 0px',
+  },
+  iframe: {
+    width: '100%',
+    height: '100%',
+    border: 'none',
+  },
+  iframeBorderMask: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    border: '1px solid white',
+    pointerEvents: 'none',
+    background: 'transparent',
+    zIndex: 1,
   },
 }))
 
@@ -107,6 +119,8 @@ interface IFrameProps {
   id: string
   src: string
   className: string
+  classes: any
+  themeMode: string
 }
 
 interface IFramesCardProps {
@@ -114,6 +128,7 @@ interface IFramesCardProps {
   title: string
   iframeSources: any[]
   iframeClass: string
+  themeMode: string
   show?: boolean
 }
 
@@ -155,11 +170,16 @@ function InventoryCard({ classes, title, inventory, themeView, teamId }: Invento
   )
 }
 
-function IFrame({ id, src, className }: IFrameProps) {
-  return <iframe key={`iframe-${id}`} id={`iframe-${id}`} title={`iframe-${id}`} src={src} className={className} />
+function IFrame({ id, src, className, classes, themeMode }: IFrameProps) {
+  return (
+    <div className={className} style={{ position: 'relative' }}>
+      {themeMode === 'light' && <div className={classes.iframeBorderMask} />}
+      <iframe key={`iframe-${id}`} id={`iframe-${id}`} title={`iframe-${id}`} src={src} className={classes.iframe} />
+    </div>
+  )
 }
 
-function IFramesCard({ classes, title, iframeSources, iframeClass, show = false }: IFramesCardProps) {
+function IFramesCard({ classes, title, iframeSources, iframeClass, themeMode, show = false }: IFramesCardProps) {
   const boxClass = iframeClass.includes('iframeFullWidth') ? classes.iframeColumn : classes.iframeRow
   if (!show) return null
   return (
@@ -169,7 +189,7 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, show = false 
       </Typography>
       <Box className={boxClass}>
         {iframeSources.map((item) => (
-          <IFrame id={item.id} src={item.src} className={iframeClass} />
+          <IFrame id={item.id} src={item.src} className={iframeClass} classes={classes} themeMode={themeMode} />
         ))}
       </Box>
     </Grid>
@@ -219,7 +239,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
         show: appsEnabled.grafana,
       },
       {
-        title: 'Cluster Resource Request Commitments',
+        title: 'Cluster Resource Requests Commitment',
         iframeClass: classes.iframeLarge,
         iframeSources: [
           { id: '4', src: `${clusterResourceUtilization}2` },
@@ -287,6 +307,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
               iframeSources={item.iframeSources}
               iframeClass={item.iframeClass}
               show={item.show}
+              themeMode={theme.palette.mode}
             />
           ))}
         </Box>
