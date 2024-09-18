@@ -239,7 +239,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
         show: appsEnabled.grafana,
       },
       {
-        title: 'Cluster Resource Request Commitments',
+        title: 'Cluster Resource Requests Commitment',
         iframeClass: classes.iframeLarge,
         iframeSources: [
           { id: '4', src: `${clusterResourceUtilization}2` },
