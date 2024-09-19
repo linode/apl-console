@@ -195,6 +195,28 @@ const injectedRtkApi = api.injectEndpoints({
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
       query: (queryArg) => ({ url: `/cloudtty`, method: 'DELETE', body: queryArg.body }),
     }),
+    getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
+      query: () => ({ url: `/users` }),
+    }),
+    getTeamUsers: build.query<GetTeamUsersApiResponse, GetTeamUsersApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users` }),
+    }),
+    createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users/${queryArg.userId}`, method: 'DELETE' }),
+    }),
+    getUser: build.query<GetUserApiResponse, GetUserApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users/${queryArg.userId}` }),
+    }),
+    editUser: build.mutation<EditUserApiResponse, EditUserApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/users/${queryArg.userId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
       query: () => ({ url: `/projects` }),
     }),
@@ -367,7 +389,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -400,7 +421,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -466,7 +486,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -533,7 +552,6 @@ export type CreateTeamApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -599,7 +617,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -668,7 +685,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -737,7 +753,6 @@ export type EditTeamApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -826,7 +841,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -880,7 +894,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -934,7 +947,6 @@ export type CreateServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -994,7 +1006,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1050,7 +1061,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1106,7 +1116,6 @@ export type EditServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2405,6 +2414,78 @@ export type DeleteCloudttyApiArg = {
     sub?: string
   }
 }
+export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  email: string
+}[]
+export type GetAllUsersApiArg = void
+export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team users configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  email: string
+}[]
+export type GetTeamUsersApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  email: string
+}
+export type CreateUserApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** User object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    email: string
+  }
+}
+export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
+export type DeleteUserApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the user */
+  userId: string
+}
+export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  email: string
+}
+export type GetUserApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the user */
+  userId: string
+}
+export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
+  id?: string
+  teamId?: string
+  name: string
+  email: string
+}
+export type EditUserApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the user */
+  userId: string
+  /** User object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    email: string
+  }
+}
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
   id?: string
   teamId?: string
@@ -2523,7 +2604,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2658,7 +2738,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2796,7 +2875,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2934,7 +3012,6 @@ export type CreateProjectApiArg = {
                 hasCert?: boolean
                 certSelect?: boolean
                 certName?: string
-                certArn?: string
                 headers?: {
                   response?: {
                     set?: {
@@ -3076,7 +3153,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3216,7 +3292,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3665,7 +3740,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -3700,12 +3774,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'linode' | 'custom'
-    apiName?: string
     apiServer?: string
-    owner?: string
-    region?: string
     k8sContext?: string
+    provider?: 'linode' | 'custom'
   }
   platformBackups?: {
     database?: {
@@ -3727,81 +3798,31 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
     persistentVolumes?: {
       linodeApiToken?: string
-      gitea?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
     }
   }
   obj?: {
-    bucket?: {
-      loki?: string
-      cnpg?: string
-      velero?: string
-      harbor?: string
-      tempo?: string
-    }
     provider?:
       | {
           type?: 'disabled'
         }
       | {
-          type: 'minioLocal'
+          type?: 'minioLocal'
         }
       | {
           linode: {
             region: string
             accessKeyId: string
             secretAccessKey: string
+            buckets?: {
+              loki?: string
+              cnpg?: string
+              velero?: string
+              harbor?: string
+              tempo?: string
+            }
           }
           type: 'linode'
         }
-  }
-  home?: {
-    repeatInterval?: string
-    groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
-    slack?: {
-      channel?: string
-      channelCrit?: string
-      url?: string
-    }
-    msteams?: {
-      highPrio?: string
-      lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
-    }
-  }
-  azure?: {
-    appgw?: {
-      isManaged?: boolean
-    }
-    storageType?: {
-      fast?: string
-      standard?: string
-    }
   }
   dns?: {
     zones?: string[]
@@ -3809,6 +3830,14 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     zoneIdFilters?: string[]
     provider?:
       | (object | null)
+      | {
+          akamai?: {
+            host: string
+            accessToken: string
+            clientToken: string
+            clientSecret: string
+          }
+        }
       | {
           aws: {
             credentials?: {
@@ -3853,11 +3882,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
-          civo: {
-            apiToken?: string
-          }
-        }
-      | {
           linode: {
             apiToken?: string
           }
@@ -3880,22 +3904,22 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     platformClass?: {
       className?: string
     } & {
-      network?: 'public' | 'private'
       loadBalancerIP?: string
-      loadBalancerRG?: string
-      loadBalancerSubnet?: string
-      sourceIpAddressFiltering?: string
       entrypoint?: string
+      annotations?: {
+        key?: string
+        value?: string
+      }[]
     }
     classes?: ({
       className?: string
     } & {
-      network?: 'public' | 'private'
       loadBalancerIP?: string
-      loadBalancerRG?: string
-      loadBalancerSubnet?: string
-      sourceIpAddressFiltering?: string
       entrypoint?: string
+      annotations?: {
+        key?: string
+        value?: string
+      }[]
     })[]
   }
   kms?: {
@@ -3952,7 +3976,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     } | null
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
-    isHomeMonitored?: boolean
     isMultitenant?: boolean
     nodeSelector?: {
       name?: string
@@ -3984,7 +4007,6 @@ export type EditSettingsApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -4019,12 +4041,9 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'linode' | 'custom'
-      apiName?: string
       apiServer?: string
-      owner?: string
-      region?: string
       k8sContext?: string
+      provider?: 'linode' | 'custom'
     }
     platformBackups?: {
       database?: {
@@ -4046,81 +4065,31 @@ export type EditSettingsApiArg = {
       }
       persistentVolumes?: {
         linodeApiToken?: string
-        gitea?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
       }
     }
     obj?: {
-      bucket?: {
-        loki?: string
-        cnpg?: string
-        velero?: string
-        harbor?: string
-        tempo?: string
-      }
       provider?:
         | {
             type?: 'disabled'
           }
         | {
-            type: 'minioLocal'
+            type?: 'minioLocal'
           }
         | {
             linode: {
               region: string
               accessKeyId: string
               secretAccessKey: string
+              buckets?: {
+                loki?: string
+                cnpg?: string
+                velero?: string
+                harbor?: string
+                tempo?: string
+              }
             }
             type: 'linode'
           }
-    }
-    home?: {
-      repeatInterval?: string
-      groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
-      slack?: {
-        channel?: string
-        channelCrit?: string
-        url?: string
-      }
-      msteams?: {
-        highPrio?: string
-        lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
-      }
-    }
-    azure?: {
-      appgw?: {
-        isManaged?: boolean
-      }
-      storageType?: {
-        fast?: string
-        standard?: string
-      }
     }
     dns?: {
       zones?: string[]
@@ -4128,6 +4097,14 @@ export type EditSettingsApiArg = {
       zoneIdFilters?: string[]
       provider?:
         | (object | null)
+        | {
+            akamai?: {
+              host: string
+              accessToken: string
+              clientToken: string
+              clientSecret: string
+            }
+          }
         | {
             aws: {
               credentials?: {
@@ -4172,11 +4149,6 @@ export type EditSettingsApiArg = {
             }
           }
         | {
-            civo: {
-              apiToken?: string
-            }
-          }
-        | {
             linode: {
               apiToken?: string
             }
@@ -4199,22 +4171,22 @@ export type EditSettingsApiArg = {
       platformClass?: {
         className?: string
       } & {
-        network?: 'public' | 'private'
         loadBalancerIP?: string
-        loadBalancerRG?: string
-        loadBalancerSubnet?: string
-        sourceIpAddressFiltering?: string
         entrypoint?: string
+        annotations?: {
+          key?: string
+          value?: string
+        }[]
       }
       classes?: ({
         className?: string
       } & {
-        network?: 'public' | 'private'
         loadBalancerIP?: string
-        loadBalancerRG?: string
-        loadBalancerSubnet?: string
-        sourceIpAddressFiltering?: string
         entrypoint?: string
+        annotations?: {
+          key?: string
+          value?: string
+        }[]
       })[]
     }
     kms?: {
@@ -4271,7 +4243,6 @@ export type EditSettingsApiArg = {
       } | null
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
-      isHomeMonitored?: boolean
       isMultitenant?: boolean
       nodeSelector?: {
         name?: string
@@ -4383,6 +4354,12 @@ export const {
   useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,
+  useGetAllUsersQuery,
+  useGetTeamUsersQuery,
+  useCreateUserMutation,
+  useDeleteUserMutation,
+  useGetUserQuery,
+  useEditUserMutation,
   useGetAllProjectsQuery,
   useGetTeamProjectsQuery,
   useCreateProjectMutation,

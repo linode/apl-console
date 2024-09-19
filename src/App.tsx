@@ -43,12 +43,14 @@ import Netpol from 'pages/Netpol'
 import Build from 'pages/Build'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
+import Users from 'pages/Users'
 import Projects from 'pages/Projects'
 import { CollapseDrawerProvider } from 'contexts/CollapseDrawerContext'
 import { ShellDrawerProvider } from 'contexts/ShellDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
+import User from 'pages/User'
 import Project from 'pages/Project'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
@@ -113,6 +115,7 @@ function App() {
                                     <PrivateRoute path='/sealed-secrets' component={SealedSecrets} adminRoute exact />
                                     <PrivateRoute path='/workloads' component={Workloads} adminRoute exact />
                                     <PrivateRoute path='/settings' component={SettingsOverview} adminRoute exact />
+                                    <PrivateRoute path='/users' component={Users} adminRoute exact />
                                     <PrivateRoute path='/projects' component={Projects} adminRoute exact />
                                     <PrivateRoute path='/builds' component={Builds} adminRoute exact />
                                     <PrivateRoute path='/settings/:settingId' component={Setting} exact />
@@ -127,6 +130,7 @@ function App() {
                                       exact
                                     />
                                     <PrivateRoute path='/teams/:teamId/create-service' component={Service} exact />
+                                    <PrivateRoute path='/teams/:teamId/create-user' component={User} exact />
                                     <PrivateRoute path='/teams/:teamId/create-project' component={Project} exact />
                                     <PrivateRoute path='/teams/:teamId/create-build' component={Build} exact />
                                     <PrivateRoute path='/teams/:teamId/secrets' component={Secrets} exact />
@@ -145,6 +149,8 @@ function App() {
                                     <PrivateRoute path='/teams/:teamId/backups/:backupId' component={Backup} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols' component={Netpols} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols/:netpolId' component={Netpol} exact />
+                                    <PrivateRoute path='/teams/:teamId/users' component={Users} exact />
+                                    <PrivateRoute path='/teams/:teamId/users/:userId' component={User} exact />
                                     <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                     <PrivateRoute path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                     {/* <Route path='/teams/:teamId/builds' component={Builds} exact /> */}

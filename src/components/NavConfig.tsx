@@ -35,6 +35,7 @@ export default function NavConfig() {
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
         // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
+        { title: 'User Management', path: '/users', icon: getIcon('teams_icon.svg') },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
@@ -59,6 +60,7 @@ export default function NavConfig() {
           path: `/catalogs/${oboTeamId}`,
           icon: getIcon('developer_guide_icon.svg'),
         },
+        { title: 'User Management', path: `/teams/${oboTeamId}/users`, icon: getIcon('teams_icon.svg') },
         {
           title: 'Projects',
           path: `/teams/${oboTeamId}/projects`,
