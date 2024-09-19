@@ -2419,6 +2419,8 @@ export type GetAllUsersApiResponse = /** status 200 Successfully obtained all us
   teamId?: string
   name: string
   email: string
+  firstName: string
+  lastName: string
 }[]
 export type GetAllUsersApiArg = void
 export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team users configuration */ {
@@ -2426,6 +2428,8 @@ export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team 
   teamId?: string
   name: string
   email: string
+  firstName: string
+  lastName: string
 }[]
 export type GetTeamUsersApiArg = {
   /** ID of team to return */
@@ -2436,6 +2440,8 @@ export type CreateUserApiResponse = /** status 200 Successfully stored user conf
   teamId?: string
   name: string
   email: string
+  firstName: string
+  lastName: string
 }
 export type CreateUserApiArg = {
   /** ID of team to return */
@@ -2446,6 +2452,8 @@ export type CreateUserApiArg = {
     teamId?: string
     name: string
     email: string
+    firstName: string
+    lastName: string
   }
 }
 export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
@@ -2460,6 +2468,8 @@ export type GetUserApiResponse = /** status 200 Successfully obtained user confi
   teamId?: string
   name: string
   email: string
+  firstName: string
+  lastName: string
 }
 export type GetUserApiArg = {
   /** ID of team to return */
@@ -2472,6 +2482,8 @@ export type EditUserApiResponse = /** status 200 Successfully edited a team user
   teamId?: string
   name: string
   email: string
+  firstName: string
+  lastName: string
 }
 export type EditUserApiArg = {
   /** ID of team to return */
@@ -2484,6 +2496,8 @@ export type EditUserApiArg = {
     teamId?: string
     name: string
     email: string
+    firstName: string
+    lastName: string
   }
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
