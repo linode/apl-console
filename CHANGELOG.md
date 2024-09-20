@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-rc.0](https://github.com/linode/apl-console/compare/v2.8.0...v3.0.0-rc.0) (2024-09-18)
+
+
+### Features
+
+* added values schema to session ([#424](https://github.com/linode/apl-console/issues/424)) ([732bb9c](https://github.com/linode/apl-console/commit/732bb9cdfe381c0a948c5f1099224c81d7d65aa1))
+* apl-console linode dockerhub ([#423](https://github.com/linode/apl-console/issues/423)) ([bb97a25](https://github.com/linode/apl-console/commit/bb97a2543881948178987519b98a220a75e8afc9))
+* app page linode styling ([#412](https://github.com/linode/apl-console/issues/412)) ([c40fc15](https://github.com/linode/apl-console/commit/c40fc15ad40f1a3f4acb0c9c56c2074037769642))
+* app page restyling ([#435](https://github.com/linode/apl-console/issues/435)) ([71646a3](https://github.com/linode/apl-console/commit/71646a3eb754ca64744508973e5068c94e811b2b))
+* argocd always enabled ([#422](https://github.com/linode/apl-console/issues/422)) ([34318b7](https://github.com/linode/apl-console/commit/34318b76a85b4c17d04d10afe926a3c0b77096a0))
+* kyverno policies ([#379](https://github.com/linode/apl-console/issues/379)) ([0adc5d3](https://github.com/linode/apl-console/commit/0adc5d3506b46954861f6aac21c45965196c6ed2))
+* minimal rebranding ([#411](https://github.com/linode/apl-console/issues/411)) ([729e71c](https://github.com/linode/apl-console/commit/729e71ca8a8bc849828f06bb19c932a43a06652c))
+* one backend obj for all apps ([#415](https://github.com/linode/apl-console/issues/415)) ([0ddca87](https://github.com/linode/apl-console/commit/0ddca87eb6e5fee86bdee4ab45d29a033e9b7f29))
+* one values schema ([#425](https://github.com/linode/apl-console/issues/425)) ([3903592](https://github.com/linode/apl-console/commit/3903592a7eaf2803383d2f5376ed263ff1963283))
+* remove shortcuts ([#414](https://github.com/linode/apl-console/issues/414)) ([f5843dd](https://github.com/linode/apl-console/commit/f5843dd934f876e33ea0b10a2c66c0713b140a88))
+* removed license ([#408](https://github.com/linode/apl-console/issues/408)) ([8a70e9b](https://github.com/linode/apl-console/commit/8a70e9b4888715d241d7c6cf476ffe6a0ec98451))
+* removing hashicorp vault ([#410](https://github.com/linode/apl-console/issues/410)) ([55efc79](https://github.com/linode/apl-console/commit/55efc799f940ebad3b3f6fe77bfb66fc450043a3))
+* simplify app values ([#419](https://github.com/linode/apl-console/issues/419)) ([8cf2b80](https://github.com/linode/apl-console/commit/8cf2b80e38eb4a3953dde4675e3069d732db7db5))
+* update sealed secret page to support readability of the secret values ([#407](https://github.com/linode/apl-console/issues/407)) ([d4b832f](https://github.com/linode/apl-console/commit/d4b832f6ff81ed6b3c7e31708efee537175babb6))
+* update team alertmanager settings ([#409](https://github.com/linode/apl-console/issues/409)) ([73e4743](https://github.com/linode/apl-console/commit/73e4743c821f75ab5c3aff1f87bb6a45e1d8eb68))
+* validate values editor ([#428](https://github.com/linode/apl-console/issues/428)) ([a390be3](https://github.com/linode/apl-console/commit/a390be3d4781f9ec5e54601f1b9de9331dd49d14))
+
+
+### Bug Fixes
+
+* added iframe overlay to 'remove' border ([#438](https://github.com/linode/apl-console/issues/438)) ([b3d81b3](https://github.com/linode/apl-console/commit/b3d81b31a7f8f446b78bc0d3b81a8943d890e1e1))
+* alerts settings ([#437](https://github.com/linode/apl-console/issues/437)) ([3ffba43](https://github.com/linode/apl-console/commit/3ffba431d468bb2977e9627ef9697ec1d4af6bb3))
+* apl-chart name substring removal ([#433](https://github.com/linode/apl-console/issues/433)) ([dbd14ae](https://github.com/linode/apl-console/commit/dbd14ae475352750486e60fb2b8515c7accc5adb))
+* change tab name in login page and clean up keycloak folder ([#436](https://github.com/linode/apl-console/issues/436)) ([4a48b96](https://github.com/linode/apl-console/commit/4a48b960774ce19877a1b7dc92271c0833b19fee))
+* ingress app ([#434](https://github.com/linode/apl-console/issues/434)) ([12e22bc](https://github.com/linode/apl-console/commit/12e22bc1c0c9744ecccc4fb66b9669a8e2afb7cc))
+* OIDC no team ([#405](https://github.com/linode/apl-console/issues/405)) ([6e89be6](https://github.com/linode/apl-console/commit/6e89be6b0cd11d95657da4525ba7dd6598926abe))
+* remove co-monitoring from the settings page ([#429](https://github.com/linode/apl-console/issues/429)) ([f738356](https://github.com/linode/apl-console/commit/f738356393f56f7a22f964362a8c9283335379f8))
+* rm azure monitor ([#402](https://github.com/linode/apl-console/issues/402)) ([2ba8151](https://github.com/linode/apl-console/commit/2ba8151ba34665b97b874f8aa6d2c2fe832031f6))
+* rm azure settings ([#417](https://github.com/linode/apl-console/issues/417)) ([77244d8](https://github.com/linode/apl-console/commit/77244d80675750bded50acd6da49ea566a2d6cc9))
+* rm opencost ([#403](https://github.com/linode/apl-console/issues/403)) ([c0f2d6b](https://github.com/linode/apl-console/commit/c0f2d6b9e3f17ab60903baaf31de75034f037a53))
+* rm thanos ([#404](https://github.com/linode/apl-console/issues/404)) ([4b2ddc7](https://github.com/linode/apl-console/commit/4b2ddc720c51e83726653d90e579f1c6eff1b625))
+* sealed secrets ([#430](https://github.com/linode/apl-console/issues/430)) ([d1b0262](https://github.com/linode/apl-console/commit/d1b0262a085581d0909bf491baa5d070928d9f17))
+* sealed secrets opaque fields & dashboard inventory items ([#413](https://github.com/linode/apl-console/issues/413)) ([2a5a6f8](https://github.com/linode/apl-console/commit/2a5a6f8b4d728d95898c95cd85b6283ce4a54eec))
+
+
+### CI
+
+* use new github secrets and variables ([#416](https://github.com/linode/apl-console/issues/416)) ([27c67e4](https://github.com/linode/apl-console/commit/27c67e40179819074faa3ad39ae8ae1dc0a49f20))
+
 ## [2.8.0](https://github.com/redkubes/otomi-stack-web/compare/v2.7.0...v2.8.0) (2024-04-19)
 
 
