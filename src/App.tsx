@@ -96,13 +96,23 @@ function App() {
                                     <Route path='/' component={Dashboard} exact />
                                     <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                     <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                                    <PrivateRoute path='/backups' component={Backups} adminRoute exact />
-                                    <PrivateRoute path='/clusters/:clusterId' component={Cluster} adminRoute exact />
-                                    <PrivateRoute path='/clusters' component={Clusters} adminRoute exact />
-                                    <PrivateRoute path='/create-team' component={Team} adminRoute exact />
-                                    <PrivateRoute path='/netpols' component={Netpols} adminRoute exact />
-                                    <PrivateRoute path='/policies' component={Policies} adminRoute exact />
-                                    <PrivateRoute path='/policies/:policyId' component={Policy} adminRoute exact />
+                                    <PrivateRoute path='/backups' component={Backups} platformAdminRoute exact />
+                                    <PrivateRoute
+                                      path='/clusters/:clusterId'
+                                      component={Cluster}
+                                      platformAdminRoute
+                                      exact
+                                    />
+                                    <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
+                                    <PrivateRoute path='/create-team' component={Team} platformAdminRoute exact />
+                                    <PrivateRoute path='/netpols' component={Netpols} platformAdminRoute exact />
+                                    <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
+                                    <PrivateRoute
+                                      path='/policies/:policyId'
+                                      component={Policy}
+                                      platformAdminRoute
+                                      exact
+                                    />
                                     <PrivateRoute path='/catalogs/:teamId' component={Catalogs} exact />
                                     <PrivateRoute path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
                                     <PrivateRoute
@@ -110,16 +120,26 @@ function App() {
                                       component={Catalog}
                                       exact
                                     />
-                                    <PrivateRoute path='/services' component={Services} adminRoute exact />
-                                    <PrivateRoute path='/secrets' component={Secrets} adminRoute exact />
-                                    <PrivateRoute path='/sealed-secrets' component={SealedSecrets} adminRoute exact />
-                                    <PrivateRoute path='/workloads' component={Workloads} adminRoute exact />
-                                    <PrivateRoute path='/settings' component={SettingsOverview} adminRoute exact />
-                                    <PrivateRoute path='/users' component={Users} adminRoute exact />
-                                    <PrivateRoute path='/projects' component={Projects} adminRoute exact />
-                                    <PrivateRoute path='/builds' component={Builds} adminRoute exact />
+                                    <PrivateRoute path='/services' component={Services} platformAdminRoute exact />
+                                    <PrivateRoute path='/secrets' component={Secrets} platformAdminRoute exact />
+                                    <PrivateRoute
+                                      path='/sealed-secrets'
+                                      component={SealedSecrets}
+                                      platformAdminRoute
+                                      exact
+                                    />
+                                    <PrivateRoute path='/workloads' component={Workloads} platformAdminRoute exact />
+                                    <PrivateRoute
+                                      path='/settings'
+                                      component={SettingsOverview}
+                                      platformAdminRoute
+                                      exact
+                                    />
+                                    <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
+                                    <PrivateRoute path='/projects' component={Projects} platformAdminRoute exact />
+                                    <PrivateRoute path='/builds' component={Builds} platformAdminRoute exact />
                                     <PrivateRoute path='/settings/:settingId' component={Setting} exact />
-                                    <PrivateRoute path='/teams' component={Teams} adminRoute exact />
+                                    <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
                                     <PrivateRoute path='/teams/:teamId' component={Team} exact />
                                     <PrivateRoute path='/teams/:teamId/create-backup' component={Backup} exact />
                                     <PrivateRoute path='/teams/:teamId/create-netpol' component={Netpol} exact />
@@ -149,8 +169,13 @@ function App() {
                                     <PrivateRoute path='/teams/:teamId/backups/:backupId' component={Backup} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols' component={Netpols} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols/:netpolId' component={Netpol} exact />
-                                    <PrivateRoute path='/teams/:teamId/users' component={Users} exact />
-                                    <PrivateRoute path='/teams/:teamId/users/:userId' component={User} exact />
+                                    <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
+                                    <PrivateRoute
+                                      path='/teams/:teamId/users/:userId'
+                                      component={User}
+                                      teamAdminRoute
+                                      exact
+                                    />
                                     <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                     <PrivateRoute path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                     {/* <Route path='/teams/:teamId/builds' component={Builds} exact /> */}
@@ -161,7 +186,12 @@ function App() {
                                     <PrivateRoute path='/teams/:teamId/workloads' component={Workloads} exact />
                                     <PrivateRoute path='/teams/:teamId/services' component={Services} exact />
                                     <PrivateRoute path='/teams/:teamId/services/:serviceId' component={Service} exact />
-                                    <PrivateRoute path='/maintenance' component={Maintenance} adminRoute exact />
+                                    <PrivateRoute
+                                      path='/maintenance'
+                                      component={Maintenance}
+                                      platformAdminRoute
+                                      exact
+                                    />
                                     <Route path='*'>
                                       <Error error={new HttpErrorBadRequest()} />
                                     </Route>

@@ -42,7 +42,7 @@ export default function AccountPopover({ email }: Props) {
   }
   const handleLogout = async () => {
     await del({
-      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams },
+      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
     })
     clearLocalStorage('oboTeamId')
     window.location.href = '/logout-otomi'

@@ -8,6 +8,7 @@ import Form from './rjsf/Form'
 
 export const getUserSchema = (): any => {
   const schema = cloneDeep(getSpec().components.schemas.TeamUser)
+  // console.log('schema', schema)
   return schema
 }
 
@@ -29,6 +30,7 @@ interface Props extends CrudProps {
 
 export default function ({ user, teamId, ...other }: Props): React.ReactElement {
   const { user: sessionUser } = useSession()
+  console.log('sessionUser', sessionUser)
   const [data, setData]: any = useState(user)
   useEffect(() => {
     setData(user)

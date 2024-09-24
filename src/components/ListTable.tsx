@@ -29,7 +29,7 @@ export default function ({
   ...other
 }: ListTableProps): React.ReactElement {
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
     oboTeamId,
   } = useSession()
   const { t } = useTranslation()
@@ -48,7 +48,7 @@ export default function ({
           <Box sx={{ flexGrow: 1 }}>
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
-          {(isAdmin || oboTeamId) && !noCrud && (
+          {(isPlatformAdmin || oboTeamId) && !noCrud && (
             <Box mb={1}>
               <Button
                 variant='contained'

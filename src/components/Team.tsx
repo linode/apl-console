@@ -87,7 +87,7 @@ export default function ({ team, diffReceivers, setDiffReceivers, ...other }: Pr
       onChange={setData}
       uiSchema={uiSchema}
       data={formData}
-      deleteDisabled={!user.isAdmin}
+      deleteDisabled={!user.isPlatformAdmin}
       resourceType='Team'
       {...other}
     />

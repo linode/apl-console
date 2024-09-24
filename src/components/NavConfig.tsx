@@ -19,6 +19,10 @@ export default function NavConfig() {
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
   const dashboard =
     oboTeamId !== 'admin' ? [{ title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') }] : []
+  const userManagement =
+    user.isPlatformAdmin || user.isTeamAdmin
+      ? [{ title: 'User Management', path: `/teams/${oboTeamId}/users`, icon: getIcon('users_icon.svg') }]
+      : []
 
   return [
     {
@@ -35,7 +39,7 @@ export default function NavConfig() {
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
         // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
-        { title: 'User Management', path: '/users', icon: getIcon('teams_icon.svg') },
+        { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg') },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
@@ -60,7 +64,7 @@ export default function NavConfig() {
           path: `/catalogs/${oboTeamId}`,
           icon: getIcon('developer_guide_icon.svg'),
         },
-        { title: 'User Management', path: `/teams/${oboTeamId}/users`, icon: getIcon('teams_icon.svg') },
+        ...userManagement,
         {
           title: 'Projects',
           path: `/teams/${oboTeamId}/projects`,

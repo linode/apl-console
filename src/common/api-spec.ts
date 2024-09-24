@@ -53,7 +53,7 @@ export const applyAclToUiSchema = (
   teamId: string,
   schemaName: string,
 ): void => {
-  if (user.isAdmin) return
+  if (user.isPlatformAdmin) return
 
   get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
     set(uiSchema, `${path}.ui:readonly`, true)

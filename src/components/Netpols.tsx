@@ -28,7 +28,7 @@ interface Props {
 export default function ({ netpols, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -36,7 +36,7 @@ export default function ({ netpols, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: getNetpolLink(isAdmin, oboTeamId),
+      renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
     },
     {
       id: 'type',

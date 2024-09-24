@@ -3705,7 +3705,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   user?: {
     name: string
     email: string
-    isAdmin: boolean
+    isPlatformAdmin: boolean
+    isTeamAdmin: boolean
     authz: {
       [key: string]: {
         deniedAttributes: {
@@ -3939,6 +3940,13 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   kms?: {
     sops?:
       | (object | null)
+      | {
+          provider?: 'age'
+          age: {
+            publicKey: string
+            privateKey: string
+          }
+        }
       | {
           provider?: 'aws'
           aws: {
@@ -4206,6 +4214,13 @@ export type EditSettingsApiArg = {
     kms?: {
       sops?:
         | (object | null)
+        | {
+            provider?: 'age'
+            age: {
+              publicKey: string
+              privateKey: string
+            }
+          }
         | {
             provider?: 'aws'
             aws: {

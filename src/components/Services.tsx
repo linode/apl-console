@@ -42,7 +42,7 @@ interface Props {
 // TODO: https://github.com/redkubes/otomi-core/discussions/475
 export default function ({ services, teamId }: Props): React.ReactElement {
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
     oboTeamId,
   } = useSession()
   const { t } = useTranslation()
@@ -52,7 +52,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: getServiceLink(isAdmin, oboTeamId),
+      renderer: getServiceLink(isPlatformAdmin, oboTeamId),
     },
     {
       id: 'ingressClass',

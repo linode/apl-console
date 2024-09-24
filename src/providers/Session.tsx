@@ -45,7 +45,8 @@ const Context = React.createContext<SessionContext>({
     teams: undefined,
     name: undefined,
     email: undefined,
-    isAdmin: undefined,
+    isPlatformAdmin: undefined,
+    isTeamAdmin: undefined,
     roles: undefined,
     authz: undefined,
     sub: undefined,
@@ -125,7 +126,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     [appsEnabled, oboTeamId, session, settings],
   )
   const { corrupt, editor, user } = ctx
-  const { email, isAdmin, teams } = user || {}
+  const { email, isPlatformAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
@@ -277,15 +278,15 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  if (!session.user.isAdmin && session.user.teams.length === 0)
+  if (!session.user.isPlatformAdmin && session.user.teams.length === 0)
     return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
-  if (!isAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
+  if (!isPlatformAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
   if (!oboTeamId) {
-    if (isAdmin) setOboTeamId('admin')
-    else if (!isAdmin) {
+    if (isPlatformAdmin) setOboTeamId('admin')
+    else if (!isPlatformAdmin) {
       if (teams.length) {
         setOboTeamId(teams[0])
         return <LoadingScreen />
