@@ -42,6 +42,11 @@ export class ApiErrorGatewayTimeout extends ApiError {
     super('API error', 504, { title: 'API', message: 'The api could not be reached' })
   }
 }
+export class ApiErrorAlreadyExist extends ApiError {
+  constructor(message: string) {
+    super('API error', 409, { title: 'API', message })
+  }
+}
 export class ApiErrorUnauthorized extends ApiError {
   constructor() {
     super('API error', 403, {
