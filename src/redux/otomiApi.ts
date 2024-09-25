@@ -2421,6 +2421,8 @@ export type GetAllUsersApiResponse = /** status 200 Successfully obtained all us
   email: string
   firstName: string
   lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
 }[]
 export type GetAllUsersApiArg = void
 export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team users configuration */ {
@@ -2430,6 +2432,8 @@ export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team 
   email: string
   firstName: string
   lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
 }[]
 export type GetTeamUsersApiArg = {
   /** ID of team to return */
@@ -2442,6 +2446,8 @@ export type CreateUserApiResponse = /** status 200 Successfully stored user conf
   email: string
   firstName: string
   lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
 }
 export type CreateUserApiArg = {
   /** ID of team to return */
@@ -2454,6 +2460,8 @@ export type CreateUserApiArg = {
     email: string
     firstName: string
     lastName: string
+    isPlatformAdmin: boolean
+    isTeamAdmin: boolean
   }
 }
 export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
@@ -2470,6 +2478,8 @@ export type GetUserApiResponse = /** status 200 Successfully obtained user confi
   email: string
   firstName: string
   lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
 }
 export type GetUserApiArg = {
   /** ID of team to return */
@@ -2484,6 +2494,8 @@ export type EditUserApiResponse = /** status 200 Successfully edited a team user
   email: string
   firstName: string
   lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
 }
 export type EditUserApiArg = {
   /** ID of team to return */
@@ -2498,6 +2510,8 @@ export type EditUserApiArg = {
     email: string
     firstName: string
     lastName: string
+    isPlatformAdmin: boolean
+    isTeamAdmin: boolean
   }
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {

@@ -8,7 +8,6 @@ import Form from './rjsf/Form'
 
 export const getUserSchema = (): any => {
   const schema = cloneDeep(getSpec().components.schemas.TeamUser)
-  // console.log('schema', schema)
   return schema
 }
 
@@ -16,6 +15,7 @@ export const getUserUiSchema = (user: GetSessionApiResponse['user'], teamId: str
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
+    isPlatformAdmin: !user.isPlatformAdmin && { 'ui:widget': 'hidden' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'user')
@@ -30,7 +30,6 @@ interface Props extends CrudProps {
 
 export default function ({ user, teamId, ...other }: Props): React.ReactElement {
   const { user: sessionUser } = useSession()
-  console.log('sessionUser', sessionUser)
   const [data, setData]: any = useState(user)
   useEffect(() => {
     setData(user)
