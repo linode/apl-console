@@ -2417,7 +2417,7 @@ export type DeleteCloudttyApiArg = {
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   teamId?: string
-  name: string
+  username: string
   email: string
   firstName: string
   lastName: string
@@ -2428,7 +2428,7 @@ export type GetAllUsersApiArg = void
 export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team users configuration */ {
   id?: string
   teamId?: string
-  name: string
+  username: string
   email: string
   firstName: string
   lastName: string
@@ -2442,7 +2442,7 @@ export type GetTeamUsersApiArg = {
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
   id?: string
   teamId?: string
-  name: string
+  username: string
   email: string
   firstName: string
   lastName: string
@@ -2456,7 +2456,7 @@ export type CreateUserApiArg = {
   body: {
     id?: string
     teamId?: string
-    name: string
+    username: string
     email: string
     firstName: string
     lastName: string
@@ -2474,7 +2474,7 @@ export type DeleteUserApiArg = {
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
   id?: string
   teamId?: string
-  name: string
+  username: string
   email: string
   firstName: string
   lastName: string
@@ -2490,7 +2490,7 @@ export type GetUserApiArg = {
 export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   teamId?: string
-  name: string
+  username: string
   email: string
   firstName: string
   lastName: string
@@ -2506,7 +2506,7 @@ export type EditUserApiArg = {
   body: {
     id?: string
     teamId?: string
-    name: string
+    username: string
     email: string
     firstName: string
     lastName: string

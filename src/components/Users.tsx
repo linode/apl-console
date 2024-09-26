@@ -10,19 +10,17 @@ import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
 
 interface Row {
-  teamId: string
-  tag: string
   id: string
-  name: string
-  trigger: boolean
-  mode: { type: string }
+  teamId: string
+  username: string
+  email: string
 }
 
 const getUserLink = (row: Row) => {
   const path = `/teams/${row.teamId}/users/${encodeURIComponent(row.id)}`
   return (
-    <RLink to={path} label={row.name}>
-      {row.name}
+    <RLink to={path} label={row.username}>
+      {row.username}
     </RLink>
   )
 }
@@ -33,8 +31,8 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
   ###########################################################
   You can start using APL. Visit: https://${hostname}
   Sign in to the web console with the following credentials:
-    - Username: ${row.name}
-    - Password: ${row.name}@APL
+    - Username: ${row.username}
+    - Password: ${row.username}@APL
   You will be prompted to change your password after the first login.
   ###########################################################
   `
@@ -75,8 +73,8 @@ export default function ({ users, teamId }: Props): React.ReactElement {
   // END HOOKS
   const headCells: HeadCell[] = [
     {
-      id: 'name',
-      label: t('Name'),
+      id: 'username',
+      label: t('Username'),
       renderer: (row: Row) => getUserLink(row),
     },
     {
