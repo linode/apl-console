@@ -12,7 +12,7 @@ export default function ErrorProvider({ children }: Props): React.ReactElement {
   if (!isError) return children
   const error =
     isError.status === 409
-      ? new ApiErrorAlreadyExists((isError?.data?.error as string) || 'Resource name already exists')
+      ? new ApiErrorAlreadyExists((isError?.data?.error as string) || 'Resource already exists')
       : new ApiErrorGatewayTimeout()
   return <ErrorComponent error={error} />
 }
