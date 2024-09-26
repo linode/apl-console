@@ -7,7 +7,7 @@ import { GetSessionApiResponse, GetUserApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
 export const getUserSchema = (): any => {
-  const schema = cloneDeep(getSpec().components.schemas.TeamUser)
+  const schema = cloneDeep(getSpec().components.schemas.User)
   return schema
 }
 
