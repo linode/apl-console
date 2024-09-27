@@ -6,8 +6,10 @@ import React, { useEffect, useState } from 'react'
 import { GetSessionApiResponse, GetUserApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getUserSchema = (): any => {
-  const schema = cloneDeep(getSpec().components.schemas.User)
+export const getUserSchema = (teamId: string, teamIds: string[]): any => {
+  const schema = cloneDeep(getSpec().components.schemas.User) as any
+  schema.properties.teams.items.enum = [...teamIds]
+  schema.properties.teams.default = [teamId]
   return schema
 }
 
@@ -26,9 +28,10 @@ export const getUserUiSchema = (user: GetSessionApiResponse['user'], teamId: str
 interface Props extends CrudProps {
   teamId: string
   user?: GetUserApiResponse
+  teamIds?: string[]
 }
 
-export default function ({ user, teamId, ...other }: Props): React.ReactElement {
+export default function ({ user, teamId, teamIds, ...other }: Props): React.ReactElement {
   const { user: sessionUser } = useSession()
   const [data, setData]: any = useState(user)
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function ({ user, teamId, ...other }: Props): React.ReactElement 
   }, [user])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getUserSchema()
+  const schema = getUserSchema(teamId, teamIds)
   const uiSchema = getUserUiSchema(sessionUser, teamId)
   return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='User' {...other} />
 }
