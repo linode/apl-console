@@ -126,12 +126,14 @@ const GREY = {
   300: '#DFE3E8',
   400: '#C4CDD5',
   500: '#919EAB',
+  510: '#a3a3ab',
   520: '#515157',
   550: '#3d3d42',
   600: '#343438',
   700: '#33373e',
   800: '#222222',
   900: '#161C24',
+  1000: '#000000',
   500_8: alpha('#919EAB', 0.08),
   500_12: alpha('#919EAB', 0.12),
   500_16: alpha('#919EAB', 0.16),
@@ -187,6 +189,19 @@ const palette = {
     mode: 'light',
     text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
     divider: GREY[500_24],
+    cm: {
+      black: GREY[1000],
+      buttonPrimaryHover: '#009cde',
+      disabledText: '#c2c2ca',
+      grey1: GREY[510],
+      grey6: '#d6d6dd',
+      tableStatic: '#e5e5ea',
+      linkActiveLight: '#0174bc',
+      tagButtonBg: '#edf8ff',
+      tagButtonText: '#343438',
+      tagIcon: '#343438',
+      white: '#343438',
+    },
     background: {
       paper: GREY[0],
       default: GREY[100],
@@ -203,6 +218,19 @@ const palette = {
     mode: 'dark',
     text: { primary: '#fff', secondary: GREY[500], disabled: GREY[300] },
     divider: GREY[520],
+    cm: {
+      black: GREY[0],
+      buttonPrimaryHover: '#96cff0',
+      disabledText: '#c2c2ca',
+      grey1: GREY[510],
+      grey6: '#a3a3ab',
+      tableStatic: '#696970',
+      linkActiveLight: '#5bb3ea',
+      tagButtonBg: '#afdef8',
+      tagButtonText: '#5bb3ea',
+      tagIcon: '#5bb3ea',
+      white: '#ffffff',
+    },
     background: {
       paper: GREY[550],
       default: GREY[600],
@@ -214,6 +242,11 @@ const palette = {
     },
     action: { active: GREY[500], ...COMMON.action },
   },
+} as const
+
+const font = {
+  bold: '"LatoWebBold", sans-serif',
+  normal: '"LatoWeb", sans-serif',
 } as const
 
 export default palette

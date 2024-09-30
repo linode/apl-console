@@ -845,111 +845,77 @@ export type GetTeamServicesApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type CreateServiceApiResponse = /** status 200 Successfully stored service configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  namespace?: string
-  port?: number
+export type CreateServiceApiResponse = {
+  id?: string;
+  teamId?: string;
+  name: string;
+  namespace?: string;
+  port?: number;
   ksvc?: {
-    predeployed?: boolean
-  }
+    predeployed?: boolean;
+  };
   trafficControl?: {
-    enabled?: boolean
-    weightV1?: number
-    weightV2?: number
-  }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain: string
-            domain: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            certArn?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
-}
+    enabled?: boolean;
+    weightV1?: number;
+    weightV2?: number;
+  };
+  ingress: IngressCluster | IngressPublic;
+};
+
+type IngressCluster = {
+  type: 'cluster'; 
+};
+
+type IngressPublic = {
+  type: 'public';
+  ingressClassName?: string;
+  tlsPass?: boolean;
+  useDefaultHost?: boolean;
+  subdomain: string;
+  domain: string;
+  useCname?: boolean;
+  cname?: {
+    domain?: string;
+    tlsSecretName?: string;
+  };
+  paths?: string[];
+  forwardPath?: boolean;
+  hasCert?: boolean;
+  certSelect?: boolean;
+  certName?: string;
+  certArn?: string;
+  headers?: {
+    response?: {
+      set?: {
+        name: string;
+        value: string;
+      }[];
+    };
+  };
+};
 export type CreateServiceApiArg = {
   /** ID of team to return */
-  teamId: string
+  teamId: string;
   /** Service object */
   body: {
-    id?: string
-    teamId?: string
-    name: string
-    namespace?: string
-    port?: number
+    id?: string;
+    teamId?: string;
+    name: string;
+    namespace?: string;
+    port?: number;
     ksvc?: {
-      predeployed?: boolean
-    }
+      predeployed?: boolean;
+    };
     trafficControl?: {
-      enabled?: boolean
-      weightV1?: number
-      weightV2?: number
-    }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain: string
-              domain: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              certArn?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
-  }
-}
+      enabled?: boolean;
+      weightV1?: number;
+      weightV2?: number;
+    };
+    ingress: IngressCluster | IngressPublic;
+  };
+};
+
+
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
   name: string
   ports?: number[]

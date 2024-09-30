@@ -54,7 +54,8 @@ export default function ({ loading, comp, title, children }: Props): React.React
   const theme = useTheme()
   const location = useLocation()
   // grafana iframe background color
-  const dashboardStyle = location.pathname === '/' ? { backgroundColor: 'background.contrast' } : {}
+  const dashboardStyle =
+    location.pathname === '/' ? { backgroundColor: 'background.contrast' } : { backgroundColor: 'transparent' }
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>

@@ -72,6 +72,9 @@ rules:
   import/no-extraneous-dependencies: off
   import/prefer-default-export: off
   no-case-declarations: off
+  no-undef: off
+  no-nested-ternary: off
+  react/no-array-index-key: off
   no-debugger: warn
   no-fallthrough: warn
   no-param-reassign:
