@@ -1,18 +1,17 @@
-import HelpOutline from '@mui/icons-material/HelpOutline'
-import _Button, { ButtonProps as _ButtonProps } from '@mui/material/Button'
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material'
 import { Theme, styled } from '@mui/material/styles'
 import { SxProps } from '@mui/system'
 import * as React from 'react'
 
 import { Tooltip } from '../Tooltip'
-import Reload from '../../assets/icons/reload.svg'
+import Reload from '../../assets/icons/reload'
 
 import { rotate360 } from '../../theme/keyframes/keyframes'
 import { omittedProps } from '../../utils/omittedProps'
 
 export type ButtonType = 'outlined' | 'primary' | 'secondary'
 
-export interface ButtonProps extends _ButtonProps {
+export interface ButtonProps extends MuiButtonProps {
   /**
    * The button variant to render
    * * @default 'secondary'
@@ -36,7 +35,7 @@ export interface ButtonProps extends _ButtonProps {
    */
   loading?: boolean
   /** The `sx` prop can be either object or function */
-  sx?: SxProps<Theme>
+  sx?: any
   /** Pass specific CSS styling for the SVG icon. */
   sxEndIcon?: SxProps<Theme>
   /** Tooltip analytics event */
@@ -45,7 +44,7 @@ export interface ButtonProps extends _ButtonProps {
   tooltipText?: string
 }
 
-const StyledButton = styled(_Button, {
+const StyledButton = styled(MuiButton, {
   shouldForwardProp: omittedProps(['compactX', 'compactY', 'loading', 'buttonType']),
 })<ButtonProps>(({ theme, ...props }) => ({
   ...(props.buttonType === 'secondary' && {
@@ -132,7 +131,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <StyledButton
         {...rest}
         aria-describedby={showTooltip ? 'button-tooltip' : rest['aria-describedby']}
-        endIcon={(showTooltip && <HelpOutline sx={sxEndIcon} />) || rest.endIcon}
+        // endIcon={(showTooltip && <HelpOutline sx={sxEndIcon} />) || rest.endIcon}
         aria-disabled={disabled}
         buttonType={buttonType}
         className={className}

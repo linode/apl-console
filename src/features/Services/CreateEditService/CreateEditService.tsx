@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Button, MenuItem, Typography } from '@mui/material'
+import { Button, Grid, MenuItem } from '@mui/material'
 import { Theme, useTheme } from '@mui/material/styles'
 import { makeStyles } from 'tss-react/mui'
 import { TextField } from 'components/forms/TextField'
@@ -23,6 +23,27 @@ const useStyles = makeStyles()((theme: Theme) => ({
   paperLayout: {
     backgroundColor: 'white',
     padding: '20px',
+  },
+  root: {
+    '& .mlMain': {
+      flexBasis: '100%',
+      maxWidth: '100%',
+      [theme.breakpoints.up('lg')]: {
+        flexBasis: '78.8%',
+        maxWidth: '78.8%',
+      },
+    },
+    '& .mlSidebar': {
+      flexBasis: '100%',
+      maxWidth: '100%',
+      position: 'static',
+      [theme.breakpoints.up('lg')]: {
+        flexBasis: '21.2%',
+        maxWidth: '21.2%',
+        position: 'sticky',
+      },
+      width: '100%',
+    },
   },
 }))
 
@@ -77,17 +98,15 @@ export default function CreateEditService({
 
   /** JSX */
   return (
-    <div>
-      <LandingHeader
-        docsLabel='Docs'
-        docsLink='https://www.linode.com/docs/kubernetes/deploy-and-manage-a-cluster-with-linode-kubernetes-engine-a-tutorial/'
-        title='Create Cluster'
-      />
+    <Grid className={classes.root}>
       <PaperLayout>
+        <LandingHeader
+          docsLabel='Docs'
+          docsLink='https://www.linode.com/docs/kubernetes/deploy-and-manage-a-cluster-with-linode-kubernetes-engine-a-tutorial/'
+          title='Create Cluster'
+        />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className={classes.paperLayout}>
-            <Typography variant='h5'>Create Service</Typography>
-
             <TextField
               label='Service Name'
               fullWidth
@@ -125,6 +144,6 @@ export default function CreateEditService({
           </form>
         </FormProvider>
       </PaperLayout>
-    </div>
+    </Grid>
   )
 }

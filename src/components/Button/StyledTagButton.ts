@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles'
 
 import { omittedProps } from '../../utils/omittedProps'
-import Plus from '../../assets/icons/plusSign.svg'
+import Plus from '../../assets/icons/plusSign'
 
 import { Button } from './Button'
 
@@ -36,11 +36,7 @@ export const StyledTagButton = styled(Button, {
 export const StyledPlusIcon = styled(Plus, {
   label: 'StyledPlusIcon',
 })(({ theme, ...props }) => ({
-  color: props.disabled
-    ? theme.palette.mode === 'dark'
-      ? '#5c6470'
-      : theme.palette.cm.disabledText
-    : theme.palette.cm.tagIcon,
+  color: theme.palette.cm.tagIcon,
   height: '10px',
   width: '10px',
 }))

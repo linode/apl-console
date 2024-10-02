@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom'
 
 import type { LinkProps as _LinkProps } from 'react-router-dom'
 import { childrenContainsNoText, flattenChildrenIntoAriaLabel, opensInNewTab } from '../../utils/link'
-import ExternalLinkIcon from '../../assets/icons/external-link.svg'
+import ExternalLinkIcon from '../../assets/icons/external-link'
 import { useStyles } from './LinkUrl.styles'
 import { omitProps } from '../../utils/omittedProps'
 
