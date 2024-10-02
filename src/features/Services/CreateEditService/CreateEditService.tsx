@@ -1,9 +1,12 @@
 // @ts-nocheck
-import { Button, Grid, MenuItem } from '@mui/material'
+import { Button, Grid, MenuItem, styled } from '@mui/material'
 import { Theme, useTheme } from '@mui/material/styles'
 import { makeStyles } from 'tss-react/mui'
+import { Checkbox } from 'components/cmCheckbox/Checkbox'
 import { TextField } from 'components/forms/TextField'
 import { LandingHeader } from 'components/LandingHeader'
+import { FormControlLabel } from 'components/FormControlLabel'
+import { Typography } from 'components/Typography'
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -43,6 +46,27 @@ const useStyles = makeStyles()((theme: Theme) => ({
         position: 'sticky',
       },
       width: '100%',
+    },
+  },
+}))
+const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ theme }) => ({
+  marginTop: -8,
+  paddingLeft: `calc(${theme.spacing(2)} + 18px)`, // 34,
+  [theme.breakpoints.up('md')]: {
+    paddingLeft: `calc(${theme.spacing(4)} + 18px)`, // 50
+  },
+}))
+
+const StyledFormControlLabel = styled(FormControlLabel, {
+  label: 'StyledFormControlLabel',
+})(({ theme }) => ({
+  '& > span:last-child': {
+    color: theme.palette.cm.headline,
+    fontFamily: theme.font.bold,
+    fontSize: '1rem',
+    lineHeight: '1.2em',
+    [theme.breakpoints.up('md')]: {
+      marginLeft: theme.spacing(2),
     },
   },
 }))
@@ -137,6 +161,15 @@ export default function CreateEditService({
             </TextField>
 
             {ingressType === 'public' && <PublicIngressForm />}
+
+            <StyledFormControlLabel
+              control={<Checkbox checked data-qa-check-private-ip data-testid='private_ip' disabled={false} />}
+              label='Private IP'
+            />
+            <StyledTypography data-testid='private-ip-contextual-copy' variant='body1'>
+              Use Private IP for a backend node to a NodeBalancer. Use VPC instead for private communication between
+              your Linodes.
+            </StyledTypography>
 
             <Button type='submit' variant='contained' color='primary'>
               Submit
