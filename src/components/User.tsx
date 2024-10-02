@@ -9,7 +9,6 @@ import Form from './rjsf/Form'
 export const getUserSchema = (teamId: string, teamIds: string[]): any => {
   const schema = cloneDeep(getSpec().components.schemas.User) as any
   schema.properties.teams.items.enum = [...teamIds]
-  schema.properties.teams.default = [teamId]
   return schema
 }
 
