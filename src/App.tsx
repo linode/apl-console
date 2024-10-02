@@ -136,6 +136,8 @@ function App() {
                                       exact
                                     />
                                     <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
+                                    <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
+                                    <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
                                     <PrivateRoute path='/projects' component={Projects} platformAdminRoute exact />
                                     <PrivateRoute path='/builds' component={Builds} platformAdminRoute exact />
                                     <PrivateRoute path='/settings/:settingId' component={Setting} exact />
@@ -169,13 +171,6 @@ function App() {
                                     <PrivateRoute path='/teams/:teamId/backups/:backupId' component={Backup} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols' component={Netpols} exact />
                                     <PrivateRoute path='/teams/:teamId/netpols/:netpolId' component={Netpol} exact />
-                                    <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
-                                    <PrivateRoute
-                                      path='/teams/:teamId/users/:userId'
-                                      component={User}
-                                      teamAdminRoute
-                                      exact
-                                    />
                                     <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                     <PrivateRoute path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                     {/* <Route path='/teams/:teamId/builds' component={Builds} exact /> */}

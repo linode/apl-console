@@ -198,24 +198,20 @@ const injectedRtkApi = api.injectEndpoints({
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/users` }),
     }),
-    getTeamUsers: build.query<GetTeamUsersApiResponse, GetTeamUsersApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users` }),
-    }),
     createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users`, method: 'POST', body: queryArg.body }),
-    }),
-    deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users/${queryArg.userId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/users`, method: 'POST', body: queryArg.body }),
     }),
     getUser: build.query<GetUserApiResponse, GetUserApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users/${queryArg.userId}` }),
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}` }),
     }),
     editUser: build.mutation<EditUserApiResponse, EditUserApiArg>({
-      query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/users/${queryArg.userId}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'PUT', body: queryArg.body }),
+    }),
+    deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'DELETE' }),
+    }),
+    editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
       query: () => ({ url: `/projects` }),
@@ -413,7 +409,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -478,7 +473,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -544,7 +538,6 @@ export type CreateTeamApiArg = {
     password?: string
     managedMonitoring?: {
       grafana?: boolean
-      prometheus?: boolean
       alertmanager?: boolean
       private?: boolean
     }
@@ -609,7 +602,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -677,7 +669,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -745,7 +736,6 @@ export type EditTeamApiArg = {
     password?: string
     managedMonitoring?: {
       grafana?: boolean
-      prometheus?: boolean
       alertmanager?: boolean
       private?: boolean
     }
@@ -2417,102 +2407,105 @@ export type DeleteCloudttyApiArg = {
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   teamId?: string
-  username: string
   email: string
   firstName: string
   lastName: string
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
+  teams?: string[]
 }[]
 export type GetAllUsersApiArg = void
-export type GetTeamUsersApiResponse = /** status 200 Successfully obtained team users configuration */ {
-  id?: string
-  teamId?: string
-  username: string
-  email: string
-  firstName: string
-  lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
-}[]
-export type GetTeamUsersApiArg = {
-  /** ID of team to return */
-  teamId: string
-}
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
   id?: string
   teamId?: string
-  username: string
   email: string
   firstName: string
   lastName: string
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
+  teams?: string[]
 }
 export type CreateUserApiArg = {
-  /** ID of team to return */
-  teamId: string
   /** User object */
   body: {
     id?: string
     teamId?: string
-    username: string
     email: string
     firstName: string
     lastName: string
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
+    teams?: string[]
   }
-}
-export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
-export type DeleteUserApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the user */
-  userId: string
 }
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
   id?: string
   teamId?: string
-  username: string
   email: string
   firstName: string
   lastName: string
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
+  teams?: string[]
 }
 export type GetUserApiArg = {
-  /** ID of team to return */
-  teamId: string
   /** ID of the user */
   userId: string
 }
 export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   teamId?: string
-  username: string
   email: string
   firstName: string
   lastName: string
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
+  teams?: string[]
 }
 export type EditUserApiArg = {
-  /** ID of team to return */
-  teamId: string
   /** ID of the user */
   userId: string
   /** User object that contains updated values */
   body: {
     id?: string
     teamId?: string
-    username: string
     email: string
     firstName: string
     lastName: string
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
+    teams?: string[]
   }
+}
+export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
+export type DeleteUserApiArg = {
+  /** ID of the user */
+  userId: string
+}
+export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
+  id?: string
+  teamId?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin: boolean
+  isTeamAdmin: boolean
+  teams?: string[]
+}[]
+export type EditTeamUsersApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** User object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    email: string
+    firstName: string
+    lastName: string
+    isPlatformAdmin: boolean
+    isTeamAdmin: boolean
+    teams?: string[]
+  }[]
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
   id?: string
@@ -3808,6 +3801,11 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     provider?: 'linode' | 'custom'
   }
   platformBackups?: {
+    gitea?: {
+      enabled?: boolean
+      retentionPolicy?: string
+      schedule?: string
+    }
     database?: {
       harbor?: {
         enabled?: boolean
@@ -3848,6 +3846,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               velero?: string
               harbor?: string
               tempo?: string
+              gitea?: string
             }
           }
           type: 'linode'
@@ -3992,7 +3991,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     issuer: string
     clientID: string
     clientSecret: string
-    adminGroupID?: string
+    platformAdminGroupID?: string
+    allTeamsAdminGroupID?: string
     teamAdminGroupID?: string
     usernameClaimMapper?: string
     subClaimMapper?: string
@@ -4082,6 +4082,11 @@ export type EditSettingsApiArg = {
       provider?: 'linode' | 'custom'
     }
     platformBackups?: {
+      gitea?: {
+        enabled?: boolean
+        retentionPolicy?: string
+        schedule?: string
+      }
       database?: {
         harbor?: {
           enabled?: boolean
@@ -4122,6 +4127,7 @@ export type EditSettingsApiArg = {
                 velero?: string
                 harbor?: string
                 tempo?: string
+                gitea?: string
               }
             }
             type: 'linode'
@@ -4266,7 +4272,8 @@ export type EditSettingsApiArg = {
       issuer: string
       clientID: string
       clientSecret: string
-      adminGroupID?: string
+      platformAdminGroupID?: string
+      allTeamsAdminGroupID?: string
       teamAdminGroupID?: string
       usernameClaimMapper?: string
       subClaimMapper?: string
@@ -4398,11 +4405,11 @@ export const {
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,
   useGetAllUsersQuery,
-  useGetTeamUsersQuery,
   useCreateUserMutation,
-  useDeleteUserMutation,
   useGetUserQuery,
   useEditUserMutation,
+  useDeleteUserMutation,
+  useEditTeamUsersMutation,
   useGetAllProjectsQuery,
   useGetTeamProjectsQuery,
   useCreateProjectMutation,

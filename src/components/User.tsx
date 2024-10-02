@@ -41,5 +41,15 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
   const formData = cloneDeep(data)
   const schema = getUserSchema(teamId, teamIds)
   const uiSchema = getUserUiSchema(sessionUser, teamId)
-  return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='User' {...other} />
+  return (
+    <Form
+      schema={schema}
+      uiSchema={uiSchema}
+      data={formData}
+      onChange={setData}
+      resourceType='User email'
+      resourceName={user?.email}
+      {...other}
+    />
+  )
 }

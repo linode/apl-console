@@ -1,8 +1,8 @@
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetTeamUsersApiResponse } from 'redux/otomiApi'
-import { Box, Tooltip } from '@mui/material'
+import { GetAllUsersApiResponse, useEditTeamUsersMutation } from 'redux/otomiApi'
+import { Box, Button, Checkbox, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import ListTable from './ListTable'
@@ -11,16 +11,15 @@ import { HeadCell } from './EnhancedTable'
 
 interface Row {
   id: string
-  teamId: string
-  username: string
   email: string
+  teams: string[]
 }
 
 const getUserLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/users/${encodeURIComponent(row.id)}`
+  const path = `/users/${encodeURIComponent(row.id)}`
   return (
-    <RLink to={path} label={row.username}>
-      {row.username}
+    <RLink to={path} label={row.email}>
+      {row.email}
     </RLink>
   )
 }
@@ -31,12 +30,11 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
   ###########################################################
   You can start using APL. Visit: https://${hostname}
   Sign in to the web console with the following credentials:
-    - Username: ${row.username}
-    - Password: ${row.username}@APL
+    - Username: ${row.email}
+    - Password: ${row.email}
   You will be prompted to change your password after the first login.
   ###########################################################
   `
-
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(message)
     setCopied(true)
@@ -61,40 +59,98 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
   )
 }
 
+function UserTeamSelector({
+  row,
+  setUsers,
+  teamId,
+}: {
+  row: Row
+  setUsers: React.Dispatch<React.SetStateAction<GetAllUsersApiResponse>>
+  teamId: string
+}) {
+  const handleUserTeamToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isSelected = event.target.checked
+    setUsers((users: GetAllUsersApiResponse) =>
+      users.map((user) => {
+        if (user.id === row.id) {
+          const updatedTeams = isSelected
+            ? [...user.teams, teamId]
+            : user.teams.filter((team: string) => team !== teamId)
+
+          return { ...user, teams: updatedTeams }
+        }
+        return user
+      }),
+    )
+  }
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Checkbox checked={row.teams.includes(teamId)} onChange={handleUserTeamToggle} />
+    </Box>
+  )
+}
+
+const updateUsers = (onClick: () => void) => {
+  return (
+    <Button variant='contained' onClick={onClick}>
+      Update Users
+    </Button>
+  )
+}
+
 interface Props {
-  users: GetTeamUsersApiResponse
+  users: GetAllUsersApiResponse
   teamId?: string
 }
 
-export default function ({ users, teamId }: Props): React.ReactElement {
+export default function ({ users: inUsers, teamId }: Props): React.ReactElement {
+  const [users, setUsers] = useState<GetAllUsersApiResponse>(inUsers)
   const { user } = useSession()
   const { t } = useTranslation()
   const hostname = window.location.hostname
+  const showCustomButton = user?.isTeamAdmin && !user?.isPlatformAdmin
+  const [update] = useEditTeamUsersMutation()
+
+  useEffect(() => {
+    setUsers(inUsers)
+  }, [inUsers])
+
   // END HOOKS
   const headCells: HeadCell[] = [
     {
-      id: 'username',
-      label: t('Username'),
-      renderer: (row: Row) => getUserLink(row),
-    },
-    {
       id: 'email',
       label: t('Email'),
-      renderer: (row) => row.email,
-    },
-    {
-      id: 'credentials',
-      label: t('Credentials'),
-      renderer: (row: Row) => <CredentialsRenderer row={row} hostname={hostname} />,
+      renderer: (row: Row) => (user.isPlatformAdmin ? getUserLink(row) : row.email),
     },
   ]
 
-  if (!teamId) {
+  if (user.isPlatformAdmin) {
     headCells.push({
-      id: 'teamId',
-      label: t('Team'),
+      id: 'credentials',
+      label: t('Initial Credentials'),
+      renderer: (row: Row) => <CredentialsRenderer row={row} hostname={hostname} />,
+    })
+  } else if (user.isTeamAdmin) {
+    headCells.push({
+      id: 'checkbox',
+      label: t('Checkbox'),
+      renderer: (row: Row) => <UserTeamSelector row={row} setUsers={setUsers} teamId={teamId} />,
     })
   }
 
-  return <ListTable teamId={teamId} headCells={headCells} rows={users} resourceType='User' />
+  const handleUpdateUsers = () => {
+    update({ teamId, body: users })
+  }
+
+  return (
+    <ListTable
+      teamId={teamId}
+      headCells={headCells}
+      rows={users}
+      resourceType='User'
+      title='Users'
+      noCrud={showCustomButton}
+      customButton={showCustomButton && updateUsers(handleUpdateUsers)}
+    />
+  )
 }

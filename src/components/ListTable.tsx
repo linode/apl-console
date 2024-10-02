@@ -16,6 +16,7 @@ interface ListTableProps extends EnhancedTableProps {
   idKey?: string
   collection?: string
   to?: string
+  customButton?: React.ReactElement
 }
 export default function ({
   teamId,
@@ -26,6 +27,7 @@ export default function ({
   noCrud = false,
   idKey = 'id',
   to,
+  customButton = null,
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -61,6 +63,7 @@ export default function ({
               </Button>
             </Box>
           )}
+          {customButton && <Box mb={1}>{customButton}</Box>}
         </Box>
       </Box>
 

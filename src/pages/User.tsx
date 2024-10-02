@@ -24,10 +24,10 @@ export default function ({
     params: { teamId, userId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] = useCreateUserMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateUserMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditUserMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteUserMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetUserQuery({ teamId, userId }, { skip: !userId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetUserQuery({ userId }, { skip: !userId })
   const {
     data: teamData,
     isLoading: isLoadingTeams,
@@ -45,13 +45,13 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/users`} />
-  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/users/`} />
+  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to='/users' />
+  if (!mutating && isSuccessCreate) return <Redirect to='/users' />
   const handleSubmit = (formData) => {
-    if (userId) update({ teamId, userId, body: omit(formData, ['id', 'teamId']) as any })
-    else create({ teamId, body: formData })
+    if (userId) update({ userId, body: omit(formData, ['id', 'teamId']) as any })
+    else create({ body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, userId: deleteId })
+  const handleDelete = (deleteId) => del({ userId: deleteId })
   const teamIds = []
   if (teamData) teamData.forEach((team) => teamIds.push(team.id))
   const loading = isLoading || isLoadingTeams
