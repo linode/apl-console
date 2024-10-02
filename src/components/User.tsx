@@ -48,6 +48,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
       data={formData}
       onChange={setData}
       resourceType='User email'
+      title={user?.email ? `User: (${user.email})` : 'New User'}
       resourceName={user?.email}
       {...other}
     />

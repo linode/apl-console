@@ -132,8 +132,8 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
     })
   } else if (user.isTeamAdmin) {
     headCells.push({
-      id: 'checkbox',
-      label: t('Checkbox'),
+      id: 'assign',
+      label: t('Assing to Team'),
       renderer: (row: Row) => <UserTeamSelector row={row} setUsers={setUsers} teamId={teamId} />,
     })
   }
