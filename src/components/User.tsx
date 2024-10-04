@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -8,6 +8,10 @@ import Form from './rjsf/Form'
 
 export const getUserSchema = (teamIds: string[]): any => {
   const schema = cloneDeep(getSpec().components.schemas.User) as any
+  if (teamIds?.length === 0) {
+    unset(schema, 'properties.teams')
+    return schema
+  }
   schema.properties.teams.items.enum = [...teamIds]
   schema.properties.teams.default = []
   return schema
