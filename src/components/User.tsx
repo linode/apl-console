@@ -39,7 +39,12 @@ interface Props extends CrudProps {
 }
 
 export default function ({ user, teamId, teamIds, ...other }: Props): React.ReactElement {
-  const { user: sessionUser } = useSession()
+  const {
+    user: sessionUser,
+    settings: {
+      otomi: { hasExternalIDP },
+    },
+  } = useSession()
   const [data, setData] = useState<GetUserApiResponse>(user)
   useEffect(() => {
     setData(user)
@@ -52,6 +57,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
   }
   const schema = getUserSchema(teamIds)
   const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
+  if (hasExternalIDP) return <p>User management is only available when using the internal identity provider (IDP).</p>
   return (
     <Form
       schema={schema}

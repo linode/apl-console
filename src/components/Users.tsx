@@ -76,7 +76,8 @@ function UserTeamSelector({
   teamId: string
 }) {
   const user = users.find((user) => user.id === row.id)
-  const isDisabled = sessionUser.email === row.email || (user.isTeamAdmin && user.teams.includes(teamId))
+  const isDisabled =
+    sessionUser.email === row.email || user.isPlatformAdmin || (user.isTeamAdmin && user.teams.includes(teamId))
   const handleUserTeamToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isSelected = event.target.checked
     setUsers((users: GetAllUsersApiResponse) =>
@@ -114,7 +115,13 @@ interface Props {
 
 export default function ({ users: inUsers, teamId }: Props): React.ReactElement {
   const [users, setUsers] = useState<GetAllUsersApiResponse>(inUsers)
-  const { user: sessionUser, oboTeamId } = useSession()
+  const {
+    user: sessionUser,
+    oboTeamId,
+    settings: {
+      otomi: { hasExternalIDP },
+    },
+  } = useSession()
   const { t } = useTranslation()
   const { themeView } = useSettings()
   const isTeamView = themeView === 'team'
@@ -166,6 +173,8 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
   const handleUpdateUsers = () => {
     update({ teamId, body: users })
   }
+
+  if (hasExternalIDP) return <p>User management is only available when using the internal identity provider (IDP).</p>
 
   return (
     <ListTable
