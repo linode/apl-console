@@ -24,6 +24,7 @@ export const getUserUiSchema = (
     teamId: { 'ui:widget': 'hidden' },
     isTeamAdmin: platformAdmin && { 'ui:readonly': true },
     teams: platformAdmin && { 'ui:readonly': true },
+    initialPassword: { 'ui:widget': 'hidden' },
   }
 
   applyAclToUiSchema(uiSchema, user, teamId, 'user')

@@ -2413,6 +2413,7 @@ export type GetAllUsersApiResponse = /** status 200 Successfully obtained all us
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
   teams?: string[]
+  initialPassword?: string
 }[]
 export type GetAllUsersApiArg = void
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
@@ -2424,6 +2425,7 @@ export type CreateUserApiResponse = /** status 200 Successfully stored user conf
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
   teams?: string[]
+  initialPassword?: string
 }
 export type CreateUserApiArg = {
   /** User object */
@@ -2436,6 +2438,7 @@ export type CreateUserApiArg = {
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
     teams?: string[]
+    initialPassword?: string
   }
 }
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
@@ -2447,6 +2450,7 @@ export type GetUserApiResponse = /** status 200 Successfully obtained user confi
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
   teams?: string[]
+  initialPassword?: string
 }
 export type GetUserApiArg = {
   /** ID of the user */
@@ -2461,6 +2465,7 @@ export type EditUserApiResponse = /** status 200 Successfully edited a team user
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
   teams?: string[]
+  initialPassword?: string
 }
 export type EditUserApiArg = {
   /** ID of the user */
@@ -2475,6 +2480,7 @@ export type EditUserApiArg = {
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
     teams?: string[]
+    initialPassword?: string
   }
 }
 export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
@@ -2491,6 +2497,7 @@ export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team
   isPlatformAdmin: boolean
   isTeamAdmin: boolean
   teams?: string[]
+  initialPassword?: string
 }[]
 export type EditTeamUsersApiArg = {
   /** ID of team to return */
@@ -2505,6 +2512,7 @@ export type EditTeamUsersApiArg = {
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
     teams?: string[]
+    initialPassword?: string
   }[]
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {

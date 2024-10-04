@@ -15,6 +15,7 @@ interface Row {
   email: string
   isTeamAdmin: boolean
   teams: string[]
+  initialPassword: string
 }
 
 const getUserLink = (row: Row) => {
@@ -33,7 +34,7 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
   You can start using APL. Visit: https://${hostname}
   Sign in to the web console with the following credentials:
     - Username: ${row.email}
-    - Password: ${row.email}
+    - Password: ${row.initialPassword}
   You will be prompted to change your password after the first login.
   ###########################################################
   `
