@@ -20,7 +20,7 @@ export default function NavConfig() {
   const dashboard =
     oboTeamId !== 'admin' ? [{ title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') }] : []
   const userManagement =
-    !user.isPlatformAdmin && user.isTeamAdmin
+    user.isPlatformAdmin || user.isTeamAdmin
       ? [{ title: 'User Management', path: `/teams/${oboTeamId}/users`, icon: getIcon('users_icon.svg') }]
       : []
 

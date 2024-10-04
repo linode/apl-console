@@ -1,10 +1,11 @@
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { GetAllUsersApiResponse, useEditTeamUsersMutation } from 'redux/otomiApi'
+import { GetAllUsersApiResponse, GetSessionApiResponse, useEditTeamUsersMutation } from 'redux/otomiApi'
 import { Box, Button, Checkbox, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
+import useSettings from 'hooks/useSettings'
 import ListTable from './ListTable'
 import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
@@ -12,6 +13,7 @@ import { HeadCell } from './EnhancedTable'
 interface Row {
   id: string
   email: string
+  isTeamAdmin: boolean
   teams: string[]
 }
 
@@ -61,13 +63,19 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
 
 function UserTeamSelector({
   row,
+  sessionUser,
+  users,
   setUsers,
   teamId,
 }: {
   row: Row
+  sessionUser: GetSessionApiResponse['user']
+  users: GetAllUsersApiResponse
   setUsers: React.Dispatch<React.SetStateAction<GetAllUsersApiResponse>>
   teamId: string
 }) {
+  const user = users.find((user) => user.id === row.id)
+  const isDisabled = sessionUser.email === row.email || (user.isTeamAdmin && user.teams.includes(teamId))
   const handleUserTeamToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isSelected = event.target.checked
     setUsers((users: GetAllUsersApiResponse) =>
@@ -85,7 +93,7 @@ function UserTeamSelector({
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Checkbox checked={row.teams.includes(teamId)} onChange={handleUserTeamToggle} />
+      <Checkbox disabled={isDisabled} checked={row.teams.includes(teamId)} onChange={handleUserTeamToggle} />
     </Box>
   )
 }
@@ -105,10 +113,11 @@ interface Props {
 
 export default function ({ users: inUsers, teamId }: Props): React.ReactElement {
   const [users, setUsers] = useState<GetAllUsersApiResponse>(inUsers)
-  const { user } = useSession()
+  const { user: sessionUser, oboTeamId } = useSession()
   const { t } = useTranslation()
+  const { themeView } = useSettings()
+  const isTeamView = themeView === 'team'
   const hostname = window.location.hostname
-  const showCustomButton = user?.isTeamAdmin && !user?.isPlatformAdmin
   const [update] = useEditTeamUsersMutation()
 
   useEffect(() => {
@@ -116,27 +125,42 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
   }, [inUsers])
 
   // END HOOKS
+  const credentials = !isTeamView
+    ? [
+        {
+          id: 'credentials',
+          label: t('Initial Credentials'),
+          renderer: (row: Row) => <CredentialsRenderer row={row} hostname={hostname} />,
+        },
+      ]
+    : []
+  const assignToTeam =
+    isTeamView && oboTeamId !== 'admin'
+      ? [
+          {
+            id: 'assign',
+            label: t(`Assign to team ${oboTeamId}`),
+            renderer: (row: Row) => (
+              <UserTeamSelector
+                row={row}
+                sessionUser={sessionUser}
+                users={inUsers}
+                setUsers={setUsers}
+                teamId={teamId}
+              />
+            ),
+          },
+        ]
+      : []
   const headCells: HeadCell[] = [
     {
       id: 'email',
       label: t('Email'),
-      renderer: (row: Row) => (user.isPlatformAdmin ? getUserLink(row) : row.email),
+      renderer: (row: Row) => (isTeamView ? row.email : getUserLink(row)),
     },
+    ...credentials,
+    ...assignToTeam,
   ]
-
-  if (user.isPlatformAdmin) {
-    headCells.push({
-      id: 'credentials',
-      label: t('Initial Credentials'),
-      renderer: (row: Row) => <CredentialsRenderer row={row} hostname={hostname} />,
-    })
-  } else if (user.isTeamAdmin) {
-    headCells.push({
-      id: 'assign',
-      label: t('Assing to Team'),
-      renderer: (row: Row) => <UserTeamSelector row={row} setUsers={setUsers} teamId={teamId} />,
-    })
-  }
 
   const handleUpdateUsers = () => {
     update({ teamId, body: users })
@@ -149,8 +173,8 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
       rows={users}
       resourceType='User'
       title='Users'
-      noCrud={showCustomButton}
-      customButton={showCustomButton && updateUsers(handleUpdateUsers)}
+      noCrud={isTeamView}
+      customButton={isTeamView && updateUsers(handleUpdateUsers)}
     />
   )
 }
