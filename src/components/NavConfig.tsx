@@ -75,7 +75,6 @@ export default function NavConfig() {
           path: `/catalogs/${oboTeamId}`,
           icon: getIcon('developer_guide_icon.svg'),
         },
-        ...teamUserManagement,
         {
           title: 'Projects',
           path: `/teams/${oboTeamId}/projects`,
@@ -87,6 +86,7 @@ export default function NavConfig() {
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('security_icon.svg') },
+        ...teamUserManagement,
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
