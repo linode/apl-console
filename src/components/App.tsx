@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, get, isEqual, set, unset } from 'lodash'
-import { CrudProps } from 'pages/types'
+import { CrudProps, ValuesSchema } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
@@ -207,8 +207,8 @@ export default function App({
 
   // END HOOKS
   const appSchema = id.startsWith('ingress-nginx')
-    ? session.valuesSchema.properties.apps.properties['ingress-nginx-platform']
-    : session.valuesSchema.properties.apps.properties[id]
+    ? (session.valuesSchema as ValuesSchema).properties.apps.properties['ingress-nginx-platform']
+    : (session.valuesSchema as ValuesSchema).properties.apps.properties[id]
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 

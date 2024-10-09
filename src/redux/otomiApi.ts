@@ -367,7 +367,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -392,7 +391,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -400,7 +398,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -458,7 +455,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -466,7 +462,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -525,7 +520,6 @@ export type CreateTeamApiArg = {
     password?: string
     managedMonitoring?: {
       grafana?: boolean
-      prometheus?: boolean
       alertmanager?: boolean
       private?: boolean
     }
@@ -533,7 +527,6 @@ export type CreateTeamApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -591,7 +584,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -599,7 +591,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -660,7 +651,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   password?: string
   managedMonitoring?: {
     grafana?: boolean
-    prometheus?: boolean
     alertmanager?: boolean
     private?: boolean
   }
@@ -668,7 +658,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -729,7 +718,6 @@ export type EditTeamApiArg = {
     password?: string
     managedMonitoring?: {
       grafana?: boolean
-      prometheus?: boolean
       alertmanager?: boolean
       private?: boolean
     }
@@ -737,7 +725,6 @@ export type EditTeamApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -826,7 +813,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -880,7 +866,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -934,7 +919,6 @@ export type CreateServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -994,7 +978,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1050,7 +1033,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             hasCert?: boolean
             certSelect?: boolean
             certName?: string
-            certArn?: string
             headers?: {
               response?: {
                 set?: {
@@ -1106,7 +1088,6 @@ export type EditServiceApiArg = {
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2523,7 +2504,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2658,7 +2638,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2796,7 +2775,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -2934,7 +2912,6 @@ export type CreateProjectApiArg = {
                 hasCert?: boolean
                 certSelect?: boolean
                 certName?: string
-                certArn?: string
                 headers?: {
                   response?: {
                     set?: {
@@ -3076,7 +3053,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3216,7 +3192,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
               hasCert?: boolean
               certSelect?: boolean
               certName?: string
-              certArn?: string
               headers?: {
                 response?: {
                   set?: {
@@ -3634,7 +3609,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     console?: string
     values?: string
   }
-  valuesSchema?: any
+  valuesSchema?: object
 }
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
@@ -3655,6 +3630,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
       provider: 'linode' | 'custom'
     }[]
     hasExternalDNS?: boolean
+    isPreInstalled?: boolean
     hasExternalIDP?: boolean
   }
   ingressClassNames?: string[]
@@ -3665,7 +3641,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     repeatInterval?: string
     groupInterval?: string
     receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -3700,14 +3675,16 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   cluster?: {
     name?: string
     domainSuffix?: string
-    provider?: 'linode' | 'custom'
-    apiName?: string
     apiServer?: string
-    owner?: string
-    region?: string
     k8sContext?: string
+    provider?: 'linode' | 'custom'
   }
   platformBackups?: {
+    gitea?: {
+      enabled?: boolean
+      retentionPolicy?: string
+      schedule?: string
+    }
     database?: {
       harbor?: {
         enabled?: boolean
@@ -3727,81 +3704,33 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
     persistentVolumes?: {
       linodeApiToken?: string
-      gitea?: {
-        enabled?: boolean
-        ttl?: string
-        schedule?: string
-      }
     }
   }
   obj?: {
-    bucket?: {
-      loki?: string
-      cnpg?: string
-      velero?: string
-      harbor?: string
-      tempo?: string
-    }
     provider?:
       | {
           type?: 'disabled'
         }
       | {
-          type: 'minioLocal'
+          type?: 'minioLocal'
         }
       | {
           linode: {
             region: string
             accessKeyId: string
             secretAccessKey: string
+            buckets?: {
+              loki?: string
+              cnpg?: string
+              velero?: string
+              harbor?: string
+              tempo?: string
+              gitea?: string
+              thanos?: string
+            }
           }
           type: 'linode'
         }
-  }
-  home?: {
-    repeatInterval?: string
-    groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-    drone?: ('slack' | 'msteams' | 'opsgenie')[]
-    slack?: {
-      channel?: string
-      channelCrit?: string
-      url?: string
-    }
-    msteams?: {
-      highPrio?: string
-      lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
-    }
-  }
-  azure?: {
-    appgw?: {
-      isManaged?: boolean
-    }
-    storageType?: {
-      fast?: string
-      standard?: string
-    }
   }
   dns?: {
     zones?: string[]
@@ -3809,6 +3738,14 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     zoneIdFilters?: string[]
     provider?:
       | (object | null)
+      | {
+          akamai?: {
+            host: string
+            accessToken: string
+            clientToken: string
+            clientSecret: string
+          }
+        }
       | {
           aws: {
             credentials?: {
@@ -3853,11 +3790,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           }
         }
       | {
-          civo: {
-            apiToken?: string
-          }
-        }
-      | {
           linode: {
             apiToken?: string
           }
@@ -3880,27 +3812,34 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     platformClass?: {
       className?: string
     } & {
-      network?: 'public' | 'private'
       loadBalancerIP?: string
-      loadBalancerRG?: string
-      loadBalancerSubnet?: string
-      sourceIpAddressFiltering?: string
       entrypoint?: string
+      annotations?: {
+        key?: string
+        value?: string
+      }[]
     }
     classes?: ({
       className?: string
     } & {
-      network?: 'public' | 'private'
       loadBalancerIP?: string
-      loadBalancerRG?: string
-      loadBalancerSubnet?: string
-      sourceIpAddressFiltering?: string
       entrypoint?: string
+      annotations?: {
+        key?: string
+        value?: string
+      }[]
     })[]
   }
   kms?: {
     sops?:
       | (object | null)
+      | {
+          provider?: 'age'
+          age: {
+            publicKey: string
+            privateKey: string
+          }
+        }
       | {
           provider?: 'aws'
           aws: {
@@ -3944,6 +3883,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       name: string
       provider: 'linode' | 'custom'
     }[]
+    isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
       password?: string
@@ -3952,7 +3892,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     } | null
     hasExternalDNS?: boolean
     hasExternalIDP?: boolean
-    isHomeMonitored?: boolean
     isMultitenant?: boolean
     nodeSelector?: {
       name?: string
@@ -3984,7 +3923,6 @@ export type EditSettingsApiArg = {
       repeatInterval?: string
       groupInterval?: string
       receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -4019,14 +3957,16 @@ export type EditSettingsApiArg = {
     cluster?: {
       name?: string
       domainSuffix?: string
-      provider?: 'linode' | 'custom'
-      apiName?: string
       apiServer?: string
-      owner?: string
-      region?: string
       k8sContext?: string
+      provider?: 'linode' | 'custom'
     }
     platformBackups?: {
+      gitea?: {
+        enabled?: boolean
+        retentionPolicy?: string
+        schedule?: string
+      }
       database?: {
         harbor?: {
           enabled?: boolean
@@ -4046,81 +3986,33 @@ export type EditSettingsApiArg = {
       }
       persistentVolumes?: {
         linodeApiToken?: string
-        gitea?: {
-          enabled?: boolean
-          ttl?: string
-          schedule?: string
-        }
       }
     }
     obj?: {
-      bucket?: {
-        loki?: string
-        cnpg?: string
-        velero?: string
-        harbor?: string
-        tempo?: string
-      }
       provider?:
         | {
             type?: 'disabled'
           }
         | {
-            type: 'minioLocal'
+            type?: 'minioLocal'
           }
         | {
             linode: {
               region: string
               accessKeyId: string
               secretAccessKey: string
+              buckets?: {
+                loki?: string
+                cnpg?: string
+                velero?: string
+                harbor?: string
+                tempo?: string
+                gitea?: string
+                thanos?: string
+              }
             }
             type: 'linode'
           }
-    }
-    home?: {
-      repeatInterval?: string
-      groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      drone?: ('slack' | 'msteams' | 'opsgenie')[]
-      slack?: {
-        channel?: string
-        channelCrit?: string
-        url?: string
-      }
-      msteams?: {
-        highPrio?: string
-        lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
-      }
-    }
-    azure?: {
-      appgw?: {
-        isManaged?: boolean
-      }
-      storageType?: {
-        fast?: string
-        standard?: string
-      }
     }
     dns?: {
       zones?: string[]
@@ -4128,6 +4020,14 @@ export type EditSettingsApiArg = {
       zoneIdFilters?: string[]
       provider?:
         | (object | null)
+        | {
+            akamai?: {
+              host: string
+              accessToken: string
+              clientToken: string
+              clientSecret: string
+            }
+          }
         | {
             aws: {
               credentials?: {
@@ -4172,11 +4072,6 @@ export type EditSettingsApiArg = {
             }
           }
         | {
-            civo: {
-              apiToken?: string
-            }
-          }
-        | {
             linode: {
               apiToken?: string
             }
@@ -4199,27 +4094,34 @@ export type EditSettingsApiArg = {
       platformClass?: {
         className?: string
       } & {
-        network?: 'public' | 'private'
         loadBalancerIP?: string
-        loadBalancerRG?: string
-        loadBalancerSubnet?: string
-        sourceIpAddressFiltering?: string
         entrypoint?: string
+        annotations?: {
+          key?: string
+          value?: string
+        }[]
       }
       classes?: ({
         className?: string
       } & {
-        network?: 'public' | 'private'
         loadBalancerIP?: string
-        loadBalancerRG?: string
-        loadBalancerSubnet?: string
-        sourceIpAddressFiltering?: string
         entrypoint?: string
+        annotations?: {
+          key?: string
+          value?: string
+        }[]
       })[]
     }
     kms?: {
       sops?:
         | (object | null)
+        | {
+            provider?: 'age'
+            age: {
+              publicKey: string
+              privateKey: string
+            }
+          }
         | {
             provider?: 'aws'
             aws: {
@@ -4263,6 +4165,7 @@ export type EditSettingsApiArg = {
         name: string
         provider: 'linode' | 'custom'
       }[]
+      isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
         password?: string
@@ -4271,7 +4174,6 @@ export type EditSettingsApiArg = {
       } | null
       hasExternalDNS?: boolean
       hasExternalIDP?: boolean
-      isHomeMonitored?: boolean
       isMultitenant?: boolean
       nodeSelector?: {
         name?: string
