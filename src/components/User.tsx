@@ -26,8 +26,8 @@ export const getUserUiSchema = (
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
-    isTeamAdmin: platformAdmin && { 'ui:readonly': true },
-    teams: platformAdmin && { 'ui:readonly': true },
+    isTeamAdmin: platformAdmin && { 'ui:widget': 'hidden' },
+    teams: platformAdmin && { 'ui:widget': 'hidden' },
     initialPassword: { 'ui:widget': 'hidden' },
   }
 
