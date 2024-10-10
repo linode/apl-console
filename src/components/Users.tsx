@@ -27,17 +27,9 @@ const getUserLink = (row: Row) => {
   )
 }
 
-function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) {
+function CredentialsRenderer({ row }: { row: Row }) {
   const [copied, setCopied] = useState(false)
-  const message = `
-  ###########################################################
-  You can start using APL. Visit: https://${hostname}
-  Sign in to the web console with the following credentials:
-    - Username: ${row.email}
-    - Password: ${row.initialPassword}
-  You will be prompted to change your password after the first login.
-  ###########################################################
-  `
+  const message = row.initialPassword
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(message)
     setCopied(true)
@@ -49,7 +41,7 @@ function CredentialsRenderer({ row, hostname }: { row: Row; hostname: string }) 
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '30px' }}>
         {!copied ? (
-          <Tooltip title='Copy initial credentials to clipboard'>
+          <Tooltip title='Copy initial password to clipboard'>
             <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
           </Tooltip>
         ) : (
@@ -125,7 +117,6 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
   const { t } = useTranslation()
   const { themeView } = useSettings()
   const isTeamView = themeView === 'team'
-  const hostname = window.location.hostname
   const [update] = useEditTeamUsersMutation()
 
   useEffect(() => {
@@ -136,9 +127,9 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
   const credentials = !isTeamView
     ? [
         {
-          id: 'credentials',
-          label: t('Initial Credentials'),
-          renderer: (row: Row) => <CredentialsRenderer row={row} hostname={hostname} />,
+          id: 'initialPassword',
+          label: t('Initial Password'),
+          renderer: (row: Row) => <CredentialsRenderer row={row} />,
         },
       ]
     : []
