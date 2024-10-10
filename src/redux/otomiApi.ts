@@ -2406,24 +2406,22 @@ export type DeleteCloudttyApiArg = {
 }
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
-  teamId?: string
   email: string
   firstName: string
   lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
   teams?: string[]
   initialPassword?: string
 }[]
 export type GetAllUsersApiArg = void
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
   id?: string
-  teamId?: string
   email: string
   firstName: string
   lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
   teams?: string[]
   initialPassword?: string
 }
@@ -2431,24 +2429,22 @@ export type CreateUserApiArg = {
   /** User object */
   body: {
     id?: string
-    teamId?: string
     email: string
     firstName: string
     lastName: string
-    isPlatformAdmin: boolean
-    isTeamAdmin: boolean
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
     teams?: string[]
     initialPassword?: string
   }
 }
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
   id?: string
-  teamId?: string
   email: string
   firstName: string
   lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
   teams?: string[]
   initialPassword?: string
 }
@@ -2458,12 +2454,11 @@ export type GetUserApiArg = {
 }
 export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
-  teamId?: string
   email: string
   firstName: string
   lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
   teams?: string[]
   initialPassword?: string
 }
@@ -2473,12 +2468,11 @@ export type EditUserApiArg = {
   /** User object that contains updated values */
   body: {
     id?: string
-    teamId?: string
     email: string
     firstName: string
     lastName: string
-    isPlatformAdmin: boolean
-    isTeamAdmin: boolean
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
     teams?: string[]
     initialPassword?: string
   }
@@ -2490,12 +2484,11 @@ export type DeleteUserApiArg = {
 }
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
-  teamId?: string
   email: string
   firstName: string
   lastName: string
-  isPlatformAdmin: boolean
-  isTeamAdmin: boolean
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
   teams?: string[]
   initialPassword?: string
 }[]
@@ -2505,14 +2498,10 @@ export type EditTeamUsersApiArg = {
   /** User object that contains updated values */
   body: {
     id?: string
-    teamId?: string
-    email: string
-    firstName: string
-    lastName: string
-    isPlatformAdmin: boolean
-    isTeamAdmin: boolean
+    email?: string
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
     teams?: string[]
-    initialPassword?: string
   }[]
 }
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
@@ -3855,6 +3844,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               harbor?: string
               tempo?: string
               gitea?: string
+              thanos?: string
             }
           }
           type: 'linode'
@@ -4136,6 +4126,7 @@ export type EditSettingsApiArg = {
                 harbor?: string
                 tempo?: string
                 gitea?: string
+                thanos?: string
               }
             }
             type: 'linode'
