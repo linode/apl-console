@@ -28,16 +28,7 @@ interface Props {
 }
 
 export default function ({ backups, teamId }: Props): React.ReactElement {
-  // const {
-  //   oboTeamId,
-  //   user: { isAdmin },
-  // } = useSession()
-  const {
-    appsEnabled,
-    settings: {
-      cluster: { domainSuffix },
-    },
-  } = useSession()
+  const { appsEnabled } = useSession()
 
   const { t } = useTranslation()
   // END HOOKS

@@ -29,7 +29,7 @@ const useStyles = makeStyles()((theme) => ({
 interface Props {
   error?: ApiError
 }
-const apiCodes = [403, 504, 666]
+const apiCodes = [403, 409, 504, 666]
 
 export default function ({ error }: Props): React.ReactElement {
   const { classes } = useStyles()

@@ -215,8 +215,8 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   }, [themeView])
   // reset themeView to team if user is not admin
   React.useEffect(() => {
-    const { isAdmin } = user
-    if (!isAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
+    const { isPlatformAdmin } = user
+    if (!isPlatformAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
   }, [])
 
   // platform view base iframe urls
