@@ -35,11 +35,11 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
   const { oboTeamId, user } = useSession()
   const { themeView } = useSettings()
 
-  const { isAdmin } = user
+  const { isPlatformAdmin } = user
 
   navConfig = navConfig.filter((group) => {
     const subheader = group.subheader.toLowerCase()
-    if (isAdmin) {
+    if (isPlatformAdmin) {
       return (
         subheader === 'actions' || subheader.includes(themeView) || (themeView === 'team' && subheader === 'access')
       )

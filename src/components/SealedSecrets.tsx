@@ -35,7 +35,7 @@ interface Props {
 export default function ({ secrets, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
   const status = useStatus()
@@ -44,7 +44,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: getSecretLink(isAdmin, oboTeamId),
+      renderer: getSecretLink(isPlatformAdmin, oboTeamId),
     },
     {
       id: 'type',
@@ -67,7 +67,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
 
   return (
     <Box>
-      {isAdmin && (
+      {isPlatformAdmin && (
         <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
           <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
             Download Keys

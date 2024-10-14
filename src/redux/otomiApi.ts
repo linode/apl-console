@@ -195,6 +195,24 @@ const injectedRtkApi = api.injectEndpoints({
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
       query: (queryArg) => ({ url: `/cloudtty`, method: 'DELETE', body: queryArg.body }),
     }),
+    getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
+      query: () => ({ url: `/users` }),
+    }),
+    createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
+      query: (queryArg) => ({ url: `/users`, method: 'POST', body: queryArg.body }),
+    }),
+    getUser: build.query<GetUserApiResponse, GetUserApiArg>({
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}` }),
+    }),
+    editUser: build.mutation<EditUserApiResponse, EditUserApiArg>({
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'PUT', body: queryArg.body }),
+    }),
+    deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
+      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'DELETE' }),
+    }),
+    editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
+    }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
       query: () => ({ url: `/projects` }),
     }),
@@ -2386,6 +2404,106 @@ export type DeleteCloudttyApiArg = {
     sub?: string
   }
 }
+export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
+  teams?: string[]
+  initialPassword?: string
+}[]
+export type GetAllUsersApiArg = void
+export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
+  teams?: string[]
+  initialPassword?: string
+}
+export type CreateUserApiArg = {
+  /** User object */
+  body: {
+    id?: string
+    email: string
+    firstName: string
+    lastName: string
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
+    teams?: string[]
+    initialPassword?: string
+  }
+}
+export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
+  teams?: string[]
+  initialPassword?: string
+}
+export type GetUserApiArg = {
+  /** ID of the user */
+  userId: string
+}
+export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
+  teams?: string[]
+  initialPassword?: string
+}
+export type EditUserApiArg = {
+  /** ID of the user */
+  userId: string
+  /** User object that contains updated values */
+  body: {
+    id?: string
+    email: string
+    firstName: string
+    lastName: string
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
+    teams?: string[]
+    initialPassword?: string
+  }
+}
+export type DeleteUserApiResponse = /** status 200 Successfully deleted a user */ undefined
+export type DeleteUserApiArg = {
+  /** ID of the user */
+  userId: string
+}
+export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
+  id?: string
+  email: string
+  firstName: string
+  lastName: string
+  isPlatformAdmin?: boolean
+  isTeamAdmin?: boolean
+  teams?: string[]
+  initialPassword?: string
+}[]
+export type EditTeamUsersApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** User object that contains updated values */
+  body: {
+    id?: string
+    email?: string
+    isPlatformAdmin?: boolean
+    isTeamAdmin?: boolean
+    teams?: string[]
+  }[]
+}
 export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ {
   id?: string
   teamId?: string
@@ -3591,7 +3709,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   user?: {
     name: string
     email: string
-    isAdmin: boolean
+    isPlatformAdmin: boolean
+    isTeamAdmin: boolean
     authz: {
       [key: string]: {
         deniedAttributes: {
@@ -3871,7 +3990,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     issuer: string
     clientID: string
     clientSecret: string
-    adminGroupID?: string
+    platformAdminGroupID?: string
+    allTeamsAdminGroupID?: string
     teamAdminGroupID?: string
     usernameClaimMapper?: string
     subClaimMapper?: string
@@ -4153,7 +4273,8 @@ export type EditSettingsApiArg = {
       issuer: string
       clientID: string
       clientSecret: string
-      adminGroupID?: string
+      platformAdminGroupID?: string
+      allTeamsAdminGroupID?: string
       teamAdminGroupID?: string
       usernameClaimMapper?: string
       subClaimMapper?: string
@@ -4285,6 +4406,12 @@ export const {
   useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,
+  useGetAllUsersQuery,
+  useCreateUserMutation,
+  useGetUserQuery,
+  useEditUserMutation,
+  useDeleteUserMutation,
+  useEditTeamUsersMutation,
   useGetAllProjectsQuery,
   useGetTeamProjectsQuery,
   useCreateProjectMutation,

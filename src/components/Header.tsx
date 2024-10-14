@@ -63,7 +63,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
       cluster,
       otomi: { additionalClusters = [] },
     },
-    user: { email, teams: userTeams, isAdmin },
+    user: { email, teams: userTeams, isPlatformAdmin },
     oboTeamId,
     setOboTeamId,
   } = useSession()
@@ -72,7 +72,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   // END HOOKs
   let teams: GetTeamsApiResponse
   const allClusters = [...additionalClusters, cluster]
-  if (isAdmin) {
+  if (isPlatformAdmin) {
     teams = ((allTeams as any) || []).map(({ id }) => ({
       id,
     }))
@@ -136,7 +136,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         )}
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
-          {isAdmin && (
+          {isPlatformAdmin && (
             <>
               <Typography>view:</Typography>
               <Select
@@ -177,7 +177,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {isAdmin && (
+            {isPlatformAdmin && (
               <MenuItem value='admin' data-cy='select-oboteam-admin'>
                 {t('admin')}
               </MenuItem>

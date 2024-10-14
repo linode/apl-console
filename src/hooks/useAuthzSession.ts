@@ -3,9 +3,9 @@ import { SessionContext, useSession } from 'providers/Session'
 export default (teamId?: string): SessionContext => {
   const session: SessionContext = useSession()
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
     oboTeamId,
   } = session
-  if (!isAdmin && teamId && teamId !== oboTeamId) return undefined
+  if (!isPlatformAdmin && teamId && teamId !== oboTeamId) return undefined
   return session
 }

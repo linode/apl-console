@@ -10,7 +10,15 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const { ca, appsEnabled, oboTeamId, user } = useSession()
+  const {
+    ca,
+    appsEnabled,
+    oboTeamId,
+    user,
+    settings: {
+      otomi: { hasExternalIDP },
+    },
+  } = useSession()
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -19,6 +27,13 @@ export default function NavConfig() {
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
   const dashboard =
     oboTeamId !== 'admin' ? [{ title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') }] : []
+  const platformUserManagement = !hasExternalIDP
+    ? [{ title: 'User Management', path: '/users', icon: getIcon('users_icon.svg') }]
+    : []
+  const teamUserManagement =
+    !hasExternalIDP && (user.isPlatformAdmin || user.isTeamAdmin)
+      ? [{ title: 'User Management', path: `/teams/${oboTeamId}/users`, icon: getIcon('users_icon.svg') }]
+      : []
 
   return [
     {
@@ -35,6 +50,7 @@ export default function NavConfig() {
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
         // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
+        ...platformUserManagement,
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
@@ -70,6 +86,7 @@ export default function NavConfig() {
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('security_icon.svg') },
+        ...teamUserManagement,
         {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,

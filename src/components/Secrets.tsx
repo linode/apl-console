@@ -44,7 +44,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     appsEnabled,
     oboTeamId,
     settings: { cluster },
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -52,7 +52,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: getSecretLink(isAdmin, oboTeamId),
+      renderer: getSecretLink(isPlatformAdmin, oboTeamId),
     },
     {
       id: 'type',
