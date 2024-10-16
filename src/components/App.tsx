@@ -167,6 +167,7 @@ export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, 
 interface Props extends CrudProps, GetAppApiResponse {
   teamId: string
   setAppState: CallableFunction
+  managed?: boolean
 }
 export default function App({
   id,
@@ -175,6 +176,7 @@ export default function App({
   values: inValues,
   rawValues: inRawValues,
   mutating,
+  managed,
   onSubmit,
 }: Props): React.ReactElement {
   const location = useLocation()
@@ -236,6 +238,9 @@ export default function App({
   return (
     <Box>
       {appInfo.isDeprecated && <InformationBanner message={appInfo.deprecationInfo.message} />}
+      {managed !== undefined && managed && (
+        <InformationBanner message='This App is managed by Linode and cannot be changed!' />
+      )}
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
@@ -353,7 +358,7 @@ export default function App({
                   if (isEdit) handleSubmit()
                   setIsEdit(!isEdit)
                 }}
-                disabled={!validValues}
+                disabled={!validValues || managed}
               >
                 {isEdit ? t('Submit') : t('Edit')}
               </Button>
