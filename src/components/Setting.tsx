@@ -17,13 +17,10 @@ export const getSettingSchema = (
   formData: any,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
-  const {
-    cluster: { provider },
-  } = settings
   switch (settingId) {
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
-      set(schema, 'properties.adminPassword.readOnly', true)
+      unset(schema, 'properties.adminPassword')
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
