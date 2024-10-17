@@ -10,6 +10,7 @@ import {
   useCreateUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,
+  useGetAllUsersQuery,
   useGetTeamsQuery,
   useGetUserQuery,
 } from 'redux/otomiApi'
@@ -34,12 +35,19 @@ export default function ({
     isFetching: isFetchingTeams,
     refetch: refetchTeams,
   } = useGetTeamsQuery()
+  const {
+    data: allUsers,
+    isLoading: isLoadingAllUsers,
+    isFetching: isFetchingAllUsers,
+    refetch: refetchAllUsers,
+  } = useGetAllUsersQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
-    if (!isFetching && !isFetchingTeams) {
+    if (!isFetching && !isFetchingTeams && !isFetchingAllUsers) {
       refetch()
       refetchTeams()
+      refetchAllUsers()
     }
   }, [isDirty])
   const { t } = useTranslation()
@@ -54,7 +62,8 @@ export default function ({
   const handleDelete = (deleteId) => del({ userId: deleteId })
   const teamIds = []
   if (teamData) teamData.forEach((team) => teamIds.push(team.id))
-  const loading = isLoading || isLoadingTeams
+  const loading = isLoading || isLoadingTeams || isLoadingAllUsers
+  const canDeletePlatformAdminUser = allUsers?.filter((user) => user.isPlatformAdmin).length > 1
   const comp = !isError && (
     <User
       onSubmit={handleSubmit}
@@ -63,6 +72,7 @@ export default function ({
       teamId={teamId}
       mutating={mutating}
       teamIds={teamIds}
+      canDeletePlatformAdminUser={canDeletePlatformAdminUser}
     />
   )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_USER', { userId, role: 'team' })} />

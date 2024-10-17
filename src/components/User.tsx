@@ -40,9 +40,10 @@ interface Props extends CrudProps {
   teamId: string
   user?: GetUserApiResponse
   teamIds?: string[]
+  canDeletePlatformAdminUser?: boolean
 }
 
-export default function ({ user, teamId, teamIds, ...other }: Props): React.ReactElement {
+export default function ({ user, teamId, teamIds, canDeletePlatformAdminUser, ...other }: Props): React.ReactElement {
   const {
     user: sessionUser,
     settings: {
@@ -71,6 +72,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
       resourceType='User email'
       title={user?.email ? `User: (${user.email})` : 'New User'}
       resourceName={user?.email}
+      deleteDisabled={!canDeletePlatformAdminUser && user?.isPlatformAdmin}
       {...other}
     />
   )
