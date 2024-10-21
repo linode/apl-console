@@ -53,6 +53,8 @@ export const getSettingSchema = (
       break
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
+      if (settings.otomi.isPreInstalled) unset(schema, 'properties.persistentVolumes')
+
       break
     default:
       break
@@ -134,8 +136,10 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       if (!appsEnabled.alertmanager && settingId === 'alerts')
         setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
 
-      if (!appsEnabled.velero && settingId === 'platformBackups')
-        setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
+      if (!appsEnabled.velero && settingId === 'platformBackups') {
+        if (!settings.otomi.isPreInstalled)
+          setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
+      }
 
       if (isPreInstalledSetting) setDisabledMessage('These settings are controlled by Linode, they cannot be changed!')
     }

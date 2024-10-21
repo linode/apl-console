@@ -16,9 +16,10 @@ export default function NavConfig() {
     oboTeamId,
     user,
     settings: {
-      otomi: { hasExternalIDP },
+      otomi: { hasExternalIDP, isPreInstalled },
     },
   } = useSession()
+  const isManaged = isPreInstalled !== undefined && true ? isPreInstalled : false
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -56,7 +57,7 @@ export default function NavConfig() {
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: '/netpols', icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
-        { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
+        { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg'), hidden: isManaged }, // replace .svg
         { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
           title: 'Settings',
@@ -69,7 +70,7 @@ export default function NavConfig() {
       subheader: `Team ${oboTeamId}`,
       items: [
         ...dashboard,
-        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
+        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: true },
         {
           title: 'Catalog',
           path: `/catalogs/${oboTeamId}`,
@@ -91,7 +92,7 @@ export default function NavConfig() {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
           icon: getIcon('settings_icon.svg'),
-          dontShowIfAdminTeam: true,
+          hidden: true,
         },
       ],
     },
@@ -122,8 +123,9 @@ export default function NavConfig() {
           title: 'Download CA',
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority'),
-          isDownload: true,
+          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority') || isManaged,
+          isDownload: isManaged,
+          hidden: isManaged,
         },
       ],
     },

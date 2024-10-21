@@ -5,6 +5,7 @@ import { GetTeamProjectsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import InformationBanner from './InformationBanner'
 
 interface Row {
   teamId: string
@@ -49,7 +50,8 @@ export default function ({ projects, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.harbor) return <p>Admin needs to enable the Harbor app to activate this feature.</p>
+  if (!appsEnabled.harbor)
+    return <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
 
   return <ListTable teamId={teamId} headCells={headCells} rows={projects} resourceType='Project' />
 }
