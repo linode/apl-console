@@ -32,6 +32,7 @@ export const getSettingSchema = (
       break
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
+      unset(schema, 'properties.isPreInstalled')
       set(schema, 'properties.adminPassword.readOnly', true)
       break
     case 'cluster':

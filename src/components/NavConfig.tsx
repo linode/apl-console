@@ -19,7 +19,7 @@ export default function NavConfig() {
       otomi: { hasExternalIDP, isPreInstalled },
     },
   } = useSession()
-  const isManaged = isPreInstalled !== undefined && true ? isPreInstalled : false
+  const isManaged = isPreInstalled ?? false
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
