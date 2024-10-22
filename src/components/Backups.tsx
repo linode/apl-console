@@ -58,7 +58,7 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
     })
   }
   if (isPreInstalled)
-    return <InformationBanner message='This platform is managed Linode, you are unable to create backups here!' />
+    return <InformationBanner message='The backup feature is not supported when installed by Akamai Connected Cloud.' />
   if (!appsEnabled.velero)
     return <InformationBanner message='Admin needs to enable the Velero app to activate this feature.' />
 

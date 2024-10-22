@@ -142,7 +142,8 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
           setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
       }
 
-      if (isPreInstalledSetting) setDisabledMessage('These settings are controlled by Linode, they cannot be changed!')
+      if (isPreInstalledSetting)
+        setDisabledMessage('These settings can not be changed when installed by Akamai Connected Cloud.')
     }
   }, [settingId])
   // END HOOKS

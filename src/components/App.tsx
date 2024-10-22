@@ -238,8 +238,11 @@ export default function App({
   return (
     <Box>
       {appInfo.isDeprecated && <InformationBanner message={appInfo.deprecationInfo.message} />}
-      {managed !== undefined && managed && (
-        <InformationBanner message='This App is managed by Linode and cannot be changed!' />
+      {managed !== undefined && managed && (id === 'external-dns' || id === 'cert-manager') && (
+        <InformationBanner message='This App is managed by Akamai Connected Cloud and cannot be changed!' />
+      )}
+      {managed !== undefined && managed && id !== 'external-dns' && id !== 'cert-manager' && (
+        <InformationBanner message='This app is not supported when installed by Akamai Connected Cloud!' />
       )}
       <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
       <Box className={classes.header}>
