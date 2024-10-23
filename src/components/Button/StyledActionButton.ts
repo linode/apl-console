@@ -1,6 +1,6 @@
 import { styled } from '@mui/material/styles'
-import { Button } from './Button'
 import font from 'theme/font'
+import { Button } from './Button'
 
 /**
  * A button for our action menu's. Eventually this treatment will go away,

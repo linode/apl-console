@@ -142,9 +142,12 @@ interface BaseProps {
    */
   trimmed?: boolean
   value?: Value
+  width?: TextboxWidth
 }
 
 type Value = null | number | string | undefined
+
+type TextboxWidth = 'small' | 'medium' | 'large' | 'fullwidth'
 
 interface LabelToolTipProps {
   labelTooltipText?: JSX.Element | string
@@ -209,7 +212,7 @@ Error messages are an indicator of system status: they let users know that a hur
 
 Number Text Fields are used for strictly numerical input
  */
-export function TextField(props: TextFieldProps) {
+export const TextField = React.forwardRef(function TextField(props: TextFieldProps, ref) {
   const { classes, cx } = useStyles()
 
   const {
@@ -248,11 +251,19 @@ export function TextField(props: TextFieldProps) {
     trimmed,
     type,
     value,
+    width = 'medium',
     ...textFieldProps
   } = props
 
   const [_value, setValue] = React.useState<Value>(value)
   const theme = useTheme()
+
+  const widthMap: Record<TextboxWidth, string> = {
+    small: '100px',
+    medium: '200px',
+    large: '400px',
+    fullwidth: '100%',
+  }
 
   React.useEffect(() => {
     setValue(value)
@@ -387,6 +398,7 @@ export function TextField(props: TextFieldProps) {
         <MuiTextField
           {...textFieldProps}
           {...dataAttrs}
+          inputRef={ref}
           InputLabelProps={{
             ...InputLabelProps,
             required: false,
@@ -427,7 +439,7 @@ export function TextField(props: TextFieldProps) {
             className,
           )}
           error={!!error || !!errorText}
-          fullWidth
+          sx={{ width: widthMap[width] }}
           helperText=''
           /**
            * Set _helperText_ and _label_ to no value because we want to
@@ -478,4 +490,4 @@ export function TextField(props: TextFieldProps) {
       )}
     </Box>
   )
-}
+})

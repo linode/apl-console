@@ -1,4 +1,4 @@
-import { array, boolean, lazy, mixed, number, object, string } from 'yup'
+import { array, boolean, number, object, string } from 'yup'
 
 // Define Yup schema for IngressCluster
 const ingressClusterSchema = object({
@@ -17,7 +17,9 @@ const ingressPublicSchema = object({
   cname: object({
     domain: string().optional(),
     tlsSecretName: string().optional(),
-  }).optional(),
+  })
+    .optional()
+    .nullable(),
   paths: array().of(string()).optional(),
   forwardPath: boolean().optional(),
   hasCert: boolean().optional(),
@@ -37,9 +39,14 @@ const ingressPublicSchema = object({
             value: string().required('Header value is required'),
           }),
         )
-        .optional(),
-    }).optional(),
-  }).optional(),
+        .optional()
+        .nullable(),
+    })
+      .optional()
+      .nullable(),
+  })
+    .optional()
+    .nullable(),
 })
 
 // Main validation schema for CreateServiceApiResponse
@@ -48,7 +55,7 @@ export const createServiceApiResponseSchema = object({
   teamId: string().optional(),
   name: string().required('Service name is required'),
   namespace: string().optional(),
-  port: number().optional(),
+  port: number().required('port number is required'),
   ksvc: object({
     predeployed: boolean().optional(),
   }).optional(),
@@ -58,14 +65,5 @@ export const createServiceApiResponseSchema = object({
     weightV2: number().optional(),
   }).optional(),
   // Conditional validation for Ingress: either IngressCluster or IngressPublic
-  ingress: lazy((value) => {
-    switch (value?.type) {
-      case 'cluster':
-        return ingressClusterSchema
-      case 'public':
-        return ingressPublicSchema
-      default:
-        return mixed().required('Ingress type is required and must be either "cluster" or "public"')
-    }
-  }),
+  ingress: ingressPublicSchema,
 })

@@ -1,17 +1,15 @@
 // @ts-nocheck
-import { Button, Grid, MenuItem, styled } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Grid, MenuItem, styled } from '@mui/material'
 import { Theme, useTheme } from '@mui/material/styles'
 import { makeStyles } from 'tss-react/mui'
-import { Checkbox } from 'components/cmCheckbox/Checkbox'
 import { TextField } from 'components/forms/TextField'
 import { LandingHeader } from 'components/LandingHeader'
-import { FormControlLabel } from 'components/FormControlLabel'
 import { Typography } from 'components/Typography'
 import PaperLayout from 'layouts/Paper'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   CreateServiceApiResponse,
   useCreateServiceMutation,
@@ -19,14 +17,15 @@ import {
   useEditServiceMutation,
   useGetServiceQuery,
 } from 'redux/otomiApi'
+import FormRow from 'components/forms/FormRow'
+import { Paper } from 'components/Paper'
+import { Divider } from 'components/Divider'
+import KeyValue from 'components/forms/KeyValue'
+import { KeyboardArrowRight } from '@mui/icons-material'
+import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { createServiceApiResponseSchema } from './CreateEditServiceValidator'
-import PublicIngressForm from './PublicIngressForm'
 
 const useStyles = makeStyles()((theme: Theme) => ({
-  paperLayout: {
-    backgroundColor: 'white',
-    padding: '20px',
-  },
   root: {
     '& .mlMain': {
       flexBasis: '100%',
@@ -49,26 +48,33 @@ const useStyles = makeStyles()((theme: Theme) => ({
     },
   },
 }))
-const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ theme }) => ({
-  marginTop: -8,
-  paddingLeft: `calc(${theme.spacing(2)} + 18px)`, // 34,
-  [theme.breakpoints.up('md')]: {
-    paddingLeft: `calc(${theme.spacing(4)} + 18px)`, // 50
+
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'transparent', // Remove background color
+  boxShadow: 'none !important', // Remove shadow
+  margin: '0px !important', // No top margin
+  '&:before': {
+    display: 'none', // Remove the default border above the accordion
   },
 }))
 
-const StyledFormControlLabel = styled(FormControlLabel, {
-  label: 'StyledFormControlLabel',
-})(({ theme }) => ({
-  '& > span:last-child': {
-    color: theme.palette.cm.headline,
-    fontFamily: theme.font.bold,
-    fontSize: '1rem',
-    lineHeight: '1.2em',
-    [theme.breakpoints.up('md')]: {
-      marginLeft: theme.spacing(2),
-    },
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+  backgroundColor: 'transparent', // Remove background color
+  boxShadow: 'none', // Remove shadow
+  marginTop: '0px', // No top margin
+  padding: 0,
+  '&:before': {
+    display: 'none', // Remove the default border above the accordion
   },
+}))
+
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  padding: '0', // Remove padding
+  '.MuiAccordionSummary-content': {
+    margin: '0', // Remove margin between text and icon
+  },
+  marginTop: '0px !important',
+  display: 'inline-flex',
 }))
 
 interface Params {
@@ -96,29 +102,44 @@ export default function CreateEditService({
   const { classes } = useStyles()
   const theme = useTheme()
 
+  const defaultValues = {
+    ingress: {
+      type: 'public',
+      ingressClassName: 'platform',
+      domain: 'try-otomi.net',
+    },
+  }
+
   const methods = useForm<any>({
     resolver: yupResolver(createServiceApiResponseSchema),
-    defaultValues: {
-      ingress: { type: 'cluster' },
-    },
+    defaultValues: data || defaultValues,
   })
 
   const {
+    control,
     register,
+    reset,
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = methods
 
-  const ingressType = watch('ingress.type')
+  const TLSEnabled = watch('ingress.tlsPass')
 
-  // console.log('halo ingress watch', watch('ingress'))
-  // console.log('halo errror state', errors)
+  useEffect(() => {
+    if (data) reset(data)
+  }, [data])
+
+  console.log('halo watcher', watch())
+  console.log('halo formstate errors', errors)
 
   const onSubmit = (data: CreateServiceApiResponse) => {
-    console.log('halo reach submit', data)
-    create({ teamId, body: data })
+    if (serviceId) update({ teamId, serviceId, body: data })
+    else create({ teamId, body: data })
   }
+
+  if (isSuccessCreate || isSuccessUpdate) return <Redirect to={`/teams/${teamId}/services`} />
 
   /** JSX */
   return (
@@ -127,52 +148,149 @@ export default function CreateEditService({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://www.linode.com/docs/kubernetes/deploy-and-manage-a-cluster-with-linode-kubernetes-engine-a-tutorial/'
-          title='Create Cluster'
+          title='Service Exposure'
         />
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)} className={classes.paperLayout}>
-            <TextField
-              label='Service Name'
-              fullWidth
-              {...register('name')}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Paper>
+              <Typography variant='h2'>General</Typography>
+              <FormRow spacing='10'>
+                <TextField
+                  label='Service Name'
+                  fullWidth
+                  {...register('name')}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setValue('name', value)
+                    setValue('ingress.subdomain', `${value}.${teamId}`)
+                  }}
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                  width='large'
+                />
 
-            <TextField
-              label='Port'
-              type='number'
-              fullWidth
-              {...register('port')}
-              error={!!errors.port}
-              helperText={errors.port?.message}
-            />
+                <TextField
+                  label='Port'
+                  type='number'
+                  fullWidth
+                  {...register('port')}
+                  error={!!errors.port}
+                  helperText={errors.port?.message}
+                  width='small'
+                />
+              </FormRow>
+            </Paper>
 
-            <TextField
-              label='Ingress Type'
-              select
-              fullWidth
-              {...register('ingress.type')}
-              error={!!errors.ingress?.type}
-              helperText={errors.ingress?.type?.message}
-            >
-              <MenuItem value='cluster'>Cluster</MenuItem>
-              <MenuItem value='public'>Public</MenuItem>
-            </TextField>
+            <Paper>
+              <Typography variant='h2'>Service Exposure</Typography>
+              <TextField
+                label='URL'
+                fullWidth
+                error={!!errors.ingress?.subdomain}
+                helperText={errors.ingress?.subdomain?.message}
+                width='large'
+                value={`https://${watch('name')}.${teamId}.try-otomi.net`}
+                disabled
+              />
 
-            {ingressType === 'public' && <PublicIngressForm />}
+              <Divider sx={{ mt: 4, mb: 2 }} />
+              <StyledAccordion disableGutters>
+                <StyledAccordionSummary
+                  expandIcon={<KeyboardArrowRight />}
+                  aria-controls='advanced-settings-content'
+                  id='advanced-settings-header'
+                  sx={{
+                    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+                      transform: 'rotate(90deg)',
+                    },
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 'bold', color: 'white' }}>Advanced Settings</Typography>
+                </StyledAccordionSummary>
+                <StyledAccordionDetails>
+                  <KeyValue
+                    title='URL paths'
+                    subTitle='These define where your service is available. For example, /login could point to your app’s login page.'
+                    keyLabel='Domain'
+                    valueLabel='Path'
+                    addLabel='Add another URL path'
+                    name='ingress.paths'
+                    onlyValue
+                    {...register('ingress.paths')}
+                  />
 
-            <StyledFormControlLabel
-              control={<Checkbox checked data-qa-check-private-ip data-testid='private_ip' disabled={false} />}
-              label='Private IP'
-            />
-            <StyledTypography data-testid='private-ip-contextual-copy' variant='body1'>
-              Use Private IP for a backend node to a NodeBalancer. Use VPC instead for private communication between
-              your Linodes.
-            </StyledTypography>
+                  {/* {ingressType === 'public' && <PublicIngressForm />} */}
 
-            <Button type='submit' variant='contained' color='primary'>
-              Submit
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <KeyValue
+                    title='Domain alias (CNAME)'
+                    subTitle='you can have another url direct to the same url as above. You need to make sure that the DNS provider where your URL is hosted is pointing to this IP-Adres'
+                    keyLabel='Domain'
+                    valueLabel='TLS Certificate'
+                    name='ingress.cname'
+                    {...register('ingress.cname')}
+                  />
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <TextField
+                    label='Ingress Class Name'
+                    fullWidth
+                    {...register('ingress.ingressClassName')}
+                    error={!!errors.ingress?.type}
+                    helperText={errors.ingress?.type?.message}
+                    width='large'
+                    value='platform'
+                    select
+                  >
+                    <MenuItem id='platform' value='platform'>
+                      platform
+                    </MenuItem>
+                  </TextField>
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <ControlledCheckbox
+                    name='ingress.tlsPass'
+                    control={control}
+                    label='TLS Passthrough'
+                    explainerText='requests will be forwarded to the backend service without being decrypted'
+                  />
+
+                  <ControlledCheckbox
+                    disabled={TLSEnabled}
+                    name='ingress.forwardPath'
+                    control={control}
+                    label='Forward Path'
+                    explainerText='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
+                  />
+
+                  <ControlledCheckbox
+                    disabled={TLSEnabled}
+                    name='trafficControl.enabled'
+                    control={control}
+                    label='Enable Traffic Mangement'
+                    explainerText='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
+                    deployments behind that service)'
+                  />
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <KeyValue
+                    title='HTTP Response Headers'
+                    keyLabel='name'
+                    valueLabel='value'
+                    addLabel='Add another response header'
+                    name='ingress.headers.response.set'
+                    {...register('ingress.headers.response.set')}
+                  />
+                </StyledAccordionDetails>
+              </StyledAccordion>
+            </Paper>
+
+            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right' }}>
+              Expose Service
             </Button>
           </form>
         </FormProvider>

@@ -911,7 +911,7 @@ export type CreateServiceApiArg = {
       weightV1?: number;
       weightV2?: number;
     };
-    ingress: IngressCluster | IngressPublic;
+    ingress: IngressPublic;
   };
 };
 

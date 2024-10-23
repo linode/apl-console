@@ -42,9 +42,9 @@ export default function Input(theme: Theme) {
             fontSize: 18,
           },
           '&.Mui-disabled': {
-            backgroundColor: '#f4f4f4',
-            borderColor: '#c2c2ca',
-            color: 'rgba(0, 0, 0, 0.75)',
+            backgroundColor: theme.palette.cm.disabledBackground,
+            borderColor: theme.palette.cm.disabledBorder,
+            color: theme.palette.cm.disabledText,
             input: {
               cursor: 'not-allowed',
             },
@@ -64,10 +64,9 @@ export default function Input(theme: Theme) {
             borderColor: '#00b050',
           },
           alignItems: 'center',
-          backgroundColor: '#ffffff',
-          border: `1px solid #c2c2ca`,
+          backgroundColor: theme.palette.cm.textBox,
+          border: `1px solid ${theme.palette.cm.textBoxBorder}`,
           boxSizing: 'border-box',
-          // [breakpoints.down('xs')]: {
           //   maxWidth: '100%',
           //   width: '100%',
           // },
