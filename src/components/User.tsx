@@ -40,14 +40,14 @@ interface Props extends CrudProps {
   teamId: string
   user?: GetUserApiResponse
   teamIds?: string[]
-  canDeletePlatformAdminUser?: boolean
 }
 
-export default function ({ user, teamId, teamIds, canDeletePlatformAdminUser, ...other }: Props): React.ReactElement {
+export default function ({ user, teamId, teamIds, ...other }: Props): React.ReactElement {
   const {
     user: sessionUser,
     settings: {
       otomi: { hasExternalIDP },
+      cluster: { domainSuffix },
     },
   } = useSession()
   const [data, setData] = useState<GetUserApiResponse>(user)
@@ -62,6 +62,7 @@ export default function ({ user, teamId, teamIds, canDeletePlatformAdminUser, ..
   }
   const schema = getUserSchema(teamIds)
   const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
+  const defaultPlatformAdminEmail = `platform-admin@${domainSuffix}`
   if (hasExternalIDP) return <p>User management is only available when using the internal identity provider (IDP).</p>
   return (
     <Form
@@ -72,7 +73,7 @@ export default function ({ user, teamId, teamIds, canDeletePlatformAdminUser, ..
       resourceType='User email'
       title={user?.email ? `User: (${user.email})` : 'New User'}
       resourceName={user?.email}
-      deleteDisabled={!canDeletePlatformAdminUser && user?.isPlatformAdmin}
+      deleteDisabled={user?.email === defaultPlatformAdminEmail}
       {...other}
     />
   )
