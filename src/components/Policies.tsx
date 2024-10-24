@@ -5,6 +5,7 @@ import { GetPolicyApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import InformationBanner from './InformationBanner'
 
 interface Row {
   teamId: string
@@ -58,7 +59,8 @@ export default function ({ policies, teamId }: Props): React.ReactElement {
       label: t('Team'),
     })
   }
-  if (!appsEnabled.kyverno) return <p>Admin needs to enable the Kyverno app to activate this feature.</p>
+  if (!appsEnabled.kyverno)
+    return <InformationBanner message='Admin needs to enable the Kyverno app to activate this feature.' />
 
   return <ListTable teamId={teamId} headCells={headCells} rows={policies} resourceType='Policy' noCrud />
 }

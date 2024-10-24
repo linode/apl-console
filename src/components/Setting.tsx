@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema4 } from 'json-schema'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, filter, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -21,8 +21,18 @@ export const getSettingSchema = (
     cluster: { provider },
   } = settings
   switch (settingId) {
+    case 'obj':
+      if (settings.otomi.isPreInstalled) {
+        set(
+          schema,
+          'properties.provider.oneOf',
+          filter((schema as unknown as JSONSchema4).properties.provider.oneOf, (item) => item.title !== 'minioLocal'),
+        )
+      }
+      break
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
+      unset(schema, 'properties.isPreInstalled')
       set(schema, 'properties.adminPassword.readOnly', true)
       break
     case 'cluster':
@@ -44,6 +54,8 @@ export const getSettingSchema = (
       break
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
+      if (settings.otomi.isPreInstalled) unset(schema, 'properties.persistentVolumes')
+
       break
     default:
       break
@@ -110,6 +122,12 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
   const [disabledMessage, setDisabledMessage] = useState('')
+  const removePreInstalledSpecificSettings = ['kms', 'dns', 'ingress']
+  let isPreInstalledSetting = false
+
+  if (removePreInstalledSpecificSettings.includes(settingId) && settings.otomi.isPreInstalled)
+    isPreInstalledSetting = true
+
   useEffect(() => {
     onChangeHandler(data)
   }, [data])
@@ -119,8 +137,13 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       if (!appsEnabled.alertmanager && settingId === 'alerts')
         setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
 
-      if (!appsEnabled.velero && settingId === 'platformBackups')
-        setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
+      if (!appsEnabled.velero && settingId === 'platformBackups') {
+        if (!settings.otomi.isPreInstalled)
+          setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
+      }
+
+      if (isPreInstalledSetting)
+        setDisabledMessage('These settings can not be changed when installed by Akamai Connected Cloud.')
     }
   }, [settingId])
   // END HOOKS
@@ -155,6 +178,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         onChange={onChangeHandler}
         idProp={null}
         adminOnly
+        disabled={isPreInstalledSetting}
         {...other}
       />
     </>

@@ -3728,7 +3728,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     console?: string
     values?: string
   }
-  valuesSchema?: any
+  valuesSchema?: object
 }
 export type GetSessionApiArg = void
 export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
@@ -3749,6 +3749,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
       provider: 'linode' | 'custom'
     }[]
     hasExternalDNS?: boolean
+    isPreInstalled?: boolean
     hasExternalIDP?: boolean
   }
   ingressClassNames?: string[]
@@ -4002,6 +4003,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       name: string
       provider: 'linode' | 'custom'
     }[]
+    isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
       password?: string
@@ -4284,6 +4286,7 @@ export type EditSettingsApiArg = {
         name: string
         provider: 'linode' | 'custom'
       }[]
+      isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
         password?: string

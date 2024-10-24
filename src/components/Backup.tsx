@@ -29,7 +29,13 @@ interface Props extends CrudProps {
 }
 
 export default function ({ backup, teamId, ...other }: Props): React.ReactElement {
-  const { appsEnabled, user } = useSession()
+  const {
+    appsEnabled,
+    user,
+    settings: {
+      otomi: { isPreInstalled },
+    },
+  } = useSession()
   const [data, setData]: any = useState(backup)
   useEffect(() => {
     setData(backup)
@@ -44,7 +50,7 @@ export default function ({ backup, teamId, ...other }: Props): React.ReactElemen
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.velero}
+      disabled={!appsEnabled.velero || isPreInstalled}
       resourceType='Backup'
       {...other}
     />

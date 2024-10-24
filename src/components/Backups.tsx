@@ -5,6 +5,7 @@ import { GetTeamBackupsApiResponse } from 'redux/otomiApi'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
+import InformationBanner from './InformationBanner'
 
 interface Row {
   teamId: string
@@ -28,7 +29,12 @@ interface Props {
 }
 
 export default function ({ backups, teamId }: Props): React.ReactElement {
-  const { appsEnabled } = useSession()
+  const {
+    appsEnabled,
+    settings: {
+      otomi: { isPreInstalled },
+    },
+  } = useSession()
 
   const { t } = useTranslation()
   // END HOOKS
@@ -51,8 +57,10 @@ export default function ({ backups, teamId }: Props): React.ReactElement {
       label: t('Team'),
     })
   }
-
-  if (!appsEnabled.velero) return <p>Admin needs to enable the Velero app to activate this feature.</p>
+  if (isPreInstalled)
+    return <InformationBanner message='The backup feature is not supported when installed by Akamai Connected Cloud.' />
+  if (!appsEnabled.velero)
+    return <InformationBanner message='Admin needs to enable the Velero app to activate this feature.' />
 
   return <ListTable teamId={teamId} headCells={headCells} rows={backups} resourceType='Backup' />
 }

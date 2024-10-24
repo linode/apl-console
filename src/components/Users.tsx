@@ -9,6 +9,7 @@ import useSettings from 'hooks/useSettings'
 import ListTable from './ListTable'
 import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
+import InformationBanner from './InformationBanner'
 
 interface Row {
   id: string
@@ -165,7 +166,11 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
     update({ teamId, body: users })
   }
 
-  if (hasExternalIDP) return <p>User management is only available when using the internal identity provider (IDP).</p>
+  if (hasExternalIDP) {
+    return (
+      <InformationBanner message='User management is only available when using the internal identity provider (IDP).' />
+    )
+  }
 
   return (
     <ListTable
