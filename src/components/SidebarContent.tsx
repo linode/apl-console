@@ -53,7 +53,7 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
         <List key={group.subheader} disablePadding>
           {index === 0 ? <FirstSidebarDivider /> : <SidebarDivider />}
           {group.items.map((list) => {
-            if (oboTeamId === 'admin' && list.dontShowIfAdminTeam) return null
+            if (list.hidden) return null
             return <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
           })}
         </List>

@@ -5,6 +5,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSessionApiResponse, GetUserApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
+import InformationBanner from './InformationBanner'
 
 export const getUserSchema = (teamIds: string[]): any => {
   const schema = cloneDeep(getSpec().components.schemas.User) as any
@@ -62,8 +63,13 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
   }
   const schema = getUserSchema(teamIds)
   const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
+
   const defaultPlatformAdminEmail = `platform-admin@${domainSuffix}`
-  if (hasExternalIDP) return <p>User management is only available when using the internal identity provider (IDP).</p>
+  if (hasExternalIDP) {
+    return (
+      <InformationBanner message='User management is only available when using the internal identity provider (IDP).' />
+    )
+  }
   return (
     <Form
       schema={schema}

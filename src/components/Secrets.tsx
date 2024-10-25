@@ -77,7 +77,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     <Box>
       <InformationBanner message='Secrets with Hashicorp Vault are going to be removed in Otomi v3.0.0. Otomi provides Sealed Secrets as a replacement.' />
       {!appsEnabled.vault ? (
-        <p>Admin needs to enable the Vault app to activate this feature.</p>
+        <InformationBanner message=' Admin needs to enable the Vault app to activate this feature.' />
       ) : (
         <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
       )}
