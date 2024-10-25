@@ -1,5 +1,4 @@
 import { setSpec } from 'common/api-spec'
-import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
 import MessageDrone from 'components/MessageDrone'
@@ -19,7 +18,7 @@ import {
   useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
+import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
 
 export interface SessionContext extends GetSessionApiResponse {
@@ -278,8 +277,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  if (!session.user.isPlatformAdmin && session.user.teams.length === 0)
-    return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
+  if (!session) throw new ApiErrorGatewayTimeout()
+  if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
@@ -291,7 +290,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
         setOboTeamId(teams[0])
         return <LoadingScreen />
       }
-      return <ErrorComponent error={new ApiErrorUnauthorized()} />
+      throw new ApiErrorUnauthorized()
     }
   }
   return <Context.Provider value={ctx}>{children}</Context.Provider>

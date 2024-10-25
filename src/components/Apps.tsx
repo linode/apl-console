@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { Card, Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
@@ -7,7 +7,6 @@ import { makeStyles } from 'tss-react/mui'
 import { get } from 'lodash'
 import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
-import LoadingScreen from './LoadingScreen'
 import TableToolbar from './TableToolbar'
 import Modal from './Modal'
 import DeprecatedModalInfo from './DeprecatedModalInfo'
@@ -107,11 +106,10 @@ interface Props {
   teamId: string
   apps: GetAppsApiResponse
   teamSettings: GetTeamApiResponse
-  loading: boolean
   setAppState: CallableFunction
 }
 
-export default function Apps({ teamId, apps, teamSettings, loading, setAppState }: Props): React.ReactElement {
+export default function Apps({ teamId, apps, teamSettings, setAppState }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
   const [deps, setDeps] = useState(undefined)
@@ -133,7 +131,6 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
   }
 
   // END HOOKS
-  if (!apps || loading) return <LoadingScreen />
   // we visualize drag state for all app dependencies
   const isAdmin = teamId === 'admin'
   const dataFiltered = applySortFilter({
@@ -213,15 +210,13 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
   }
 
   return (
-    <div className={cx(classes.root)}>
-      <Card sx={{ p: 5 }}>
-        <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
-        <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-          {out(dataFiltered.sort(sortArray))}
-        </Grid>
-        {deprecatedAppModals()}
-      </Card>
-    </div>
+    <Box p={5} className={cx(classes.root)}>
+      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
+      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+        {out(dataFiltered.sort(sortArray))}
+      </Grid>
+      {deprecatedAppModals()}
+    </Box>
   )
 }
 

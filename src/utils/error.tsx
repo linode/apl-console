@@ -22,6 +22,15 @@ export class HttpErrorBadRequest extends HttpError {
   }
 }
 
+export class HttpErrorForbidden extends HttpError {
+  constructor() {
+    super(
+      e['You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.'],
+      403,
+    )
+  }
+}
+
 export class ApiError extends HttpError {
   extendedMessage?: string | { title: string; message: string } | undefined
 
