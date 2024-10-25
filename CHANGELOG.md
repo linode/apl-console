@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/linode/apl-console/compare/v3.0.0-rc.0...v3.0.0) (2024-10-25)
+
+
+### Features
+
+* added ispreinstalled flag and filtering for apps ([#442](https://github.com/linode/apl-console/issues/442)) ([5f3e11d](https://github.com/linode/apl-console/commit/5f3e11dd475d46e5c691788d27e28cc0be6f67f0))
+* update kms settings & age fields ([#432](https://github.com/linode/apl-console/issues/432)) ([58a3bff](https://github.com/linode/apl-console/commit/58a3bff4fd69216b648669b6ca2fab8b60b309db))
+* user management ([#441](https://github.com/linode/apl-console/issues/441)) ([4609446](https://github.com/linode/apl-console/commit/4609446a52cba3008d9c6e4d3bedbe023b997d2d))
+
+
+### Bug Fixes
+
+* add thanos logo ([#440](https://github.com/linode/apl-console/issues/440)) ([e6aaa8e](https://github.com/linode/apl-console/commit/e6aaa8ebcdf73ec98294f18e20ea9a129e4a719a))
+
 ## [3.0.0-rc.0](https://github.com/linode/apl-console/compare/v2.8.0...v3.0.0-rc.0) (2024-09-18)
 
 
