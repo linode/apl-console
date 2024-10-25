@@ -92,12 +92,12 @@ function sortArray(a, b) {
 
 function getDeprecatedApps(apps, session, teamId) {
   return apps
-    .map((app) => {
+    ?.map((app) => {
       const { id, isDeprecated, deprecationInfo, externalUrl, replacementUrl } = getAppData(session, teamId, app)
       if (isDeprecated) return { id, deprecationInfo, externalUrl, replacementUrl }
       return null
     })
-    .filter((app) => app !== null)
+    ?.filter((app) => app !== null)
 }
 
 // ---- JSX -------------------------------------------------------------
@@ -146,7 +146,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
-    items.map((item) => {
+    items?.map((item) => {
       const {
         enabled,
         externalUrl,
@@ -182,7 +182,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
     })
 
   const deprecatedAppModals = () => {
-    return deprecatedApps.map((app) => {
+    return deprecatedApps?.map((app) => {
       const handleCancel = () => {
         setOpenModal('')
         window.open(app.externalUrl, '_blank')
@@ -213,7 +213,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
     <Box p={5} className={cx(classes.root)}>
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {out(dataFiltered.sort(sortArray))}
+        {out(dataFiltered?.sort(sortArray))}
       </Grid>
       {deprecatedAppModals()}
     </Box>
@@ -235,26 +235,26 @@ function applySortFilter({
   managedMonitoringApps: any
   isAdmin: boolean
 }) {
-  const stabilizedThis = tableData.map((el, index) => [el, index] as const)
+  const stabilizedThis = tableData?.map((el, index) => [el, index] as const)
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0])
     if (order !== 0) return order
     return a[1] - b[1]
   })
 
-  tableData = stabilizedThis.map((el) => el[0])
+  tableData = stabilizedThis?.map((el) => el[0])
 
   if (filterName) {
-    tableData = tableData.filter(
+    tableData = tableData?.filter(
       (item: Record<string, any>) => item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     )
   }
 
   if (managedMonitoringApps)
-    tableData = tableData.filter((item: Record<string, any>) => managedMonitoringApps[item.id.toLowerCase()] !== false)
+    tableData = tableData?.filter((item: Record<string, any>) => managedMonitoringApps[item.id.toLowerCase()] !== false)
 
-  if (!isAdmin) tableData = tableData.filter((item: Record<string, any>) => item.enabled !== false)
+  if (!isAdmin) tableData = tableData?.filter((item: Record<string, any>) => item.enabled !== false)
 
   return tableData
 }
