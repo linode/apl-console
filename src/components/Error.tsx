@@ -20,6 +20,7 @@ export default function ({ error }: Props): React.ReactElement {
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
+  if (err.status === 'FETCH_ERROR') window.location.href = '/'
   const code = err.code || err.originalStatus || err.status
   const message = error ? err.message : err.data.error
   const msgKey = message || code || 'Unknown'
