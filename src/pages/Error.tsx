@@ -2,10 +2,10 @@ import { Card, Container } from '@mui/material'
 import Error from 'components/Error'
 import MainLayout from 'layouts/Base'
 import React from 'react'
-import { ApiError } from 'utils/error'
+import { HttpError } from 'utils/error'
 
 interface Props {
-  error?: ApiError
+  error?: HttpError
 }
 
 export default function ({ error }: Props): React.ReactElement {
