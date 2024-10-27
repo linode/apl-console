@@ -53,7 +53,7 @@ export default function ({ error }: Props): React.ReactElement {
         window.location.href = '/logout-otomi'
       })
     }
-    if (code === 409) return renderButton(t('Clear', { ns: 'error' }) as string, clearError)
+    if (status === 409) return renderButton(t('Clear', { ns: 'error' }) as string, clearError)
     // if (code === 409) return renderButton(t('Revert', { ns: 'error' }) as string, clearError)
     return (
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
