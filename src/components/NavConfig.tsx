@@ -70,7 +70,7 @@ export default function NavConfig() {
       subheader: `Team ${oboTeamId}`,
       items: [
         ...dashboard,
-        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: true },
+        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: oboTeamId === 'admin' },
         {
           title: 'Catalog',
           path: `/catalogs/${oboTeamId}`,
@@ -92,7 +92,7 @@ export default function NavConfig() {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
           icon: getIcon('settings_icon.svg'),
-          hidden: true,
+          hidden: oboTeamId === 'admin',
         },
       ],
     },
