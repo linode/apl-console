@@ -74,15 +74,15 @@ function App() {
       <Provider store={store}>
         <SettingsProvider defaultSettings={settings}>
           <ThemeProvider>
-            <Router basename={contextPath}>
-              <ErrorBoundary FallbackComponent={Error}>
-                <CacheProvider value={muiCache}>
-                  <DndProvider backend={HTML5Backend}>
-                    <IoProvider>
-                      <SessionProvider>
-                        <ShellDrawerProvider>
-                          <CollapseDrawerProvider>
-                            <ThemeColorPresets>
+            <ThemeColorPresets>
+              <Router basename={contextPath}>
+                <ErrorBoundary FallbackComponent={Error}>
+                  <CacheProvider value={muiCache}>
+                    <DndProvider backend={HTML5Backend}>
+                      <IoProvider>
+                        <SessionProvider>
+                          <ShellDrawerProvider>
+                            <CollapseDrawerProvider>
                               <NotistackProvider>
                                 <SnackbarUtilsConfigurator />
                                 <CssBaseline />
@@ -180,15 +180,15 @@ function App() {
                                   </Route>
                                 </Switch>
                               </NotistackProvider>
-                            </ThemeColorPresets>
-                          </CollapseDrawerProvider>
-                        </ShellDrawerProvider>
-                      </SessionProvider>
-                    </IoProvider>
-                  </DndProvider>
-                </CacheProvider>
-              </ErrorBoundary>
-            </Router>
+                            </CollapseDrawerProvider>
+                          </ShellDrawerProvider>
+                        </SessionProvider>
+                      </IoProvider>
+                    </DndProvider>
+                  </CacheProvider>
+                </ErrorBoundary>
+              </Router>
+            </ThemeColorPresets>
           </ThemeProvider>
         </SettingsProvider>
       </Provider>
