@@ -63,7 +63,6 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
   }
   const schema = getUserSchema(teamIds)
   const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
-
   const defaultPlatformAdminEmail = `platform-admin@${domainSuffix}`
   if (hasExternalIDP) {
     return (
