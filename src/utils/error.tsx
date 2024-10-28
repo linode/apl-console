@@ -15,14 +15,14 @@ class HttpError extends Error {
 
 class HttpErrorBadRequest extends HttpError {
   constructor() {
-    super(e['The route does not exist'], 400)
+    super(e['The route does not exist.'], 400)
   }
 }
 
 class HttpErrorForbidden extends HttpError {
   constructor() {
     super(
-      'You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.',
+      e['You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.'],
       403,
     )
   }
@@ -30,20 +30,22 @@ class HttpErrorForbidden extends HttpError {
 
 class ApiErrorGatewayTimeout extends HttpError {
   constructor() {
-    super('The API could not be reached', 504)
+    super(e['The API could not be reached.'], 504)
   }
 }
 
 class ApiErrorUnauthorized extends HttpError {
   constructor() {
-    super('Unauthorized. The user may not be assigned to any team.', 403, 'No OIDC Claim')
+    super(e['Unauthorized! The user may not be assigned to any team.'], 403, 'No OIDC Claim')
   }
 }
 
 class ApiErrorUnauthorizedNoGroups extends HttpError {
   constructor() {
     super(
-      'It seems that this user does not belong to any team. Please check the groups claim of the ID token or contact your administrator.',
+      e[
+        'It seems that this user does not belong to any team. Please check the groups claim of the ID token or contact your administrator.'
+      ],
       403,
       'No OIDC Claim',
     )
