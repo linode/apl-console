@@ -3722,6 +3722,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     roles: string[]
     sub?: string
   }
+  defaultPlatformAdminEmail?: string
   versions?: {
     core?: string
     api?: string

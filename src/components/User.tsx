@@ -48,8 +48,8 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
     user: sessionUser,
     settings: {
       otomi: { hasExternalIDP },
-      cluster: { domainSuffix },
     },
+    defaultPlatformAdminEmail,
   } = useSession()
   const [data, setData] = useState<GetUserApiResponse>(user)
   useEffect(() => {
@@ -63,7 +63,6 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
   }
   const schema = getUserSchema(teamIds)
   const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
-  const defaultPlatformAdminEmail = `platform-admin@${domainSuffix}`
   if (hasExternalIDP) {
     return (
       <InformationBanner message='User management is only available when using the internal identity provider (IDP).' />
