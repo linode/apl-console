@@ -22,6 +22,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
   const error = useAppSelector(({ global: { error } }) => error)
   useEffect(() => {
     return () => {
+      // clear 409 Conflict error when navigating away from the page to prevent it from reappearing
       if (error && error.status === 409) dispatch(setError(undefined))
     }
   }, [error])
