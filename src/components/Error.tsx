@@ -18,7 +18,9 @@ export default function ({ error }: Props): React.ReactElement {
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
-  if (err.status === 'FETCH_ERROR') window.location.href = '/'
+  // redirect to login page if the error is a fetch error (session expired)
+  // automatically triggers Keycloak to route the user to the Keycloak login page
+  if (err?.status === 'FETCH_ERROR') window.location.href = '/'
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error
@@ -54,20 +56,13 @@ export default function ({ error }: Props): React.ReactElement {
       })
     }
     if (status === 409) return renderButton(t('Clear', { ns: 'error' }) as string, clearError)
-    // if (code === 409) return renderButton(t('Revert', { ns: 'error' }) as string, clearError)
     return (
       <Box sx={{ display: 'flex', flexDirection: 'row', gap: '8px' }}>
         {renderButton(t('Clear', { ns: 'error' }) as string, clearError)}
         {renderButton(t('Back', { ns: 'error' }) as string, () => window.history.back())}
-        {/* {renderButton(t('Reload', { ns: 'error' }) as string, () => window.location.reload())} */}
       </Box>
     )
   }
-
-  console.log({ err })
-  // TODO: redirect user to the root page when the session is expired (FETCH_ERROR)
-  // TODO: redirect user to the login page when the user is not authenticated (FETCH_ERROR)
-  // TODO: check 401 error code and redirect user to the login page
   return (
     <Container sx={{ p: 5 }} maxWidth='lg'>
       <Helmet title={tError} />

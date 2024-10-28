@@ -22,7 +22,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
   const error = useAppSelector(({ global: { error } }) => error)
   useEffect(() => {
     return () => {
-      if (error) dispatch(setError(undefined))
+      if (error && error.status === 409) dispatch(setError(undefined))
     }
   }, [error])
   return (
