@@ -29,8 +29,6 @@ export const getSettingSchema = (
       break
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
-      unset(schema, 'properties.isPreInstalled')
-      unset(schema, 'properties.adminPassword')
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
@@ -71,6 +69,8 @@ export const getSettingUiSchema = (
     },
     otomi: {
       isMultitenant: { 'ui:widget': 'hidden' },
+      isPreInstalled: { 'ui:widget': 'hidden' },
+      adminPassword: { 'ui:widget': 'hidden' },
     },
     kms: {
       sops: {
