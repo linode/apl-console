@@ -40,7 +40,7 @@
   "The URL is already in use": "The URL is already in use",
   "The route does not exist.": "The route does not exist.",
   "You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.": "You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.",
-  "The api could not be reached.": "The api could not be reached.",
+  "The API could not be reached.": "The API could not be reached.",
   "Unauthorized! The user may not be assigned to any team.": "Unauthorized! The user may not be assigned to any team.",
   "It seems that this user does not belong to any team. Please check the groups claim of the ID token or contact your administrator.": "It seems that this user does not belong to any team. Please check the groups claim of the ID token or contact your administrator.",
   "Unknown": "Unknown"

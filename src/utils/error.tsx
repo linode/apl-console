@@ -3,7 +3,7 @@ import { e } from 'i18n/i18n'
 
 class HttpError extends Error {
   constructor(message: string, public code?: number, public title?: string) {
-    // Ensure to add the corresponding message translation in src/i18n/trans/error.json
+    // Ensure to add the corresponding message translation in public/i18n/*/error.json and src/i18n/trans/error.json
     super(message)
     this.name = this.constructor.name
   }
