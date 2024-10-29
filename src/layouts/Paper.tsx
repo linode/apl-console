@@ -4,6 +4,7 @@ import LoadingScreen from 'components/LoadingScreen'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { useLocation } from 'react-router-dom'
+import ObjectStorageWizard from 'components/ObjectStorageWizard'
 import MainLayout from './Base'
 
 const useStyles = makeStyles()((theme) => ({
@@ -65,6 +66,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
           {children}
         </Card>
       </Container>
+      <ObjectStorageWizard />
     </MainLayout>
   )
 }
