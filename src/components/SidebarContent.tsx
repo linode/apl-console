@@ -32,7 +32,7 @@ const FirstSidebarDivider = styled(SidebarDivider)`
 // ----------------------------------------------------------------------
 
 export default function SidebarContent({ navConfig, isCollapse = false, ...other }: NavSectionProps) {
-  const { oboTeamId, user } = useSession()
+  const { user } = useSession()
   const { themeView } = useSettings()
 
   const { isPlatformAdmin } = user

@@ -50,6 +50,7 @@ const Context = React.createContext<SessionContext>({
     authz: undefined,
     sub: undefined,
   },
+  defaultPlatformAdminEmail: undefined,
   versions: undefined,
 })
 

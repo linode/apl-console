@@ -49,6 +49,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
     settings: {
       otomi: { hasExternalIDP },
     },
+    defaultPlatformAdminEmail,
   } = useSession()
   const [data, setData] = useState<GetUserApiResponse>(user)
   useEffect(() => {
@@ -76,6 +77,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
       resourceType='User email'
       title={user?.email ? `User: (${user.email})` : 'New User'}
       resourceName={user?.email}
+      deleteDisabled={user?.email === defaultPlatformAdminEmail}
       {...other}
     />
   )

@@ -17,9 +17,6 @@ export const getSettingSchema = (
   formData: any,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
-  const {
-    cluster: { provider },
-  } = settings
   switch (settingId) {
     case 'obj':
       if (settings.otomi.isPreInstalled) {
@@ -32,8 +29,6 @@ export const getSettingSchema = (
       break
     case 'otomi':
       unset(schema, 'properties.additionalClusters.items.properties.provider.description')
-      unset(schema, 'properties.isPreInstalled')
-      set(schema, 'properties.adminPassword.readOnly', true)
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
@@ -74,6 +69,8 @@ export const getSettingUiSchema = (
     },
     otomi: {
       isMultitenant: { 'ui:widget': 'hidden' },
+      isPreInstalled: { 'ui:widget': 'hidden' },
+      adminPassword: { 'ui:widget': 'hidden' },
     },
     kms: {
       sops: {
