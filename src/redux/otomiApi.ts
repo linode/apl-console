@@ -416,7 +416,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -480,7 +479,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -545,7 +543,6 @@ export type CreateTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -609,7 +606,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -676,7 +672,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -743,7 +738,6 @@ export type EditTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -3763,14 +3757,16 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
 }
 export type GetSettingsInfoApiArg = void
 export type GetObjWizardApiResponse = /** status 200 Successfully obtained obj wizard configuration */ {
-  apiToken: string
+  showWizard?: boolean
+  apiToken?: string
 }
 export type GetObjWizardApiArg = void
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
   /** ObjWizard object */
   body: {
-    apiToken: string
+    showWizard?: boolean
+    apiToken?: string
   }
 }
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
@@ -3844,6 +3840,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   obj?: {
+    showWizard?: boolean
     provider?:
       | {
           type?: 'disabled'
@@ -4127,6 +4124,7 @@ export type EditSettingsApiArg = {
       }
     }
     obj?: {
+      showWizard?: boolean
       provider?:
         | {
             type?: 'disabled'

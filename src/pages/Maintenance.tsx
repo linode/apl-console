@@ -4,11 +4,17 @@ import React from 'react'
 import { Box, Button, Link, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
+import { useSession } from 'providers/Session'
 
 export default function (): React.ReactElement {
-  const [, setShowObjWizard] = useLocalStorage<string>('showObjWizard')
+  const {
+    settings: {
+      otomi: { isPreInstalled },
+    },
+  } = useSession()
+  const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const handleShowObjWizard = () => {
-    setShowObjWizard(JSON.stringify(true))
+    setShowObjWizard(true)
     window.location.reload()
   }
   const comp = (
@@ -20,21 +26,25 @@ export default function (): React.ReactElement {
         Download APL values
       </Link>
 
-      <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=true'>
+      <Link sx={{ display: 'block', mt: '6px' }} href='/api/v1/otomi/values?excludeSecrets=true'>
         Download APL values (secrets redacted)
       </Link>
 
-      <Button
-        variant='text'
-        color='primary'
-        sx={{
-          px: 0,
-          '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-        }}
-        onClick={handleShowObjWizard}
-      >
-        Show Object Storage Wizard
-      </Button>
+      {isPreInstalled && (
+        <Button
+          variant='text'
+          color='primary'
+          sx={{
+            px: 0,
+            fontWeight: 500,
+            fontSize: '16px',
+            '&.MuiButton-root:hover': { bgcolor: 'transparent' },
+          }}
+          onClick={handleShowObjWizard}
+        >
+          Show Object Storage Wizard
+        </Button>
+      )}
     </Box>
   )
   // title is set in component as it knows more to put in the url (like tab chosen)

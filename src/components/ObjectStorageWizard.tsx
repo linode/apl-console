@@ -1,8 +1,10 @@
 import { Box, Button, Link, Modal, TextField, Typography, styled } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocalStorage } from 'react-use'
-import { useCreateObjWizardMutation } from 'redux/otomiApi'
+import { useCreateObjWizardMutation, useGetObjWizardQuery } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
+import { useSession } from 'providers/Session'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -32,26 +34,41 @@ const ModalFooter = styled('div')({
 })
 
 export default function StyledModal() {
-  const [showObjWizard, setShowObjWizard] = useLocalStorage<string>('showObjWizard', JSON.stringify(true))
+  const {
+    user: { isPlatformAdmin },
+    settings: {
+      otomi: { isPreInstalled },
+    },
+  } = useSession()
+  const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const [accepted, setAccepted] = useState(false)
   const [apiToken, setApiToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
+  const { data } = useGetObjWizardQuery(showObjWizard !== undefined && skipToken)
+
+  useEffect(() => {
+    if (showObjWizard === undefined) setShowObjWizard(data?.showWizard as boolean)
+  }, [data])
+
+  if (!isPlatformAdmin || !isPreInstalled) return null
+
   const handleSkip = () => {
-    setShowObjWizard(JSON.stringify(false))
+    create({ body: { showWizard: false } }).then(() => null)
+    setShowObjWizard(false)
   }
   const handleAccept = () => {
     setAccepted(true)
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken } }).then(() => {
+    create({ body: { apiToken, showWizard: false } }).then(() => {
       setLoading(false)
-      setShowObjWizard(JSON.stringify(false))
+      setShowObjWizard(false)
     })
   }
   return (
-    <Modal open={JSON.parse(showObjWizard)}>
+    <Modal open={showObjWizard}>
       <ModalBox>
         <ModalContent>
           {!accepted ? (
@@ -77,7 +94,11 @@ export default function StyledModal() {
                 }}
               />
               <Typography variant='body2' mt={2}>
-                <Link href='https://example.com/how-to-create-api-token' target='_blank' rel='noopener'>
+                <Link
+                  href='https://techdocs.akamai.com/linode-api/reference/get-started#personal-access-tokens'
+                  target='_blank'
+                  rel='noopener'
+                >
                   How to create an API token?
                 </Link>
               </Typography>
