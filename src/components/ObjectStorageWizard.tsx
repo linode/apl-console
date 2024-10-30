@@ -1,6 +1,8 @@
 import { Box, Button, Link, Modal, TextField, Typography, styled } from '@mui/material'
 import { useState } from 'react'
 import { useLocalStorage } from 'react-use'
+import { useCreateObjWizardMutation } from 'redux/otomiApi'
+import { LoadingButton } from '@mui/lab'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -29,26 +31,27 @@ const ModalFooter = styled('div')({
   gap: '10px',
 })
 
-// interface and component -----------------------------------------------
-interface Props {
-  open?: boolean
-}
-
-export default function StyledModal({ open = true }: Props) {
-  const [isWizardSkipped, setWizardSkipped] = useLocalStorage<string>('isWizardSkipped', JSON.stringify(false))
+export default function StyledModal() {
+  const [showObjWizard, setShowObjWizard] = useLocalStorage<string>('showObjWizard', JSON.stringify(true))
   const [accepted, setAccepted] = useState(false)
   const [apiToken, setApiToken] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [create] = useCreateObjWizardMutation()
   const handleSkip = () => {
-    setWizardSkipped(JSON.stringify(true))
+    setShowObjWizard(JSON.stringify(false))
   }
   const handleAccept = () => {
     setAccepted(true)
   }
   const handleSubmit = () => {
-    console.log('API Token:', apiToken)
+    setLoading(true)
+    create({ body: { apiToken } }).then(() => {
+      setLoading(false)
+      setShowObjWizard(JSON.stringify(false))
+    })
   }
   return (
-    <Modal open={!JSON.parse(isWizardSkipped)}>
+    <Modal open={JSON.parse(showObjWizard)}>
       <ModalBox>
         <ModalContent>
           {!accepted ? (
@@ -83,7 +86,7 @@ export default function StyledModal({ open = true }: Props) {
         </ModalContent>
 
         <ModalFooter>
-          <Button variant='outlined' color='primary' onClick={handleSkip}>
+          <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
             Skip
           </Button>
 
@@ -92,14 +95,15 @@ export default function StyledModal({ open = true }: Props) {
               Yes
             </Button>
           ) : (
-            <Box sx={{ display: 'flex', gap: '10px' }}>
-              <Button variant='outlined' color='primary' onClick={() => setAccepted(false)}>
-                Previous
-              </Button>
-              <Button variant='contained' color='primary' disabled={!apiToken} onClick={handleSubmit}>
-                Submit
-              </Button>
-            </Box>
+            <LoadingButton
+              variant='contained'
+              color='primary'
+              disabled={!apiToken}
+              onClick={handleSubmit}
+              loading={loading}
+            >
+              Submit
+            </LoadingButton>
           )}
         </ModalFooter>
       </ModalBox>
