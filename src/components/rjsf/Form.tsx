@@ -90,7 +90,7 @@ export default function ({
   const { classes } = useStyles()
   // END HOOKS
   const id = data?.[idProp]
-  const docUrl = schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
+  const docUrl = schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
   const onChangeWrapper = ({ formData, errors }: IChangeEvent<Record<string, unknown>>) => {
     // lets check if form data is dirty (has meaningful changes)
