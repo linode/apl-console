@@ -256,8 +256,26 @@ function applySortFilter({
     )
   }
 
-  if (managedMonitoringApps)
-    tableData = tableData.filter((item: Record<string, any>) => managedMonitoringApps[item.id.toLowerCase()] !== false)
+  if (managedMonitoringApps) {
+    /**
+     * Loki is not part of managedMonitoringApps, but it is dependend on Grafana dashboards.
+     *
+     * So if Grafana is disabled but Loki is enabled you can still click on Loki and get an error
+     * as it goes to a Grafana dashboard
+     *
+     * Therefore we disable Loki if Grafana is disabled in managedMonitoring and Loki is enabled as an app
+     */
+    const isGrafanaDisabled = managedMonitoringApps.grafana === false
+    const hasLokiInTableData = tableData.some((entry: Record<string, any>) => entry.id.toLowerCase() === 'loki')
+
+    if (isGrafanaDisabled && hasLokiInTableData)
+      tableData = tableData.filter((entry: Record<string, any>) => entry.id.toLowerCase() !== 'loki')
+
+    // Filter out any entries in tableData where the corresponding managedMonitoringApps entry is false
+    tableData = tableData.filter(
+      (entry: Record<string, any>) => managedMonitoringApps[entry.id.toLowerCase()] !== false,
+    )
+  }
 
   if (!isAdmin) tableData = tableData.filter((item: Record<string, any>) => item.enabled !== false)
 
