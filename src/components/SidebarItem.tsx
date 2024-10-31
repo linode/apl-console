@@ -36,7 +36,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
         primary={title}
         sx={{ color: '#fff', fontWeight: 'bold' }}
         secondary={
-          <Tooltip title={caption} arrow>
+          <Tooltip title={caption ?? ''} arrow>
             <Typography
               noWrap
               variant='caption'

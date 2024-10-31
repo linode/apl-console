@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
 import useAuthzSession from 'hooks/useAuthzSession'
-import MainLayout from 'layouts/EmptyBase'
+import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
@@ -41,15 +41,9 @@ export default function ({
     if (!isFetching) refetch()
   }, [isDirty])
   // END HOOKS
-  return (
-    <MainLayout title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`}>
-      <Apps
-        teamId={teamId}
-        apps={isFetching ? undefined : apps}
-        teamSettings={teamSettings}
-        setAppState={setAppState}
-        loading={isLoading}
-      />
-    </MainLayout>
+  const loading = isLoading
+  const comp = apps && (
+    <Apps teamId={teamId} apps={isFetching ? undefined : apps} teamSettings={teamSettings} setAppState={setAppState} />
   )
+  return <PaperLayout loading={loading} comp={comp} title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`} />
 }
