@@ -1,67 +1,62 @@
 /* eslint-disable max-classes-per-file */
 import { e } from 'i18n/i18n'
 
-export class HttpError extends Error {
-  code?: number
-
-  constructor(message: string, code?: number | undefined) {
+class HttpError extends Error {
+  constructor(message: string, public code?: number, public title?: string) {
+    // Ensure to add the corresponding message translation in public/i18n/*/error.json and src/i18n/trans/error.json
     super(message)
-    this.code = code
-    // restore prototype chain
-    Object.setPrototypeOf(this, new.target.prototype)
+    this.name = this.constructor.name
   }
 
-  public static fromCode(code: number): HttpError {
+  static fromCode(code: number): HttpError {
     return new HttpError(e[code], code)
   }
 }
 
-export class HttpErrorBadRequest extends HttpError {
+class HttpErrorBadRequest extends HttpError {
   constructor() {
-    super(e['The route does not exist'], 400)
+    super(e['The route does not exist.'], 400)
   }
 }
 
-export class ApiError extends HttpError {
-  extendedMessage?: string | { title: string; message: string } | undefined
-
-  constructor(
-    message: string,
-    code?: number | undefined,
-    extendedMessage?: string | { title: string; message: string } | undefined,
-  ) {
-    super(message)
-    this.extendedMessage = extendedMessage
-    this.code = code
-    // restore prototype chain
-    Object.setPrototypeOf(this, new.target.prototype)
-  }
-}
-export class ApiErrorGatewayTimeout extends ApiError {
+class HttpErrorForbidden extends HttpError {
   constructor() {
-    super('API error', 504, { title: 'API', message: 'The api could not be reached' })
-  }
-}
-export class ApiErrorAlreadyExists extends ApiError {
-  constructor(message: string) {
-    super('API error', 409, { title: 'API', message })
-  }
-}
-export class ApiErrorUnauthorized extends ApiError {
-  constructor() {
-    super('API error', 403, {
-      title: 'No OIDC Claim',
-      message: 'Unauthorized. The user may not be assigned to any team.',
-    })
+    super(
+      e['You are not allowed to access this page. Perhaps you’ve mistyped the URL? Be sure to check your spelling.'],
+      403,
+    )
   }
 }
 
-export class ApiErrorUnauthorizedNoGroups extends ApiError {
+class ApiErrorGatewayTimeout extends HttpError {
   constructor() {
-    super('API error', 403, {
-      title: 'No OIDC Claim',
-      message:
-        'It seems that this user does not belong to any team. Please check the groups claim of the id token or contact your administrator.',
-    })
+    super(e['The API could not be reached.'], 504)
   }
+}
+
+class ApiErrorUnauthorized extends HttpError {
+  constructor() {
+    super(e['Unauthorized! The user may not be assigned to any team.'], 403, 'No OIDC Claim')
+  }
+}
+
+class ApiErrorUnauthorizedNoGroups extends HttpError {
+  constructor() {
+    super(
+      e[
+        'It seems that this user does not belong to any team. Please check the groups claim of the ID token or contact your administrator.'
+      ],
+      403,
+      'No OIDC Claim',
+    )
+  }
+}
+
+export {
+  HttpError,
+  HttpErrorBadRequest,
+  HttpErrorForbidden,
+  ApiErrorGatewayTimeout,
+  ApiErrorUnauthorized,
+  ApiErrorUnauthorizedNoGroups,
 }

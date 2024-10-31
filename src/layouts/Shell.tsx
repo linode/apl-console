@@ -130,11 +130,11 @@ export const getDomain = (hostname: string) => {
 }
 
 export const getEmailNoSymbols = (email: string) => {
-  return email.replaceAll('@', '-').replaceAll('.', '-')
+  return email?.replaceAll('@', '-')?.replaceAll('.', '-')
 }
 
 export const getUserTeams = (user: any) => {
-  return user?.groups.filter((group: string) => group.startsWith('team-')) || []
+  return user?.groups?.filter((group: string) => group.startsWith('team-')) || []
 }
 
 interface Props {
