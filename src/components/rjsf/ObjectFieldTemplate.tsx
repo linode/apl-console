@@ -42,7 +42,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     const type = getSchemaType(schema)
     if (type === 'boolean' && !inSkipTitle) return
     const docUrl =
-      schema && schema['x-externalDocsPath'] ? `https://otomi.io/${schema['x-externalDocsPath']}` : undefined
+      schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
     // we may get the title from the following:
     // const displayTitle = title
     const displayTitle =
