@@ -1,9 +1,5 @@
-import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import ErrorComponent from 'components/Error'
-import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
-import { useHistory } from 'react-router-dom'
 import Sidebar from 'components/Sidebar'
 import Header from 'components/Header'
 import useCollapseDrawer from 'hooks/useCollapseDrawer'
@@ -48,11 +44,7 @@ interface Props {
 export default function ({ children, title }: Props): React.ReactElement {
   const { collapseClick, isCollapse } = useCollapseDrawer()
   const { isShell, shellHeight } = useShellDrawer()
-  const session = useSession()
-  const history = useHistory()
   const [open, setOpen] = useState(false)
-
-  const verticalLayout = 'vertical'
 
   return (
     <Box
@@ -63,27 +55,9 @@ export default function ({ children, title }: Props): React.ReactElement {
       }}
     >
       {title && <Helmet title={title} />}
-      {/* <AppBar position='fixed' className={cx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <div className={classes.logo}>
-            <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-              <IconButton>
-                {img}
-                <Typography className={classes.title}>Otomi Platform</Typography>
-              </IconButton>
-            </Box>
-            <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-              <IconButton onClick={handleDrawerOpen}>{img}</IconButton>
-            </Box>
-          </div>
-          <Header />
-        </Toolbar>
-      </AppBar> */}
       <Header isCollapse={isCollapse} onOpenSidebar={() => setOpen(true)} />
       <Sidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
-      <MainStyle collapseClick={collapseClick}>
-        <ErrorBoundary FallbackComponent={ErrorComponent}>{children}</ErrorBoundary>
-      </MainStyle>
+      <MainStyle collapseClick={collapseClick}>{children}</MainStyle>
       {isShell && <Shell collapseClick={collapseClick} />}
     </Box>
   )

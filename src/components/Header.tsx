@@ -59,10 +59,6 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const isDesktop = useResponsive('up', 'lg')
   const history = useHistory()
   const {
-    settings: {
-      cluster,
-      otomi: { additionalClusters = [] },
-    },
     user: { email, teams: userTeams, isPlatformAdmin },
     oboTeamId,
     setOboTeamId,
@@ -71,13 +67,13 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const { t } = useTranslation()
   // END HOOKs
   let teams: GetTeamsApiResponse
-  const allClusters = [...additionalClusters, cluster]
+
   if (isPlatformAdmin) {
     teams = ((allTeams as any) || []).map(({ id }) => ({
       id,
     }))
   } else {
-    teams = (userTeams as any).map((id) => ({
+    teams = ((userTeams as any) || []).map((id) => ({
       id,
     }))
   }
@@ -108,12 +104,6 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     setOboTeamId(teamId)
     history.push(url)
     event.preventDefault()
-  }
-  const handleChangeCluster = (event) => {
-    const id = event.target.value
-    const [provider, name] = id.split('-')
-    const { domainSuffix } = additionalClusters.find((c) => c.name === name && c.provider === provider)
-    window.location.href = `https://otomi.${domainSuffix}`
   }
 
   return (
@@ -152,23 +142,6 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             </>
           )}
 
-          <Typography>cluster:</Typography>
-          <Select
-            size='small'
-            color='secondary'
-            value={`${cluster.provider}-${cluster.name}`}
-            onChange={handleChangeCluster}
-            data-cy='select-cluster'
-          >
-            {allClusters.map(({ name, provider }) => {
-              const id = `${provider}-${name}`
-              return (
-                <MenuItem key={id} value={id} data-cy={`select-cluster-${id}`}>
-                  {id}
-                </MenuItem>
-              )
-            })}
-          </Select>
           <Typography variant='body1'>team:</Typography>
           <Select
             size='small'
@@ -188,6 +161,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
               </MenuItem>
             ))}
           </Select>
+
           <AccountPopover email={email} />
         </Stack>
       </Toolbar>

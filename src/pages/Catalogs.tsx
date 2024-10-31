@@ -1,6 +1,5 @@
 import Catalogs from 'components/Catalogs'
-import LoadingScreen from 'components/LoadingScreen'
-import MainLayout from 'layouts/EmptyBase'
+import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -26,11 +25,8 @@ export default function ({
     })
   }, [])
 
-  if (!catalogs || isLoading) return <LoadingScreen />
+  const loading = isLoading
+  const comp = catalogs && <Catalogs teamId={teamId} catalogs={catalogs} />
 
-  return (
-    <MainLayout title={`Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`}>
-      <Catalogs teamId={teamId} catalogs={catalogs} />
-    </MainLayout>
-  )
+  return <PaperLayout loading={loading} comp={comp} title={`Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`} />
 }
