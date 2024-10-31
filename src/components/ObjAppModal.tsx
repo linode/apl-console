@@ -32,14 +32,19 @@ const ModalFooter = styled('div')({
 interface Props {
   open: boolean
   handleClose: () => void
-  appName: string
+  appId: string
   required: boolean
+  toggleApp?: any
 }
 
-export default function StyledModal({ open, handleClose, appName, required }: Props) {
-  const name = `${appName[0].toUpperCase()}${appName.slice(1).toLowerCase()}`
+export default function StyledModal({ open, handleClose, appId, required, toggleApp }: Props) {
+  const name = `${appId[0].toUpperCase()}${appId.slice(1).toLowerCase()}`
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const history = useHistory()
+  const handleEnable = () => {
+    toggleApp()
+    handleClose()
+  }
   return (
     <Modal open={open} onClose={handleClose}>
       <ModalBox>
@@ -56,7 +61,7 @@ export default function StyledModal({ open, handleClose, appName, required }: Pr
             Skip
           </Button>
           {!required && (
-            <Button variant='outlined' color='primary' onClick={() => console.log('Enable')}>
+            <Button variant='outlined' color='primary' onClick={handleEnable}>
               {`Enable ${name}`}
             </Button>
           )}

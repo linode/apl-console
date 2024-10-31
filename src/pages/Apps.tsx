@@ -5,7 +5,7 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAppsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useGetAppsQuery, useGetSettingsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -22,6 +22,12 @@ export default function ({
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
   const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
   const { data: teamSettings } = useGetTeamQuery({ teamId })
+  const {
+    data: objSettings,
+    isLoading: isLoadingSettings,
+    isFetching: isFetchingSettings,
+    refetch: refetchSettings,
+  } = useGetSettingsQuery({ ids: ['obj'] })
   useEffect(() => {
     if (appIds) {
       setAppState([])
@@ -39,11 +45,18 @@ export default function ({
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
+    if (!isFetchingSettings) refetchSettings()
   }, [isDirty])
   // END HOOKS
-  const loading = isLoading
+  const loading = isLoading || isLoadingSettings
   const comp = apps && (
-    <Apps teamId={teamId} apps={isFetching ? undefined : apps} teamSettings={teamSettings} setAppState={setAppState} />
+    <Apps
+      teamId={teamId}
+      apps={isFetching ? undefined : apps}
+      teamSettings={teamSettings}
+      setAppState={setAppState}
+      objSettings={objSettings}
+    />
   )
   return <PaperLayout loading={loading} comp={comp} title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`} />
 }

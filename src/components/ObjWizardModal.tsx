@@ -48,8 +48,9 @@ export default function StyledModal() {
   const { data } = useGetObjWizardQuery(showObjWizard !== undefined && skipToken)
 
   useEffect(() => {
-    if (showObjWizard === undefined) setShowObjWizard(data?.showWizard as boolean)
-  }, [data])
+    if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
+    if (!isPreInstalled) setShowObjWizard(false)
+  }, [data, isPreInstalled])
 
   if (!isPlatformAdmin || !isPreInstalled) return null
 

@@ -2,7 +2,7 @@
 import { Box, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
+import { GetAppsApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { get } from 'lodash'
 import { getAppData } from 'utils/data'
@@ -10,6 +10,7 @@ import AppCard from './AppCard'
 import TableToolbar from './TableToolbar'
 import Modal from './Modal'
 import DeprecatedModalInfo from './DeprecatedModalInfo'
+import ObjAppModal from './ObjAppModal'
 
 // -- Styles -------------------------------------------------------------
 
@@ -107,22 +108,46 @@ interface Props {
   apps: GetAppsApiResponse
   teamSettings: GetTeamApiResponse
   setAppState: CallableFunction
+  objSettings: GetSettingsApiResponse
 }
 
-export default function Apps({ teamId, apps, teamSettings, setAppState }: Props): React.ReactElement {
+export default function Apps({ teamId, apps, teamSettings, setAppState, objSettings }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
-  const [deps, setDeps] = useState(undefined)
   const [filterName, setFilterName] = useState('')
   const [orderBy, setOrderBy] = useState('enabled')
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [openModal, setOpenModal] = useState('')
+  const [openObjAppModal, setOpenObjAppModal] = useState('')
 
-  const toggleApp = (name: string) => {
-    const { deps, appInfo } = getAppData(session, teamId, name)
-    // we only allow turning on
-    setAppState([(appInfo.dependencies || []).concat([name])])
-    setDeps(undefined)
+  const objStorageApps = [
+    { appId: 'harbor', required: false },
+    { appId: 'loki', required: false },
+    { appId: 'tempo', required: false },
+    { appId: 'velero', required: true },
+    { appId: 'thanos', required: true },
+  ]
+
+  const isLinodeConfigured = (appId: string): boolean => {
+    const linode: any = objSettings.obj?.provider?.type === 'linode' ? objSettings.obj.provider.linode : {}
+    const { accessKeyId, secretAccessKey, buckets } = linode
+    return Boolean(accessKeyId && secretAccessKey && buckets?.[appId])
+  }
+
+  const getObjStorageRequired = (appId: string): boolean => {
+    const { isPreInstalled } = session.settings.otomi
+    return Boolean(isPreInstalled && objStorageApps.some((app) => app.appId === appId) && !isLinodeConfigured(appId))
+  }
+
+  const toggleApp = (id: string, ignoreObjStorage = false) => {
+    const isObjStorageRequired = getObjStorageRequired(id)
+    if (isObjStorageRequired && !ignoreObjStorage) setOpenObjAppModal(id)
+    else {
+      // we only allow turning on
+      const { deps } = getAppData(session, teamId, id)
+      setAppState([[id], true])
+      if (deps) setAppState([(deps || []).concat([id]), true])
+    }
   }
 
   const handleFilterName = (filterName: string) => {
@@ -142,35 +167,21 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
   })
 
   const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
-
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
     items?.map((item) => {
-      const {
-        enabled,
-        externalUrl,
-        id,
-        logo,
-        logoAlt,
-        deps: coreDeps,
-        isDeprecated,
-        isBeta,
-      } = getAppData(session, teamId, item)
+      const { enabled, externalUrl, id, logo, logoAlt, isDeprecated, isBeta } = getAppData(session, teamId, item)
       return (
         <Grid item xs={12} sm={6} md={4} lg={4} key={id}>
           <AppCard
-            deps={coreDeps}
             enabled={enabled !== false}
-            isCore={enabled === undefined}
-            externalUrl={externalUrl}
             id={id}
             img={`/logos/${logo}`}
             imgAlt={`/logos/${logoAlt}`}
-            setDeps={setDeps}
             teamId={teamId}
             title={id}
-            setAppState={setAppState}
+            externalUrl={externalUrl}
             hostedByOtomi={item.enabled === undefined}
             toggleApp={() => toggleApp(id)}
             isDeprecated={isDeprecated}
@@ -187,7 +198,6 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
         setOpenModal('')
         window.open(app.externalUrl, '_blank')
       }
-
       const handleAction = () => {
         setOpenModal('')
         window.open(app.replacementUrl, '_blank')
@@ -209,6 +219,25 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
     })
   }
 
+  const objAppModals = () => {
+    return objStorageApps.map(({ appId, required }) => {
+      const handleClose = () => {
+        setOpenObjAppModal('')
+      }
+      return (
+        <div key={`obj-app-${appId}-modal`}>
+          <ObjAppModal
+            open={openObjAppModal === appId}
+            handleClose={handleClose}
+            appId={appId}
+            required={required}
+            toggleApp={() => toggleApp(appId, true)}
+          />
+        </div>
+      )
+    })
+  }
+
   return (
     <Box p={5} className={cx(classes.root)}>
       <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
@@ -216,6 +245,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState }: Props)
         {out(dataFiltered?.sort(sortArray))}
       </Grid>
       {deprecatedAppModals()}
+      {objAppModals()}
     </Box>
   )
 }
