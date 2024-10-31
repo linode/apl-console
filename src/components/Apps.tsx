@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import { Card, Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
 import { GetAppsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
@@ -7,7 +7,6 @@ import { makeStyles } from 'tss-react/mui'
 import { get } from 'lodash'
 import { getAppData } from 'utils/data'
 import AppCard from './AppCard'
-import LoadingScreen from './LoadingScreen'
 import TableToolbar from './TableToolbar'
 import Modal from './Modal'
 import DeprecatedModalInfo from './DeprecatedModalInfo'
@@ -93,12 +92,12 @@ function sortArray(a, b) {
 
 function getDeprecatedApps(apps, session, teamId) {
   return apps
-    .map((app) => {
+    ?.map((app) => {
       const { id, isDeprecated, deprecationInfo, externalUrl, replacementUrl } = getAppData(session, teamId, app)
       if (isDeprecated) return { id, deprecationInfo, externalUrl, replacementUrl }
       return null
     })
-    .filter((app) => app !== null)
+    ?.filter((app) => app !== null)
 }
 
 // ---- JSX -------------------------------------------------------------
@@ -107,11 +106,10 @@ interface Props {
   teamId: string
   apps: GetAppsApiResponse
   teamSettings: GetTeamApiResponse
-  loading: boolean
   setAppState: CallableFunction
 }
 
-export default function Apps({ teamId, apps, teamSettings, loading, setAppState }: Props): React.ReactElement {
+export default function Apps({ teamId, apps, teamSettings, setAppState }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
   const [deps, setDeps] = useState(undefined)
@@ -133,7 +131,6 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
   }
 
   // END HOOKS
-  if (!apps || loading) return <LoadingScreen />
   // we visualize drag state for all app dependencies
   const isAdmin = teamId === 'admin'
   const dataFiltered = applySortFilter({
@@ -149,7 +146,7 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
   // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
-    items.map((item) => {
+    items?.map((item) => {
       const {
         enabled,
         externalUrl,
@@ -185,7 +182,7 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
     })
 
   const deprecatedAppModals = () => {
-    return deprecatedApps.map((app) => {
+    return deprecatedApps?.map((app) => {
       const handleCancel = () => {
         setOpenModal('')
         window.open(app.externalUrl, '_blank')
@@ -213,15 +210,13 @@ export default function Apps({ teamId, apps, teamSettings, loading, setAppState 
   }
 
   return (
-    <div className={cx(classes.root)}>
-      <Card sx={{ p: 5 }}>
-        <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
-        <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-          {out(dataFiltered.sort(sortArray))}
-        </Grid>
-        {deprecatedAppModals()}
-      </Card>
-    </div>
+    <Box p={5} className={cx(classes.root)}>
+      <TableToolbar filterName={filterName} onFilterName={handleFilterName} placeholderText='search apps' noPadding />
+      <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+        {out(dataFiltered?.sort(sortArray))}
+      </Grid>
+      {deprecatedAppModals()}
+    </Box>
   )
 }
 
@@ -240,26 +235,44 @@ function applySortFilter({
   managedMonitoringApps: any
   isAdmin: boolean
 }) {
-  const stabilizedThis = tableData.map((el, index) => [el, index] as const)
+  const stabilizedThis = tableData?.map((el, index) => [el, index] as const)
 
-  stabilizedThis.sort((a, b) => {
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0])
     if (order !== 0) return order
     return a[1] - b[1]
   })
 
-  tableData = stabilizedThis.map((el) => el[0])
+  tableData = stabilizedThis?.map((el) => el[0])
 
   if (filterName) {
-    tableData = tableData.filter(
+    tableData = tableData?.filter(
       (item: Record<string, any>) => item.id.toLowerCase().indexOf(filterName.toLowerCase()) !== -1,
     )
   }
 
-  if (managedMonitoringApps)
-    tableData = tableData.filter((item: Record<string, any>) => managedMonitoringApps[item.id.toLowerCase()] !== false)
+  if (managedMonitoringApps) {
+    /**
+     * Loki is not part of managedMonitoringApps, but it is dependend on Grafana dashboards.
+     *
+     * So if Grafana is disabled but Loki is enabled you can still click on Loki and get an error
+     * as it goes to a Grafana dashboard
+     *
+     * Therefore we disable Loki if Grafana is disabled in managedMonitoring and Loki is enabled as an app
+     */
+    const isGrafanaDisabled = managedMonitoringApps.grafana === false
+    const hasLokiInTableData = tableData.some((entry: Record<string, any>) => entry.id.toLowerCase() === 'loki')
 
-  if (!isAdmin) tableData = tableData.filter((item: Record<string, any>) => item.enabled !== false)
+    if (isGrafanaDisabled && hasLokiInTableData)
+      tableData = tableData.filter((entry: Record<string, any>) => entry.id.toLowerCase() !== 'loki')
+
+    // Filter out any entries in tableData where the corresponding managedMonitoringApps entry is false
+    tableData = tableData.filter(
+      (entry: Record<string, any>) => managedMonitoringApps[entry.id.toLowerCase()] !== false,
+    )
+  }
+
+  if (!isAdmin) tableData = tableData?.filter((item: Record<string, any>) => item.enabled !== false)
 
   return tableData
 }

@@ -1,7 +1,8 @@
-import Forbidden from 'components/Forbidden'
 import { useSession } from 'providers/Session'
 import React from 'react'
 import { Route } from 'react-router-dom'
+import Error from 'pages/Error'
+import { HttpErrorForbidden } from 'utils/error'
 
 function PrivateRoute({ component: Component, platformAdminRoute, teamAdminRoute, ...rest }: any) {
   const session = useSession()
@@ -23,7 +24,9 @@ function PrivateRoute({ component: Component, platformAdminRoute, teamAdminRoute
   return (
     <Route
       {...rest}
-      render={(props) => (isAuthenticated(props) ? <Component {...props} /> : React.createElement(Forbidden))}
+      render={(props) =>
+        isAuthenticated(props) ? <Component {...props} /> : <Error error={new HttpErrorForbidden()} />
+      }
     />
   )
 }
