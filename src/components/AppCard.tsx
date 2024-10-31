@@ -49,7 +49,7 @@ const useStyles = makeStyles()((theme) => {
       border: 'none',
       borderRadius: '5px',
     },
-    chipDepricated: {
+    chipDeprecated: {
       color: `${theme.palette.text.primary} !important`,
       backgroundColor: '#a4a4a440 !important',
       fontWeight: 'bold !important',
@@ -164,8 +164,8 @@ export default function ({
         {isDeprecated && (
           <Box>
             <Chip
-              className={cx(classes.chip, classes.chipDepricated, isLight ? classes.chipLight : classes.chipDark)}
-              label='DEPRICATED'
+              className={cx(classes.chip, classes.chipDeprecated, isLight ? classes.chipLight : classes.chipDark)}
+              label='DEPRECATED'
               variant='outlined'
             />
           </Box>
