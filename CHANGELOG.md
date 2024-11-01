@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.1.0](https://github.com/linode/apl-console/compare/v3.0.0...v3.1.0) (2024-11-01)
+
+
+### Features
+
+* default platform admin user ([#443](https://github.com/linode/apl-console/issues/443)) ([73f11b1](https://github.com/linode/apl-console/commit/73f11b158515264db08bb0f2c83dbea6dd236c88))
+* deprecated chip ([#450](https://github.com/linode/apl-console/issues/450)) ([171174a](https://github.com/linode/apl-console/commit/171174afc75e133075c757c2de26594d6a913582))
+* error isolation and error handling ([#446](https://github.com/linode/apl-console/issues/446)) ([2504746](https://github.com/linode/apl-console/commit/250474689a4ff82e29002d5ff044651fc5958717))
+* updated dependencies to remove critical issues ([#449](https://github.com/linode/apl-console/issues/449)) ([0a407bf](https://github.com/linode/apl-console/commit/0a407bfd248959caa3efe855f93ae951407da206))
+
+
+### Bug Fixes
+
+* apps filtering ([#451](https://github.com/linode/apl-console/issues/451)) ([cb1c432](https://github.com/linode/apl-console/commit/cb1c4328d4da77d61c13255dea5ed4bad8965fd5))
+* docs url and settings menu ([#448](https://github.com/linode/apl-console/issues/448)) ([b5711cb](https://github.com/linode/apl-console/commit/b5711cb41384417daf91160228f54038240c6aa0))
+* loki is shown as a team app when grafana for the team is not enabled ([#447](https://github.com/linode/apl-console/issues/447)) ([d0835fa](https://github.com/linode/apl-console/commit/d0835fa5d55a65a0670ebb692176e8614d2ab219))
+
 ## [3.0.0](https://github.com/linode/apl-console/compare/v3.0.0-rc.0...v3.0.0) (2024-10-25)
 
 
