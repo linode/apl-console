@@ -55,11 +55,8 @@ export default function StyledModal() {
   if (!isPlatformAdmin || !isPreInstalled) return null
 
   const handleSkip = () => {
-    create({ body: { showWizard: false } }).then(() => null)
+    create({ body: { showWizard: false } })
     setShowObjWizard(false)
-  }
-  const handleAccept = () => {
-    setAccepted(true)
   }
   const handleSubmit = () => {
     setLoading(true)
@@ -113,7 +110,7 @@ export default function StyledModal() {
           </Button>
 
           {!accepted ? (
-            <Button variant='contained' color='primary' onClick={handleAccept}>
+            <Button variant='contained' color='primary' onClick={() => setAccepted(true)}>
               Yes
             </Button>
           ) : (
