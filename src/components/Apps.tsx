@@ -261,13 +261,13 @@ function applySortFilter({
      * Therefore we disable Loki if Grafana is disabled in managedMonitoring and Loki is enabled as an app
      */
     const isGrafanaDisabled = managedMonitoringApps.grafana === false
-    const hasLokiInTableData = tableData.some((entry: Record<string, any>) => entry.id.toLowerCase() === 'loki')
+    const hasLokiInTableData = tableData?.some((entry: Record<string, any>) => entry.id.toLowerCase() === 'loki')
 
     if (isGrafanaDisabled && hasLokiInTableData)
-      tableData = tableData.filter((entry: Record<string, any>) => entry.id.toLowerCase() !== 'loki')
+      tableData = tableData?.filter((entry: Record<string, any>) => entry.id.toLowerCase() !== 'loki')
 
     // Filter out any entries in tableData where the corresponding managedMonitoringApps entry is false
-    tableData = tableData.filter(
+    tableData = tableData?.filter(
       (entry: Record<string, any>) => managedMonitoringApps[entry.id.toLowerCase()] !== false,
     )
   }
