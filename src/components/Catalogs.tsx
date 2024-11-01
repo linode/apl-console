@@ -62,7 +62,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
   }
 
   return (
-    <div className={cx(classes.root)}>
+    <Box p={5} className={cx(classes.root)}>
       <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
         <AccordionSummary>
           <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Catalog!</Box>
@@ -71,7 +71,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
         <AccordionDetails>
           {developerCatalogInfo.map((info) => {
             return (
-              <Box sx={{ mb: '12px' }}>
+              <Box key={info.title} sx={{ mb: '12px' }}>
                 <Box sx={{ fontWeight: 'bold' }}>{info.title}</Box>
                 <Typography sx={{ ml: '1rem' }}>{info.text}</Typography>
               </Box>
@@ -90,6 +90,6 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
           )
         })}
       </Grid>
-    </div>
+    </Box>
   )
 }
