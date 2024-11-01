@@ -21,8 +21,8 @@ export default function SettingsOverview() {
   const session = useSession()
   const settings = [
     { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg'), id: 'cluster' },
-    { title: 'APL settings', path: '/settings/otomi', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
-    { title: 'Platform Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), id: 'kms' },
+    { title: 'Platform', path: '/settings/otomi', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
+    { title: 'Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), id: 'kms' },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg'), id: 'alerts' },
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg'), id: 'dns' },
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg'), id: 'ingress' },
