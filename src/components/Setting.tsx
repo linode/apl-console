@@ -30,9 +30,6 @@ export const getSettingSchema = (
         )
       }
       break
-    case 'otomi':
-      unset(schema, 'properties.additionalClusters.items.properties.provider.description')
-      break
     case 'cluster':
       unset(schema, 'properties.provider.description')
       set(schema, 'properties.provider.readOnly', true)

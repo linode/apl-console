@@ -111,6 +111,11 @@ interface Props {
   objSettings: GetSettingsApiResponse
 }
 
+interface ObjStorageApp {
+  appId: string
+  required: boolean
+}
+
 export default function Apps({ teamId, apps, teamSettings, setAppState, objSettings }: Props): React.ReactElement {
   const session = useSession()
   const { classes, cx } = useStyles()
@@ -119,14 +124,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [openModal, setOpenModal] = useState('')
   const [openObjAppModal, setOpenObjAppModal] = useState('')
-
-  const objStorageApps = [
-    { appId: 'harbor', required: false },
-    { appId: 'loki', required: false },
-    { appId: 'tempo', required: false },
-    { appId: 'velero', required: true },
-    { appId: 'thanos', required: true },
-  ]
+  const objStorageApps = (session?.objStorageApps || []) as ObjStorageApp[]
 
   const isLinodeConfigured = (appId: string): boolean => {
     const linode: any = objSettings.obj?.provider?.type === 'linode' ? objSettings.obj.provider.linode : {}

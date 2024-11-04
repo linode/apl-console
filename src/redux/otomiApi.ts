@@ -3723,6 +3723,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     sub?: string
   }
   defaultPlatformAdminEmail?: string
+  objStorageApps?: object[]
   versions?: {
     core?: string
     api?: string
@@ -3744,11 +3745,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     zones?: string[]
   }
   otomi?: {
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
@@ -4013,11 +4009,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
@@ -4297,11 +4288,6 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
-      additionalClusters?: {
-        domainSuffix: string
-        name: string
-        provider: 'linode' | 'custom'
-      }[]
       isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
