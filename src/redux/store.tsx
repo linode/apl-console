@@ -20,6 +20,9 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
         // clear state
         if (requestStatus === 'fulfilled') dispatch(setDirty(false))
       }
+      // exclude endpoints from dirty state
+      if (type === 'mutation' && ['workloadCatalog', 'createObjWizard'].includes(endpointName as string))
+        dispatch(setDirty(false))
     }
   } else if (payload) {
     // eslint-disable-next-line no-console
