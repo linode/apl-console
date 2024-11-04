@@ -164,10 +164,10 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
   const onChangeHandler = (data) => {
     const isAnyAppEnabled = Object.values(data?.database || {}).some((app: any) => app?.enabled)
     if (isAnyAppEnabled && getObjStorageRequired('cnpg')) {
-      setDisabledMessage('Database requires object storage to be enabled.')
+      setDisabledMessage('Database backup requires object storage to be enabled.')
       setIsObjStorageRequired(true)
     } else if (data?.gitea?.enabled && getObjStorageRequired('gitea')) {
-      setDisabledMessage('Gitea requires object storage to be enabled.')
+      setDisabledMessage('Gitea backup requires object storage to be enabled.')
       setIsObjStorageRequired(true)
     } else {
       setDisabledMessage('')
@@ -199,7 +199,7 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
                 history.push('/maintenance')
               }}
             >
-              Show Object Storage Wizard
+              Start Object Storage Wizard
             </Button>
           )}
         </InformationBanner>
