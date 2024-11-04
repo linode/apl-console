@@ -45,7 +45,7 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
-  const { data } = useGetObjWizardQuery(showObjWizard !== undefined && skipToken)
+  const { data } = useGetObjWizardQuery(!isPlatformAdmin && showObjWizard !== undefined && skipToken)
 
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
