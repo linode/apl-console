@@ -16,6 +16,7 @@ interface ListTableProps extends EnhancedTableProps {
   idKey?: string
   collection?: string
   to?: string
+  customButton?: React.ReactElement
 }
 export default function ({
   teamId,
@@ -26,10 +27,11 @@ export default function ({
   noCrud = false,
   idKey = 'id',
   to,
+  customButton = null,
   ...other
 }: ListTableProps): React.ReactElement {
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
     oboTeamId,
   } = useSession()
   const { t } = useTranslation()
@@ -48,7 +50,7 @@ export default function ({
           <Box sx={{ flexGrow: 1 }}>
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
-          {(isAdmin || oboTeamId) && !noCrud && (
+          {(isPlatformAdmin || oboTeamId) && !noCrud && (
             <Box mb={1}>
               <Button
                 variant='contained'
@@ -61,6 +63,7 @@ export default function ({
               </Button>
             </Box>
           )}
+          {customButton && <Box mb={1}>{customButton}</Box>}
         </Box>
       </Box>
 

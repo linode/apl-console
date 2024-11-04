@@ -44,7 +44,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     appsEnabled,
     oboTeamId,
     settings: { cluster },
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -52,7 +52,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: getSecretLink(isAdmin, oboTeamId),
+      renderer: getSecretLink(isPlatformAdmin, oboTeamId),
     },
     {
       id: 'type',
@@ -77,7 +77,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     <Box>
       <InformationBanner message='Secrets with Hashicorp Vault are going to be removed in Otomi v3.0.0. Otomi provides Sealed Secrets as a replacement.' />
       {!appsEnabled.vault ? (
-        <p>Admin needs to enable the Vault app to activate this feature.</p>
+        <InformationBanner message=' Admin needs to enable the Vault app to activate this feature.' />
       ) : (
         <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='Secret' />
       )}

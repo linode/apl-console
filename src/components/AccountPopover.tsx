@@ -14,9 +14,7 @@ type Props = {
 }
 
 export default function AccountPopover({ email }: Props) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [open, setOpen] = useState<HTMLElement | null>(null)
-
   const [del] = useDeleteCloudttyMutation()
   const { user, oboTeamId } = useSession()
   const hostname = window.location.hostname
@@ -24,26 +22,22 @@ export default function AccountPopover({ email }: Props) {
   const emailNoSymbols = getEmailNoSymbols(user.email)
   const userTeams = getUserTeams(user)
 
-  const notifications = [{ type: 'PLATFORM', content: 'Coming soon', status: 'STICKY' }]
-  const unreadNotifications = notifications.filter((n) => n.status === 'UNREAD')
-
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget)
   }
 
-  const handleAccountClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
   const handleClose = () => {
     setOpen(null)
   }
-  const toggleTheme = (): void => {
-    // setThemeMode(toggleThemeMode())
-  }
+
   const handleLogout = async () => {
-    await del({
-      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams },
-    })
+    try {
+      await del({
+        body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
+      })
+    } catch (error) {
+      // cloudtty resources will be automatically deleted by the API after a 2-hour timeout
+    }
     clearLocalStorage('oboTeamId')
     window.location.href = '/logout-otomi'
   }

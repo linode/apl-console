@@ -12,7 +12,7 @@ import { useGetDashboardQuery, useGetTeamsQuery } from 'redux/otomiApi'
 export default function (): React.ReactElement {
   const { themeView } = useSettings()
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
     oboTeamId: teamId,
   } = useSession()
 
@@ -44,6 +44,10 @@ export default function (): React.ReactElement {
   const inventory = [...teamInventory, ...dashboardInventory]
   const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
-    <PaperLayout loading={loading} comp={comp} title={t('TITLE_DASHBOARD', { role: isAdmin ? 'admin' : 'team' })} />
+    <PaperLayout
+      loading={loading}
+      comp={comp}
+      title={t('TITLE_DASHBOARD', { role: isPlatformAdmin ? 'admin' : 'team' })}
+    />
   )
 }

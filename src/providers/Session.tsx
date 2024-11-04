@@ -1,5 +1,4 @@
 import { setSpec } from 'common/api-spec'
-import ErrorComponent from 'components/Error'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
 import MessageDrone from 'components/MessageDrone'
@@ -19,7 +18,7 @@ import {
   useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
+import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
 import snack from 'utils/snack'
 
 export interface SessionContext extends GetSessionApiResponse {
@@ -45,11 +44,13 @@ const Context = React.createContext<SessionContext>({
     teams: undefined,
     name: undefined,
     email: undefined,
-    isAdmin: undefined,
+    isPlatformAdmin: undefined,
+    isTeamAdmin: undefined,
     roles: undefined,
     authz: undefined,
     sub: undefined,
   },
+  defaultPlatformAdminEmail: undefined,
   versions: undefined,
 })
 
@@ -125,7 +126,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     [appsEnabled, oboTeamId, session, settings],
   )
   const { corrupt, editor, user } = ctx
-  const { email, isAdmin, teams } = user || {}
+  const { email, isPlatformAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
@@ -277,20 +278,20 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  if (!session.user.isAdmin && session.user.teams.length === 0)
-    return <ErrorComponent error={new ApiErrorUnauthorizedNoGroups()} />
+  if (!session) throw new ApiErrorGatewayTimeout()
+  if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
-  if (!isAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
+  if (!isPlatformAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
   if (!oboTeamId) {
-    if (isAdmin) setOboTeamId('admin')
-    else if (!isAdmin) {
+    if (isPlatformAdmin) setOboTeamId('admin')
+    else if (!isPlatformAdmin) {
       if (teams.length) {
         setOboTeamId(teams[0])
         return <LoadingScreen />
       }
-      return <ErrorComponent error={new ApiErrorUnauthorized()} />
+      throw new ApiErrorUnauthorized()
     }
   }
   return <Context.Provider value={ctx}>{children}</Context.Provider>

@@ -32,14 +32,14 @@ const FirstSidebarDivider = styled(SidebarDivider)`
 // ----------------------------------------------------------------------
 
 export default function SidebarContent({ navConfig, isCollapse = false, ...other }: NavSectionProps) {
-  const { oboTeamId, user } = useSession()
+  const { user } = useSession()
   const { themeView } = useSettings()
 
-  const { isAdmin } = user
+  const { isPlatformAdmin } = user
 
   navConfig = navConfig.filter((group) => {
     const subheader = group.subheader.toLowerCase()
-    if (isAdmin) {
+    if (isPlatformAdmin) {
       return (
         subheader === 'actions' || subheader.includes(themeView) || (themeView === 'team' && subheader === 'access')
       )
@@ -53,7 +53,7 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
         <List key={group.subheader} disablePadding>
           {index === 0 ? <FirstSidebarDivider /> : <SidebarDivider />}
           {group.items.map((list) => {
-            if (oboTeamId === 'admin' && list.dontShowIfAdminTeam) return null
+            if (list.hidden) return null
             return <SidebarListRoot key={list.title + list.path} list={list} isCollapse={isCollapse} />
           })}
         </List>

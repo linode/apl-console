@@ -7,22 +7,34 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Box, Grid, Typography } from '@mui/material'
 import Versions from 'components/Versions'
+import { jsx } from '@emotion/react'
+import { useSession } from 'providers/Session'
 
+interface Settings {
+  title: string
+  path: string
+  icon: jsx.JSX.Element
+  id: string
+}
 export default function SettingsOverview() {
   const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
-
+  const session = useSession()
   const settings = [
-    { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg') },
-    { title: 'APL settings', path: '/settings/otomi', icon: getIcon('akamai_icon.svg') },
-    { title: 'Platform Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg') },
-    { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg') },
-    { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg') },
-    { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg') },
-    { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg') },
-    { title: 'SMTP', path: '/settings/smtp', icon: getIcon('smtp_icon.svg') },
-    { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg') },
-    { title: 'Object Storage', path: '/settings/obj', icon: getIcon('cloud_upload.svg') },
+    { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg'), id: 'cluster' },
+    { title: 'Platform', path: '/settings/otomi', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
+    { title: 'Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), id: 'kms' },
+    { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg'), id: 'alerts' },
+    { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg'), id: 'dns' },
+    { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg'), id: 'ingress' },
+    { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg'), id: 'oidc' },
+    { title: 'SMTP', path: '/settings/smtp', icon: getIcon('smtp_icon.svg'), id: 'smtp' },
+    { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg'), id: 'backup' },
+    { title: 'Object Storage', path: '/settings/obj', icon: getIcon('cloud_upload.svg'), id: 'objectStorage' },
   ]
+  const removePreInstalledSpecificSettings = ['kms', 'dns', 'ingress']
+  let filteredSettings: Settings[] = settings
+  if (session.settings.otomi.isPreInstalled)
+    filteredSettings = settings.filter((setting) => !removePreInstalledSpecificSettings.includes(setting.id))
   // TODO: remove inline styling and use theming
   const SettingsCard = ({ title, path, icon }) => (
     <Grid item xs={6} sm={4} md={3} lg={3} key={title}>
@@ -59,7 +71,7 @@ export default function SettingsOverview() {
   const comp = (
     <div>
       <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-        {settings.map((setting) => {
+        {filteredSettings.map((setting) => {
           return <SettingsCard key={setting.title} title={setting.title} path={setting.path} icon={setting.icon} />
         })}
       </Grid>

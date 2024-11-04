@@ -130,11 +130,11 @@ export const getDomain = (hostname: string) => {
 }
 
 export const getEmailNoSymbols = (email: string) => {
-  return email.replaceAll('@', '-').replaceAll('.', '-')
+  return email?.replaceAll('@', '-')?.replaceAll('.', '-')
 }
 
 export const getUserTeams = (user: any) => {
-  return user?.groups.filter((group: string) => group.startsWith('team-')) || []
+  return user?.groups?.filter((group: string) => group.startsWith('team-')) || []
 }
 
 interface Props {
@@ -166,11 +166,11 @@ function Shell({ collapseClick }: Props): React.ReactElement {
 
   useEffect(() => {
     if (isShell) {
-      connect({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams, sub: user.sub } }).then(
-        ({ data }: { data: ConnectCloudttyApiResponse }) => {
-          onSetIFrameUrl(data.iFrameUrl)
-        },
-      )
+      connect({
+        body: { teamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams, sub: user.sub },
+      }).then(({ data }: { data: ConnectCloudttyApiResponse }) => {
+        onSetIFrameUrl(data.iFrameUrl)
+      })
     }
   }, [isShell])
 
@@ -200,14 +200,14 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isAdmin, userTeams } })
+    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams } })
   }
 
   return (
     <ShellStyle isDesktop={isDesktop} collapseClick={collapseClick} drawerHeight={shellHeight}>
       <ShellBarStyle>
         <Box sx={{ mr: 'auto', display: 'flex', alignItems: 'center', color: '#f4f7f9' }}>
-          {!isLoading && <Box>{`team-${user.isAdmin ? 'admin' : teamId}`}</Box>}
+          {!isLoading && <Box>{`team-${user.isPlatformAdmin ? 'admin' : teamId}`}</Box>}
         </Box>
         <HandleBarStyle transparency={transparency} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} />
         <ShellButton tooltip='Open shell in a new tab' src='/assets/openInNew_icon.svg' onClick={handleOpenInNew} />

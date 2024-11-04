@@ -10,16 +10,15 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const { ca, appsEnabled, oboTeamId, user } = useSession()
+  const { ca, appsEnabled, oboTeamId, user, settings } = useSession()
+  const hasExternalIDP = settings?.otomi?.hasExternalIDP ?? false
+  const isManaged = settings?.otomi?.isPreInstalled ?? false
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
     filename: 'ca.crt',
   }
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
-  const dashboard =
-    oboTeamId !== 'admin' ? [{ title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') }] : []
-
   return [
     {
       subheader: 'actions',
@@ -35,12 +34,13 @@ export default function NavConfig() {
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
         // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
+        { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: '/netpols', icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
-        { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg') }, // replace .svg
+        { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg'), hidden: isManaged }, // replace .svg
         { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
           title: 'Settings',
@@ -52,8 +52,8 @@ export default function NavConfig() {
     {
       subheader: `Team ${oboTeamId}`,
       items: [
-        ...dashboard,
-        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), dontShowIfAdminTeam: true },
+        { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg'), hidden: oboTeamId === 'admin' },
+        { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: oboTeamId === 'admin' },
         {
           title: 'Catalog',
           path: `/catalogs/${oboTeamId}`,
@@ -71,10 +71,16 @@ export default function NavConfig() {
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('security_icon.svg') },
         {
+          title: 'User Management',
+          path: `/teams/${oboTeamId}/users`,
+          icon: getIcon('users_icon.svg'),
+          hidden: hasExternalIDP || !(user.isPlatformAdmin || user.isTeamAdmin),
+        },
+        {
           title: 'Settings',
           path: `/teams/${oboTeamId}`,
           icon: getIcon('settings_icon.svg'),
-          dontShowIfAdminTeam: true,
+          hidden: oboTeamId === 'admin',
         },
       ],
     },
@@ -98,15 +104,16 @@ export default function NavConfig() {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !appsEnabled.harbor || !canDo(user, oboTeamId, 'downloadDockerConfig'),
+          disabled: !appsEnabled?.harbor || !canDo(user, oboTeamId, 'downloadDockerConfig'),
           isDownload: true,
         },
         {
           title: 'Download CA',
           path: `${anchor}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority'),
-          isDownload: true,
+          disabled: !ca || !canDo(user, oboTeamId, 'downloadCertificateAuthority') || isManaged,
+          isDownload: isManaged,
+          hidden: isManaged,
         },
       ],
     },

@@ -189,7 +189,14 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, themeMode, sh
       </Typography>
       <Box className={boxClass}>
         {iframeSources.map((item) => (
-          <IFrame id={item.id} src={item.src} className={iframeClass} classes={classes} themeMode={themeMode} />
+          <IFrame
+            key={item.id}
+            id={item.id}
+            src={item.src}
+            className={iframeClass}
+            classes={classes}
+            themeMode={themeMode}
+          />
         ))}
       </Box>
     </Grid>
@@ -215,8 +222,8 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   }, [themeView])
   // reset themeView to team if user is not admin
   React.useEffect(() => {
-    const { isAdmin } = user
-    if (!isAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
+    const { isPlatformAdmin } = user
+    if (!isPlatformAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
   }, [])
 
   // platform view base iframe urls
@@ -302,6 +309,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
         <Box>
           {views[themeView].map((item) => (
             <IFramesCard
+              key={item.title}
               classes={classes}
               title={item.title}
               iframeSources={item.iframeSources}

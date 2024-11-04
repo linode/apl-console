@@ -12,7 +12,7 @@ interface Props {
 
 export default function ({ teams }: Props): React.ReactElement {
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
   // END HOOKS
@@ -21,7 +21,7 @@ export default function ({ teams }: Props): React.ReactElement {
       id: 'name',
       label: t('Name'),
       renderer: ({ id }: any) =>
-        isAdmin ? (
+        isPlatformAdmin ? (
           <RLink to={`/teams/${id}`} label={id}>
             {id}
           </RLink>

@@ -20,7 +20,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const {
-    user: { isAdmin },
+    user: { isPlatformAdmin },
   } = useAuthzSession(teamId)
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
@@ -39,7 +39,7 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const team = !isLoadingTeams && find(teams, { id: teamId })
-  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin' || isAdmin
+  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin' || isPlatformAdmin
   const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
