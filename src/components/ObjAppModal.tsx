@@ -51,18 +51,18 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
         <ModalContent>
           <Box>
             {required
-              ? `${name} requires object storage to be activated.`
-              : `${name} can be activated without object storage, but using it is preferred.`}
+              ? `${name} requires object storage to be installed.`
+              : `${name} can be installed without object storage, but using it is recommended.`}
           </Box>
         </ModalContent>
 
         <ModalFooter>
           <Button variant='outlined' color='primary' onClick={handleClose}>
-            Skip
+            Cancel
           </Button>
           {!required && (
             <Button variant='outlined' color='primary' onClick={handleEnable}>
-              {`Enable ${name}`}
+              Install Without Object Storage
             </Button>
           )}
           <Button
@@ -74,7 +74,7 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
               history.push('/maintenance')
             }}
           >
-            Start Object Storage Wizard
+            Configure Object Storage
           </Button>
         </ModalFooter>
       </ModalBox>

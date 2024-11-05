@@ -45,7 +45,7 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
-  const { data } = useGetObjWizardQuery(!isPlatformAdmin && showObjWizard !== undefined && skipToken)
+  const { data } = useGetObjWizardQuery((!isPlatformAdmin && skipToken) || (showObjWizard !== undefined && skipToken))
 
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
@@ -71,12 +71,12 @@ export default function StyledModal() {
         <ModalContent>
           {!accepted ? (
             <Box>
-              <Typography variant='body1'>
-                The Application Platform requires Object Storage to support long term retention of logs, metrics and
-                traces, and storing backups and created container images.
+              <Typography variant='body1'>Would you like to configure object storage?</Typography>
+              <Typography variant='body1' mt={2} ml={2}>
+                It is recommended to leverage object storage for long term logs and metrics retention.
               </Typography>
-              <Typography variant='body1' mt={2}>
-                Would you like the Platform to create all the required buckets for you?
+              <Typography variant='body1' mt={2} ml={2}>
+                It is required to leverage object storage for the automated backups and network trace collection.
               </Typography>
             </Box>
           ) : (
@@ -106,7 +106,7 @@ export default function StyledModal() {
 
         <ModalFooter>
           <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
-            Skip
+            Skip for now
           </Button>
 
           {!accepted ? (
