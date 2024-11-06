@@ -148,6 +148,9 @@ const injectedRtkApi = api.injectEndpoints({
     getDashboard: build.query<GetDashboardApiResponse, GetDashboardApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/dashboard` }),
     }),
+    getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
+      query: () => ({ url: `/internalRepoUrls` }),
+    }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
       query: () => ({ url: `/builds` }),
     }),
@@ -410,7 +413,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -474,7 +476,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -539,7 +540,6 @@ export type CreateTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -603,7 +603,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -670,7 +669,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -737,7 +735,6 @@ export type EditTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -1837,11 +1834,20 @@ export type GetDashboardApiArg = {
   /** ID of team to return */
   teamId: string
 }
+export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
+export type GetInternalRepoUrlsApiArg = void
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   id?: string
   teamId?: string
   name: string
   tag?: string
+  repoType?: {
+    type?: 'internal' | 'external'
+    external?: {
+      private?: boolean
+      secretName?: string
+    }
+  }
   mode?:
     | {
         docker: {
@@ -1867,8 +1873,6 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
         }
         type: 'buildpacks'
       }
-  externalRepo?: boolean
-  secretName?: string
   trigger?: boolean
   scanSource?: boolean
 }[]
@@ -1878,6 +1882,13 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   teamId?: string
   name: string
   tag?: string
+  repoType?: {
+    type?: 'internal' | 'external'
+    external?: {
+      private?: boolean
+      secretName?: string
+    }
+  }
   mode?:
     | {
         docker: {
@@ -1903,8 +1914,6 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
         }
         type: 'buildpacks'
       }
-  externalRepo?: boolean
-  secretName?: string
   trigger?: boolean
   scanSource?: boolean
 }[]
@@ -1917,6 +1926,13 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   teamId?: string
   name: string
   tag?: string
+  repoType?: {
+    type?: 'internal' | 'external'
+    external?: {
+      private?: boolean
+      secretName?: string
+    }
+  }
   mode?:
     | {
         docker: {
@@ -1942,8 +1958,6 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
         }
         type: 'buildpacks'
       }
-  externalRepo?: boolean
-  secretName?: string
   trigger?: boolean
   scanSource?: boolean
 }
@@ -1956,6 +1970,13 @@ export type CreateBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -1981,8 +2002,6 @@ export type CreateBuildApiArg = {
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -1999,6 +2018,13 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   teamId?: string
   name: string
   tag?: string
+  repoType?: {
+    type?: 'internal' | 'external'
+    external?: {
+      private?: boolean
+      secretName?: string
+    }
+  }
   mode?:
     | {
         docker: {
@@ -2024,8 +2050,6 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
         }
         type: 'buildpacks'
       }
-  externalRepo?: boolean
-  secretName?: string
   trigger?: boolean
   scanSource?: boolean
 }
@@ -2040,6 +2064,13 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   teamId?: string
   name: string
   tag?: string
+  repoType?: {
+    type?: 'internal' | 'external'
+    external?: {
+      private?: boolean
+      secretName?: string
+    }
+  }
   mode?:
     | {
         docker: {
@@ -2065,8 +2096,6 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
         }
         type: 'buildpacks'
       }
-  externalRepo?: boolean
-  secretName?: string
   trigger?: boolean
   scanSource?: boolean
 }
@@ -2081,6 +2110,13 @@ export type EditBuildApiArg = {
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -2106,8 +2142,6 @@ export type EditBuildApiArg = {
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -2513,6 +2547,13 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -2538,8 +2579,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -2647,6 +2686,13 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -2672,8 +2718,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -2784,6 +2828,13 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -2809,8 +2860,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -2921,6 +2970,13 @@ export type CreateProjectApiArg = {
       teamId?: string
       name: string
       tag?: string
+      repoType?: {
+        type?: 'internal' | 'external'
+        external?: {
+          private?: boolean
+          secretName?: string
+        }
+      }
       mode?:
         | {
             docker: {
@@ -2946,8 +3002,6 @@ export type CreateProjectApiArg = {
             }
             type: 'buildpacks'
           }
-      externalRepo?: boolean
-      secretName?: string
       trigger?: boolean
       scanSource?: boolean
     }
@@ -3062,6 +3116,13 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -3087,8 +3148,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -3201,6 +3260,13 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     teamId?: string
     name: string
     tag?: string
+    repoType?: {
+      type?: 'internal' | 'external'
+      external?: {
+        private?: boolean
+        secretName?: string
+      }
+    }
     mode?:
       | {
           docker: {
@@ -3226,8 +3292,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
           }
           type: 'buildpacks'
         }
-    externalRepo?: boolean
-    secretName?: string
     trigger?: boolean
     scanSource?: boolean
   }
@@ -3744,11 +3808,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     zones?: string[]
   }
   otomi?: {
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
@@ -3999,11 +4058,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
@@ -4282,11 +4336,6 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
-      additionalClusters?: {
-        domainSuffix: string
-        name: string
-        provider: 'linode' | 'custom'
-      }[]
       isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
@@ -4394,6 +4443,7 @@ export const {
   useGetBackupQuery,
   useEditBackupMutation,
   useGetDashboardQuery,
+  useGetInternalRepoUrlsQuery,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
   useCreateBuildMutation,

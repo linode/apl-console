@@ -6,7 +6,14 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useCreateBuildMutation, useDeleteBuildMutation, useEditBuildMutation, useGetBuildQuery } from 'redux/otomiApi'
+import {
+  useCreateBuildMutation,
+  useDeleteBuildMutation,
+  useEditBuildMutation,
+  useGetBuildQuery,
+  useGetInternalRepoUrlsQuery,
+  useGetSealedSecretsQuery,
+} from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -23,10 +30,24 @@ export default function ({
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBuildMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteBuildMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetBuildQuery({ teamId, buildId }, { skip: !buildId })
+  const {
+    data: repoUrls,
+    isLoading: repoUrlsLoading,
+    isFetching: repoUrlsFetching,
+    refetch: repoUrlsRefetch,
+  } = useGetInternalRepoUrlsQuery()
+  const {
+    data: teamSecrets,
+    isLoading: isLoadingTeamSecrets,
+    isFetching: isFetchingTeamSecrets,
+    refetch: refetchTeamSecrets,
+  } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
+    if (!repoUrlsFetching) repoUrlsRefetch()
+    if (teamId && !isFetchingTeamSecrets) refetchTeamSecrets()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
@@ -39,8 +60,18 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, buildId: deleteId })
+  const secrets = teamSecrets?.map((secret) => secret.name)
   const comp = !isError && (
-    <Build onSubmit={handleSubmit} build={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
+    <Build
+      onSubmit={handleSubmit}
+      build={data}
+      onDelete={handleDelete}
+      teamId={teamId}
+      mutating={mutating}
+      repoUrls={repoUrls}
+      secrets={secrets}
+    />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { buildId, role: 'team' })} />
+  const loading = isLoading || repoUrlsLoading || isLoadingTeamSecrets
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { buildId, role: 'team' })} />
 }
