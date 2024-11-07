@@ -301,6 +301,12 @@ const injectedRtkApi = api.injectEndpoints({
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/settingsInfo` }),
     }),
+    getObjWizard: build.query<GetObjWizardApiResponse, GetObjWizardApiArg>({
+      query: () => ({ url: `/objwizard` }),
+    }),
+    createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
+      query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
+    }),
     getSettings: build.query<GetSettingsApiResponse, GetSettingsApiArg>({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
     }),
@@ -410,7 +416,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -474,7 +479,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -539,7 +543,6 @@ export type CreateTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -603,7 +606,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -670,7 +672,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -737,7 +738,6 @@ export type EditTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -3723,6 +3723,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     sub?: string
   }
   defaultPlatformAdminEmail?: string
+  objStorageApps?: object[]
   versions?: {
     core?: string
     api?: string
@@ -3744,11 +3745,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     zones?: string[]
   }
   otomi?: {
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
@@ -3756,6 +3752,19 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetObjWizardApiResponse = /** status 200 Successfully obtained obj wizard configuration */ {
+  showWizard?: boolean
+  apiToken?: string
+}
+export type GetObjWizardApiArg = void
+export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
+export type CreateObjWizardApiArg = {
+  /** ObjWizard object */
+  body: {
+    showWizard?: boolean
+    apiToken?: string
+  }
+}
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
   alerts?: {
     repeatInterval?: string
@@ -3827,6 +3836,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   obj?: {
+    showWizard?: boolean
     provider?:
       | {
           type?: 'disabled'
@@ -3999,11 +4009,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
@@ -4110,6 +4115,7 @@ export type EditSettingsApiArg = {
       }
     }
     obj?: {
+      showWizard?: boolean
       provider?:
         | {
             type?: 'disabled'
@@ -4282,11 +4288,6 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
-      additionalClusters?: {
-        domainSuffix: string
-        name: string
-        provider: 'linode' | 'custom'
-      }[]
       isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
@@ -4437,6 +4438,8 @@ export const {
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetObjWizardQuery,
+  useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,
   useGetAppsQuery,

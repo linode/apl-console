@@ -6,29 +6,29 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSettingsInfoApiResponse } from 'redux/otomiApi'
 import { extract, isOf } from 'utils/schema'
+import { Button } from '@mui/material'
+import { useLocalStorage } from 'react-use'
+import { useHistory } from 'react-router-dom'
 import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
 export const getSettingSchema = (
   appsEnabled: Record<string, any>,
-  settings: GetSettingsInfoApiResponse,
   settingId,
   formData: any,
+  isPreInstalled: boolean,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   switch (settingId) {
     case 'obj':
-      if (settings.otomi.isPreInstalled) {
+      if (isPreInstalled) {
         set(
           schema,
           'properties.provider.oneOf',
           filter((schema as unknown as JSONSchema4).properties.provider.oneOf, (item) => item.title !== 'minioLocal'),
         )
       }
-      break
-    case 'otomi':
-      unset(schema, 'properties.additionalClusters.items.properties.provider.description')
       break
     case 'cluster':
       unset(schema, 'properties.provider.description')
@@ -49,8 +49,6 @@ export const getSettingSchema = (
       break
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
-      if (settings.otomi.isPreInstalled) unset(schema, 'properties.persistentVolumes')
-
       break
     default:
       break
@@ -58,11 +56,7 @@ export const getSettingSchema = (
   return schema
 }
 
-export const getSettingUiSchema = (
-  appsEnabled: Record<string, any>,
-  settings: GetSettingsInfoApiResponse,
-  settingId: string,
-): any => {
+export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, settingId: string): any => {
   const uiSchema: any = {
     cluster: {
       k8sContext: { 'ui:widget': 'hidden' },
@@ -85,6 +79,8 @@ export const getSettingUiSchema = (
       },
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
+    platformBackups: { persistentVolumes: { 'ui:widget': settings?.otomi?.isPreInstalled ? 'hidden' : '' } },
+    obj: { showWizard: { 'ui:widget': 'hidden' } },
   }
 
   if (!settings.otomi.hasExternalDNS) {
@@ -111,19 +107,23 @@ export const getSettingUiSchema = (
 interface Props extends CrudProps {
   settings: GetSettingsInfoApiResponse
   settingId: string
+  objSettings: any
 }
 
-export default function ({ settings: data, settingId, ...other }: Props): React.ReactElement {
+export default function ({ settings: data, settingId, objSettings, ...other }: Props): React.ReactElement {
+  const history = useHistory()
   const { appsEnabled, settings } = useSession()
+  const isPreInstalled = settings.otomi.isPreInstalled || false
   const [setting, setSetting]: any = useState<GetSettingsInfoApiResponse>(data)
-  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settings, settingId, setting))
-  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(appsEnabled, settings, settingId))
+  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting, isPreInstalled))
+  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(settings, settingId))
   const [disabledMessage, setDisabledMessage] = useState('')
+  const [isObjStorageRequired, setIsObjStorageRequired] = useState(false)
+  const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const removePreInstalledSpecificSettings = ['kms', 'dns', 'ingress']
   let isPreInstalledSetting = false
 
-  if (removePreInstalledSpecificSettings.includes(settingId) && settings.otomi.isPreInstalled)
-    isPreInstalledSetting = true
+  if (removePreInstalledSpecificSettings.includes(settingId) && isPreInstalled) isPreInstalledSetting = true
 
   useEffect(() => {
     onChangeHandler(data)
@@ -134,10 +134,8 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
       if (!appsEnabled.alertmanager && settingId === 'alerts')
         setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
 
-      if (!appsEnabled.velero && settingId === 'platformBackups') {
-        if (!settings.otomi.isPreInstalled)
-          setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
-      }
+      if (!appsEnabled.velero && settingId === 'platformBackups')
+        if (!isPreInstalled) setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
 
       if (isPreInstalledSetting)
         setDisabledMessage('These settings can not be changed when installed by Akamai Connected Cloud.')
@@ -145,18 +143,37 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
   }, [settingId])
   // END HOOKS
   const getDynamicUiSchema = (data) => {
-    if (settingId !== 'alerts') return getSettingUiSchema(appsEnabled, settings, settingId)
+    if (settingId !== 'alerts') return getSettingUiSchema(settings, settingId)
     const { receivers } = schema.properties
     const allReceivers = receivers?.items?.enum || []
-    const uiSchema = getSettingUiSchema(appsEnabled, settings, settingId)
+    const uiSchema = getSettingUiSchema(settings, settingId)
     const hiddenReceivers = allReceivers.filter((receiver) => !data.receivers?.includes(receiver))
     hiddenReceivers.forEach((receiver) => {
       uiSchema[receiver] = { 'ui:widget': 'hidden' }
     })
     return uiSchema
   }
+  const isLinodeConfigured = (appId: string): boolean => {
+    const linode: any = objSettings?.provider?.type === 'linode' ? objSettings.provider.linode : {}
+    const { accessKeyId, secretAccessKey, buckets } = linode
+    return Boolean(accessKeyId && secretAccessKey && buckets?.[appId])
+  }
+  const getObjStorageRequired = (appId: string): boolean => {
+    return Boolean(isPreInstalled && !isLinodeConfigured(appId))
+  }
   const onChangeHandler = (data) => {
-    const schema = getSettingSchema(appsEnabled, settings, settingId, data)
+    const isAnyAppEnabled = Object.values(data?.database || {}).some((app: any) => app?.enabled)
+    if (isAnyAppEnabled && getObjStorageRequired('cnpg')) {
+      setDisabledMessage('Database backup requires object storage to be enabled.')
+      setIsObjStorageRequired(true)
+    } else if (data?.gitea?.enabled && getObjStorageRequired('gitea')) {
+      setDisabledMessage('Gitea backup requires object storage to be enabled.')
+      setIsObjStorageRequired(true)
+    } else {
+      setDisabledMessage('')
+      setIsObjStorageRequired(false)
+    }
+    const schema = getSettingSchema(appsEnabled, settingId, data, isPreInstalled)
     setSetting(data)
     setSchema(schema)
     setUiSchema(getDynamicUiSchema(data))
@@ -164,7 +181,29 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
 
   return (
     <>
-      {disabledMessage && <InformationBanner message={disabledMessage} />}
+      {disabledMessage && (
+        <InformationBanner message={disabledMessage}>
+          {isObjStorageRequired && (
+            <Button
+              variant='text'
+              color='primary'
+              sx={{
+                ml: '8px',
+                px: 0,
+                fontWeight: 500,
+                fontSize: '16px',
+                '&.MuiButton-root:hover': { bgcolor: 'transparent' },
+              }}
+              onClick={() => {
+                setShowObjWizard(true)
+                history.push('/maintenance')
+              }}
+            >
+              Start Object Storage Wizard
+            </Button>
+          )}
+        </InformationBanner>
+      )}
 
       <Form
         key={settingId}
@@ -177,6 +216,7 @@ export default function ({ settings: data, settingId, ...other }: Props): React.
         adminOnly
         disabled={isPreInstalledSetting}
         {...other}
+        children={isObjStorageRequired}
       />
     </>
   )
