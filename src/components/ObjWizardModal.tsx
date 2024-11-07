@@ -12,7 +12,7 @@ const ModalBox = styled(Box)(({ theme }) => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 600,
+  width: 620,
   backgroundColor: theme.palette.background.paper,
   boxShadow:
     'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
@@ -71,12 +71,12 @@ export default function StyledModal() {
         <ModalContent>
           {!accepted ? (
             <Box>
-              <Typography variant='body1'>Would you like to configure object storage?</Typography>
-              <Typography variant='body1' mt={2} ml={2}>
-                It is recommended to leverage object storage for long term logs and metrics retention.
+              <Typography variant='body1'>
+                It is recommended to use object storage for long term storage of logs and images. It is required to use
+                object storage for the automated backups and storing traces and metrics.
               </Typography>
-              <Typography variant='body1' mt={2} ml={2}>
-                It is required to leverage object storage for the automated backups and network trace collection.
+              <Typography variant='body1' mt={2}>
+                Would you like to configure object storage now?
               </Typography>
             </Box>
           ) : (
@@ -93,7 +93,7 @@ export default function StyledModal() {
               />
               <Typography variant='body2' mt={2}>
                 <Link
-                  href='https://techdocs.akamai.com/linode-api/reference/get-started#personal-access-tokens'
+                  href='https://apl-docs.net/docs/get-started/installation/akamai-connected-cloud#provision-object-storage-for-the-application-platform'
                   target='_blank'
                   rel='noopener'
                 >

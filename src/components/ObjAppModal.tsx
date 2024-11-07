@@ -8,7 +8,7 @@ const ModalBox = styled(Box)(({ theme }) => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 600,
+  width: 620,
   backgroundColor: theme.palette.background.paper,
   boxShadow:
     'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
@@ -51,8 +51,8 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
         <ModalContent>
           <Box>
             {required
-              ? `${name} requires object storage to be installed.`
-              : `${name} can be installed without object storage, but using it is recommended.`}
+              ? `${name} requires object storage to be activated.`
+              : `${name} can be activated without object storage, but using it is preferred.`}
           </Box>
         </ModalContent>
 
@@ -62,7 +62,7 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
           </Button>
           {!required && (
             <Button variant='outlined' color='primary' onClick={handleEnable}>
-              Install Without Object Storage
+              Enable Without Object Storage
             </Button>
           )}
           <Button
@@ -74,7 +74,7 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
               history.push('/maintenance')
             }}
           >
-            Configure Object Storage
+            Show Object Storage Wizard
           </Button>
         </ModalFooter>
       </ModalBox>
