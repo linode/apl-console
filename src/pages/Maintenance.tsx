@@ -42,7 +42,7 @@ export default function (): React.ReactElement {
           }}
           onClick={handleShowObjWizard}
         >
-          Show Object Storage Wizard
+          Start Object Storage Wizard
         </Button>
       )}
     </Box>

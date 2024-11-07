@@ -74,7 +74,7 @@ export default function StyledModal({ open, handleClose, appId, required, toggle
               history.push('/maintenance')
             }}
           >
-            Show Object Storage Wizard
+            Start Object Storage Wizard
           </Button>
         </ModalFooter>
       </ModalBox>
