@@ -9,7 +9,9 @@ import {
   useCreateProjectMutation,
   useDeleteProjectMutation,
   useEditProjectMutation,
+  useGetInternalRepoUrlsQuery,
   useGetProjectQuery,
+  useGetSealedSecretsQuery,
 } from 'redux/otomiApi'
 
 interface Params {
@@ -30,15 +32,30 @@ export default function ({
     { teamId, projectId },
     { skip: !projectId },
   )
+  const {
+    data: repoUrls,
+    isLoading: repoUrlsLoading,
+    isFetching: repoUrlsFetching,
+    refetch: repoUrlsRefetch,
+  } = useGetInternalRepoUrlsQuery()
+  const {
+    data: teamSecrets,
+    isLoading: isLoadingTeamSecrets,
+    isFetching: isFetchingTeamSecrets,
+    refetch: refetchTeamSecrets,
+  } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
+    if (!repoUrlsFetching) repoUrlsRefetch()
+    if (teamId && !isFetchingTeamSecrets) refetchTeamSecrets()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  const secretNames = teamSecrets?.map((secret) => secret.name)
   const comp = !isError && (
     <Project
       teamId={teamId}
@@ -48,7 +65,10 @@ export default function ({
       projectId={createData?.id || projectId}
       project={data}
       onDelete={del}
+      repoUrls={repoUrls}
+      secretNames={secretNames}
     />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { projectId, role: 'team' })} />
+  const loading = isLoading || repoUrlsLoading || isLoadingTeamSecrets
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_PROJECT', { projectId, role: 'team' })} />
 }

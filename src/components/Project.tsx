@@ -136,6 +136,8 @@ interface Props extends CrudProps {
   projectId?: string
   project?: any
   onDelete?: any
+  repoUrls?: string[]
+  secretNames?: string[]
 }
 
 export default function ({
@@ -145,6 +147,8 @@ export default function ({
   projectId,
   project,
   onDelete,
+  repoUrls = [],
+  secretNames = [],
   ...other
 }: Props): React.ReactElement {
   const history = useHistory()
@@ -222,7 +226,7 @@ export default function ({
   const projectSchema = getProjectSchema()
   const projectUiSchema = getProjectUiSchema(user, teamId)
 
-  const buildSchema = getBuildSchema(teamId)
+  const buildSchema = getBuildSchema(teamId, formData?.build, repoUrls, secretNames)
   const buildUiSchema = getBuildUiSchema(user, teamId, formData?.build)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 

@@ -60,7 +60,7 @@ export default function ({
     else create({ teamId, body: formData })
   }
   const handleDelete = (deleteId) => del({ teamId, buildId: deleteId })
-  const secrets = teamSecrets?.map((secret) => secret.name)
+  const secretNames = teamSecrets?.map((secret) => secret.name)
   const comp = !isError && (
     <Build
       onSubmit={handleSubmit}
@@ -69,7 +69,7 @@ export default function ({
       teamId={teamId}
       mutating={mutating}
       repoUrls={repoUrls}
-      secrets={secrets}
+      secretNames={secretNames}
     />
   )
   const loading = isLoading || repoUrlsLoading || isLoadingTeamSecrets

@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { GetBuildApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import Form from './rjsf/Form'
 
-export const getBuildSchema = (teamId: string, formData?: any, repoUrls?: string[], secrets?: string[]): any => {
+export const getBuildSchema = (teamId: string, formData?: any, repoUrls?: string[], secretNames?: string[]): any => {
   const repoType = formData?.repoType?.type || 'internal'
   const mode = formData?.mode?.type || 'docker'
   const modeIndex = mode === 'buildpacks' ? 1 : 0
@@ -15,8 +15,8 @@ export const getBuildSchema = (teamId: string, formData?: any, repoUrls?: string
     set(schema, `properties.mode.oneOf[${modeIndex}].properties.${mode}.properties.repoUrl.enum`, repoUrls)
     set(schema, `properties.mode.oneOf[${modeIndex}].properties.${mode}.properties.repoUrl.listNotShort`, true)
   }
-  if (repoType === 'external' && secrets.length > 0) {
-    set(schema, `properties.repoType.properties.external.properties.secretName.enum`, secrets)
+  if (repoType === 'external' && secretNames.length > 0) {
+    set(schema, `properties.repoType.properties.external.properties.secretName.enum`, secretNames)
     set(schema, `properties.repoType.properties.external.properties.secretName.listNotShort`, true)
   }
   return schema
@@ -44,10 +44,10 @@ interface Props extends CrudProps {
   teamId: string
   build?: GetBuildApiResponse
   repoUrls?: string[]
-  secrets?: string[]
+  secretNames?: string[]
 }
 
-export default function ({ build, teamId, repoUrls = [], secrets = [], ...other }: Props): React.ReactElement {
+export default function ({ build, teamId, repoUrls = [], secretNames = [], ...other }: Props): React.ReactElement {
   const { user } = useSession()
   const [data, setData]: any = useState(build)
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function ({ build, teamId, repoUrls = [], secrets = [], ...other 
   }, [build])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getBuildSchema(teamId, formData, repoUrls, secrets)
+  const schema = getBuildSchema(teamId, formData, repoUrls, secretNames)
   const uiSchema = getBuildUiSchema(user, teamId, formData)
   return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Build' {...other} />
 }

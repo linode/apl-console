@@ -40,5 +40,5 @@ export default function ({
   const loading = isLoadingAllProjects || isLoadingTeamProjects
   const projects = teamId ? teamProjects : allProjects
   const comp = projects && <Projects projects={projects} teamId={teamId} />
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_PROJECTS', { scope: getRole(teamId) })} />
 }

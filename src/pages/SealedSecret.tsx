@@ -48,5 +48,5 @@ export default function ({
   const comp = !isError && (
     <SealedSecret onSubmit={handleSubmit} secret={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SEALEDSECRET', { secretId, role: 'team' })} />
 }
