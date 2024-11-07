@@ -18,7 +18,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchSettings } = useSession()
   const [edit, { isLoading: isLoadingUpdate }] = useEditSettingsMutation()
-  const { data, isLoading, isFetching, refetch } = useGetSettingsQuery({ ids: [settingId] })
+  const { data, isLoading, isFetching, refetch } = useGetSettingsQuery({ ids: [settingId, 'obj'] })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== undefined && !isDirty && !isFetching) refetch()
@@ -32,6 +32,15 @@ export default function ({
       .then(refetchSettings)
   }
   const settings = data?.[settingId] || {}
-  const comp = <Setting onSubmit={handleSubmit} settings={settings} settingId={settingId} mutating={mutating} />
+  const objSettings = data?.obj || {}
+  const comp = (
+    <Setting
+      onSubmit={handleSubmit}
+      settings={settings}
+      settingId={settingId}
+      mutating={mutating}
+      objSettings={objSettings}
+    />
+  )
   return <PaperLayout comp={comp} loading={isLoading} title={t('TITLE_SETTINGS', { settingId })} />
 }
