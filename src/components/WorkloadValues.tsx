@@ -30,7 +30,14 @@ export default function ({
   return (
     <Box pt={2}>
       {show && workloadValues ? (
-        <CodeEditor code={yaml} onChange={(data) => setWorkloadValues(data)} showComments={showComments} />
+        <CodeEditor
+          code={yaml}
+          onChange={(data) => {
+            setWorkloadValues(data)
+          }}
+          setWorkloadValues={setWorkloadValues}
+          showComments={showComments}
+        />
       ) : (
         <CircularProgress sx={{ mb: '1rem' }} />
       )}
