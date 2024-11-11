@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Link, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
-import { useGetObjWizardQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const {
@@ -14,8 +13,6 @@ export default function (): React.ReactElement {
     },
   } = useSession()
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
-  const { data } = useGetObjWizardQuery()
-
   const handleShowObjWizard = () => {
     setShowObjWizard(true)
     window.location.reload()
@@ -34,24 +31,19 @@ export default function (): React.ReactElement {
       </Link>
 
       {isPreInstalled && (
-        <Tooltip title={data?.regionId ? 'Object storage settings are already configured.' : ''}>
-          <span>
-            <Button
-              variant='text'
-              color='primary'
-              sx={{
-                px: 0,
-                fontWeight: 500,
-                fontSize: '16px',
-                '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-              }}
-              onClick={handleShowObjWizard}
-              disabled={!!data?.regionId}
-            >
-              Start Object Storage Wizard
-            </Button>
-          </span>
-        </Tooltip>
+        <Button
+          variant='text'
+          color='primary'
+          sx={{
+            px: 0,
+            fontWeight: 500,
+            fontSize: '16px',
+            '&.MuiButton-root:hover': { bgcolor: 'transparent' },
+          }}
+          onClick={handleShowObjWizard}
+        >
+          Start Object Storage Wizard
+        </Button>
       )}
     </Box>
   )

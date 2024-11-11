@@ -1,16 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  Link,
-  MenuItem,
-  Modal,
-  Select,
-  TextField,
-  Typography,
-  styled,
-} from '@mui/material'
+import { Box, Button, Link, Modal, TextField, Typography, styled } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation, useGetObjWizardQuery } from 'redux/otomiApi'
@@ -55,16 +43,12 @@ export default function StyledModal() {
   const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const [accepted, setAccepted] = useState(false)
   const [apiToken, setApiToken] = useState('')
-  const [region, setRegion] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
-  const { data } = useGetObjWizardQuery(
-    (!isPlatformAdmin && skipToken) || (showObjWizard !== undefined && !accepted && skipToken),
-  )
+  const { data } = useGetObjWizardQuery((!isPlatformAdmin && skipToken) || (showObjWizard !== undefined && skipToken))
 
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
-    if (data?.regionId) setRegion(data.regionId as string)
     if (!isPreInstalled) setShowObjWizard(false)
   }, [data, isPreInstalled])
 
@@ -76,7 +60,7 @@ export default function StyledModal() {
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken, showWizard: false, regionId: region } }).then(() => {
+    create({ body: { apiToken, showWizard: false } }).then(() => {
       setLoading(false)
       setShowObjWizard(false)
     })
@@ -116,23 +100,6 @@ export default function StyledModal() {
                   How to create an API token?
                 </Link>
               </Typography>
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel id='region-label'>Region</InputLabel>
-                <Select
-                  labelId='region-label'
-                  id='region'
-                  value={region}
-                  label='Region'
-                  disabled={!!data?.regionId}
-                  onChange={(e) => setRegion(e.target.value)}
-                >
-                  {data?.regions.map((region) => (
-                    <MenuItem key={region.id} value={region.id}>
-                      {region.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
             </Box>
           )}
         </ModalContent>
@@ -150,7 +117,7 @@ export default function StyledModal() {
             <LoadingButton
               variant='contained'
               color='primary'
-              disabled={!apiToken || !region}
+              disabled={!apiToken}
               onClick={handleSubmit}
               loading={loading}
             >
