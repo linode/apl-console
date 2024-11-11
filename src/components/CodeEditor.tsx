@@ -121,7 +121,7 @@ export default function CodeEditor({
   useEffect(() => {
     const obj = fromYaml(modifiedCode)
     setWorkloadValues(obj)
-  }, [])
+  }, [modifiedCode])
 
   return (
     <>
