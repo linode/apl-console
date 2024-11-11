@@ -2,6 +2,7 @@
 import Apps from 'components/Apps'
 import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
@@ -16,10 +17,10 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const { refetchAppsEnabled } = useAuthzSession(teamId)
   const {
-    refetchAppsEnabled,
     user: { isPlatformAdmin },
-  } = useAuthzSession(teamId)
+  } = useSession()
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
