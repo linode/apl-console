@@ -2,143 +2,133 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [3.1.0](https://github.com/linode/apl-console/compare/v3.0.0...v3.1.0) (2024-11-01)
-
-
-### Features
-
-* default platform admin user ([#443](https://github.com/linode/apl-console/issues/443)) ([73f11b1](https://github.com/linode/apl-console/commit/73f11b158515264db08bb0f2c83dbea6dd236c88))
-* deprecated chip ([#450](https://github.com/linode/apl-console/issues/450)) ([171174a](https://github.com/linode/apl-console/commit/171174afc75e133075c757c2de26594d6a913582))
-* error isolation and error handling ([#446](https://github.com/linode/apl-console/issues/446)) ([2504746](https://github.com/linode/apl-console/commit/250474689a4ff82e29002d5ff044651fc5958717))
-* updated dependencies to remove critical issues ([#449](https://github.com/linode/apl-console/issues/449)) ([0a407bf](https://github.com/linode/apl-console/commit/0a407bfd248959caa3efe855f93ae951407da206))
-
+### [3.1.1](https://github.com/linode/apl-console/compare/v3.1.0...v3.1.1) (2024-11-11)
 
 ### Bug Fixes
 
-* apps filtering ([#451](https://github.com/linode/apl-console/issues/451)) ([cb1c432](https://github.com/linode/apl-console/commit/cb1c4328d4da77d61c13255dea5ed4bad8965fd5))
-* docs url and settings menu ([#448](https://github.com/linode/apl-console/issues/448)) ([b5711cb](https://github.com/linode/apl-console/commit/b5711cb41384417daf91160228f54038240c6aa0))
-* loki is shown as a team app when grafana for the team is not enabled ([#447](https://github.com/linode/apl-console/issues/447)) ([d0835fa](https://github.com/linode/apl-console/commit/d0835fa5d55a65a0670ebb692176e8614d2ab219))
+- set correct workload values on first load ([#455](https://github.com/linode/apl-console/issues/455)) ([89bcb7c](https://github.com/linode/apl-console/commit/89bcb7c315ad768ff414eb8bc0eef8d2ff289bd3))
+
+## [3.1.0](https://github.com/linode/apl-console/compare/v3.0.0...v3.1.0) (2024-11-01)
+
+### Features
+
+- default platform admin user ([#443](https://github.com/linode/apl-console/issues/443)) ([73f11b1](https://github.com/linode/apl-console/commit/73f11b158515264db08bb0f2c83dbea6dd236c88))
+- deprecated chip ([#450](https://github.com/linode/apl-console/issues/450)) ([171174a](https://github.com/linode/apl-console/commit/171174afc75e133075c757c2de26594d6a913582))
+- error isolation and error handling ([#446](https://github.com/linode/apl-console/issues/446)) ([2504746](https://github.com/linode/apl-console/commit/250474689a4ff82e29002d5ff044651fc5958717))
+- updated dependencies to remove critical issues ([#449](https://github.com/linode/apl-console/issues/449)) ([0a407bf](https://github.com/linode/apl-console/commit/0a407bfd248959caa3efe855f93ae951407da206))
+
+### Bug Fixes
+
+- apps filtering ([#451](https://github.com/linode/apl-console/issues/451)) ([cb1c432](https://github.com/linode/apl-console/commit/cb1c4328d4da77d61c13255dea5ed4bad8965fd5))
+- docs url and settings menu ([#448](https://github.com/linode/apl-console/issues/448)) ([b5711cb](https://github.com/linode/apl-console/commit/b5711cb41384417daf91160228f54038240c6aa0))
+- loki is shown as a team app when grafana for the team is not enabled ([#447](https://github.com/linode/apl-console/issues/447)) ([d0835fa](https://github.com/linode/apl-console/commit/d0835fa5d55a65a0670ebb692176e8614d2ab219))
 
 ## [3.0.0](https://github.com/linode/apl-console/compare/v3.0.0-rc.0...v3.0.0) (2024-10-25)
 
-
 ### Features
 
-* added ispreinstalled flag and filtering for apps ([#442](https://github.com/linode/apl-console/issues/442)) ([5f3e11d](https://github.com/linode/apl-console/commit/5f3e11dd475d46e5c691788d27e28cc0be6f67f0))
-* update kms settings & age fields ([#432](https://github.com/linode/apl-console/issues/432)) ([58a3bff](https://github.com/linode/apl-console/commit/58a3bff4fd69216b648669b6ca2fab8b60b309db))
-* user management ([#441](https://github.com/linode/apl-console/issues/441)) ([4609446](https://github.com/linode/apl-console/commit/4609446a52cba3008d9c6e4d3bedbe023b997d2d))
-
+- added ispreinstalled flag and filtering for apps ([#442](https://github.com/linode/apl-console/issues/442)) ([5f3e11d](https://github.com/linode/apl-console/commit/5f3e11dd475d46e5c691788d27e28cc0be6f67f0))
+- update kms settings & age fields ([#432](https://github.com/linode/apl-console/issues/432)) ([58a3bff](https://github.com/linode/apl-console/commit/58a3bff4fd69216b648669b6ca2fab8b60b309db))
+- user management ([#441](https://github.com/linode/apl-console/issues/441)) ([4609446](https://github.com/linode/apl-console/commit/4609446a52cba3008d9c6e4d3bedbe023b997d2d))
 
 ### Bug Fixes
 
-* add thanos logo ([#440](https://github.com/linode/apl-console/issues/440)) ([e6aaa8e](https://github.com/linode/apl-console/commit/e6aaa8ebcdf73ec98294f18e20ea9a129e4a719a))
+- add thanos logo ([#440](https://github.com/linode/apl-console/issues/440)) ([e6aaa8e](https://github.com/linode/apl-console/commit/e6aaa8ebcdf73ec98294f18e20ea9a129e4a719a))
 
 ## [3.0.0-rc.0](https://github.com/linode/apl-console/compare/v2.8.0...v3.0.0-rc.0) (2024-09-18)
 
-
 ### Features
 
-* added values schema to session ([#424](https://github.com/linode/apl-console/issues/424)) ([732bb9c](https://github.com/linode/apl-console/commit/732bb9cdfe381c0a948c5f1099224c81d7d65aa1))
-* apl-console linode dockerhub ([#423](https://github.com/linode/apl-console/issues/423)) ([bb97a25](https://github.com/linode/apl-console/commit/bb97a2543881948178987519b98a220a75e8afc9))
-* app page linode styling ([#412](https://github.com/linode/apl-console/issues/412)) ([c40fc15](https://github.com/linode/apl-console/commit/c40fc15ad40f1a3f4acb0c9c56c2074037769642))
-* app page restyling ([#435](https://github.com/linode/apl-console/issues/435)) ([71646a3](https://github.com/linode/apl-console/commit/71646a3eb754ca64744508973e5068c94e811b2b))
-* argocd always enabled ([#422](https://github.com/linode/apl-console/issues/422)) ([34318b7](https://github.com/linode/apl-console/commit/34318b76a85b4c17d04d10afe926a3c0b77096a0))
-* kyverno policies ([#379](https://github.com/linode/apl-console/issues/379)) ([0adc5d3](https://github.com/linode/apl-console/commit/0adc5d3506b46954861f6aac21c45965196c6ed2))
-* minimal rebranding ([#411](https://github.com/linode/apl-console/issues/411)) ([729e71c](https://github.com/linode/apl-console/commit/729e71ca8a8bc849828f06bb19c932a43a06652c))
-* one backend obj for all apps ([#415](https://github.com/linode/apl-console/issues/415)) ([0ddca87](https://github.com/linode/apl-console/commit/0ddca87eb6e5fee86bdee4ab45d29a033e9b7f29))
-* one values schema ([#425](https://github.com/linode/apl-console/issues/425)) ([3903592](https://github.com/linode/apl-console/commit/3903592a7eaf2803383d2f5376ed263ff1963283))
-* remove shortcuts ([#414](https://github.com/linode/apl-console/issues/414)) ([f5843dd](https://github.com/linode/apl-console/commit/f5843dd934f876e33ea0b10a2c66c0713b140a88))
-* removed license ([#408](https://github.com/linode/apl-console/issues/408)) ([8a70e9b](https://github.com/linode/apl-console/commit/8a70e9b4888715d241d7c6cf476ffe6a0ec98451))
-* removing hashicorp vault ([#410](https://github.com/linode/apl-console/issues/410)) ([55efc79](https://github.com/linode/apl-console/commit/55efc799f940ebad3b3f6fe77bfb66fc450043a3))
-* simplify app values ([#419](https://github.com/linode/apl-console/issues/419)) ([8cf2b80](https://github.com/linode/apl-console/commit/8cf2b80e38eb4a3953dde4675e3069d732db7db5))
-* update sealed secret page to support readability of the secret values ([#407](https://github.com/linode/apl-console/issues/407)) ([d4b832f](https://github.com/linode/apl-console/commit/d4b832f6ff81ed6b3c7e31708efee537175babb6))
-* update team alertmanager settings ([#409](https://github.com/linode/apl-console/issues/409)) ([73e4743](https://github.com/linode/apl-console/commit/73e4743c821f75ab5c3aff1f87bb6a45e1d8eb68))
-* validate values editor ([#428](https://github.com/linode/apl-console/issues/428)) ([a390be3](https://github.com/linode/apl-console/commit/a390be3d4781f9ec5e54601f1b9de9331dd49d14))
-
+- added values schema to session ([#424](https://github.com/linode/apl-console/issues/424)) ([732bb9c](https://github.com/linode/apl-console/commit/732bb9cdfe381c0a948c5f1099224c81d7d65aa1))
+- apl-console linode dockerhub ([#423](https://github.com/linode/apl-console/issues/423)) ([bb97a25](https://github.com/linode/apl-console/commit/bb97a2543881948178987519b98a220a75e8afc9))
+- app page linode styling ([#412](https://github.com/linode/apl-console/issues/412)) ([c40fc15](https://github.com/linode/apl-console/commit/c40fc15ad40f1a3f4acb0c9c56c2074037769642))
+- app page restyling ([#435](https://github.com/linode/apl-console/issues/435)) ([71646a3](https://github.com/linode/apl-console/commit/71646a3eb754ca64744508973e5068c94e811b2b))
+- argocd always enabled ([#422](https://github.com/linode/apl-console/issues/422)) ([34318b7](https://github.com/linode/apl-console/commit/34318b76a85b4c17d04d10afe926a3c0b77096a0))
+- kyverno policies ([#379](https://github.com/linode/apl-console/issues/379)) ([0adc5d3](https://github.com/linode/apl-console/commit/0adc5d3506b46954861f6aac21c45965196c6ed2))
+- minimal rebranding ([#411](https://github.com/linode/apl-console/issues/411)) ([729e71c](https://github.com/linode/apl-console/commit/729e71ca8a8bc849828f06bb19c932a43a06652c))
+- one backend obj for all apps ([#415](https://github.com/linode/apl-console/issues/415)) ([0ddca87](https://github.com/linode/apl-console/commit/0ddca87eb6e5fee86bdee4ab45d29a033e9b7f29))
+- one values schema ([#425](https://github.com/linode/apl-console/issues/425)) ([3903592](https://github.com/linode/apl-console/commit/3903592a7eaf2803383d2f5376ed263ff1963283))
+- remove shortcuts ([#414](https://github.com/linode/apl-console/issues/414)) ([f5843dd](https://github.com/linode/apl-console/commit/f5843dd934f876e33ea0b10a2c66c0713b140a88))
+- removed license ([#408](https://github.com/linode/apl-console/issues/408)) ([8a70e9b](https://github.com/linode/apl-console/commit/8a70e9b4888715d241d7c6cf476ffe6a0ec98451))
+- removing hashicorp vault ([#410](https://github.com/linode/apl-console/issues/410)) ([55efc79](https://github.com/linode/apl-console/commit/55efc799f940ebad3b3f6fe77bfb66fc450043a3))
+- simplify app values ([#419](https://github.com/linode/apl-console/issues/419)) ([8cf2b80](https://github.com/linode/apl-console/commit/8cf2b80e38eb4a3953dde4675e3069d732db7db5))
+- update sealed secret page to support readability of the secret values ([#407](https://github.com/linode/apl-console/issues/407)) ([d4b832f](https://github.com/linode/apl-console/commit/d4b832f6ff81ed6b3c7e31708efee537175babb6))
+- update team alertmanager settings ([#409](https://github.com/linode/apl-console/issues/409)) ([73e4743](https://github.com/linode/apl-console/commit/73e4743c821f75ab5c3aff1f87bb6a45e1d8eb68))
+- validate values editor ([#428](https://github.com/linode/apl-console/issues/428)) ([a390be3](https://github.com/linode/apl-console/commit/a390be3d4781f9ec5e54601f1b9de9331dd49d14))
 
 ### Bug Fixes
 
-* added iframe overlay to 'remove' border ([#438](https://github.com/linode/apl-console/issues/438)) ([b3d81b3](https://github.com/linode/apl-console/commit/b3d81b31a7f8f446b78bc0d3b81a8943d890e1e1))
-* alerts settings ([#437](https://github.com/linode/apl-console/issues/437)) ([3ffba43](https://github.com/linode/apl-console/commit/3ffba431d468bb2977e9627ef9697ec1d4af6bb3))
-* apl-chart name substring removal ([#433](https://github.com/linode/apl-console/issues/433)) ([dbd14ae](https://github.com/linode/apl-console/commit/dbd14ae475352750486e60fb2b8515c7accc5adb))
-* change tab name in login page and clean up keycloak folder ([#436](https://github.com/linode/apl-console/issues/436)) ([4a48b96](https://github.com/linode/apl-console/commit/4a48b960774ce19877a1b7dc92271c0833b19fee))
-* ingress app ([#434](https://github.com/linode/apl-console/issues/434)) ([12e22bc](https://github.com/linode/apl-console/commit/12e22bc1c0c9744ecccc4fb66b9669a8e2afb7cc))
-* OIDC no team ([#405](https://github.com/linode/apl-console/issues/405)) ([6e89be6](https://github.com/linode/apl-console/commit/6e89be6b0cd11d95657da4525ba7dd6598926abe))
-* remove co-monitoring from the settings page ([#429](https://github.com/linode/apl-console/issues/429)) ([f738356](https://github.com/linode/apl-console/commit/f738356393f56f7a22f964362a8c9283335379f8))
-* rm azure monitor ([#402](https://github.com/linode/apl-console/issues/402)) ([2ba8151](https://github.com/linode/apl-console/commit/2ba8151ba34665b97b874f8aa6d2c2fe832031f6))
-* rm azure settings ([#417](https://github.com/linode/apl-console/issues/417)) ([77244d8](https://github.com/linode/apl-console/commit/77244d80675750bded50acd6da49ea566a2d6cc9))
-* rm opencost ([#403](https://github.com/linode/apl-console/issues/403)) ([c0f2d6b](https://github.com/linode/apl-console/commit/c0f2d6b9e3f17ab60903baaf31de75034f037a53))
-* rm thanos ([#404](https://github.com/linode/apl-console/issues/404)) ([4b2ddc7](https://github.com/linode/apl-console/commit/4b2ddc720c51e83726653d90e579f1c6eff1b625))
-* sealed secrets ([#430](https://github.com/linode/apl-console/issues/430)) ([d1b0262](https://github.com/linode/apl-console/commit/d1b0262a085581d0909bf491baa5d070928d9f17))
-* sealed secrets opaque fields & dashboard inventory items ([#413](https://github.com/linode/apl-console/issues/413)) ([2a5a6f8](https://github.com/linode/apl-console/commit/2a5a6f8b4d728d95898c95cd85b6283ce4a54eec))
-
+- added iframe overlay to 'remove' border ([#438](https://github.com/linode/apl-console/issues/438)) ([b3d81b3](https://github.com/linode/apl-console/commit/b3d81b31a7f8f446b78bc0d3b81a8943d890e1e1))
+- alerts settings ([#437](https://github.com/linode/apl-console/issues/437)) ([3ffba43](https://github.com/linode/apl-console/commit/3ffba431d468bb2977e9627ef9697ec1d4af6bb3))
+- apl-chart name substring removal ([#433](https://github.com/linode/apl-console/issues/433)) ([dbd14ae](https://github.com/linode/apl-console/commit/dbd14ae475352750486e60fb2b8515c7accc5adb))
+- change tab name in login page and clean up keycloak folder ([#436](https://github.com/linode/apl-console/issues/436)) ([4a48b96](https://github.com/linode/apl-console/commit/4a48b960774ce19877a1b7dc92271c0833b19fee))
+- ingress app ([#434](https://github.com/linode/apl-console/issues/434)) ([12e22bc](https://github.com/linode/apl-console/commit/12e22bc1c0c9744ecccc4fb66b9669a8e2afb7cc))
+- OIDC no team ([#405](https://github.com/linode/apl-console/issues/405)) ([6e89be6](https://github.com/linode/apl-console/commit/6e89be6b0cd11d95657da4525ba7dd6598926abe))
+- remove co-monitoring from the settings page ([#429](https://github.com/linode/apl-console/issues/429)) ([f738356](https://github.com/linode/apl-console/commit/f738356393f56f7a22f964362a8c9283335379f8))
+- rm azure monitor ([#402](https://github.com/linode/apl-console/issues/402)) ([2ba8151](https://github.com/linode/apl-console/commit/2ba8151ba34665b97b874f8aa6d2c2fe832031f6))
+- rm azure settings ([#417](https://github.com/linode/apl-console/issues/417)) ([77244d8](https://github.com/linode/apl-console/commit/77244d80675750bded50acd6da49ea566a2d6cc9))
+- rm opencost ([#403](https://github.com/linode/apl-console/issues/403)) ([c0f2d6b](https://github.com/linode/apl-console/commit/c0f2d6b9e3f17ab60903baaf31de75034f037a53))
+- rm thanos ([#404](https://github.com/linode/apl-console/issues/404)) ([4b2ddc7](https://github.com/linode/apl-console/commit/4b2ddc720c51e83726653d90e579f1c6eff1b625))
+- sealed secrets ([#430](https://github.com/linode/apl-console/issues/430)) ([d1b0262](https://github.com/linode/apl-console/commit/d1b0262a085581d0909bf491baa5d070928d9f17))
+- sealed secrets opaque fields & dashboard inventory items ([#413](https://github.com/linode/apl-console/issues/413)) ([2a5a6f8](https://github.com/linode/apl-console/commit/2a5a6f8b4d728d95898c95cd85b6283ce4a54eec))
 
 ### CI
 
-* use new github secrets and variables ([#416](https://github.com/linode/apl-console/issues/416)) ([27c67e4](https://github.com/linode/apl-console/commit/27c67e40179819074faa3ad39ae8ae1dc0a49f20))
+- use new github secrets and variables ([#416](https://github.com/linode/apl-console/issues/416)) ([27c67e4](https://github.com/linode/apl-console/commit/27c67e40179819074faa3ad39ae8ae1dc0a49f20))
 
 ## [2.8.0](https://github.com/redkubes/otomi-stack-web/compare/v2.7.0...v2.8.0) (2024-04-19)
 
-
 ### Bug Fixes
 
-* Error 403: Forbidden ([#398](https://github.com/redkubes/otomi-stack-web/issues/398)) ([376ac06](https://github.com/redkubes/otomi-stack-web/commit/376ac06f85887da952d9f0cfb051adc80ff0bcee))
-* rerender of forms ([#397](https://github.com/redkubes/otomi-stack-web/issues/397)) ([89faa7b](https://github.com/redkubes/otomi-stack-web/commit/89faa7bff955d43776be648a773db5d3a6a2a14f))
-* tekton pipeline run link ([#396](https://github.com/redkubes/otomi-stack-web/issues/396)) ([893b0c5](https://github.com/redkubes/otomi-stack-web/commit/893b0c5ce65ca7c4787d07a0812a98a30538cac9))
+- Error 403: Forbidden ([#398](https://github.com/redkubes/otomi-stack-web/issues/398)) ([376ac06](https://github.com/redkubes/otomi-stack-web/commit/376ac06f85887da952d9f0cfb051adc80ff0bcee))
+- rerender of forms ([#397](https://github.com/redkubes/otomi-stack-web/issues/397)) ([89faa7b](https://github.com/redkubes/otomi-stack-web/commit/89faa7bff955d43776be648a773db5d3a6a2a14f))
+- tekton pipeline run link ([#396](https://github.com/redkubes/otomi-stack-web/issues/396)) ([893b0c5](https://github.com/redkubes/otomi-stack-web/commit/893b0c5ce65ca7c4787d07a0812a98a30538cac9))
 
 ## [2.7.0](https://github.com/redkubes/otomi-stack-web/compare/v2.6.0...v2.7.0) (2024-04-05)
 
-
 ### Features
 
-* move netpols out of svc ([#386](https://github.com/redkubes/otomi-stack-web/issues/386)) ([08a7b19](https://github.com/redkubes/otomi-stack-web/commit/08a7b19f4676e69bc387ca8d0a1c5dc6e81b1f9c))
-
+- move netpols out of svc ([#386](https://github.com/redkubes/otomi-stack-web/issues/386)) ([08a7b19](https://github.com/redkubes/otomi-stack-web/commit/08a7b19f4676e69bc387ca8d0a1c5dc6e81b1f9c))
 
 ### Bug Fixes
 
-* tekton pipeline emit message error ([#395](https://github.com/redkubes/otomi-stack-web/issues/395)) ([fe474e2](https://github.com/redkubes/otomi-stack-web/commit/fe474e2492c03b823b73982ddd6fac6c3c93a574))
-* vulnerability in settings data ([#394](https://github.com/redkubes/otomi-stack-web/issues/394)) ([d6ff5e2](https://github.com/redkubes/otomi-stack-web/commit/d6ff5e26e6161a87c5ea6db8a7f1dbfaf268bc63))
+- tekton pipeline emit message error ([#395](https://github.com/redkubes/otomi-stack-web/issues/395)) ([fe474e2](https://github.com/redkubes/otomi-stack-web/commit/fe474e2492c03b823b73982ddd6fac6c3c93a574))
+- vulnerability in settings data ([#394](https://github.com/redkubes/otomi-stack-web/issues/394)) ([d6ff5e2](https://github.com/redkubes/otomi-stack-web/commit/d6ff5e26e6161a87c5ea6db8a7f1dbfaf268bc63))
 
 ## [2.6.0](https://github.com/redkubes/otomi-stack-web/compare/v2.5.0...v2.6.0) (2024-03-14)
 
-
 ### Features
 
-* secrets migration ([#392](https://github.com/redkubes/otomi-stack-web/issues/392)) ([b82d6ac](https://github.com/redkubes/otomi-stack-web/commit/b82d6acf4ffe2c48e63959e8290bdd4ed9d6be17))
-
+- secrets migration ([#392](https://github.com/redkubes/otomi-stack-web/issues/392)) ([b82d6ac](https://github.com/redkubes/otomi-stack-web/commit/b82d6acf4ffe2c48e63959e8290bdd4ed9d6be17))
 
 ### Bug Fixes
 
-* disable form submission if onSubmit doesn't exist ([#391](https://github.com/redkubes/otomi-stack-web/issues/391)) ([ca2532a](https://github.com/redkubes/otomi-stack-web/commit/ca2532ac0e4accffe431e72a0e0e0598803b99c9))
+- disable form submission if onSubmit doesn't exist ([#391](https://github.com/redkubes/otomi-stack-web/issues/391)) ([ca2532a](https://github.com/redkubes/otomi-stack-web/commit/ca2532ac0e4accffe431e72a0e0e0598803b99c9))
 
 ## [2.5.0](https://github.com/redkubes/otomi-stack-web/compare/v2.4.0...v2.5.0) (2024-02-22)
 
-
 ### Features
 
-* improve team permissions ([#390](https://github.com/redkubes/otomi-stack-web/issues/390)) ([fcd303b](https://github.com/redkubes/otomi-stack-web/commit/fcd303b9c25061e7f714eefe8cca7e22fa6bed56))
-* rabbitmq ([#382](https://github.com/redkubes/otomi-stack-web/issues/382)) ([79feaed](https://github.com/redkubes/otomi-stack-web/commit/79feaede7f833b022cf7786b6f31432429f33612))
-* sealed secrets ([#381](https://github.com/redkubes/otomi-stack-web/issues/381)) ([5a85d49](https://github.com/redkubes/otomi-stack-web/commit/5a85d4935d4005b17fc47da80635799f17bb7b01))
+- improve team permissions ([#390](https://github.com/redkubes/otomi-stack-web/issues/390)) ([fcd303b](https://github.com/redkubes/otomi-stack-web/commit/fcd303b9c25061e7f714eefe8cca7e22fa6bed56))
+- rabbitmq ([#382](https://github.com/redkubes/otomi-stack-web/issues/382)) ([79feaed](https://github.com/redkubes/otomi-stack-web/commit/79feaede7f833b022cf7786b6f31432429f33612))
+- sealed secrets ([#381](https://github.com/redkubes/otomi-stack-web/issues/381)) ([5a85d49](https://github.com/redkubes/otomi-stack-web/commit/5a85d4935d4005b17fc47da80635799f17bb7b01))
 
 ## [2.4.0](https://github.com/redkubes/otomi-stack-web/compare/v2.3.0...v2.4.0) (2024-02-13)
 
-
 ### Features
 
-* download values ([#388](https://github.com/redkubes/otomi-stack-web/issues/388)) ([0e98bd1](https://github.com/redkubes/otomi-stack-web/commit/0e98bd1739043508ffed702dafaa106324ff665f))
-
+- download values ([#388](https://github.com/redkubes/otomi-stack-web/issues/388)) ([0e98bd1](https://github.com/redkubes/otomi-stack-web/commit/0e98bd1739043508ffed702dafaa106324ff665f))
 
 ### Bug Fixes
 
-* workload values re-render structure & remove unnecessary files ([#385](https://github.com/redkubes/otomi-stack-web/issues/385)) ([be56ebd](https://github.com/redkubes/otomi-stack-web/commit/be56ebd67eec1f70c9661252960efea54438d644))
+- workload values re-render structure & remove unnecessary files ([#385](https://github.com/redkubes/otomi-stack-web/issues/385)) ([be56ebd](https://github.com/redkubes/otomi-stack-web/commit/be56ebd67eec1f70c9661252960efea54438d644))
 
 ## [2.3.0](https://github.com/redkubes/otomi-stack-web/compare/v2.2.0...v2.3.0) (2024-01-12)
 
-
 ### Bug Fixes
 
-* apps filtering for team apps page ([#377](https://github.com/redkubes/otomi-stack-web/issues/377)) ([2b5a30f](https://github.com/redkubes/otomi-stack-web/commit/2b5a30f323a8ecc89d4ecbd51d237d9eab7a1f22))
-* knative services ([#378](https://github.com/redkubes/otomi-stack-web/issues/378)) ([6b6c27c](https://github.com/redkubes/otomi-stack-web/commit/6b6c27c6918c95d6b82b731fbec4d02167e29560))
+- apps filtering for team apps page ([#377](https://github.com/redkubes/otomi-stack-web/issues/377)) ([2b5a30f](https://github.com/redkubes/otomi-stack-web/commit/2b5a30f323a8ecc89d4ecbd51d237d9eab7a1f22))
+- knative services ([#378](https://github.com/redkubes/otomi-stack-web/issues/378)) ([6b6c27c](https://github.com/redkubes/otomi-stack-web/commit/6b6c27c6918c95d6b82b731fbec4d02167e29560))
 
 ## [2.2.0](https://github.com/redkubes/otomi-stack-web/compare/v2.1.0...v2.2.0) (2024-01-04)
 
