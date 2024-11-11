@@ -106,6 +106,7 @@ export default function StyledModal() {
                 onChange={(e) => {
                   setApiToken(e.target.value)
                 }}
+                required
               />
               <Typography variant='body2' mt={2}>
                 <Link
@@ -116,7 +117,7 @@ export default function StyledModal() {
                   How to create an API token?
                 </Link>
               </Typography>
-              <FormControl fullWidth sx={{ mt: 2 }}>
+              <FormControl fullWidth sx={{ mt: 2 }} required>
                 <InputLabel id='region-label'>Region</InputLabel>
                 <Select
                   labelId='region-label'
