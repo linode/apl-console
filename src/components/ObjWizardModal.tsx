@@ -127,7 +127,7 @@ export default function StyledModal() {
                   disabled={!!data?.regionId}
                   onChange={(e) => setRegion(e.target.value)}
                 >
-                  {data?.regions.map((region) => (
+                  {data?.regions?.map((region) => (
                     <MenuItem key={region.id} value={region.id}>
                       {region.label}
                     </MenuItem>
