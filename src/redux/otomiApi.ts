@@ -3755,6 +3755,11 @@ export type GetSettingsInfoApiArg = void
 export type GetObjWizardApiResponse = /** status 200 Successfully obtained obj wizard configuration */ {
   showWizard?: boolean
   apiToken?: string
+  regionId?: string
+  regions?: {
+    id?: string
+    label?: string
+  }[]
 }
 export type GetObjWizardApiArg = void
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
@@ -3763,6 +3768,11 @@ export type CreateObjWizardApiArg = {
   body: {
     showWizard?: boolean
     apiToken?: string
+    regionId?: string
+    regions?: {
+      id?: string
+      label?: string
+    }[]
   }
 }
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
