@@ -16,7 +16,10 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchAppsEnabled } = useAuthzSession(teamId)
+  const {
+    refetchAppsEnabled,
+    user: { isPlatformAdmin },
+  } = useAuthzSession(teamId)
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
@@ -27,7 +30,7 @@ export default function ({
     isLoading: isLoadingSettings,
     isFetching: isFetchingSettings,
     refetch: refetchSettings,
-  } = useGetSettingsQuery({ ids: ['obj'] })
+  } = useGetSettingsQuery({ ids: ['obj'] }, { skip: !isPlatformAdmin })
   useEffect(() => {
     if (appIds) {
       setAppState([])
