@@ -64,7 +64,7 @@ export default function StyledModal() {
 
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
-    if (data?.regionId) setRegion(data.regionId as string)
+    if (data?.regionId) setRegion(data.regionId)
     if (!isPreInstalled) setShowObjWizard(false)
   }, [data, isPreInstalled])
 
