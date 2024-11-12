@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { Box, Button, Link, Typography } from '@mui/material'
+import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
+import { useGetSettingsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const {
@@ -13,6 +14,12 @@ export default function (): React.ReactElement {
     },
   } = useSession()
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
+  const { data } = useGetSettingsQuery({ ids: ['obj'] })
+  const isObjStorageConfigured = (): boolean => {
+    const linode: any = data?.obj?.provider?.type === 'linode' ? data.obj.provider.linode : {}
+    const { accessKeyId, secretAccessKey, region } = linode
+    return Boolean(accessKeyId || secretAccessKey || region)
+  }
   const handleShowObjWizard = () => {
     setShowObjWizard(true)
     window.location.reload()
@@ -31,19 +38,24 @@ export default function (): React.ReactElement {
       </Link>
 
       {isPreInstalled && (
-        <Button
-          variant='text'
-          color='primary'
-          sx={{
-            px: 0,
-            fontWeight: 500,
-            fontSize: '16px',
-            '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-          }}
-          onClick={handleShowObjWizard}
-        >
-          Start Object Storage Wizard
-        </Button>
+        <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
+          <span>
+            <Button
+              variant='text'
+              color='primary'
+              sx={{
+                px: 0,
+                fontWeight: 500,
+                fontSize: '16px',
+                '&.MuiButton-root:hover': { bgcolor: 'transparent' },
+              }}
+              onClick={handleShowObjWizard}
+              disabled={isObjStorageConfigured()}
+            >
+              Start Object Storage Wizard
+            </Button>
+          </span>
+        </Tooltip>
       )}
     </Box>
   )

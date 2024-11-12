@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.3.0](https://github.com/linode/apl-console/compare/v3.2.0...v3.3.0) (2024-11-12)
+
+
+### Features
+
+* selectable object storage region ([#456](https://github.com/linode/apl-console/issues/456)) ([02279cf](https://github.com/linode/apl-console/commit/02279cf2f8e694c527dcdcc7256e25b3635d1ec6))
+
+
+### Bug Fixes
+
+* set correct workload values on first load ([#455](https://github.com/linode/apl-console/issues/455)) ([901a979](https://github.com/linode/apl-console/commit/901a979311289e7ec28b37950c578685df58168a))
+
 ## [3.2.0](https://github.com/linode/apl-console/compare/v3.1.0...v3.2.0) (2024-11-07)
 
 

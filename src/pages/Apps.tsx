@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
 import useAuthzSession from 'hooks/useAuthzSession'
+import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -17,6 +18,7 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { refetchAppsEnabled } = useAuthzSession(teamId)
+  const { themeView } = useSettings()
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
@@ -27,7 +29,7 @@ export default function ({
     isLoading: isLoadingSettings,
     isFetching: isFetchingSettings,
     refetch: refetchSettings,
-  } = useGetSettingsQuery({ ids: ['obj'] })
+  } = useGetSettingsQuery({ ids: ['obj'] }, { skip: themeView === 'team' })
   useEffect(() => {
     if (appIds) {
       setAppState([])

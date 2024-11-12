@@ -124,7 +124,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
   const [openModal, setOpenModal] = useState('')
   const [openObjAppModal, setOpenObjAppModal] = useState('')
-  const objStorageApps = (session?.objStorageApps || []) as ObjStorageApp[]
+  const objStorageApps = (session?.objectStorage?.objStorageApps || []) as ObjStorageApp[]
 
   const isLinodeConfigured = (appId: string): boolean => {
     const linode: any = objSettings.obj?.provider?.type === 'linode' ? objSettings.obj.provider.linode : {}
