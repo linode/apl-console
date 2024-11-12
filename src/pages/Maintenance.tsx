@@ -5,7 +5,7 @@ import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
-import { useGetObjWizardQuery } from 'redux/otomiApi'
+import { useGetSettingsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const {
@@ -14,8 +14,12 @@ export default function (): React.ReactElement {
     },
   } = useSession()
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
-  const { data } = useGetObjWizardQuery()
-
+  const { data } = useGetSettingsQuery({ ids: ['obj'] })
+  const isObjStorageConfigured = (): boolean => {
+    const linode: any = data?.obj?.provider?.type === 'linode' ? data.obj.provider.linode : {}
+    const { accessKeyId, secretAccessKey, region } = linode
+    return Boolean(accessKeyId || secretAccessKey || region)
+  }
   const handleShowObjWizard = () => {
     setShowObjWizard(true)
     window.location.reload()
@@ -34,7 +38,7 @@ export default function (): React.ReactElement {
       </Link>
 
       {isPreInstalled && (
-        <Tooltip title={data?.regionId ? 'Object storage settings are already configured.' : ''}>
+        <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
           <span>
             <Button
               variant='text'
@@ -46,7 +50,7 @@ export default function (): React.ReactElement {
                 '&.MuiButton-root:hover': { bgcolor: 'transparent' },
               }}
               onClick={handleShowObjWizard}
-              disabled={!!data?.regionId}
+              disabled={isObjStorageConfigured()}
             >
               Start Object Storage Wizard
             </Button>

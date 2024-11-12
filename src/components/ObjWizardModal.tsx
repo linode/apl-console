@@ -13,10 +13,9 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLocalStorage } from 'react-use'
-import { useCreateObjWizardMutation, useGetObjWizardQuery } from 'redux/otomiApi'
+import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
-import { skipToken } from '@reduxjs/toolkit/dist/query'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -51,32 +50,30 @@ export default function StyledModal() {
     settings: {
       otomi: { isPreInstalled },
     },
+    objectStorage: { objStorageRegions, showWizard },
   } = useSession()
-  const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
+  const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard', !!showWizard)
   const [accepted, setAccepted] = useState(false)
   const [apiToken, setApiToken] = useState('')
-  const [region, setRegion] = useState('')
+  const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
-  const { data } = useGetObjWizardQuery(!isPlatformAdmin && skipToken)
-
   useEffect(() => {
-    if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
-    if (data?.regionId) setRegion(data.regionId)
+    if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
     if (!isPreInstalled) setShowObjWizard(false)
-  }, [data, isPreInstalled])
-
+  }, [isPreInstalled])
   if (!isPlatformAdmin || !isPreInstalled) return null
-
   const handleSkip = () => {
     create({ body: { showWizard: false } })
     setShowObjWizard(false)
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken, showWizard: false, regionId: region } }).then(() => {
+    create({ body: { apiToken, showWizard: false, regionId } }).then(() => {
       setLoading(false)
       setShowObjWizard(false)
+      // refresh the page to get the new session/settings
+      window.location.reload()
     })
   }
   return (
@@ -120,14 +117,13 @@ export default function StyledModal() {
                 <Select
                   labelId='region-label'
                   id='region'
-                  value={region}
+                  value={regionId}
                   label='Region'
-                  disabled={!!data?.regionId}
-                  onChange={(e) => setRegion(e.target.value)}
+                  onChange={(e) => setRegionId(e.target.value)}
                 >
-                  {data?.regions?.map((region) => (
+                  {objStorageRegions?.map((region) => (
                     <MenuItem key={region.id} value={region.id}>
-                      {region.label}
+                      {`${region.label} (${region.id})`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -149,7 +145,7 @@ export default function StyledModal() {
             <LoadingButton
               variant='contained'
               color='primary'
-              disabled={!apiToken || !region}
+              disabled={!apiToken || !regionId}
               onClick={handleSubmit}
               loading={loading}
             >
