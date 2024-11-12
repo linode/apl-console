@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/linode/apl-console/compare/v3.1.0...v3.2.0) (2024-11-07)
+
+
+### Features
+
+* object storage wizard ([#452](https://github.com/linode/apl-console/issues/452)) ([0c12bd4](https://github.com/linode/apl-console/commit/0c12bd4c085cb33ed7c2eb781412d3ef65aa58ad))
+
 ## [3.1.0](https://github.com/linode/apl-console/compare/v3.0.0...v3.1.0) (2024-11-01)
 
 
