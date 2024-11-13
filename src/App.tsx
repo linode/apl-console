@@ -54,7 +54,7 @@ import Project from 'pages/Project'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
-import Logout from 'components/Logout'
+import Logout from 'pages/Logout'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
