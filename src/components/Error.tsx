@@ -20,7 +20,7 @@ export default function ({ error }: Props): React.ReactElement {
   if (!err) return null
   // redirect to login page if the error is a fetch error (session expired)
   // automatically triggers Keycloak to route the user to the Keycloak login page
-  if (err?.status === 'FETCH_ERROR') window.location.href = '/'
+  if (err?.status === 'FETCH_ERROR') window.location.reload()
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error
