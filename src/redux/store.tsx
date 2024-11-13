@@ -21,7 +21,10 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
         if (requestStatus === 'fulfilled') dispatch(setDirty(false))
       }
       // exclude endpoints from dirty state
-      if (type === 'mutation' && ['workloadCatalog', 'createObjWizard'].includes(endpointName as string))
+      if (
+        type === 'mutation' &&
+        ['workloadCatalog', 'createObjWizard', 'deleteCloudtty'].includes(endpointName as string)
+      )
         dispatch(setDirty(false))
     }
   } else if (payload) {
