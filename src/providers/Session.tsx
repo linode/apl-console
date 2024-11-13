@@ -8,6 +8,7 @@ import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
@@ -90,6 +91,8 @@ type DroneBuildEvent = {
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
+  const { pathname } = useLocation()
+  console.log('pathname', pathname)
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
@@ -278,6 +281,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
+  if (pathname === '/logout') window.location.href = '/logout-otomi'
   if (!session) throw new ApiErrorGatewayTimeout()
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
