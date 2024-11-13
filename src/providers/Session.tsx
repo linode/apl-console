@@ -296,9 +296,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  const { originalStatus } = sessionError as any
-  if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
-  if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
+  if (sessionError) {
+    const { originalStatus } = sessionError as any
+    if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
+    if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
+  }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
