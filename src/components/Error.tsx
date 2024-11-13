@@ -40,6 +40,7 @@ export default function ({ error }: Props): React.ReactElement {
     case 403:
       icon = 'ic:baseline-do-not-disturb'
       break
+    case 503:
     case 504:
       icon = 'ant-design:api-outlined'
       break
@@ -54,7 +55,12 @@ export default function ({ error }: Props): React.ReactElement {
         {text}
       </Button>
     )
-    if (code === 504 || err instanceof ApiErrorUnauthorized || err instanceof ApiErrorUnauthorizedNoGroups) {
+    if (
+      code === 503 ||
+      code === 504 ||
+      err instanceof ApiErrorUnauthorized ||
+      err instanceof ApiErrorUnauthorizedNoGroups
+    ) {
       return renderButton(t('Logout', { ns: 'error' }) as string, () => {
         window.location.href = '/logout-otomi'
       })
