@@ -54,6 +54,7 @@ import Project from 'pages/Project'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
+import Logout from 'components/Logout'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -175,6 +176,7 @@ function App() {
                                   <PrivateRoute path='/teams/:teamId/services' component={Services} exact />
                                   <PrivateRoute path='/teams/:teamId/services/:serviceId' component={Service} exact />
                                   <PrivateRoute path='/maintenance' component={Maintenance} platformAdminRoute exact />
+                                  <Route path='/logout' component={Logout} />
                                   <Route path='*'>
                                     <Error error={new HttpErrorBadRequest()} />
                                   </Route>
