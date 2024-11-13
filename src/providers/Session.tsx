@@ -19,7 +19,12 @@ import {
   useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
+import {
+  ApiErrorGatewayTimeout,
+  ApiErrorServiceUnavailable,
+  ApiErrorUnauthorized,
+  ApiErrorUnauthorizedNoGroups,
+} from 'utils/error'
 import snack from 'utils/snack'
 
 export interface SessionContext extends GetSessionApiResponse {
@@ -93,7 +98,12 @@ type DroneBuildEvent = {
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
-  const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
+  const {
+    data: session,
+    isLoading: isLoadingSession,
+    refetch: refetchSession,
+    error: sessionError,
+  } = useGetSessionQuery()
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
   const { data: settings, isLoading: isLoadingSettings, refetch: refetchSettings } = useGetSettingsInfoQuery()
@@ -286,7 +296,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  if (!session) throw new ApiErrorGatewayTimeout()
+  const { originalStatus } = sessionError as any
+  if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
+  if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
