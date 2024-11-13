@@ -41,7 +41,7 @@ export default function AccountPopover({ email }: Props) {
       // cloudtty resources will be automatically deleted by the API after a 2-hour timeout
     }
     clearLocalStorage('oboTeamId')
-    history.push('/logout')
+    window.location.href = '/logout-otomi'
   }
 
   return (
