@@ -32,16 +32,13 @@ export default function AccountPopover({ email }: Props) {
     setOpen(null)
   }
 
-  const handleLogout = async () => {
-    try {
-      await del({
-        body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
-      })
-    } catch (error) {
-      // cloudtty resources will be automatically deleted by the API after a 2-hour timeout
-    }
-    clearLocalStorage('oboTeamId')
-    history.push('/logout')
+  const handleLogout = () => {
+    del({
+      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
+    }).finally(() => {
+      clearLocalStorage('oboTeamId')
+      history.push('/logout')
+    })
   }
 
   return (
