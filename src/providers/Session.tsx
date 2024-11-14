@@ -123,6 +123,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { socket, error: errorSocket } = useSocket({ url, path })
   console.log('socket', socket)
   console.log('errorSocket', errorSocket)
+
+  if (socket.connected === false && sessionError) window.location.reload()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
