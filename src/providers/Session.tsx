@@ -27,6 +27,7 @@ import {
   ApiErrorUnauthorizedNoGroups,
 } from 'utils/error'
 import snack from 'utils/snack'
+import Cookies from 'js-cookie'
 
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
@@ -291,6 +292,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   }, [lastTektonMessage])
 
   console.log('sessionError', sessionError)
+  const cookies = Cookies.get()
+  console.log('cookies', cookies)
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // redirect to the Keyclok logout page if the user tries to access the logout route
