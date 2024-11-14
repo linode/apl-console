@@ -15,9 +15,14 @@ export default function Logout({ waitAndLogout = false }: Props): React.ReactEle
     dispatch(setError(undefined))
     if (waitAndLogout) {
       setTimeout(() => {
-        window.location.href = '/logout-otomi'
+        window.location.reload()
       }, 1000)
     } else window.location.href = '/logout-otomi'
+    return () => {
+      dispatch(setDirty(false))
+      dispatch(setError(undefined))
+      window.location.reload()
+    }
   }, [waitAndLogout])
   return <LoadingScreen />
 }
