@@ -121,9 +121,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
-  console.log('socket', socket)
-
-  // if (socket.connected === false && sessionError) window.location.reload()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -306,11 +303,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (sessionError) {
-    console.log('sessionError', sessionError)
     const { originalStatus, status } = sessionError as any
     if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
-    if (status === 'FETCH_ERROR') return <Logout waitAndLogout />
+    if (status === 'FETCH_ERROR') return <Logout fetchError />
   }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />

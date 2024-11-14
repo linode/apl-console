@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
+import Logout from 'pages/Logout'
 import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups, HttpError } from '../utils/error'
 import Iconify from './Iconify'
 
@@ -20,7 +21,7 @@ export default function ({ error }: Props): React.ReactElement {
   if (!err) return null
   // redirect to login page if the error is a fetch error (session expired)
   // automatically triggers Keycloak to route the user to the Keycloak login page
-  // if (err?.status === 'FETCH_ERROR') window.location.href = '/'
+  if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error
