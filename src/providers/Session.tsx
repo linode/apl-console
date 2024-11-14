@@ -27,7 +27,6 @@ import {
   ApiErrorUnauthorizedNoGroups,
 } from 'utils/error'
 import snack from 'utils/snack'
-import Cookies from 'js-cookie'
 
 export interface SessionContext extends GetSessionApiResponse {
   appsEnabled?: Record<string, any>
@@ -122,9 +121,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
   console.log('socket', socket)
-  console.log('errorSocket', errorSocket)
 
-  if (socket.connected === false && sessionError) window.location.reload()
+  // if (socket.connected === false && sessionError) window.location.reload()
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -295,9 +293,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     })
   }, [lastTektonMessage])
 
-  console.log('sessionError', sessionError)
-  const cookies = Cookies.get()
-  console.log('cookies', cookies)
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // redirect to the Keyclok logout page if the user tries to access the logout route
@@ -310,9 +305,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (sessionError) {
-    const { originalStatus } = sessionError as any
+    console.log('sessionError', sessionError)
+    const { originalStatus, status } = sessionError as any
     if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
+    if (status === 'FETCH_ERROR') window.location.href = '/'
   }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />

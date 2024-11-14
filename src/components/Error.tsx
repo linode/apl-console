@@ -12,10 +12,8 @@ interface Props {
 }
 
 export default function ({ error }: Props): React.ReactElement {
-  console.log('error comp', error)
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
-  console.log('globalError', globalError)
   const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
