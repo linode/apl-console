@@ -19,7 +19,7 @@ export default function ({ error }: Props): React.ReactElement {
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
-  // redirect to logout page if the error is a fetch error (session expired)
+  // return the logout page if the error is a fetch error (session expired)
   if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
