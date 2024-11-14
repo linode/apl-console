@@ -14,9 +14,8 @@ export default function Logout({ fetchError = false }: Props): React.ReactElemen
     dispatch(setDirty(false))
     dispatch(setError(undefined))
     if (fetchError) {
-      setTimeout(() => {
-        window.location.reload()
-      }, 100)
+      // automatically triggers Keycloak to route the user to the Keycloak login page
+      window.location.reload()
     } else window.location.href = '/logout-otomi'
     return () => {
       dispatch(setDirty(false))
