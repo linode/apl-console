@@ -37,7 +37,7 @@ export default function AccountPopover({ email }: Props) {
       body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
     }).finally(() => {
       clearLocalStorage('oboTeamId')
-      window.location.href = '/logout-otomi'
+      history.push('/logout')
     })
   }
 

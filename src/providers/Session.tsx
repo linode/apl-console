@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { setSpec } from 'common/api-spec'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
@@ -97,22 +98,27 @@ type DroneBuildEvent = {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const { pathname } = useLocation()
+  const skipFetch = pathname === '/logout' || pathname === '/logout-otomi'
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const {
     data: session,
     isLoading: isLoadingSession,
     refetch: refetchSession,
     error: sessionError,
-  } = useGetSessionQuery()
+  } = useGetSessionQuery(skipFetch && skipToken)
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
-  const { data: settings, isLoading: isLoadingSettings, refetch: refetchSettings } = useGetSettingsInfoQuery()
+  const {
+    data: settings,
+    isLoading: isLoadingSettings,
+    refetch: refetchSettings,
+  } = useGetSettingsInfoQuery(skipFetch && skipToken)
   const {
     data: apps,
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
-  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
+  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
@@ -286,6 +292,11 @@ export default function SessionProvider({ children }: Props): React.ReactElement
 
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
+  // redirect to the Keyclok logout page if the user tries to access the logout route
+  // prevents throwing an error and showing the error component
+  if (pathname === '/logout') window.location.href = '/logout-otomi'
+  if (pathname === '/logout-otomi') return null
+
   // if an error occured we keep rendering and let the error component show what happened
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
