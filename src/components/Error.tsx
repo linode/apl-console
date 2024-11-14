@@ -12,15 +12,17 @@ interface Props {
 }
 
 export default function ({ error }: Props): React.ReactElement {
+  console.log('error comp', error)
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
+  console.log('globalError', globalError)
   const { t } = useTranslation('error')
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
   // redirect to login page if the error is a fetch error (session expired)
   // automatically triggers Keycloak to route the user to the Keycloak login page
-  if (err?.status === 'FETCH_ERROR') window.location.href = '/'
+  // if (err?.status === 'FETCH_ERROR') window.location.href = '/'
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error

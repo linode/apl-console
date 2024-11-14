@@ -290,6 +290,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     })
   }, [lastTektonMessage])
 
+  console.log('sessionError', sessionError)
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // redirect to the Keyclok logout page if the user tries to access the logout route
