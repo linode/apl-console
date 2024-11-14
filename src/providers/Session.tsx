@@ -121,6 +121,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
   const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
+  console.log('socket', socket)
+  console.log('errorSocket', errorSocket)
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
