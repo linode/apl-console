@@ -7,6 +7,7 @@ import MessageTekton from 'components/MessageTekton'
 import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
+import Logout from 'pages/Logout'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
@@ -309,7 +310,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     const { originalStatus, status } = sessionError as any
     if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
-    if (status === 'FETCH_ERROR') return <LoadingScreen />
+    if (status === 'FETCH_ERROR') return <Logout waitAndLogout />
   }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
