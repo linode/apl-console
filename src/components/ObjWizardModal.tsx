@@ -1,10 +1,21 @@
-import { Box, Button, Link, Modal, TextField, Typography, styled } from '@mui/material'
+import {
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Link,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Typography,
+  styled,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLocalStorage } from 'react-use'
-import { useCreateObjWizardMutation, useGetObjWizardQuery } from 'redux/otomiApi'
+import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
-import { skipToken } from '@reduxjs/toolkit/dist/query'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -39,30 +50,30 @@ export default function StyledModal() {
     settings: {
       otomi: { isPreInstalled },
     },
+    objectStorage: { objStorageRegions, showWizard },
   } = useSession()
-  const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
+  const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard', !!showWizard)
   const [accepted, setAccepted] = useState(false)
   const [apiToken, setApiToken] = useState('')
+  const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
   const [create] = useCreateObjWizardMutation()
-  const { data } = useGetObjWizardQuery((!isPlatformAdmin && skipToken) || (showObjWizard !== undefined && skipToken))
-
   useEffect(() => {
-    if (showObjWizard === undefined) setShowObjWizard(data?.showWizard)
+    if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
     if (!isPreInstalled) setShowObjWizard(false)
-  }, [data, isPreInstalled])
-
+  }, [isPreInstalled])
   if (!isPlatformAdmin || !isPreInstalled) return null
-
   const handleSkip = () => {
     create({ body: { showWizard: false } })
     setShowObjWizard(false)
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken, showWizard: false } }).then(() => {
+    create({ body: { apiToken, showWizard: false, regionId } }).then(() => {
       setLoading(false)
       setShowObjWizard(false)
+      // refresh the page to get the new session/settings
+      window.location.reload()
     })
   }
   return (
@@ -90,6 +101,7 @@ export default function StyledModal() {
                 onChange={(e) => {
                   setApiToken(e.target.value)
                 }}
+                required
               />
               <Typography variant='body2' mt={2}>
                 <Link
@@ -100,6 +112,22 @@ export default function StyledModal() {
                   How to create an API token?
                 </Link>
               </Typography>
+              <FormControl fullWidth sx={{ mt: 2 }} required>
+                <InputLabel id='region-label'>Region</InputLabel>
+                <Select
+                  labelId='region-label'
+                  id='region'
+                  value={regionId}
+                  label='Region'
+                  onChange={(e) => setRegionId(e.target.value)}
+                >
+                  {objStorageRegions?.map((region) => (
+                    <MenuItem key={region.id} value={region.id}>
+                      {`${region.label} (${region.id})`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Box>
           )}
         </ModalContent>
@@ -117,7 +145,7 @@ export default function StyledModal() {
             <LoadingButton
               variant='contained'
               color='primary'
-              disabled={!apiToken}
+              disabled={!apiToken || !regionId}
               onClick={handleSubmit}
               loading={loading}
             >
