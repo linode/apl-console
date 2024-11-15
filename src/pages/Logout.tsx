@@ -6,12 +6,13 @@ interface Props {
 }
 
 export default function Logout({ fetchError = false }: Props): React.ReactElement {
-  // This component will redirect the user to the Keycloak logout page
+  // This component manages the logout process for users authenticated with Keycloak.
+  // - If a fetch error occurs, the page reloads automatically to handle potential session issues.
+  // - If no fetch error occurs, the user is redirected to the Keycloak logout page ('/logout-otomi' route).
+  // - On component unmount, the page reloads to ensure a clean and consistent state.
   useEffect(() => {
-    if (fetchError) {
-      // automatically triggers Keycloak to route the user to the Keycloak login page
-      window.location.reload()
-    } else window.location.href = '/logout-otomi'
+    if (fetchError) window.location.reload()
+    else window.location.href = '/logout-otomi'
     return () => {
       window.location.reload()
     }
