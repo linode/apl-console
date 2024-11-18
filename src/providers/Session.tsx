@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { setSpec } from 'common/api-spec'
 import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
@@ -6,8 +7,10 @@ import MessageTekton from 'components/MessageTekton'
 import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
+import Logout from 'pages/Logout'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useLocation } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
@@ -18,7 +21,12 @@ import {
   useGetSettingsInfoQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
-import { ApiErrorGatewayTimeout, ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups } from 'utils/error'
+import {
+  ApiErrorGatewayTimeout,
+  ApiErrorServiceUnavailable,
+  ApiErrorUnauthorized,
+  ApiErrorUnauthorizedNoGroups,
+} from 'utils/error'
 import snack from 'utils/snack'
 
 export interface SessionContext extends GetSessionApiResponse {
@@ -90,17 +98,28 @@ type DroneBuildEvent = {
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
+  const { pathname } = useLocation()
+  const skipFetch = pathname === '/logout' || pathname === '/logout-otomi'
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
-  const { data: session, isLoading: isLoadingSession, refetch: refetchSession } = useGetSessionQuery()
+  const {
+    data: session,
+    isLoading: isLoadingSession,
+    refetch: refetchSession,
+    error: sessionError,
+  } = useGetSessionQuery(skipFetch && skipToken)
   const url = `${window.location.origin.replace(/^http/, 'ws')}`
   const path = '/api/ws'
-  const { data: settings, isLoading: isLoadingSettings, refetch: refetchSettings } = useGetSettingsInfoQuery()
+  const {
+    data: settings,
+    isLoading: isLoadingSettings,
+    refetch: refetchSettings,
+  } = useGetSettingsInfoQuery(skipFetch && skipToken)
   const {
     data: apps,
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
-  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery()
+  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
@@ -278,7 +297,13 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   if (errorSocket)
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
-  if (!session) throw new ApiErrorGatewayTimeout()
+  if (sessionError) {
+    const { originalStatus, status } = sessionError as any
+    if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
+    if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
+    // return the logout page if the error is a fetch error (session expired)
+    if (status === 'FETCH_ERROR') return <Logout fetchError />
+  }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)

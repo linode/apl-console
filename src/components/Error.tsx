@@ -4,6 +4,7 @@ import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
+import Logout from 'pages/Logout'
 import { ApiErrorUnauthorized, ApiErrorUnauthorizedNoGroups, HttpError } from '../utils/error'
 import Iconify from './Iconify'
 
@@ -18,9 +19,8 @@ export default function ({ error }: Props): React.ReactElement {
   // END HOOKS
   const err = error ?? globalError
   if (!err) return null
-  // redirect to login page if the error is a fetch error (session expired)
-  // automatically triggers Keycloak to route the user to the Keycloak login page
-  if (err?.status === 'FETCH_ERROR') window.location.href = '/'
+  // return the logout page if the error is a fetch error (session expired)
+  if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error
@@ -36,6 +36,7 @@ export default function ({ error }: Props): React.ReactElement {
     case 403:
       icon = 'ic:baseline-do-not-disturb'
       break
+    case 503:
     case 504:
       icon = 'ant-design:api-outlined'
       break
@@ -50,7 +51,12 @@ export default function ({ error }: Props): React.ReactElement {
         {text}
       </Button>
     )
-    if (code === 504 || err instanceof ApiErrorUnauthorized || err instanceof ApiErrorUnauthorizedNoGroups) {
+    if (
+      code === 503 ||
+      code === 504 ||
+      err instanceof ApiErrorUnauthorized ||
+      err instanceof ApiErrorUnauthorizedNoGroups
+    ) {
       return renderButton(t('Logout', { ns: 'error' }) as string, () => {
         window.location.href = '/logout-otomi'
       })
