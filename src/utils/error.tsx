@@ -28,6 +28,11 @@ class HttpErrorForbidden extends HttpError {
   }
 }
 
+class ApiErrorServiceUnavailable extends HttpError {
+  constructor() {
+    super(e['The API could not be reached.'], 503)
+  }
+}
 class ApiErrorGatewayTimeout extends HttpError {
   constructor() {
     super(e['The API could not be reached.'], 504)
@@ -56,6 +61,7 @@ export {
   HttpError,
   HttpErrorBadRequest,
   HttpErrorForbidden,
+  ApiErrorServiceUnavailable,
   ApiErrorGatewayTimeout,
   ApiErrorUnauthorized,
   ApiErrorUnauthorizedNoGroups,
