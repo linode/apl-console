@@ -12,8 +12,11 @@ export const getNetpolSchema = (teamId: string, formData: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.Netpol)
   if (teamId !== 'admin') delete schema.properties.namespace
   set(schema, 'properties.ruleType.properties.type.title', '')
-  if (mode === 'AllowAll' && type === 'ingress')
+  unset(schema, 'properties.ruleType.additionalProperties')
+  if (mode === 'AllowAll' && type === 'ingress') {
     unset(schema, 'properties.ruleType.properties.ingress.properties.allow')
+    unset(schema, 'properties.ruleType.properties.ingress.additionalProperties')
+  }
   if (type === 'ingress') unset(schema, 'properties.ruleType.properties.egress')
   else unset(schema, 'properties.ruleType.properties.ingress')
 
