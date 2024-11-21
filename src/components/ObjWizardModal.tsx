@@ -16,6 +16,8 @@ import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import InformationBanner from './InformationBanner'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -57,7 +59,8 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
-  const [create] = useCreateObjWizardMutation()
+  const [wizardError, setWizardError] = useState<object | null>(null)
+  const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
     if (!isPreInstalled) setShowObjWizard(false)
@@ -69,11 +72,18 @@ export default function StyledModal() {
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken, showWizard: false, regionId } }).then(() => {
-      setLoading(false)
-      setShowObjWizard(false)
-      // refresh the page to get the new session/settings
-      window.location.reload()
+    create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
+      if (response) {
+        setLoading(false)
+        console.log('then err: ', JSON.stringify(response))
+        setWizardError((response as any).data.errorMessage)
+      } else {
+        setLoading(false)
+        setWizardError(null)
+        setShowObjWizard(false)
+        // refresh the page to get the new session/settings
+        window.location.reload()
+      }
     })
   }
   return (
@@ -92,6 +102,9 @@ export default function StyledModal() {
             </Box>
           ) : (
             <Box>
+              {wizardError !== null ? (
+                <InformationBanner message={`The Wizard encountered a problem: ${wizardError}, please retry!`} />
+              ) : null}
               <Typography variant='body1'>
                 The Application Platform needs an API Token to create the Object Storage.
               </Typography>
