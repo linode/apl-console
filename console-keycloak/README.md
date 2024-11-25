@@ -17,7 +17,7 @@ Next:
 
 - navigate to apl-console/console-keycloak
 - make sure java and the full JDK are installed on the machine
-- run command `jar cf APL.jar -C APL `
+- run command `jar cf APL.jar -C APL .`
 - This will create a jar file in the child resources folder
 - the jar file will be consumed in the build step, so there is no manual deploy step
 
