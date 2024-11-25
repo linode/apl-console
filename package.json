@@ -28,7 +28,7 @@
     "change-case": "4.1.2",
     "chokidar": "3.5.3",
     "debug": "4.3.4",
-    "dotenv-cli": "4.1.1",
+    "dotenv-cli": "7.4.4",
     "framer-motion": "^6.2.9",
     "generate-download-link": "1.0.1",
     "http-proxy-middleware": "0.21.0",
