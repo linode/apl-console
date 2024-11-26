@@ -52,7 +52,7 @@ export default function ({
     else create({ body: formData })
   }
   const handleDelete = (deleteId) => del({ userId: deleteId })
-  const teamIds = ['admin']
+  const teamIds = []
   if (teamData) teamData.forEach((team) => teamIds.push(team.id))
   const loading = isLoading || isLoadingTeams
   const comp = !isError && (
