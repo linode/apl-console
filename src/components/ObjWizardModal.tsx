@@ -73,7 +73,8 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      if (response) {
+      console.log('respone: ', response)
+      if ((response as any)?.error) {
         setLoading(false)
         console.log('then err: ', JSON.stringify(response))
         setWizardError((response as any).data.errorMessage)
