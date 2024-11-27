@@ -73,8 +73,9 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      console.log('respone: ', response)
-      if ((response as any)?.error) {
+      console.log('response: ', response)
+      console.log('response data: ', (response as any)?.data)
+      if ((response as any)?.data.status === 'error') {
         setLoading(false)
         console.log('then err: ', JSON.stringify(response))
         setWizardError((response as any).data.errorMessage)
@@ -104,7 +105,7 @@ export default function StyledModal() {
           ) : (
             <Box>
               {wizardError !== null ? (
-                <InformationBanner message={`The Wizard encountered a problem: ${wizardError}, please retry!`} />
+                <InformationBanner message={`The Wizard encountered a problem: ${wizardError} Please retry!`} />
               ) : null}
               <Typography variant='body1'>
                 The Application Platform needs an API Token to create the Object Storage.
