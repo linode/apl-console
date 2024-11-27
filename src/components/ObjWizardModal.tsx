@@ -75,7 +75,7 @@ export default function StyledModal() {
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
       console.log('response: ', response)
       console.log('response data: ', (response as any)?.data)
-      if ((response as any)?.data.status === 'error') {
+      if ((response as any)?.data?.status === 'error') {
         setLoading(false)
         console.log('then err: ', JSON.stringify(response))
         setWizardError((response as any).data.errorMessage)
