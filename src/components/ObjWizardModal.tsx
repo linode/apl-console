@@ -46,6 +46,15 @@ const ModalFooter = styled('div')({
   gap: '10px',
 })
 
+// interfaces ----------------------------------------------------------------
+interface ObjWizardResponse {
+  data: {
+    status: string
+    errorMessage: string
+    objBuckets: Array<string>
+  }
+}
+
 export default function StyledModal() {
   const {
     user: { isPlatformAdmin },
@@ -60,7 +69,7 @@ export default function StyledModal() {
   const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
   const [wizardSuccess, setWizardSuccess] = useState<Array<string> | null>(null)
-  const [wizardError, setWizardError] = useState<object | null>(null)
+  const [wizardError, setWizardError] = useState<string | null>(null)
   const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
@@ -74,12 +83,12 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      if ((response as any)?.data?.status === 'error') {
+      if ((response as ObjWizardResponse)?.data?.status === 'error') {
         setLoading(false)
-        setWizardError((response as any).data.errorMessage)
+        setWizardError((response as ObjWizardResponse).data.errorMessage)
       } else {
         setLoading(false)
-        setWizardSuccess((response as any)?.data?.objBuckets)
+        setWizardSuccess((response as ObjWizardResponse)?.data?.objBuckets)
         setWizardError(null)
       }
     })
@@ -150,7 +159,7 @@ export default function StyledModal() {
           {accepted && wizardSuccess ? (
             <Box>
               <Typography variant='body1' sx={{ marginBottom: 2 }}>
-                Buckets with the following names have been created:
+                Buckets with the following names have been created in region {regionId}:
               </Typography>
               <Box component='ul' sx={{ listStyle: 'inside', listStyleType: 'disc' }}>
                 {wizardSuccess.map((item) => (
