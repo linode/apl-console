@@ -83,12 +83,12 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      if ((response as ObjWizardResponse)?.data?.status === 'error') {
+      if ((response as ObjWizardResponse).data.status === 'error') {
         setLoading(false)
         setWizardError((response as ObjWizardResponse).data.errorMessage)
       } else {
         setLoading(false)
-        setWizardSuccess((response as ObjWizardResponse)?.data?.objBuckets)
+        setWizardSuccess((response as ObjWizardResponse).data.objBuckets)
         setWizardError(null)
       }
     })
