@@ -74,11 +74,8 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      console.log('response: ', response)
-      console.log('response data: ', (response as any)?.data)
       if ((response as any)?.data?.status === 'error') {
         setLoading(false)
-        console.log('then err: ', JSON.stringify(response))
         setWizardError((response as any).data.errorMessage)
       } else {
         setLoading(false)
@@ -153,13 +150,15 @@ export default function StyledModal() {
           {accepted && wizardSuccess ? (
             <Box>
               <Typography variant='body1' sx={{ marginBottom: 2 }}>
-                The following buckets were created:
+                Buckets with the following names have been created:
               </Typography>
-              {wizardSuccess.map((item) => (
-                <Typography variant='body1' sx={{ marginLeft: 2 }}>
-                  - {item}
-                </Typography>
-              ))}
+              <Box component='ul' sx={{ listStyle: 'inside', listStyleType: 'disc' }}>
+                {wizardSuccess.map((item) => (
+                  <Typography component='li' variant='body1' sx={{ marginLeft: 2, display: 'list-item' }}>
+                    {item}
+                  </Typography>
+                ))}
+              </Box>
             </Box>
           ) : null}
         </ModalContent>
