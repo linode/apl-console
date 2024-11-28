@@ -59,6 +59,7 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
+  const [wizardSuccess, setWizardSuccess] = useState<Array<string> | null>(null)
   const [wizardError, setWizardError] = useState<object | null>(null)
   const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
   useEffect(() => {
@@ -81,18 +82,21 @@ export default function StyledModal() {
         setWizardError((response as any).data.errorMessage)
       } else {
         setLoading(false)
+        setWizardSuccess((response as any)?.data?.objBuckets)
         setWizardError(null)
-        setShowObjWizard(false)
-        // refresh the page to get the new session/settings
-        window.location.reload()
       }
     })
+  }
+  const handleClose = () => {
+    setShowObjWizard(false)
+    // refresh the page to get the new session/settings
+    window.location.reload()
   }
   return (
     <Modal open={showObjWizard}>
       <ModalBox>
         <ModalContent>
-          {!accepted ? (
+          {!accepted && !wizardSuccess ? (
             <Box>
               <Typography variant='body1'>
                 It is recommended to use object storage for long term storage of logs and images. It is required to use
@@ -102,7 +106,8 @@ export default function StyledModal() {
                 Would you like to configure object storage now?
               </Typography>
             </Box>
-          ) : (
+          ) : null}
+          {accepted && !wizardSuccess ? (
             <Box>
               {wizardError !== null ? (
                 <InformationBanner message={`The Wizard encountered a problem: ${wizardError} Please retry!`} />
@@ -144,19 +149,33 @@ export default function StyledModal() {
                 </Select>
               </FormControl>
             </Box>
-          )}
+          ) : null}
+          {accepted && wizardSuccess ? (
+            <Box>
+              <Typography variant='body1' sx={{ marginBottom: 2 }}>
+                The following buckets were created:
+              </Typography>
+              {wizardSuccess.map((item) => (
+                <Typography variant='body1' sx={{ marginLeft: 2 }}>
+                  - {item}
+                </Typography>
+              ))}
+            </Box>
+          ) : null}
         </ModalContent>
 
         <ModalFooter>
-          <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
-            Skip for now
-          </Button>
-
-          {!accepted ? (
+          {!wizardSuccess ? (
+            <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
+              Skip for now
+            </Button>
+          ) : null}
+          {!accepted && !wizardSuccess ? (
             <Button variant='contained' color='primary' onClick={() => setAccepted(true)}>
               Yes
             </Button>
-          ) : (
+          ) : null}
+          {accepted && !wizardSuccess ? (
             <LoadingButton
               variant='contained'
               color='primary'
@@ -166,7 +185,12 @@ export default function StyledModal() {
             >
               Submit
             </LoadingButton>
-          )}
+          ) : null}
+          {accepted && wizardSuccess ? (
+            <Button variant='contained' color='primary' onClick={handleClose}>
+              Close
+            </Button>
+          ) : null}
         </ModalFooter>
       </ModalBox>
     </Modal>
