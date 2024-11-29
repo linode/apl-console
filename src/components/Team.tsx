@@ -33,6 +33,10 @@ export const getTeamUiSchema = (
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
     name: { 'ui:readonly': action !== 'create' },
+    managedMonitoring: {
+      grafana: { 'ui:readonly': !appsEnabled?.grafana },
+      alertmanager: { 'ui:readonly': !appsEnabled?.alertmanager },
+    },
     password: { 'ui:widget': 'hidden' },
     alerts: {
       receivers: {
