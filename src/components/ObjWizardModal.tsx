@@ -17,6 +17,7 @@ import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { isEmpty } from 'lodash'
 import InformationBanner from './InformationBanner'
 
 // styles ----------------------------------------------------------------
@@ -68,8 +69,8 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
-  const [wizardSuccess, setWizardSuccess] = useState<Array<string> | null>(null)
-  const [wizardError, setWizardError] = useState<string | null>(null)
+  const [wizardSuccess, setWizardSuccess] = useState<Array<string>>([])
+  const [wizardError, setWizardError] = useState<string>('')
   const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
@@ -83,13 +84,12 @@ export default function StyledModal() {
   const handleSubmit = () => {
     setLoading(true)
     create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
-      if ((response as ObjWizardResponse).data.status === 'error') {
-        setLoading(false)
+      setLoading(false)
+      if ((response as ObjWizardResponse).data.status === 'error')
         setWizardError((response as ObjWizardResponse).data.errorMessage)
-      } else {
-        setLoading(false)
+      else {
         setWizardSuccess((response as ObjWizardResponse).data.objBuckets)
-        setWizardError(null)
+        setWizardError('')
       }
     })
   }
@@ -102,7 +102,7 @@ export default function StyledModal() {
     <Modal open={showObjWizard}>
       <ModalBox>
         <ModalContent>
-          {!accepted && !wizardSuccess ? (
+          {!accepted && isEmpty(wizardSuccess) && (
             <Box>
               <Typography variant='body1'>
                 It is recommended to use object storage for long term storage of logs and images. It is required to use
@@ -112,12 +112,12 @@ export default function StyledModal() {
                 Would you like to configure object storage now?
               </Typography>
             </Box>
-          ) : null}
-          {accepted && !wizardSuccess ? (
+          )}
+          {accepted && isEmpty(wizardSuccess) && (
             <Box>
-              {wizardError !== null ? (
+              {!isEmpty(wizardError) && (
                 <InformationBanner message={`The Wizard encountered a problem: ${wizardError} Please retry!`} />
-              ) : null}
+              )}
               <Typography variant='body1'>
                 The Application Platform needs an API Token to create the Object Storage.
               </Typography>
@@ -155,8 +155,8 @@ export default function StyledModal() {
                 </Select>
               </FormControl>
             </Box>
-          ) : null}
-          {accepted && wizardSuccess ? (
+          )}
+          {accepted && !isEmpty(wizardSuccess) && (
             <Box>
               <Typography variant='body1' sx={{ marginBottom: 2 }}>
                 Buckets with the following names have been created in region {regionId}:
@@ -169,21 +169,21 @@ export default function StyledModal() {
                 ))}
               </Box>
             </Box>
-          ) : null}
+          )}
         </ModalContent>
 
         <ModalFooter>
-          {!wizardSuccess ? (
+          {isEmpty(wizardSuccess) && (
             <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
               Skip for now
             </Button>
-          ) : null}
-          {!accepted && !wizardSuccess ? (
+          )}
+          {!accepted && isEmpty(wizardSuccess) && (
             <Button variant='contained' color='primary' onClick={() => setAccepted(true)}>
               Yes
             </Button>
-          ) : null}
-          {accepted && !wizardSuccess ? (
+          )}
+          {accepted && isEmpty(wizardSuccess) && (
             <LoadingButton
               variant='contained'
               color='primary'
@@ -193,12 +193,12 @@ export default function StyledModal() {
             >
               Submit
             </LoadingButton>
-          ) : null}
-          {accepted && wizardSuccess ? (
+          )}
+          {accepted && !isEmpty(wizardSuccess) && (
             <Button variant='contained' color='primary' onClick={handleClose}>
               Close
             </Button>
-          ) : null}
+          )}
         </ModalFooter>
       </ModalBox>
     </Modal>
