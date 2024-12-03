@@ -16,6 +16,9 @@ import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { isEmpty } from 'lodash'
+import InformationBanner from './InformationBanner'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -44,6 +47,15 @@ const ModalFooter = styled('div')({
   gap: '10px',
 })
 
+// interfaces ----------------------------------------------------------------
+interface ObjWizardResponse {
+  data: {
+    status: string
+    errorMessage: string
+    objBuckets: Array<string>
+  }
+}
+
 export default function StyledModal() {
   const {
     user: { isPlatformAdmin },
@@ -57,7 +69,9 @@ export default function StyledModal() {
   const [apiToken, setApiToken] = useState('')
   const [regionId, setRegionId] = useState('')
   const [loading, setLoading] = useState(false)
-  const [create] = useCreateObjWizardMutation()
+  const [wizardSuccess, setWizardSuccess] = useState<Array<string>>([])
+  const [wizardError, setWizardError] = useState<string>('')
+  const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
   useEffect(() => {
     if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
     if (!isPreInstalled) setShowObjWizard(false)
@@ -69,18 +83,26 @@ export default function StyledModal() {
   }
   const handleSubmit = () => {
     setLoading(true)
-    create({ body: { apiToken, showWizard: false, regionId } }).then(() => {
+    create({ body: { apiToken, showWizard: false, regionId } }).then((response) => {
       setLoading(false)
-      setShowObjWizard(false)
-      // refresh the page to get the new session/settings
-      window.location.reload()
+      if ((response as ObjWizardResponse).data.status === 'error')
+        setWizardError((response as ObjWizardResponse).data.errorMessage)
+      else {
+        setWizardSuccess((response as ObjWizardResponse).data.objBuckets)
+        setWizardError('')
+      }
     })
+  }
+  const handleClose = () => {
+    setShowObjWizard(false)
+    // refresh the page to get the new session/settings
+    window.location.reload()
   }
   return (
     <Modal open={showObjWizard}>
       <ModalBox>
         <ModalContent>
-          {!accepted ? (
+          {!accepted && isEmpty(wizardSuccess) && (
             <Box>
               <Typography variant='body1'>
                 It is recommended to use object storage for long term storage of logs and images. It is required to use
@@ -90,8 +112,12 @@ export default function StyledModal() {
                 Would you like to configure object storage now?
               </Typography>
             </Box>
-          ) : (
+          )}
+          {accepted && isEmpty(wizardSuccess) && (
             <Box>
+              {!isEmpty(wizardError) && (
+                <InformationBanner message={`The Wizard encountered a problem: ${wizardError} Please retry!`} />
+              )}
               <Typography variant='body1'>
                 The Application Platform needs an API Token to create the Object Storage.
               </Typography>
@@ -130,18 +156,34 @@ export default function StyledModal() {
               </FormControl>
             </Box>
           )}
+          {accepted && !isEmpty(wizardSuccess) && (
+            <Box>
+              <Typography variant='body1' sx={{ marginBottom: 2 }}>
+                Buckets with the following names have been created in region {regionId}:
+              </Typography>
+              <Box component='ul' sx={{ listStyle: 'inside', listStyleType: 'disc' }}>
+                {wizardSuccess.map((item) => (
+                  <Typography component='li' variant='body1' sx={{ marginLeft: 2, display: 'list-item' }}>
+                    {item}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
+          )}
         </ModalContent>
 
         <ModalFooter>
-          <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
-            Skip for now
-          </Button>
-
-          {!accepted ? (
+          {isEmpty(wizardSuccess) && (
+            <Button variant='outlined' color='primary' onClick={handleSkip} disabled={loading}>
+              Skip for now
+            </Button>
+          )}
+          {!accepted && isEmpty(wizardSuccess) && (
             <Button variant='contained' color='primary' onClick={() => setAccepted(true)}>
               Yes
             </Button>
-          ) : (
+          )}
+          {accepted && isEmpty(wizardSuccess) && (
             <LoadingButton
               variant='contained'
               color='primary'
@@ -151,6 +193,11 @@ export default function StyledModal() {
             >
               Submit
             </LoadingButton>
+          )}
+          {accepted && !isEmpty(wizardSuccess) && (
+            <Button variant='contained' color='primary' onClick={handleClose}>
+              Close
+            </Button>
           )}
         </ModalFooter>
       </ModalBox>
