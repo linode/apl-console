@@ -1,5 +1,5 @@
 import { applyAclToUiSchema, deleteAlertEndpoints, getSpec } from 'common/api-spec'
-import { cloneDeep, unset } from 'lodash'
+import { cloneDeep, filter, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -14,10 +14,20 @@ export const getTeamSchema = (
   const {
     cluster: { provider },
     otomi,
+    smtp,
   } = settings
   const schema = cloneDeep(getSpec().components.schemas.Team)
   // no drone alerts for teams (yet)
   unset(schema, 'properties.alerts.properties.drone')
+  if (!smtp?.smarthost) {
+    unset(schema, 'properties.alerts.properties.email')
+    set(
+      schema,
+      'properties.alerts.properties.receivers.items.enum',
+      filter((schema as any).properties.alerts.properties.receivers.items.enum, (item) => item !== 'email'),
+    )
+  }
+
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   return schema
@@ -44,11 +54,13 @@ export const getTeamUiSchema = (
       },
     },
   }
+
   if (!teamAlertmanager) {
     uiSchema.alerts['ui:title'] = 'Alerts (disabled)'
     uiSchema.alerts['ui:disabled'] = true
     uiSchema.selfService = { Team: { 'ui:enumDisabled': ['alerts'] } }
   }
+
   applyAclToUiSchema(uiSchema, user, teamId, 'team')
   return uiSchema
 }
