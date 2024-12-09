@@ -7,7 +7,6 @@ import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
-import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
 const useStyles = makeStyles()((theme) => ({
@@ -209,7 +208,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const theme = useTheme()
   const { classes } = useStyles()
   const { themeView, onChangeView } = useSettings()
-  const { oboTeamId, appsEnabled, user, versions } = useSession()
+  const { oboTeamId, appsEnabled, user } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
@@ -292,7 +291,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
 
   return (
     <Box>
-      <UpgradeVersion version={versions.core} />
       <InventoryCard
         classes={classes}
         inventory={inventory}

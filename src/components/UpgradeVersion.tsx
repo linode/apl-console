@@ -1,7 +1,9 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Paper, Stack, Typography } from '@mui/material'
 import axios from 'axios'
-import { findLast, isEmpty } from 'lodash'
+import { findLast, isEmpty, takeRight } from 'lodash'
+import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
+import { useEditSettingsMutation } from 'redux/otomiApi'
 import YAML from 'yaml'
 
 interface Props {
@@ -19,7 +21,6 @@ interface VersionInfo {
 }
 
 function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUpdates {
-  // Helper to parse and compare semantic versions
   const parseVersion = (version: string) => version.replace('v', '').split('.').map(Number)
 
   const compareVersions = (v1: string, v2: string) => {
@@ -48,15 +49,18 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
       return major === latestMajorVersion
     })
     .sort((a, b) => compareVersions(a.version, b.version))
-
-  return { currentVersionUpdates, latestVersionUpdates }
+  return {
+    currentVersionUpdates: takeRight(currentVersionUpdates, 5),
+    latestVersionUpdates: takeRight(latestVersionUpdates, 5),
+  }
 }
 
 export default function ({ version }: Props): React.ReactElement | null {
+  const { refetchSettings } = useSession()
   const [data, setData] = useState([])
   const [error, setError] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
-
+  const [edit] = useEditSettingsMutation()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,174 +79,145 @@ export default function ({ version }: Props): React.ReactElement | null {
 
     fetchData()
   }, [])
-
+  const handleSubmit = (version: string) => {
+    edit({
+      settingId: 'otomi',
+      body: {
+        otomi: {
+          version,
+        },
+      },
+    }).then(refetchSettings)
+  }
   const versionUpgrades = parseUpdates(data, 'v4.1.0')
-  // const versionUpgrades: VersionUpdates = {
-  //   currentVersionUpdates: data,
-  //   latestVersionUpdates: data,
-  // }
   console.log(version)
   console.log(versionUpgrades)
-  // const headCells: HeadCell[] = [
-  //   {
-  //     id: 'version',
-  //     label: 'Version',
-  //     renderer: ({ version }: any) => version,
-  //   },
-  //   {
-  //     id: 'Message',
-  //     label: 'Message',
-  //     renderer: ({ message }: any) => message,
-  //   },
-  // ]
   if (isEmpty(versionUpgrades)) return null
   return (
-    <Box sx={{ color: '#FFFFFF', padding: '20px', marginBottom: '20px' }}>
+    <Box
+      sx={{
+        backgroundColor: '#3d3d42',
+        color: '#FFFFFF',
+        padding: '1rem',
+        paddingLeft: '2.5rem',
+        paddingRight: '2.5rem',
+        maxWidth: '75rem',
+        margin: '1rem auto',
+      }}
+    >
       {!showDetails ? (
-        <Box
-          sx={{
-            direction: 'row',
-            display: 'flex',
-            alignItems: 'center',
-            color: '#FFFFFF',
-            gap: '16px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <Typography variant='h3'>Upgrades Available</Typography>
+        <Box>
+          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
+            <Typography variant='h5' fontWeight='bold'>
+              Upgrades Available!
+            </Typography>
             <Button
+              variant='contained'
+              color='primary'
               onClick={() => {
-                console.log('Upgrading...')
-              }}
-              sx={{
-                backgroundColor: '#007BFF',
-                color: '#FFFFFF',
-                padding: '10px 20px',
-                fontSize: '14px',
-                borderRadius: '4px',
-                textTransform: 'none',
-                ':hover': {
-                  backgroundColor: '#0056b3',
-                },
+                handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
-              Upgrade to {findLast(versionUpgrades?.currentVersionUpdates)?.version}
+              Upgrade to {findLast(versionUpgrades.currentVersionUpdates)?.version}
             </Button>
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: '16px',
-            }}
+          </Stack>
+
+          <Typography variant='body1' mb={1}>
+            Current Version: {version}
+          </Typography>
+
+          <Typography
+            variant='body2'
+            sx={{ cursor: 'pointer', textDecoration: 'underline' }}
+            onClick={() => setShowDetails(true)}
           >
-            <Typography sx={{ display: 'flex' }} variant='body1'>
-              Current Version {version}
-            </Typography>
-            <Typography
-              onClick={() => {
-                setShowDetails(true)
-              }}
-              variant='body1'
-              sx={{
-                fontSize: '14px',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-              }}
-            >
-              Here&#39;s what you missed &gt;{' '}
-            </Typography>
-          </Box>
+            Here&apos;s what you missed &gt;
+          </Typography>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            color: '#FFFFFF',
-            gap: '16px',
-            flexWrap: 'wrap',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <Typography variant='h3'>Available Updates</Typography>
+        <Box>
+          <Typography variant='h5' fontWeight='bold' mb={2}>
+            Available Updates
+          </Typography>
+          <Typography
+            variant='body2'
+            sx={{ cursor: 'pointer', textDecoration: 'underline', paddingBottom: '0.1rem' }}
+            onClick={() => setShowDetails(false)}
+          >
+            Go Back &lt;
+          </Typography>
+          <Paper
+            sx={{
+              color: '#FFFFFF',
+              padding: '1rem',
+              marginBottom: '1rem',
+              flexWrap: 'wrap',
+              justifyContent: 'flex-start',
+            }}
+          >
+            <Typography variant='h6' mb={1}>
+              Current Updates (v{version.split('.')[0]})
+            </Typography>
+            {versionUpgrades?.currentVersionUpdates?.map((update, index) => (
+              <Box
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
+                <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+              </Box>
+            ))}
             <Button
+              variant='contained'
+              color='primary'
+              sx={{ marginTop: '1rem' }}
               onClick={() => {
-                console.log('Upgrading...')
-              }}
-              sx={{
-                backgroundColor: '#007BFF',
-                color: '#FFFFFF',
-                padding: '10px 20px',
-                fontSize: '14px',
-                borderRadius: '4px',
-                textTransform: 'none',
-                ':hover': {
-                  backgroundColor: '#0056b3',
-                },
+                handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
               Upgrade to {findLast(versionUpgrades?.currentVersionUpdates)?.version}
             </Button>
-          </Box>
-          <Box
+          </Paper>
+
+          <Paper
             sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              gap: '16px',
+              color: '#FFFFFF',
+              padding: '1rem',
             }}
           >
-            <Typography variant='body1'>Current Version {version}</Typography>
-            <Typography
+            <Typography variant='h6' mb={1}>
+              Latest Major Updates
+            </Typography>
+            {versionUpgrades?.latestVersionUpdates?.map((update, index) => (
+              <Box
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
+                <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+              </Box>
+            ))}
+            <Button
+              variant='contained'
+              color='primary'
+              sx={{ marginTop: '1rem' }}
               onClick={() => {
-                setShowDetails(false)
-              }}
-              variant='body1'
-              sx={{
-                fontSize: '14px',
-                textDecoration: 'underline',
-                cursor: 'pointer',
+                handleSubmit(findLast(versionUpgrades?.latestVersionUpdates)?.version)
               }}
             >
-              Go back &lt;
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: '20px' }}>
-            <Typography variant='h4'>Current Major Version Updates</Typography>
-            <table style={{ width: '100%', backgroundColor: '#2D2D2D', color: '#FFFFFF', borderCollapse: 'collapse' }}>
-              <tbody>
-                {versionUpgrades.currentVersionUpdates?.map((update) => (
-                  <tr key={update.version}>
-                    <td style={{ border: '1px solid #555', padding: '8px' }}>{update.version}</td>
-                    <td style={{ border: '1px solid #555', padding: '8px' }}>{update.message}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Box>
-          <Box sx={{ marginBottom: '20px' }}>
-            <Typography variant='h4'>Latest Major Version Updates</Typography>
-            <table style={{ width: '100%', backgroundColor: '#2D2D2D', color: '#FFFFFF', borderCollapse: 'collapse' }}>
-              <tbody>
-                {versionUpgrades.latestVersionUpdates?.map((update) => (
-                  <tr key={update.version}>
-                    <td style={{ border: '1px solid #555', padding: '8px' }}>{update.version}</td>
-                    <td style={{ border: '1px solid #555', padding: '8px' }}>{update.message}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Box>
-          {/* <ListTable
-            headCells={headCells}
-            rows={versionUpgrades?.currentVersionUpdates}
-            resourceType='Version'
-            noCrud
-          /> */}
+              Upgrade to {findLast(versionUpgrades?.latestVersionUpdates)?.version}
+            </Button>
+          </Paper>
         </Box>
       )}
     </Box>
