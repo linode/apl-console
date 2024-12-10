@@ -83,19 +83,23 @@ export default function ({ version }: Props): React.ReactElement {
     fetchData()
   }, [])
 
-  const handleUpgradeButton = (version: string) => {
-    setUpgradeVersion(version)
+  const handleUpgradeButton = (upgradeVersion: string) => {
+    setUpgradeVersion(upgradeVersion)
     setShowConfirmationModal(true)
   }
-  const handleSubmit = (version: string) => {
+  const handleSubmit = (newVersion: string) => {
     edit({
       settingId: 'otomi',
       body: {
         otomi: {
-          version,
+          version: newVersion,
         },
       },
-    }).then(refetchSettings)
+    }).then(() => {
+      refetchSettings()
+      setUpgradeVersion('')
+      setShowConfirmationModal(false)
+    })
   }
   const versionUpgrades = parseUpdates(data, 'v4.1.1')
   console.log(version)
@@ -220,7 +224,7 @@ export default function ({ version }: Props): React.ReactElement {
             }}
           >
             <Typography variant='h6' mb={1}>
-              Latest Major Updates
+              Next Major Updates
             </Typography>
             {isEmpty(versionUpgrades?.nextVersionUpdates) && (
               <Box
@@ -268,6 +272,7 @@ export default function ({ version }: Props): React.ReactElement {
       {showConfirmationModal && (
         <Modal
           noHeader
+          title={`Upgrade to version ${upgradeVersion}?`}
           children={null}
           open={showConfirmationModal}
           handleClose={() => setShowConfirmationModal(false)}
@@ -275,8 +280,8 @@ export default function ({ version }: Props): React.ReactElement {
             setUpgradeVersion('')
             setShowConfirmationModal(false)
           }}
-          handleAction={handleSubmit(upgradeVersion)}
-          actionButtonText={`Upgrade to ${upgradeVersion}`}
+          handleAction={() => handleSubmit(upgradeVersion)}
+          actionButtonText='Upgrade'
           cancelButtonText='Cancel Upgrade'
         />
       )}
