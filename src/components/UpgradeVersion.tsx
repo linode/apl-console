@@ -31,22 +31,24 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
     return patch1 - patch2
   }
 
-  // Parse the current version
-  const [currentMajor] = parseVersion(currentVersion)
+  const [currentMajor] = parseVersion(currentVersion) // Get the current major version
 
-  // Filter and sort updates
+  // Filter and sort updates for the current major version
   const currentVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
-      return major === currentMajor && compareVersions(version, currentVersion) >= 0
+      return major === currentMajor && compareVersions(version, currentVersion) > 0
     })
     .sort((a, b) => compareVersions(a.version, b.version))
 
-  const latestMajorVersion = currentMajor + 2
+  // Determine the latest major version in the updates list
+  const latestMajor = Math.max(...updates.map(({ version }) => parseVersion(version)[0]))
+
+  // Filter and sort updates for the latest major version
   const latestVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
-      return major === latestMajorVersion
+      return major === latestMajor
     })
     .sort((a, b) => compareVersions(a.version, b.version))
   return {
@@ -89,7 +91,7 @@ export default function ({ version }: Props): React.ReactElement | null {
       },
     }).then(refetchSettings)
   }
-  const versionUpgrades = parseUpdates(data, 'v4.1.0')
+  const versionUpgrades = parseUpdates(data, 'v5.1.1')
   console.log(version)
   console.log(versionUpgrades)
   if (isEmpty(versionUpgrades)) return null
@@ -114,11 +116,14 @@ export default function ({ version }: Props): React.ReactElement | null {
             <Button
               variant='contained'
               color='primary'
+              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
               onClick={() => {
                 handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
-              Upgrade to {findLast(versionUpgrades.currentVersionUpdates)?.version}
+              {isEmpty(versionUpgrades.currentVersionUpdates)
+                ? 'Running Latest'
+                : ` Upgrade to ${findLast(versionUpgrades?.currentVersionUpdates)?.version}`}
             </Button>
           </Stack>
 
@@ -158,6 +163,21 @@ export default function ({ version }: Props): React.ReactElement | null {
             <Typography variant='h6' mb={1}>
               Current Updates (v{version.split('.')[0]})
             </Typography>
+            {isEmpty(versionUpgrades?.currentVersionUpdates) && (
+              <Box
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <Typography sx={{ marginRight: '2rem' }}>
+                  You are currently running the latest minor version of your major.
+                </Typography>
+              </Box>
+            )}
             {versionUpgrades?.currentVersionUpdates?.map((update, index) => (
               <Box
                 sx={{
@@ -176,11 +196,14 @@ export default function ({ version }: Props): React.ReactElement | null {
               variant='contained'
               color='primary'
               sx={{ marginTop: '1rem' }}
+              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
               onClick={() => {
                 handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
-              Upgrade to {findLast(versionUpgrades?.currentVersionUpdates)?.version}
+              {isEmpty(versionUpgrades.currentVersionUpdates)
+                ? 'Running Latest'
+                : ` Upgrade to ${findLast(versionUpgrades?.currentVersionUpdates)?.version}`}
             </Button>
           </Paper>
 
@@ -193,6 +216,19 @@ export default function ({ version }: Props): React.ReactElement | null {
             <Typography variant='h6' mb={1}>
               Latest Major Updates
             </Typography>
+            {isEmpty(versionUpgrades?.latestVersionUpdates) && (
+              <Box
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <Typography sx={{ marginRight: '2rem' }}>You are currently running the latest version.</Typography>
+              </Box>
+            )}
             {versionUpgrades?.latestVersionUpdates?.map((update, index) => (
               <Box
                 sx={{
@@ -211,11 +247,14 @@ export default function ({ version }: Props): React.ReactElement | null {
               variant='contained'
               color='primary'
               sx={{ marginTop: '1rem' }}
+              disabled={isEmpty(versionUpgrades.latestVersionUpdates)}
               onClick={() => {
                 handleSubmit(findLast(versionUpgrades?.latestVersionUpdates)?.version)
               }}
             >
-              Upgrade to {findLast(versionUpgrades?.latestVersionUpdates)?.version}
+              {isEmpty(versionUpgrades.latestVersionUpdates)
+                ? 'Running Latest'
+                : ` Upgrade to ${findLast(versionUpgrades?.latestVersionUpdates)?.version}`}
             </Button>
           </Paper>
         </Box>
