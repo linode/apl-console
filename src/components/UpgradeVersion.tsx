@@ -272,8 +272,11 @@ export default function ({ version }: Props): React.ReactElement {
       {showConfirmationModal && (
         <Modal
           noHeader
-          title={`Upgrade to version ${upgradeVersion}?`}
-          children={null}
+          children={
+            <Typography variant='h4' sx={{ marginRight: '2rem', textAlign: 'center' }}>
+              Upgrade to version {upgradeVersion}?
+            </Typography>
+          }
           open={showConfirmationModal}
           handleClose={() => setShowConfirmationModal(false)}
           handleCancel={() => {
@@ -283,6 +286,7 @@ export default function ({ version }: Props): React.ReactElement {
           handleAction={() => handleSubmit(upgradeVersion)}
           actionButtonText='Upgrade'
           cancelButtonText='Cancel Upgrade'
+          actionButtonColor='primary'
         />
       )}
     </Box>
