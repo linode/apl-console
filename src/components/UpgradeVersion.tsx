@@ -5,6 +5,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useEditSettingsMutation } from 'redux/otomiApi'
 import YAML from 'yaml'
+import Modal from './Modal'
 
 interface Props {
   version?: string
@@ -12,7 +13,7 @@ interface Props {
 
 interface VersionUpdates {
   currentVersionUpdates?: VersionInfo[]
-  latestVersionUpdates?: VersionInfo[]
+  nextVersionUpdates?: VersionInfo[]
 }
 
 interface VersionInfo {
@@ -33,7 +34,7 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
 
   const [currentMajor] = parseVersion(currentVersion) // Get the current major version
 
-  // Filter and sort updates for the current major version
+  // Filter and sort updates for the current version group
   const currentVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
@@ -41,27 +42,27 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
     })
     .sort((a, b) => compareVersions(a.version, b.version))
 
-  // Determine the latest major version in the updates list
-  const latestMajor = Math.max(...updates.map(({ version }) => parseVersion(version)[0]))
-
-  // Filter and sort updates for the latest major version
-  const latestVersionUpdates = updates
+  // Filter and sort updates for the next major version group
+  const nextVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
-      return major === latestMajor
+      return major === currentMajor + 1 // Only the *next* major version
     })
     .sort((a, b) => compareVersions(a.version, b.version))
+
   return {
     currentVersionUpdates: takeRight(currentVersionUpdates, 5),
-    latestVersionUpdates: takeRight(latestVersionUpdates, 5),
+    nextVersionUpdates: takeRight(nextVersionUpdates, 5),
   }
 }
 
-export default function ({ version }: Props): React.ReactElement | null {
+export default function ({ version }: Props): React.ReactElement {
   const { refetchSettings } = useSession()
   const [data, setData] = useState([])
   const [error, setError] = useState(null)
+  const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showDetails, setShowDetails] = useState(false)
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [edit] = useEditSettingsMutation()
   useEffect(() => {
     const fetchData = async () => {
@@ -81,6 +82,11 @@ export default function ({ version }: Props): React.ReactElement | null {
 
     fetchData()
   }, [])
+
+  const handleUpgradeButton = (version: string) => {
+    setUpgradeVersion(version)
+    setShowConfirmationModal(true)
+  }
   const handleSubmit = (version: string) => {
     edit({
       settingId: 'otomi',
@@ -91,7 +97,7 @@ export default function ({ version }: Props): React.ReactElement | null {
       },
     }).then(refetchSettings)
   }
-  const versionUpgrades = parseUpdates(data, 'v5.1.1')
+  const versionUpgrades = parseUpdates(data, 'v4.1.1')
   console.log(version)
   console.log(versionUpgrades)
   if (isEmpty(versionUpgrades)) return null
@@ -118,7 +124,7 @@ export default function ({ version }: Props): React.ReactElement | null {
               color='primary'
               disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
               onClick={() => {
-                handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
+                handleUpgradeButton(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
               {isEmpty(versionUpgrades.currentVersionUpdates)
@@ -198,7 +204,7 @@ export default function ({ version }: Props): React.ReactElement | null {
               sx={{ marginTop: '1rem' }}
               disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
               onClick={() => {
-                handleSubmit(findLast(versionUpgrades?.currentVersionUpdates)?.version)
+                handleUpgradeButton(findLast(versionUpgrades?.currentVersionUpdates)?.version)
               }}
             >
               {isEmpty(versionUpgrades.currentVersionUpdates)
@@ -216,7 +222,7 @@ export default function ({ version }: Props): React.ReactElement | null {
             <Typography variant='h6' mb={1}>
               Latest Major Updates
             </Typography>
-            {isEmpty(versionUpgrades?.latestVersionUpdates) && (
+            {isEmpty(versionUpgrades?.nextVersionUpdates) && (
               <Box
                 sx={{
                   backgroundColor: '#3A3A3A',
@@ -229,7 +235,7 @@ export default function ({ version }: Props): React.ReactElement | null {
                 <Typography sx={{ marginRight: '2rem' }}>You are currently running the latest version.</Typography>
               </Box>
             )}
-            {versionUpgrades?.latestVersionUpdates?.map((update, index) => (
+            {versionUpgrades?.nextVersionUpdates?.map((update, index) => (
               <Box
                 sx={{
                   backgroundColor: '#3A3A3A',
@@ -247,17 +253,32 @@ export default function ({ version }: Props): React.ReactElement | null {
               variant='contained'
               color='primary'
               sx={{ marginTop: '1rem' }}
-              disabled={isEmpty(versionUpgrades.latestVersionUpdates)}
+              disabled={isEmpty(versionUpgrades.nextVersionUpdates)}
               onClick={() => {
-                handleSubmit(findLast(versionUpgrades?.latestVersionUpdates)?.version)
+                handleUpgradeButton(findLast(versionUpgrades?.nextVersionUpdates)?.version)
               }}
             >
-              {isEmpty(versionUpgrades.latestVersionUpdates)
+              {isEmpty(versionUpgrades.nextVersionUpdates)
                 ? 'Running Latest'
-                : ` Upgrade to ${findLast(versionUpgrades?.latestVersionUpdates)?.version}`}
+                : ` Upgrade to ${findLast(versionUpgrades?.nextVersionUpdates)?.version}`}
             </Button>
           </Paper>
         </Box>
+      )}
+      {showConfirmationModal && (
+        <Modal
+          noHeader
+          children={null}
+          open={showConfirmationModal}
+          handleClose={() => setShowConfirmationModal(false)}
+          handleCancel={() => {
+            setUpgradeVersion('')
+            setShowConfirmationModal(false)
+          }}
+          handleAction={handleSubmit(upgradeVersion)}
+          actionButtonText={`Upgrade to ${upgradeVersion}`}
+          cancelButtonText='Cancel Upgrade'
+        />
       )}
     </Box>
   )
