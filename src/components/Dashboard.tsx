@@ -233,6 +233,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/JcVjFgdZz/kubernetes-deployment?orgId=1&theme=${theme.palette.mode}&panelId=`
   const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+  const securitypolicies = `https://grafana-${oboTeamId}.${domain}/d-solo/kyverno/policy-compliance?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
 
   const views = {
     platform: [
@@ -285,6 +286,17 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '14', src: `${vulnerabilities}51` },
         ],
         show: appsEnabled.grafana && team?.managedMonitoring?.grafana && appsEnabled.trivy,
+      },
+      {
+        title: 'Policy compliance',
+        iframeClass: classes.iframeSmall,
+        iframeSources: [
+          { id: '15', src: `${securitypolicies}60` },
+          { id: '16', src: `${securitypolicies}49` },
+          { id: '17', src: `${securitypolicies}50` },
+          { id: '18', src: `${securitypolicies}51` },
+        ],
+        show: appsEnabled.grafana && team?.managedMonitoring?.grafana && appsEnabled.kyverno,
       },
     ],
   }
