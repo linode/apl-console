@@ -101,7 +101,37 @@ export default function ({ version }: Props): React.ReactElement {
       setShowConfirmationModal(false)
     })
   }
-  const versionUpgrades = parseUpdates(data, 'v4.1.1')
+  // const versionUpgrades = parseUpdates(data, 'v4.1.1')
+  const versionUpgrades: VersionUpdates = {
+    currentVersionUpdates: [
+      {
+        version: 'APL-282',
+        message: 'Ani his branch',
+      },
+      {
+        version: 'APL-244',
+        message: 'Cas his branch',
+      },
+      {
+        version: 'APL-448',
+        message: 'Sander his branch',
+      },
+    ],
+    nextVersionUpdates: [
+      {
+        version: 'APL-305',
+        message: 'Ani his old branch',
+      },
+      {
+        version: 'apl-379',
+        message: 'ElderMatt his branch',
+      },
+      {
+        version: 'apl-109',
+        message: 'ElderMatt his other branch',
+      },
+    ],
+  }
   console.log(version)
   console.log(versionUpgrades)
   if (isEmpty(versionUpgrades)) return null
