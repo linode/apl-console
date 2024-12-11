@@ -103,7 +103,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/dummy-releases/updates.yaml',
+          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/main/updates.yaml',
         )
         const parsedData = YAML.parse(response.data)
         setData(parsedData.updates)
@@ -138,27 +138,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     })
   }
 
-  // Hard-coding currentVersion here as 'v4.1.1' per original code logic
-  // const versionUpgrades = parseUpdates(data, 'v4.1.1')
-  const versionUpgrades: VersionUpdates = {
-    currentVersionUpdates: [
-      {
-        version: 'APL-282',
-        message: 'Ani his branch',
-        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v4.1.1',
-      },
-      {
-        version: 'APL-244',
-        message: 'Cas his branch',
-        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v4.1.0',
-      },
-      {
-        version: 'APL-447',
-        message: 'Sander his branch',
-        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v3.0.0',
-      },
-    ],
-  }
+  const versionUpgrades = parseUpdates(data, version)
 
   const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
 
@@ -169,17 +149,15 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
           <Typography variant='h5' fontWeight='bold'>
             {isEmpty(versionUpgrades.currentVersionUpdates) ? 'No upgrades available!' : 'Upgrades Available!'}
           </Typography>
-          {!isEmpty(latestCurrentUpdate) && (
-            <Button
-              variant='contained'
-              color='primary'
-              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-              onClick={() => handleUpgradeButton(latestCurrentUpdate)}
-              sx={{ ml: 3 }}
-            >
-              Upgrade to {latestCurrentUpdate}
-            </Button>
-          )}
+          <Button
+            variant='contained'
+            color='primary'
+            disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+            onClick={() => handleUpgradeButton(latestCurrentUpdate)}
+            sx={{ ml: 3 }}
+          >
+            {isEmpty(latestCurrentUpdate) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
+          </Button>
         </Stack>
 
         <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
@@ -199,9 +177,6 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             </StyledAccordionSummary>
             <StyledAccordionDetails>
               <StyledUpdateSection>
-                <Typography variant='h6' mb={1}>
-                  {`Current Updates (v${version?.split('.')[0]})`}
-                </Typography>
                 {isEmpty(versionUpgrades.currentVersionUpdates) && (
                   <Box
                     sx={{
@@ -230,12 +205,15 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                       alignItems: 'center',
                     }}
                   >
-                    <IconButton sx={{ color: '#ffffff' }} onClick={() => window.open(update.releaseUrl)}>
+                    <IconButton
+                      sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: '#ffffff' }}
+                      onClick={() => window.open(update.releaseUrl)}
+                    >
                       <LocalOffer />
-                      <Typography sx={{ marginLeft: '0.5rem', marginRight: '2rem' }}>{update.version}</Typography>
+                      <Typography sx={{ marginLeft: '0.5rem' }}>{update.version}</Typography>
                     </IconButton>
 
-                    <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+                    <Typography sx={{ marginLeft: '2rem', textAlign: 'left' }}>{update.message}</Typography>
                   </Box>
                 ))}
               </StyledUpdateSection>
