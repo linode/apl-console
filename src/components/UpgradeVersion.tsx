@@ -62,7 +62,6 @@ interface VersionUpdates {
 interface VersionInfo {
   version: string
   message: string
-  releaseUrl: string
 }
 
 function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUpdates {
@@ -98,6 +97,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
+  const baseUrl = 'https://github.com/linode/apl-core/releases/tag/'
 
   useEffect(() => {
     const fetchData = async () => {
@@ -207,7 +207,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                   >
                     <IconButton
                       sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: '#ffffff' }}
-                      onClick={() => window.open(update.releaseUrl)}
+                      onClick={() => window.open(`${baseUrl}${update.version}`)}
                     >
                       <LocalOffer />
                       <Typography sx={{ marginLeft: '0.5rem' }}>{update.version}</Typography>
