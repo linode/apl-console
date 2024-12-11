@@ -232,7 +232,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                   >
                     <IconButton sx={{ color: '#ffffff' }} onClick={() => window.open(update.releaseUrl)}>
                       <LocalOffer />
-                      <Typography sx={{ marginLeft: '1rem', marginRight: '2rem' }}>{update.version}</Typography>
+                      <Typography sx={{ marginLeft: '0.5rem', marginRight: '2rem' }}>{update.version}</Typography>
                     </IconButton>
 
                     <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
