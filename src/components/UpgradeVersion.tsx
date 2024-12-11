@@ -119,21 +119,21 @@ export default function ({ version }: Props): React.ReactElement {
         message: 'Cas his branch',
       },
       {
-        version: 'APL-448',
+        version: 'APL-447',
         message: 'Sander his branch',
       },
     ],
     nextVersionUpdates: [
       {
-        version: 'APL-305',
-        message: 'Ani his old branch',
+        version: 'apl-109',
+        message: 'my old branch',
       },
       {
         version: 'apl-379',
         message: 'ElderMatt his branch',
       },
       {
-        version: 'apl-109',
+        version: 'APL-305',
         message: 'ElderMatt his other branch',
       },
     ],
