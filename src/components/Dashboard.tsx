@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Card, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { GetTeamApiResponse } from 'redux/otomiApi'
@@ -7,6 +7,7 @@ import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
+import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
 const useStyles = makeStyles()((theme) => ({
@@ -291,35 +292,40 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
 
   return (
     <Box>
-      <InventoryCard
-        classes={classes}
-        inventory={inventory}
-        teamId={team?.id}
-        themeView={themeView}
-        title='Inventory'
-      />
-      {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
-      <iframe
-        className={classes.hiddenIframe}
-        title='Hidden iFrame'
-        src={views[themeView][0].iframeSources[0].src}
-        onLoad={onLoad}
-      />
-      {isCookiesLoaded && (
-        <Box>
-          {views[themeView].map((item) => (
-            <IFramesCard
-              key={item.title}
-              classes={classes}
-              title={item.title}
-              iframeSources={item.iframeSources}
-              iframeClass={item.iframeClass}
-              show={item.show}
-              themeMode={theme.palette.mode}
-            />
-          ))}
-        </Box>
-      )}
+      <UpgradeVersion version='5.x.x' />
+      <br />
+      <Card>
+        <InventoryCard
+          classes={classes}
+          inventory={inventory}
+          teamId={team?.id}
+          themeView={themeView}
+          title='Inventory'
+        />
+
+        {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
+        <iframe
+          className={classes.hiddenIframe}
+          title='Hidden iFrame'
+          src={views[themeView][0].iframeSources[0].src}
+          onLoad={onLoad}
+        />
+        {isCookiesLoaded && (
+          <Box>
+            {views[themeView].map((item) => (
+              <IFramesCard
+                key={item.title}
+                classes={classes}
+                title={item.title}
+                iframeSources={item.iframeSources}
+                iframeClass={item.iframeClass}
+                show={item.show}
+                themeMode={theme.palette.mode}
+              />
+            ))}
+          </Box>
+        )}
+      </Card>
     </Box>
   )
 }

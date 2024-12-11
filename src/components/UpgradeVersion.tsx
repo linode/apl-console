@@ -1,11 +1,54 @@
-import { Box, Button, Paper, Stack, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Button,
+  Card,
+  Stack,
+  Typography,
+  styled,
+} from '@mui/material'
+import { KeyboardArrowRight } from '@mui/icons-material'
 import axios from 'axios'
 import { findLast, isEmpty, takeRight } from 'lodash'
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
-import { EditSettingsApiArg, useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { useEditSettingsMutation } from 'redux/otomiApi'
 import YAML from 'yaml'
 import Modal from './Modal'
+
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'transparent',
+  boxShadow: 'none !important',
+  margin: '0px !important',
+  '&:before': {
+    display: 'none',
+  },
+}))
+
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  padding: '0',
+  '.MuiAccordionSummary-content': {
+    margin: '0',
+  },
+  marginTop: '0px !important',
+  display: 'inline-flex',
+}))
+
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  marginTop: '0px',
+  padding: 0,
+  '&:before': {
+    display: 'none',
+  },
+}))
+
+const StyledUpdateSection = styled(Box)(() => ({
+  marginTop: '20px',
+}))
 
 interface Props {
   version?: string
@@ -32,9 +75,8 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
     return patch1 - patch2
   }
 
-  const [currentMajor] = parseVersion(currentVersion) // Get the current major version
+  const [currentMajor] = parseVersion(currentVersion)
 
-  // Filter and sort updates for the current version group
   const currentVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
@@ -42,11 +84,10 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
     })
     .sort((a, b) => compareVersions(a.version, b.version))
 
-  // Filter and sort updates for the next major version group
   const nextVersionUpdates = updates
     .filter(({ version }) => {
       const [major] = parseVersion(version)
-      return major === currentMajor + 1 // Only the *next* major version
+      return major === currentMajor + 1
     })
     .sort((a, b) => compareVersions(a.version, b.version))
 
@@ -56,275 +97,208 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
   }
 }
 
-export default function ({ version }: Props): React.ReactElement {
+export default function UpgradesCard({ version }: Props): React.ReactElement | null {
   const { refetchSettings } = useSession()
-  const [data, setData] = useState([])
-  const [error, setError] = useState(null)
+  const [data, setData] = useState<VersionInfo[]>([])
+  const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
-  const [showDetails, setShowDetails] = useState(false)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
           'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/dummy-releases/updates.yaml',
         )
-        console.log(response.data)
         const parsedData = YAML.parse(response.data)
-        console.log(parsedData.updates[0])
         setData(parsedData.updates)
       } catch (err) {
-        console.error(err)
         setError('Failed to fetch data')
+        console.error(err)
       }
     }
 
     fetchData()
   }, [])
 
-  const handleUpgradeButton = (upgradeVersion: string) => {
-    setUpgradeVersion(upgradeVersion)
+  const handleUpgradeButton = (selectedVersion: string | undefined) => {
+    if (!selectedVersion) return
+    setUpgradeVersion(selectedVersion)
     setShowConfirmationModal(true)
   }
-  const handleSubmit = (newVersion: string) => {
-    console.log(otomiSettings)
-    const settings: EditSettingsApiArg = {
+
+  const handleSubmit = () => {
+    edit({
       settingId: 'otomi',
       body: {
         otomi: {
-          ...otomiSettings.otomi,
-          version: newVersion,
+          version,
         },
       },
-    }
-    console.log(otomiSettings)
-    console.log(settings)
-    edit(settings).then(() => {
+    }).then(() => {
       refetchSettings()
-      setUpgradeVersion('')
       setShowConfirmationModal(false)
     })
   }
-  // const versionUpgrades = parseUpdates(data, 'v4.1.1')
-  const versionUpgrades: VersionUpdates = {
-    currentVersionUpdates: [
-      {
-        version: 'APL-282',
-        message: 'Ani his branch',
-      },
-      {
-        version: 'APL-244',
-        message: 'Cas his branch',
-      },
-      {
-        version: 'APL-447',
-        message: 'Sander his branch',
-      },
-    ],
-    nextVersionUpdates: [
-      {
-        version: 'apl-109',
-        message: 'my old branch',
-      },
-      {
-        version: 'apl-379',
-        message: 'ElderMatt his branch',
-      },
-      {
-        version: 'APL-305',
-        message: 'ElderMatt his other branch',
-      },
-    ],
-  }
-  console.log(version)
-  console.log(versionUpgrades)
+
+  // Hard-coding currentVersion here as 'v4.1.1' per original code logic
+  const versionUpgrades = parseUpdates(data, 'v4.1.1')
   if (isEmpty(versionUpgrades)) return null
+
+  const latestCurrentUpdate = findLast(versionUpgrades.currentVersionUpdates)?.version
+  const latestNextUpdate = findLast(versionUpgrades.nextVersionUpdates)?.version
+
   return (
-    <Box
-      sx={{
-        backgroundColor: '#3d3d42',
-        color: '#FFFFFF',
-        padding: '1rem',
-        paddingLeft: '2.5rem',
-        paddingRight: '2.5rem',
-        maxWidth: '75rem',
-        margin: '1rem auto',
-      }}
-    >
-      {!showDetails ? (
-        <Box>
-          <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
-            <Typography variant='h5' fontWeight='bold'>
-              Upgrades Available!
-            </Typography>
-            <Button
-              variant='contained'
-              color='primary'
-              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-              onClick={() => {
-                handleUpgradeButton(findLast(versionUpgrades?.currentVersionUpdates)?.version)
-              }}
-            >
-              {isEmpty(versionUpgrades.currentVersionUpdates)
-                ? 'Running Latest'
-                : ` Upgrade to ${findLast(versionUpgrades?.currentVersionUpdates)?.version}`}
-            </Button>
-          </Stack>
-
-          <Typography variant='body1' mb={1}>
-            Current Version: {version}
+    <Card sx={{ p: 3 }}>
+      <Box>
+        <Stack direction='row' justifyContent='flex-start' alignItems='center'>
+          <Typography variant='h5' fontWeight='bold'>
+            Upgrades Available!
           </Typography>
-
-          <Typography
-            variant='body2'
-            sx={{ cursor: 'pointer', textDecoration: 'underline' }}
-            onClick={() => setShowDetails(true)}
+          <Button
+            variant='contained'
+            color='primary'
+            disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+            onClick={() => handleUpgradeButton(latestCurrentUpdate)}
+            sx={{ ml: 3 }}
           >
-            Here&apos;s what you missed &gt;
-          </Typography>
-        </Box>
-      ) : (
-        <Box>
-          <Typography variant='h5' fontWeight='bold' mb={2}>
-            Available Updates
-          </Typography>
-          <Typography
-            variant='body2'
-            sx={{ cursor: 'pointer', textDecoration: 'underline', paddingBottom: '0.1rem' }}
-            onClick={() => setShowDetails(false)}
-          >
-            Go Back &lt;
-          </Typography>
-          <Paper
+            {isEmpty(versionUpgrades.currentVersionUpdates) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
+          </Button>
+        </Stack>
+
+        <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+          Current Version: {version}
+        </Typography>
+
+        <StyledAccordion disableGutters>
+          <StyledAccordionSummary
+            expandIcon={<KeyboardArrowRight />}
             sx={{
-              color: '#FFFFFF',
-              padding: '1rem',
-              marginBottom: '1rem',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
+              '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+                transform: 'rotate(90deg)',
+              },
             }}
           >
-            <Typography variant='h6' mb={1}>
-              Current Updates (v{version.split('.')[0]})
-            </Typography>
-            {isEmpty(versionUpgrades?.currentVersionUpdates) && (
-              <Box
-                sx={{
-                  backgroundColor: '#3A3A3A',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                <Typography sx={{ marginRight: '2rem' }}>
-                  You are currently running the latest minor version of your major.
-                </Typography>
-              </Box>
-            )}
-            {versionUpgrades?.currentVersionUpdates?.map((update, index) => (
-              <Box
-                sx={{
-                  backgroundColor: '#3A3A3A',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
-                <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
-              </Box>
-            ))}
-            <Button
-              variant='contained'
-              color='primary'
-              sx={{ marginTop: '1rem' }}
-              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-              onClick={() => {
-                handleUpgradeButton(findLast(versionUpgrades?.currentVersionUpdates)?.version)
-              }}
-            >
-              {isEmpty(versionUpgrades.currentVersionUpdates)
-                ? 'Running Latest'
-                : ` Upgrade to ${findLast(versionUpgrades?.currentVersionUpdates)?.version}`}
-            </Button>
-          </Paper>
+            <Typography variant='body2' sx={{ fontSize: '12px' }}>{`Here's what you've missed!`}</Typography>
+          </StyledAccordionSummary>
+          <StyledAccordionDetails>
+            <StyledUpdateSection>
+              <Typography variant='h6' mb={1}>
+                {`Current Updates (v${version?.split('.')[0]})`}
+              </Typography>
+              {isEmpty(versionUpgrades.currentVersionUpdates) && (
+                <Box
+                  sx={{
+                    backgroundColor: '#3A3A3A',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    padding: '0.5rem',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <Typography sx={{ marginRight: '2rem' }}>
+                    You are currently running the latest minor version of your major.
+                  </Typography>
+                </Box>
+              )}
 
-          <Paper
-            sx={{
-              color: '#FFFFFF',
-              padding: '1rem',
+              {versionUpgrades.currentVersionUpdates?.map((update) => (
+                <Box
+                  key={update.version}
+                  sx={{
+                    backgroundColor: '#3A3A3A',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    padding: '0.5rem',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
+                  <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+                </Box>
+              ))}
+
+              <Button
+                variant='contained'
+                color='primary'
+                sx={{ marginTop: '1rem' }}
+                disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+                onClick={() => handleUpgradeButton(latestCurrentUpdate)}
+              >
+                {isEmpty(versionUpgrades.currentVersionUpdates)
+                  ? 'Running Latest'
+                  : `Upgrade to ${latestCurrentUpdate}`}
+              </Button>
+            </StyledUpdateSection>
+            <StyledUpdateSection>
+              <Typography variant='h6' mb={1}>
+                Latest Major Updates
+              </Typography>
+              {isEmpty(versionUpgrades.nextVersionUpdates) && (
+                <Box
+                  sx={{
+                    backgroundColor: '#3A3A3A',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    padding: '0.5rem',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <Typography sx={{ marginRight: '2rem' }}>You are currently running the latest version.</Typography>
+                </Box>
+              )}
+
+              {versionUpgrades.nextVersionUpdates?.map((update) => (
+                <Box
+                  key={update.version}
+                  sx={{
+                    backgroundColor: '#3A3A3A',
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    padding: '0.5rem',
+                    marginBottom: '0.5rem',
+                  }}
+                >
+                  <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
+                  <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+                </Box>
+              ))}
+
+              <Button
+                variant='contained'
+                color='primary'
+                sx={{ marginTop: '1rem' }}
+                disabled={isEmpty(versionUpgrades.nextVersionUpdates)}
+                onClick={() => handleUpgradeButton(latestNextUpdate)}
+              >
+                {isEmpty(versionUpgrades.nextVersionUpdates) ? 'Running Latest' : `Upgrade to ${latestNextUpdate}`}
+              </Button>
+            </StyledUpdateSection>
+          </StyledAccordionDetails>
+        </StyledAccordion>
+
+        {showConfirmationModal && (
+          <Modal
+            noHeader
+            open={showConfirmationModal}
+            handleClose={() => setShowConfirmationModal(false)}
+            handleCancel={() => {
+              setUpgradeVersion('')
+              setShowConfirmationModal(false)
             }}
-          >
-            <Typography variant='h6' mb={1}>
-              Next Major Updates
-            </Typography>
-            {isEmpty(versionUpgrades?.nextVersionUpdates) && (
-              <Box
-                sx={{
-                  backgroundColor: '#3A3A3A',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                <Typography sx={{ marginRight: '2rem' }}>You are currently running the latest version.</Typography>
-              </Box>
-            )}
-            {versionUpgrades?.nextVersionUpdates?.map((update, index) => (
-              <Box
-                sx={{
-                  backgroundColor: '#3A3A3A',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
-                <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
-              </Box>
-            ))}
-            <Button
-              variant='contained'
-              color='primary'
-              sx={{ marginTop: '1rem' }}
-              disabled={isEmpty(versionUpgrades.nextVersionUpdates)}
-              onClick={() => {
-                handleUpgradeButton(findLast(versionUpgrades?.nextVersionUpdates)?.version)
-              }}
-            >
-              {isEmpty(versionUpgrades.nextVersionUpdates)
-                ? 'Running Latest'
-                : ` Upgrade to ${findLast(versionUpgrades?.nextVersionUpdates)?.version}`}
-            </Button>
-          </Paper>
-        </Box>
-      )}
-      {showConfirmationModal && (
-        <Modal
-          noHeader
-          children={
-            <Typography variant='h4' sx={{ marginRight: '2rem', textAlign: 'center' }}>
-              Upgrade to version {upgradeVersion}?
-            </Typography>
-          }
-          open={showConfirmationModal}
-          handleClose={() => setShowConfirmationModal(false)}
-          handleCancel={() => {
-            setUpgradeVersion('')
-            setShowConfirmationModal(false)
-          }}
-          handleAction={() => handleSubmit(upgradeVersion)}
-          actionButtonText='Upgrade'
-          cancelButtonText='Cancel Upgrade'
-          actionButtonColor='primary'
-        />
-      )}
-    </Box>
+            handleAction={() => handleSubmit()}
+            actionButtonText='Upgrade'
+            cancelButtonText='Cancel Upgrade'
+            actionButtonColor='primary'
+            children={
+              <Typography variant='h4' sx={{ marginRight: '2rem', textAlign: 'center' }}>
+                Upgrade to version {upgradeVersion}?
+              </Typography>
+            }
+          />
+        )}
+      </Box>
+    </Card>
   )
 }

@@ -1,7 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import { Box } from '@mui/material'
 import Dashboard from 'components/Dashboard'
-import UpgradeVersion from 'components/UpgradeVersion'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
 import find from 'lodash/find'
@@ -48,7 +47,6 @@ export default function (): React.ReactElement {
   const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
     <Box sx={{ paddingTop: '3rem' }}>
-      <UpgradeVersion version={versions.core} />
       <PaperLayout
         loading={loading}
         comp={comp}
