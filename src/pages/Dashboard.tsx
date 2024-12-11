@@ -15,7 +15,6 @@ export default function (): React.ReactElement {
   const {
     user: { isPlatformAdmin },
     oboTeamId: teamId,
-    versions,
   } = useSession()
 
   const {

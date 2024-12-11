@@ -209,7 +209,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const theme = useTheme()
   const { classes } = useStyles()
   const { themeView, onChangeView } = useSettings()
-  const { oboTeamId, appsEnabled, user } = useSession()
+  const { oboTeamId, appsEnabled, user, versions } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
@@ -292,7 +292,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
 
   return (
     <Box>
-      <UpgradeVersion version='5.x.x' />
+      <UpgradeVersion version={versions?.core} />
       <br />
       <Card>
         <InventoryCard

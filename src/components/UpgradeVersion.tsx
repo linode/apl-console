@@ -6,19 +6,20 @@ import {
   Box,
   Button,
   Card,
+  IconButton,
   Stack,
   Typography,
   styled,
 } from '@mui/material'
-import { KeyboardArrowRight } from '@mui/icons-material'
+import { KeyboardArrowRight, LocalOffer } from '@mui/icons-material'
 import axios from 'axios'
 import { findLast, isEmpty, takeRight } from 'lodash'
 import { useSession } from 'providers/Session'
-import { useEditSettingsMutation } from 'redux/otomiApi'
+import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 import YAML from 'yaml'
 import Modal from './Modal'
 
-const StyledAccordion = styled(Accordion)(({ theme }) => ({
+const StyledAccordion = styled(Accordion)(() => ({
   backgroundColor: 'transparent',
   boxShadow: 'none !important',
   margin: '0px !important',
@@ -27,7 +28,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   },
 }))
 
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+const StyledAccordionSummary = styled(AccordionSummary)(() => ({
   padding: '0',
   '.MuiAccordionSummary-content': {
     margin: '0',
@@ -36,7 +37,7 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   display: 'inline-flex',
 }))
 
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
   boxShadow: 'none',
   marginTop: '0px',
@@ -56,12 +57,12 @@ interface Props {
 
 interface VersionUpdates {
   currentVersionUpdates?: VersionInfo[]
-  nextVersionUpdates?: VersionInfo[]
 }
 
 interface VersionInfo {
   version: string
   message: string
+  releaseUrl: string
 }
 
 function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUpdates {
@@ -84,16 +85,8 @@ function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUp
     })
     .sort((a, b) => compareVersions(a.version, b.version))
 
-  const nextVersionUpdates = updates
-    .filter(({ version }) => {
-      const [major] = parseVersion(version)
-      return major === currentMajor + 1
-    })
-    .sort((a, b) => compareVersions(a.version, b.version))
-
   return {
     currentVersionUpdates: takeRight(currentVersionUpdates, 5),
-    nextVersionUpdates: takeRight(nextVersionUpdates, 5),
   }
 }
 
@@ -103,6 +96,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
 
   useEffect(() => {
@@ -133,150 +127,121 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
       settingId: 'otomi',
       body: {
         otomi: {
-          version,
+          ...otomiSettings.otomi,
+          version: upgradeVersion,
         },
       },
     }).then(() => {
       refetchSettings()
+      setUpgradeVersion('')
       setShowConfirmationModal(false)
     })
   }
 
   // Hard-coding currentVersion here as 'v4.1.1' per original code logic
-  const versionUpgrades = parseUpdates(data, 'v4.1.1')
-  if (isEmpty(versionUpgrades)) return null
+  // const versionUpgrades = parseUpdates(data, 'v4.1.1')
+  const versionUpgrades: VersionUpdates = {
+    currentVersionUpdates: [
+      {
+        version: 'APL-282',
+        message: 'Ani his branch',
+        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v4.1.1',
+      },
+      {
+        version: 'APL-244',
+        message: 'Cas his branch',
+        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v4.1.0',
+      },
+      {
+        version: 'APL-447',
+        message: 'Sander his branch',
+        releaseUrl: 'https://github.com/linode/apl-core/releases/tag/v3.0.0',
+      },
+    ],
+  }
 
-  const latestCurrentUpdate = findLast(versionUpgrades.currentVersionUpdates)?.version
-  const latestNextUpdate = findLast(versionUpgrades.nextVersionUpdates)?.version
+  const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
 
   return (
     <Card sx={{ p: 3 }}>
       <Box>
         <Stack direction='row' justifyContent='flex-start' alignItems='center'>
           <Typography variant='h5' fontWeight='bold'>
-            Upgrades Available!
+            {isEmpty(versionUpgrades.currentVersionUpdates) ? 'No upgrades available!' : 'Upgrades Available!'}
           </Typography>
-          <Button
-            variant='contained'
-            color='primary'
-            disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-            onClick={() => handleUpgradeButton(latestCurrentUpdate)}
-            sx={{ ml: 3 }}
-          >
-            {isEmpty(versionUpgrades.currentVersionUpdates) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
-          </Button>
+          {!isEmpty(latestCurrentUpdate) && (
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+              onClick={() => handleUpgradeButton(latestCurrentUpdate)}
+              sx={{ ml: 3 }}
+            >
+              Upgrade to {latestCurrentUpdate}
+            </Button>
+          )}
         </Stack>
 
         <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
           Current Version: {version}
         </Typography>
+        {!isEmpty(versionUpgrades.currentVersionUpdates) && (
+          <StyledAccordion disableGutters>
+            <StyledAccordionSummary
+              expandIcon={<KeyboardArrowRight />}
+              sx={{
+                '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+                  transform: 'rotate(90deg)',
+                },
+              }}
+            >
+              <Typography variant='body2' sx={{ fontSize: '12px' }}>{`Here's what you've missed!`}</Typography>
+            </StyledAccordionSummary>
+            <StyledAccordionDetails>
+              <StyledUpdateSection>
+                <Typography variant='h6' mb={1}>
+                  {`Current Updates (v${version?.split('.')[0]})`}
+                </Typography>
+                {isEmpty(versionUpgrades.currentVersionUpdates) && (
+                  <Box
+                    sx={{
+                      backgroundColor: '#3A3A3A',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      padding: '0.5rem',
+                      marginBottom: '0.5rem',
+                    }}
+                  >
+                    <Typography sx={{ marginRight: '2rem' }}>
+                      You are currently running the latest minor version of your major.
+                    </Typography>
+                  </Box>
+                )}
 
-        <StyledAccordion disableGutters>
-          <StyledAccordionSummary
-            expandIcon={<KeyboardArrowRight />}
-            sx={{
-              '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-                transform: 'rotate(90deg)',
-              },
-            }}
-          >
-            <Typography variant='body2' sx={{ fontSize: '12px' }}>{`Here's what you've missed!`}</Typography>
-          </StyledAccordionSummary>
-          <StyledAccordionDetails>
-            <StyledUpdateSection>
-              <Typography variant='h6' mb={1}>
-                {`Current Updates (v${version?.split('.')[0]})`}
-              </Typography>
-              {isEmpty(versionUpgrades.currentVersionUpdates) && (
-                <Box
-                  sx={{
-                    backgroundColor: '#3A3A3A',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    padding: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  <Typography sx={{ marginRight: '2rem' }}>
-                    You are currently running the latest minor version of your major.
-                  </Typography>
-                </Box>
-              )}
+                {versionUpgrades.currentVersionUpdates?.map((update) => (
+                  <Box
+                    key={update.version}
+                    sx={{
+                      backgroundColor: '#3A3A3A',
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      padding: '0.5rem',
+                      marginBottom: '0.5rem',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <IconButton sx={{ color: '#ffffff' }} onClick={() => window.open(update.releaseUrl)}>
+                      <LocalOffer />
+                      <Typography sx={{ marginLeft: '1rem', marginRight: '2rem' }}>{update.version}</Typography>
+                    </IconButton>
 
-              {versionUpgrades.currentVersionUpdates?.map((update) => (
-                <Box
-                  key={update.version}
-                  sx={{
-                    backgroundColor: '#3A3A3A',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    padding: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
-                  <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
-                </Box>
-              ))}
-
-              <Button
-                variant='contained'
-                color='primary'
-                sx={{ marginTop: '1rem' }}
-                disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-                onClick={() => handleUpgradeButton(latestCurrentUpdate)}
-              >
-                {isEmpty(versionUpgrades.currentVersionUpdates)
-                  ? 'Running Latest'
-                  : `Upgrade to ${latestCurrentUpdate}`}
-              </Button>
-            </StyledUpdateSection>
-            <StyledUpdateSection>
-              <Typography variant='h6' mb={1}>
-                Latest Major Updates
-              </Typography>
-              {isEmpty(versionUpgrades.nextVersionUpdates) && (
-                <Box
-                  sx={{
-                    backgroundColor: '#3A3A3A',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    padding: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  <Typography sx={{ marginRight: '2rem' }}>You are currently running the latest version.</Typography>
-                </Box>
-              )}
-
-              {versionUpgrades.nextVersionUpdates?.map((update) => (
-                <Box
-                  key={update.version}
-                  sx={{
-                    backgroundColor: '#3A3A3A',
-                    display: 'flex',
-                    justifyContent: 'flex-start',
-                    padding: '0.5rem',
-                    marginBottom: '0.5rem',
-                  }}
-                >
-                  <Typography sx={{ marginRight: '2rem' }}>{update.version}</Typography>
-                  <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
-                </Box>
-              ))}
-
-              <Button
-                variant='contained'
-                color='primary'
-                sx={{ marginTop: '1rem' }}
-                disabled={isEmpty(versionUpgrades.nextVersionUpdates)}
-                onClick={() => handleUpgradeButton(latestNextUpdate)}
-              >
-                {isEmpty(versionUpgrades.nextVersionUpdates) ? 'Running Latest' : `Upgrade to ${latestNextUpdate}`}
-              </Button>
-            </StyledUpdateSection>
-          </StyledAccordionDetails>
-        </StyledAccordion>
+                    <Typography sx={{ textAlign: 'left' }}>{update.message}</Typography>
+                  </Box>
+                ))}
+              </StyledUpdateSection>
+            </StyledAccordionDetails>
+          </StyledAccordion>
+        )}
 
         {showConfirmationModal && (
           <Modal
