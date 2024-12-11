@@ -3,7 +3,7 @@ import axios from 'axios'
 import { findLast, isEmpty, takeRight } from 'lodash'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
-import { useEditSettingsMutation } from 'redux/otomiApi'
+import { EditSettingsApiArg, useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 import YAML from 'yaml'
 import Modal from './Modal'
 
@@ -63,6 +63,7 @@ export default function ({ version }: Props): React.ReactElement {
   const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showDetails, setShowDetails] = useState(false)
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
   useEffect(() => {
     const fetchData = async () => {
@@ -88,14 +89,19 @@ export default function ({ version }: Props): React.ReactElement {
     setShowConfirmationModal(true)
   }
   const handleSubmit = (newVersion: string) => {
-    edit({
+    console.log(otomiSettings)
+    const settings: EditSettingsApiArg = {
       settingId: 'otomi',
       body: {
         otomi: {
+          ...otomiSettings.otomi,
           version: newVersion,
         },
       },
-    }).then(() => {
+    }
+    console.log(otomiSettings)
+    console.log(settings)
+    edit(settings).then(() => {
       refetchSettings()
       setUpgradeVersion('')
       setShowConfirmationModal(false)
