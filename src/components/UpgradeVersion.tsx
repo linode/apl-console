@@ -121,7 +121,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             color='primary'
             disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
             onClick={() => handleUpgradeButton(latestCurrentUpdate)}
-            sx={{ ml: 3 }}
+            sx={{ ml: 3, textTransform: 'none' }}
           >
             {isEmpty(latestCurrentUpdate) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
           </Button>
