@@ -198,13 +198,17 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
               setShowConfirmationModal(false)
             }}
             handleAction={() => handleSubmit()}
-            actionButtonText='Upgrade'
-            cancelButtonText='Cancel Upgrade'
+            actionButtonText='Confirm'
+            cancelButtonText='Cancel'
             actionButtonColor='primary'
             children={
-              <Typography variant='h4' sx={{ marginRight: '2rem', textAlign: 'center' }}>
-                Upgrade to version {upgradeVersion}?
-              </Typography>
+              <>
+                <Typography sx={{ marginRight: '2rem' }}>
+                  You are about to upgrade platform from {version} to {upgradeVersion}.
+                </Typography>
+                <Typography sx={{ marginRight: '2rem' }}>This action cannot be undone.</Typography>
+                <Typography sx={{ mt: '1rem', mr: '2rem' }}>Please confirm to proceed or cancel to go back.</Typography>
+              </>
             }
           />
         )}
