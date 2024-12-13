@@ -81,7 +81,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
 
   return (
-    <Card sx={{ p: 3 }}>
+    <Card sx={{ p: 3, mb: 1 }}>
       <Box>
         <Stack direction='row' justifyContent='space-between' alignItems='center'>
           <Typography variant='h5' fontWeight='bold'>
