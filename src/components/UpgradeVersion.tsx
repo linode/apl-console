@@ -118,7 +118,6 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                   backgroundColor: '#3A3A3A',
                   display: 'flex',
                   justifyContent: 'flex-start',
-                  padding: '0.5rem',
                   marginBottom: '0.5rem',
                   alignItems: 'center',
                 }}
@@ -136,17 +135,19 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             ))}
           </StyledUpdateSection>
         </StyledAccordionDetails>
-        <Stack direction='row' justifyContent='flex-end' alignItems='center'>
-          <Button
-            variant='contained'
-            color='primary'
-            disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
-            onClick={() => handleUpgradeButton(latestCurrentUpdate)}
-            sx={{ ml: 3, textTransform: 'none' }}
-          >
-            {isEmpty(latestCurrentUpdate) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
-          </Button>
-        </Stack>
+        {!isEmpty(latestCurrentUpdate) && (
+          <Stack direction='row' justifyContent='flex-end' alignItems='center'>
+            <Button
+              variant='contained'
+              color='primary'
+              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+              onClick={() => handleUpgradeButton(latestCurrentUpdate)}
+              sx={{ ml: 3, textTransform: 'none' }}
+            >
+              {`Upgrade to ${latestCurrentUpdate}`}
+            </Button>
+          </Stack>
+        )}
       </Box>
 
       {showConfirmationModal && (
