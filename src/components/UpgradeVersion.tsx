@@ -1,17 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Button,
-  Card,
-  IconButton,
-  Stack,
-  Typography,
-  styled,
-} from '@mui/material'
-import { KeyboardArrowRight, LocalOffer } from '@mui/icons-material'
+import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled } from '@mui/material'
+import { LocalOffer } from '@mui/icons-material'
 import axios from 'axios'
 import { findLast, isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
@@ -19,24 +8,6 @@ import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 import YAML from 'yaml'
 import Modal from './Modal'
 import { VersionInfo, parseUpdates } from '../utils/helpers'
-
-const StyledAccordion = styled(Accordion)(() => ({
-  backgroundColor: 'transparent',
-  boxShadow: 'none !important',
-  margin: '0px !important',
-  '&:before': {
-    display: 'none',
-  },
-}))
-
-const StyledAccordionSummary = styled(AccordionSummary)(() => ({
-  padding: '0',
-  '.MuiAccordionSummary-content': {
-    margin: '0',
-  },
-  marginTop: '0px !important',
-  display: 'inline-flex',
-}))
 
 const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
@@ -112,10 +83,60 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   return (
     <Card sx={{ p: 3 }}>
       <Box>
-        <Stack direction='row' justifyContent='flex-start' alignItems='center'>
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
           <Typography variant='h5' fontWeight='bold'>
-            {isEmpty(versionUpgrades.currentVersionUpdates) ? 'No upgrades available!' : 'Upgrades Available!'}
+            Available versions
           </Typography>
+
+          <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+            Current version: {version}
+          </Typography>
+        </Stack>
+
+        <StyledAccordionDetails>
+          <StyledUpdateSection>
+            {isEmpty(versionUpgrades.currentVersionUpdates) && (
+              <Box
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                <Typography sx={{ marginRight: '2rem' }}>
+                  You are currently running the latest minor version of your major.
+                </Typography>
+              </Box>
+            )}
+
+            {versionUpgrades.currentVersionUpdates?.map((update) => (
+              <Box
+                key={update.version}
+                sx={{
+                  backgroundColor: '#3A3A3A',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  padding: '0.5rem',
+                  marginBottom: '0.5rem',
+                  alignItems: 'center',
+                }}
+              >
+                <IconButton
+                  sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: '#ffffff' }}
+                  onClick={() => window.open(`${baseUrl}${update.version}`)}
+                >
+                  <LocalOffer />
+                  <Typography sx={{ marginLeft: '0.5rem' }}>{update.version}</Typography>
+                </IconButton>
+
+                <Typography sx={{ marginLeft: '2rem', textAlign: 'left' }}>{update.message}</Typography>
+              </Box>
+            ))}
+          </StyledUpdateSection>
+        </StyledAccordionDetails>
+        <Stack direction='row' justifyContent='flex-end' alignItems='center'>
           <Button
             variant='contained'
             color='primary'
@@ -126,93 +147,32 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             {isEmpty(latestCurrentUpdate) ? 'Running Latest' : `Upgrade to ${latestCurrentUpdate}`}
           </Button>
         </Stack>
-
-        <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-          Current Version: {version}
-        </Typography>
-        {!isEmpty(versionUpgrades.currentVersionUpdates) && (
-          <StyledAccordion disableGutters>
-            <StyledAccordionSummary
-              expandIcon={<KeyboardArrowRight />}
-              sx={{
-                '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-                  transform: 'rotate(90deg)',
-                },
-              }}
-            >
-              <Typography variant='body2' sx={{ fontSize: '12px' }}>{`Here's what you've missed!`}</Typography>
-            </StyledAccordionSummary>
-            <StyledAccordionDetails>
-              <StyledUpdateSection>
-                {isEmpty(versionUpgrades.currentVersionUpdates) && (
-                  <Box
-                    sx={{
-                      backgroundColor: '#3A3A3A',
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      padding: '0.5rem',
-                      marginBottom: '0.5rem',
-                    }}
-                  >
-                    <Typography sx={{ marginRight: '2rem' }}>
-                      You are currently running the latest minor version of your major.
-                    </Typography>
-                  </Box>
-                )}
-
-                {versionUpgrades.currentVersionUpdates?.map((update) => (
-                  <Box
-                    key={update.version}
-                    sx={{
-                      backgroundColor: '#3A3A3A',
-                      display: 'flex',
-                      justifyContent: 'flex-start',
-                      padding: '0.5rem',
-                      marginBottom: '0.5rem',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <IconButton
-                      sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: '#ffffff' }}
-                      onClick={() => window.open(`${baseUrl}${update.version}`)}
-                    >
-                      <LocalOffer />
-                      <Typography sx={{ marginLeft: '0.5rem' }}>{update.version}</Typography>
-                    </IconButton>
-
-                    <Typography sx={{ marginLeft: '2rem', textAlign: 'left' }}>{update.message}</Typography>
-                  </Box>
-                ))}
-              </StyledUpdateSection>
-            </StyledAccordionDetails>
-          </StyledAccordion>
-        )}
-
-        {showConfirmationModal && (
-          <Modal
-            noHeader
-            open={showConfirmationModal}
-            handleClose={() => setShowConfirmationModal(false)}
-            handleCancel={() => {
-              setUpgradeVersion('')
-              setShowConfirmationModal(false)
-            }}
-            handleAction={() => handleSubmit()}
-            actionButtonText='Confirm'
-            cancelButtonText='Cancel'
-            actionButtonColor='primary'
-            children={
-              <>
-                <Typography sx={{ marginRight: '2rem' }}>
-                  You are about to upgrade platform from {version} to {upgradeVersion}.
-                </Typography>
-                <Typography sx={{ marginRight: '2rem' }}>This action cannot be undone.</Typography>
-                <Typography sx={{ mt: '1rem', mr: '2rem' }}>Please confirm to proceed or cancel to go back.</Typography>
-              </>
-            }
-          />
-        )}
       </Box>
+
+      {showConfirmationModal && (
+        <Modal
+          noHeader
+          open={showConfirmationModal}
+          handleClose={() => setShowConfirmationModal(false)}
+          handleCancel={() => {
+            setUpgradeVersion('')
+            setShowConfirmationModal(false)
+          }}
+          handleAction={() => handleSubmit()}
+          actionButtonText='Confirm'
+          cancelButtonText='Cancel'
+          actionButtonColor='primary'
+          children={
+            <>
+              <Typography sx={{ marginRight: '2rem' }}>
+                You are about to upgrade platform from {version} to {upgradeVersion}.
+              </Typography>
+              <Typography sx={{ marginRight: '2rem' }}>This action cannot be undone.</Typography>
+              <Typography sx={{ mt: '1rem', mr: '2rem' }}>Please confirm to proceed or cancel to go back.</Typography>
+            </>
+          }
+        />
+      )}
     </Card>
   )
 }
