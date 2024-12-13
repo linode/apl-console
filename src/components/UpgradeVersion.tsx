@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled } from '@mui/material'
+import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled, useTheme } from '@mui/material'
 import { LocalOffer } from '@mui/icons-material'
 import axios from 'axios'
 import { findLast, isEmpty } from 'lodash'
@@ -29,6 +29,7 @@ interface Props {
 
 export default function UpgradesCard({ version }: Props): React.ReactElement | null {
   const { refetchSettings } = useSession()
+  const theme = useTheme()
   const [data, setData] = useState<VersionInfo[]>([])
   const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
@@ -84,9 +85,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     <Card sx={{ p: 3, mb: 1 }}>
       <Box>
         <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Typography variant='h5' fontWeight='bold'>
-            Available versions
-          </Typography>
+          <Typography variant='h5'>Available versions</Typography>
 
           <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
             Current version: {version}
@@ -98,7 +97,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             {isEmpty(versionUpgrades.currentVersionUpdates) && (
               <Box
                 sx={{
-                  backgroundColor: '#3A3A3A',
+                  backgroundColor: theme.palette.background.default,
                   display: 'flex',
                   justifyContent: 'flex-start',
                   padding: '0.5rem',
@@ -115,7 +114,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
               <Box
                 key={update.version}
                 sx={{
-                  backgroundColor: '#3A3A3A',
+                  backgroundColor: theme.palette.background.default,
                   display: 'flex',
                   justifyContent: 'flex-start',
                   marginBottom: '0.5rem',
@@ -123,7 +122,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                 }}
               >
                 <IconButton
-                  sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: '#ffffff' }}
+                  sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: theme.palette.text.primary }}
                   onClick={() => window.open(`${baseUrl}${update.version}`)}
                 >
                   <LocalOffer />

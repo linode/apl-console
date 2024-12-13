@@ -14,11 +14,6 @@ const useStyles = makeStyles()((theme) => ({
   card: {
     padding: theme.spacing(1),
   },
-  cardHeaderTitle: {
-    textAlign: 'center',
-    color: theme.palette.grey[500],
-    fontSize: '14px',
-  },
   inventoryItem: {
     display: 'flex',
     flexDirection: 'row',
@@ -27,7 +22,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   inventoryName: {
     textTransform: 'capitalize',
-    color: theme.palette.grey[500],
+    color: theme.palette.text.primary,
     fontSize: '14px',
   },
   inventoryCard: {
@@ -152,7 +147,7 @@ function InventoryCard({ classes, title, inventory, themeView, teamId }: Invento
   const columnItemNumber = Math.round(inventory.length / 2)
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
-      <Typography variant='h5' className={classes.cardHeaderTitle}>
+      <Typography variant='h5' ml={2}>
         {title}
       </Typography>
       <Box className={classes.inventoryCard}>
@@ -185,7 +180,7 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, themeMode, sh
   if (!show) return null
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
-      <Typography variant='h5' className={classes.cardHeaderTitle}>
+      <Typography variant='h5' ml={2}>
         {title}
       </Typography>
       <Box className={boxClass}>
