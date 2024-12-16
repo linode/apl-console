@@ -74,7 +74,7 @@ export default function NavConfig() {
           title: 'User Management',
           path: `/teams/${oboTeamId}/users`,
           icon: getIcon('users_icon.svg'),
-          hidden: hasExternalIDP || !(user.isPlatformAdmin || user.isTeamAdmin),
+          hidden: hasExternalIDP || !(user.isPlatformAdmin || user.isTeamAdmin) || oboTeamId === 'admin',
         },
         {
           title: 'Settings',

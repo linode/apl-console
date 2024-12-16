@@ -1,4 +1,6 @@
-import { Box, Button, IconButton, Modal, Typography, styled } from '@mui/material'
+import { Box, Button, ButtonPropsColorOverrides, IconButton, Modal, Typography, styled } from '@mui/material'
+// eslint-disable-next-line import/no-unresolved
+import { OverridableStringUnion } from '@mui/types'
 import { ReactElement, ReactNode } from 'react'
 
 // styles ----------------------------------------------------------------
@@ -50,7 +52,10 @@ interface Props {
   cancelButtonText?: string
   handleAction?: any
   actionButtonText?: string
-  actionButtonColor?: string
+  actionButtonColor?: OverridableStringUnion<
+    'inherit' | 'error' | 'primary' | 'secondary' | 'success' | 'info' | 'warning',
+    ButtonPropsColorOverrides
+  >
   actionButtonEndIcon?: ReactElement
   actionButtonFrontIcon?: ReactElement
 }
@@ -89,7 +94,7 @@ export default function StyledModal({
             </Button>
             <Button
               variant='contained'
-              color='error'
+              color={actionButtonColor || 'error'}
               sx={{ ml: 1, bgcolor: actionButtonColor }}
               onClick={handleAction}
               startIcon={actionButtonFrontIcon && actionButtonFrontIcon}
