@@ -6,6 +6,7 @@ import { Box, Button, Checkbox, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import useSettings from 'hooks/useSettings'
+import { isEqual } from 'lodash'
 import ListTable from './ListTable'
 import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
@@ -93,9 +94,9 @@ function UserTeamSelector({
   )
 }
 
-const updateUsers = (onClick: () => void) => {
+const updateUsers = (onClick: () => void, disabled: boolean) => {
   return (
-    <Button variant='contained' onClick={onClick}>
+    <Button variant='contained' onClick={onClick} disabled={disabled}>
       Update Users
     </Button>
   )
@@ -134,24 +135,17 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
         },
       ]
     : []
-  const assignToTeam =
-    isTeamView && oboTeamId !== 'admin'
-      ? [
-          {
-            id: 'assign',
-            label: t(`Assign to team ${oboTeamId}`),
-            renderer: (row: Row) => (
-              <UserTeamSelector
-                row={row}
-                sessionUser={sessionUser}
-                users={inUsers}
-                setUsers={setUsers}
-                teamId={teamId}
-              />
-            ),
-          },
-        ]
-      : []
+  const assignToTeam = isTeamView
+    ? [
+        {
+          id: 'assign',
+          label: t(`Assign to team ${oboTeamId}`),
+          renderer: (row: Row) => (
+            <UserTeamSelector row={row} sessionUser={sessionUser} users={inUsers} setUsers={setUsers} teamId={teamId} />
+          ),
+        },
+      ]
+    : []
   const headCells: HeadCell[] = [
     {
       id: 'email',
@@ -180,7 +174,7 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
       resourceType='User'
       title='Users'
       noCrud={isTeamView}
-      customButton={isTeamView && updateUsers(handleUpdateUsers)}
+      customButton={isTeamView && updateUsers(handleUpdateUsers, isEqual(users, inUsers))}
     />
   )
 }

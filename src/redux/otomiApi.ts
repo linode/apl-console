@@ -3756,6 +3756,9 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
   }
+  smtp: {
+    smarthost: string
+  }
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void

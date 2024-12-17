@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import { Box } from '@mui/material'
 import Dashboard from 'components/Dashboard'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
@@ -44,10 +45,12 @@ export default function (): React.ReactElement {
   const inventory = [...teamInventory, ...dashboardInventory]
   const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
-    <PaperLayout
-      loading={loading}
-      comp={comp}
-      title={t('TITLE_DASHBOARD', { role: isPlatformAdmin ? 'admin' : 'team' })}
-    />
+    <Box sx={{ paddingTop: '3rem' }}>
+      <PaperLayout
+        loading={loading}
+        comp={comp}
+        title={t('TITLE_DASHBOARD', { role: isPlatformAdmin ? 'admin' : 'team' })}
+      />
+    </Box>
   )
 }
