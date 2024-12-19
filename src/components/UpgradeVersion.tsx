@@ -78,6 +78,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   }
 
   const versionUpgrades = parseUpdates(data, version)
+  const currentMajorVersion = version.split('.')[0]
 
   const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
 
@@ -104,7 +105,9 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                   marginBottom: '0.5rem',
                 }}
               >
-                <Typography sx={{ marginRight: '2rem' }}>There are no new updates for v{version}</Typography>
+                <Typography sx={{ marginRight: '2rem' }}>
+                  There are no new updates for v{currentMajorVersion}
+                </Typography>
               </Box>
             )}
 
