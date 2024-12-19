@@ -1,0 +1,45 @@
+name: Enforce Checklist
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check-checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Get PR details
+        id: pr
+        uses: actions-ecosystem/action-get-PR-info@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Checklist
+        run: |
+          PR_BODY="${{ steps.pr.outputs.body }}"
+
+          # 1. Check for "## Checklist" section
+          if ! echo "$PR_BODY" | grep -q "^## Checklist"; then
+            echo "No '## Checklist' section found in the PR description."
+            exit 1
+          fi
+
+          # 2. Check that there is at least one checkbox line ('- [ ]' or '- [x]')
+          #    We'll consider any line that starts with '- [' as a checklist item.
+          CHECKBOX_COUNT=$(echo "$PR_BODY" | grep "^- \[" | wc -l)
+          if [ "$CHECKBOX_COUNT" -eq 0 ]; then
+            echo "No checklist items found under '## Checklist'."
+            exit 1
+          fi
+
+          # 3. Ensure all checkbox items are ticked (i.e., no '- [ ]' remain).
+          UNCHECKED_COUNT=$(echo "$PR_BODY" | grep "^- \[ \]" | wc -l)
+          if [ "$UNCHECKED_COUNT" -gt 0 ]; then
+            echo "Not all checklist items are checked. Please tick all boxes."
+            exit 1
+          fi
+
+          echo "All checks passed. The checklist is present and fully checked."
