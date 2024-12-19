@@ -88,7 +88,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
           <Typography variant='h5'>Available versions</Typography>
 
           <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-            Current version: {version}
+            Current version: v{version}
           </Typography>
         </Stack>
 
