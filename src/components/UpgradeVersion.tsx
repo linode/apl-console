@@ -104,9 +104,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                   marginBottom: '0.5rem',
                 }}
               >
-                <Typography sx={{ marginRight: '2rem' }}>
-                  You are currently running the latest minor version of your major.
-                </Typography>
+                <Typography sx={{ marginRight: '2rem' }}>There are no new updates for v{version}</Typography>
               </Box>
             )}
 
