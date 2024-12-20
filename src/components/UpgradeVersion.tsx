@@ -78,6 +78,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   }
 
   const versionUpgrades = parseUpdates(data, version)
+  const currentMajorVersion = version.split('.')[0]
 
   const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
 
@@ -88,7 +89,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
           <Typography variant='h5'>Available versions</Typography>
 
           <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-            Current version: {version}
+            Current version: v{version}
           </Typography>
         </Stack>
 
@@ -105,7 +106,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                 }}
               >
                 <Typography sx={{ marginRight: '2rem' }}>
-                  You are currently running the latest minor version of your major.
+                  There are no new updates for v{currentMajorVersion}
                 </Typography>
               </Box>
             )}
