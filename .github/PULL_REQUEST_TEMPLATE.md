@@ -1,7 +1,6 @@
 ## Checklist
 
 - [ ] I have tested the changes in both light and dark mode.
-- [ ] I have run all unit tests and ensured they pass.
 - [ ] I have considered the need for new unit tests.
 - [ ] I have tested the changes on a cluster.
 - [ ] I have included relevant documentation updates.
