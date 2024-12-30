@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.4.0](https://github.com/linode/apl-console/compare/v3.3.0...v3.4.0) (2024-12-17)
+
+
+### Features
+
+* add dependabot ([#458](https://github.com/linode/apl-console/issues/458)) ([189276b](https://github.com/linode/apl-console/commit/189276bfb54cb1613e400d9f4af9997af870e597))
+* add path for gitea ([#482](https://github.com/linode/apl-console/issues/482)) ([b15fa92](https://github.com/linode/apl-console/commit/b15fa9237175be7bbe27fea9cf3db1f65de59b1a))
+* product updates in console ([#486](https://github.com/linode/apl-console/issues/486)) ([f6e6837](https://github.com/linode/apl-console/commit/f6e683787fad97df1e888af514407b48ba8f546d))
+* updated release tag generation ([#461](https://github.com/linode/apl-console/issues/461)) ([cb1cd74](https://github.com/linode/apl-console/commit/cb1cd744c63afe618b9e428872bf738588e10646))
+
+
+### Bug Fixes
+
+* allow extra fields during initial validation ([#462](https://github.com/linode/apl-console/issues/462)) ([4e69867](https://github.com/linode/apl-console/commit/4e69867849f2e3226218207243155fab13e7d74b))
+* authz route apps page access ([#487](https://github.com/linode/apl-console/issues/487)) ([27b82e3](https://github.com/linode/apl-console/commit/27b82e3da302e2e930d49735e605420d344d3bd5))
+* changed keycloak tab name ([#468](https://github.com/linode/apl-console/issues/468)) ([4ef90a1](https://github.com/linode/apl-console/commit/4ef90a1fbaa1b4cc1ff2f6e03cc0abcf2817f597))
+* code editor error ([#459](https://github.com/linode/apl-console/issues/459)) ([4335406](https://github.com/linode/apl-console/commit/4335406da3d260ad36e50d92eb5a9132bd467ea8))
+* dependabot ignore >=21 node ([#477](https://github.com/linode/apl-console/issues/477)) ([bc1152b](https://github.com/linode/apl-console/commit/bc1152b5741f12a1b223439595c0144413c4a7a3))
+* improved error handling for objwizard ([#479](https://github.com/linode/apl-console/issues/479)) ([4237522](https://github.com/linode/apl-console/commit/423752246bdafb54ae31a26426f200e5f96b6b8b))
+* logout error ([#460](https://github.com/linode/apl-console/issues/460)) ([48da38e](https://github.com/linode/apl-console/commit/48da38ee22f45bb25c39dc794259f7f1e4021da0))
+* project page 409 error ([#488](https://github.com/linode/apl-console/issues/488)) ([689cad1](https://github.com/linode/apl-console/commit/689cad1226262a63a06b01136984d921a16c583f))
+* remove email alert if smtp is not present ([#480](https://github.com/linode/apl-console/issues/480)) ([fd4b732](https://github.com/linode/apl-console/commit/fd4b732c0d1acb65dbbf2a67e8908ae2b827fa8c))
+* removed user management from team-admin team view ([#484](https://github.com/linode/apl-console/issues/484)) ([a6bea50](https://github.com/linode/apl-console/commit/a6bea5012d8ce77125bdf2ee8554fc78ff11e765))
+* replaced seedling with chore for dependabot ([#469](https://github.com/linode/apl-console/issues/469)) ([7021d97](https://github.com/linode/apl-console/commit/7021d977ffba977be30f9ca1d6bafa16591dc632))
+* svg logo for cert-manager ([#463](https://github.com/linode/apl-console/issues/463)) ([be1c296](https://github.com/linode/apl-console/commit/be1c296c2e34e45624f76c242814a9ccff8fc9fc))
+* team view iframes visibility ([#475](https://github.com/linode/apl-console/issues/475)) ([2cda4bf](https://github.com/linode/apl-console/commit/2cda4bf3f396d503079cfaa38fa8988d59260a14))
+* workload form liveValidate ([#485](https://github.com/linode/apl-console/issues/485)) ([97bc85d](https://github.com/linode/apl-console/commit/97bc85d2fa4dad94d377b58a9a6f9f42fe853eb5))
+
+
+### Others
+
+* node 20 and npm 10 ([#483](https://github.com/linode/apl-console/issues/483)) ([47ff317](https://github.com/linode/apl-console/commit/47ff317df407ab4202407a67e38bd4b67e6b9c84))
+
 ## [3.3.0](https://github.com/linode/apl-console/compare/v3.2.0...v3.3.0) (2024-11-12)
 
 
