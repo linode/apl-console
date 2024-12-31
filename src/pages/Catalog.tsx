@@ -9,9 +9,9 @@ import {
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
   useEditWorkloadMutation,
+  useEditWorkloadValuesMutation,
   useGetWorkloadQuery,
   useGetWorkloadValuesQuery,
-  useUpdateWorkloadValuesMutation,
   useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 
@@ -46,7 +46,7 @@ export default function ({
     isError: isErrorValues,
     refetch: refetchValues,
   } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
-  const [updateValues] = useUpdateWorkloadValuesMutation()
+  const [updateWorkloadValues] = useEditWorkloadValuesMutation()
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
@@ -102,7 +102,7 @@ export default function ({
       createWorkload={createWorkload}
       updateWorkload={updateWorkload}
       deleteWorkload={deleteWorkload}
-      updateWorkloadValues={updateValues}
+      updateWorkloadValues={updateWorkloadValues}
       mutating={mutating}
       readme={readme}
     />
