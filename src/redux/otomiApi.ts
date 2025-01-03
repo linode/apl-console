@@ -270,15 +270,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
-    deploy: build.query<DeployApiResponse, DeployApiArg>({
-      query: () => ({ url: `/deploy` }),
-    }),
-    revert: build.query<RevertApiResponse, RevertApiArg>({
-      query: () => ({ url: `/revert` }),
-    }),
-    restore: build.query<RestoreApiResponse, RestoreApiArg>({
-      query: () => ({ url: `/restore` }),
-    }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
@@ -3655,12 +3646,6 @@ export type EditWorkloadValuesApiArg = {
     values: object
   }
 }
-export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
-export type DeployApiArg = void
-export type RevertApiResponse = unknown
-export type RevertApiArg = void
-export type RestoreApiResponse = unknown
-export type RestoreApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
   /** ID of team to return */
@@ -4409,9 +4394,6 @@ export const {
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
-  useDeployQuery,
-  useRevertQuery,
-  useRestoreQuery,
   useDownloadKubecfgQuery,
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
