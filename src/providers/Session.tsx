@@ -151,10 +151,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   }
   useEffect(() => {
     if (!lastDbMessage) return
-    const { editor: msgEditor, state, reason } = lastDbMessage
+    const { state, reason } = lastDbMessage
 
     // initiated by system
-    if (state === 'dirty') snack.warning(`${t('User {{editor}} started editing.', { editor: msgEditor })}`)
     if (state === 'clean') {
       if (reason === 'conflict') {
         snack.info(
