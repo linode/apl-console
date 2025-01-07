@@ -1,4 +1,4 @@
-## Checklist
+## Considerations
 
 - [ ] I have tested the changes in both light and dark mode.
 - [ ] I have considered the need for new unit tests.
