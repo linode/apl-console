@@ -89,7 +89,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
           <Typography variant='h5'>Available versions</Typography>
 
           <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-            Current version: v{version}
+            Current version: {version}
           </Typography>
         </Stack>
 
@@ -106,7 +106,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                 }}
               >
                 <Typography sx={{ marginRight: '2rem' }}>
-                  There are no new updates for v{currentMajorVersion}
+                  There are no new updates for {currentMajorVersion}
                 </Typography>
               </Box>
             )}
