@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.4.2](https://github.com/linode/apl-console/compare/v3.4.1...v3.4.2) (2025-01-08)
+
+
+### Bug Fixes
+
+* update message ([#494](https://github.com/linode/apl-console/issues/494)) ([c8e2291](https://github.com/linode/apl-console/commit/c8e22917efce8bef785af7b3b1beb353924c2221))
+
 ### [3.4.1](https://github.com/linode/apl-console/compare/v3.4.0...v3.4.1) (2025-01-07)
 
 ### Bug Fixes
