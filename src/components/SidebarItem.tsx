@@ -9,17 +9,12 @@ import { NavItemProps } from './SidebarTypes'
 //
 import Iconify from './Iconify'
 import { ListItemIconStyle, ListItemStyle, ListItemStyleProps, ListItemTextStyle } from './SidebarStyle'
-import SidebarDeployButton from './SidebarDeployButton'
-import SidebarRevertButton from './SidebarRevertButton'
 import SidebarShellButton from './SidebarShellButton'
 
 // ----------------------------------------------------------------------
 
 // HANDLE SHOW ITEM BY ROLE
 const ListItem = forwardRef<HTMLDivElement & HTMLAnchorElement, ListItemStyleProps>((props, ref) => (
-  //   <RoleBasedGuard roles={props.roles}>
-
-  //   </RoleBasedGuard>
   <ListItemStyle {...props} ref={ref}>
     {props.children}
   </ListItemStyle>
@@ -66,8 +61,6 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
     )
   }
 
-  if (title === 'Deploy Changes') return <SidebarDeployButton item={item}>{renderContent}</SidebarDeployButton>
-  if (title === 'Revert Changes') return <SidebarRevertButton item={item}>{renderContent}</SidebarRevertButton>
   if (title === 'Shell') {
     return (
       <SidebarShellButton disabled={disabled} item={item}>

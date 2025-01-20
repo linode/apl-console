@@ -1,10 +1,7 @@
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { setSpec } from 'common/api-spec'
-import LinkCommit from 'components/LinkCommit'
 import LoadingScreen from 'components/LoadingScreen'
-import MessageDrone from 'components/MessageDrone'
 import MessageTekton from 'components/MessageTekton'
-import MessageTrans from 'components/MessageTrans'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import { ProviderContext, SnackbarKey } from 'notistack'
 import Logout from 'pages/Logout'
@@ -124,7 +121,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const { lastMessage: lastDroneMessage } = useSocketEvent<DroneBuildEvent>(socket, 'drone')
   const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
@@ -145,7 +141,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     [appsEnabled, oboTeamId, session, settings],
   )
   const { corrupt, editor, user } = ctx
-  const { email, isPlatformAdmin, teams } = user || {}
+  const { isPlatformAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
   const closeKey = (key) => {
@@ -155,91 +151,49 @@ export default function SessionProvider({ children }: Props): React.ReactElement
   }
   useEffect(() => {
     if (!lastDbMessage) return
-    const { editor: msgEditor, state, reason, sha } = lastDbMessage
-    const isMsgEditor = msgEditor === email
-    const linkCommit = sha ? <LinkCommit domainSuffix={settings.cluster.domainSuffix} sha={sha} short /> : null
+    const { state, reason } = lastDbMessage
 
-    // initiated by self
-    if (isMsgEditor) {
-      if (state === 'clean' && reason === 'revert')
-        snack.success(<MessageTrans defaults='DB reverted to commit <0></0>' components={[linkCommit]} />)
-    }
-
-    // initiated by others
-    if (!isMsgEditor) {
-      if (state === 'dirty') snack.warning(`${t('User {{editor}} started editing.', { editor: msgEditor })}`)
-      if (state === 'clean') {
-        if (reason === 'deploy')
-          if (editor) snack.warning(`${t('You have undeployed changes. Potential conflict upon deploy!')}`)
-
-        if (reason === 'revert') {
-          snack.info(
-            `${t('User {{editor}} stopped editing (reason: {{reason}}).', {
-              editor: msgEditor,
-              reason,
-            })}`,
-          )
-        }
-        if (reason === 'conflict') {
-          snack.info(
-            `${t('DB updated to latest commit (reason: {{reason}}).', {
-              editor: 'system',
-              reason,
-            })}`,
-          )
-        }
-        if (reason === 'restored') {
-          snack.info(
-            `${t('DB restored to commit (reason: {{reason}}).', {
-              editor: 'system',
-              reason,
-            })}`,
-          )
-        }
+    // initiated by system
+    if (state === 'clean') {
+      if (reason === 'conflict') {
+        snack.info(
+          `${t('The database updated to the latest commit (reason: {{reason}}).', {
+            editor: 'system',
+            reason,
+          })}`,
+        )
+      }
+      if (reason === 'restored') {
+        snack.info(
+          `${t('The database restored to the previous commit (reason: {{reason}}).', {
+            editor: 'system',
+            reason,
+          })}`,
+        )
       }
     }
-
     // global messages
-    if (state === 'clean' && reason === 'revert') {
-      closeKey('conflict')
-      refetchSession()
-    }
     if (state === 'corrupt' && reason === 'deploy') refetchSession()
-    if (state === 'clean' && reason === 'deploy') {
-      closeKey('deploy')
-      keys.deploy = snack.info(
-        <MessageTrans defaults='Deployment scheduled for commit <0></0>' components={[linkCommit]} />,
-        { key: keys.deploy },
-      )
-      refetchSession()
-    }
-    if (state === 'clean' && reason === 'restore') {
-      closeKey('conflict')
-      keys.restore = snack.success(<MessageTrans defaults='DB restored to commit <0><0>' components={[linkCommit]} />, {
-        persist: true,
-        onClick: () => {
-          closeKey('restore')
-        },
-      })
-      refetchSession()
-    }
   }, [lastDbMessage])
   // special one for corrupt state
   useEffect(() => {
     if (corrupt) {
-      keys.conflict = snack.error(`${t('Git conflict: upstream changes. Admin must restore DB.')}`, {
-        persist: true,
-        onClick: () => {
-          closeKey('conflict')
+      keys.conflict = snack.error(
+        `${t('Git conflict detected due to upstream changes. The database has been restored.')}`,
+        {
+          persist: true,
+          onClick: () => {
+            closeKey('conflict')
+          },
         },
-      })
+      )
     } else closeKey('conflict')
   }, [corrupt])
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
     if (isDirty === undefined) return
     if (!editor && isDirty === null) {
-      keys.create = snack.info(`${t('Cloning DB for the session... Hold on!')}`, {
+      keys.create = snack.info(`${t('Processing... Hold on!')}`, {
         key: keys.create,
         persist: true,
         onClick: () => {
@@ -249,27 +203,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     } else if (isDirty !== null) closeKey('create')
     if (isDirty) refetchSession()
   }, [isDirty])
-  // Drone events
-  useEffect(() => {
-    if (!lastDroneMessage) return
-    const domainSuffix = settings?.cluster?.domainSuffix
-    const { action, build } = lastDroneMessage
-    const { after: sha, created, id, status, updated } = build
-    const interest = [
-      { type: 'info', cond: action === 'created' && status === 'pending', time: created },
-      { type: 'error', cond: action === 'updated' && status === 'failed', time: updated },
-      { type: 'success', cond: action === 'updated' && status === 'success', time: updated },
-    ]
-    interest.forEach((msg) => {
-      const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
-      if (!msg.cond) return
-      keys[`drone-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
-        <MessageDrone {...{ datetime, domainSuffix, id, sha, status }} />,
-      )
-      // pull in latest state as it might have changed
-      if (status !== 'pending') refetchSession()
-    })
-  }, [lastDroneMessage])
 
   // Tekton events
   useEffect(() => {

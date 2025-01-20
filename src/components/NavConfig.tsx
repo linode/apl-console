@@ -21,13 +21,6 @@ export default function NavConfig() {
   const anchor = ca ? generateDownloadLink(downloadOpts) : ''
   return [
     {
-      subheader: 'actions',
-      items: [
-        { title: 'Deploy Changes', path: '/deploychanges', icon: getIcon('deploy_icon.svg') },
-        { title: 'Revert Changes', path: '/revertchanges', icon: getIcon('revert_icon.svg') },
-      ],
-    },
-    {
       subheader: 'platform',
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
