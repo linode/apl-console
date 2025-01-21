@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Editor } from '@monaco-editor/react'
 import { isEmpty } from 'lodash'
 import { Box } from '@mui/material'
@@ -51,6 +51,7 @@ interface Props {
   setValid?: CallableFunction
   showComments?: boolean
   validationSchema?: any
+  setWorkloadValues?: CallableFunction
 }
 
 const toYaml = (obj) => YAML.stringify(obj, { blockQuote: 'literal' })
@@ -63,6 +64,7 @@ export default function CodeEditor({
   disabled,
   showComments = false,
   validationSchema,
+  setWorkloadValues,
   ...props
 }: Props): React.ReactElement {
   const [startCode] = useState(isEmpty(inCode) ? '' : toYaml(inCode).replace('|\n', '').replace(/\n$/, ''))
@@ -115,6 +117,11 @@ export default function CodeEditor({
     if (onChange && obj) onChange(obj)
     validateCode(newValue)
   }
+
+  useEffect(() => {
+    const obj = fromYaml(modifiedCode)
+    setWorkloadValues?.(obj)
+  }, [modifiedCode])
 
   return (
     <>

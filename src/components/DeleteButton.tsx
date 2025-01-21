@@ -26,7 +26,7 @@ export default function ({ loading, disabled, ...other }: DeleteButtonProps): Re
   }
   return (
     <>
-      {dialogOpen && <DeleteDialog onCancel={onDialogCancel} {...other} />}
+      {dialogOpen && <DeleteDialog onCancel={onDialogCancel} loading={loading} {...other} />}
       <LoadingButton
         disabled={disabled}
         startIcon={<DeleteIcon />}

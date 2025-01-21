@@ -5,6 +5,7 @@ import { useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { getDomain, getEmailNoSymbols, getUserTeams } from 'layouts/Shell'
 import { clearLocalStorage } from 'hooks/useLocalStorage'
+import { useHistory } from 'react-router-dom'
 import MenuPopover from './MenuPopover'
 import { IconButtonAnimate } from './animate'
 import SettingMode from './SettingMode'
@@ -14,6 +15,7 @@ type Props = {
 }
 
 export default function AccountPopover({ email }: Props) {
+  const history = useHistory()
   const [open, setOpen] = useState<HTMLElement | null>(null)
   const [del] = useDeleteCloudttyMutation()
   const { user, oboTeamId } = useSession()
@@ -30,16 +32,13 @@ export default function AccountPopover({ email }: Props) {
     setOpen(null)
   }
 
-  const handleLogout = async () => {
-    try {
-      await del({
-        body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
-      })
-    } catch (error) {
-      // cloudtty resources will be automatically deleted by the API after a 2-hour timeout
-    }
-    clearLocalStorage('oboTeamId')
-    window.location.href = '/logout-otomi'
+  const handleLogout = () => {
+    del({
+      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
+    }).finally(() => {
+      clearLocalStorage('oboTeamId')
+      history.push('/logout')
+    })
   }
 
   return (

@@ -5,12 +5,9 @@ import React from 'react'
 
 export default function (): React.ReactElement {
   const {
-    settings: {
-      cluster,
-      otomi: { additionalClusters = [] },
-    },
+    settings: { cluster },
   } = useSession()
   // END HOOKS
-  const allClusters = [...additionalClusters, cluster]
+  const allClusters = [cluster]
   return <PaperLayout title='Clusters' comp={<Clusters clusters={allClusters} />} />
 }

@@ -275,6 +275,7 @@ export default function ({
     create({ teamId, body: omit(formData, ['id', 'build', 'workload', 'workloadValues', 'service']) }).then(
       (res: any) => {
         if (res.error) return
+        setData((prev: any) => ({ ...prev, id: res.data.id }))
         if (selectedPath === 'useExisting') setActiveStep(2)
         else setNextStep()
       },

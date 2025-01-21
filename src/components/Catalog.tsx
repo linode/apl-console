@@ -307,6 +307,7 @@ export default function ({
           resourceType='Workload'
           children
           hideHelp
+          liveValidate={data?.name || data?.namespace}
           {...other}
         />
 

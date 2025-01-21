@@ -29,6 +29,7 @@
     "@rjsf/material-ui": "4.2.3",
     "@types/react-linkify": "^1.0.1",
     "ajv": "^8.17.1",
+    "axios": "^1.7.9",
     "change-case": "4.1.2",
     "chokidar": "3.5.3",
     "debug": "4.3.4",
@@ -123,8 +124,8 @@
     "typescript": "4.7.3"
   },
   "engines": {
-    "npm": "10.7.0",
-    "node": "18.20.4"
+    "node": ">=20 <21",
+    "npm": "^10"
   },
   "lint-staged": {
     "*.{js,ts,tsx,json,md,yml,yaml}": [
@@ -170,5 +171,5 @@
       "tag": true
     }
   },
-  "version": "3.1.0"
+  "version": "3.4.0"
 }
