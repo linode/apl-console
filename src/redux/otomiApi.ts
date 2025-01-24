@@ -235,6 +235,28 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllCoderepos: build.query<GetAllCodereposApiResponse, GetAllCodereposApiArg>({
+      query: () => ({ url: `/coderepos` }),
+    }),
+    getTeamCoderepos: build.query<GetTeamCodereposApiResponse, GetTeamCodereposApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos` }),
+    }),
+    createCoderepo: build.mutation<CreateCoderepoApiResponse, CreateCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
+    }),
+    getCoderepo: build.query<GetCoderepoApiResponse, GetCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}` }),
+    }),
+    editCoderepo: build.mutation<EditCoderepoApiResponse, EditCoderepoApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteCoderepo: build.mutation<DeleteCoderepoApiResponse, DeleteCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`, method: 'DELETE' }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -830,77 +852,109 @@ export type GetTeamServicesApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type CreateServiceApiResponse = {
-  id?: string;
-  teamId?: string;
-  name: string;
-  namespace?: string;
-  port?: number;
+export type CreateServiceApiResponse = /** status 200 Successfully stored service configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  namespace?: string
+  port?: number
   ksvc?: {
-    predeployed?: boolean;
-  };
+    predeployed?: boolean
+  }
   trafficControl?: {
-    enabled?: boolean;
-    weightV1?: number;
-    weightV2?: number;
-  };
-  ingress: IngressCluster | IngressPublic;
-};
-
-type IngressCluster = {
-  type: 'cluster'; 
-};
-
-type IngressPublic = {
-  type: 'public';
-  ingressClassName?: string;
-  tlsPass?: boolean;
-  useDefaultHost?: boolean;
-  subdomain: string;
-  domain: string;
-  useCname?: boolean;
-  cname?: {
-    domain?: string;
-    tlsSecretName?: string;
-  };
-  paths?: string[];
-  forwardPath?: boolean;
-  hasCert?: boolean;
-  certSelect?: boolean;
-  certName?: string;
-  certArn?: string;
-  headers?: {
-    response?: {
-      set?: {
-        name: string;
-        value: string;
-      }[];
-    };
-  };
-};
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
+  ingress:
+    | ({
+        type?: 'cluster'
+      } | null)
+    | (
+        | ({
+            ingressClassName?: string
+            tlsPass?: boolean
+            useDefaultHost?: boolean
+            subdomain: string
+            domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
+            paths?: string[]
+            forwardPath?: boolean
+            hasCert?: boolean
+            certSelect?: boolean
+            certName?: string
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
+          } & {
+            type?: 'public'
+          })
+        | null
+      )
+}
 export type CreateServiceApiArg = {
   /** ID of team to return */
-  teamId: string;
+  teamId: string
   /** Service object */
   body: {
-    id?: string;
-    teamId?: string;
-    name: string;
-    namespace?: string;
-    port?: number;
+    id?: string
+    teamId?: string
+    name: string
+    namespace?: string
+    port?: number
     ksvc?: {
-      predeployed?: boolean;
-    };
+      predeployed?: boolean
+    }
     trafficControl?: {
-      enabled?: boolean;
-      weightV1?: number;
-      weightV2?: number;
-    };
-    ingress: IngressPublic;
-  };
-};
-
-
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+    ingress:
+      | ({
+          type?: 'cluster'
+        } | null)
+      | (
+          | ({
+              ingressClassName?: string
+              tlsPass?: boolean
+              useDefaultHost?: boolean
+              subdomain: string
+              domain: string
+              useCname?: boolean
+              cname?: {
+                domain?: string
+                tlsSecretName?: string
+              }
+              paths?: string[]
+              forwardPath?: boolean
+              hasCert?: boolean
+              certSelect?: boolean
+              certName?: string
+              headers?: {
+                response?: {
+                  set?: {
+                    name: string
+                    value: string
+                  }[]
+                }
+              }
+            } & {
+              type?: 'public'
+            })
+          | null
+        )
+  }
+}
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
   name: string
   ports?: number[]
@@ -3282,6 +3336,99 @@ export type EditProjectApiArg = {
   /** Project object that contains updated values */
   body: object
 }
+export type GetAllCodereposApiResponse = /** status 200 Successfully obtained all code repositories */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}[]
+export type GetAllCodereposApiArg = void
+export type GetTeamCodereposApiResponse = /** status 200 Successfully obtained code repositories */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}[]
+export type GetTeamCodereposApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateCoderepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type CreateCoderepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Coderepo object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    type?: 'gitea' | 'github' | 'gitlab'
+    isPrivate?: boolean
+    url?: string
+    sealedSecret?: string
+  }
+}
+export type GetCoderepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type GetCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
+export type EditCoderepoApiResponse = /** status 200 Successfully edited a team code repo */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type EditCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+  /** Coderepo object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    type?: 'gitea' | 'github' | 'gitlab'
+    isPrivate?: boolean
+    url?: string
+    sealedSecret?: string
+  }
+}
+export type DeleteCoderepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
+export type DeleteCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -3696,6 +3843,9 @@ export type CreateObjWizardApiArg = {
     showWizard?: boolean
     apiToken?: string
     regionId?: string
+    errorMessage?: string
+    status?: string
+    objBuckets?: string[]
   }
 }
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
@@ -4353,6 +4503,12 @@ export const {
   useDeleteProjectMutation,
   useGetProjectQuery,
   useEditProjectMutation,
+  useGetAllCodereposQuery,
+  useGetTeamCodereposQuery,
+  useCreateCoderepoMutation,
+  useGetCoderepoQuery,
+  useEditCoderepoMutation,
+  useDeleteCoderepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,

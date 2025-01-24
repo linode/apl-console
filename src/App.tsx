@@ -21,6 +21,8 @@ import Secrets from 'pages/Secrets'
 import SealedSecrets from 'pages/SealedSecrets'
 import Service from 'features/Services/CreateEditService/CreateEditService'
 import Services from 'features/Services/ServiceOverview/ServiceOverview'
+import CodeRepository from 'features/CodeRepositories/CreateEditCodeRepository/CreateEditCodeRepository'
+import CodeRepositories from 'features/CodeRepositories/CodeRepositoryOverview/CodeRepositoryOverview'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
 import Team from 'pages/Team'
@@ -137,6 +139,12 @@ function App() {
                                   <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
                                   <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
                                   <PrivateRoute path='/projects' component={Projects} platformAdminRoute exact />
+                                  <PrivateRoute
+                                    path='/code-repositories'
+                                    component={CodeRepositories}
+                                    platformAdminRoute
+                                    exact
+                                  />
                                   <PrivateRoute path='/builds' component={Builds} platformAdminRoute exact />
                                   <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                   <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
@@ -150,6 +158,11 @@ function App() {
                                     exact
                                   />
                                   <PrivateRoute path='/teams/:teamId/create-service' component={Service} exact />
+                                  <PrivateRoute
+                                    path='/teams/:teamId/create-coderepository'
+                                    component={CodeRepository}
+                                    exact
+                                  />
                                   <PrivateRoute path='/teams/:teamId/create-user' component={User} exact />
                                   <PrivateRoute path='/teams/:teamId/create-project' component={Project} exact />
                                   <PrivateRoute path='/teams/:teamId/create-build' component={Build} exact />
@@ -168,6 +181,16 @@ function App() {
                                   <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                   <PrivateRoute path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                   {/* <Route path='/teams/:teamId/builds' component={Builds} exact /> */}
+                                  <PrivateRoute
+                                    path='/teams/:teamId/code-repositories'
+                                    component={CodeRepositories}
+                                    exact
+                                  />
+                                  <PrivateRoute
+                                    path='/teams/:teamId/code-repositories/:coderepoId'
+                                    component={CodeRepository}
+                                    exact
+                                  />
                                   <PrivateRoute exact path='/teams/:teamId/builds' component={Builds} />
                                   <PrivateRoute path='/teams/:teamId/builds/:buildId' component={Build} exact />
                                   <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
