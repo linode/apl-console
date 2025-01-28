@@ -37,7 +37,7 @@
     "i18next-browser-languagedetector": "6.1.4",
     "i18next-http-backend": "1.4.1",
     "i18next-http-middleware": "3.2.1",
-    "js-cookie": "^3.0.1",
+    "js-cookie": "^3.0.5",
     "js-yaml": "^4.1.0",
     "lodash": "4.17.21",
     "lodash.isnil": "4.0.0",
