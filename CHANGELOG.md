@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/linode/apl-console/compare/v3.4.0...v3.5.0) (2025-01-28)
+
+
+### Features
+
+* pr checklist ([#491](https://github.com/linode/apl-console/issues/491)) ([2465a25](https://github.com/linode/apl-console/commit/2465a252eb834cb625541bdedbca86f94f6e46b2))
+* remove deploy and revert changes buttons ([#493](https://github.com/linode/apl-console/issues/493)) ([91ed8a6](https://github.com/linode/apl-console/commit/91ed8a61fb2670df834e16dfcd262df41099d7ff))
+
+
+### Bug Fixes
+
+* readonly user email when already exist ([#492](https://github.com/linode/apl-console/issues/492)) ([b9f1904](https://github.com/linode/apl-console/commit/b9f19047b5cd37dcd834f7e32210cd999df7e620))
+* update message ([#494](https://github.com/linode/apl-console/issues/494)) ([a144e9f](https://github.com/linode/apl-console/commit/a144e9f83f69b8002acb53ad36e86bed12bef1af))
+* updated no new updates text ([#490](https://github.com/linode/apl-console/issues/490)) ([39ddbf1](https://github.com/linode/apl-console/commit/39ddbf1ced3de777e05b20671c8f1dcd3ed8ffbc))
+
+
+### Others
+
+* **deps:** bump nginx from 1.22.0-alpine to 1.27.3-alpine ([#478](https://github.com/linode/apl-console/issues/478)) ([90d07ac](https://github.com/linode/apl-console/commit/90d07ac0ae047764199e18d56869ed2169fec764))
+
 ## [3.4.0](https://github.com/linode/apl-console/compare/v3.3.0...v3.4.0) (2024-12-17)
 
 
