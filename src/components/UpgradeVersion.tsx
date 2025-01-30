@@ -6,7 +6,6 @@ import { findLast, isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 import YAML from 'yaml'
-import useSettings from 'hooks/useSettings'
 import Modal from './Modal'
 import { VersionInfo, parseUpdates } from '../utils/helpers'
 
@@ -31,15 +30,11 @@ interface Props {
 export default function UpgradesCard({ version }: Props): React.ReactElement | null {
   const { refetchSettings } = useSession()
   const theme = useTheme()
-  const { themeView } = useSettings()
   const [data, setData] = useState<VersionInfo[]>([])
   const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
-  const { data: otomiSettings } = useGetSettingsQuery(
-    { ids: ['otomi'] },
-    { skip: !themeView || themeView !== 'platform' },
-  )
+  const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
   const baseUrl = 'https://github.com/linode/apl-core/releases/tag/'
 
