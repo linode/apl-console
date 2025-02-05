@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.5.1](https://github.com/linode/apl-console/compare/v3.4.0...v3.5.1) (2025-02-05)
+
+
+### Features
+
+* disable UpgradeVersion card for team view ([#503](https://github.com/linode/apl-console/issues/503)) ([ee7c7d6](https://github.com/linode/apl-console/commit/ee7c7d642ee84e76b7ce343a75a5cd64c3fcf569))
+
+
 ## [3.5.0](https://github.com/linode/apl-console/compare/v3.4.0...v3.5.0) (2025-01-28)
 
 
