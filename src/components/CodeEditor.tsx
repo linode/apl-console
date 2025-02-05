@@ -104,11 +104,11 @@ export default function CodeEditor({
       console.error('something went wrong with parsing yaml, please notify administrator')
       return
     }
-    const validate = ajv.compile(validationSchema)
+    const validate = ajv.compile(validationSchema || {})
     const valid = validate(parsedYaml)
 
     setValidationErrors(!valid ? validate.errors : [])
-    setValid(valid)
+    setValid?.(valid)
   }
 
   const onChangeHandler = (newValue: any) => {
