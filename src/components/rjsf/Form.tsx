@@ -1,5 +1,6 @@
-import { IChangeEvent, UiSchema, withTheme } from '@rjsf/core'
-import { Theme5 } from '@rjsf/material-ui'
+import { IChangeEvent, withTheme } from '@rjsf/core'
+import { UiSchema } from '@rjsf/utils'
+import { Theme } from '@rjsf/mui'
 import ButtonGroup from 'components/ButtonGroup'
 import HeaderTitle from 'components/HeaderTitle'
 import { JSONSchema7 } from 'json-schema'
@@ -11,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { cleanData } from 'utils/data'
 import { nullify } from 'utils/schema'
 import { makeStyles } from 'tss-react/mui'
+import validator from '@rjsf/validator-ajv8'
 import ArrayField from './ArrayField'
 import CheckboxesWidget from './CheckboxesWidget'
 import CheckboxWidget from './CheckboxWidget'
@@ -22,9 +24,8 @@ import ObjectFieldTemplate from './ObjectFieldTemplate'
 import OneOfField from './OneOfField'
 import RadioWidget from './RadioWidget'
 import StringField from './StringField'
-import TitleField from './TitleField'
 
-const Form = withTheme(Theme5)
+const Form = withTheme(Theme)
 
 const useStyles = makeStyles()((theme) => ({
   form: {
@@ -153,12 +154,11 @@ export default function ({
         liveValidate={liveValidate || false}
         showErrorList={false}
         noHtml5Validate
+        validator={validator}
         // validate={validate}
         // customValidateOnly
-        ArrayFieldTemplate={ArrayFieldTemplate}
-        ObjectFieldTemplate={ObjectFieldTemplate}
-        FieldTemplate={FieldTemplate}
-        fields={{ ArrayField, DescriptionField, OneOfField, StringField, TitleField }}
+        templates={{ ArrayFieldTemplate, ObjectFieldTemplate, FieldTemplate }}
+        fields={{ ArrayField, DescriptionField, OneOfField, StringField }}
         widgets={{ CheckboxWidget, CheckboxesWidget, RadioWidget, CodeEditorWidget }}
         onChange={onChangeWrapper}
         onSubmit={onSubmit && onSubmitWrapper}

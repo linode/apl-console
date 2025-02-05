@@ -84,7 +84,6 @@ function App() {
                             <NotistackProvider>
                               <SnackbarUtilsConfigurator />
                               <CssBaseline />
-                              {/* <ProgressBar /> */}
                               <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
                               <Switch>
                                 {/* ! user && <Route path='/' component={Home} exact /> */}

@@ -1,4 +1,4 @@
-import { skipToken } from '@reduxjs/toolkit/dist/query'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import SealedSecrets from 'components/SealedSecrets'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'

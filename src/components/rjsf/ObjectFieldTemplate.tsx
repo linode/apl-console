@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import { Divider, Grid, Paper } from '@mui/material'
-import { FieldProps, IdSchema, ObjectFieldTemplateProps } from '@rjsf/core'
+import { FieldProps, ObjectFieldTemplateProps } from '@rjsf/utils'
 import { sentenceCase } from 'utils/data'
 import { JSONSchema7 } from 'json-schema'
 import React from 'react'
@@ -21,7 +21,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   properties.forEach((o) => {
     if (grouped === undefined) grouped = []
     let schema: JSONSchema7 = o.content.props.schema
-    if (schema === 'object') schema = { type: 'object' } as JSONSchema7
+    if (typeof schema === 'object') schema = { type: 'object' } as JSONSchema7
     const type = getSchemaType(schema)
     // we group props together that we want to render in their own row
     if (isHidden(o) || isOf || ['boolean', 'object'].includes(type)) {
@@ -46,17 +46,17 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     // we may get the title from the following:
     // const displayTitle = title
     const displayTitle =
-      uiSchema['ui:title'] ||
-      uiSchema['ui:options']?.title ||
+      uiSchema?.['ui:title'] ||
+      uiSchema?.['ui:options']?.title ||
       schema.title ||
       title ||
       (name && type === 'object' && !schema.properties && sentenceCase(name))
     const displayDescription =
-      uiSchema['ui:description'] || uiSchema['ui:options']?.description || description || schema.description
+      uiSchema?.['ui:description'] || uiSchema?.['ui:options']?.description || description || schema.description
     if (!(displayTitle || displayDescription)) return
     const skipTitle =
       inSkipTitle ??
-      (schema['x-hideTitle'] || propsToAccordion.includes((uiSchema.title as string) || schema.title || title))
+      (schema['x-hideTitle'] || propsToAccordion.includes((uiSchema?.title as string) || schema?.title || title))
     // eslint-disable-next-line consistent-return
     return (
       <Grid key={`${idSchema?.$id}-header`} className={skipTitle ? classes.headerSkip : classes.header}>
@@ -84,15 +84,15 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
     )
   }
 
-  const render = (o: FieldProps, id = o.name) => {
-    const { idSchema: _idSchema, schema } = (o.content?.props ?? {}) as FieldProps
-    const idSchema = (_idSchema ?? {}) as IdSchema
+  const render = (o: any, id = o.name) => {
+    const { idSchema: _idSchema, schema } = o.content?.props ?? {}
+    const idSchema = _idSchema ?? {}
     const type = getSchemaType(schema)
     const isCustomArray = type === 'array' && schema.uniqueItems && (schema.items as JSONSchema7).enum
     const hidden = isHidden(o.content?.props)
     const isOf = hasSomeOf(schema)
     // do not render input fields that are marked with x-nullMe
-    if ('x-nullMe' in schema) return null
+    // if ('x-nullMe' in schema) return null
 
     if (hidden) {
       if (!schema.properties && !isOf) {
@@ -165,7 +165,7 @@ export default function (props: ObjectFieldTemplateProps): React.ReactElement {
   return (
     <Grid container spacing={2} className={classes.root}>
       {!isOf && (
-        <Grid key={idSchema.$id} item>
+        <Grid container key={idSchema.$id} item>
           {renderTitleDescription(props)}
         </Grid>
       )}

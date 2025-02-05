@@ -16,7 +16,7 @@ import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import { LoadingButton } from '@mui/lab'
 import { useSession } from 'providers/Session'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { isEmpty } from 'lodash'
 import InformationBanner from './InformationBanner'
 

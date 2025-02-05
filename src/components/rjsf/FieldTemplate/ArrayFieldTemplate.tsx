@@ -1,46 +1,17 @@
 import React from 'react'
-import { ArrayFieldTemplateProps, IdSchema, utils } from '@rjsf/core'
+import { ArrayFieldTemplateProps } from '@rjsf/utils'
 import { Box, Grid, IconButton, Paper } from '@mui/material'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddButton from '../AddButton'
 
-const { isMultiSelect, getDefaultRegistry } = utils
-
 function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
-  const { schema, registry = getDefaultRegistry() } = props
+  const { schema, registry } = props
 
-  if (isMultiSelect(schema, registry.rootSchema)) return <DefaultFixedArrayFieldTemplate {...props} />
+  if (registry.schemaUtils.isMultiSelect(schema)) return <DefaultFixedArrayFieldTemplate {...props} />
 
   return <DefaultNormalArrayFieldTemplate {...props} />
-}
-
-type ArrayFieldTitleProps = {
-  TitleField: any
-  idSchema: IdSchema
-  title: string
-  required: boolean
-}
-
-function ArrayFieldTitle({ TitleField, idSchema, title, required }: ArrayFieldTitleProps) {
-  if (!title) return null
-
-  const id = `${idSchema.$id}__title`
-  return <TitleField id={id} title={title} required={required} />
-}
-
-type ArrayFieldDescriptionProps = {
-  DescriptionField: any
-  idSchema: IdSchema
-  description: string
-}
-
-function ArrayFieldDescription({ DescriptionField, idSchema, description }: ArrayFieldDescriptionProps) {
-  if (!description) return null
-
-  const id = `${idSchema.$id}__description`
-  return <DescriptionField id={id} description={description} />
 }
 
 // Used in the two templates
@@ -110,17 +81,9 @@ function DefaultArrayItem(props: any) {
 function DefaultFixedArrayFieldTemplate(props: ArrayFieldTemplateProps) {
   return (
     <fieldset className={props.className}>
-      <ArrayFieldTitle
-        key={`array-field-title-${props.idSchema.$id}`}
-        TitleField={props.TitleField}
-        idSchema={props.idSchema}
-        title={props.uiSchema['ui:title'] || props.title}
-        required={props.required}
-      />
-
-      {(props.uiSchema['ui:description'] || props.schema.description) && (
+      {(props.uiSchema?.['ui:description'] || props.schema.description) && (
         <div className='field-description' key={`field-description-${props.idSchema.$id}`}>
-          {props.uiSchema['ui:description'] || props.schema.description}
+          {props.uiSchema?.['ui:description'] || props.schema.description}
         </div>
       )}
 
@@ -139,23 +102,6 @@ function DefaultNormalArrayFieldTemplate(props: ArrayFieldTemplateProps) {
   return (
     <Paper elevation={2}>
       <Box p={2}>
-        <ArrayFieldTitle
-          key={`array-field-title-${props.idSchema.$id}`}
-          TitleField={props.TitleField}
-          idSchema={props.idSchema}
-          title={props.uiSchema['ui:title'] || props.title}
-          required={props.required}
-        />
-
-        {(props.uiSchema['ui:description'] || props.schema.description) && (
-          <ArrayFieldDescription
-            key={`array-field-description-${props.idSchema.$id}`}
-            DescriptionField={props.DescriptionField}
-            idSchema={props.idSchema}
-            description={props.uiSchema['ui:description'] || props.schema.description}
-          />
-        )}
-
         <Grid container key={`array-item-list-${props.idSchema.$id}`}>
           {props.items && props.items.map((p) => DefaultArrayItem(p))}
 
