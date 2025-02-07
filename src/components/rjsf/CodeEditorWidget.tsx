@@ -1,4 +1,4 @@
-import { WidgetProps } from '@rjsf/core'
+import { WidgetProps } from '@rjsf/utils'
 import CodeEditor from 'components/CodeEditor'
 import { isEmpty } from 'lodash'
 import React, { ChangeEventHandler } from 'react'

@@ -8,10 +8,9 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
   const { dispatch } = api
   if (!error) {
     if (meta) {
-      const {
-        arg: { type, endpointName },
-        requestStatus,
-      } = meta
+      const type = meta?.arg?.type
+      const endpointName = meta?.arg?.endpointName
+      const { requestStatus } = meta
       // dirty logic: every MUTATION we deem to make state dirty
       if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))

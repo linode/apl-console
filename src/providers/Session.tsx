@@ -1,4 +1,4 @@
-import { skipToken } from '@reduxjs/toolkit/dist/query'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import { setSpec } from 'common/api-spec'
 import LoadingScreen from 'components/LoadingScreen'
 import MessageTekton from 'components/MessageTekton'

@@ -4,7 +4,7 @@ import { Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
-import { WidgetProps } from '@rjsf/core'
+import { WidgetProps } from '@rjsf/utils'
 import { sentenceCase } from 'utils/data'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
@@ -49,14 +49,7 @@ function RadioWidget({
   return (
     <>
       {(hasLabel || schema.title) && <Typography variant='h6'>{label || schema.title}</Typography>}
-      <RadioGroup
-        classes={classes}
-        value={useValue}
-        row={row as boolean}
-        onChange={_onChange}
-        onBlur={_onBlur}
-        onFocus={_onFocus}
-      >
+      <RadioGroup classes={classes} value={useValue} row={row} onChange={_onChange} onBlur={_onBlur} onFocus={_onFocus}>
         {renderOptions.map((option: Record<string, any>) => {
           const itemDisabled = disabledOptions && disabledOptions.indexOf(option.value) !== -1
 

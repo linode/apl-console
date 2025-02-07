@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import Typography from '@mui/material/Typography'
-import { FieldProps } from '@rjsf/core'
+import { FieldProps } from '@rjsf/utils'
 import { sentenceCase } from 'utils/data'
 import HelpButton from 'components/HelpButton'
 import React from 'react'

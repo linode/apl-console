@@ -1,11 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel } from '@mui/material'
-import { WidgetProps, utils } from '@rjsf/core'
+import { WidgetProps, schemaRequiresTrueValue } from '@rjsf/utils'
 import { sentenceCase } from 'utils/data'
 import Checkbox from 'components/Checkbox'
 import React from 'react'
-
-const { schemaRequiresTrueValue } = utils
 
 export default function (props: WidgetProps) {
   const { schema, uiSchema, id, value, disabled, readonly, label, autofocus, onChange, onBlur, onFocus } = props
