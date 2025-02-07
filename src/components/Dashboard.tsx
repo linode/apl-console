@@ -287,7 +287,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
 
   return (
     <Box>
-      {themeView === 'platform' && <UpgradeVersion version={versions?.core} />}
+      {themeView === 'platform' && user?.isPlatformAdmin && <UpgradeVersion version={versions?.core} />}
       <Card>
         <InventoryCard
           classes={classes}
