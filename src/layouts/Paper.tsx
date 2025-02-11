@@ -18,7 +18,8 @@ interface Props {
 export default function ({ loading, comp, title, children }: Props): React.ReactElement {
   const location = useLocation()
   // grafana iframe background color
-  const dashboardStyle = location.pathname === '/' ? { backgroundColor: 'background.default' } : {}
+  const dashboardStyle =
+    location.pathname === '/' ? { backgroundColor: 'background.contrast' } : { backgroundColor: 'transparent' }
   const dispatch = useAppDispatch()
   const error = useAppSelector(({ global: { error } }) => error)
   useEffect(() => {

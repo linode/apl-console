@@ -1,0 +1,27 @@
+import { styled } from '@mui/material'
+
+import { EditableText } from '../EditableText'
+import { H1Header } from '../H1Header'
+
+export const StyledDiv = styled('div', { label: 'StyledDiv' })({
+  display: 'flex',
+  flexDirection: 'column',
+})
+
+export const StyledEditableText = styled(EditableText, {
+  label: 'StyledEditableText',
+})(({ theme }) => ({
+  '& > div': {
+    width: 250,
+  },
+  marginLeft: `-${theme.spacing()}`,
+}))
+
+export const StyledH1Header = styled(H1Header, { label: 'StyledH1Header' })(({ theme }) => ({
+  color: '#696970',
+  fontSize: '1.125rem',
+  textTransform: 'capitalize',
+  [theme.breakpoints.up('lg')]: {
+    fontSize: '1.125rem',
+  },
+}))
