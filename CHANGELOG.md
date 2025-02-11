@@ -2,6 +2,78 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.5.0](https://github.com/linode/apl-console/compare/v3.4.0...v3.5.0) (2025-01-28)
+
+
+### Features
+
+* pr checklist ([#491](https://github.com/linode/apl-console/issues/491)) ([2465a25](https://github.com/linode/apl-console/commit/2465a252eb834cb625541bdedbca86f94f6e46b2))
+* remove deploy and revert changes buttons ([#493](https://github.com/linode/apl-console/issues/493)) ([91ed8a6](https://github.com/linode/apl-console/commit/91ed8a61fb2670df834e16dfcd262df41099d7ff))
+
+
+### Bug Fixes
+
+* readonly user email when already exist ([#492](https://github.com/linode/apl-console/issues/492)) ([b9f1904](https://github.com/linode/apl-console/commit/b9f19047b5cd37dcd834f7e32210cd999df7e620))
+* update message ([#494](https://github.com/linode/apl-console/issues/494)) ([a144e9f](https://github.com/linode/apl-console/commit/a144e9f83f69b8002acb53ad36e86bed12bef1af))
+* updated no new updates text ([#490](https://github.com/linode/apl-console/issues/490)) ([39ddbf1](https://github.com/linode/apl-console/commit/39ddbf1ced3de777e05b20671c8f1dcd3ed8ffbc))
+
+
+### Others
+
+* **deps:** bump nginx from 1.22.0-alpine to 1.27.3-alpine ([#478](https://github.com/linode/apl-console/issues/478)) ([90d07ac](https://github.com/linode/apl-console/commit/90d07ac0ae047764199e18d56869ed2169fec764))
+
+## [3.4.0](https://github.com/linode/apl-console/compare/v3.3.0...v3.4.0) (2024-12-17)
+
+
+### Features
+
+* add dependabot ([#458](https://github.com/linode/apl-console/issues/458)) ([189276b](https://github.com/linode/apl-console/commit/189276bfb54cb1613e400d9f4af9997af870e597))
+* add path for gitea ([#482](https://github.com/linode/apl-console/issues/482)) ([b15fa92](https://github.com/linode/apl-console/commit/b15fa9237175be7bbe27fea9cf3db1f65de59b1a))
+* product updates in console ([#486](https://github.com/linode/apl-console/issues/486)) ([f6e6837](https://github.com/linode/apl-console/commit/f6e683787fad97df1e888af514407b48ba8f546d))
+* updated release tag generation ([#461](https://github.com/linode/apl-console/issues/461)) ([cb1cd74](https://github.com/linode/apl-console/commit/cb1cd744c63afe618b9e428872bf738588e10646))
+
+
+### Bug Fixes
+
+* allow extra fields during initial validation ([#462](https://github.com/linode/apl-console/issues/462)) ([4e69867](https://github.com/linode/apl-console/commit/4e69867849f2e3226218207243155fab13e7d74b))
+* authz route apps page access ([#487](https://github.com/linode/apl-console/issues/487)) ([27b82e3](https://github.com/linode/apl-console/commit/27b82e3da302e2e930d49735e605420d344d3bd5))
+* changed keycloak tab name ([#468](https://github.com/linode/apl-console/issues/468)) ([4ef90a1](https://github.com/linode/apl-console/commit/4ef90a1fbaa1b4cc1ff2f6e03cc0abcf2817f597))
+* code editor error ([#459](https://github.com/linode/apl-console/issues/459)) ([4335406](https://github.com/linode/apl-console/commit/4335406da3d260ad36e50d92eb5a9132bd467ea8))
+* dependabot ignore >=21 node ([#477](https://github.com/linode/apl-console/issues/477)) ([bc1152b](https://github.com/linode/apl-console/commit/bc1152b5741f12a1b223439595c0144413c4a7a3))
+* improved error handling for objwizard ([#479](https://github.com/linode/apl-console/issues/479)) ([4237522](https://github.com/linode/apl-console/commit/423752246bdafb54ae31a26426f200e5f96b6b8b))
+* logout error ([#460](https://github.com/linode/apl-console/issues/460)) ([48da38e](https://github.com/linode/apl-console/commit/48da38ee22f45bb25c39dc794259f7f1e4021da0))
+* project page 409 error ([#488](https://github.com/linode/apl-console/issues/488)) ([689cad1](https://github.com/linode/apl-console/commit/689cad1226262a63a06b01136984d921a16c583f))
+* remove email alert if smtp is not present ([#480](https://github.com/linode/apl-console/issues/480)) ([fd4b732](https://github.com/linode/apl-console/commit/fd4b732c0d1acb65dbbf2a67e8908ae2b827fa8c))
+* removed user management from team-admin team view ([#484](https://github.com/linode/apl-console/issues/484)) ([a6bea50](https://github.com/linode/apl-console/commit/a6bea5012d8ce77125bdf2ee8554fc78ff11e765))
+* replaced seedling with chore for dependabot ([#469](https://github.com/linode/apl-console/issues/469)) ([7021d97](https://github.com/linode/apl-console/commit/7021d977ffba977be30f9ca1d6bafa16591dc632))
+* svg logo for cert-manager ([#463](https://github.com/linode/apl-console/issues/463)) ([be1c296](https://github.com/linode/apl-console/commit/be1c296c2e34e45624f76c242814a9ccff8fc9fc))
+* team view iframes visibility ([#475](https://github.com/linode/apl-console/issues/475)) ([2cda4bf](https://github.com/linode/apl-console/commit/2cda4bf3f396d503079cfaa38fa8988d59260a14))
+* workload form liveValidate ([#485](https://github.com/linode/apl-console/issues/485)) ([97bc85d](https://github.com/linode/apl-console/commit/97bc85d2fa4dad94d377b58a9a6f9f42fe853eb5))
+
+
+### Others
+
+* node 20 and npm 10 ([#483](https://github.com/linode/apl-console/issues/483)) ([47ff317](https://github.com/linode/apl-console/commit/47ff317df407ab4202407a67e38bd4b67e6b9c84))
+
+## [3.3.0](https://github.com/linode/apl-console/compare/v3.2.0...v3.3.0) (2024-11-12)
+
+
+### Features
+
+* selectable object storage region ([#456](https://github.com/linode/apl-console/issues/456)) ([02279cf](https://github.com/linode/apl-console/commit/02279cf2f8e694c527dcdcc7256e25b3635d1ec6))
+
+
+### Bug Fixes
+
+* set correct workload values on first load ([#455](https://github.com/linode/apl-console/issues/455)) ([901a979](https://github.com/linode/apl-console/commit/901a979311289e7ec28b37950c578685df58168a))
+
+## [3.2.0](https://github.com/linode/apl-console/compare/v3.1.0...v3.2.0) (2024-11-07)
+
+
+### Features
+
+* object storage wizard ([#452](https://github.com/linode/apl-console/issues/452)) ([0c12bd4](https://github.com/linode/apl-console/commit/0c12bd4c085cb33ed7c2eb781412d3ef65aa58ad))
+
 ## [3.1.0](https://github.com/linode/apl-console/compare/v3.0.0...v3.1.0) (2024-11-01)
 
 

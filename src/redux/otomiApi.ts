@@ -270,22 +270,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
-    updateWorkloadValues: build.mutation<UpdateWorkloadValuesApiResponse, UpdateWorkloadValuesApiArg>({
-      query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
-        method: 'PATCH',
-        body: queryArg.body,
-      }),
-    }),
-    deploy: build.query<DeployApiResponse, DeployApiArg>({
-      query: () => ({ url: `/deploy` }),
-    }),
-    revert: build.query<RevertApiResponse, RevertApiArg>({
-      query: () => ({ url: `/revert` }),
-    }),
-    restore: build.query<RestoreApiResponse, RestoreApiArg>({
-      query: () => ({ url: `/restore` }),
-    }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
       query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
     }),
@@ -300,6 +284,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/settingsInfo` }),
+    }),
+    createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
+      query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
     }),
     getSettings: build.query<GetSettingsApiResponse, GetSettingsApiArg>({
       query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
@@ -410,7 +397,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -474,7 +460,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -539,7 +524,6 @@ export type CreateTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -603,7 +587,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -670,7 +653,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   managedMonitoring?: {
     grafana?: boolean
     alertmanager?: boolean
-    private?: boolean
   }
   alerts?: {
     repeatInterval?: string
@@ -737,7 +719,6 @@ export type EditTeamApiArg = {
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
-      private?: boolean
     }
     alerts?: {
       repeatInterval?: string
@@ -3633,31 +3614,6 @@ export type EditWorkloadValuesApiArg = {
     values: object
   }
 }
-export type UpdateWorkloadValuesApiResponse = /** status 200 Successfully updated workload values */ {
-  id?: string
-  teamId?: string
-  name?: string
-  values: object
-}
-export type UpdateWorkloadValuesApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the workload */
-  workloadId: string
-  /** Workload values */
-  body: {
-    id?: string
-    teamId?: string
-    name?: string
-    values: object
-  }
-}
-export type DeployApiResponse = /** status 202 Deploy has been triggered */ undefined
-export type DeployApiArg = void
-export type RevertApiResponse = unknown
-export type RevertApiArg = void
-export type RestoreApiResponse = unknown
-export type RestoreApiArg = void
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
   /** ID of team to return */
@@ -3691,6 +3647,17 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     sub?: string
   }
   defaultPlatformAdminEmail?: string
+  objectStorage?: {
+    showWizard?: boolean
+    objStorageApps?: {
+      appId?: string
+      required?: boolean
+    }[]
+    objStorageRegions?: {
+      id?: string
+      label?: string
+    }[]
+  }
   versions?: {
     core?: string
     api?: string
@@ -3712,18 +3679,25 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     zones?: string[]
   }
   otomi?: {
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
   }
+  smtp: {
+    smarthost: string
+  }
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
+export type CreateObjWizardApiArg = {
+  /** ObjWizard object */
+  body: {
+    showWizard?: boolean
+    apiToken?: string
+    regionId?: string
+  }
+}
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
   alerts?: {
     repeatInterval?: string
@@ -3795,6 +3769,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   obj?: {
+    showWizard?: boolean
     provider?:
       | {
           type?: 'disabled'
@@ -3967,11 +3942,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   }
   otomi?: {
     adminPassword?: string
-    additionalClusters?: {
-      domainSuffix: string
-      name: string
-      provider: 'linode' | 'custom'
-    }[]
     isPreInstalled?: boolean
     globalPullSecret?: {
       username?: string
@@ -4078,6 +4048,7 @@ export type EditSettingsApiArg = {
       }
     }
     obj?: {
+      showWizard?: boolean
       provider?:
         | {
             type?: 'disabled'
@@ -4250,11 +4221,6 @@ export type EditSettingsApiArg = {
     }
     otomi?: {
       adminPassword?: string
-      additionalClusters?: {
-        domainSuffix: string
-        name: string
-        provider: 'linode' | 'custom'
-      }[]
       isPreInstalled?: boolean
       globalPullSecret?: {
         username?: string
@@ -4396,15 +4362,12 @@ export const {
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
-  useUpdateWorkloadValuesMutation,
-  useDeployQuery,
-  useRevertQuery,
-  useRestoreQuery,
   useDownloadKubecfgQuery,
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,
   useGetAppsQuery,

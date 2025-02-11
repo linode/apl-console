@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-underscore-dangle */
 import { FormControlLabel, FormGroup, Typography } from '@mui/material'
-import { WidgetProps } from '@rjsf/core'
+import { WidgetProps } from '@rjsf/utils'
 import { sentenceCase } from 'utils/data'
 import Checkbox from 'components/Checkbox'
 import React from 'react'

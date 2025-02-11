@@ -22,12 +22,14 @@ export const getUserUiSchema = (
   user: GetSessionApiResponse['user'],
   formData: GetUserApiResponse,
   teamId: string,
+  hasEmail: boolean,
 ): any => {
   const platformAdmin = formData?.isPlatformAdmin || false
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     isTeamAdmin: platformAdmin && { 'ui:widget': 'hidden' },
+    email: hasEmail && { 'ui:readonly': 'true' },
     teams: platformAdmin && { 'ui:widget': 'hidden' },
     initialPassword: { 'ui:widget': 'hidden' },
   }
@@ -52,9 +54,12 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
     defaultPlatformAdminEmail,
   } = useSession()
   const [data, setData] = useState<GetUserApiResponse>(user)
+  const [hasEmail, setHasEmail] = useState(false)
   useEffect(() => {
+    if (user?.email) setHasEmail(true)
     setData(user)
   }, [user])
+
   // END HOOKS
   const formData = cloneDeep(data)
   if (formData?.isPlatformAdmin) {
@@ -62,7 +67,7 @@ export default function ({ user, teamId, teamIds, ...other }: Props): React.Reac
     formData.teams = []
   }
   const schema = getUserSchema(teamIds)
-  const uiSchema = getUserUiSchema(sessionUser, formData, teamId)
+  const uiSchema = getUserUiSchema(sessionUser, formData, teamId, hasEmail)
   if (hasExternalIDP) {
     return (
       <InformationBanner message='User management is only available when using the internal identity provider (IDP).' />

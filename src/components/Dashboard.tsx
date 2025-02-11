@@ -1,4 +1,4 @@
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Card, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
 import { GetTeamApiResponse } from 'redux/otomiApi'
@@ -7,16 +7,12 @@ import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
+import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
 const useStyles = makeStyles()((theme) => ({
   card: {
     padding: theme.spacing(1),
-  },
-  cardHeaderTitle: {
-    textAlign: 'center',
-    color: theme.palette.grey[500],
-    fontSize: '14px',
   },
   inventoryItem: {
     display: 'flex',
@@ -26,7 +22,7 @@ const useStyles = makeStyles()((theme) => ({
   },
   inventoryName: {
     textTransform: 'capitalize',
-    color: theme.palette.grey[500],
+    color: theme.palette.text.primary,
     fontSize: '14px',
   },
   inventoryCard: {
@@ -151,7 +147,7 @@ function InventoryCard({ classes, title, inventory, themeView, teamId }: Invento
   const columnItemNumber = Math.round(inventory.length / 2)
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
-      <Typography variant='h5' className={classes.cardHeaderTitle}>
+      <Typography variant='h5' ml={2}>
         {title}
       </Typography>
       <Box className={classes.inventoryCard}>
@@ -184,7 +180,7 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, themeMode, sh
   if (!show) return null
   return (
     <Grid item xs={12} mb={2} className={classes.card}>
-      <Typography variant='h5' className={classes.cardHeaderTitle}>
+      <Typography variant='h5' ml={2}>
         {title}
       </Typography>
       <Box className={boxClass}>
@@ -208,7 +204,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const theme = useTheme()
   const { classes } = useStyles()
   const { themeView, onChangeView } = useSettings()
-  const { oboTeamId, appsEnabled, user } = useSession()
+  const { oboTeamId, appsEnabled, user, versions } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
@@ -264,7 +260,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '7', src: `${resourceStatus}9` },
           { id: '8', src: `${resourceStatus}10` },
         ],
-        show: team?.managedMonitoring?.grafana,
+        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
       },
       {
         title: 'Resource Utilization',
@@ -273,7 +269,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '9', src: `${resourceUtilization}8` },
           { id: '10', src: `${resourceUtilization}9` },
         ],
-        show: team?.managedMonitoring?.grafana,
+        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
       },
       {
         title: 'Vulnerabilities',
@@ -284,42 +280,46 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '13', src: `${vulnerabilities}50` },
           { id: '14', src: `${vulnerabilities}51` },
         ],
-        show: team?.managedMonitoring?.grafana && appsEnabled.trivy,
+        show: appsEnabled.grafana && team?.managedMonitoring?.grafana && appsEnabled.trivy,
       },
     ],
   }
 
   return (
     <Box>
-      <InventoryCard
-        classes={classes}
-        inventory={inventory}
-        teamId={team?.id}
-        themeView={themeView}
-        title='Inventory'
-      />
-      {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
-      <iframe
-        className={classes.hiddenIframe}
-        title='Hidden iFrame'
-        src={views[themeView][0].iframeSources[0].src}
-        onLoad={onLoad}
-      />
-      {isCookiesLoaded && (
-        <Box>
-          {views[themeView].map((item) => (
-            <IFramesCard
-              key={item.title}
-              classes={classes}
-              title={item.title}
-              iframeSources={item.iframeSources}
-              iframeClass={item.iframeClass}
-              show={item.show}
-              themeMode={theme.palette.mode}
-            />
-          ))}
-        </Box>
-      )}
+      {themeView === 'platform' && user?.isPlatformAdmin && <UpgradeVersion version={versions?.core} />}
+      <Card>
+        <InventoryCard
+          classes={classes}
+          inventory={inventory}
+          teamId={team?.id}
+          themeView={themeView}
+          title='Inventory'
+        />
+
+        {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
+        <iframe
+          className={classes.hiddenIframe}
+          title='Hidden iFrame'
+          src={views[themeView][0].iframeSources[0].src}
+          onLoad={onLoad}
+        />
+        {isCookiesLoaded && (
+          <Box>
+            {views[themeView].map((item) => (
+              <IFramesCard
+                key={item.title}
+                classes={classes}
+                title={item.title}
+                iframeSources={item.iframeSources}
+                iframeClass={item.iframeClass}
+                show={item.show}
+                themeMode={theme.palette.mode}
+              />
+            ))}
+          </Box>
+        )}
+      </Card>
     </Box>
   )
 }

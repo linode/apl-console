@@ -1,11 +1,9 @@
 /* eslint-disable no-prototype-builtins */
 import { FormControl, Grid, Input, InputLabel } from '@mui/material'
-import { utils } from '@rjsf/core'
+import { ADDITIONAL_PROPERTY_FLAG } from '@rjsf/utils'
 import IconButton from 'components/rjsf/IconButton'
 import { JSONSchema7 } from 'json-schema'
 import React from 'react'
-
-const { ADDITIONAL_PROPERTY_FLAG } = utils
 
 type WrapIfAdditionalProps = {
   children: React.ReactElement

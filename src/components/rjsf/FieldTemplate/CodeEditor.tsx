@@ -1,4 +1,4 @@
-import { FieldTemplateProps } from '@rjsf/core'
+import { FieldTemplateProps } from '@rjsf/utils'
 import CodeEditor from 'components/CodeEditor'
 import React from 'react'
 import FieldTemplate from './FieldTemplate'

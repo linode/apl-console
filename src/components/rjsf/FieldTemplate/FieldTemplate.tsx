@@ -6,7 +6,7 @@ import FormHelperText from '@mui/material/FormHelperText'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
-import { FieldTemplateProps } from '@rjsf/core'
+import { FieldTemplateProps } from '@rjsf/utils'
 import React from 'react'
 import { propsToAccordion } from 'utils/schema'
 import WrapIfAdditional from './WrapIfAdditional'
@@ -31,7 +31,7 @@ export default function ({
   let isCustomArray = schema.type === 'array' && schema.uniqueItems && schema.items?.enum
   if (schema.type === 'string' && schema.enum && schema.default) isCustomArray = true
   const hideDescription =
-    uiSchema['ui:widget'] === 'hidden' ||
+    uiSchema?.['ui:widget'] === 'hidden' ||
     isCustomArray ||
     ['allOf', 'anyOf', 'oneOf', 'properties'].some((p) => p in schema)
 

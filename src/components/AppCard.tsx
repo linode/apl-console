@@ -90,17 +90,12 @@ const useStyles = makeStyles()((theme) => {
 })
 
 export default function ({
-  deps,
   enabled,
   id,
   img,
   imgAlt,
-  isDragging,
-  setDeps,
   teamId,
   title,
-  setAppState,
-  isCore = false,
   externalUrl,
   hostedByOtomi,
   toggleApp,
@@ -172,12 +167,9 @@ export default function ({
           id={id}
           teamId={teamId}
           enabled={enabled}
-          externalUrl={externalUrl}
-          setAppState={setAppState}
           toggleApp={toggleApp}
-          appTitle={title}
+          externalUrl={externalUrl}
           isHostedByOtomi={hostedByOtomi}
-          isDeprecated={isDeprecated}
           handleClickModal={handleClickModal}
         />
       </Box>

@@ -8,10 +8,9 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
   const { dispatch } = api
   if (!error) {
     if (meta) {
-      const {
-        arg: { type, endpointName },
-        requestStatus,
-      } = meta
+      const type = meta?.arg?.type
+      const endpointName = meta?.arg?.endpointName
+      const { requestStatus } = meta
       // dirty logic: every MUTATION we deem to make state dirty
       if (type === 'mutation' && requestStatus === 'pending') dispatch(setDirty(null))
       if (type === 'mutation' && requestStatus === 'fulfilled') dispatch(setDirty(true))
@@ -20,11 +19,15 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
         // clear state
         if (requestStatus === 'fulfilled') dispatch(setDirty(false))
       }
+      // exclude endpoints from dirty state
+      if (type === 'mutation' && ['workloadCatalog', 'createObjWizard'].includes(endpointName as string))
+        dispatch(setDirty(false))
     }
   } else if (payload) {
     // eslint-disable-next-line no-console
     console.error('We got a rejected action with payload: ', payload)
     dispatch(setError(payload))
+    dispatch(setDirty(false))
   }
   return next(action)
 }

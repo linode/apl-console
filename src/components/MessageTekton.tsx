@@ -35,8 +35,8 @@ export default function ({
   return (
     <div data-cy={`drone-${status}-message`} style={{ whiteSpace: 'pre-wrap' }}>
       <MessageTrans i18nKey='TEKTON_MESSAGE' t={t} {...data}>
-        Tekton <LinkTekton {...tekton}>build {{ order }}</LinkTekton> <strong>{{ status }}</strong> for commit{' '}
-        <LinkCommit {...commit}>{{ sha }}</LinkCommit> at {{ datetime }}.
+        Tekton <LinkTekton {...tekton}>build {order}</LinkTekton> <strong>{{ status }}</strong> for commit{' '}
+        <LinkCommit {...commit}>{sha}</LinkCommit> at {datetime}.
       </MessageTrans>
     </div>
   )

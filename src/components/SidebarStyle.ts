@@ -1,4 +1,3 @@
-import { ReactNode } from 'react'
 // @mui
 import { alpha, styled } from '@mui/material/styles'
 import { LinkProps, ListItemButton, ListItemButtonProps, ListItemIcon, ListItemText } from '@mui/material'
@@ -10,7 +9,7 @@ import { ICON, NAVBAR } from '../config'
 type IProps = LinkProps & ListItemButtonProps
 
 export interface ListItemStyleProps extends IProps {
-  component?: ReactNode
+  component?: any
   activeRoot?: boolean
   activeSub?: boolean
   subItem?: boolean
