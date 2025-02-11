@@ -69,13 +69,13 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) 
   const { classes, cx } = useStyles()
   const sanitizedUrl = () => sanitizeUrl(to)
   const shouldOpenInNewTab = opensInNewTab(sanitizedUrl())
-  const childrenAsAriaLabel = flattenChildrenIntoAriaLabel(children)
+  const childrenAsAriaLabel = flattenChildrenIntoAriaLabel(children as React.ReactNode)
   const externalNotice = '- link opens in a new tab'
   const ariaLabel = accessibleAriaLabel
     ? `${accessibleAriaLabel} ${shouldOpenInNewTab ? externalNotice : ''}`
     : `${childrenAsAriaLabel} ${shouldOpenInNewTab ? externalNotice : ''}`
 
-  if (childrenContainsNoText(children) && !accessibleAriaLabel) {
+  if (childrenContainsNoText(children as React.ReactNode) && !accessibleAriaLabel) {
     // eslint-disable-next-line no-console
     console.error(
       'Link component must have text content to be accessible to screen readers. Please provide an accessibleAriaLabel prop or text content.',
@@ -101,7 +101,7 @@ export const Link = React.forwardRef<HTMLAnchorElement, LinkProps>((props, ref) 
       rel='noopener noreferrer'
       target='_blank'
     >
-      {children}
+      {children as React.ReactNode}
       {external && !hideIcon && (
         <span
           className={cx(classes.iconContainer, {
