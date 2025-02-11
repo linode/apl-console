@@ -235,6 +235,28 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllCoderepos: build.query<GetAllCodereposApiResponse, GetAllCodereposApiArg>({
+      query: () => ({ url: `/coderepos` }),
+    }),
+    getTeamCoderepos: build.query<GetTeamCodereposApiResponse, GetTeamCodereposApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos` }),
+    }),
+    createCoderepo: build.mutation<CreateCoderepoApiResponse, CreateCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
+    }),
+    getCoderepo: build.query<GetCoderepoApiResponse, GetCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}` }),
+    }),
+    editCoderepo: build.mutation<EditCoderepoApiResponse, EditCoderepoApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteCoderepo: build.mutation<DeleteCoderepoApiResponse, DeleteCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`, method: 'DELETE' }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -3314,6 +3336,99 @@ export type EditProjectApiArg = {
   /** Project object that contains updated values */
   body: object
 }
+export type GetAllCodereposApiResponse = /** status 200 Successfully obtained all code repositories */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}[]
+export type GetAllCodereposApiArg = void
+export type GetTeamCodereposApiResponse = /** status 200 Successfully obtained code repositories */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}[]
+export type GetTeamCodereposApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateCoderepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type CreateCoderepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Coderepo object */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    type?: 'gitea' | 'github' | 'gitlab'
+    isPrivate?: boolean
+    url?: string
+    sealedSecret?: string
+  }
+}
+export type GetCoderepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type GetCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
+export type EditCoderepoApiResponse = /** status 200 Successfully edited a team code repo */ {
+  id?: string
+  teamId?: string
+  name: string
+  type?: 'gitea' | 'github' | 'gitlab'
+  isPrivate?: boolean
+  url?: string
+  sealedSecret?: string
+}
+export type EditCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+  /** Coderepo object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    name: string
+    type?: 'gitea' | 'github' | 'gitlab'
+    isPrivate?: boolean
+    url?: string
+    sealedSecret?: string
+  }
+}
+export type DeleteCoderepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
+export type DeleteCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -4385,6 +4500,12 @@ export const {
   useDeleteProjectMutation,
   useGetProjectQuery,
   useEditProjectMutation,
+  useGetAllCodereposQuery,
+  useGetTeamCodereposQuery,
+  useCreateCoderepoMutation,
+  useGetCoderepoQuery,
+  useEditCoderepoMutation,
+  useDeleteCoderepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
