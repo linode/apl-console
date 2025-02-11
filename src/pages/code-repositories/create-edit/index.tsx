@@ -48,12 +48,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 interface Params {
   teamId: string
-  coderepoId?: string
+  coderepositoryId?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, coderepoId },
+    params: { teamId, coderepositoryId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
@@ -66,7 +66,7 @@ export default function ({
     isFetching: isFetchingCoderepo,
     isError: isErrorCoderepo,
     refetch: refetchCoderepo,
-  } = useGetCoderepoQuery({ teamId, coderepoId }, { skip: !coderepoId })
+  } = useGetCoderepoQuery({ teamId, coderepoId: coderepositoryId }, { skip: !coderepositoryId })
 
   const { classes } = useStyles()
 
@@ -94,12 +94,12 @@ export default function ({
   console.log({ data: watch(), errors })
 
   const onSubmit = (data: CreateCoderepoApiResponse) => {
-    if (coderepoId) update({ teamId, coderepoId, body: data })
+    if (coderepositoryId) update({ teamId, coderepoId: coderepositoryId, body: data })
     else create({ teamId, body: data })
   }
 
   const onDelete = () => {
-    if (coderepoId) del({ teamId, coderepoId })
+    if (coderepositoryId) del({ teamId, coderepoId: coderepositoryId })
   }
 
   if (isSuccessCreate || isSuccessUpdate) return <Redirect to={`/teams/${teamId}/coderepositories`} />
@@ -192,13 +192,13 @@ export default function ({
                 </TextField>
               </Box>
             </Paper>
-            {coderepoId && (
+            {coderepositoryId && (
               <Button onClick={onDelete} variant='contained' color='primary' sx={{ float: 'right' }}>
                 Delete
               </Button>
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right' }}>
-              {coderepoId ? 'Edit Repo' : 'Add Repo'}
+              {coderepositoryId ? 'Edit Repo' : 'Add Repo'}
             </Button>
           </form>
         </FormProvider>

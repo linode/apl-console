@@ -100,6 +100,11 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
+                                <PrivateRoute
+                                  path='/teams/:teamId/coderepositories/:coderepositoryId'
+                                  component={CodeRepository}
+                                  exact
+                                />
 
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />

@@ -4,22 +4,48 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
-import { useSession } from 'providers/Session'
 import { useGetAllCodereposQuery, useGetTeamCodereposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
 
-const getCodeRepoLink = (isAdmin, ownerId): CallableFunction =>
+const getCodeRepoLabel = (): CallableFunction =>
   function (row): string | React.ReactElement {
     const { teamId, id, name }: { teamId: string; id: string; name: string } = row
-    if (!(isAdmin || teamId === ownerId)) return name
-    const path = `/teams/${teamId}/code-repositories/${encodeURIComponent(id)}`
+    const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(id)}`
     return (
       <RLink to={path} label={name}>
         {name}
       </RLink>
+    )
+  }
+
+const getCodeRepoUrl = (): CallableFunction =>
+  function (row): string | React.ReactElement {
+    const { url }: { url: string } = row
+    return (
+      <a href={url} target='_blank' rel='noopener noreferrer'>
+        {url}
+      </a>
+    )
+  }
+
+const getIcon = (): CallableFunction =>
+  function (row): string | React.ReactElement {
+    const { type }: { type: string } = row
+    return (
+      <img
+        style={{ width: 24, height: 24 }}
+        src={`/logos/${type}_logo.svg`}
+        onError={({ currentTarget }) => {
+          // eslint-disable-next-line no-param-reassign
+          currentTarget.onerror = null // prevents looping
+          // eslint-disable-next-line no-param-reassign
+          currentTarget.src = `${type}_logo.svg`
+        }}
+        alt={`Logo for ${type}`}
+      />
     )
   }
 
@@ -33,10 +59,6 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
-  const {
-    user: { isPlatformAdmin },
-    oboTeamId,
-  } = useSession()
 
   const {
     data: allCodeRepositories,
@@ -64,17 +86,17 @@ export default function ({
     {
       id: 'label',
       label: t('Label'),
-      renderer: getCodeRepoLink(isPlatformAdmin, oboTeamId),
+      renderer: getCodeRepoLabel(),
     },
     {
       id: 'url',
       label: t('URL'),
-      renderer: getCodeRepoLink(isPlatformAdmin, oboTeamId),
+      renderer: getCodeRepoUrl(),
     },
     {
       id: 'gitservice',
       label: t('Git Service'),
-      renderer: getCodeRepoLink(isPlatformAdmin, oboTeamId),
+      renderer: getIcon(),
     },
   ]
   if (!teamId) {
