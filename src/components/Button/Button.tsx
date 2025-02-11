@@ -106,12 +106,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const color = buttonType === 'primary' ? 'primary' : 'secondary'
     const showTooltip = disabled && Boolean(tooltipText)
 
-    const variant =
-      buttonType === 'primary' || buttonType === 'secondary'
-        ? 'contained'
-        : buttonType === 'outlined'
-        ? 'outlined'
-        : 'text'
+    let variant: 'contained' | 'outlined' | 'text'
+    if (buttonType === 'primary' || buttonType === 'secondary') variant = 'contained'
+    else if (buttonType === 'outlined') variant = 'outlined'
+    else variant = 'text'
 
     const handleTooltipAnalytics = () => {
       if (tooltipAnalyticsEvent) tooltipAnalyticsEvent()

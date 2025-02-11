@@ -19,14 +19,14 @@ export interface LandingHeaderProps {
   docsLabel?: string
   docsLink?: string
   entity?: string
-  extraActions?: JSX.Element
+  extraActions?: React.JSX.Element
   loading?: boolean
   onButtonClick?: () => void
   onButtonKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void
   onDocsClick?: () => void
   removeCrumbX?: number | number[]
   shouldHideDocsAndCreateButtons?: boolean
-  title?: JSX.Element | string
+  title?: React.JSX.Element | string
 }
 
 /**
@@ -84,11 +84,11 @@ export function LandingHeader({
           <Grid
             sx={{
               flex: '1 1 auto',
-              marginLeft: customSmMdBetweenBreakpoint
-                ? theme.spacing(2)
-                : customXsDownBreakpoint
-                ? theme.spacing(1)
-                : undefined,
+              marginLeft: (() => {
+                if (customSmMdBetweenBreakpoint) return theme.spacing(2)
+                if (customXsDownBreakpoint) return theme.spacing(1)
+                return undefined
+              })(),
             }}
             alignItems='center'
             display='flex'

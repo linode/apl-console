@@ -28,7 +28,7 @@ export interface TooltipIconProps
    * Use this custom icon when `status` is `other`
    * @todo this seems like a flaw... passing an icon should not require `status` to be `other`
    */
-  icon?: JSX.Element
+  icon?: React.JSX.Element
   /**
    * Enables a leaveDelay of 3000ms
    * @default false
@@ -49,7 +49,7 @@ export interface TooltipIconProps
   /**
    * The tooltip's contents
    */
-  text: JSX.Element | string
+  text: React.JSX.Element | string
   /**
    * Send event analytics
    */
@@ -85,7 +85,7 @@ export function TooltipIcon(props: TooltipIconProps) {
     if (tooltipAnalyticsEvent) tooltipAnalyticsEvent()
   }
 
-  let renderIcon: JSX.Element | null = null
+  let renderIcon: React.JSX.Element | null = null
 
   const sxRootStyle = {
     '&&': {

@@ -5,7 +5,7 @@ import { clamp } from 'ramda'
 import * as React from 'react'
 import { makeStyles } from 'tss-react/mui'
 
-import { convertToKebabCase } from '../../utils/convertToKebobCase'
+import { convertToKebabCase } from '../../utils/convertToKebabCase'
 import { Box } from '../Box'
 import type { BoxProps } from '../Box'
 import { CircleProgress } from '../CircleProgress'
@@ -150,14 +150,14 @@ type Value = null | number | string | undefined
 type TextboxWidth = 'small' | 'medium' | 'large' | 'fullwidth'
 
 interface LabelToolTipProps {
-  labelTooltipText?: JSX.Element | string
+  labelTooltipText?: React.JSX.Element | string
 }
 
 interface InputToolTipProps {
   tooltipClasses?: string
   tooltipOnMouseEnter?: React.MouseEventHandler<HTMLDivElement>
   tooltipPosition?: TooltipProps['placement']
-  tooltipText?: JSX.Element | string
+  tooltipText?: React.JSX.Element | string
 }
 
 interface TextFieldPropsOverrides extends StandardTextFieldProps {
@@ -367,6 +367,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           htmlFor={validInputId}
         >
           {label}
+          {/* eslint-disable-next-line no-nested-ternary */}
           {required ? (
             <span className={classes.label}> (required)</span>
           ) : optional ? (

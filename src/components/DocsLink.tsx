@@ -17,7 +17,7 @@ export interface DocsLinkProps {
   /** A callback function when the link is clicked */
   onClick?: () => void
   /*  */
-  icon?: JSX.Element
+  icon?: React.JSX.Element
 }
 
 /**

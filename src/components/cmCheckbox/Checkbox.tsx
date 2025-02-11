@@ -15,11 +15,11 @@ interface Props extends CheckboxProps {
   /**
    * Renders a `FormControlLabel` that controls the underlying Checkbox with a label of `text`
    */
-  text?: JSX.Element | string
+  text?: React.JSX.Element | string
   /**
    * Renders a tooltip to the right of the Checkbox
    */
-  toolTipText?: JSX.Element | string
+  toolTipText?: React.JSX.Element | string
 }
 
 /**

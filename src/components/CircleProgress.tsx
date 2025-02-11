@@ -10,7 +10,7 @@ interface CircleProgressProps extends Omit<CircularProgressProps, 'size'> {
   /**
    * Additional child elements to pass in
    */
-  children?: JSX.Element
+  children?: React.JSX.Element
   /**
    * Removes the padding
    */

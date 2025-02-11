@@ -47,8 +47,8 @@ export const Crumbs = React.memo((props: Props) => {
         const override = crumbOverrides && crumbOverrides.find((e) => e.position === key + 1)
 
         return (
-          <StyledDiv key={key}>
-            <Link to={crumbOverrides && override ? (override.linkTo ? override.linkTo : link) : link} data-qa-link>
+          <StyledDiv key={link}>
+            <Link to={crumbOverrides && override ? override.linkTo ?? link : link} data-qa-link>
               <StyledTypography
                 sx={{
                   ...(override && override.noCap && { textTransform: 'initial' }),
@@ -56,7 +56,7 @@ export const Crumbs = React.memo((props: Props) => {
                 data-qa-link-text
                 data-testid='link-text'
               >
-                {crumbOverrides && override ? (override.label ? override.label : crumb) : crumb}
+                {crumbOverrides && override ? override.label ?? crumb : crumb}
               </StyledTypography>
             </Link>
             <StyledSlashTypography>/</StyledSlashTypography>

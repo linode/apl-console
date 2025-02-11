@@ -19,8 +19,8 @@ import Secret from 'pages/Secret'
 import SealedSecret from 'pages/SealedSecret'
 import Secrets from 'pages/Secrets'
 import SealedSecrets from 'pages/SealedSecrets'
-import Service from 'features/Services/CreateEditService/CreateEditService'
-import Services from 'features/Services/ServiceOverview/ServiceOverview'
+import Service from 'pages/Service'
+import Services from 'pages/Services'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
 import Team from 'pages/Team'
@@ -53,6 +53,8 @@ import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
+import CodeRepository from 'pages/code-repositories/create-edit'
+import CodeRepositories from 'pages/code-repositories/overview'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -86,8 +88,19 @@ function App() {
                               <CssBaseline />
                               <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
                               <Switch>
-                                {/* ! user && <Route path='/' component={Home} exact /> */}
                                 <Route path='/' component={Dashboard} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/create-coderepository'
+                                  component={CodeRepository}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/coderepositories'
+                                  component={CodeRepositories}
+                                  platformAdminRoute
+                                  exact
+                                />
+
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
                                 <PrivateRoute path='/backups' component={Backups} platformAdminRoute exact />

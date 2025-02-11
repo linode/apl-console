@@ -2,7 +2,7 @@ import { styled } from '@mui/material'
 import * as React from 'react'
 
 interface Props {
-  prefixComponent: JSX.Element | null
+  prefixComponent: React.JSX.Element | null
   prefixStyle?: React.CSSProperties
 }
 
