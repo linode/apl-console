@@ -58,6 +58,59 @@ const useStyles = makeStyles()((theme: Theme) => ({
   root: {
     marginTop: 0,
   },
+  input: {
+    border: '1px solid #e3e3e3',
+  },
+  // TODO: This is a temporary fix for new styles to override the MUI styles
+  // This should be removed once the new styles are applied to the TextField component
+  TempMuiInput: {
+    '&.Mui-disabled': {
+      backgroundColor: theme.palette.cm.disabledBackground,
+      borderColor: theme.palette.cm.disabledBorder,
+      color: theme.palette.cm.disabledText,
+      '& input': {
+        cursor: 'not-allowed',
+      },
+      opacity: 0.5,
+    },
+    '&.Mui-error': {
+      borderColor: '#d63c42',
+    },
+    '& .MuiSelect-select': {
+      position: 'relative',
+      top: 4,
+      '&:focus': {
+        backgroundColor: 'transparent',
+      },
+    },
+    '&.Mui-focused': {
+      '& .select-option-icon': {
+        paddingLeft: `30px !important`,
+      },
+      borderColor: '#108ad6',
+      boxShadow: `0 0 2px 1px #d6d6dd`,
+    },
+    '&.affirmative': {
+      borderColor: '#00b050',
+    },
+    alignItems: 'center',
+    backgroundColor: theme.palette.cm.textBox,
+    border: `1px solid ${theme.palette.cm.textBoxBorder}`,
+    boxSizing: 'border-box',
+    paddingLeft: theme.spacing(1),
+    color: '#696970',
+    lineHeight: 1,
+    maxWidth: 416,
+    minHeight: 34,
+    transition: 'border-color 225ms ease-in-out',
+    '& svg': {
+      '&:hover': {
+        color: '#5bb3ea',
+      },
+      color: '#108ad6',
+      fontSize: 18,
+    },
+  },
 }))
 
 interface BaseProps {
@@ -374,16 +427,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             <span className={classes.label}> (optional)</span>
           ) : null}
         </InputLabel>
-        {/* {labelTooltipText && (
-          <TooltipIcon
-            sxTooltipIcon={{
-              marginLeft: `${theme.spacing(0.5)}`,
-              padding: `${theme.spacing(0.5)}`,
-            }}
-            status='help'
-            text={labelTooltipText}
-          />
-        )} */}
       </Box>
 
       {helperText && helperTextPosition === 'top' && (
@@ -412,6 +455,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
                 [classes.expand]: expand,
               },
               className,
+              classes.TempMuiInput,
             ),
             disableUnderline: true,
             endAdornment: loading && (
@@ -459,19 +503,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
         >
           {children}
         </MuiTextField>
-        {/* {tooltipText && (
-          <TooltipIcon
-            sxTooltipIcon={{
-              margin: '0px 0px 0px 4px',
-              padding: '6px',
-            }}
-            classes={{ popper: tooltipClasses }}
-            onMouseEnter={tooltipOnMouseEnter}
-            status='help'
-            text={tooltipText}
-            tooltipPosition={tooltipPosition}
-          />
-        )} */}
       </div>
       {errorText && (
         <FormHelperText
