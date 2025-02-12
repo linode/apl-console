@@ -27,4 +27,7 @@ export const StyledSlashTypography = styled(Typography, {
 export const StyledDiv = styled('div', { label: 'StyledDiv' })({
   alignItems: 'center',
   display: 'flex',
+  '& *': {
+    textDecoration: 'none',
+  },
 })

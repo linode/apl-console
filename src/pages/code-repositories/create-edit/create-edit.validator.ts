@@ -1,12 +1,12 @@
 import { boolean, object, string } from 'yup'
 
 // Main validation schema for CreateCoderepoApiResponse
-export const createCoderepoApiResponseSchema = object({
+export const coderepoApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
-  name: string().required('Code repository name is required'),
-  type: string().optional(),
-  isPrivate: boolean().optional(),
-  url: string(),
-  sealedSecret: string().optional(),
+  label: string().required(),
+  gitService: string().required(),
+  repositoryUrl: string().required(),
+  private: boolean().optional(),
+  secret: string().optional(),
 })

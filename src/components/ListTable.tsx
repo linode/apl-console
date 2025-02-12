@@ -17,6 +17,7 @@ interface ListTableProps extends EnhancedTableProps {
   collection?: string
   to?: string
   customButton?: React.ReactElement
+  customButtonText?: React.ReactElement
 }
 export default function ({
   teamId,
@@ -28,6 +29,7 @@ export default function ({
   idKey = 'id',
   to,
   customButton = null,
+  customButtonText = null,
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -59,7 +61,7 @@ export default function ({
                 // disabled={!adminOnly && isAdmin && !oboTeamId}
                 data-cy={`button-create-${resourceType}`}
               >
-                {t('BUTTON_NEW_RESOURCE', { model: resourceType })}
+                {customButtonText || t('BUTTON_NEW_RESOURCE', { model: resourceType })}
               </Button>
             </Box>
           )}

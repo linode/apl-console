@@ -171,11 +171,11 @@ interface BaseProps {
   /**
    * The maximum number allowed in TextField. The "type" prop must also be set to `number`
    */
-  max?: number
+  max?: number | string
   /**
    * The minimum number allowed in TextField. The "type" prop must also be set to `number`
    */
-  min?: number
+  min?: number | string
   /**
    * Removes the default top margin (16px)
    * @default false

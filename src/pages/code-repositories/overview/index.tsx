@@ -6,45 +6,46 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAllCodereposQuery, useGetTeamCodereposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
+import { Typography } from '@mui/material'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
 
 const getCodeRepoLabel = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, id, label }: { teamId: string; id: string; label: string } = row
     const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(id)}`
     return (
-      <RLink to={path} label={name}>
-        {name}
+      <RLink to={path} label={label}>
+        {label}
       </RLink>
     )
   }
 
 const getCodeRepoUrl = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { url }: { url: string } = row
+    const { repositoryUrl }: { repositoryUrl: string } = row
     return (
-      <a href={url} target='_blank' rel='noopener noreferrer'>
-        {url}
+      <a href={repositoryUrl} target='_blank' rel='noopener noreferrer'>
+        {repositoryUrl}
       </a>
     )
   }
 
 const getIcon = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { type }: { type: string } = row
+    const { gitService }: { gitService: string } = row
     return (
       <img
         style={{ width: 24, height: 24 }}
-        src={`/logos/${type}_logo.svg`}
+        src={`/logos/${gitService}_logo.svg`}
         onError={({ currentTarget }) => {
           // eslint-disable-next-line no-param-reassign
           currentTarget.onerror = null // prevents looping
           // eslint-disable-next-line no-param-reassign
-          currentTarget.src = `${type}_logo.svg`
+          currentTarget.src = `${gitService}_logo.svg`
         }}
-        alt={`Logo for ${type}`}
+        alt={`Logo for ${gitService}`}
       />
     )
   }
@@ -106,6 +107,20 @@ export default function ({
     })
   }
 
-  const comp = <ListTable teamId={teamId} headCells={headCells} rows={coderepos} resourceType='CodeRepository' />
+  const customButtonText = () => (
+    <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
+      Add Code Repository
+    </Typography>
+  )
+
+  const comp = (
+    <ListTable
+      teamId={teamId}
+      headCells={headCells}
+      rows={coderepos}
+      resourceType='CodeRepository'
+      customButtonText={customButtonText()}
+    />
+  )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CODEREPOSITORIES', { scope: getRole(teamId) })} />
 }

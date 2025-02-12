@@ -307,6 +307,9 @@ const injectedRtkApi = api.injectEndpoints({
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/settingsInfo` }),
     }),
+    getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
+      query: (queryArg) => ({ url: `/testRepoConnect`, params: { url: queryArg.url } }),
+    }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
     }),
@@ -3339,21 +3342,21 @@ export type EditProjectApiArg = {
 export type GetAllCodereposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
   teamId?: string
-  name: string
-  type?: 'gitea' | 'github' | 'gitlab'
-  isPrivate?: boolean
-  url?: string
-  sealedSecret?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
 }[]
 export type GetAllCodereposApiArg = void
 export type GetTeamCodereposApiResponse = /** status 200 Successfully obtained code repositories */ {
   id?: string
   teamId?: string
-  name: string
-  type?: 'gitea' | 'github' | 'gitlab'
-  isPrivate?: boolean
-  url?: string
-  sealedSecret?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
 }[]
 export type GetTeamCodereposApiArg = {
   /** ID of team to return */
@@ -3362,11 +3365,11 @@ export type GetTeamCodereposApiArg = {
 export type CreateCoderepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
   id?: string
   teamId?: string
-  name: string
-  type?: 'gitea' | 'github' | 'gitlab'
-  isPrivate?: boolean
-  url?: string
-  sealedSecret?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
 }
 export type CreateCoderepoApiArg = {
   /** ID of team */
@@ -3375,21 +3378,21 @@ export type CreateCoderepoApiArg = {
   body: {
     id?: string
     teamId?: string
-    name: string
-    type?: 'gitea' | 'github' | 'gitlab'
-    isPrivate?: boolean
-    url?: string
-    sealedSecret?: string
+    label: string
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
   }
 }
 export type GetCoderepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
   id?: string
   teamId?: string
-  name: string
-  type?: 'gitea' | 'github' | 'gitlab'
-  isPrivate?: boolean
-  url?: string
-  sealedSecret?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
 }
 export type GetCoderepoApiArg = {
   /** ID of team to return */
@@ -3400,11 +3403,11 @@ export type GetCoderepoApiArg = {
 export type EditCoderepoApiResponse = /** status 200 Successfully edited a team code repo */ {
   id?: string
   teamId?: string
-  name: string
-  type?: 'gitea' | 'github' | 'gitlab'
-  isPrivate?: boolean
-  url?: string
-  sealedSecret?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
 }
 export type EditCoderepoApiArg = {
   /** ID of team to return */
@@ -3415,11 +3418,11 @@ export type EditCoderepoApiArg = {
   body: {
     id?: string
     teamId?: string
-    name: string
-    type?: 'gitea' | 'github' | 'gitlab'
-    isPrivate?: boolean
-    url?: string
-    sealedSecret?: string
+    label: string
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
   }
 }
 export type DeleteCoderepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
@@ -3836,6 +3839,14 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+  url?: string
+  status?: 'unknown' | 'success' | 'failed'
+}
+export type GetTestRepoConnectApiArg = {
+  /** URL of the repository */
+  url?: string
+}
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
   /** ObjWizard object */
@@ -4523,6 +4534,7 @@ export const {
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetTestRepoConnectQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,

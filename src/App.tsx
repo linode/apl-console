@@ -90,14 +90,19 @@ function App() {
                               <Switch>
                                 <Route path='/' component={Dashboard} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/create-coderepository'
-                                  component={CodeRepository}
-                                  exact
-                                />
-                                <PrivateRoute
                                   path='/coderepositories'
                                   component={CodeRepositories}
                                   platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/coderepositories'
+                                  component={CodeRepositories}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/create-coderepository'
+                                  component={CodeRepository}
                                   exact
                                 />
                                 <PrivateRoute

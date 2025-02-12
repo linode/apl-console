@@ -3,15 +3,7 @@ import { Control, Controller } from 'react-hook-form'
 import { Checkbox } from 'components/cmCheckbox/Checkbox'
 import { FormControlLabel } from 'components/FormControlLabel'
 import { Typography } from 'components/Typography'
-import { styled } from '@mui/material'
-
-const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ theme }) => ({
-  marginTop: -8,
-  paddingLeft: `calc(${theme.spacing(2)} + 18px)`, // 34,
-  [theme.breakpoints.up('md')]: {
-    paddingLeft: `calc(${theme.spacing(4)} + 18px)`, // 50
-  },
-}))
+import { Box, styled } from '@mui/material'
 
 const StyledFormControlLabel = styled(FormControlLabel, {
   label: 'StyledFormControlLabel',
@@ -21,10 +13,20 @@ const StyledFormControlLabel = styled(FormControlLabel, {
     fontFamily: theme.font.bold,
     fontSize: '1rem',
     lineHeight: '1.2em',
+    marginBottom: theme.spacing(2),
     [theme.breakpoints.up('md')]: {
       marginLeft: theme.spacing(2),
     },
   },
+}))
+
+const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ theme }) => ({
+  marginTop: theme.spacing(-4),
+  paddingLeft: `calc(${theme.spacing(2)} + 14px)`, // 30
+  [theme.breakpoints.up('md')]: {
+    paddingLeft: `calc(${theme.spacing(4)} + 14px)`, // 46
+  },
+  lineHeight: '0.875rem',
 }))
 
 interface ControlledCheckboxProps {
@@ -32,14 +34,14 @@ interface ControlledCheckboxProps {
   control: Control<any>
   disabled?: boolean
   label: string
-  explainerText?: string
+  explainertext?: string
   [x: string]: any // For any additional props like data-testid
 }
 
 export default function ControlledCheckbox(props: ControlledCheckboxProps) {
-  const { name, disabled, control, label, explainerText } = props
+  const { name, disabled, control, label, explainertext } = props
   return (
-    <>
+    <Box sx={{ pl: '4px' }}>
       <Controller
         name={name}
         control={control}
@@ -51,7 +53,7 @@ export default function ControlledCheckbox(props: ControlledCheckboxProps) {
           />
         )}
       />
-      {explainerText && <StyledTypography variant='body1'>{explainerText}</StyledTypography>}
-    </>
+      {explainertext && <StyledTypography variant='body1'>{explainertext}</StyledTypography>}
+    </Box>
   )
 }

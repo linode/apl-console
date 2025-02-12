@@ -58,6 +58,11 @@ export default function NavConfig() {
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
         },
+        {
+          title: 'Code Repositories',
+          path: `/teams/${oboTeamId}/coderepositories`,
+          icon: getIcon('coderepositories_icon.svg'),
+        },
         { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
         { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
