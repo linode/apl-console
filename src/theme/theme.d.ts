@@ -1,5 +1,10 @@
 import '@mui/material/styles'
 
+interface FontOptions {
+  bold?: string
+  normal?: string
+}
+
 declare module '@mui/material/styles' {
   interface Theme {
     applyLinkStyles?: any
