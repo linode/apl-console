@@ -242,33 +242,40 @@ export default function ({
                     explainertext='Select if repository is private'
                   />
 
-                  <TextField
-                    label='Secret'
-                    fullWidth
-                    {...register('secret')}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      setValue('secret', value)
-                    }}
-                    error={!!errors.secret}
-                    helperText={errors.secret?.message || 'A secret that contains the authentication credentials'}
-                    helperTextPosition='top'
-                    width='large'
-                    value={watch('secret')}
-                    select
-                  >
-                    <MenuItem value='' disabled>
-                      Select a secret
-                    </MenuItem>
-                    {teamSecrets?.map((secret) => (
-                      <MenuItem key={secret?.id} id={secret?.id} value={secret?.name}>
-                        {secret?.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                  <Link sx={{ fontSize: '0.625rem', fontWeight: 400 }} href={`/teams/${teamId}/create-sealedsecret`}>
-                    + Create Secret
-                  </Link>
+                  {watch('private') && (
+                    <Box>
+                      <TextField
+                        label='Secret'
+                        fullWidth
+                        {...register('secret')}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          setValue('secret', value)
+                        }}
+                        error={!!errors.secret}
+                        helperText={errors.secret?.message || 'A secret that contains the authentication credentials'}
+                        helperTextPosition='top'
+                        width='large'
+                        value={watch('secret')}
+                        select
+                      >
+                        <MenuItem value='' disabled>
+                          Select a secret
+                        </MenuItem>
+                        {teamSecrets?.map((secret) => (
+                          <MenuItem key={secret?.id} id={secret?.id} value={secret?.name}>
+                            {secret?.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                      <Link
+                        sx={{ fontSize: '0.625rem', fontWeight: 400 }}
+                        href={`/teams/${teamId}/create-sealedsecret`}
+                      >
+                        + Create Secret
+                      </Link>
+                    </Box>
+                  )}
                   <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>
                     <Box>
                       <Button

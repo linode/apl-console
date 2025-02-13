@@ -8,5 +8,9 @@ export const coderepoApiResponseSchema = object({
   gitService: string().required(),
   repositoryUrl: string().required(),
   private: boolean().optional(),
-  secret: string().optional(),
+  secret: string().when('private', {
+    is: true,
+    then: string().required('Secret is required when private is true'),
+    otherwise: string().optional(),
+  }),
 })
