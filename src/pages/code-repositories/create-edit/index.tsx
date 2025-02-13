@@ -1,4 +1,4 @@
-import { Box, Button, Grid, MenuItem } from '@mui/material'
+import { Box, Button, Grid, Link, MenuItem } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { TextField } from 'components/forms/TextField'
 import { LandingHeader } from 'components/LandingHeader'
@@ -7,13 +7,14 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   CreateCoderepoApiResponse,
   useCreateCoderepoMutation,
   useDeleteCoderepoMutation,
   useEditCoderepoMutation,
   useGetCoderepoQuery,
+  useGetInternalRepoUrlsQuery,
   useGetSealedSecretsQuery,
   useGetTestRepoConnectQuery,
 } from 'redux/otomiApi'
@@ -24,8 +25,14 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import Iconify from 'components/Iconify'
 import { useAppSelector } from 'redux/hooks'
+import { useSession } from 'providers/Session'
 import { coderepoApiResponseSchema } from './create-edit.validator'
 import { useStyles } from './create-edit.styles'
+
+const extractRepoName = (url: string): string => {
+  const match = url.match(/\/([^/]+)\.git$/)
+  return match ? match[1] : url
+}
 
 interface Params {
   teamId: string
@@ -40,9 +47,12 @@ export default function ({
   // state
   const { t } = useTranslation()
   const theme = useTheme()
-  const history = useHistory()
   const { classes } = useStyles()
+  const {
+    settings: { cluster },
+  } = useSession()
   const [testConnectUrl, setTestConnectUrl] = useState<string | null>(null)
+  const [gitProvider, setGitProvider] = useState<string | null>(null)
   const options = [
     {
       value: 'gitea',
@@ -76,6 +86,13 @@ export default function ({
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  const {
+    data: internalRepoUrls,
+    isLoading: isLoadingRepoUrls,
+    isFetching: isFetchingRepoUrls,
+    isError: isErrorRepoUrls,
+    refetch: refetchRepoUrls,
+  } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
   const { data: testRepoConnect } = useGetTestRepoConnectQuery({ url: testConnectUrl }, { skip: !testConnectUrl })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -83,10 +100,11 @@ export default function ({
     if (isDirty !== false) return
     if (!isFetching) refetch()
     if (!isFetchingTeamSecrets) refetchTeamSecrets()
+    if (!isFetchingRepoUrls) refetchRepoUrls()
   }, [isDirty])
 
   // form state
-  const defaultValues = {}
+  const defaultValues = { ...data }
   const methods = useForm<CreateCoderepoApiResponse>({
     resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCoderepoApiResponse>,
     defaultValues: data || defaultValues,
@@ -95,6 +113,7 @@ export default function ({
     control,
     register,
     reset,
+    resetField,
     handleSubmit,
     watch,
     formState: { errors },
@@ -102,8 +121,17 @@ export default function ({
   } = methods
 
   useEffect(() => {
-    if (data) reset(data)
+    if (data) {
+      reset(data)
+      setGitProvider(watch('gitService'))
+    }
   }, [data, setValue])
+
+  useEffect(() => {
+    resetField('repositoryUrl')
+    resetField('private')
+    resetField('secret')
+  }, [gitProvider])
 
   const onSubmit = (data: CreateCoderepoApiResponse) => {
     if (coderepositoryId) update({ teamId, coderepoId: coderepositoryId, body: data })
@@ -116,8 +144,10 @@ export default function ({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/coderepositories`} />
 
-  const loading = isLoading || isLoadingTeamSecrets
-  const error = isError || isErrorTeamSecrets
+  const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (coderepositoryId && !internalRepoUrls)
+  const error = isError || isErrorTeamSecrets || isErrorRepoUrls
+
+  if (loading) return <PaperLayout loading title={t('TITLE_CODEREPOSITORY')} />
 
   return (
     <Grid className={classes.root}>
@@ -133,7 +163,6 @@ export default function ({
               <FormRow spacing={10}>
                 <TextField
                   label='Code Repository Label'
-                  fullWidth
                   {...register('label')}
                   onChange={(e) => {
                     const value = e.target.value
@@ -141,6 +170,7 @@ export default function ({
                   }}
                   error={!!errors.label}
                   helperText={errors.label?.message?.toString()}
+                  width='large'
                 />
               </FormRow>
             </Paper>
@@ -153,112 +183,145 @@ export default function ({
                 name='gitService'
                 control={control}
                 options={options}
-                value={watch('gitService')}
-                onChange={(value) => setValue('gitService', value as 'gitea' | 'github' | 'gitlab')}
-              />
-
-              <TextField
-                label='Repository URL'
-                fullWidth
-                {...register('repositoryUrl')}
-                onChange={(e) => {
-                  const value = e.target.value
-                  setValue('repositoryUrl', value)
+                value={gitProvider}
+                onChange={(value) => {
+                  setGitProvider(value)
                 }}
-                placeholder='Repository Url'
-                error={!!errors.repositoryUrl}
-                helperText={errors.repositoryUrl?.message}
-                width='large'
               />
 
-              <ControlledCheckbox
-                sx={{ my: 2 }}
-                name='private'
-                control={control}
-                label='Private'
-                explainertext='Select if repository is private'
-              />
-
-              <TextField
-                label='Secret'
-                fullWidth
-                {...(register('secret') as Pick<CreateCoderepoApiResponse, 'secret'>)}
-                onChange={(e) => {
-                  const value = e.target.value
-                  setValue('secret', value)
-                }}
-                error={!!errors.secret}
-                helperText={errors.secret?.message || 'A secret that contains the authentication credentials'}
-                helperTextPosition='top'
-                width='large'
-                value={`${watch('secret')}`}
-                select
-              >
-                {teamSecrets ? (
-                  teamSecrets?.map((secret) => (
-                    <MenuItem key={secret?.id} id={secret?.id} value={secret?.name}>
-                      {secret?.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value='' disabled>
-                    No secrets available. Please create a new secret.
-                  </MenuItem>
-                )}
-              </TextField>
-              <Button
-                variant='text'
-                color='primary'
-                sx={{ textTransform: 'none', fontSize: '0.625rem', fontWeight: 400 }}
-                onClick={() => history.push(`/teams/${teamId}/create-sealedsecret`)}
-              >
-                + Create Secret
-              </Button>
-              <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>
+              {gitProvider === 'gitea' && internalRepoUrls ? (
                 <Box>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() => setTestConnectUrl(watch('repositoryUrl'))}
-                    sx={{ textTransform: 'none' }}
-                  >
-                    Test Connection
-                  </Button>
-                </Box>
-                {testRepoConnect?.status && testRepoConnect?.status !== 'unknown' && (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      padding: '4px 12px',
-                      gap: 1,
-                      mt: 2,
-                      border: `1px solid ${
-                        testRepoConnect?.status === 'success' ? theme.palette.success.main : theme.palette.error.main
-                      }`,
-                      backgroundColor: `${
-                        testRepoConnect?.status === 'success' ? theme.palette.success.main : theme.palette.error.main
-                      }50`,
-                      width: 'fit-content',
+                  <TextField
+                    label='Repository'
+                    fullWidth
+                    {...register('repositoryUrl')}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('repositoryUrl', value)
                     }}
+                    error={!!errors.repositoryUrl}
+                    width='large'
+                    value={watch('repositoryUrl') || ''}
+                    select
                   >
-                    <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
-                    <Typography
-                      variant='h6'
-                      sx={{
-                        display: 'inline-block',
-                        fontSize: 16,
-                        fontWeight: 400,
-                      }}
-                    >
-                      {testRepoConnect?.status === 'success'
-                        ? 'Successfully connected with Git repository'
-                        : 'Failed to connect with Git repository'}
-                    </Typography>
+                    <MenuItem value='' disabled>
+                      Select a code repository
+                    </MenuItem>
+                    {internalRepoUrls?.map((repoUrl) => (
+                      <MenuItem key={repoUrl} id={repoUrl} value={repoUrl}>
+                        {extractRepoName(repoUrl)}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <Link
+                    sx={{ fontSize: '0.625rem', fontWeight: 400 }}
+                    href={`https://gitea.${cluster.domainSuffix}/team-${teamId}`}
+                    target='_blank'
+                  >
+                    + Create Repository
+                  </Link>
+                </Box>
+              ) : (
+                <Box>
+                  <TextField
+                    label='Repository URL'
+                    fullWidth
+                    {...register('repositoryUrl')}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('repositoryUrl', value)
+                    }}
+                    error={!!errors.repositoryUrl}
+                    helperText={errors.repositoryUrl?.message}
+                    width='large'
+                  />
+
+                  <ControlledCheckbox
+                    sx={{ my: 2 }}
+                    name='private'
+                    control={control}
+                    label='Private'
+                    explainertext='Select if repository is private'
+                  />
+
+                  <TextField
+                    label='Secret'
+                    fullWidth
+                    {...register('secret')}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('secret', value)
+                    }}
+                    error={!!errors.secret}
+                    helperText={errors.secret?.message || 'A secret that contains the authentication credentials'}
+                    helperTextPosition='top'
+                    width='large'
+                    value={watch('secret')}
+                    select
+                  >
+                    <MenuItem value='' disabled>
+                      Select a secret
+                    </MenuItem>
+                    {teamSecrets?.map((secret) => (
+                      <MenuItem key={secret?.id} id={secret?.id} value={secret?.name}>
+                        {secret?.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <Link sx={{ fontSize: '0.625rem', fontWeight: 400 }} href={`/teams/${teamId}/create-sealedsecret`}>
+                    + Create Secret
+                  </Link>
+                  <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>
+                    <Box>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => setTestConnectUrl(watch('repositoryUrl'))}
+                        sx={{ textTransform: 'none' }}
+                      >
+                        Test Connection
+                      </Button>
+                    </Box>
+                    {testRepoConnect?.status && testRepoConnect?.status !== 'unknown' && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          padding: '4px 12px',
+                          gap: 1,
+                          mt: 2,
+                          border: `1px solid ${
+                            testRepoConnect?.status === 'success'
+                              ? theme.palette.success.main
+                              : theme.palette.error.main
+                          }`,
+                          backgroundColor: `${
+                            testRepoConnect?.status === 'success'
+                              ? theme.palette.success.main
+                              : theme.palette.error.main
+                          }50`,
+                          width: 'fit-content',
+                        }}
+                      >
+                        <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
+                        <Typography
+                          variant='h6'
+                          sx={{
+                            display: 'inline-block',
+                            fontSize: 16,
+                            fontWeight: 400,
+                          }}
+                        >
+                          {testRepoConnect?.status === 'success'
+                            ? 'Successfully connected with Git repository'
+                            : 'Failed to connect with Git repository'}
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
-                )}
-              </Box>
+                </Box>
+              )}
             </Paper>
             {coderepositoryId && (
               <Button

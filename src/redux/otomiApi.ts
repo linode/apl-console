@@ -310,6 +310,9 @@ const injectedRtkApi = api.injectEndpoints({
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
       query: (queryArg) => ({ url: `/testRepoConnect`, params: { url: queryArg.url } }),
     }),
+    getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
+      query: (queryArg) => ({ url: `/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+    }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
     }),
@@ -3847,6 +3850,11 @@ export type GetTestRepoConnectApiArg = {
   /** URL of the repository */
   url?: string
 }
+export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
+export type GetInternalRepoUrlsApiArg = {
+  /** ID of the team */
+  teamId?: string
+}
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
   /** ObjWizard object */
@@ -4535,6 +4543,7 @@ export const {
   useApiDocsQuery,
   useGetSettingsInfoQuery,
   useGetTestRepoConnectQuery,
+  useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,
