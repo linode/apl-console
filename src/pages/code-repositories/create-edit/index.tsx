@@ -26,6 +26,7 @@ import Iconify from 'components/Iconify'
 import { useAppSelector } from 'redux/hooks'
 import { useSession } from 'providers/Session'
 import Section from 'components/Section'
+import DeleteButton from 'components/DeleteButton'
 import { coderepoApiResponseSchema } from './create-edit.validator'
 import { useStyles } from './create-edit.styles'
 
@@ -136,9 +137,6 @@ export default function ({
   const onSubmit = (data: CreateCoderepoApiResponse) => {
     if (coderepositoryId) update({ teamId, coderepoId: coderepositoryId, body: data })
     else create({ teamId, body: data })
-  }
-  const onDelete = () => {
-    if (coderepositoryId) del({ teamId, coderepoId: coderepositoryId })
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
@@ -329,14 +327,13 @@ export default function ({
               )}
             </Section>
             {coderepositoryId && (
-              <Button
-                onClick={onDelete}
-                variant='contained'
-                color='primary'
-                sx={{ float: 'right', textTransform: 'none', ml: 2 }}
-              >
-                Delete
-              </Button>
+              <DeleteButton
+                onDelete={() => del({ teamId, coderepoId: coderepositoryId })}
+                resourceName={watch('label')}
+                resourceType='coderepo'
+                data-cy='button-delete-coderepo'
+                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+              />
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
               {coderepositoryId ? 'Edit Code Repository' : 'Add Code Repository'}
