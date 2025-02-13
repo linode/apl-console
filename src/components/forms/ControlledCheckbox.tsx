@@ -27,6 +27,7 @@ const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ th
     paddingLeft: `calc(${theme.spacing(4)} + 14px)`, // 46
   },
   lineHeight: '0.875rem',
+  color: theme.palette.cl.text.subTitle,
 }))
 
 interface ControlledCheckboxProps {

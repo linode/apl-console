@@ -5,20 +5,22 @@ import { Typography } from '../Typography'
 
 export const StyledTypography = styled(Typography, {
   label: 'StyledTypography',
-})(({}) => ({
+})(({ theme }) => ({
   '&:hover': {
     textDecoration: 'underline',
   },
   fontSize: '1.125rem',
+  fontWeight: 300,
   lineHeight: 'normal',
   textTransform: 'capitalize',
   whiteSpace: 'nowrap',
+  color: theme.palette.cl.breadCrumb.crumbPath,
 }))
 
 export const StyledSlashTypography = styled(Typography, {
   label: 'StyledSlashTypography',
 })(({ theme }) => ({
-  color: '#83838c',
+  color: theme.palette.cl.breadCrumb.crumbPath,
   fontSize: 20,
   marginLeft: 2,
   marginRight: 2,

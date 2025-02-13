@@ -11,6 +11,8 @@ interface Props extends PaperProps {
    * Displays an error in red text below the Paper
    */
   error?: string
+
+  noPaddingTop?: boolean
 }
 
 /**
@@ -38,7 +40,7 @@ const StyledPaper = styled(_Paper, {
 })<Props>(({ theme, ...props }) => ({
   borderColor: props.error ? theme.palette.cm.red : undefined,
   padding: theme.spacing(3),
-  paddingTop: 17,
+  paddingTop: props.noPaddingTop ? 0 : 20,
   marginBottom: 20,
 }))
 

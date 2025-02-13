@@ -20,12 +20,12 @@ import {
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import FormRow from 'components/forms/FormRow'
-import { Paper } from 'components/Paper'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import Iconify from 'components/Iconify'
 import { useAppSelector } from 'redux/hooks'
 import { useSession } from 'providers/Session'
+import Section from 'components/Section'
 import { coderepoApiResponseSchema } from './create-edit.validator'
 import { useStyles } from './create-edit.styles'
 
@@ -159,10 +159,11 @@ export default function ({
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Paper>
+            <Section noPaddingTop>
               <FormRow spacing={10}>
                 <TextField
                   label='Code Repository Label'
+                  width='large'
                   {...register('label')}
                   onChange={(e) => {
                     const value = e.target.value
@@ -170,14 +171,11 @@ export default function ({
                   }}
                   error={!!errors.label}
                   helperText={errors.label?.message?.toString()}
-                  width='large'
                 />
               </FormRow>
-            </Paper>
+            </Section>
 
-            <Paper>
-              <Typography variant='h6'>Code Repository</Typography>
-              <Typography variant='body1'>A code repository from an internal or external Git service</Typography>
+            <Section title='Code Repository' description='A code repository from an internal or external Git service'>
               <ImgButtonGroup
                 title='Git Service'
                 name='gitService'
@@ -322,7 +320,7 @@ export default function ({
                   </Box>
                 </Box>
               )}
-            </Paper>
+            </Section>
             {coderepositoryId && (
               <Button
                 onClick={onDelete}

@@ -84,7 +84,7 @@ const SECONDARY = {
 const CYAN = {
   lighter: '#D1FFFC',
   light: '#76F2FF',
-  main: '#1CCAFF',
+  main: '#59ADE1',
   dark: '#0E77B7',
   darker: '#053D7A',
 }
@@ -188,6 +188,16 @@ const palette = {
     ...COMMON,
     mode: 'light',
     text: { primary: GREY[800], secondary: GREY[600], disabled: GREY[500] },
+    cl: {
+      text: {
+        title: '#343438',
+        subTitle: '#696970',
+      },
+      breadCrumb: {
+        crumbPath: '#696970',
+        lastCrumb: '#343438',
+      },
+    },
     divider: GREY[500_24],
     cm: {
       black: GREY[1000],
@@ -228,6 +238,16 @@ const palette = {
     ...COMMON,
     mode: 'dark',
     text: { primary: '#fff', secondary: GREY[500], disabled: GREY[300] },
+    cl: {
+      text: {
+        title: '#FFFFFF',
+        subTitle: '#ABABAB',
+      },
+      breadCrumb: {
+        crumbPath: '#E3E2E2',
+        lastCrumb: '#FFFFFF',
+      },
+    },
     divider: GREY[520],
     cm: {
       black: GREY[0],

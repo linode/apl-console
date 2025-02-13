@@ -46,8 +46,8 @@ const useStyles = makeStyles()((theme: Theme) => ({
     width: '415px',
   },
   helperTextTop: {
-    marginBottom: theme.spacing(),
-    marginTop: theme.spacing(),
+    color: theme.palette.cl.text.subTitle,
+    marginTop: 0,
   },
   label: {
     fontFamily: 'sans-serif',
@@ -56,7 +56,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     transform: 'none',
   },
   root: {
-    marginTop: 0,
+    marginTop: theme.spacing(1),
   },
   input: {
     border: '1px solid #e3e3e3',
@@ -402,7 +402,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           'visually-hidden': hideLabel,
         })}
         sx={{
-          marginBottom: theme.spacing(1),
+          marginBottom: 0,
           ...(!noMarginTop && { marginTop: theme.spacing(2) }),
         }}
         alignItems='center'
@@ -414,7 +414,10 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             [classes.noTransform]: true,
           })}
           sx={{
+            marginTop: 0,
             marginBottom: 0,
+            fontWeight: '500',
+            fontSize: '0.875rem',
           }}
           data-qa-textfield-label={label}
           htmlFor={validInputId}
