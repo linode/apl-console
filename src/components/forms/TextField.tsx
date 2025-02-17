@@ -107,8 +107,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
       '&:hover': {
         color: '#5bb3ea',
       },
-      color: '#108ad6',
-      fontSize: 18,
+      color: '#838383',
+      fontSize: '25px',
+      marginRight: '5px',
     },
   },
 }))

@@ -210,7 +210,7 @@ export default function ({
                     ))}
                   </TextField>
                   <Link
-                    sx={{ fontSize: '0.625rem', fontWeight: 400 }}
+                    className={classes.link}
                     href={`https://gitea.${cluster.domainSuffix}/team-${teamId}`}
                     target='_blank'
                   >
@@ -266,10 +266,7 @@ export default function ({
                           </MenuItem>
                         ))}
                       </TextField>
-                      <Link
-                        sx={{ fontSize: '0.625rem', fontWeight: 400 }}
-                        href={`/teams/${teamId}/create-sealedsecret`}
-                      >
+                      <Link className={classes.link} href={`/teams/${teamId}/create-sealedsecret`}>
                         + Create Secret
                       </Link>
                     </Box>
