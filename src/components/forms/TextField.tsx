@@ -98,7 +98,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     border: `1px solid ${theme.palette.cm.textBoxBorder}`,
     boxSizing: 'border-box',
     paddingLeft: theme.spacing(1),
-    color: '#696970',
+    color: theme.palette.text.primary,
     lineHeight: 1,
     maxWidth: 416,
     minHeight: 34,
