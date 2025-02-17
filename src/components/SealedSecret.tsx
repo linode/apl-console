@@ -4,7 +4,9 @@ import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { GetSealedSecretApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
+import { Box } from '@mui/material'
 import Form from './rjsf/Form'
+import InformationBanner from './InformationBanner'
 
 export const getSecretSchema = (teamId: string, formData: SealedSecret): any => {
   const schema = cloneDeep(getSpec().components.schemas.SealedSecret)
@@ -90,13 +92,14 @@ const encryptedDataMap = {
 interface Props extends CrudProps {
   teamId: string
   secret?: GetSealedSecretApiResponse
+  isCoderepository?: boolean
 }
 
 interface SealedSecret extends GetSealedSecretApiResponse {
   isDisabled?: boolean
 }
 
-export default function ({ secret, teamId, ...other }: Props): React.ReactElement {
+export default function ({ secret, teamId, isCoderepository, ...other }: Props): React.ReactElement {
   const { user } = useSession()
   const [data, setData] = useState<SealedSecret>(secret)
   useEffect(() => {
@@ -117,14 +120,19 @@ export default function ({ secret, teamId, ...other }: Props): React.ReactElemen
   const schema = getSecretSchema(teamId, formData)
   const uiSchema = getSecretUiSchema(user, teamId, formData)
   return (
-    <Form
-      schema={schema}
-      uiSchema={uiSchema}
-      data={formData}
-      onChange={setData}
-      disabled={formData?.isDisabled}
-      resourceType='SealedSecret'
-      {...other}
-    />
+    <Box>
+      {isCoderepository && (
+        <InformationBanner message='Please make sure to create a "basic-auth" or "ssh-auth" type Sealed Secret for the private code repository.' />
+      )}
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        data={formData}
+        onChange={setData}
+        disabled={formData?.isDisabled}
+        resourceType='SealedSecret'
+        {...other}
+      />
+    </Box>
   )
 }

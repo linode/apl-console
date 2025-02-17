@@ -7,7 +7,7 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
 import {
   CreateCoderepoApiResponse,
   useCreateCoderepoMutation,
@@ -27,6 +27,7 @@ import { useAppSelector } from 'redux/hooks'
 import { useSession } from 'providers/Session'
 import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
+import { isEmpty } from 'lodash'
 import { coderepoApiResponseSchema } from './create-edit.validator'
 import { useStyles } from './create-edit.styles'
 
@@ -46,6 +47,10 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
+  const history = useHistory()
+  const location = useLocation()
+  const locationState = location?.state as any
+  const prefilledData = locationState?.prefilled as CreateCoderepoApiResponse
   const { t } = useTranslation()
   const theme = useTheme()
   const { classes } = useStyles()
@@ -81,12 +86,16 @@ export default function ({
     { skip: !coderepositoryId },
   )
   const {
-    data: teamSecrets,
+    data: teamSealedSecrets,
     isLoading: isLoadingTeamSecrets,
     isFetching: isFetchingTeamSecrets,
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  const teamSecrets =
+    teamSealedSecrets?.filter(
+      (secret) => secret.type === 'kubernetes.io/basic-auth' || secret.type === 'kubernetes.io/ssh-auth',
+    ) || []
   const {
     data: internalRepoUrls,
     isLoading: isLoadingRepoUrls,
@@ -105,7 +114,7 @@ export default function ({
   }, [isDirty])
 
   // form state
-  const defaultValues = { ...data }
+  const defaultValues = { gitService: 'gitea' as 'gitea' | 'github' | 'gitlab', ...prefilledData }
   const methods = useForm<CreateCoderepoApiResponse>({
     resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCoderepoApiResponse>,
     defaultValues: data || defaultValues,
@@ -125,8 +134,13 @@ export default function ({
     if (data) {
       reset(data)
       setGitProvider(watch('gitService'))
+    } else setGitProvider('gitea')
+
+    if (!isEmpty(prefilledData)) {
+      reset(prefilledData)
+      setGitProvider(prefilledData.gitService)
     }
-  }, [data, setValue])
+  }, [data, setValue, prefilledData])
 
   useEffect(() => {
     resetField('repositoryUrl')
@@ -266,9 +280,17 @@ export default function ({
                           </MenuItem>
                         ))}
                       </TextField>
-                      <Link className={classes.link} href={`/teams/${teamId}/create-sealedsecret`}>
+                      <Button
+                        className={classes.link}
+                        onClick={() =>
+                          history.push(`/teams/${teamId}/create-sealedsecret`, {
+                            coderepository: true,
+                            prefilled: watch(),
+                          })
+                        }
+                      >
                         + Create Secret
-                      </Link>
+                      </Button>
                     </Box>
                   )}
                   <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>

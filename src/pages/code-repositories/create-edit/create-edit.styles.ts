@@ -26,5 +26,12 @@ export const useStyles = makeStyles()((theme: Theme) => ({
   link: {
     fontSize: '0.725rem',
     fontWeight: 400,
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: 'transparent',
+    },
+    '&:active': {
+      backgroundColor: 'transparent',
+    },
   },
 }))
