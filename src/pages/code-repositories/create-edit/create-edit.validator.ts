@@ -14,7 +14,9 @@ const urlValidation = string().test('is-valid-url', 'Invalid URL for the selecte
 export const coderepoApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
-  label: string().required(),
+  label: string()
+    .required()
+    .matches(/^[a-z]([-a-z0-9]*[a-z0-9])+$/, 'Invalid format, must match pattern "^[a-z]([-a-z0-9]*[a-z0-9])+$"'),
   gitService: string().required(),
   repositoryUrl: urlValidation.required(),
   private: boolean().optional(),
