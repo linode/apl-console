@@ -2,6 +2,7 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography } 
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
+import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
 import CatalogAddChartCard from './CatalogAddChartCard'
@@ -54,6 +55,8 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
   const [expanded, setExpanded] = useState(false)
 
+  const [createWorkloadCatalog] = useCreateWorkloadCatalogMutation()
+
   useEffect(() => {
     setFilteredCatalog(catalogs)
   }, [catalogs])
@@ -62,6 +65,11 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     setFilterName(name)
     const filtered = catalogs.filter((item) => item.name.includes(name))
     setFilteredCatalog(filtered)
+  }
+
+  const addChart = () => {
+    console.log('halo add chart no mem leaks')
+    createWorkloadCatalog({ body: { halo: 'reach' } })
   }
 
   return (
@@ -108,6 +116,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
         actionButtonText='Add Chart'
         title='Add Helm Chart'
         open={openNewChartModal}
+        handleAction={() => addChart()}
         handleClose={() => setOpenNewChartModal(false)}
       />
     </>
