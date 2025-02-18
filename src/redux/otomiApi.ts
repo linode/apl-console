@@ -308,7 +308,10 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/settingsInfo` }),
     }),
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
-      query: (queryArg) => ({ url: `/testRepoConnect`, params: { url: queryArg.url } }),
+      query: (queryArg) => ({
+        url: `/testRepoConnect`,
+        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+      }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
       query: (queryArg) => ({ url: `/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
@@ -3849,6 +3852,10 @@ export type GetTestRepoConnectApiResponse = /** status 200 The request is succes
 export type GetTestRepoConnectApiArg = {
   /** URL of the repository */
   url?: string
+  /** Id of the team */
+  teamId?: string
+  /** Name of the secret for private repositories */
+  secret?: string
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {

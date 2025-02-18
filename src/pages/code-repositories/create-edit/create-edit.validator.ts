@@ -4,8 +4,8 @@ import { boolean, object, string } from 'yup'
 const urlValidation = string().test('is-valid-url', 'Invalid URL for the selected git service', function (value) {
   const { gitService } = this.parent
   if (gitService === 'gitea') return value.startsWith('https://gitea')
-  if (gitService === 'github') return /^https:\/\/github\.com\/.+/.test(value)
-  if (gitService === 'gitlab') return /^https:\/\/gitlab\.com\/.+/.test(value)
+  if (gitService === 'github') return /^(https:\/\/github\.com\/.+|git@github\.com:.+\.git)$/.test(value)
+  if (gitService === 'gitlab') return /^(https:\/\/gitlab\.com\/.+|git@gitlab\.com:.+\.git)$/.test(value)
 
   return true
 })

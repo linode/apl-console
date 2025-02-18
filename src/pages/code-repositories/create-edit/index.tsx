@@ -58,6 +58,7 @@ export default function ({
     settings: { cluster },
   } = useSession()
   const [testConnectUrl, setTestConnectUrl] = useState<string | null>(null)
+  const [secretName, setSecretName] = useState<string | undefined>(undefined)
   const [gitProvider, setGitProvider] = useState<string | null>(null)
   const options = [
     {
@@ -103,7 +104,10 @@ export default function ({
     isError: isErrorRepoUrls,
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
-  const { data: testRepoConnect } = useGetTestRepoConnectQuery({ url: testConnectUrl }, { skip: !testConnectUrl })
+  const { data: testRepoConnect } = useGetTestRepoConnectQuery(
+    { url: testConnectUrl, teamId, secret: secretName },
+    { skip: !testConnectUrl },
+  )
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -153,6 +157,7 @@ export default function ({
   }, [gitProvider])
 
   const handleTestConnection = async () => {
+    if (watch('private')) setSecretName(watch('secret'))
     const validRepositoryUrl = await trigger('repositoryUrl')
     if (validRepositoryUrl) setTestConnectUrl(watch('repositoryUrl'))
   }
