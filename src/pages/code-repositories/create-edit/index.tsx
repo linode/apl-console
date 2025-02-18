@@ -128,6 +128,7 @@ export default function ({
     watch,
     formState: { errors },
     setValue,
+    trigger,
   } = methods
 
   useEffect(() => {
@@ -143,10 +144,18 @@ export default function ({
   }, [data, setValue, prefilledData])
 
   useEffect(() => {
-    resetField('repositoryUrl')
-    resetField('private')
-    resetField('secret')
+    if (gitProvider === 'gitea') {
+      resetField('repositoryUrl')
+      resetField('private')
+      resetField('secret')
+    }
+    setTestConnectUrl(null)
   }, [gitProvider])
+
+  const handleTestConnection = async () => {
+    const validRepositoryUrl = await trigger('repositoryUrl')
+    if (validRepositoryUrl) setTestConnectUrl(watch('repositoryUrl'))
+  }
 
   const onSubmit = (data: CreateCoderepoApiResponse) => {
     if (coderepositoryId) update({ teamId, coderepoId: coderepositoryId, body: data })
@@ -298,13 +307,13 @@ export default function ({
                       <Button
                         variant='contained'
                         color='primary'
-                        onClick={() => setTestConnectUrl(watch('repositoryUrl'))}
+                        onClick={handleTestConnection}
                         sx={{ textTransform: 'none' }}
                       >
                         Test Connection
                       </Button>
                     </Box>
-                    {testRepoConnect?.status && testRepoConnect?.status !== 'unknown' && (
+                    {testConnectUrl && testRepoConnect?.status && testRepoConnect?.status !== 'unknown' && (
                       <Box
                         sx={{
                           display: 'flex',
