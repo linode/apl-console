@@ -157,9 +157,13 @@ export default function ({
   }, [gitProvider])
 
   const handleTestConnection = async () => {
-    if (watch('private')) setSecretName(watch('secret'))
+    let validSecret = true
+    if (watch('private')) {
+      validSecret = await trigger('secret')
+      setSecretName(watch('secret'))
+    }
     const validRepositoryUrl = await trigger('repositoryUrl')
-    if (validRepositoryUrl) setTestConnectUrl(watch('repositoryUrl'))
+    if (validRepositoryUrl && validSecret) setTestConnectUrl(watch('repositoryUrl'))
   }
 
   const onSubmit = (data: CreateCoderepoApiResponse) => {
