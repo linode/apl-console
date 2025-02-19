@@ -156,6 +156,21 @@ export default function ({
     setTestConnectUrl(null)
   }, [gitProvider])
 
+  useEffect(() => {
+    const url = watch('repositoryUrl')
+    if (url) {
+      const githubRegex = /^(https:\/\/github\.com|git@github\.com)/
+      const gitlabRegex = /^(https:\/\/gitlab\.com|git@gitlab\.com)/
+      if (githubRegex.test(url)) {
+        setValue('gitService', 'github')
+        setGitProvider('github')
+      } else if (gitlabRegex.test(url)) {
+        setValue('gitService', 'gitlab')
+        setGitProvider('gitlab')
+      }
+    }
+  }, [watch('repositoryUrl')])
+
   const handleTestConnection = async () => {
     let validSecret = true
     if (watch('private')) {
