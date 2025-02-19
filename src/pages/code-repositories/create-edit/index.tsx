@@ -161,7 +161,7 @@ export default function ({
     if (watch('private')) {
       validSecret = await trigger('secret')
       setSecretName(watch('secret'))
-    }
+    } else setSecretName(undefined)
     const validRepositoryUrl = await trigger('repositoryUrl')
     if (validRepositoryUrl && validSecret) setTestConnectUrl(watch('repositoryUrl'))
   }

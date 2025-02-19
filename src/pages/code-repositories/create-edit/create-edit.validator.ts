@@ -2,20 +2,10 @@ import { boolean, object, string } from 'yup'
 
 // Custom validation for repositoryUrl
 const urlValidation = string().test('is-valid-url', 'Invalid URL for the selected git service', function (value) {
-  const { gitService, private: isPrivate } = this.parent
+  const { gitService } = this.parent
   if (gitService === 'gitea') return value.startsWith('https://gitea')
-  if (gitService === 'github') {
-    const isValid = /^(https:\/\/github\.com\/.+|git@github\.com:.+\.git)$/.test(value)
-    if (value.startsWith('git@github') && !isPrivate)
-      return this.createError({ message: 'Private must be selected for SSH URLs' })
-    return isValid
-  }
-  if (gitService === 'gitlab') {
-    const isValid = /^(https:\/\/gitlab\.com\/.+|git@gitlab\.com:.+\.git)$/.test(value)
-    if (value.startsWith('git@gitlab') && !isPrivate)
-      return this.createError({ message: 'Private must be selected for SSH URLs' })
-    return isValid
-  }
+  if (gitService === 'github') return /^(https:\/\/github\.com\/.+|git@github\.com:.+\.git)$/.test(value)
+  if (gitService === 'gitlab') return /^(https:\/\/gitlab\.com\/.+|git@gitlab\.com:.+\.git)$/.test(value)
   return true
 })
 
