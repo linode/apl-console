@@ -14,6 +14,7 @@ export const getBuildSchema = (teamId: string): any => {
 export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    webHookId: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
     secretName: !formData?.externalRepo && { 'ui:widget': 'hidden' },
