@@ -28,6 +28,7 @@ import { useSession } from 'providers/Session'
 import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
 import { isEmpty } from 'lodash'
+import { LoadingButton } from '@mui/lab'
 import { coderepoApiResponseSchema } from './create-edit.validator'
 import { useStyles } from './create-edit.styles'
 
@@ -58,6 +59,7 @@ export default function ({
     settings: { cluster },
   } = useSession()
   const [testConnectUrl, setTestConnectUrl] = useState<string | null>(null)
+  const [showConnectResult, setShowConnectResult] = useState<boolean>(false)
   const [secretName, setSecretName] = useState<string | undefined>(undefined)
   const [gitProvider, setGitProvider] = useState<string | null>(null)
   const options = [
@@ -104,7 +106,7 @@ export default function ({
     isError: isErrorRepoUrls,
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
-  const { data: testRepoConnect } = useGetTestRepoConnectQuery(
+  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useGetTestRepoConnectQuery(
     { url: testConnectUrl, teamId, secret: secretName },
     { skip: !testConnectUrl },
   )
@@ -172,6 +174,7 @@ export default function ({
   }, [watch('repositoryUrl')])
 
   const handleTestConnection = async () => {
+    setShowConnectResult(false)
     let validSecret = true
     if (watch('private')) {
       validSecret = await trigger('secret')
@@ -179,6 +182,7 @@ export default function ({
     } else setSecretName(undefined)
     const validRepositoryUrl = await trigger('repositoryUrl')
     if (validRepositoryUrl && validSecret) setTestConnectUrl(watch('repositoryUrl'))
+    setShowConnectResult(true)
   }
 
   const onSubmit = (data: CreateCoderepoApiResponse) => {
@@ -296,6 +300,7 @@ export default function ({
                         onChange={(e) => {
                           const value = e.target.value
                           setValue('secret', value)
+                          setShowConnectResult(false)
                         }}
                         error={!!errors.secret}
                         helperText={errors.secret?.message || 'A secret that contains the authentication credentials'}
@@ -328,52 +333,57 @@ export default function ({
                   )}
                   <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>
                     <Box>
-                      <Button
+                      <LoadingButton
                         variant='contained'
                         color='primary'
                         onClick={handleTestConnection}
                         sx={{ textTransform: 'none' }}
+                        loading={isFetchingTestRepoConnect}
                       >
                         Test Connection
-                      </Button>
+                      </LoadingButton>
                     </Box>
-                    {testConnectUrl && testRepoConnect?.status && testRepoConnect?.status !== 'unknown' && (
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          padding: '4px 12px',
-                          gap: 1,
-                          mt: 2,
-                          border: `1px solid ${
-                            testRepoConnect?.status === 'success'
-                              ? theme.palette.success.main
-                              : theme.palette.error.main
-                          }`,
-                          backgroundColor: `${
-                            testRepoConnect?.status === 'success'
-                              ? theme.palette.success.main
-                              : theme.palette.error.main
-                          }50`,
-                          width: 'fit-content',
-                        }}
-                      >
-                        <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
-                        <Typography
-                          variant='h6'
+                    {showConnectResult &&
+                      !isFetchingTestRepoConnect &&
+                      testConnectUrl &&
+                      testRepoConnect?.status &&
+                      testRepoConnect?.status !== 'unknown' && (
+                        <Box
                           sx={{
-                            display: 'inline-block',
-                            fontSize: 16,
-                            fontWeight: 400,
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            padding: '4px 12px',
+                            gap: 1,
+                            mt: 2,
+                            border: `1px solid ${
+                              testRepoConnect?.status === 'success'
+                                ? theme.palette.success.main
+                                : theme.palette.error.main
+                            }`,
+                            backgroundColor: `${
+                              testRepoConnect?.status === 'success'
+                                ? theme.palette.success.main
+                                : theme.palette.error.main
+                            }50`,
+                            width: 'fit-content',
                           }}
                         >
-                          {testRepoConnect?.status === 'success'
-                            ? 'Successfully connected with Git repository'
-                            : 'Failed to connect with Git repository'}
-                        </Typography>
-                      </Box>
-                    )}
+                          <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
+                          <Typography
+                            variant='h6'
+                            sx={{
+                              display: 'inline-block',
+                              fontSize: 16,
+                              fontWeight: 400,
+                            }}
+                          >
+                            {testRepoConnect?.status === 'success'
+                              ? 'Successfully connected with Git repository'
+                              : 'Failed to connect with Git repository'}
+                          </Typography>
+                        </Box>
+                      )}
                   </Box>
                 </Box>
               )}
