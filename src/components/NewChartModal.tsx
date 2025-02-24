@@ -51,7 +51,7 @@ interface Props {
   handleClose: () => void
   handleCancel?: () => void
   cancelButtonText?: string
-  handleAction?: () => void
+  handleAction?: (values: NewChartValues) => void
   actionButtonText?: string
   actionButtonColor?: OverridableStringUnion<
     'inherit' | 'error' | 'primary' | 'secondary' | 'success' | 'info' | 'warning',
@@ -59,6 +59,14 @@ interface Props {
   >
   actionButtonEndIcon?: React.ReactElement
   actionButtonFrontIcon?: React.ReactElement
+}
+
+interface NewChartValues {
+  url: string
+  chartName: string
+  chartIcon?: string
+  chartPath: string
+  revision: string
 }
 
 export default function NewChartModal({
@@ -186,7 +194,15 @@ export default function NewChartModal({
               variant='contained'
               color={actionButtonColor || 'error'}
               sx={{ ml: 1, bgcolor: actionButtonColor }}
-              onClick={handleAction}
+              onClick={() =>
+                handleAction({
+                  url: githubUrl,
+                  chartName,
+                  chartIcon,
+                  chartPath,
+                  revision,
+                })
+              }
               startIcon={actionButtonFrontIcon && actionButtonFrontIcon}
               endIcon={actionButtonEndIcon && actionButtonEndIcon}
             >

@@ -48,6 +48,19 @@ interface Props {
   catalogs: any[]
 }
 
+// TODO: this needs to be fetched from APL Api
+interface NewChartValues {
+  url: string
+  chartName: string
+  chartIcon?: string
+  chartPath: string
+  revision: string
+}
+
+interface NewChartPayload extends NewChartValues {
+  teamId: string
+}
+
 export default function ({ teamId, catalogs }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
@@ -67,9 +80,26 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     setFilteredCatalog(filtered)
   }
 
-  const addChart = () => {
-    console.log('halo add chart no mem leaks')
-    createWorkloadCatalog({ body: { halo: 'reach' } })
+  const addChart = (values: NewChartValues) => {
+    let finalUrl = ''
+
+    try {
+      const parsedUrl = new URL(values.url)
+      // Split the pathname into segments and filter out empty values.
+      const segments = parsedUrl.pathname.split('/').filter(Boolean)
+      if (segments.length < 2) throw new Error('Invalid repository URL: not enough segments.')
+
+      // Construct the base URL using only the first two segments.
+      // This gives you: https://github.com/{company}/{project}.git
+      finalUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}/${segments[0]}/${segments[1]}.git`
+    } catch (error) {
+      console.error('Invalid URL provided:', error)
+      return
+    }
+
+    const payload: NewChartPayload = { ...values, teamId, url: finalUrl }
+    console.log('halo add chart no mem leaks', payload)
+    createWorkloadCatalog({ body: payload })
   }
 
   return (
@@ -116,7 +146,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
         actionButtonText='Add Chart'
         title='Add Helm Chart'
         open={openNewChartModal}
-        handleAction={() => addChart()}
+        handleAction={(handleActionValues) => addChart(handleActionValues)}
         handleClose={() => setOpenNewChartModal(false)}
       />
     </>
