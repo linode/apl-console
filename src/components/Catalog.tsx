@@ -98,6 +98,8 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     chart: { 'ui:widget': 'hidden' },
     revision: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    createNamespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    sidecarInject: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')
   return uiSchema
