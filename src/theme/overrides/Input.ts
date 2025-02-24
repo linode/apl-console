@@ -3,6 +3,7 @@ import { Theme } from '@mui/material/styles'
 // ----------------------------------------------------------------------
 
 export default function Input(theme: Theme) {
+  // TODO: This should be updated once the new styles are applied to the components
   return {
     MuiInputBase: {
       styleOverrides: {

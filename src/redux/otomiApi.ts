@@ -235,6 +235,28 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getAllCoderepos: build.query<GetAllCodereposApiResponse, GetAllCodereposApiArg>({
+      query: () => ({ url: `/coderepos` }),
+    }),
+    getTeamCoderepos: build.query<GetTeamCodereposApiResponse, GetTeamCodereposApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos` }),
+    }),
+    createCoderepo: build.mutation<CreateCoderepoApiResponse, CreateCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
+    }),
+    getCoderepo: build.query<GetCoderepoApiResponse, GetCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}` }),
+    }),
+    editCoderepo: build.mutation<EditCoderepoApiResponse, EditCoderepoApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteCoderepo: build.mutation<DeleteCoderepoApiResponse, DeleteCoderepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`, method: 'DELETE' }),
+    }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
     }),
@@ -284,6 +306,15 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/settingsInfo` }),
+    }),
+    getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
+      query: (queryArg) => ({
+        url: `/testRepoConnect`,
+        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+      }),
+    }),
+    getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
+      query: (queryArg) => ({ url: `/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
@@ -3314,6 +3345,99 @@ export type EditProjectApiArg = {
   /** Project object that contains updated values */
   body: object
 }
+export type GetAllCodereposApiResponse = /** status 200 Successfully obtained all code repositories */ {
+  id?: string
+  teamId?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
+}[]
+export type GetAllCodereposApiArg = void
+export type GetTeamCodereposApiResponse = /** status 200 Successfully obtained code repositories */ {
+  id?: string
+  teamId?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
+}[]
+export type GetTeamCodereposApiArg = {
+  /** ID of team to return */
+  teamId: string
+}
+export type CreateCoderepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
+  id?: string
+  teamId?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
+}
+export type CreateCoderepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Coderepo object */
+  body: {
+    id?: string
+    teamId?: string
+    label: string
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+}
+export type GetCoderepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
+  id?: string
+  teamId?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
+}
+export type GetCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
+export type EditCoderepoApiResponse = /** status 200 Successfully edited a team code repo */ {
+  id?: string
+  teamId?: string
+  label: string
+  gitService: 'gitea' | 'github' | 'gitlab'
+  repositoryUrl: string
+  private?: boolean
+  secret?: string
+}
+export type EditCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+  /** Coderepo object that contains updated values */
+  body: {
+    id?: string
+    teamId?: string
+    label: string
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+}
+export type DeleteCoderepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
+export type DeleteCoderepoApiArg = {
+  /** ID of team to return */
+  teamId: string
+  /** ID of the code repo */
+  coderepoId: string
+}
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
   teamId?: string
@@ -3721,6 +3845,23 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+  url?: string
+  status?: 'unknown' | 'success' | 'failed'
+}
+export type GetTestRepoConnectApiArg = {
+  /** URL of the repository */
+  url?: string
+  /** Id of the team */
+  teamId?: string
+  /** Name of the secret for private repositories */
+  secret?: string
+}
+export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
+export type GetInternalRepoUrlsApiArg = {
+  /** ID of the team */
+  teamId?: string
+}
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
   /** ObjWizard object */
@@ -3728,6 +3869,9 @@ export type CreateObjWizardApiArg = {
     showWizard?: boolean
     apiToken?: string
     regionId?: string
+    errorMessage?: string
+    status?: string
+    objBuckets?: string[]
   }
 }
 export type GetSettingsApiResponse = /** status 200 The request is successful. */ {
@@ -4385,6 +4529,12 @@ export const {
   useDeleteProjectMutation,
   useGetProjectQuery,
   useEditProjectMutation,
+  useGetAllCodereposQuery,
+  useGetTeamCodereposQuery,
+  useCreateCoderepoMutation,
+  useGetCoderepoQuery,
+  useEditCoderepoMutation,
+  useDeleteCoderepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
@@ -4399,6 +4549,8 @@ export const {
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetTestRepoConnectQuery,
+  useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,

@@ -26,15 +26,6 @@ interface CustomShadowOptions {
   dropdown: string
 }
 
-declare module '@mui/material/styles' {
-  interface Theme {
-    customShadows: CustomShadowOptions
-  }
-  interface ThemeOptions {
-    customShadows?: CustomShadowOptions
-  }
-}
-
 const LIGHT_MODE = palette.light.grey[500]
 const DARK_MODE = '#000000'
 
