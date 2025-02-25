@@ -1,5 +1,16 @@
 import React, { useState } from 'react'
-import { Box, Button, ButtonPropsColorOverrides, IconButton, Modal, TextField, Typography, styled } from '@mui/material'
+import {
+  Box,
+  Button,
+  ButtonPropsColorOverrides,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  Modal,
+  TextField,
+  Typography,
+  styled,
+} from '@mui/material'
 // eslint-disable-next-line import/no-unresolved
 import { OverridableStringUnion } from '@mui/types'
 import yaml from 'js-yaml'
@@ -67,6 +78,7 @@ interface NewChartValues {
   chartIcon?: string
   chartPath: string
   revision: string
+  allowTeams: boolean
 }
 
 export default function NewChartModal({
@@ -90,6 +102,7 @@ export default function NewChartModal({
   const [chartIcon, setChartIcon] = useState('')
   const [chartPath, setChartPath] = useState('')
   const [revision, setRevision] = useState('')
+  const [allowTeams, setAllowTeams] = useState(true)
 
   const getChart = async () => {
     if (!githubUrl) {
@@ -158,7 +171,7 @@ export default function NewChartModal({
           <ModalHeader>
             <Typography variant='h5'>{title}</Typography>
             <IconButton color='primary' onClick={handleClose}>
-              {/* Replace with an icon if needed */}X
+              X
             </IconButton>
           </ModalHeader>
         )}
@@ -195,6 +208,13 @@ export default function NewChartModal({
             <TextField label='Icon URL' value={chartIcon} onChange={(e) => setChartIcon(e.target.value)} fullWidth />
             <TextField label='Chart Path' value={chartPath} onChange={(e) => setChartPath(e.target.value)} fullWidth />
             <TextField label='Revision' value={revision} onChange={(e) => setRevision(e.target.value)} fullWidth />
+            {/* New checkbox: Allow teams to use this chart */}
+            <FormControlLabel
+              control={
+                <Checkbox checked={allowTeams} onChange={(e) => setAllowTeams(e.target.checked)} color='primary' />
+              }
+              label='Allow teams to use this chart'
+            />
           </Box>
         </ModalContent>
         {!noFooter && (
@@ -214,6 +234,7 @@ export default function NewChartModal({
                   chartIcon,
                   chartPath,
                   revision,
+                  allowTeams,
                 })
               }
               startIcon={actionButtonFrontIcon}

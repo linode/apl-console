@@ -3,6 +3,7 @@ import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
+import { useSession } from 'providers/Session'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
 import CatalogAddChartCard from './CatalogAddChartCard'
@@ -55,10 +56,12 @@ interface NewChartValues {
   chartIcon?: string
   chartPath: string
   revision: string
+  allowTeams: boolean
 }
 
 interface NewChartPayload extends NewChartValues {
   teamId: string
+  userSub: string
 }
 
 export default function ({ teamId, catalogs }: Props): React.ReactElement {
@@ -67,6 +70,8 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
   const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
   const [expanded, setExpanded] = useState(false)
+  const { user } = useSession()
+  const { isPlatformAdmin } = user
 
   const [createWorkloadCatalog] = useCreateWorkloadCatalogMutation()
 
@@ -97,7 +102,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
       return
     }
 
-    const payload: NewChartPayload = { ...values, teamId, url: finalUrl }
+    const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
     console.log('halo add chart no mem leaks', payload)
     createWorkloadCatalog({ body: payload })
   }
@@ -128,6 +133,11 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
           noPadding
         />
         <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
+          {isPlatformAdmin && teamId === 'admin' && (
+            <Grid item xs={12} sm={6} md={4} lg={4} key='name'>
+              <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
+            </Grid>
+          )}
           {filteredCatalog.map((item) => {
             const img = item?.icon || '/logos/akamai_logo.svg'
             return (
@@ -136,9 +146,6 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
               </Grid>
             )
           })}
-          <Grid item xs={12} sm={6} md={4} lg={4} key='name'>
-            <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
-          </Grid>
         </Grid>
       </Box>
       <NewChartModal
