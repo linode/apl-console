@@ -164,6 +164,18 @@ export default function NewChartModal({
         )}
         <ModalContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Display the chart icon as a non-interactive image.
+                If chartIcon is not set, show a default placeholder image. */}
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <img
+                src={
+                  chartIcon ||
+                  'https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/logos/akamai-gqva4arap2uinswj55zve.png/akamai-4cwl4z4ddcnjbmpmzcl38.png?_a=DAJFJtWIZAAC'
+                }
+                alt='Chart Icon'
+                style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }}
+              />
+            </Box>
             {/* Row for the GitHub URL input and Test Connection button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
               <TextField
@@ -195,6 +207,7 @@ export default function NewChartModal({
               color={actionButtonColor || 'error'}
               sx={{ ml: 1, bgcolor: actionButtonColor }}
               onClick={() =>
+                handleAction &&
                 handleAction({
                   url: githubUrl,
                   chartName,
@@ -203,8 +216,8 @@ export default function NewChartModal({
                   revision,
                 })
               }
-              startIcon={actionButtonFrontIcon && actionButtonFrontIcon}
-              endIcon={actionButtonEndIcon && actionButtonEndIcon}
+              startIcon={actionButtonFrontIcon}
+              endIcon={actionButtonEndIcon}
             >
               {actionButtonText}
             </Button>
