@@ -39,7 +39,6 @@ export default function ({
   const [updateWorkload] = useEditWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
 
-  console.log('workload', workloadName)
   const {
     data: values,
     isLoading: isLoadingValues,
@@ -57,12 +56,14 @@ export default function ({
 
   useEffect(() => {
     if (workloadName) {
-      getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-        const { catalog }: { catalog: any[] } = res.data
-        const item = catalog.find((item) => item.name === workload.path)
-        const { readme } = item
-        setReadme(readme)
-      })
+      if (workload?.name) {
+        getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
+          const { catalog }: { catalog: any[] } = res.data
+          const item = catalog.find((item) => item.name === workload.path)
+          const { readme } = item
+          setReadme(readme)
+        })
+      }
       return
     }
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {

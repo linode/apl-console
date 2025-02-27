@@ -11,10 +11,16 @@ export const getBuildSchema = (teamId: string): any => {
   return schema
 }
 
-export const getBuildUiSchema = (user: GetSessionApiResponse['user'], teamId: string, formData: any): any => {
+export const getBuildUiSchema = (
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  formData: any,
+  isNameEditable: boolean,
+): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
     teamId: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
     secretName: !formData?.externalRepo && { 'ui:widget': 'hidden' },
   }
@@ -38,6 +44,6 @@ export default function ({ build, teamId, ...other }: Props): React.ReactElement
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getBuildSchema(teamId)
-  const uiSchema = getBuildUiSchema(user, teamId, formData)
+  const uiSchema = getBuildUiSchema(user, teamId, formData, !build?.name)
   return <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Build' {...other} />
 }

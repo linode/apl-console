@@ -18,27 +18,27 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const {
-    data: allSecrets,
-    isLoading: isLoadingAllSecrets,
-    isFetching: isFetchingAllSecrets,
-    refetch: refetchAllSecrets,
+    data: allSealedSecrets,
+    isLoading: isLoadingAllSealedSecrets,
+    isFetching: isFetchingAllSealedSecrets,
+    refetch: refetchAllSealedSecrets,
   } = useGetAllSealedSecretsQuery(teamId ? skipToken : undefined)
   const {
-    data: teamSecrets,
-    isLoading: isLoadingTeamSecrets,
-    isFetching: isFetchingTeamSecrets,
-    refetch: refetchTeamSecrets,
+    data: teamSealedSecrets,
+    isLoading: isLoadingTeamSealedSecrets,
+    isFetching: isFetchingTeamSealedSecrets,
+    refetch: refetchTeamSealedSecrets,
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
-    if (!teamId && !isFetchingAllSecrets) refetchAllSecrets()
-    else if (teamId && !isFetchingTeamSecrets) refetchTeamSecrets()
+    if (!teamId && !isFetchingAllSealedSecrets) refetchAllSealedSecrets()
+    else if (teamId && !isFetchingTeamSealedSecrets) refetchTeamSealedSecrets()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const loading = isLoadingAllSecrets || isLoadingTeamSecrets
-  const secrets = teamId ? teamSecrets : allSecrets
-  const comp = secrets && <SealedSecrets teamId={teamId} secrets={secrets} />
+  const loading = isLoadingAllSealedSecrets || isLoadingTeamSealedSecrets
+  const sealedSecrets = teamId ? teamSealedSecrets : allSealedSecrets
+  const comp = sealedSecrets && <SealedSecrets teamId={teamId} sealedSecrets={sealedSecrets} />
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SEALEDSECRETS', { role: getRole(teamId) })} />
 }
