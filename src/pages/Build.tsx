@@ -10,19 +10,23 @@ import { useCreateBuildMutation, useDeleteBuildMutation, useEditBuildMutation, u
 
 interface Params {
   teamId: string
-  buildId?: string
+  buildName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, buildId },
+    params: { teamId, buildName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  console.log('buildId:', buildName)
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
     useCreateBuildMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBuildMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteBuildMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetBuildQuery({ teamId, buildId }, { skip: !buildId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetBuildQuery(
+    { teamId, buildName },
+    { skip: !buildName },
+  )
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -35,12 +39,12 @@ export default function ({
   if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/builds/`} />
   const handleSubmit = (formData) => {
     if (formData?.mode.type === 'buildpacks') delete formData.mode.docker
-    if (buildId) update({ teamId, buildId, body: omit(formData, ['id', 'teamId']) as any })
+    if (buildName) update({ teamId, buildName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, buildId: deleteId })
+  const handleDelete = () => del({ teamId, buildName })
   const comp = !isError && (
     <Build onSubmit={handleSubmit} build={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { buildId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { buildName, role: 'team' })} />
 }

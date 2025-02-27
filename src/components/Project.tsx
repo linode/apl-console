@@ -54,7 +54,7 @@ const getWorkloadSchema = (
   helmChart?: string,
   helmChartVersion?: string,
   helmChartDescription?: string,
-  workloadId?: string,
+  workloadName?: string,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
   const chartMetadata = {
@@ -69,7 +69,7 @@ const getWorkloadSchema = (
       title: 'Helm chart',
       default: helmChart,
       listNotShort: true,
-      ...(!workloadId && { enum: helmCharts }),
+      ...(!workloadName && { enum: helmCharts }),
     },
     helmChartVersion: {
       type: 'null',

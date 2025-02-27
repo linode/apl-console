@@ -128,7 +128,7 @@ function App() {
                                 <PrivateRoute path='/catalogs/:teamId' component={Catalogs} exact />
                                 <PrivateRoute path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName/:workloadId'
+                                  path='/catalogs/:teamId/:catalogName/:workloadName'
                                   component={Catalog}
                                   exact
                                 />
@@ -178,7 +178,7 @@ function App() {
                                 <PrivateRoute path='/teams/:teamId/projects/:projectId' component={Project} exact />
                                 {/* <Route path='/teams/:teamId/builds' component={Builds} exact /> */}
                                 <PrivateRoute exact path='/teams/:teamId/builds' component={Builds} />
-                                <PrivateRoute path='/teams/:teamId/builds/:buildId' component={Build} exact />
+                                <PrivateRoute path='/teams/:teamId/builds/:buildName' component={Build} exact />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
                                 <PrivateRoute path='/teams/:teamId/policies/:policyId' component={Policy} exact />
                                 <PrivateRoute path='/teams/:teamId/workloads' component={Workloads} exact />

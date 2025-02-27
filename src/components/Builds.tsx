@@ -23,7 +23,7 @@ interface Row {
 }
 
 const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.id)}`
+  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}

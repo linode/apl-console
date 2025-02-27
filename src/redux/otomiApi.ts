@@ -158,14 +158,14 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
     }),
     deleteBuild: build.mutation<DeleteBuildApiResponse, DeleteBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`, method: 'DELETE' }),
     }),
     getBuild: build.query<GetBuildApiResponse, GetBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}` }),
     }),
     editBuild: build.mutation<EditBuildApiResponse, EditBuildApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`,
+        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
@@ -270,24 +270,24 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
     }),
     deleteWorkload: build.mutation<DeleteWorkloadApiResponse, DeleteWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`, method: 'DELETE' }),
     }),
     getWorkload: build.query<GetWorkloadApiResponse, GetWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}` }),
     }),
     editWorkload: build.mutation<EditWorkloadApiResponse, EditWorkloadApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`,
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getWorkloadValues: build.query<GetWorkloadValuesApiResponse, GetWorkloadValuesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values` }),
     }),
     editWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values`,
         method: 'PUT',
         body: queryArg.body,
       }),
@@ -2004,7 +2004,7 @@ export type DeleteBuildApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the build */
-  buildId: string
+  buildName: string
 }
 export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
   id?: string
@@ -2045,7 +2045,7 @@ export type GetBuildApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the build */
-  buildId: string
+  buildName: string
 }
 export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
   id?: string
@@ -2086,7 +2086,7 @@ export type EditBuildApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the build */
-  buildId: string
+  buildName: string
   /** Build object that contains updated values */
   body: {
     id?: string
@@ -3610,7 +3610,7 @@ export type DeleteWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the workload */
-  workloadId: string
+  workloadName: string
 }
 export type GetWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
   id?: string
@@ -3654,7 +3654,7 @@ export type GetWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the workload */
-  workloadId: string
+  workloadName: string
 }
 export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   id?: string
@@ -3698,7 +3698,7 @@ export type EditWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the workload */
-  workloadId: string
+  workloadName: string
   /** Workload object that contains updated values */
   body: {
     id?: string
@@ -3749,7 +3749,7 @@ export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the workload */
-  workloadId: string
+  workloadName: string
 }
 export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited workload values */ {
   id?: string
@@ -3761,7 +3761,7 @@ export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
   /** ID of the workload */
-  workloadId: string
+  workloadName: string
   /** Workload values */
   body: {
     id?: string

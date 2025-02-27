@@ -7,7 +7,7 @@ import { JSONSchema7 } from 'json-schema'
 import { isEqual } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cleanData } from 'utils/data'
 import { nullify } from 'utils/schema'
@@ -91,6 +91,9 @@ export default function ({
   const { classes } = useStyles()
   // END HOOKS
   const id = data?.[idProp]
+  const initialNameRef = useRef(data?.[nameProp]) // Store initial name once
+  const originalName = initialNameRef.current // Always refer to the initial name
+  console.log('data', originalName)
   const docUrl =
     schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
@@ -136,12 +139,14 @@ export default function ({
   //   return errors
   // }
   let title: string
-  if (adminOnly && idProp && !id) title = t('FORM_TITLE_NEW', { model: t(resourceType) })
-  if (adminOnly && ((idProp && id) || !idProp) && resourceName)
+  if (adminOnly && idProp && !id && !originalName) title = t('FORM_TITLE_NEW', { model: t(resourceType) })
+  if (adminOnly && ((idProp && (id || originalName)) || !idProp) && resourceName)
     title = t('FORM_TITLE_NAMED', { model: t(resourceType), name: resourceName })
   if (adminOnly && !idProp && !resourceName) title = t('FORM_TITLE', { model: t(resourceType) })
-  if (!adminOnly && id) title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: resourceName, teamId: oboTeamId })
-  if (!adminOnly && !id) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
+  if (!adminOnly && (id || originalName))
+    title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: resourceName, teamId: oboTeamId })
+  if (!adminOnly && !id && !originalName)
+    title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
 
   return (
     <>
