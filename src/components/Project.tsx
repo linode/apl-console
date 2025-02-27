@@ -34,9 +34,10 @@ const getProjectSchema = (): any => {
   return schema
 }
 
-const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isNameEditable: boolean): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     teamId: { 'ui:widget': 'hidden' },
     build: { 'ui:widget': 'hidden' },
     workload: { 'ui:widget': 'hidden' },
@@ -220,7 +221,7 @@ export default function ({
   }, [project])
 
   const projectSchema = getProjectSchema()
-  const projectUiSchema = getProjectUiSchema(user, teamId)
+  const projectUiSchema = getProjectUiSchema(user, teamId, !project?.name)
 
   const buildSchema = getBuildSchema(teamId)
   const buildUiSchema = getBuildUiSchema(user, teamId, formData?.build, !project?.build?.name)
@@ -244,7 +245,7 @@ export default function ({
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
   const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
-  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
+  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId, !formData?.service.name)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
   const teamSubdomain = getHost(formData?.name, teamId)

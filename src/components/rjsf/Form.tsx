@@ -93,7 +93,6 @@ export default function ({
   const id = data?.[idProp]
   const initialNameRef = useRef(data?.[nameProp]) // Store initial name once
   const originalName = initialNameRef.current // Always refer to the initial name
-  console.log('data', originalName)
   const docUrl =
     schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped

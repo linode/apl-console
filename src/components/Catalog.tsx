@@ -85,7 +85,7 @@ export const getWorkloadSchema = (): any => {
   return cloneDeep(getSpec().components.schemas.Workload)
 }
 
-export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isNameEditable): any => {
   const uiSchema = {
     'ui:description': ' ',
     id: { 'ui:widget': 'hidden' },
@@ -98,6 +98,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     chart: { 'ui:widget': 'hidden' },
     revision: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')
   return uiSchema
@@ -187,7 +188,7 @@ export default function ({
   }
 
   const schema = getWorkloadSchema()
-  const uiSchema = getWorkloadUiSchema(user, teamId)
+  const uiSchema = getWorkloadUiSchema(user, teamId, !workload?.name)
 
   return (
     <Box sx={{ width: '100%' }}>

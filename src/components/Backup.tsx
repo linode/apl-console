@@ -11,9 +11,14 @@ export const getBackupSchema = (teamId: string): any => {
   return schema
 }
 
-export const getBackupUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getBackupUiSchema = (
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  isNameEditable: boolean,
+): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     teamId: { 'ui:widget': 'hidden' },
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
   }
@@ -43,7 +48,7 @@ export default function ({ backup, teamId, ...other }: Props): React.ReactElemen
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getBackupSchema(teamId)
-  const uiSchema = getBackupUiSchema(user, teamId)
+  const uiSchema = getBackupUiSchema(user, teamId, !backup.name)
   return (
     <Form
       schema={schema}
