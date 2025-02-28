@@ -65,7 +65,7 @@ export default function ({
     if (serviceName) update({ teamId, serviceName, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (serviceName) => del({ teamId, serviceName })
+  const handleDelete = () => del({ teamId, serviceName })
   const loading = isLoadingService || isLoadingSecrets || isLoadingK8sServices
   const isError = isErrorService || isErrorSecrets
   const comp = !isError && (

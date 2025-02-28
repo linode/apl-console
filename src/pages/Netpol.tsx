@@ -49,7 +49,7 @@ export default function ({
     if (netpolName) update({ teamId, netpolName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, netpolName: deleteId })
+  const handleDelete = () => del({ teamId, netpolName })
   const comp = !isError && (
     <Netpol onSubmit={handleSubmit} netpol={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )

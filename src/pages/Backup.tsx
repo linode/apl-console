@@ -45,7 +45,7 @@ export default function ({
     if (backupName) update({ teamId, backupName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, backupName: deleteId })
+  const handleDelete = () => del({ teamId, backupName })
   const comp = !isError && (
     <Backup onSubmit={handleSubmit} backup={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
