@@ -48,7 +48,7 @@ export default function ({ backup, teamId, ...other }: Props): React.ReactElemen
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getBackupSchema(teamId)
-  const uiSchema = getBackupUiSchema(user, teamId, !backup.name)
+  const uiSchema = getBackupUiSchema(user, teamId, !backup?.name)
   return (
     <Form
       schema={schema}

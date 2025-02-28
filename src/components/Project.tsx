@@ -245,7 +245,7 @@ export default function ({
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
   const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
-  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId, !formData?.service.name)
+  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId, !formData?.service?.name)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
   const teamSubdomain = getHost(formData?.name, teamId)
