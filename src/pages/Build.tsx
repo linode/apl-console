@@ -42,7 +42,7 @@ export default function ({
     if (buildName) update({ teamId, buildName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (buildname) => del({ teamId, buildName })
+  const handleDelete = () => del({ teamId, buildName })
   const comp = !isError && (
     <Build onSubmit={handleSubmit} build={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
