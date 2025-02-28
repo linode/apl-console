@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
+import { useHistory } from 'react-router-dom'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
 import CatalogAddChartCard from './CatalogAddChartCard'
@@ -65,6 +66,7 @@ interface NewChartPayload extends NewChartValues {
 }
 
 export default function ({ teamId, catalogs }: Props): React.ReactElement {
+  const history = useHistory()
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
@@ -104,7 +106,11 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
 
     const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
     console.log('halo add chart no mem leaks', payload)
-    createWorkloadCatalog({ body: payload })
+    createWorkloadCatalog({ body: payload }).then((res) => {
+      console.log(res)
+      setOpenNewChartModal(false)
+      history.go(0)
+    })
   }
 
   return (
