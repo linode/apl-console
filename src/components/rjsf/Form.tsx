@@ -92,7 +92,7 @@ export default function ({
   // END HOOKS
   const id = data?.[idProp]
   const initialNameRef = useRef(data?.[nameProp]) // Store initial name once
-  const originalName = initialNameRef.current // Always refer to the initial name
+  const initialName = initialNameRef.current // Always refer to the initial name
   const docUrl =
     schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
@@ -138,14 +138,13 @@ export default function ({
   //   return errors
   // }
   let title: string
-  if (adminOnly && idProp && !id && !originalName) title = t('FORM_TITLE_NEW', { model: t(resourceType) })
-  if (adminOnly && ((idProp && (id || originalName)) || !idProp) && resourceName)
+  if (adminOnly && idProp && !id && !initialName) title = t('FORM_TITLE_NEW', { model: t(resourceType) })
+  if (adminOnly && ((idProp && (id || initialName)) || !idProp) && resourceName)
     title = t('FORM_TITLE_NAMED', { model: t(resourceType), name: resourceName })
   if (adminOnly && !idProp && !resourceName) title = t('FORM_TITLE', { model: t(resourceType) })
-  if (!adminOnly && (id || originalName))
+  if (!adminOnly && (id || initialName))
     title = t('FORM_TITLE_TEAM', { model: t(resourceType), name: resourceName, teamId: oboTeamId })
-  if (!adminOnly && !id && !originalName)
-    title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
+  if (!adminOnly && !id && !initialName) title = t('FORM_TITLE_TEAM_NEW', { model: t(resourceType), teamId: oboTeamId })
 
   return (
     <>
@@ -172,7 +171,7 @@ export default function ({
       >
         {children || (
           <ButtonGroup
-            id={id}
+            id={id || initialName}
             loading={mutating}
             resourceName={resourceName}
             resourceType={resourceType}
