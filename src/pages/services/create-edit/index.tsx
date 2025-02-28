@@ -1,8 +1,8 @@
-import { Button, Grid } from '@mui/material'
-import { useTheme } from '@mui/material/styles'
+import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid } from '@mui/material'
+import { styled, useTheme } from '@mui/material/styles'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
@@ -11,7 +11,6 @@ import {
   useCreateServiceMutation,
   useDeleteServiceMutation,
   useEditServiceMutation,
-  useGetSecretsFromK8SQuery,
   useGetServiceQuery,
   useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
@@ -24,13 +23,42 @@ import Section from 'components/Section'
 import { TextField } from 'components/forms/TextField'
 import { MenuItem } from 'components/List'
 import Iconify from 'components/Iconify'
+import { KeyboardArrowRight } from '@mui/icons-material'
+import { Typography } from 'components/Typography'
+import KeyValue from 'components/forms/KeyValue'
+import ControlledCheckbox from 'components/forms/ControlledCheckbox'
+import { isEmpty } from 'lodash'
+import LinkedNumberField from 'components/forms/LinkedNumberField'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
 
-const extractRepoName = (url: string): string => {
-  const match = url.match(/\/([^/]+)\.git$/)
-  return match ? match[1] : url
-}
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'transparent', // Remove background color
+  boxShadow: 'none !important', // Remove shadow
+  margin: '0px !important', // No top margin
+  '&:before': {
+    display: 'none', // Remove the default border above the accordion
+  },
+}))
+
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+  backgroundColor: 'transparent', // Remove background color
+  boxShadow: 'none', // Remove shadow
+  marginTop: '0px', // No top margin
+  padding: 0,
+  '&:before': {
+    display: 'none', // Remove the default border above the accordion
+  },
+}))
+
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  padding: '0', // Remove padding
+  '.MuiAccordionSummary-content': {
+    margin: '0', // Remove margin between text and icon
+  },
+  marginTop: '0px !important',
+  display: 'inline-flex',
+}))
 
 interface Params {
   teamId: string
@@ -45,6 +73,9 @@ export default function ({
   // state
   const history = useHistory()
   const location = useLocation()
+  console.log('LOCATION: ', location)
+  const session = useSession()
+  console.log('SESSION: ', session)
   const locationState = location?.state as any
   const prefilledData = locationState?.prefilled as CreateServiceApiResponse
   const { t } = useTranslation()
@@ -53,8 +84,7 @@ export default function ({
   const {
     settings: { cluster },
   } = useSession()
-  const [secretName, setSecretName] = useState<string | undefined>(undefined)
-  const [gitProvider, setGitProvider] = useState<string | null>(null)
+  const [service, setService] = useState<{ name: string; ports?: number } | undefined>(undefined)
 
   // api calls
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
@@ -74,15 +104,13 @@ export default function ({
     isError: isErrorK8sServices,
     refetch: refetchK8sServices,
   } = useGetTeamK8SServicesQuery({ teamId })
-  const {
-    data: secrets,
-    isLoading: isLoadingSecrets,
-    isFetching: isFetchingSecrets,
-    isError: isErrorSecrets,
-    refetch: refetchSecrets,
-  } = useGetSecretsFromK8SQuery({ teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetching) refetchService()
+    if (!isFetchingK8sServices) refetchK8sServices()
+  }, [isDirty])
 
   // form state
   const defaultValues = { ...prefilledData }
@@ -101,36 +129,16 @@ export default function ({
     setValue,
     trigger,
   } = methods
+  const TLSEnabled = watch('ingress.tlsPass')
+  // const TrafficControlEnabled = watch('trafficControl.enabled')
+  const TrafficControlEnabled = true
 
-  // useEffect(() => {
-  //   if (data) {
-  //     reset(data)
-  //     setGitProvider(watch('gitService'))
-  //   } else setGitProvider('gitea')
-
-  //   if (!isEmpty(prefilledData)) {
-  //     reset(prefilledData)
-  //     setGitProvider(prefilledData.gitService)
-  //   }
-  // }, [data, setValue, prefilledData])
-
-  // useEffect(() => {
-  //   const url = watch('repositoryUrl')
-  //   if (url) {
-  //     const githubRegex = /^(https:\/\/github\.com|git@github\.com)/
-  //     const gitlabRegex = /^(https:\/\/gitlab\.com|git@gitlab\.com)/
-  //     if (githubRegex.test(url)) {
-  //       setValue('gitService', 'github')
-  //       setGitProvider('github')
-  //     } else if (gitlabRegex.test(url)) {
-  //       setValue('gitService', 'gitlab')
-  //       setGitProvider('gitlab')
-  //     }
-  //   }
-  // }, [watch('repositoryUrl')])
-  // serviceId = '1'
+  function setActiveService(name: string) {
+    setService(services.find((service) => service.name === name))
+  }
 
   const onSubmit = (data: CreateServiceApiResponse) => {
+    console.log('DATA: ', data)
     // eslint-disable-next-line object-shorthand
     if (serviceId) update({ teamId, serviceId: serviceId, body: data })
     else create({ teamId, body: data })
@@ -143,7 +151,16 @@ export default function ({
   const error = isError || isErrorK8sServices
 
   if (loading) return <PaperLayout loading title={t('TITLE_SERVICE')} />
-
+  // DEMO VALUES
+  const namespaces = ['team-admin', 'team-demo', 'team-demo2']
+  console.log('services: ', k8sServices)
+  console.log('ACTIVE SERVICE: ', service)
+  const services = [
+    { name: 'demo', ports: 80 },
+    { name: 'blue', ports: 1001 },
+    { name: 'green', ports: 91 },
+    { name: 'the-moon', ports: 8080 },
+  ]
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
@@ -152,29 +169,193 @@ export default function ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='General'>
               <FormRow spacing={10}>
-                <TextField label='Namespace' width='large' select>
-                  <MenuItem value='namespace' disabled classes={undefined}>
-                    Select a namespace
-                  </MenuItem>
-                </TextField>
+                {teamId === 'admin' ? (
+                  <TextField
+                    label='Namespace'
+                    width='large'
+                    select
+                    {...register('namespace')}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('name', value)
+                      setValue('ingress.subdomain', `${value}.${teamId}`)
+                    }}
+                  >
+                    <MenuItem value='namespace' disabled classes={undefined}>
+                      Select a namespace
+                    </MenuItem>
+                    {namespaces.map((namespace) => {
+                      return (
+                        <MenuItem value={namespace} classes={undefined}>
+                          {namespace}
+                        </MenuItem>
+                      )
+                    })}
+                  </TextField>
+                ) : (
+                  <TextField label='Namespace' width='large' value={`team-${teamId}`} disabled />
+                )}
               </FormRow>
-              <FormRow spacing={10}>
-                <TextField label='Service Name' width='large' select>
+              <FormRow key={1} spacing={10}>
+                <TextField
+                  label='Service Name'
+                  width='large'
+                  {...register('name')}
+                  select
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setActiveService(value)
+                  }}
+                >
                   <MenuItem value='namespace' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
+                  {services.map((service) => {
+                    return (
+                      <MenuItem value={service.name} classes={undefined}>
+                        {service.name}
+                      </MenuItem>
+                    )
+                  })}
                 </TextField>
-                <TextField label='Port' width='small' />
+                <TextField
+                  label='Port'
+                  width='small'
+                  type='number'
+                  {...register('port')}
+                  min={1}
+                  max={99999}
+                  error={!!errors.port}
+                  helperText={errors.port?.message?.toString()}
+                />
               </FormRow>
             </Section>
             <Section title='Service Exposure'>
               <FormRow spacing={10}>
-                <TextField label='URL' width='large' />
+                <TextField
+                  label='URL'
+                  width='large'
+                  disabled
+                  value={
+                    service !== undefined
+                      ? `https://${service.name}-${cluster.domainSuffix}/`
+                      : `https://*-${cluster.domainSuffix}/`
+                  }
+                />
                 <Iconify
                   icon='eva:question-mark-circle-outline'
                   sx={{ width: '24px', height: '24px', color: '#83868B' }}
                 />
               </FormRow>
+              <Divider sx={{ mt: 4, mb: 2 }} />
+              <StyledAccordion disableGutters>
+                <StyledAccordionSummary
+                  expandIcon={<KeyboardArrowRight />}
+                  aria-controls='advanced-settings-content'
+                  id='advanced-settings-header'
+                  sx={{
+                    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+                      transform: 'rotate(90deg)',
+                    },
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '16px' }}>
+                    Advanced Settings
+                  </Typography>
+                </StyledAccordionSummary>
+                <StyledAccordionDetails>
+                  <KeyValue
+                    title='URL paths'
+                    subTitle='These define where your service is available. For example, /login could point to your app’s login page.'
+                    keyDisabled
+                    keyValue={
+                      service !== undefined ? `${service.name}-${cluster.domainSuffix}/` : `*-${cluster.domainSuffix}/`
+                    }
+                    addLabel='Add another URL path'
+                    name='ingress.paths'
+                    {...register('ingress.paths')}
+                  />
+
+                  {/* {ingressType === 'public' && <PublicIngressForm />} */}
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <KeyValue
+                    title='Domain alias (CNAME)'
+                    subTitle='You can have multiple urls directing to the same url as above. You need to make sure that the DNS provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1'
+                    keyLabel='Domain'
+                    valueLabel='TLS Certificate'
+                    name='ingress.cname'
+                    {...register('ingress.cname')}
+                  />
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <TextField
+                    label='Ingress Class Name'
+                    fullWidth
+                    {...register('ingress.ingressClassName')}
+                    error={!!errors.ingress?.type}
+                    width='large'
+                    value='platform'
+                    select
+                  >
+                    <MenuItem id='platform' value='platform' classes={undefined}>
+                      platform
+                    </MenuItem>
+                  </TextField>
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <ControlledCheckbox
+                    sx={{ my: 2 }}
+                    name='ingress.tlsPass'
+                    {...register('ingress.tlsPass')}
+                    control={control}
+                    label='TLS Passthrough'
+                    explainertext='Requests will be forwarded to the backend service without being decrypted'
+                  />
+
+                  <ControlledCheckbox
+                    sx={{ my: 2 }}
+                    disabled={TLSEnabled}
+                    name='ingress.forwardPath'
+                    {...register('ingress.forwardPath')}
+                    control={control}
+                    label='Forward Path'
+                    explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
+                  />
+
+                  <ControlledCheckbox
+                    sx={{ my: 2 }}
+                    disabled={TLSEnabled}
+                    name='trafficControl.enabled'
+                    {...register('trafficControl.enabled')}
+                    control={control}
+                    label='Enable Traffic Mangement'
+                    explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
+                    deployments behind that service)'
+                  />
+
+                  <LinkedNumberField
+                    labelA='Version A'
+                    labelB='Version B'
+                    valueMax={100}
+                    disabled={TrafficControlEnabled}
+                  />
+
+                  <Divider sx={{ mt: 4, mb: 2 }} />
+
+                  <KeyValue
+                    title='HTTP Response Headers'
+                    keyLabel='Name'
+                    valueLabel='Value'
+                    addLabel='Add another response header'
+                    name='ingress.headers.response.set'
+                    {...register('ingress.headers.response.set')}
+                  />
+                </StyledAccordionDetails>
+              </StyledAccordion>
             </Section>
             {serviceId && (
               <DeleteButton
@@ -185,7 +366,13 @@ export default function ({
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
               />
             )}
-            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+            <Button
+              disabled={isEmpty(service)}
+              type='submit'
+              variant='contained'
+              color='primary'
+              sx={{ float: 'right', textTransform: 'none' }}
+            >
               {serviceId ? 'Edit Service' : 'Add Service'}
             </Button>
           </form>

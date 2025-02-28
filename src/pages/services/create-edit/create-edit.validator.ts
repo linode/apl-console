@@ -13,9 +13,9 @@ const urlValidation = string().test('is-valid-url', 'Invalid URL for the selecte
 export const serviceApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
-  name: string(),
+  name: string().required('Name is required'),
   namespace: string().optional(),
-  port: number(),
+  port: number().required('Port is required'),
   ksvc: object({
     predeployed: boolean().optional(),
   }).optional(),
@@ -23,12 +23,12 @@ export const serviceApiResponseSchema = object({
     enabled: boolean().optional(),
     weightV1: number().when('enabled', {
       is: true,
-      then: number().required(),
+      then: number().required('WeightV1 is required when "trafficControl" is enabled'),
       otherwise: number().optional(),
     }),
     weightV2: number().when('enabled', {
       is: true,
-      then: number().required(),
+      then: number().required('WeightV2 is required when "trafficControl" is enabled'),
       otherwise: number().optional(),
     }),
   }).optional(),
