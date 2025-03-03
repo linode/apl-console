@@ -102,25 +102,17 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
       // This gives you: https://github.com/{company}/{project}.git
       finalUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}/${segments[0]}/${segments[1]}.git`
     } catch (error) {
-      console.error('Invalid URL provided:', error)
       return
     }
 
     const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
-    console.log('halo add chart no mem leaks', payload)
     try {
       const result = await createWorkloadCatalog({ body: payload }).unwrap()
-      if (result) {
-        enqueueSnackbar('Chart successfully added', { variant: 'success' })
-        setOpenNewChartModal(false)
-        // Refresh catalog:
-        // await getWorkloadCatalog()
-      } else {
-        enqueueSnackbar('Error adding chart', { variant: 'error' })
-        setOpenNewChartModal(false)
-      }
+      if (result) enqueueSnackbar('Chart successfully added', { variant: 'success' })
+      else enqueueSnackbar('Error adding chart', { variant: 'error' })
+
+      setOpenNewChartModal(false)
     } catch (error) {
-      console.error('Error adding chart:', error)
       enqueueSnackbar('Error adding chart', { variant: 'error' })
     }
   }

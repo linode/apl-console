@@ -18,6 +18,9 @@ const useStyles = makeStyles()((theme) => {
       margin: '5px',
       maxHeight: '200px',
       height: '58px',
+      '&:hover': {
+        cursor: 'pointer',
+      },
     },
     img: {
       height: '32px',

@@ -190,10 +190,8 @@ export default function NewChartModal({
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
               {/* Literal string because of quotation useage */}
-              ($
               {`Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with "chart.yaml". After
               clicking "Test connection", the chart details will be enabled.`}
-              )
             </Typography>
             {/* Display the chart icon as a non-interactive image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
