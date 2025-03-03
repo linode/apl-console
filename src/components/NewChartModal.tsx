@@ -139,8 +139,8 @@ export default function NewChartModal({
       const chartData = yaml.load(yamlText) as any
 
       // Set chart fields (icon is optional)
-      setChartName(chartData.name || '')
-      setChartIcon(chartData.icon || '')
+      setChartName((chartData.name as string) || '')
+      setChartIcon((chartData.icon as string) || '')
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
       if (pathSegments.length < 5 || pathSegments[2] !== 'blob') return
 
@@ -151,7 +151,6 @@ export default function NewChartModal({
       setChartPath(cp)
       setConnectionTested(true)
     } catch (error) {
-      console.error('Error fetching or processing chart:', error)
       setConnectionTested(false)
     }
   }
@@ -165,7 +164,7 @@ export default function NewChartModal({
     githubUrl.trim() !== '' &&
     !urlError
 
-  // Common sx style to grey out disabled inputs.
+  // Temp solution to style disabled state, cannot be done with styled components.
   const disabledSx = {
     '& .MuiInputBase-root.Mui-disabled': {
       backgroundColor: '#58585833',
@@ -190,6 +189,7 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
+              {/* Literal string because of quotation useage */}
               ($
               {`Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with "chart.yaml". After
               clicking "Test connection", the chart details will be enabled.`}
@@ -254,7 +254,6 @@ export default function NewChartModal({
               disabled={!connectionTested}
               sx={disabledSx}
             />
-            {/* New checkbox: Allow teams to use this chart */}
             <FormControlLabel
               control={
                 <Checkbox checked={allowTeams} onChange={(e) => setAllowTeams(e.target.checked)} color='primary' />
