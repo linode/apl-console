@@ -84,7 +84,7 @@ export default function ({
   const {
     settings: { cluster },
   } = useSession()
-  const [service, setService] = useState<{ name: string; ports?: number } | undefined>(undefined)
+  const [service, setService] = useState<string | undefined>(undefined)
 
   // api calls
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
@@ -129,14 +129,24 @@ export default function ({
     setValue,
     trigger,
   } = methods
+
+  useEffect(() => {
+    if (data) {
+      reset(data)
+      setService(watch('name'))
+    }
+
+    if (!isEmpty(prefilledData)) {
+      reset(prefilledData)
+      setService(prefilledData.name)
+    }
+  }, [data, setValue, prefilledData])
   const TLSEnabled = watch('ingress.tlsPass')
-  // const TrafficControlEnabled = watch('trafficControl.enabled')
-  const TrafficControlEnabled = true
-
+  const TrafficControlEnabled = watch('trafficControl.enabled')
+  console.log('methods', methods)
   function setActiveService(name: string) {
-    setService(services.find((service) => service.name === name))
+    setService(services.find((service) => service.name === name).name)
   }
-
   const onSubmit = (data: CreateServiceApiResponse) => {
     console.log('DATA: ', data)
     // eslint-disable-next-line object-shorthand
@@ -193,7 +203,13 @@ export default function ({
                     })}
                   </TextField>
                 ) : (
-                  <TextField label='Namespace' width='large' value={`team-${teamId}`} disabled />
+                  <TextField
+                    label='Namespace'
+                    width='large'
+                    value={`team-${teamId}`}
+                    disabled
+                    {...register('namespace')}
+                  />
                 )}
               </FormRow>
               <FormRow key={1} spacing={10}>
@@ -204,10 +220,12 @@ export default function ({
                   select
                   onChange={(e) => {
                     const value = e.target.value
+                    setValue('name', value)
                     setActiveService(value)
                   }}
+                  value={watch('name')}
                 >
-                  <MenuItem value='namespace' disabled classes={undefined}>
+                  <MenuItem value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
                   {services.map((service) => {
@@ -238,7 +256,7 @@ export default function ({
                   disabled
                   value={
                     service !== undefined
-                      ? `https://${service.name}-${cluster.domainSuffix}/`
+                      ? `https://${service}-${cluster.domainSuffix}/`
                       : `https://*-${cluster.domainSuffix}/`
                   }
                 />
@@ -269,7 +287,7 @@ export default function ({
                     subTitle='These define where your service is available. For example, /login could point to your app’s login page.'
                     keyDisabled
                     keyValue={
-                      service !== undefined ? `${service.name}-${cluster.domainSuffix}/` : `*-${cluster.domainSuffix}/`
+                      service !== undefined ? `${service}-${cluster.domainSuffix}/` : `*-${cluster.domainSuffix}/`
                     }
                     addLabel='Add another URL path'
                     name='ingress.paths'
@@ -295,7 +313,6 @@ export default function ({
                     label='Ingress Class Name'
                     fullWidth
                     {...register('ingress.ingressClassName')}
-                    error={!!errors.ingress?.type}
                     width='large'
                     value='platform'
                     select
@@ -310,7 +327,6 @@ export default function ({
                   <ControlledCheckbox
                     sx={{ my: 2 }}
                     name='ingress.tlsPass'
-                    {...register('ingress.tlsPass')}
                     control={control}
                     label='TLS Passthrough'
                     explainertext='Requests will be forwarded to the backend service without being decrypted'
@@ -320,7 +336,6 @@ export default function ({
                     sx={{ my: 2 }}
                     disabled={TLSEnabled}
                     name='ingress.forwardPath'
-                    {...register('ingress.forwardPath')}
                     control={control}
                     label='Forward Path'
                     explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
@@ -330,18 +345,20 @@ export default function ({
                     sx={{ my: 2 }}
                     disabled={TLSEnabled}
                     name='trafficControl.enabled'
-                    {...register('trafficControl.enabled')}
                     control={control}
                     label='Enable Traffic Mangement'
                     explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
                     deployments behind that service)'
                   />
-
                   <LinkedNumberField
+                    registers={{
+                      registerA: { ...register('trafficControl.weightV1') },
+                      registerB: { ...register('trafficControl.weightV2') },
+                    }}
                     labelA='Version A'
                     labelB='Version B'
                     valueMax={100}
-                    disabled={TrafficControlEnabled}
+                    disabled={!TrafficControlEnabled}
                   />
 
                   <Divider sx={{ mt: 4, mb: 2 }} />

@@ -3,14 +3,20 @@ import { useState } from 'react'
 import { TextField } from './TextField'
 import FormRow from './FormRow'
 
+interface registers {
+  registerA: any
+  registerB: any
+}
+
 interface LinkedNumberFieldProps {
   labelA: string
   labelB: string
   valueMax: number
   disabled: boolean
+  registers: registers
 }
 
-export default function LinkedNumberField({ labelA, labelB, valueMax, disabled }: LinkedNumberFieldProps) {
+export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, registers }: LinkedNumberFieldProps) {
   const [valueA, setValueA] = useState(valueMax / 2)
   const [valueB, setValueB] = useState(valueMax / 2)
 
@@ -54,6 +60,7 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled }
     <Box>
       <FormRow spacing={10}>
         <TextField
+          {...registers.registerA}
           width='small'
           label={labelA}
           value={valueA}
@@ -61,6 +68,7 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled }
           disabled={disabled}
         />
         <TextField
+          {...registers.registerB}
           width='small'
           label={labelB}
           value={valueB}

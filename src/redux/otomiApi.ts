@@ -391,8 +391,8 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
             ingressClassName?: string
             tlsPass?: boolean
             useDefaultHost?: boolean
-            subdomain: string
-            domain: string
+            subdomain?: string
+            domain?: string
             useCname?: boolean
             cname?: {
               domain?: string
@@ -831,8 +831,8 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
             ingressClassName?: string
             tlsPass?: boolean
             useDefaultHost?: boolean
-            subdomain: string
-            domain: string
+            subdomain?: string
+            domain?: string
             useCname?: boolean
             cname?: {
               domain?: string
@@ -884,8 +884,8 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
             ingressClassName?: string
             tlsPass?: boolean
             useDefaultHost?: boolean
-            subdomain: string
-            domain: string
+            subdomain?: string
+            domain?: string
             useCname?: boolean
             cname?: {
               domain?: string
@@ -937,8 +937,8 @@ export type CreateServiceApiArg = {
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -996,8 +996,8 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
             ingressClassName?: string
             tlsPass?: boolean
             useDefaultHost?: boolean
-            subdomain: string
-            domain: string
+            subdomain?: string
+            domain?: string
             useCname?: boolean
             cname?: {
               domain?: string
@@ -1051,8 +1051,8 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
             ingressClassName?: string
             tlsPass?: boolean
             useDefaultHost?: boolean
-            subdomain: string
-            domain: string
+            subdomain?: string
+            domain?: string
             useCname?: boolean
             cname?: {
               domain?: string
@@ -1106,8 +1106,8 @@ export type EditServiceApiArg = {
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -2622,8 +2622,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -2756,8 +2756,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -2893,8 +2893,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -3030,8 +3030,8 @@ export type CreateProjectApiArg = {
                 ingressClassName?: string
                 tlsPass?: boolean
                 useDefaultHost?: boolean
-                subdomain: string
-                domain: string
+                subdomain?: string
+                domain?: string
                 useCname?: boolean
                 cname?: {
                   domain?: string
@@ -3171,8 +3171,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -3310,8 +3310,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
               ingressClassName?: string
               tlsPass?: boolean
               useDefaultHost?: boolean
-              subdomain: string
-              domain: string
+              subdomain?: string
+              domain?: string
               useCname?: boolean
               cname?: {
                 domain?: string
@@ -3838,9 +3838,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
-  }
-  smtp: {
-    smarthost: string
   }
   ingressClassNames?: string[]
 }
