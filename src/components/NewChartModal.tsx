@@ -96,38 +96,57 @@ export default function NewChartModal({
   actionButtonEndIcon,
   actionButtonFrontIcon,
 }: Props) {
-  // State for the Github URL and chart fields
   const [githubUrl, setGithubUrl] = useState('')
   const [chartName, setChartName] = useState('')
   const [chartIcon, setChartIcon] = useState('')
   const [chartPath, setChartPath] = useState('')
   const [revision, setRevision] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
-  // New state: indicates that Test connection was clicked and passed.
   const [connectionTested, setConnectionTested] = useState(false)
+  const [urlError, setUrlError] = useState<string | null>(null)
 
-  // Form is considered valid when the connection has been tested and required fields are non-empty.
+  // Form is valid if the connection has been tested, required fields are non-empty, and no URL error exists.
   const isFormValid =
     connectionTested &&
     chartName.trim() !== '' &&
     chartPath.trim() !== '' &&
     revision.trim() !== '' &&
-    githubUrl.trim() !== ''
+    githubUrl.trim() !== '' &&
+    !urlError
+
+  // Validate and update the URL error whenever the URL changes.
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setGithubUrl(val)
+    setConnectionTested(false)
+    try {
+      const parsedUrl = new URL(val)
+      if (!parsedUrl.hostname.includes('github.com'))
+        setUrlError('URL must be a valid GitHub URL (containing github.com.')
+      else if (!val.toLowerCase().endsWith('chart.yaml'))
+        setUrlError("This is a valid GitHub URL but does not end with 'chart.yaml'.")
+      else setUrlError(null)
+    } catch (error) {
+      setUrlError('Invalid URL format.')
+    }
+  }
 
   const getChart = async () => {
     if (!githubUrl) {
       console.error('No URL provided')
       return
     }
+    if (urlError) {
+      console.error('URL error:', urlError)
+      return
+    }
     console.log('Test connection clicked with URL:', githubUrl)
     try {
-      // Validate the URL
       const parsedUrl = new URL(githubUrl)
       if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/')) {
         console.error('Invalid URL format for a GitHub chart file.')
         return
       }
-      // Convert GitHub URL to a raw file URL.
       const rawUrl = githubUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob', '')
       const response = await fetch(rawUrl)
       if (!response.ok) {
@@ -137,10 +156,9 @@ export default function NewChartModal({
       const yamlText = await response.text()
       const chartData = yaml.load(yamlText) as any
 
-      // Set chart fields (chart icon is optional)
+      // Set chart fields (icon is optional)
       setChartName(chartData.name || '')
       setChartIcon(chartData.icon || '')
-      // Parse the original URL to extract revision and chart path.
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
       if (pathSegments.length < 5 || pathSegments[2] !== 'blob') {
         console.error('Unexpected URL format.')
@@ -155,18 +173,11 @@ export default function NewChartModal({
       console.log('Icon:', chartData.icon)
       console.log('Chart Path:', cp)
       console.log('Revision:', rev)
-      // Mark that the connection test passed.
       setConnectionTested(true)
     } catch (error) {
       console.error('Error fetching or processing chart:', error)
       setConnectionTested(false)
     }
-  }
-
-  // Reset connectionTested when the URL is changed.
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGithubUrl(e.target.value)
-    setConnectionTested(false)
   }
 
   // Common sx style to grey out disabled inputs.
@@ -209,13 +220,15 @@ export default function NewChartModal({
               />
             </Box>
             {/* Row for the GitHub URL input and Test Connection button */}
-            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
               <TextField
                 sx={{ width: '400px' }}
                 placeholder='Github URL'
                 label='Github URL'
                 value={githubUrl}
                 onChange={handleUrlChange}
+                error={!!urlError}
+                helperText={urlError}
               />
               <Button sx={{ ml: 2, mt: 1, height: '40px', p: 2 }} variant='contained' onClick={getChart}>
                 Test connection
