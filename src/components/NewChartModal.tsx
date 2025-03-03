@@ -11,6 +11,7 @@ import {
   Typography,
   styled,
 } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
 // eslint-disable-next-line import/no-unresolved
 import { OverridableStringUnion } from '@mui/types'
 import yaml from 'js-yaml'
@@ -56,8 +57,6 @@ const ModalFooter = styled('div')({
 interface Props {
   title?: string
   noHeader?: boolean
-  noFooter?: boolean
-  children?: React.ReactNode
   open: boolean
   handleClose: () => void
   handleCancel?: () => void
@@ -84,8 +83,6 @@ interface NewChartValues {
 export default function NewChartModal({
   title,
   noHeader,
-  noFooter,
-  children,
   open,
   handleClose,
   handleCancel,
@@ -96,33 +93,29 @@ export default function NewChartModal({
   actionButtonEndIcon,
   actionButtonFrontIcon,
 }: Props) {
+  // State for the GitHub URL and chart fields
   const [githubUrl, setGithubUrl] = useState('')
   const [chartName, setChartName] = useState('')
   const [chartIcon, setChartIcon] = useState('')
   const [chartPath, setChartPath] = useState('')
   const [revision, setRevision] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
+  // Indicates that Test connection passed.
   const [connectionTested, setConnectionTested] = useState(false)
+  // Error state for the URL input.
   const [urlError, setUrlError] = useState<string | null>(null)
+  // Loading state for the Add Chart button.
+  const [isLoading, setIsLoading] = useState(false)
 
-  // Form is valid if the connection has been tested, required fields are non-empty, and no URL error exists.
-  const isFormValid =
-    connectionTested &&
-    chartName.trim() !== '' &&
-    chartPath.trim() !== '' &&
-    revision.trim() !== '' &&
-    githubUrl.trim() !== '' &&
-    !urlError
-
-  // Validate and update the URL error whenever the URL changes.
+  // Validate the URL whenever it changes.
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value
     setGithubUrl(val)
     setConnectionTested(false)
     try {
       const parsedUrl = new URL(val)
-      if (!parsedUrl.hostname.includes('github.com'))
-        setUrlError('URL must be a valid GitHub URL (containing github.com.')
+      if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/'))
+        setUrlError('URL must be a valid GitHub URL (containing github.com and /blob/).')
       else if (!val.toLowerCase().endsWith('chart.yaml'))
         setUrlError("This is a valid GitHub URL but does not end with 'chart.yaml'.")
       else setUrlError(null)
@@ -132,27 +125,16 @@ export default function NewChartModal({
   }
 
   const getChart = async () => {
-    if (!githubUrl) {
-      console.error('No URL provided')
-      return
-    }
-    if (urlError) {
-      console.error('URL error:', urlError)
-      return
-    }
-    console.log('Test connection clicked with URL:', githubUrl)
+    if (!githubUrl || urlError) return
+
     try {
       const parsedUrl = new URL(githubUrl)
-      if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/')) {
-        console.error('Invalid URL format for a GitHub chart file.')
-        return
-      }
+      if (!parsedUrl.hostname.includes('github.com')) return
+
       const rawUrl = githubUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob', '')
       const response = await fetch(rawUrl)
-      if (!response.ok) {
-        console.error('Failed to fetch the chart file.')
-        return
-      }
+      if (!response.ok) return
+
       const yamlText = await response.text()
       const chartData = yaml.load(yamlText) as any
 
@@ -160,25 +142,28 @@ export default function NewChartModal({
       setChartName(chartData.name || '')
       setChartIcon(chartData.icon || '')
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
-      if (pathSegments.length < 5 || pathSegments[2] !== 'blob') {
-        console.error('Unexpected URL format.')
-        return
-      }
+      if (pathSegments.length < 5 || pathSegments[2] !== 'blob') return
+
       const rev = pathSegments[3]
       const chartPathSegments = pathSegments.slice(4, pathSegments.length - 1)
       const cp = chartPathSegments.join('/')
       setRevision(rev)
       setChartPath(cp)
-      console.log('Name:', chartData.name)
-      console.log('Icon:', chartData.icon)
-      console.log('Chart Path:', cp)
-      console.log('Revision:', rev)
       setConnectionTested(true)
     } catch (error) {
       console.error('Error fetching or processing chart:', error)
       setConnectionTested(false)
     }
   }
+
+  // Form is valid when connection is tested, required fields are filled, and no URL error exists.
+  const isFormValid =
+    connectionTested &&
+    chartName.trim() !== '' &&
+    chartPath.trim() !== '' &&
+    revision.trim() !== '' &&
+    githubUrl.trim() !== '' &&
+    !urlError
 
   // Common sx style to grey out disabled inputs.
   const disabledSx = {
@@ -205,8 +190,10 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml. After
-              clicking Test connection, the chart details will be enabled.
+              ($
+              {`Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with "chart.yaml". After
+              clicking "Test connection", the chart details will be enabled.`}
+              )
             </Typography>
             {/* Display the chart icon as a non-interactive image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -280,12 +267,12 @@ export default function NewChartModal({
           <Button variant='text' color='inherit' onClick={handleCancel ?? handleClose}>
             {cancelButtonText ?? 'Cancel'}
           </Button>
-          <Button
+          <LoadingButton
             variant='contained'
             color={actionButtonColor || 'error'}
             sx={{ ml: 1, bgcolor: actionButtonColor }}
-            onClick={() =>
-              handleAction &&
+            onClick={() => {
+              setIsLoading(true)
               handleAction({
                 url: githubUrl,
                 chartName,
@@ -294,13 +281,14 @@ export default function NewChartModal({
                 revision,
                 allowTeams,
               })
-            }
-            disabled={!isFormValid}
+            }}
+            disabled={!isFormValid || isLoading}
+            loading={isLoading}
             startIcon={actionButtonFrontIcon}
             endIcon={actionButtonEndIcon}
           >
             {actionButtonText}
-          </Button>
+          </LoadingButton>
         </ModalFooter>
       </ModalBox>
     </Modal>
