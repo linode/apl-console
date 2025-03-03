@@ -104,6 +104,9 @@ export default function NewChartModal({
   const [revision, setRevision] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
 
+  // Determines whether the GitHub URL is valid (i.e. a non-empty string that ends with "chart.yaml")
+  const isValidGithubChartUrl = githubUrl.trim() !== '' && githubUrl.toLowerCase().endsWith('chart.yaml')
+
   const getChart = async () => {
     if (!githubUrl) {
       console.error('No URL provided')
@@ -164,6 +167,16 @@ export default function NewChartModal({
     }
   }
 
+  // Common sx style to grey out disabled inputs.
+  const disabledSx = {
+    '& .MuiInputBase-root.Mui-disabled': {
+      backgroundColor: '#58585833',
+    },
+    '& .MuiFormLabel-root.MuiInputLabel-root.Mui-disabled': {
+      color: '#6b6b6b !important',
+    },
+  }
+
   return (
     <Modal open={open} onClose={handleClose}>
       <ModalBox>
@@ -177,6 +190,10 @@ export default function NewChartModal({
         )}
         <ModalContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Helper text */}
+            <Typography variant='body2' color='textSecondary'>
+              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml.
+            </Typography>
             {/* Display the chart icon as a non-interactive image.
                 If chartIcon is not set, show a default placeholder image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -202,12 +219,39 @@ export default function NewChartModal({
                 Test connection
               </Button>
             </Box>
-
-            {/* Editable fields for the fetched chart data */}
-            <TextField label='Chart Name' value={chartName} onChange={(e) => setChartName(e.target.value)} fullWidth />
-            <TextField label='Icon URL' value={chartIcon} onChange={(e) => setChartIcon(e.target.value)} fullWidth />
-            <TextField label='Chart Path' value={chartPath} onChange={(e) => setChartPath(e.target.value)} fullWidth />
-            <TextField label='Revision' value={revision} onChange={(e) => setRevision(e.target.value)} fullWidth />
+            {/* Editable fields for the fetched chart data. They remain disabled until a valid URL is provided. */}
+            <TextField
+              label='Chart Name'
+              value={chartName}
+              onChange={(e) => setChartName(e.target.value)}
+              fullWidth
+              disabled={!isValidGithubChartUrl}
+              sx={disabledSx}
+            />
+            <TextField
+              label='Icon URL'
+              value={chartIcon}
+              onChange={(e) => setChartIcon(e.target.value)}
+              fullWidth
+              disabled={!isValidGithubChartUrl}
+              sx={disabledSx}
+            />
+            <TextField
+              label='Chart Path'
+              value={chartPath}
+              onChange={(e) => setChartPath(e.target.value)}
+              fullWidth
+              disabled={!isValidGithubChartUrl}
+              sx={disabledSx}
+            />
+            <TextField
+              label='Revision'
+              value={revision}
+              onChange={(e) => setRevision(e.target.value)}
+              fullWidth
+              disabled={!isValidGithubChartUrl}
+              sx={disabledSx}
+            />
             {/* New checkbox: Allow teams to use this chart */}
             <FormControlLabel
               control={

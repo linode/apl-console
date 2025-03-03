@@ -5,6 +5,7 @@ import { makeStyles } from 'tss-react/mui'
 import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { useHistory } from 'react-router-dom'
+import { useSnackbar } from 'notistack'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
 import CatalogAddChartCard from './CatalogAddChartCard'
@@ -75,6 +76,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
   const { user } = useSession()
   const { isPlatformAdmin } = user
 
+  const { enqueueSnackbar } = useSnackbar()
   const [createWorkloadCatalog] = useCreateWorkloadCatalogMutation()
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     setFilteredCatalog(filtered)
   }
 
-  const addChart = (values: NewChartValues) => {
+  const addChart = async (values: NewChartValues) => {
     let finalUrl = ''
 
     try {
@@ -106,11 +108,21 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
 
     const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
     console.log('halo add chart no mem leaks', payload)
-    createWorkloadCatalog({ body: payload }).then((res) => {
-      console.log(res)
-      setOpenNewChartModal(false)
-      history.go(0)
-    })
+    try {
+      const result = await createWorkloadCatalog({ body: payload }).unwrap()
+      if (result) {
+        enqueueSnackbar('Chart successfully added', { variant: 'success' })
+        setOpenNewChartModal(false)
+        // Refresh catalog:
+        // await getWorkloadCatalog()
+      } else {
+        enqueueSnackbar('Error adding chart', { variant: 'error' })
+        setOpenNewChartModal(false)
+      }
+    } catch (error) {
+      console.error('Error adding chart:', error)
+      enqueueSnackbar('Error adding chart', { variant: 'error' })
+    }
   }
 
   return (
