@@ -103,9 +103,8 @@ export default function NewChartModal({
   const [chartPath, setChartPath] = useState('')
   const [revision, setRevision] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
-
-  // Determines whether the GitHub URL is valid (i.e. a non-empty string that ends with "chart.yaml")
-  const isValidGithubChartUrl = githubUrl.trim() !== '' && githubUrl.toLowerCase().endsWith('chart.yaml')
+  // New state: indicates that Test connection was clicked and passed.
+  const [connectionTested, setConnectionTested] = useState(false)
 
   const getChart = async () => {
     if (!githubUrl) {
@@ -114,38 +113,25 @@ export default function NewChartModal({
     }
     console.log('Test connection clicked with URL:', githubUrl)
     try {
-      // Validate the URL
       const parsedUrl = new URL(githubUrl)
       if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/')) {
         console.error('Invalid URL format for a GitHub chart file.')
         return
       }
-
       // Convert GitHub URL to a raw file URL.
-      // e.g., "https://github.com/nats-io/k8s/blob/main/helm/charts/nats/Chart.yaml"
-      // becomes "https://raw.githubusercontent.com/nats-io/k8s/main/helm/charts/nats/Chart.yaml"
       const rawUrl = githubUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob', '')
-
-      // Fetch the YAML file from the raw URL.
       const response = await fetch(rawUrl)
       if (!response.ok) {
         console.error('Failed to fetch the chart file.')
         return
       }
       const yamlText = await response.text()
-
-      // Parse the YAML content.
       const chartData = yaml.load(yamlText) as any
 
-      // Set the chart name and icon (if missing, default to empty string so user can edit)
+      // Set chart fields
       setChartName(chartData.name || '')
       setChartIcon(chartData.icon || '')
-
-      // Parse the original URL to extract revision and chart path.
-      // Example pathname: "/nats-io/k8s/blob/main/helm/charts/nats/Chart.yaml"
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
-      // Expected structure:
-      // [ owner, repo, "blob", revision, ...chartPath, fileName ]
       if (pathSegments.length < 5 || pathSegments[2] !== 'blob') {
         console.error('Unexpected URL format.')
         return
@@ -153,18 +139,25 @@ export default function NewChartModal({
       const rev = pathSegments[3]
       const chartPathSegments = pathSegments.slice(4, pathSegments.length - 1)
       const cp = chartPathSegments.join('/')
-
       setRevision(rev)
       setChartPath(cp)
 
-      // Log the extracted values.
       console.log('Name:', chartData.name)
       console.log('Icon:', chartData.icon)
       console.log('Chart Path:', cp)
       console.log('Revision:', rev)
+      // Mark that the connection test passed.
+      setConnectionTested(true)
     } catch (error) {
       console.error('Error fetching or processing chart:', error)
+      setConnectionTested(false)
     }
+  }
+
+  // Reset connectionTested when the URL is changed.
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setGithubUrl(e.target.value)
+    setConnectionTested(false)
   }
 
   // Common sx style to grey out disabled inputs.
@@ -172,7 +165,7 @@ export default function NewChartModal({
     '& .MuiInputBase-root.Mui-disabled': {
       backgroundColor: '#58585833',
     },
-    '& .MuiFormLabel-root.MuiInputLabel-root.Mui-disabled': {
+    '& .MuiFormLabel-root.Mui-disabled': {
       color: '#6b6b6b !important',
     },
   }
@@ -192,10 +185,10 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml.
+              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml. Once
+              the Test connection button is clicked and passes, the chart details will be enabled.
             </Typography>
-            {/* Display the chart icon as a non-interactive image.
-                If chartIcon is not set, show a default placeholder image. */}
+            {/* Display the chart icon as a non-interactive image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <img
                 src={
@@ -213,19 +206,19 @@ export default function NewChartModal({
                 placeholder='Github URL'
                 label='Github URL'
                 value={githubUrl}
-                onChange={(e) => setGithubUrl(e.target.value)}
+                onChange={handleUrlChange}
               />
               <Button sx={{ ml: 2, mt: 1, height: '40px', p: 2 }} variant='contained' onClick={getChart}>
                 Test connection
               </Button>
             </Box>
-            {/* Editable fields for the fetched chart data. They remain disabled until a valid URL is provided. */}
+            {/* Editable fields for the fetched chart data. They are enabled only if connectionTested is true. */}
             <TextField
               label='Chart Name'
               value={chartName}
               onChange={(e) => setChartName(e.target.value)}
               fullWidth
-              disabled={!isValidGithubChartUrl}
+              disabled={!connectionTested}
               sx={disabledSx}
             />
             <TextField
@@ -233,7 +226,7 @@ export default function NewChartModal({
               value={chartIcon}
               onChange={(e) => setChartIcon(e.target.value)}
               fullWidth
-              disabled={!isValidGithubChartUrl}
+              disabled={!connectionTested}
               sx={disabledSx}
             />
             <TextField
@@ -241,7 +234,7 @@ export default function NewChartModal({
               value={chartPath}
               onChange={(e) => setChartPath(e.target.value)}
               fullWidth
-              disabled={!isValidGithubChartUrl}
+              disabled={!connectionTested}
               sx={disabledSx}
             />
             <TextField
@@ -249,7 +242,7 @@ export default function NewChartModal({
               value={revision}
               onChange={(e) => setRevision(e.target.value)}
               fullWidth
-              disabled={!isValidGithubChartUrl}
+              disabled={!connectionTested}
               sx={disabledSx}
             />
             {/* New checkbox: Allow teams to use this chart */}
