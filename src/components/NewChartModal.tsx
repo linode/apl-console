@@ -106,6 +106,14 @@ export default function NewChartModal({
   // New state: indicates that Test connection was clicked and passed.
   const [connectionTested, setConnectionTested] = useState(false)
 
+  // Form is considered valid when the connection has been tested and required fields are non-empty.
+  const isFormValid =
+    connectionTested &&
+    chartName.trim() !== '' &&
+    chartPath.trim() !== '' &&
+    revision.trim() !== '' &&
+    githubUrl.trim() !== ''
+
   const getChart = async () => {
     if (!githubUrl) {
       console.error('No URL provided')
@@ -113,6 +121,7 @@ export default function NewChartModal({
     }
     console.log('Test connection clicked with URL:', githubUrl)
     try {
+      // Validate the URL
       const parsedUrl = new URL(githubUrl)
       if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/')) {
         console.error('Invalid URL format for a GitHub chart file.')
@@ -128,9 +137,10 @@ export default function NewChartModal({
       const yamlText = await response.text()
       const chartData = yaml.load(yamlText) as any
 
-      // Set chart fields
+      // Set chart fields (chart icon is optional)
       setChartName(chartData.name || '')
       setChartIcon(chartData.icon || '')
+      // Parse the original URL to extract revision and chart path.
       const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
       if (pathSegments.length < 5 || pathSegments[2] !== 'blob') {
         console.error('Unexpected URL format.')
@@ -141,7 +151,6 @@ export default function NewChartModal({
       const cp = chartPathSegments.join('/')
       setRevision(rev)
       setChartPath(cp)
-
       console.log('Name:', chartData.name)
       console.log('Icon:', chartData.icon)
       console.log('Chart Path:', cp)
@@ -185,8 +194,8 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml. Once
-              the Test connection button is clicked and passes, the chart details will be enabled.
+              Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with chart.yaml. After
+              clicking Test connection, the chart details will be enabled.
             </Typography>
             {/* Display the chart icon as a non-interactive image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -222,7 +231,7 @@ export default function NewChartModal({
               sx={disabledSx}
             />
             <TextField
-              label='Icon URL'
+              label='Icon URL (optional)'
               value={chartIcon}
               onChange={(e) => setChartIcon(e.target.value)}
               fullWidth
@@ -254,33 +263,32 @@ export default function NewChartModal({
             />
           </Box>
         </ModalContent>
-        {!noFooter && (
-          <ModalFooter>
-            <Button variant='text' color='inherit' onClick={handleCancel ?? handleClose}>
-              {cancelButtonText ?? 'Cancel'}
-            </Button>
-            <Button
-              variant='contained'
-              color={actionButtonColor || 'error'}
-              sx={{ ml: 1, bgcolor: actionButtonColor }}
-              onClick={() =>
-                handleAction &&
-                handleAction({
-                  url: githubUrl,
-                  chartName,
-                  chartIcon,
-                  chartPath,
-                  revision,
-                  allowTeams,
-                })
-              }
-              startIcon={actionButtonFrontIcon}
-              endIcon={actionButtonEndIcon}
-            >
-              {actionButtonText}
-            </Button>
-          </ModalFooter>
-        )}
+        <ModalFooter>
+          <Button variant='text' color='inherit' onClick={handleCancel ?? handleClose}>
+            {cancelButtonText ?? 'Cancel'}
+          </Button>
+          <Button
+            variant='contained'
+            color={actionButtonColor || 'error'}
+            sx={{ ml: 1, bgcolor: actionButtonColor }}
+            onClick={() =>
+              handleAction &&
+              handleAction({
+                url: githubUrl,
+                chartName,
+                chartIcon,
+                chartPath,
+                revision,
+                allowTeams,
+              })
+            }
+            disabled={!isFormValid}
+            startIcon={actionButtonFrontIcon}
+            endIcon={actionButtonEndIcon}
+          >
+            {actionButtonText}
+          </Button>
+        </ModalFooter>
       </ModalBox>
     </Modal>
   )
