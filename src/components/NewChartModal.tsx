@@ -100,7 +100,7 @@ export default function NewChartModal({
   const [chartPath, setChartPath] = useState('')
   const [revision, setRevision] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
-  // Indicates that Test connection passed.
+  // Indicates that Get details passed.
   const [connectionTested, setConnectionTested] = useState(false)
   // Error state for the URL input.
   const [urlError, setUrlError] = useState<string | null>(null)
@@ -191,7 +191,7 @@ export default function NewChartModal({
             <Typography variant='body2' color='textSecondary'>
               {/* Literal string because of quotation useage */}
               {`Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with "chart.yaml". After
-              clicking "Test connection", the chart details will be enabled.`}
+              clicking "Get Details", the chart details will be enabled.`}
             </Typography>
             {/* Display the chart icon as a non-interactive image. */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -204,7 +204,7 @@ export default function NewChartModal({
                 style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }}
               />
             </Box>
-            {/* Row for the GitHub URL input and Test Connection button */}
+            {/* Row for the GitHub URL input and Get details button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
               <TextField
                 sx={{ width: '400px' }}
@@ -216,7 +216,7 @@ export default function NewChartModal({
                 helperText={urlError}
               />
               <Button sx={{ ml: 2, mt: 1, height: '40px', p: 2 }} variant='contained' onClick={getChart}>
-                Test connection
+                Get details
               </Button>
             </Box>
             {/* Editable fields for the fetched chart data. They are enabled only if connectionTested is true. */}
