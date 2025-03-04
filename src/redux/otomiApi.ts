@@ -307,6 +307,12 @@ const injectedRtkApi = api.injectEndpoints({
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/settingsInfo` }),
     }),
+    getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
+      query: (queryArg) => ({
+        url: `/repoBranches`,
+        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+      }),
+    }),
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
       query: (queryArg) => ({
         url: `/testRepoConnect`,
@@ -3845,6 +3851,15 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
+export type GetRepoBranchesApiArg = {
+  /** URL of the repository */
+  url?: string
+  /** Id of the team */
+  teamId?: string
+  /** Name of the secret for private repositories */
+  secret?: string
+}
 export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
@@ -4549,6 +4564,7 @@ export const {
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetRepoBranchesQuery,
   useGetTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,

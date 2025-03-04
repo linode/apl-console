@@ -29,7 +29,7 @@ const StyledTypography = styled(Typography)<{ selected: boolean }>(({ theme, sel
 }))
 
 interface ImgButtonGroupProps {
-  title: string
+  title?: string
   name: string
   control: any
   value: string
@@ -45,11 +45,13 @@ function ImgButtonGroup({ title, name, control, value, options, onChange }: ImgB
       defaultValue={value}
       render={({ field }) => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
-          <Box>
-            <Typography variant='h6' sx={{ fontSize: 16, fontWeight: 400 }}>
-              {title}
-            </Typography>
-          </Box>
+          {title && (
+            <Box>
+              <Typography variant='h6' sx={{ fontSize: 16, fontWeight: 400 }}>
+                {title}
+              </Typography>
+            </Box>
+          )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             {options.map((option) => (
               <StyledButton

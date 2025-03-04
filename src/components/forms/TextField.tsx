@@ -522,7 +522,9 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
         </FormHelperText>
       )}
       {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
-        <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
+        <FormHelperText data-qa-textfield-helper-text sx={{ width: widthMap[width] }}>
+          {helperText}
+        </FormHelperText>
       )}
     </Box>
   )

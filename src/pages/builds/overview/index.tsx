@@ -1,17 +1,21 @@
+import { skipToken } from '@reduxjs/toolkit/query/react'
+import { HeadCell } from 'components/EnhancedTable'
+import InformationBanner from 'components/InformationBanner'
+import ListTable from 'components/ListTable'
+import { getStatus } from 'components/Workloads'
+import useStatus from 'hooks/useStatus'
+import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
+import { useGetAllBuildsQuery, useGetTeamBuildsQuery } from 'redux/otomiApi'
+import { getRole } from 'utils/data'
 import { Box, Tooltip, Typography } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
-import useStatus from 'hooks/useStatus'
-import { HeadCell } from './EnhancedTable'
-import RLink from './Link'
-import ListTable from './ListTable'
-import { getStatus } from './Workloads'
-import InformationBanner from './InformationBanner'
+import RLink from '../../../components/Link'
 
 interface Row {
   teamId: string
@@ -113,12 +117,37 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   )
 }
 
-interface Props {
-  builds: GetTeamBuildsApiResponse
+interface Params {
   teamId?: string
 }
 
-export default function ({ builds, teamId }: Props): React.ReactElement {
+export default function ({
+  match: {
+    params: { teamId },
+  },
+}: RouteComponentProps<Params>): React.ReactElement {
+  const {
+    data: allBuilds,
+    isLoading: isLoadingAllBuilds,
+    isFetching: isFetchingAllBuilds,
+    refetch: refetchAllBuilds,
+  } = useGetAllBuildsQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamBuilds,
+    isLoading: isLoadingTeamBuilds,
+    isFetching: isFetchingTeamBuilds,
+    refetch: refetchTeamBuilds,
+  } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!teamId && !isFetchingAllBuilds) refetchAllBuilds()
+    else if (teamId && !isFetchingTeamBuilds) refetchTeamBuilds()
+  }, [isDirty])
+
+  const { t } = useTranslation()
+  // END HOOKS
+
   const {
     appsEnabled,
     settings: {
@@ -126,8 +155,6 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
   } = useSession()
   const status = useStatus()
-
-  const { t } = useTranslation()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -183,7 +210,10 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     </Typography>
   )
 
-  return (
+  const loading = isLoadingAllBuilds || isLoadingTeamBuilds
+  const builds = teamId ? teamBuilds : allBuilds
+
+  const comp = builds && (
     <ListTable
       teamId={teamId}
       headCells={headCells}
@@ -192,4 +222,5 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       customButtonText={customButtonText()}
     />
   )
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILDS', { scope: getRole(teamId) })} />
 }
