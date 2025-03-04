@@ -5,8 +5,8 @@ import { ThemeProvider as MUIThemeProvider, ThemeOptions, createTheme } from '@m
 //
 import useSettings from 'hooks/useSettings'
 import palette from './palette'
-import typography from './typography'
 import breakpoints from './breakpoints'
+import font from './font'
 import componentsOverride from './overrides'
 import shadows, { customShadows } from './shadows'
 
@@ -24,8 +24,8 @@ export default function AppThemeProvider({ children }: Props) {
   const themeOptions: ThemeOptions = useMemo(
     () => ({
       palette: isLight ? palette.light : palette.dark,
-      typography,
       breakpoints,
+      font,
       shape: { borderRadius: 8 },
       direction: 'ltr',
       shadows: isLight ? shadows.light : shadows.dark,

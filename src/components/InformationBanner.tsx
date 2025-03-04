@@ -1,4 +1,4 @@
-import { Box, Typography, styled } from '@mui/material'
+import { Box, Typography, styled, useTheme } from '@mui/material'
 import React from 'react'
 import Iconify from './Iconify'
 
@@ -17,10 +17,11 @@ interface Props {
 }
 
 export default function InformationBanner({ message, children }: Props) {
+  const theme = useTheme()
   return (
     <StyledInfoBanner>
       <Iconify icon='material-symbols:info' width={40} height={28} color='#c7d030d9' />
-      <Typography>{message}</Typography>
+      <Typography sx={{ color: theme.palette.text.primary }}>{message}</Typography>
       {children}
     </StyledInfoBanner>
   )

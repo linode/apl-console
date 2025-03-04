@@ -43,6 +43,6 @@ export const defaultSettings: SettingsValueProps = {
   themeMode: 'dark',
   themeContrast: 'default',
   themeLayout: 'horizontal',
-  themeColorPresets: 'blue',
+  themeColorPresets: 'cyan',
   themeStretch: false,
 }

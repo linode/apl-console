@@ -62,7 +62,7 @@
   "TITLE_NETPOL": "Network Policy {{secretId}} - {{role}}",
   "TITLE_SECRETS": "Secrets",
   "TITLE_SEALEDSECRETS": "Sealed Secrets",
-  "TITLE_NETPOLS": "Sealed Secrets",
+  "TITLE_NETPOLS": "Network Policies",
   "TITLE_SERVICE": "Service details",
   "TITLE_SERVICES": "Services - {{scope}}",
   "TITLE_SETTINGS": "Settings - {{settingId}}",
@@ -100,5 +100,9 @@
   "edit": "edit",
   "enabled": "enabled",
   "help": "help",
-  "submit": "submit"
+  "submit": "submit",
+  "CodeRepository": "Code Repository",
+  "CodeRepository_plural": "Code Repositories",
+  "TITLE_CODEREPOSITORY": "Code Repository Details",
+  "TITLE_CODEREPOSITORIES": "Code Repositories - {{scope}}"
 }

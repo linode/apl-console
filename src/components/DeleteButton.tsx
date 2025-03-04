@@ -11,8 +11,9 @@ interface DeleteButtonProps {
   resourceName: string
   resourceType: string
   customContent?: string
+  sx?: any
 }
-export default function ({ loading, disabled, ...other }: DeleteButtonProps): React.ReactElement {
+export default function ({ loading, disabled, sx, ...other }: DeleteButtonProps): React.ReactElement {
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
@@ -33,6 +34,7 @@ export default function ({ loading, disabled, ...other }: DeleteButtonProps): Re
         onClick={onButtonClick}
         loading={loading}
         variant='contained'
+        sx={{ ...sx }}
       >
         {t('delete')}
       </LoadingButton>
