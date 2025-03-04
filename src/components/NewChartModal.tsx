@@ -15,6 +15,7 @@ import { LoadingButton } from '@mui/lab'
 // eslint-disable-next-line import/no-unresolved
 import { OverridableStringUnion } from '@mui/types'
 import yaml from 'js-yaml'
+import DefaultLogo from '../assets/akamai-logo-rgb-waveOnly'
 
 // styles ----------------------------------------------------------------
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -189,21 +190,8 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              {/* Literal string because of quotation useage */}
-              {`Please provide a valid GitHub URL pointing to a Chart.yaml file. The URL must end with "chart.yaml". After
-              clicking "Get Details", the chart details will be enabled.`}
+              Please provide a valid GitHub URL pointing to a Chart.yaml file
             </Typography>
-            {/* Display the chart icon as a non-interactive image. */}
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <img
-                src={
-                  chartIcon ||
-                  'https://assets.streamlinehq.com/image/private/w_300,h_300,ar_1/f_auto/v1/icons/logos/akamai-gqva4arap2uinswj55zve.png/akamai-4cwl4z4ddcnjbmpmzcl38.png?_a=DAJFJtWIZAAC'
-                }
-                alt='Chart Icon'
-                style={{ maxWidth: '100px', maxHeight: '100px', objectFit: 'contain' }}
-              />
-            </Box>
             {/* Row for the GitHub URL input and Get details button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
               <TextField
@@ -228,14 +216,36 @@ export default function NewChartModal({
               disabled={!connectionTested}
               sx={disabledSx}
             />
-            <TextField
-              label='Icon URL (optional)'
-              value={chartIcon}
-              onChange={(e) => setChartIcon(e.target.value)}
-              fullWidth
-              disabled={!connectionTested}
-              sx={disabledSx}
-            />
+            {/* Icon URL field with preview image next to it */}
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+              <TextField
+                label='Icon URL (optional)'
+                value={chartIcon}
+                onChange={(e) => setChartIcon(e.target.value)}
+                fullWidth
+                disabled={!connectionTested}
+                sx={disabledSx}
+              />
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {chartIcon ? (
+                  <img
+                    src={chartIcon}
+                    alt='Icon preview'
+                    style={{ maxWidth: '50px', maxHeight: '50px', objectFit: 'contain', marginTop: '5px' }}
+                  />
+                ) : (
+                  <DefaultLogo width='50px' height='50px' />
+                )}
+              </Box>
+            </Box>
             <TextField
               label='Chart Path'
               value={chartPath}
