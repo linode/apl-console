@@ -18,7 +18,6 @@ export default function ({
     params: { teamId, buildName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  console.log('buildId:', buildName)
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
     useCreateBuildMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBuildMutation()
