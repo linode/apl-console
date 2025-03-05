@@ -1,13 +1,5 @@
 import { array, boolean, number, object, string } from 'yup'
 
-// Custom validation for repositoryUrl
-const urlValidation = string().test('is-valid-url', 'Invalid URL for the selected git service', function (value) {
-  const { gitService } = this.parent
-  if (gitService === 'gitea') return value.startsWith('https://gitea')
-  if (gitService === 'github') return /^(https:\/\/github\.com\/.+|git@github\.com:.+\.git)$/.test(value)
-  if (gitService === 'gitlab') return /^(https:\/\/gitlab\.com\/.+|git@gitlab\.com:.+\.git)$/.test(value)
-  return true
-})
 const ingressPublicSchema = object({
   ingressClassName: string().optional(),
   tlsPass: boolean().optional(),

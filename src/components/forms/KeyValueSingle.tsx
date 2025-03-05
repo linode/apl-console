@@ -1,9 +1,8 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
-import { Box, Button, IconButton } from '@mui/material'
+import React, { useState } from 'react'
+import { Box } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from '@mui/styles'
-import { Add, Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
 import { useFieldArray, useFormContext } from 'react-hook-form'
@@ -28,6 +27,11 @@ const useStyles = makeStyles({
   },
 })
 
+interface registers {
+  registerA: any
+  registerB: any
+}
+
 interface KeyValueProps {
   title: string
   subTitle?: string
@@ -37,9 +41,8 @@ interface KeyValueProps {
   showLabel?: boolean
   valueLabel: string
   valueDisabled?: boolean
-  addLabel?: string
   name: string
-  onlyValue?: boolean
+  registers?: registers
 }
 
 export default function KeyValue(props: KeyValueProps) {
@@ -51,13 +54,12 @@ export default function KeyValue(props: KeyValueProps) {
     subTitle,
     keyLabel,
     valueLabel,
-    addLabel,
     name,
-    onlyValue,
     keyValue,
     keyDisabled = false,
     showLabel = true,
     valueDisabled = false,
+    registers,
   } = props
 
   const [items, setItems] = useState([{ [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' }])
@@ -67,45 +69,21 @@ export default function KeyValue(props: KeyValueProps) {
     name,
   })
 
-  const handleAddItem = () => {
-    append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
-  }
-
-  useEffect(() => {
-    handleAddItem()
-  }, [])
-
   return (
     <Box>
       <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
-      {fields.map((item, index) => (
-        <FormRow spacing={10}>
-          <TextField
-            sx={{ color: '#B5B5BC' }}
-            disabled={keyDisabled}
-            value={keyValue}
-            label={showLabel && index === 0 ? keyLabel : ''}
-            {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
-          />
-          <TextField
-            disabled={valueDisabled}
-            label={showLabel && index === 0 ? valueLabel : ''}
-            {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
-          />
-          {addLabel && (
-            <IconButton onClick={() => remove(index)}>
-              <Clear />
-            </IconButton>
-          )}
-        </FormRow>
-      ))}
-      {addLabel && (
-        <Button sx={{ fontSize: '10px' }} className={classes.addItemButton} onClick={handleAddItem}>
-          <Add /> {addLabel}
-        </Button>
-      )}
+      <FormRow spacing={10}>
+        <TextField
+          sx={{ color: '#B5B5BC' }}
+          disabled={keyDisabled}
+          value={keyValue}
+          label={showLabel ? keyLabel : ''}
+          {...registers.registerA}
+        />
+        <TextField disabled={valueDisabled} label={showLabel ? valueLabel : ''} {...registers.registerB} />
+      </FormRow>
     </Box>
   )
 }

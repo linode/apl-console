@@ -29,6 +29,7 @@ import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { isEmpty } from 'lodash'
 import LinkedNumberField from 'components/forms/LinkedNumberField'
+import KeyValueSingle from 'components/forms/KeyValueSingle'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
 
@@ -143,10 +144,12 @@ export default function ({
   }, [data, setValue, prefilledData])
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
+
   console.log('methods', methods)
   function setActiveService(name: string) {
     setService(services.find((service) => service.name === name).name)
   }
+
   const onSubmit = (data: CreateServiceApiResponse) => {
     console.log('DATA: ', data)
     // eslint-disable-next-line object-shorthand
@@ -155,7 +158,7 @@ export default function ({
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
-    return <Redirect to={`/teams/${teamId}/coderepositories`} />
+    return <Redirect to={`/teams/${teamId}/services`} />
 
   const loading = isLoading || isLoadingK8sServices
   const error = isError || isErrorK8sServices
@@ -242,7 +245,7 @@ export default function ({
                   type='number'
                   {...register('port')}
                   min={1}
-                  max={99999}
+                  max={65535}
                   error={!!errors.port}
                   helperText={errors.port?.message?.toString()}
                 />
@@ -289,7 +292,11 @@ export default function ({
                     keyValue={
                       service !== undefined ? `${service}-${cluster.domainSuffix}/` : `*-${cluster.domainSuffix}/`
                     }
+                    keyLabel='Domain'
+                    valueLabel='Path'
+                    showLabel={false}
                     addLabel='Add another URL path'
+                    onlyValue
                     name='ingress.paths'
                     {...register('ingress.paths')}
                   />
@@ -298,13 +305,16 @@ export default function ({
 
                   <Divider sx={{ mt: 4, mb: 2 }} />
 
-                  <KeyValue
+                  <KeyValueSingle
                     title='Domain alias (CNAME)'
                     subTitle='You can have multiple urls directing to the same url as above. You need to make sure that the DNS provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1'
-                    keyLabel='Domain'
-                    valueLabel='TLS Certificate'
+                    keyLabel='domain'
+                    valueLabel='tlsSecretName'
                     name='ingress.cname'
-                    {...register('ingress.cname')}
+                    registers={{
+                      registerA: { ...register('ingress.cname.domain') },
+                      registerB: { ...register('ingress.cname.tlsSecretName') },
+                    }}
                   />
 
                   <Divider sx={{ mt: 4, mb: 2 }} />
