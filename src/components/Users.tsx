@@ -89,7 +89,7 @@ function UserTeamSelector({
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Checkbox disabled={isDisabled} checked={row.teams.includes(teamId)} onChange={handleUserTeamToggle} />
+      <Checkbox disabled={isDisabled} checked={row?.teams?.includes(teamId)} onChange={handleUserTeamToggle} />
     </Box>
   )
 }
