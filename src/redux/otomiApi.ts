@@ -11,9 +11,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
-      query: () => ({ url: `/secrets` }),
-    }),
     getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
       query: () => ({ url: `/services` }),
     }),
@@ -84,12 +81,6 @@ const injectedRtkApi = api.injectEndpoints({
         url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
         method: 'DELETE',
       }),
-    }),
-    getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
-    }),
-    createSecret: build.mutation<CreateSecretApiResponse, CreateSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets`, method: 'POST', body: queryArg.body }),
     }),
     getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
       query: () => ({ url: `/netpols` }),
@@ -341,26 +332,6 @@ export type GetValuesApiArg = {
   excludeSecrets?: 'true' | 'false'
   withWorkloadValues?: 'true' | 'false'
 }
-export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}[]
-export type GetAllSecretsApiArg = void
 export type GetAllServicesApiResponse = /** status 200 Successfully obtained all services */ {
   id?: string
   teamId?: string
@@ -1018,7 +989,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
 export type GetServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
+  /** Name of the service */
   serviceName: string
 }
 export type EditServiceApiResponse = /** status 200 Successfully edited service */ {
@@ -1073,7 +1044,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
 export type EditServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
+  /** Name of the service */
   serviceName: string
   /** Service object that contains updated values */
   body: {
@@ -1130,7 +1101,7 @@ export type DeleteServiceApiResponse = /** status 200 Successfully deleted a ser
 export type DeleteServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
+  /** Name of the service */
   serviceName: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
@@ -1374,72 +1345,6 @@ export type DeleteSealedSecretApiArg = {
   teamId: string
   /** Name of the sealed secret */
   sealedSecretName: string
-}
-export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}[]
-export type GetSecretsApiArg = {
-  /** ID of team to return */
-  teamId: string
-}
-export type CreateSecretApiResponse = /** status 200 Successfully stored secret configuration */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}
-export type CreateSecretApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Service object */
-  body: {
-    id?: string
-    name: string
-    namespace?: string
-    secret:
-      | {
-          type: 'generic'
-          entries: string[]
-        }
-      | {
-          type: 'docker-registry'
-        }
-      | {
-          type: 'tls'
-          crt: string
-          key?: string
-          ca?: string
-        }
-  }
 }
 export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
   id?: string
@@ -1708,7 +1613,7 @@ export type DeleteBackupApiResponse = /** status 200 Successfully deleted a back
 export type DeleteBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
+  /** Name of the backup */
   backupName: string
 }
 export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
@@ -1726,7 +1631,7 @@ export type GetBackupApiResponse = /** status 200 Successfully obtained backup c
 export type GetBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
+  /** Name of the backup */
   backupName: string
 }
 export type EditBackupApiResponse = /** status 200 Successfully edited a team backup */ {
@@ -1744,7 +1649,7 @@ export type EditBackupApiResponse = /** status 200 Successfully edited a team ba
 export type EditBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
+  /** Name of the backup */
   backupName: string
   /** Backup object that contains updated values */
   body: {
@@ -1919,7 +1824,7 @@ export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build
 export type DeleteBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** Name of the build */
   buildName: string
 }
 export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
@@ -1960,7 +1865,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
 export type GetBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** Name of the build */
   buildName: string
 }
 export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
@@ -2001,7 +1906,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
 export type EditBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
+  /** Name of the build */
   buildName: string
   /** Build object that contains updated values */
   body: {
@@ -2978,7 +2883,7 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
+  /** Name of the project */
   projectName: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
@@ -3117,7 +3022,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
+  /** Name of the project */
   projectName: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
@@ -3256,7 +3161,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
+  /** Name of the project */
   projectName: string
   /** Project object that contains updated values */
   body: object
@@ -3525,7 +3430,7 @@ export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a wo
 export type DeleteWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** Name of the workload */
   workloadName: string
 }
 export type GetWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
@@ -3569,7 +3474,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
 export type GetWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** Name of the workload */
   workloadName: string
 }
 export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
@@ -3613,7 +3518,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
 export type EditWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** Name of the workload */
   workloadName: string
   /** Workload object that contains updated values */
   body: {
@@ -3664,7 +3569,7 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** Name of the workload */
   workloadName: string
 }
 export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited workload values */ {
@@ -3676,7 +3581,7 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
+  /** Name of the workload */
   workloadName: string
   /** Workload values */
   body: {
@@ -4387,7 +4292,6 @@ export type EditAppApiArg = {
 }
 export const {
   useGetValuesQuery,
-  useGetAllSecretsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
   useCreateTeamMutation,
@@ -4408,8 +4312,6 @@ export const {
   useGetSealedSecretQuery,
   useEditSealedSecretMutation,
   useDeleteSealedSecretMutation,
-  useGetSecretsQuery,
-  useCreateSecretMutation,
   useGetAllNetpolsQuery,
   useGetTeamNetpolsQuery,
   useCreateNetpolMutation,
