@@ -21,40 +21,41 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
   const [valueB, setValueB] = useState(valueMax / 2)
 
   function calculateValues(updatedValue: number, isValueA: boolean) {
+    if (updatedValue < 0) {
+      if (isValueA) {
+        setValueA(0)
+        setValueB(valueMax)
+      } else {
+        setValueA(valueMax)
+        setValueB(0)
+      }
+      return
+    }
+    if (updatedValue > valueMax) {
+      if (isValueA) {
+        setValueA(valueMax)
+        setValueB(0)
+      } else {
+        setValueA(0)
+        setValueB(valueMax)
+      }
+      return
+    }
+
     if (isValueA) {
-      console.log('A')
-      if (updatedValue < 0) {
-        console.log('Smaller than 0')
-        setValueA(0)
-        setValueB(valueMax)
-      } else if (updatedValue > valueMax) {
-        console.log(`Bigger than ${valueMax}`)
-        setValueA(valueMax)
-        setValueB(0)
-      } else {
-        console.log(`Within Range`)
-        const newValueB = valueMax - updatedValue
-        setValueA(updatedValue)
-        setValueB(newValueB)
-      }
-    } else if (!isValueA) {
-      console.log('B')
-      if (updatedValue < 0) {
-        console.log('Smaller than 0')
-        setValueA(valueMax)
-        setValueB(0)
-      } else if (updatedValue > valueMax) {
-        console.log(`Bigger than ${valueMax}`)
-        setValueA(0)
-        setValueB(valueMax)
-      } else {
-        console.log(`Within Range`)
-        const newValueA = valueMax - updatedValue
-        setValueB(updatedValue)
-        setValueA(newValueA)
-      }
+      setValueA(updatedValue)
+      setValueB(valueMax - updatedValue)
+    } else {
+      setValueB(updatedValue)
+      setValueA(valueMax - updatedValue)
     }
   }
+
+  // Increment/Decrement helpers
+  const incrementA = () => calculateValues(valueA + 1, true)
+  const decrementA = () => calculateValues(valueA - 1, true)
+  const incrementB = () => calculateValues(valueB + 1, false)
+  const decrementB = () => calculateValues(valueB - 1, false)
 
   return (
     <Box>
@@ -64,7 +65,11 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           width='small'
           label={labelA}
           value={valueA}
+          type='number'
           onChange={(e) => calculateValues(Number(e.target.value), true)}
+          onIncrement={() => incrementA()}
+          onDecrement={() => decrementA()}
+          suffixSymbol='%'
           disabled={disabled}
         />
         <TextField
@@ -72,7 +77,11 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           width='small'
           label={labelB}
           value={valueB}
+          type='number'
           onChange={(e) => calculateValues(Number(e.target.value), false)}
+          onIncrement={() => incrementB()}
+          onDecrement={() => decrementB()}
+          suffixSymbol='%'
           disabled={disabled}
         />
       </FormRow>
