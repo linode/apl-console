@@ -1,0 +1,303 @@
+import React, { useState } from 'react'
+import {
+  Box,
+  Button,
+  ButtonPropsColorOverrides,
+  Checkbox,
+  FormControlLabel,
+  IconButton,
+  Modal,
+  TextField,
+  Typography,
+  styled,
+} from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+// eslint-disable-next-line import/no-unresolved
+import { OverridableStringUnion } from '@mui/types'
+import yaml from 'js-yaml'
+import DefaultLogo from '../assets/akamai-logo-rgb-waveOnly'
+
+// styles ----------------------------------------------------------------
+const ModalBox = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 700,
+  backgroundColor: theme.palette.background.paper,
+  boxShadow:
+    'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
+  borderRadius: 16,
+  padding: 0,
+}))
+
+const ModalHeader = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  paddingBottom: '20px',
+  paddingLeft: '32px',
+  paddingTop: '32px',
+  paddingRight: '32px',
+  borderBottom: '1px dashed rgba(145, 158, 171, 0.24)',
+})
+
+const ModalContent = styled('div')({
+  padding: '32px',
+})
+
+const ModalFooter = styled('div')({
+  borderTop: '1px dashed rgba(145, 158, 171, 0.24)',
+  display: 'flex',
+  justifyContent: 'flex-end',
+  padding: '20px',
+  paddingRight: '30px',
+})
+
+// interface and component -----------------------------------------------
+interface Props {
+  title?: string
+  noHeader?: boolean
+  open: boolean
+  handleClose: () => void
+  handleCancel?: () => void
+  cancelButtonText?: string
+  handleAction?: (values: NewChartValues) => void
+  actionButtonText?: string
+  actionButtonColor?: OverridableStringUnion<
+    'inherit' | 'error' | 'primary' | 'secondary' | 'success' | 'info' | 'warning',
+    ButtonPropsColorOverrides
+  >
+  actionButtonEndIcon?: React.ReactElement
+  actionButtonFrontIcon?: React.ReactElement
+}
+
+interface NewChartValues {
+  url: string
+  chartName: string
+  chartIcon?: string
+  chartPath: string
+  revision: string
+  allowTeams: boolean
+}
+
+export default function NewChartModal({
+  title,
+  noHeader,
+  open,
+  handleClose,
+  handleCancel,
+  cancelButtonText,
+  handleAction,
+  actionButtonText,
+  actionButtonColor,
+  actionButtonEndIcon,
+  actionButtonFrontIcon,
+}: Props) {
+  // State for the GitHub URL and chart fields
+  const [githubUrl, setGithubUrl] = useState('')
+  const [chartName, setChartName] = useState('')
+  const [chartIcon, setChartIcon] = useState('')
+  const [chartPath, setChartPath] = useState('')
+  const [revision, setRevision] = useState('')
+  const [allowTeams, setAllowTeams] = useState(true)
+  // Indicates that Get details passed.
+  const [connectionTested, setConnectionTested] = useState(false)
+  // Error state for the URL input.
+  const [urlError, setUrlError] = useState<string | null>(null)
+  // Loading state for the Add Chart button.
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Validate the URL whenever it changes.
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setGithubUrl(val)
+    setConnectionTested(false)
+    try {
+      const parsedUrl = new URL(val)
+      if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/'))
+        setUrlError('URL must be a valid GitHub URL (containing github.com and /blob/).')
+      else if (!val.toLowerCase().endsWith('chart.yaml'))
+        setUrlError("This is a valid GitHub URL but does not end with 'chart.yaml'.")
+      else setUrlError(null)
+    } catch (error) {
+      setUrlError('Invalid URL format.')
+    }
+  }
+
+  const getChart = async () => {
+    if (!githubUrl || urlError) return
+
+    try {
+      const parsedUrl = new URL(githubUrl)
+      if (!parsedUrl.hostname.includes('github.com')) return
+
+      const rawUrl = githubUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob', '')
+      const response = await fetch(rawUrl)
+      if (!response.ok) return
+
+      const yamlText = await response.text()
+      const chartData = yaml.load(yamlText) as any
+
+      // Set chart fields (icon is optional)
+      setChartName((chartData.name as string) || '')
+      setChartIcon((chartData.icon as string) || '')
+      const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
+      if (pathSegments.length < 5 || pathSegments[2] !== 'blob') return
+
+      const rev = pathSegments[3]
+      const chartPathSegments = pathSegments.slice(4, pathSegments.length - 1)
+      const cp = chartPathSegments.join('/')
+      setRevision(rev)
+      setChartPath(cp)
+      setConnectionTested(true)
+    } catch (error) {
+      setConnectionTested(false)
+    }
+  }
+
+  // Form is valid when connection is tested, required fields are filled, and no URL error exists.
+  const isFormValid =
+    connectionTested &&
+    chartName.trim() !== '' &&
+    chartPath.trim() !== '' &&
+    revision.trim() !== '' &&
+    githubUrl.trim() !== '' &&
+    !urlError
+
+  // Temp solution to style disabled state, cannot be done with styled components.
+  const disabledSx = {
+    '& .MuiInputBase-root.Mui-disabled': {
+      backgroundColor: '#58585833',
+    },
+    '& .MuiFormLabel-root.Mui-disabled': {
+      color: '#6b6b6b !important',
+    },
+  }
+
+  return (
+    <Modal open={open} onClose={handleClose}>
+      <ModalBox>
+        {!noHeader && (
+          <ModalHeader>
+            <Typography variant='h5'>{title}</Typography>
+            <IconButton color='primary' onClick={handleClose}>
+              X
+            </IconButton>
+          </ModalHeader>
+        )}
+        <ModalContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Helper text */}
+            <Typography variant='body2' color='textSecondary'>
+              Please provide a valid GitHub URL pointing to a Chart.yaml file
+            </Typography>
+            {/* Row for the GitHub URL input and Get details button */}
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+              <TextField
+                sx={{ width: '400px' }}
+                placeholder='Github URL'
+                label='Github URL'
+                value={githubUrl}
+                onChange={handleUrlChange}
+                error={!!urlError}
+                helperText={urlError}
+              />
+              <Button sx={{ ml: 2, mt: 1, height: '40px', p: 2 }} variant='contained' onClick={getChart}>
+                Get details
+              </Button>
+            </Box>
+            {/* Editable fields for the fetched chart data. They are enabled only if connectionTested is true. */}
+            <TextField
+              label='Chart Name'
+              value={chartName}
+              onChange={(e) => setChartName(e.target.value)}
+              fullWidth
+              disabled={!connectionTested}
+              sx={disabledSx}
+            />
+            {/* Icon URL field with preview image next to it */}
+            <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+              <TextField
+                label='Icon URL (optional)'
+                value={chartIcon}
+                onChange={(e) => setChartIcon(e.target.value)}
+                fullWidth
+                disabled={!connectionTested}
+                sx={disabledSx}
+              />
+              <Box
+                sx={{
+                  width: 80,
+                  height: 80,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {chartIcon ? (
+                  <img
+                    src={chartIcon}
+                    alt='Icon preview'
+                    style={{ maxWidth: '50px', maxHeight: '50px', objectFit: 'contain', marginTop: '5px' }}
+                  />
+                ) : (
+                  <DefaultLogo width='50px' height='50px' />
+                )}
+              </Box>
+            </Box>
+            <TextField
+              label='Chart Path'
+              value={chartPath}
+              onChange={(e) => setChartPath(e.target.value)}
+              fullWidth
+              disabled={!connectionTested}
+              sx={disabledSx}
+            />
+            <TextField
+              label='Revision'
+              value={revision}
+              onChange={(e) => setRevision(e.target.value)}
+              fullWidth
+              disabled={!connectionTested}
+              sx={disabledSx}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox checked={allowTeams} onChange={(e) => setAllowTeams(e.target.checked)} color='primary' />
+              }
+              label='Allow teams to use this chart'
+            />
+          </Box>
+        </ModalContent>
+        <ModalFooter>
+          <Button variant='text' color='inherit' onClick={handleCancel ?? handleClose}>
+            {cancelButtonText ?? 'Cancel'}
+          </Button>
+          <LoadingButton
+            variant='contained'
+            color={actionButtonColor || 'error'}
+            sx={{ ml: 1, bgcolor: actionButtonColor }}
+            onClick={() => {
+              setIsLoading(true)
+              handleAction({
+                url: githubUrl,
+                chartName,
+                chartIcon,
+                chartPath,
+                revision,
+                allowTeams,
+              })
+            }}
+            disabled={!isFormValid || isLoading}
+            loading={isLoading}
+            startIcon={actionButtonFrontIcon}
+            endIcon={actionButtonEndIcon}
+          >
+            {actionButtonText}
+          </LoadingButton>
+        </ModalFooter>
+      </ModalBox>
+    </Modal>
+  )
+}
