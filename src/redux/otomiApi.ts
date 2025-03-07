@@ -263,6 +263,9 @@ const injectedRtkApi = api.injectEndpoints({
     workloadCatalog: build.mutation<WorkloadCatalogApiResponse, WorkloadCatalogApiArg>({
       query: (queryArg) => ({ url: `/workloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
+    createWorkloadCatalog: build.mutation<CreateWorkloadCatalogApiResponse, CreateWorkloadCatalogApiArg>({
+      query: (queryArg) => ({ url: `/createWorkloadCatalog`, method: 'POST', body: queryArg.body }),
+    }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
     }),
@@ -3478,7 +3481,12 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
 }[]
 export type GetAllWorkloadsApiArg = void
 export type WorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
+export type CreateWorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
 export type WorkloadCatalogApiArg = {
+  /** Project object that contains updated values */
+  body: object
+}
+export type CreateWorkloadCatalogApiArg = {
   /** Project object that contains updated values */
   body: object
 }
@@ -4537,6 +4545,7 @@ export const {
   useDeleteCoderepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
+  useCreateWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
