@@ -18,15 +18,19 @@ export default function ({
   const [getWorkloadCatalog, { isLoading }] = useWorkloadCatalogMutation()
   const [catalogs, setCatalogs] = useState<any[]>([])
 
-  useEffect(() => {
+  const fetchCatalog = () => {
     getWorkloadCatalog({ body: { sub: user.sub, teamId } }).then((res: any) => {
       const { catalog }: { catalog: any[] } = res.data
       setCatalogs(catalog)
     })
+  }
+
+  useEffect(() => {
+    fetchCatalog()
   }, [])
 
   const loading = isLoading
-  const comp = catalogs && <Catalogs teamId={teamId} catalogs={catalogs} />
+  const comp = catalogs && <Catalogs teamId={teamId} catalogs={catalogs} fetchCatalog={fetchCatalog} />
 
   return <PaperLayout loading={loading} comp={comp} title={`Catalog - ${teamId === 'admin' ? 'admin' : 'team'}`} />
 }
