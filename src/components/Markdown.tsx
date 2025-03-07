@@ -23,7 +23,13 @@ const Header1 = createMDComp('h1', { ...headerStyle })
 const Header2 = createMDComp('h2', { ...headerStyle })
 const Header3 = createMDComp('h3', { ...mb })
 const Paragraph = createMDComp('p', { ...mb, ...lh })
-const Code = createMDComp('code', { borderRadius: '6px', padding: '1.5px 4px', backgroundColor: '#6e768164' })
+const UrlLink = createMDComp('a', { color: '#1CCAFF' })
+const Code = createMDComp('code', {
+  borderRadius: '6px',
+  padding: '1.5px 4px',
+  backgroundColor: '#6e768164',
+  textWrap: 'pretty',
+})
 const Pre = createMDComp('pre', {
   ...mb,
   backgroundColor: '#6e768164',
@@ -63,6 +69,9 @@ export default function Markdown({ readme, sx }: Props) {
             },
             p: {
               component: Paragraph,
+            },
+            a: {
+              component: UrlLink,
             },
             code: {
               component: Code,
