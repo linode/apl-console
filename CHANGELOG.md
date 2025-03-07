@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/linode/apl-console/compare/v3.5.0...v3.6.0) (2025-03-07)
+
+
+### Features
+
+* add code repository page ([#512](https://github.com/linode/apl-console/issues/512)) ([269d229](https://github.com/linode/apl-console/commit/269d229450ba4a3874165d025a476a4d82ebad0e))
+* APL-556, Add self-service option for admins to add external helm charts to the catalog ([#519](https://github.com/linode/apl-console/issues/519)) ([11f5800](https://github.com/linode/apl-console/commit/11f58000a650ae897fb6fe4be07b8bf3d630a4a8))
+* disable UpgradeVersion card for team view ([#503](https://github.com/linode/apl-console/issues/503)) ([00d3840](https://github.com/linode/apl-console/commit/00d38404e01625014f2f7790a82d2268df0955a5))
+* react testing library ([#511](https://github.com/linode/apl-console/issues/511)) ([7ae643c](https://github.com/linode/apl-console/commit/7ae643c4bccc444d286d91dc6111bc0a74188a47))
+* update otomiApi.ts ([#520](https://github.com/linode/apl-console/issues/520)) ([99ccd58](https://github.com/linode/apl-console/commit/99ccd58362d1452f75413b018e89162bd757ef16))
+* Upgrade React v18.3.1 and RJSF v5.24.2 ([#504](https://github.com/linode/apl-console/issues/504)) ([2804b4d](https://github.com/linode/apl-console/commit/2804b4d32c8e3485858b043693e291bc8aa6a06c))
+
+
+### Others
+
+* **deps:** bump node from 20.18.1-alpine to 20.18.2-alpine ([#501](https://github.com/linode/apl-console/issues/501)) ([25b7b48](https://github.com/linode/apl-console/commit/25b7b48bf4ec5a2c9c8e0c7848f85b3583f8ecf9))
+* **deps:** bump react-error-boundary from 4.1.2 to 5.0.0 ([#505](https://github.com/linode/apl-console/issues/505)) ([b1f85e7](https://github.com/linode/apl-console/commit/b1f85e76557f130b287fa2d4feb8949f256e86e2))
+
+
+### CI
+
+* added semantic-release workflow ([#516](https://github.com/linode/apl-console/issues/516)) ([f9ad982](https://github.com/linode/apl-console/commit/f9ad9823113c4e7ac21d3452162121c78ce08803))
+
 ## [3.5.0](https://github.com/linode/apl-console/compare/v3.4.0...v3.5.0) (2025-01-28)
 
 
