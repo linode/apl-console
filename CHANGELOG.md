@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 - add code repository page ([#512](https://github.com/linode/apl-console/issues/512)) ([269d229](https://github.com/linode/apl-console/commit/269d229450ba4a3874165d025a476a4d82ebad0e))
-- APL-556, Add self-service option for admins to add external helm charts to the catalog ([#519](https://github.com/linode/apl-console/issues/519)) ([11f5800](https://github.com/linode/apl-console/commit/11f58000a650ae897fb6fe4be07b8bf3d630a4a8))
+- Add self-service option for admins to add external helm charts to the catalog ([#519](https://github.com/linode/apl-console/issues/519)) ([11f5800](https://github.com/linode/apl-console/commit/11f58000a650ae897fb6fe4be07b8bf3d630a4a8))
 - disable UpgradeVersion card for team view ([#503](https://github.com/linode/apl-console/issues/503)) ([00d3840](https://github.com/linode/apl-console/commit/00d38404e01625014f2f7790a82d2268df0955a5))
 - react testing library ([#511](https://github.com/linode/apl-console/issues/511)) ([7ae643c](https://github.com/linode/apl-console/commit/7ae643c4bccc444d286d91dc6111bc0a74188a47))
 - update otomiApi.ts ([#520](https://github.com/linode/apl-console/issues/520)) ([99ccd58](https://github.com/linode/apl-console/commit/99ccd58362d1452f75413b018e89162bd757ef16))
