@@ -190,7 +190,7 @@ export default function ({
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
   function setActiveService(name: string) {
-    const activeService = k8sServices.find((service) => service.name === name) as unknown as K8Service
+    const activeService = k8sServices?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
     if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
