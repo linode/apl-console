@@ -2,11 +2,27 @@ import { array, boolean, number, object, string } from 'yup'
 
 const pathsValidation = array()
   .of(string())
-  .test('optional-or-not', 'Paths cannot have empty values if "forwardPath" is enabled or not', function (value) {
+  .test('optional-or-not', 'Paths cannot have empty values if "forwardPath" is enabled or not', function (paths) {
     const { forwardPath } = this.parent
-    if (forwardPath) if (value.length === 0) return false
+    if (forwardPath) if (paths.length === 0) return false
+    // eslint-disable-next-line array-callback-return
 
-    return !value.some((string) => string === '')
+    const includesSlash = paths.some((path) => {
+      console.log('PATH: ', path)
+      if (path.includes('/')) {
+        console.log('PATH INCLUDES /')
+        return true
+      }
+      return false
+    })
+
+    if (includesSlash) {
+      return this.createError({
+        path: `ingress.paths.root`, // Attach the error to tlsSecretName (or use `.domain` if preferred)
+        message: 'Url Paths cannot contain a "/"',
+      })
+    }
+    return !paths.some((string) => string === '')
   })
 
 const cnameValidation = object({

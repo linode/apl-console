@@ -164,7 +164,7 @@ export default function ({
     trigger,
     getValues,
   } = methods
-  console.log(errors.ingress?.headers)
+  console.log(errors.ingress?.paths)
   useEffect(() => {
     if (data) {
       reset(data)
@@ -197,7 +197,13 @@ export default function ({
   const onSubmit = (data: CreateServiceApiResponse) => {
     console.log('data', data)
     if (isEmpty(data.ingress.cname.tlsSecretName) || isEmpty(data.ingress.cname.domain)) data.ingress.cname = {}
-
+    if (isEmpty(data.ingress.headers.response.set)) data.ingress.headers = {}
+    // if (!isEmpty(data.ingress.paths)) {
+    //   data.ingress.paths.forEach((path, index) => {
+    //     data.ingress.paths[index] = `/${path}`
+    //   })
+    // }
+    console.log('MODIFIED data', data)
     // eslint-disable-next-line object-shorthand
     if (serviceId) update({ teamId, serviceId: serviceId, body: data })
     else create({ teamId, body: data })

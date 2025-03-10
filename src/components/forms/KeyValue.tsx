@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Box, Button, IconButton, StandardTextFieldProps } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
@@ -99,14 +99,13 @@ export default function KeyValue(props: KeyValueProps) {
   })
 
   const handleAddItem = () => {
+    console.log('FIELD ADDED')
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
   }
   console.log('ERROR', error)
   console.log('HELP', helperText)
+  console.log('FIELDS', fields)
 
-  useEffect(() => {
-    handleAddItem()
-  }, [])
   const errorScrollClassName = 'error-for-scroll'
   return (
     <Box
