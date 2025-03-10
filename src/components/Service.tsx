@@ -25,11 +25,11 @@ export const addDomainEnumField = (
   formData: GetServiceApiResponse,
 ): void => {
   const { cluster, dns } = settings
-  if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
+  // if (['cluster', 'tlsPass'].includes(formData?.ingress?.type)) return
   const ing = formData?.ingress as any
-  const idx = idxMap[formData?.ingress?.type]
+  // const idx = idxMap[formData?.ingress?.type]
   if (!formData || isEmpty(ing)) return
-  const ingressSchemaPath = getIngressSchemaPath(idx)
+  const ingressSchemaPath = getIngressSchemaPath(1)
   const ingressSchema = getStrict(schema, ingressSchemaPath)
   const zones = [cluster.domainSuffix, ...(dns?.zones || [])]
   if (!ingressSchema) return
@@ -85,7 +85,7 @@ export const getServiceSchema = (
   if (teamId !== 'admin') addServiceNameEnumField(schema, k8sServices, formData)
   addDomainEnumField(schema, settings, formData)
   const ing = formData?.ingress as Record<string, any>
-  const idx = idxMap[formData?.ingress?.type]
+  const idx = 1
   set(schema, 'properties.ingress.oneOf[1].allOf[0].properties.ingressClassName.enum', [
     'platform',
     ...settings.ingressClassNames,

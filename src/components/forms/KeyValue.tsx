@@ -1,15 +1,17 @@
 // @ts-nocheck
 import React, { useEffect, useState } from 'react'
-import { Box, Button, IconButton } from '@mui/material'
+import { Box, Button, IconButton, StandardTextFieldProps } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
-import { makeStyles } from '@mui/styles'
+import { makeStyles } from 'tss-react/mui'
+import { Theme } from '@mui/material/styles'
 import { Add, Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import FormRow from './FormRow'
+import { FormHelperText } from '../FormHelperText'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles()((theme: Theme) => ({
   container: {
     padding: '16px',
     backgroundColor: '#424242',
@@ -26,7 +28,26 @@ const useStyles = makeStyles({
     alignItems: 'center',
     textTransform: 'none',
   },
-})
+  errorText: {
+    alignItems: 'center',
+    color: '#d63c42',
+    display: 'flex',
+    left: 5,
+    top: 42,
+    width: '100%',
+  },
+  helperTextTop: {
+    color: theme.palette.cl.text.subTitle,
+    marginTop: 0,
+  },
+  label: {
+    fontFamily: 'sans-serif',
+  },
+}))
+
+interface TextFieldPropsOverrides extends StandardTextFieldProps {
+  label: string
+}
 
 interface KeyValueProps {
   title: string
@@ -34,16 +55,21 @@ interface KeyValueProps {
   keyLabel: string
   keyValue?: string
   keyDisabled?: boolean
+  helperText?: string
+  helperTextPosition?: 'bottom' | 'top'
   showLabel?: boolean
   valueLabel: string
   valueDisabled?: boolean
   addLabel?: string
+  label?: string
+  error?: boolean
   name: string
   onlyValue?: boolean
+  errorText?: string
 }
 
 export default function KeyValue(props: KeyValueProps) {
-  const classes = useStyles()
+  const { classes, cx } = useStyles()
   const { control, register } = useFormContext()
 
   const {
@@ -53,8 +79,13 @@ export default function KeyValue(props: KeyValueProps) {
     valueLabel,
     addLabel,
     name,
+    label,
+    helperText,
+    helperTextPosition,
     onlyValue,
     keyValue,
+    error,
+    errorText,
     keyDisabled = false,
     showLabel = true,
     valueDisabled = false,
@@ -70,13 +101,19 @@ export default function KeyValue(props: KeyValueProps) {
   const handleAddItem = () => {
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
   }
+  console.log('ERROR', error)
+  console.log('HELP', helperText)
 
   useEffect(() => {
     handleAddItem()
   }, [])
-
+  const errorScrollClassName = 'error-for-scroll'
   return (
-    <Box>
+    <Box
+      className={cx({
+        [errorScrollClassName]: !!errorText,
+      })}
+    >
       <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
@@ -102,9 +139,27 @@ export default function KeyValue(props: KeyValueProps) {
         </FormRow>
       ))}
       {addLabel && (
-        <Button sx={{ fontSize: '10px' }} className={classes.addItemButton} onClick={handleAddItem}>
+        <Button
+          sx={{ fontSize: '10px', color: `${error ? 'red' : ''}` }}
+          className={classes.addItemButton}
+          onClick={handleAddItem}
+        >
           <Add /> {addLabel}
         </Button>
+      )}
+      {errorText && (
+        <FormHelperText
+          className={cx({
+            [classes.errorText]: true,
+          })}
+          data-qa-textfield-error-text={label}
+          role='alert'
+        >
+          {errorText}
+        </FormHelperText>
+      )}
+      {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
+        <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
       )}
     </Box>
   )

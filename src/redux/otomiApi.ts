@@ -382,40 +382,31 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
     weightV1?: number
     weightV2?: number
   }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain?: string
-            domain?: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
+  ingress: {
+    ingressClassName?: string
+    tlsPass?: boolean
+    useDefaultHost?: boolean
+    subdomain?: string
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certSelect?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
+      }
+    }
+  }
 }[]
 export type GetAllServicesApiArg = void
 export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
@@ -822,40 +813,31 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
     weightV1?: number
     weightV2?: number
   }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain?: string
-            domain?: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
+  ingress: {
+    ingressClassName?: string
+    tlsPass?: boolean
+    useDefaultHost?: boolean
+    subdomain?: string
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certSelect?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
+      }
+    }
+  }
 }[]
 export type GetTeamServicesApiArg = {
   /** ID of team to return */
@@ -875,40 +857,31 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
     weightV1?: number
     weightV2?: number
   }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain?: string
-            domain?: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
+  ingress: {
+    ingressClassName?: string
+    tlsPass?: boolean
+    useDefaultHost?: boolean
+    subdomain?: string
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certSelect?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
+      }
+    }
+  }
 }
 export type CreateServiceApiArg = {
   /** ID of team to return */
@@ -928,40 +901,31 @@ export type CreateServiceApiArg = {
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }
 export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
@@ -987,40 +951,31 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
     weightV1?: number
     weightV2?: number
   }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain?: string
-            domain?: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
+  ingress: {
+    ingressClassName?: string
+    tlsPass?: boolean
+    useDefaultHost?: boolean
+    subdomain?: string
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certSelect?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
+      }
+    }
+  }
 }
 export type GetServiceApiArg = {
   /** ID of team to return */
@@ -1042,40 +997,31 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
     weightV1?: number
     weightV2?: number
   }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain?: string
-            domain?: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
+  ingress: {
+    ingressClassName?: string
+    tlsPass?: boolean
+    useDefaultHost?: boolean
+    subdomain?: string
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certSelect?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
+      }
+    }
+  }
 }
 export type EditServiceApiArg = {
   /** ID of team to return */
@@ -1097,40 +1043,31 @@ export type EditServiceApiArg = {
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }
 export type DeleteServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
@@ -2613,40 +2550,31 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }[]
 export type GetAllProjectsApiArg = void
@@ -2747,40 +2675,31 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }[]
 export type GetTeamProjectsApiArg = {
@@ -2884,40 +2803,31 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }
 export type CreateProjectApiArg = {
@@ -3021,40 +2931,31 @@ export type CreateProjectApiArg = {
         weightV1?: number
         weightV2?: number
       }
-      ingress:
-        | ({
-            type?: 'cluster'
-          } | null)
-        | (
-            | ({
-                ingressClassName?: string
-                tlsPass?: boolean
-                useDefaultHost?: boolean
-                subdomain?: string
-                domain?: string
-                useCname?: boolean
-                cname?: {
-                  domain?: string
-                  tlsSecretName?: string
-                }
-                paths?: string[]
-                forwardPath?: boolean
-                hasCert?: boolean
-                certSelect?: boolean
-                certName?: string
-                headers?: {
-                  response?: {
-                    set?: {
-                      name: string
-                      value: string
-                    }[]
-                  }
-                }
-              } & {
-                type?: 'public'
-              })
-            | null
-          )
+      ingress: {
+        ingressClassName?: string
+        tlsPass?: boolean
+        useDefaultHost?: boolean
+        subdomain?: string
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certSelect?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
     }
   }
 }
@@ -3162,40 +3063,31 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }
 export type GetProjectApiArg = {
@@ -3301,40 +3193,31 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
       weightV1?: number
       weightV2?: number
     }
-    ingress:
-      | ({
-          type?: 'cluster'
-        } | null)
-      | (
-          | ({
-              ingressClassName?: string
-              tlsPass?: boolean
-              useDefaultHost?: boolean
-              subdomain?: string
-              domain?: string
-              useCname?: boolean
-              cname?: {
-                domain?: string
-                tlsSecretName?: string
-              }
-              paths?: string[]
-              forwardPath?: boolean
-              hasCert?: boolean
-              certSelect?: boolean
-              certName?: string
-              headers?: {
-                response?: {
-                  set?: {
-                    name: string
-                    value: string
-                  }[]
-                }
-              }
-            } & {
-              type?: 'public'
-            })
-          | null
-        )
+    ingress: {
+      ingressClassName?: string
+      tlsPass?: boolean
+      useDefaultHost?: boolean
+      subdomain?: string
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certSelect?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
+        }
+      }
+    }
   }
 }
 export type EditProjectApiArg = {

@@ -1,19 +1,37 @@
 import { array, boolean, number, object, string } from 'yup'
 
+const pathsValidation = array()
+  .of(string())
+  .test('optional-or-not', 'Paths cannot have empty values if "forwardPath" is enabled or not', function (value) {
+    const { forwardPath } = this.parent
+    if (forwardPath) if (value.length === 0) return false
+
+    return !value.some((string) => string === '')
+  })
+
+const cnameValidation = object({
+  domain: string().optional(),
+  tlsSecretName: string().optional(),
+}).test('both-or-none', 'Both domain and tlsSecretName must be filled or empty', function (value) {
+  if (!value) return true // Allow undefined cname object
+
+  const { domain, tlsSecretName } = value
+
+  // If one is filled while the other is empty, return a validation error
+  if ((domain && !tlsSecretName) || (!domain && tlsSecretName)) return false
+
+  return true // Valid case
+})
+
 const ingressPublicSchema = object({
   ingressClassName: string().optional(),
   tlsPass: boolean().optional(),
   useDefaultHost: boolean().optional(),
-  subdomain: string().optional(),
-  domain: string().optional(),
+  subdomain: string().required(),
+  domain: string().required(),
   useCname: boolean().optional(),
-  cname: object({
-    domain: string().optional(),
-    tlsSecretName: string().optional(),
-  })
-    .optional()
-    .nullable(),
-  paths: array().of(string()).optional(),
+  cname: cnameValidation.required(),
+  paths: pathsValidation.required(),
   forwardPath: boolean().optional(),
   hasCert: boolean().optional(),
   certSelect: boolean().optional(),
@@ -45,7 +63,7 @@ const ingressPublicSchema = object({
 export const serviceApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
-  name: string().required('Name is required'),
+  name: string().required('Service name is required'),
   namespace: string().optional(),
   port: number().required('Port is required'),
   ksvc: object({

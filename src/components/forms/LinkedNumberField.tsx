@@ -1,11 +1,13 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { TextField } from './TextField'
 import FormRow from './FormRow'
 
-interface registers {
+interface Registers {
   registerA: any
   registerB: any
+  setValue: (name: string, value: any) => void
+  watch: (name: string) => any
 }
 
 interface LinkedNumberFieldProps {
@@ -13,42 +15,34 @@ interface LinkedNumberFieldProps {
   labelB: string
   valueMax: number
   disabled: boolean
-  registers: registers
+  registers: Registers
 }
 
 export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, registers }: LinkedNumberFieldProps) {
-  const [valueA, setValueA] = useState(valueMax / 2)
-  const [valueB, setValueB] = useState(valueMax / 2)
+  const { setValue, watch } = registers
+
+  const valueA: number = watch('trafficControl.weightV1') ?? valueMax / 2
+  const valueB: number = watch('trafficControl.weightV2') ?? valueMax / 2
+
+  useEffect(() => {
+    setValue('trafficControl.weightV1', valueMax / 2)
+    setValue('trafficControl.weightV2', valueMax / 2)
+  }, [setValue, valueMax])
 
   function calculateValues(updatedValue: number, isValueA: boolean) {
     if (updatedValue < 0) {
-      if (isValueA) {
-        setValueA(0)
-        setValueB(valueMax)
-      } else {
-        setValueA(valueMax)
-        setValueB(0)
-      }
+      setValue('trafficControl.weightV1', isValueA ? 0 : valueMax)
+      setValue('trafficControl.weightV2', isValueA ? valueMax : 0)
       return
     }
     if (updatedValue > valueMax) {
-      if (isValueA) {
-        setValueA(valueMax)
-        setValueB(0)
-      } else {
-        setValueA(0)
-        setValueB(valueMax)
-      }
+      setValue('trafficControl.weightV1', isValueA ? valueMax : 0)
+      setValue('trafficControl.weightV2', isValueA ? 0 : valueMax)
       return
     }
 
-    if (isValueA) {
-      setValueA(updatedValue)
-      setValueB(valueMax - updatedValue)
-    } else {
-      setValueB(updatedValue)
-      setValueA(valueMax - updatedValue)
-    }
+    setValue('trafficControl.weightV1', isValueA ? updatedValue : valueMax - updatedValue)
+    setValue('trafficControl.weightV2', isValueA ? valueMax - updatedValue : updatedValue)
   }
 
   // Increment/Decrement helpers
@@ -67,8 +61,8 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           value={valueA}
           type='number'
           onChange={(e) => calculateValues(Number(e.target.value), true)}
-          onIncrement={() => incrementA()}
-          onDecrement={() => decrementA()}
+          onIncrement={incrementA}
+          onDecrement={decrementA}
           suffixSymbol='%'
           disabled={disabled}
         />
@@ -79,8 +73,8 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           value={valueB}
           type='number'
           onChange={(e) => calculateValues(Number(e.target.value), false)}
-          onIncrement={() => incrementB()}
-          onDecrement={() => decrementB()}
+          onIncrement={incrementB}
+          onDecrement={decrementB}
           suffixSymbol='%'
           disabled={disabled}
         />
