@@ -169,16 +169,16 @@ export default function ({
     if (data) {
       reset(data)
       setActiveService(data.name)
-      setService(k8sServices.find((service) => service.name === data.name) as unknown as K8Service)
-      setSecret(teamSecrets.find((secret) => secret.name === data.name))
+      setService(k8sServices?.find((service) => service.name === data.name) as unknown as K8Service)
+      setSecret(teamSecrets?.find((secret) => secret.name === data.name))
     }
 
     if (!isEmpty(prefilledData)) {
       console.log('PREFILLED')
       reset(prefilledData)
       setActiveService(prefilledData.name)
-      setService(k8sServices.find((service) => service.name === prefilledData.name) as unknown as K8Service)
-      setSecret(teamSecrets.find((secret) => secret.name === prefilledData.name))
+      setService(k8sServices?.find((service) => service.name === prefilledData.name) as unknown as K8Service)
+      setSecret(teamSecrets?.find((secret) => secret.name === prefilledData.name))
       if (!isEmpty(prefilledData.ingress.paths)) {
         prefilledData.ingress.paths.forEach((path, index) => {
           prefilledData.ingress.paths[index] = path.replace(/^\/+/, '')
