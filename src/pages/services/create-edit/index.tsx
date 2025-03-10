@@ -174,10 +174,16 @@ export default function ({
     }
 
     if (!isEmpty(prefilledData)) {
+      console.log('PREFILLED')
       reset(prefilledData)
       setActiveService(prefilledData.name)
       setService(services.find((service) => service.name === prefilledData.name))
       setSecret(localTeamSecrets.find((secret) => secret.name === prefilledData.name))
+      if (!isEmpty(prefilledData.ingress.paths)) {
+        prefilledData.ingress.paths.forEach((path, index) => {
+          prefilledData.ingress.paths[index] = path.replace(/^\/+/, '')
+        })
+      }
     }
   }, [data, setValue, prefilledData])
   const TLSEnabled = watch('ingress.tlsPass')
@@ -186,7 +192,7 @@ export default function ({
   function setActiveService(name: string) {
     const activeService = services.find((service) => service.name === name)
     setService(activeService)
-    if (activeService.managedByKnative) setValue('ksvc.predeployed', true)
+    if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
   }
 

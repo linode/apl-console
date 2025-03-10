@@ -5,8 +5,6 @@ const pathsValidation = array()
   .test('optional-or-not', 'Paths cannot have empty values if "forwardPath" is enabled or not', function (paths) {
     const { forwardPath } = this.parent
     if (forwardPath) if (paths.length === 0) return false
-    // eslint-disable-next-line array-callback-return
-
     const includesSlash = paths.some((path) => {
       console.log('PATH: ', path)
       if (path.includes('/')) {
@@ -18,7 +16,7 @@ const pathsValidation = array()
 
     if (includesSlash) {
       return this.createError({
-        path: `ingress.paths.root`, // Attach the error to tlsSecretName (or use `.domain` if preferred)
+        path: `ingress.paths.root`,
         message: 'Url Paths cannot contain a "/"',
       })
     }
@@ -29,16 +27,15 @@ const cnameValidation = object({
   domain: string().optional(),
   tlsSecretName: string().optional(),
 }).test('both-or-none', 'Both domain and tlsSecretName must be filled or empty', function (value) {
-  if (!value) return true // Allow undefined cname object
+  if (!value) return true
 
   const { domain, tlsSecretName } = value
 
-  // If one is filled while the other is empty, return a validation error
   if ((domain && !tlsSecretName) || (!domain && tlsSecretName)) return false
 
-  return true // Valid case
+  return true
 })
-
+// Ingress Validation
 const ingressPublicSchema = object({
   ingressClassName: string().optional(),
   tlsPass: boolean().optional(),
