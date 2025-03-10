@@ -86,6 +86,13 @@ export default function ({
   } = useGetRepoBranchesQuery({ url: repoUrl, teamId, secret: secretName }, { skip: !repoUrl })
   console.log('repoBranches', repoBranches)
 
+  const buildDataModeType = buildData?.mode?.type
+  const buildDataModeRevision: string = buildData?.mode?.[`${buildDataModeType}`]?.revision || ''
+  let repoBranchesSet = [buildDataModeRevision]
+  if (repoBranches) repoBranchesSet = Array.from(new Set([...(repoBranches as string[]), buildDataModeRevision]))
+
+  console.log('repoBranchesSet', repoBranchesSet)
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -165,7 +172,7 @@ export default function ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <FormRow spacing={10} sx={{ mb: 4 }}>
               <TextField
-                label='Name'
+                label='Label'
                 width='medium'
                 {...register('name')}
                 onChange={(e) => {
@@ -175,10 +182,21 @@ export default function ({
                 error={!!errors.name}
                 helperText={errors?.name?.message?.toString()}
               />
+              <TextField
+                label='Tag'
+                width='medium'
+                {...register('tag')}
+                onChange={(e) => {
+                  const value = e.target.value
+                  setValue('tag', value)
+                }}
+                error={!!errors.tag}
+                helperText={errors?.tag?.message?.toString()}
+              />
             </FormRow>
             <Section
-              title='Add a build'
-              description='You can select your desired build tool and configure from what repository you want to build'
+              title='Create a build'
+              description='Select the desired build task and select the code repository to build from'
             >
               <ImgButtonGroup
                 name='mode.type'
@@ -269,11 +287,11 @@ export default function ({
               <Divider sx={{ mt: 4, mb: 2 }} />
               <Box>
                 <KeyValue
-                  title='Environment variables'
-                  subTitle='You can optionally add environment variables that are being added to the runtime'
+                  title='Extra arguments'
+                  subTitle='Additional arguments to pass on to the build executor'
                   keyLabel='Name'
                   valueLabel='Value'
-                  addLabel='Add environment variable'
+                  addLabel='Add argument'
                   name={`mode.${watch('mode.type')}.envVars`}
                   {...register(`mode.${watch('mode.type')}.envVars`)}
                 />
@@ -281,15 +299,15 @@ export default function ({
                   sx={{ my: 2 }}
                   name='trigger'
                   control={control}
-                  label='Enable webhook listener'
-                  explainertext='Select this if you want trigger build on repository webhook event.'
+                  label='Create webhook listener'
+                  explainertext='Select to trigger the build based on a repository webhook event'
                 />
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='scanSource'
                   control={control}
                   label='Scan source code'
-                  explainertext='Select this if you want the source code to be scanned for vulnerabilities. This requires Trivy to be enabled.'
+                  explainertext='Select to scan source code for vulnerabilities'
                 />
               </Box>
             </Section>
@@ -303,7 +321,7 @@ export default function ({
               />
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {buildId ? 'Edit Build' : 'Add Build'}
+              {buildId ? 'Edit Build' : 'Create Build'}
             </Button>
           </form>
         </FormProvider>

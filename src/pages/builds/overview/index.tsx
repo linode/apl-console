@@ -206,7 +206,7 @@ export default function ({
 
   const customButtonText = () => (
     <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
-      Add Build
+      Create Build
     </Typography>
   )
 
