@@ -169,16 +169,16 @@ export default function ({
     if (data) {
       reset(data)
       setActiveService(data.name)
-      setService(services.find((service) => service.name === data.name))
-      setSecret(localTeamSecrets.find((secret) => secret.name === data.name))
+      setService(k8sServices.find((service) => service.name === data.name) as unknown as K8Service)
+      setSecret(teamSecrets.find((secret) => secret.name === data.name))
     }
 
     if (!isEmpty(prefilledData)) {
       console.log('PREFILLED')
       reset(prefilledData)
       setActiveService(prefilledData.name)
-      setService(services.find((service) => service.name === prefilledData.name))
-      setSecret(localTeamSecrets.find((secret) => secret.name === prefilledData.name))
+      setService(k8sServices.find((service) => service.name === prefilledData.name) as unknown as K8Service)
+      setSecret(teamSecrets.find((secret) => secret.name === prefilledData.name))
       if (!isEmpty(prefilledData.ingress.paths)) {
         prefilledData.ingress.paths.forEach((path, index) => {
           prefilledData.ingress.paths[index] = path.replace(/^\/+/, '')
@@ -190,14 +190,14 @@ export default function ({
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
   function setActiveService(name: string) {
-    const activeService = services.find((service) => service.name === name)
+    const activeService = k8sServices.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
     if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
   }
 
   function setActiveSecret(name: string) {
-    setSecret(localTeamSecrets.find((secret) => secret.name === name))
+    setSecret(teamSecrets.find((secret) => secret.name === name))
   }
 
   const onSubmit = (data: CreateServiceApiResponse) => {
@@ -269,7 +269,7 @@ export default function ({
                   <MenuItem value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
-                  {services.map((service) => {
+                  {k8sServices.map((service) => {
                     return (
                       <MenuItem value={service.name} classes={undefined}>
                         {service.name}
@@ -354,7 +354,7 @@ export default function ({
                       <MenuItem value='' classes={undefined}>
                         TLS certificate
                       </MenuItem>
-                      {localTeamSecrets.map((secret) => {
+                      {teamSecrets.map((secret) => {
                         return (
                           <MenuItem value={secret.name} classes={undefined}>
                             {secret.name}
