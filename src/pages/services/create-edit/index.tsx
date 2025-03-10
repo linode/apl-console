@@ -197,7 +197,7 @@ export default function ({
   }
 
   function setActiveSecret(name: string) {
-    setSecret(teamSecrets.find((secret) => secret.name === name))
+    setSecret(teamSecrets?.find((secret) => secret.name === name))
   }
 
   const onSubmit = (data: CreateServiceApiResponse) => {
