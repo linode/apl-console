@@ -142,6 +142,7 @@ export default function ({ teamId, catalogs, fetchCatalog }: Props): React.React
         open={openNewChartModal}
         handleAction={(handleActionValues) => addChart(handleActionValues)}
         handleClose={() => setOpenNewChartModal(false)}
+        chartDirectories={filteredCatalog.map((item) => item.name) || []}
       />
     </>
   )

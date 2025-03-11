@@ -56,6 +56,15 @@ const ModalFooter = styled('div')({
   paddingRight: '30px',
 })
 
+// helper functions -----------------------------------------------------
+const checkDirectoryName = (directoryName: string, chartDirectories: string[]) => {
+  if (chartDirectories.includes(directoryName.toLowerCase())) return 'Directory name already exists.'
+  const invalidDirNamePattern = /[\\/:*?"<>|#%&{}$!`~\s]|^\.+$|^-|-$/
+  if (invalidDirNamePattern.test(directoryName))
+    return 'Invalid directory name. Avoid spaces, special characters or leading, trailing dots and dashes.'
+  return ''
+}
+
 // interface and component -----------------------------------------------
 interface Props {
   title?: string
@@ -72,6 +81,7 @@ interface Props {
   >
   actionButtonEndIcon?: React.ReactElement
   actionButtonFrontIcon?: React.ReactElement
+  chartDirectories: string[]
 }
 
 interface NewChartValues {
@@ -93,6 +103,7 @@ export default function NewChartModal({
   actionButtonColor,
   actionButtonEndIcon,
   actionButtonFrontIcon,
+  chartDirectories,
 }: Props) {
   const {
     settings: { cluster },
@@ -160,15 +171,14 @@ export default function NewChartModal({
     })
   }
 
-  const invalidDirNamePattern = /[\\/:*?"<>|#%&{}$!`~\s]|^\.+$|^-|-$/
-  // Form is valid when connection is tested, required fields are filled, and no URL error exists.
+  // Form is valid when connection is tested, required fields are filled, and no error exists.
   const isFormValid =
     connectionTested &&
     chartName?.trim() !== '' &&
     chartAppVersion?.trim() !== '' &&
     chartVersion?.trim() !== '' &&
     gitRepositoryUrl?.trim() !== '' &&
-    !invalidDirNamePattern.test(chartTargetDirName) &&
+    !checkDirectoryName(chartTargetDirName, chartDirectories) &&
     !urlError
 
   // Temp solution to style disabled state, cannot be done with styled components.
@@ -260,12 +270,8 @@ export default function NewChartModal({
               fullWidth
               disabled={!connectionTested}
               sx={disabledSx}
-              error={Boolean(chartTargetDirName && invalidDirNamePattern.test(chartTargetDirName))}
-              helperText={
-                chartTargetDirName && invalidDirNamePattern.test(chartTargetDirName)
-                  ? 'Invalid directory name. Avoid spaces, special characters or leading, trailing dots and dashes.'
-                  : ''
-              }
+              error={Boolean(chartTargetDirName && checkDirectoryName(chartTargetDirName, chartDirectories))}
+              helperText={checkDirectoryName(chartTargetDirName, chartDirectories)}
             />
             <Typography variant='body2'>
               {`The Helm chart will be added at: `}
