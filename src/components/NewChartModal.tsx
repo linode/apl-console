@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Button,
@@ -14,7 +14,9 @@ import {
 import { LoadingButton } from '@mui/lab'
 // eslint-disable-next-line import/no-unresolved
 import { OverridableStringUnion } from '@mui/types'
-import yaml from 'js-yaml'
+import { useGetHelmChartContentQuery } from 'redux/otomiApi'
+import { isEmpty } from 'lodash'
+import { useSession } from 'providers/Session'
 import DefaultLogo from '../assets/akamai-logo-rgb-waveOnly'
 
 // styles ----------------------------------------------------------------
@@ -76,8 +78,7 @@ interface NewChartValues {
   url: string
   chartName: string
   chartIcon?: string
-  chartPath: string
-  revision: string
+  chartTargetDir: string
   allowTeams: boolean
 }
 
@@ -94,12 +95,17 @@ export default function NewChartModal({
   actionButtonEndIcon,
   actionButtonFrontIcon,
 }: Props) {
-  // State for the GitHub URL and chart fields
-  const [githubUrl, setGithubUrl] = useState('')
+  const {
+    settings: { cluster },
+  } = useSession()
+  const [helmChartUrl, setHelmChartUrl] = useState('')
+  const [gitRepositoryUrl, setGitRepositoryUrl] = useState('')
   const [chartName, setChartName] = useState('')
+  const [chartDescription, setChartDescription] = useState('')
+  const [chartAppVersion, setChartAppVersion] = useState('')
+  const [chartVersion, setChartVersion] = useState('')
   const [chartIcon, setChartIcon] = useState('')
-  const [chartPath, setChartPath] = useState('')
-  const [revision, setRevision] = useState('')
+  const [chartTargetDir, setChartTargetDir] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
   // Indicates that Get details passed.
   const [connectionTested, setConnectionTested] = useState(false)
@@ -108,61 +114,64 @@ export default function NewChartModal({
   // Loading state for the Add Chart button.
   const [isLoading, setIsLoading] = useState(false)
 
-  // Validate the URL whenever it changes.
-  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value
-    setGithubUrl(val)
-    setConnectionTested(false)
-    try {
-      const parsedUrl = new URL(val)
-      if (!parsedUrl.hostname.includes('github.com') || !parsedUrl.pathname.includes('/blob/'))
-        setUrlError('URL must be a valid GitHub URL (containing github.com and /blob/).')
-      else if (!val.toLowerCase().endsWith('chart.yaml'))
-        setUrlError("This is a valid GitHub URL but does not end with 'chart.yaml'.")
-      else setUrlError(null)
-    } catch (error) {
-      setUrlError('Invalid URL format.')
+  const {
+    data: helmChartData,
+    isLoading: isLoadingHelmChartContent,
+    isFetching: isFetchingHelmChartContent,
+  } = useGetHelmChartContentQuery({ url: helmChartUrl }, { skip: !helmChartUrl })
+
+  useEffect(() => {
+    if (helmChartData?.error) {
+      setConnectionTested(false)
+      setUrlError(helmChartData?.error as string)
+    } else {
+      setConnectionTested(true)
+      setUrlError(null)
     }
+    if (!isEmpty(helmChartData?.values)) {
+      const values = helmChartData?.values as {
+        name: string
+        description: string
+        icon?: string
+        version: string
+        appVersion: string
+      }
+      setChartName(values.name)
+      setChartDescription(values.description)
+      setChartVersion(values.version)
+      setChartAppVersion(values.appVersion)
+      setChartIcon(values.icon || '')
+      setChartTargetDir(values.name)
+      setConnectionTested(true)
+    } else setConnectionTested(false)
+  }, [helmChartData])
+
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const repoUrl = e.target.value
+    setHelmChartUrl('')
+    setGitRepositoryUrl(repoUrl)
+    setConnectionTested(false)
+    setUrlError(null)
   }
 
-  const getChart = async () => {
-    if (!githubUrl || urlError) return
-
-    try {
-      const parsedUrl = new URL(githubUrl)
-      if (!parsedUrl.hostname.includes('github.com')) return
-
-      const rawUrl = githubUrl.replace('github.com', 'raw.githubusercontent.com').replace('/blob', '')
-      const response = await fetch(rawUrl)
-      if (!response.ok) return
-
-      const yamlText = await response.text()
-      const chartData = yaml.load(yamlText) as any
-
-      // Set chart fields (icon is optional)
-      setChartName((chartData.name as string) || '')
-      setChartIcon((chartData.icon as string) || '')
-      const pathSegments = parsedUrl.pathname.split('/').filter(Boolean)
-      if (pathSegments.length < 5 || pathSegments[2] !== 'blob') return
-
-      const rev = pathSegments[3]
-      const chartPathSegments = pathSegments.slice(4, pathSegments.length - 1)
-      const cp = chartPathSegments.join('/')
-      setRevision(rev)
-      setChartPath(cp)
-      setConnectionTested(true)
-    } catch (error) {
-      setConnectionTested(false)
-    }
+  const handleSubmit = () => {
+    setIsLoading(true)
+    handleAction({
+      url: helmChartUrl,
+      chartName,
+      chartIcon,
+      chartTargetDir,
+      allowTeams,
+    })
   }
 
   // Form is valid when connection is tested, required fields are filled, and no URL error exists.
   const isFormValid =
     connectionTested &&
-    chartName.trim() !== '' &&
-    chartPath.trim() !== '' &&
-    revision.trim() !== '' &&
-    githubUrl.trim() !== '' &&
+    chartName?.trim() !== '' &&
+    chartAppVersion?.trim() !== '' &&
+    chartVersion?.trim() !== '' &&
+    gitRepositoryUrl?.trim() !== '' &&
     !urlError
 
   // Temp solution to style disabled state, cannot be done with styled components.
@@ -190,32 +199,33 @@ export default function NewChartModal({
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              Please provide a valid GitHub URL pointing to a Chart.yaml file
+              Please provide a valid Git Repository URL pointing to a Chart.yaml file
             </Typography>
             {/* Row for the GitHub URL input and Get details button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
               <TextField
                 sx={{ width: '400px' }}
-                placeholder='Github URL'
-                label='Github URL'
-                value={githubUrl}
+                placeholder='Git Repository URL'
+                label='Git Repository URL'
+                value={gitRepositoryUrl}
                 onChange={handleUrlChange}
                 error={!!urlError}
                 helperText={urlError}
               />
-              <Button sx={{ ml: 2, mt: 1, height: '40px', p: 2 }} variant='contained' onClick={getChart}>
+              <LoadingButton
+                sx={{ ml: 2, mt: 1, height: '40px', p: 2 }}
+                variant='contained'
+                onClick={() => setHelmChartUrl(gitRepositoryUrl)}
+                loading={isLoadingHelmChartContent || isFetchingHelmChartContent}
+              >
                 Get details
-              </Button>
+              </LoadingButton>
             </Box>
-            {/* Editable fields for the fetched chart data. They are enabled only if connectionTested is true. */}
-            <TextField
-              label='Chart Name'
-              value={chartName}
-              onChange={(e) => setChartName(e.target.value)}
-              fullWidth
-              disabled={!connectionTested}
-              sx={disabledSx}
-            />
+            {/* Read-only fields for the fetched chart data. */}
+            <TextField label='Name' value={chartName} fullWidth disabled sx={disabledSx} />
+            <TextField label='Description' multiline value={chartDescription} fullWidth disabled sx={disabledSx} />
+            <TextField label='App Version' value={chartAppVersion} fullWidth disabled sx={disabledSx} />
+            <TextField label='Version' value={chartVersion} fullWidth disabled sx={disabledSx} />
             {/* Icon URL field with preview image next to it */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 2 }}>
               <TextField
@@ -247,21 +257,17 @@ export default function NewChartModal({
               </Box>
             </Box>
             <TextField
-              label='Chart Path'
-              value={chartPath}
-              onChange={(e) => setChartPath(e.target.value)}
+              label='Target Directory Name'
+              value={chartTargetDir}
+              onChange={(e) => setChartTargetDir(e.target.value)}
               fullWidth
               disabled={!connectionTested}
               sx={disabledSx}
             />
-            <TextField
-              label='Revision'
-              value={revision}
-              onChange={(e) => setRevision(e.target.value)}
-              fullWidth
-              disabled={!connectionTested}
-              sx={disabledSx}
-            />
+            {/* https://gitea.ferruhcihan-1.dev-akamai-apl.net/otomi/charts */}
+            <Typography variant='body2' color='textSecondary'>
+              {`The Helm chart will be added at: https://gitea.${cluster.domainSuffix}/otomi/charts/${chartTargetDir}`}
+            </Typography>
             <FormControlLabel
               control={
                 <Checkbox checked={allowTeams} onChange={(e) => setAllowTeams(e.target.checked)} color='primary' />
@@ -278,17 +284,7 @@ export default function NewChartModal({
             variant='contained'
             color={actionButtonColor || 'error'}
             sx={{ ml: 1, bgcolor: actionButtonColor }}
-            onClick={() => {
-              setIsLoading(true)
-              handleAction({
-                url: githubUrl,
-                chartName,
-                chartIcon,
-                chartPath,
-                revision,
-                allowTeams,
-              })
-            }}
+            onClick={handleSubmit}
             disabled={!isFormValid || isLoading}
             loading={isLoading}
             startIcon={actionButtonFrontIcon}
