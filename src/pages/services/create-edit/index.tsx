@@ -82,7 +82,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
   // DEMO VALUES
-  const services: K8Service[] = [
+  const k8sServices2: K8Service[] = [
     { name: 'demo', ports: [80], managedByKnative: false },
     { name: 'blue', ports: [1001], managedByKnative: true },
     { name: 'green', ports: [91], managedByKnative: true },
@@ -202,8 +202,8 @@ export default function ({
 
   const onSubmit = (data: CreateServiceApiResponse) => {
     console.log('data', data)
-    if (isEmpty(data.ingress.cname.tlsSecretName) || isEmpty(data.ingress.cname.domain)) data.ingress.cname = {}
-    if (isEmpty(data.ingress.headers.response.set)) data.ingress.headers = {}
+    if (isEmpty(data.ingress.cname.tlsSecretName) || isEmpty(data.ingress.cname.domain)) delete data.ingress.cname
+    if (isEmpty(data.ingress.headers.response.set)) delete data.ingress.headers
     // if (!isEmpty(data.ingress.paths)) {
     //   data.ingress.paths.forEach((path, index) => {
     //     data.ingress.paths[index] = `/${path}`
@@ -211,6 +211,7 @@ export default function ({
     // }
     if (data.ksvc?.predeployed) data.ingress.subdomain = `${data.ingress.subdomain}-team-${teamId}`
     else data.ingress.subdomain = `${data.ingress.subdomain}-${teamId}`
+
     console.log('MODIFIED data', data)
     // eslint-disable-next-line object-shorthand
     if (serviceId) update({ teamId, serviceId: serviceId, body: data })
