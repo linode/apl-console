@@ -209,6 +209,8 @@ export default function ({
     //     data.ingress.paths[index] = `/${path}`
     //   })
     // }
+    if (data.ksvc?.predeployed) data.ingress.subdomain = `${data.ingress.subdomain}-team-${teamId}`
+    else data.ingress.subdomain = `${data.ingress.subdomain}-${teamId}`
     console.log('MODIFIED data', data)
     // eslint-disable-next-line object-shorthand
     if (serviceId) update({ teamId, serviceId: serviceId, body: data })
