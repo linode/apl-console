@@ -123,7 +123,7 @@ export default function NewChartModal({
   useEffect(() => {
     if (helmChartData?.error) {
       setConnectionTested(false)
-      setUrlError(helmChartData?.error as string)
+      setUrlError(helmChartData.error)
     } else {
       setConnectionTested(true)
       setUrlError(null)
