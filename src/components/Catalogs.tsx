@@ -53,10 +53,9 @@ interface Props {
 
 // TODO: this needs to be fetched from APL Api
 interface NewChartValues {
-  url: string
-  chartName: string
+  gitRepositoryUrl: string
+  chartTargetDirName: string
   chartIcon?: string
-  chartTargetDir: string
   allowTeams: boolean
 }
 

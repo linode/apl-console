@@ -75,10 +75,9 @@ interface Props {
 }
 
 interface NewChartValues {
-  url: string
-  chartName: string
+  gitRepositoryUrl: string
+  chartTargetDirName: string
   chartIcon?: string
-  chartTargetDir: string
   allowTeams: boolean
 }
 
@@ -105,12 +104,12 @@ export default function NewChartModal({
   const [chartAppVersion, setChartAppVersion] = useState('')
   const [chartVersion, setChartVersion] = useState('')
   const [chartIcon, setChartIcon] = useState('')
-  const [chartTargetDir, setChartTargetDir] = useState('')
+  const [chartTargetDirName, setChartTargetDirName] = useState('')
   const [allowTeams, setAllowTeams] = useState(true)
   // Indicates that Get details passed.
   const [connectionTested, setConnectionTested] = useState(false)
   // Error state for the URL input.
-  const [urlError, setUrlError] = useState<string | null>(null)
+  const [urlError, setUrlError] = useState<string>('')
   // Loading state for the Add Chart button.
   const [isLoading, setIsLoading] = useState(false)
 
@@ -122,26 +121,23 @@ export default function NewChartModal({
 
   useEffect(() => {
     if (helmChartData?.error) {
+      const { error } = helmChartData as { error: string }
       setConnectionTested(false)
-      setUrlError(helmChartData.error)
+      setUrlError(error)
     } else {
       setConnectionTested(true)
       setUrlError(null)
     }
     if (!isEmpty(helmChartData?.values)) {
-      const values = helmChartData?.values as {
-        name: string
-        description: string
-        icon?: string
-        version: string
-        appVersion: string
+      const { values } = helmChartData as {
+        values: { name: string; description: string; version: string; appVersion: string; icon: string }
       }
       setChartName(values.name)
       setChartDescription(values.description)
       setChartVersion(values.version)
       setChartAppVersion(values.appVersion)
       setChartIcon(values.icon || '')
-      setChartTargetDir(values.name)
+      setChartTargetDirName(values.name)
       setConnectionTested(true)
     } else setConnectionTested(false)
   }, [helmChartData])
@@ -157,14 +153,14 @@ export default function NewChartModal({
   const handleSubmit = () => {
     setIsLoading(true)
     handleAction({
-      url: helmChartUrl,
-      chartName,
+      gitRepositoryUrl: helmChartUrl,
+      chartTargetDirName,
       chartIcon,
-      chartTargetDir,
       allowTeams,
     })
   }
 
+  const invalidDirNamePattern = /[\\/:*?"<>|#%&{}$!`~\s]|^\.+$|^-|-$/
   // Form is valid when connection is tested, required fields are filled, and no URL error exists.
   const isFormValid =
     connectionTested &&
@@ -172,6 +168,7 @@ export default function NewChartModal({
     chartAppVersion?.trim() !== '' &&
     chartVersion?.trim() !== '' &&
     gitRepositoryUrl?.trim() !== '' &&
+    !invalidDirNamePattern.test(chartTargetDirName) &&
     !urlError
 
   // Temp solution to style disabled state, cannot be done with styled components.
@@ -204,7 +201,7 @@ export default function NewChartModal({
             {/* Row for the GitHub URL input and Get details button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
               <TextField
-                sx={{ width: '400px' }}
+                sx={{ width: '480px' }}
                 placeholder='Git Repository URL'
                 label='Git Repository URL'
                 value={gitRepositoryUrl}
@@ -258,15 +255,23 @@ export default function NewChartModal({
             </Box>
             <TextField
               label='Target Directory Name'
-              value={chartTargetDir}
-              onChange={(e) => setChartTargetDir(e.target.value)}
+              value={chartTargetDirName}
+              onChange={(e) => setChartTargetDirName(e.target.value)}
               fullWidth
               disabled={!connectionTested}
               sx={disabledSx}
+              error={Boolean(chartTargetDirName && invalidDirNamePattern.test(chartTargetDirName))}
+              helperText={
+                chartTargetDirName && invalidDirNamePattern.test(chartTargetDirName)
+                  ? 'Invalid directory name. Avoid spaces, special characters or leading, trailing dots and dashes.'
+                  : ''
+              }
             />
-            {/* https://gitea.ferruhcihan-1.dev-akamai-apl.net/otomi/charts */}
-            <Typography variant='body2' color='textSecondary'>
-              {`The Helm chart will be added at: https://gitea.${cluster.domainSuffix}/otomi/charts/${chartTargetDir}`}
+            <Typography variant='body2'>
+              {`The Helm chart will be added at: `}
+              <Typography variant='body2' display='inline' sx={{ textDecoration: 'underline' }}>
+                {`https://gitea.${cluster.domainSuffix}/otomi/charts/${chartTargetDirName}`}
+              </Typography>
             </Typography>
             <FormControlLabel
               control={
