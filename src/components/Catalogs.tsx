@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
-import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
@@ -49,6 +48,7 @@ const developerCatalogInfo = [
 interface Props {
   teamId: string
   catalogs: any[]
+  fetchCatalog: () => void
 }
 
 // TODO: this needs to be fetched from APL Api
@@ -66,8 +66,7 @@ interface NewChartPayload extends NewChartValues {
   userSub: string
 }
 
-export default function ({ teamId, catalogs }: Props): React.ReactElement {
-  const history = useHistory()
+export default function ({ teamId, catalogs, fetchCatalog }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
@@ -108,6 +107,7 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
     try {
       const result = await createWorkloadCatalog({ body: payload }).unwrap()
+      fetchCatalog()
       if (result) enqueueSnackbar('Chart successfully added', { variant: 'success' })
       else enqueueSnackbar('Error adding chart', { variant: 'error' })
 

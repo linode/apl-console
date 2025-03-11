@@ -2394,6 +2394,8 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -2528,6 +2530,8 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -2665,6 +2669,8 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -2802,6 +2808,8 @@ export type CreateProjectApiArg = {
         helmChartDescription?: string
       }
       namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
       imageUpdateStrategy?:
         | {
             type?: 'disabled'
@@ -2943,6 +2951,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -3082,6 +3092,8 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -3277,6 +3289,8 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
     helmChartDescription?: string
   }
   namespace?: string
+  createNamespace?: boolean
+  sidecarInject?: boolean
   imageUpdateStrategy?:
     | {
         type?: 'disabled'
@@ -3302,11 +3316,11 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
 }[]
 export type GetAllWorkloadsApiArg = void
 export type WorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
-export type CreateWorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
 export type WorkloadCatalogApiArg = {
   /** Project object that contains updated values */
   body: object
 }
+export type CreateWorkloadCatalogApiResponse = /** status 200 Successfully updated a team project */ object
 export type CreateWorkloadCatalogApiArg = {
   /** Project object that contains updated values */
   body: object
@@ -3326,6 +3340,8 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
     helmChartDescription?: string
   }
   namespace?: string
+  createNamespace?: boolean
+  sidecarInject?: boolean
   imageUpdateStrategy?:
     | {
         type?: 'disabled'
@@ -3368,6 +3384,8 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
     helmChartDescription?: string
   }
   namespace?: string
+  createNamespace?: boolean
+  sidecarInject?: boolean
   imageUpdateStrategy?:
     | {
         type?: 'disabled'
@@ -3410,6 +3428,8 @@ export type CreateWorkloadApiArg = {
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
@@ -3456,6 +3476,8 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
     helmChartDescription?: string
   }
   namespace?: string
+  createNamespace?: boolean
+  sidecarInject?: boolean
   imageUpdateStrategy?:
     | {
         type?: 'disabled'
@@ -3500,6 +3522,8 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
     helmChartDescription?: string
   }
   namespace?: string
+  createNamespace?: boolean
+  sidecarInject?: boolean
   imageUpdateStrategy?:
     | {
         type?: 'disabled'
@@ -3544,6 +3568,8 @@ export type EditWorkloadApiArg = {
       helmChartDescription?: string
     }
     namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
     imageUpdateStrategy?:
       | {
           type?: 'disabled'
