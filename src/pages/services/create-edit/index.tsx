@@ -64,6 +64,42 @@ interface Params {
   teamId: string
   serviceId?: string
 }
+interface Ingress {
+  ingressClassName?: string
+  tlsPass?: boolean
+  useDefaultHost?: boolean
+  subdomain: string
+  domain: string
+  useCname?: boolean
+  cname?: {
+    domain?: string
+    tlsSecretName?: string
+  }
+  paths?: string[]
+  forwardPath?: boolean
+  hasCert?: boolean
+  certSelect?: boolean
+  certName?: string
+  headers?: {
+    response?: { set?: { name: string; value: string }[] }
+  }
+}
+interface Service {
+  id?: string
+  teamId?: string
+  name: string
+  namespace?: string
+  port: number
+  ksvc?: {
+    predeployed?: boolean
+  }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
+  ingress: Ingress
+}
 
 interface K8Service {
   name: string
@@ -82,7 +118,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
   // DEMO VALUES
-  const k8sServices2: K8Service[] = [
+  const k8sServices: K8Service[] = [
     { name: 'demo', ports: [80], managedByKnative: false },
     { name: 'blue', ports: [1001], managedByKnative: true },
     { name: 'green', ports: [91], managedByKnative: true },
@@ -121,7 +157,7 @@ export default function ({
     refetch: refetchService,
   } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const {
-    data: k8sServices,
+    data: k8sServices2,
     isLoading: isLoadingK8sServices,
     isFetching: isFetchingK8sServices,
     isError: isErrorK8sServices,
@@ -179,12 +215,14 @@ export default function ({
       setActiveService(prefilledData.name)
       setService(k8sServices?.find((service) => service.name === prefilledData.name) as unknown as K8Service)
       setSecret(teamSecrets?.find((secret) => secret.name === prefilledData.name))
-      if (!isEmpty(prefilledData.ingress.paths)) {
-        prefilledData.ingress.paths.forEach((path, index) => {
-          prefilledData.ingress.paths[index] = path.replace(/^\/+/, '')
-        })
-      }
     }
+
+    if (!isEmpty(data?.ingress?.paths)) {
+      data.ingress.paths.forEach((path, index) => {
+        if (path.includes('/')) setValue(`ingress.paths.${index}`, path.replace(/^\/+/, ''))
+      })
+    }
+    setValue('ingress.domain', cluster.domainSuffix)
   }, [data, setValue, prefilledData])
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
@@ -200,22 +238,24 @@ export default function ({
     setSecret(teamSecrets?.find((secret) => secret.name === name))
   }
 
-  const onSubmit = (data: CreateServiceApiResponse) => {
-    console.log('data', data)
-    if (isEmpty(data.ingress.cname.tlsSecretName) || isEmpty(data.ingress.cname.domain)) delete data.ingress.cname
-    if (isEmpty(data.ingress.headers.response.set)) delete data.ingress.headers
-    // if (!isEmpty(data.ingress.paths)) {
-    //   data.ingress.paths.forEach((path, index) => {
-    //     data.ingress.paths[index] = `/${path}`
-    //   })
-    // }
-    if (data.ksvc?.predeployed) data.ingress.subdomain = `${data.ingress.subdomain}-team-${teamId}`
-    else data.ingress.subdomain = `${data.ingress.subdomain}-${teamId}`
+  const onSubmit = (submitData: CreateServiceApiResponse) => {
+    console.log('data', submitData)
+    if (!isEmpty(submitData.ingress.paths)) {
+      submitData.ingress.paths.forEach((path, index) => {
+        submitData.ingress.paths[index] = `/${path}`
+      })
+    }
+    // eslint-disable-next-line no-param-reassign
+    if (submitData.ksvc?.predeployed) {
+      if (submitData.ingress.subdomain !== `${service.name}-team-${teamId}`)
+        submitData.ingress.subdomain = `${submitData.ingress.subdomain}-team-${teamId}`
+    } else if (submitData.ingress.subdomain !== `${service.name}-${teamId}`)
+      submitData.ingress.subdomain = `${submitData.ingress.subdomain}-${teamId}`
 
-    console.log('MODIFIED data', data)
+    console.log('MODIFIED data', submitData)
     // eslint-disable-next-line object-shorthand
-    if (serviceId) update({ teamId, serviceId: serviceId, body: data })
-    else create({ teamId, body: data })
+    if (serviceId) update({ teamId, serviceId: serviceId, body: submitData })
+    else create({ teamId, body: submitData })
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
@@ -225,7 +265,7 @@ export default function ({
   const error = isError || isErrorK8sServices || isErrorTeamSecrets
 
   if (loading) return <PaperLayout loading title={t('TITLE_SERVICE')} />
-  setValue('ingress.domain', `${cluster.domainSuffix}/`)
+
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
 
   const getKeyValue = () => {
@@ -287,7 +327,6 @@ export default function ({
                   {...register('port')}
                   min={1}
                   max={65535}
-                  helperTextPosition='top'
                   error={!!errors.port}
                   helperText={errors.port?.message?.toString()}
                 />
@@ -324,6 +363,8 @@ export default function ({
                     showLabel={false}
                     addLabel='Add another URL path'
                     onlyValue
+                    keySize='large'
+                    valueSize='medium'
                     name='ingress.paths'
                     error={!!errors.ingress?.paths}
                     helperText={errors.ingress?.paths?.root?.message?.toString()}
@@ -336,7 +377,7 @@ export default function ({
                       label='Domain'
                       error={!!errors.ingress?.cname}
                       helperText={errors.ingress?.cname?.root?.message?.toString()}
-                      width='medium'
+                      width='large'
                       type='text'
                       {...register('ingress.cname.domain')}
                     />
@@ -346,7 +387,6 @@ export default function ({
                       {...register('ingress.cname.tlsSecretName')}
                       select
                       error={!!errors.ingress?.cname}
-                      helperText={errors.ingress?.cname?.root?.message?.toString()}
                       onChange={(e) => {
                         const value = e.target.value
                         setValue('ingress.cname.tlsSecretName', value)

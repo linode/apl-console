@@ -13,7 +13,7 @@ export default function FormRow(props: FormRowProps) {
     <Box
       display='flex'
       flexDirection='row'
-      alignItems='flex-end'
+      alignItems='baseline'
       sx={{
         '& > *:not(:last-child)': {
           marginRight: `${spacing}px`,

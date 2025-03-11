@@ -64,6 +64,8 @@ interface KeyValueProps {
   label?: string
   error?: boolean
   name: string
+  keySize?: 'small' | 'medium' | 'large'
+  valueSize?: 'small' | 'medium' | 'large'
   onlyValue?: boolean
   errorText?: string
 }
@@ -84,6 +86,8 @@ export default function KeyValue(props: KeyValueProps) {
     helperTextPosition,
     onlyValue,
     keyValue,
+    keySize = 'medium',
+    valueSize = 'medium',
     error,
     errorText,
     keyDisabled = false,
@@ -117,25 +121,29 @@ export default function KeyValue(props: KeyValueProps) {
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
       {fields.map((item, index) => (
-        <FormRow spacing={10}>
-          <TextField
-            sx={{ color: '#B5B5BC' }}
-            disabled={keyDisabled}
-            value={keyValue}
-            label={showLabel && index === 0 ? keyLabel : ''}
-            {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
-          />
-          <TextField
-            disabled={valueDisabled}
-            label={showLabel && index === 0 ? valueLabel : ''}
-            {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
-          />
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <FormRow spacing={10}>
+            <TextField
+              width={keySize}
+              sx={{ color: '#B5B5BC' }}
+              disabled={keyDisabled}
+              value={keyValue}
+              label={showLabel && index === 0 ? keyLabel : ''}
+              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
+            />
+            <TextField
+              width={valueSize}
+              disabled={valueDisabled}
+              label={showLabel && index === 0 ? valueLabel : ''}
+              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
+            />
+          </FormRow>
           {addLabel && (
-            <IconButton onClick={() => remove(index)}>
+            <IconButton sx={{ marginTop: '25px' }} onClick={() => remove(index)}>
               <Clear />
             </IconButton>
           )}
-        </FormRow>
+        </Box>
       ))}
       {addLabel && (
         <Button
