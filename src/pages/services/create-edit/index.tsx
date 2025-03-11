@@ -118,7 +118,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
   // DEMO VALUES
-  const k8sServices: K8Service[] = [
+  const k8sServices2: K8Service[] = [
     { name: 'demo', ports: [80], managedByKnative: false },
     { name: 'blue', ports: [1001], managedByKnative: true },
     { name: 'green', ports: [91], managedByKnative: true },
@@ -157,7 +157,7 @@ export default function ({
     refetch: refetchService,
   } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
   const {
-    data: k8sServices2,
+    data: k8sServices,
     isLoading: isLoadingK8sServices,
     isFetching: isFetchingK8sServices,
     isError: isErrorK8sServices,
