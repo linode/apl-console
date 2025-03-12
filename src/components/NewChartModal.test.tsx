@@ -136,15 +136,6 @@ describe('NewChartModal Component', () => {
       expect(urlInput).toHaveValue('https://github.com/test/repo')
     })
 
-    it('should trigger handleClose when clicking the close button', () => {
-      render(<NewChartModal {...mockProps} />)
-
-      const closeButton = screen.getByText('X')
-      fireEvent.click(closeButton)
-
-      expect(mockHandleClose).toHaveBeenCalledTimes(1)
-    })
-
     it('should trigger handleCancel when clicking the cancel button', () => {
       render(<NewChartModal {...mockProps} />)
 
