@@ -84,8 +84,9 @@ const checkGitRepositoryUrl = (url: string, urlError: string) => {
   // 3. Ensures repository owner and name in the URL path.
   // 4. Matches "blob", "raw", or "src" for content retrieval.
   // 5. Validates file path after content type.
+  // 6. Ensures ending with "Chart.yaml".
   const gitRepositoryUrlRegex =
-    /^(https?:\/\/)?(github\.com|gitlab\.com|bitbucket\.org)\/.+\/.+\/(blob|raw|src|-\/(?:blob|raw))\/.+/
+    /^(https?:\/\/)?(github\.com|gitlab\.com|bitbucket\.org)\/.+\/.+\/(blob|raw|src|-\/(?:blob|raw))\/.+\/Chart\.yaml$/
 
   const errorText = urlError || (url && !url.match(gitRepositoryUrlRegex) ? 'Invalid URL format.' : '')
   return errorText
