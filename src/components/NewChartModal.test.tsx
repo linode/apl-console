@@ -131,9 +131,9 @@ describe('NewChartModal Component', () => {
       render(<NewChartModal {...mockProps} />)
 
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
-      expect(urlInput).toHaveValue('https://github.com/test/repo')
+      expect(urlInput).toHaveValue('https://github.com/test/repo/blob/main/Chart.yaml')
     })
 
     it('should trigger handleCancel when clicking the cancel button', () => {
@@ -155,7 +155,7 @@ describe('NewChartModal Component', () => {
       render(<NewChartModal {...mockProps} />)
 
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
@@ -172,7 +172,7 @@ describe('NewChartModal Component', () => {
     })
 
     it('should show error when helm chart data has an error', async () => {
-      const mockError = 'Invalid repository URL'
+      const mockError = 'Error fetching helm chart content.'
       mockedUseGetHelmChartContentQuery.mockImplementation(({ url }) => ({
         data: url ? { error: mockError } : null,
         isLoading: false,
@@ -182,7 +182,7 @@ describe('NewChartModal Component', () => {
       render(<NewChartModal {...mockProps} />)
 
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://invalid-url')
+      await userEvent.type(urlInput, 'https://github.com/invalid/invalid/blob/invalid/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
@@ -221,7 +221,7 @@ describe('NewChartModal Component', () => {
 
       // First get chart details to enable the field
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
@@ -255,7 +255,7 @@ describe('NewChartModal Component', () => {
 
       // First get chart details to enable the field
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
@@ -287,7 +287,7 @@ describe('NewChartModal Component', () => {
 
       // Fill form
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
@@ -303,7 +303,7 @@ describe('NewChartModal Component', () => {
       fireEvent.click(submitButton)
 
       expect(mockHandleAction).toHaveBeenCalledWith({
-        gitRepositoryUrl: 'https://github.com/test/repo',
+        gitRepositoryUrl: 'https://github.com/test/repo/blob/main/Chart.yaml',
         chartTargetDirName: 'test-chart',
         chartIcon: 'https://example.com/icon.png',
         allowTeams: true,
@@ -349,7 +349,7 @@ describe('NewChartModal Component', () => {
 
       // Fill form
       const urlInput = screen.getByLabelText('Git Repository URL')
-      await userEvent.type(urlInput, 'https://github.com/test/repo')
+      await userEvent.type(urlInput, 'https://github.com/test/repo/blob/main/Chart.yaml')
 
       const getDetailsButton = screen.getByText('Get details')
       fireEvent.click(getDetailsButton)
