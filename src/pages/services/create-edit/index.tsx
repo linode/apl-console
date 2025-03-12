@@ -1,11 +1,11 @@
 import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid } from '@mui/material'
-import { styled, useTheme } from '@mui/material/styles'
+import { styled } from '@mui/material/styles'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   CreateServiceApiResponse,
   useCreateServiceMutation,
@@ -64,51 +64,11 @@ interface Params {
   teamId: string
   serviceId?: string
 }
-interface Ingress {
-  ingressClassName?: string
-  tlsPass?: boolean
-  useDefaultHost?: boolean
-  subdomain: string
-  domain: string
-  useCname?: boolean
-  cname?: {
-    domain?: string
-    tlsSecretName?: string
-  }
-  paths?: string[]
-  forwardPath?: boolean
-  hasCert?: boolean
-  certSelect?: boolean
-  certName?: string
-  headers?: {
-    response?: { set?: { name: string; value: string }[] }
-  }
-}
-interface Service {
-  id?: string
-  teamId?: string
-  name: string
-  namespace?: string
-  port: number
-  ksvc?: {
-    predeployed?: boolean
-  }
-  trafficControl?: {
-    enabled?: boolean
-    weightV1?: number
-    weightV2?: number
-  }
-  ingress: Ingress
-}
 
 interface K8Service {
   name: string
   ports: number[]
   managedByKnative: boolean
-}
-
-interface K8Secret {
-  name: string
 }
 
 export default function ({
@@ -117,33 +77,12 @@ export default function ({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
-  // DEMO VALUES
-  const k8sServices2: K8Service[] = [
-    { name: 'demo', ports: [80], managedByKnative: false },
-    { name: 'blue', ports: [1001], managedByKnative: true },
-    { name: 'green', ports: [91], managedByKnative: true },
-    { name: 'the-moon', ports: [8080], managedByKnative: false },
-  ]
-
-  const localTeamSecrets = [
-    { name: 'tls-secret-1' },
-    { name: 'tls-secret-2' },
-    { name: 'tls-secret-3' },
-    { name: 'tls-secret-4' },
-  ]
-  const history = useHistory()
-  const location = useLocation()
-  const session = useSession()
-  const locationState = location?.state as any
-  const prefilledData = locationState?.prefilled as CreateServiceApiResponse
   const { t } = useTranslation()
-  const theme = useTheme()
   const { classes } = useStyles()
   const {
     settings: { cluster },
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
-  const [secret, setSecret] = useState<K8Secret | undefined>(undefined)
 
   // api calls
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
@@ -183,38 +122,24 @@ export default function ({
   }, [isDirty])
 
   // form state
-  const defaultValues = { ...prefilledData }
   const methods = useForm<CreateServiceApiResponse>({
     resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateServiceApiResponse>,
-    defaultValues: data || defaultValues,
+    defaultValues: data,
   })
   const {
     control,
     register,
     reset,
-    resetField,
     handleSubmit,
     watch,
     formState: { errors },
     setValue,
-    trigger,
-    getValues,
   } = methods
-  console.log(errors.ingress?.paths)
   useEffect(() => {
     if (data) {
       reset(data)
       setActiveService(data.name)
       setService(k8sServices?.find((service) => service.name === data.name) as unknown as K8Service)
-      setSecret(teamSecrets?.find((secret) => secret.name === data.name))
-    }
-
-    if (!isEmpty(prefilledData)) {
-      console.log('PREFILLED')
-      reset(prefilledData)
-      setActiveService(prefilledData.name)
-      setService(k8sServices?.find((service) => service.name === prefilledData.name) as unknown as K8Service)
-      setSecret(teamSecrets?.find((secret) => secret.name === prefilledData.name))
     }
 
     if (!isEmpty(data?.ingress?.paths)) {
@@ -223,7 +148,7 @@ export default function ({
       })
     }
     setValue('ingress.domain', cluster.domainSuffix)
-  }, [data, setValue, prefilledData])
+  }, [data, setValue])
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
@@ -234,25 +159,18 @@ export default function ({
     else setValue('ksvc.predeployed', false)
   }
 
-  function setActiveSecret(name: string) {
-    setSecret(teamSecrets?.find((secret) => secret.name === name))
-  }
-
   const onSubmit = (submitData: CreateServiceApiResponse) => {
-    console.log('data', submitData)
     if (!isEmpty(submitData.ingress.paths)) {
       submitData.ingress.paths.forEach((path, index) => {
         submitData.ingress.paths[index] = `/${path}`
       })
     }
-    // eslint-disable-next-line no-param-reassign
     if (submitData.ksvc?.predeployed) {
       if (submitData.ingress.subdomain !== `${service.name}-team-${teamId}`)
         submitData.ingress.subdomain = `${submitData.ingress.subdomain}-team-${teamId}`
     } else if (submitData.ingress.subdomain !== `${service.name}-${teamId}`)
       submitData.ingress.subdomain = `${submitData.ingress.subdomain}-${teamId}`
 
-    console.log('MODIFIED data', submitData)
     // eslint-disable-next-line object-shorthand
     if (serviceId) update({ teamId, serviceId: serviceId, body: submitData })
     else create({ teamId, body: submitData })
@@ -269,15 +187,13 @@ export default function ({
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
 
   const getKeyValue = () => {
-    if (service !== undefined) {
-      return service.managedByKnative
-        ? `${service.name}-team-${teamId}.${cluster.domainSuffix}/`
-        : `${service.name}-${teamId}.${cluster.domainSuffix}/`
+    if (data !== undefined) {
+      return data.ksvc?.predeployed
+        ? `${data.name}-team-${teamId}.${cluster.domainSuffix}/`
+        : `${data.name}-${teamId}.${cluster.domainSuffix}/`
     }
     return `*-${teamId}.${cluster.domainSuffix}/`
   }
-
-  console.log('methods: ', methods)
 
   const keyValue = getKeyValue()
 
@@ -307,7 +223,7 @@ export default function ({
                     setValue('ingress.subdomain', value)
                     setActiveService(value)
                   }}
-                  value={watch('name')}
+                  value={watch('name', data?.name)}
                 >
                   <MenuItem value='' disabled classes={undefined}>
                     Select a service
@@ -355,7 +271,7 @@ export default function ({
                 <StyledAccordionDetails>
                   <KeyValue
                     title='URL paths'
-                    subTitle='These define where your service is available. For example, /login could point to your app’s login page.'
+                    subTitle='These define where your service is available. For example, login could point to your app’s login page.'
                     keyDisabled
                     keyValue={keyValue}
                     keyLabel='Domain'
@@ -390,17 +306,16 @@ export default function ({
                       onChange={(e) => {
                         const value = e.target.value
                         setValue('ingress.cname.tlsSecretName', value)
-                        setActiveSecret(value)
                       }}
-                      value={watch('ingress.cname.tlsSecretName')}
+                      value={watch('ingress.cname.tlsSecretName', data?.ingress?.cname?.tlsSecretName)}
                     >
                       <MenuItem value='' classes={undefined}>
                         TLS certificate
                       </MenuItem>
                       {teamSecrets.map((secret) => {
                         return (
-                          <MenuItem value={secret.name} classes={undefined}>
-                            {secret.name}
+                          <MenuItem value={secret?.name} classes={undefined}>
+                            {secret?.name}
                           </MenuItem>
                         )
                       })}

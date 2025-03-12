@@ -139,7 +139,7 @@ export default function KeyValue(props: KeyValueProps) {
             />
           </FormRow>
           {addLabel && (
-            <IconButton sx={{ marginTop: '25px' }} onClick={() => remove(index)}>
+            <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
               <Clear />
             </IconButton>
           )}
