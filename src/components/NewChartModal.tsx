@@ -77,6 +77,20 @@ export const checkDirectoryName = (directoryName: string, chartDirectories: stri
   return ''
 }
 
+const checkGitRepositoryUrl = (url: string, urlError: string) => {
+  // Regex to validate Git URLs by checking:
+  // 1. Optional "http(s)://".
+  // 2. Matches "github.com", "gitlab.com", or "bitbucket.org".
+  // 3. Ensures repository owner and name in the URL path.
+  // 4. Matches "blob", "raw", or "src" for content retrieval.
+  // 5. Validates file path after content type.
+  const gitRepositoryUrlRegex =
+    /^(https?:\/\/)?(github\.com|gitlab\.com|bitbucket\.org)\/.+\/.+\/(blob|raw|src|-\/(?:blob|raw))\/.+/
+
+  const errorText = urlError || (url && !url.match(gitRepositoryUrlRegex) ? 'Invalid URL format.' : '')
+  return errorText
+}
+
 // interface and component -----------------------------------------------
 interface Props {
   title?: string
@@ -225,8 +239,8 @@ export default function NewChartModal({
                 label='Git Repository URL'
                 value={gitRepositoryUrl}
                 onChange={handleUrlChange}
-                error={!!urlError}
-                helperText={urlError}
+                error={!!checkGitRepositoryUrl(gitRepositoryUrl, urlError)}
+                helperText={checkGitRepositoryUrl(gitRepositoryUrl, urlError)}
               />
               <LoadingButton
                 sx={{ ml: 2, mt: 1, height: '40px', p: 2 }}
