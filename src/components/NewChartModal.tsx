@@ -248,6 +248,7 @@ export default function NewChartModal({
                 variant='contained'
                 onClick={() => setHelmChartUrl(gitRepositoryUrl)}
                 loading={isLoadingHelmChartContent || isFetchingHelmChartContent}
+                disabled={!gitRepositoryUrl || !!checkGitRepositoryUrl(gitRepositoryUrl, urlError)}
               >
                 Get details
               </LoadingButton>
