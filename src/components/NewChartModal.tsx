@@ -25,6 +25,8 @@ const ModalBox = styled(Box)(({ theme }) => ({
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 700,
+  maxHeight: '90%',
+  overflowY: 'auto',
   backgroundColor: theme.palette.background.paper,
   boxShadow:
     'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
@@ -57,7 +59,12 @@ const ModalFooter = styled('div')({
 
 // helper functions -----------------------------------------------------
 export const checkDirectoryName = (directoryName: string, chartDirectories: string[]) => {
+  if (!directoryName) return 'Directory name is required.'
   if (chartDirectories.includes(directoryName.toLowerCase())) return 'Directory name already exists.'
+  // Regex to validate directory names by checking:
+  // 1. Names consisting **only** of dots (`.`) → Invalid (e.g., "..", "...").
+  // 2. Presence of special characters: `\ / : * ? " < > | # % & { } $ ! ` ~` or whitespace → Invalid.
+  // 3. Names starting (`^-`) or ending (`-$`) with a hyphen → Invalid.
   const invalidDirNamePattern = /[\\/:*?"<>|#%&{}$!`~\s]|^\.+$|^-|-$/
   if (invalidDirNamePattern.test(directoryName))
     return 'Invalid directory name. Avoid spaces, special characters or leading, trailing dots and dashes.'
@@ -266,8 +273,8 @@ export default function NewChartModal({
               fullWidth
               disabled={!connectionTested}
               sx={disabledSx}
-              error={Boolean(chartTargetDirName && checkDirectoryName(chartTargetDirName, chartDirectories))}
-              helperText={checkDirectoryName(chartTargetDirName, chartDirectories)}
+              error={Boolean(checkDirectoryName(chartTargetDirName, chartDirectories))}
+              helperText={helmChartUrl && checkDirectoryName(chartTargetDirName, chartDirectories)}
             />
             <Typography variant='body2'>
               {`The Helm chart will be added at: `}
