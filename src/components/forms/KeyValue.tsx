@@ -103,12 +103,8 @@ export default function KeyValue(props: KeyValueProps) {
   })
 
   const handleAddItem = () => {
-    console.log('FIELD ADDED')
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
   }
-  console.log('ERROR', error)
-  console.log('HELP', helperText)
-  console.log('FIELDS', fields)
 
   const errorScrollClassName = 'error-for-scroll'
   return (
