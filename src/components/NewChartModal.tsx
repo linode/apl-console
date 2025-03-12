@@ -5,7 +5,6 @@ import {
   ButtonPropsColorOverrides,
   Checkbox,
   FormControlLabel,
-  IconButton,
   Modal,
   TextField,
   Typography,
@@ -197,16 +196,13 @@ export default function NewChartModal({
         {!noHeader && (
           <ModalHeader>
             <Typography variant='h5'>{title}</Typography>
-            <IconButton color='primary' onClick={handleClose}>
-              X
-            </IconButton>
           </ModalHeader>
         )}
         <ModalContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* Helper text */}
             <Typography variant='body2' color='textSecondary'>
-              Please provide a valid Git Repository URL pointing to a Chart.yaml file
+              Provide a git repository URL pointing to a Chart.yaml file.
             </Typography>
             {/* Row for the GitHub URL input and Get details button */}
             <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
