@@ -53,8 +53,8 @@ import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
-import CodeRepository from 'pages/code-repositories/create-edit'
-import CodeRepositories from 'pages/code-repositories/overview'
+// import CodeRepository from 'pages/code-repositories/create-edit'
+// import CodeRepositories from 'pages/code-repositories/overview'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -89,7 +89,7 @@ function App() {
                               <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
                               <Switch>
                                 <Route path='/' component={Dashboard} exact />
-                                <PrivateRoute
+                                {/* <PrivateRoute
                                   path='/coderepositories'
                                   component={CodeRepositories}
                                   platformAdminRoute
@@ -109,7 +109,7 @@ function App() {
                                   path='/teams/:teamId/coderepositories/:coderepositoryId'
                                   component={CodeRepository}
                                   exact
-                                />
+                                /> */}
 
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
