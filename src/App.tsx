@@ -53,6 +53,7 @@ import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
+// TODO: Uncomment the following line(s) when the new build page is ready
 // import CodeRepository from 'pages/code-repositories/create-edit'
 // import CodeRepositories from 'pages/code-repositories/overview'
 import { HttpErrorBadRequest } from './utils/error'
@@ -89,6 +90,7 @@ function App() {
                               <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
                               <Switch>
                                 <Route path='/' component={Dashboard} exact />
+                                {/* TODO: Uncomment the following line(s) when the new build page is ready */}
                                 {/* <PrivateRoute
                                   path='/coderepositories'
                                   component={CodeRepositories}

@@ -29,6 +29,7 @@ export default function NavConfig() {
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
+        // TODO: Uncomment the following line(s) when the new build page is ready
         // { title: 'Code Repositories', path: '/coderepositories', icon: getIcon('coderepositories_icon.svg') },
         { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
@@ -58,6 +59,7 @@ export default function NavConfig() {
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
         },
+        // TODO: Uncomment the following line(s) when the new build page is ready
         // {
         //   title: 'Code Repositories',
         //   path: `/teams/${oboTeamId}/coderepositories`,
