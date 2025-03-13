@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSession } from 'providers/Session'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
@@ -136,7 +136,6 @@ export default function ({
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const { user } = useSession()
-  const globalError = useAppSelector(({ global: { error } }) => error)
   const hash = location.hash.substring(1)
   const hashMap = {
     info: 0,
@@ -151,19 +150,7 @@ export default function ({
   }
   const [data, setData] = useState<any>(workload)
   const [workloadValues, setWorkloadValues] = useState<any>(values)
-  const [scrollPosition, setScrollPosition] = useState(0)
   const icon = data?.icon || '/logos/akamai_logo.svg'
-
-  const handleScroll = () => {
-    const position = window.scrollY
-    setScrollPosition(position)
-  }
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   useEffect(() => {
     if (!workload) return
