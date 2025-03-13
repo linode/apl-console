@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.6.1](https://github.com/linode/apl-console/compare/v3.5.0...v3.6.1) (2025-03-13)
+
+### Features
+
+- add code repository page ([#512](https://github.com/linode/apl-console/issues/512)) ([269d229](https://github.com/linode/apl-console/commit/269d229450ba4a3874165d025a476a4d82ebad0e))
+- add self-service option for admins to add external helm charts to the catalog ([#519](https://github.com/linode/apl-console/issues/519)) ([11f5800](https://github.com/linode/apl-console/commit/11f58000a650ae897fb6fe4be07b8bf3d630a4a8))
+- hide code repositories pages ([#526](https://github.com/linode/apl-console/issues/526)) ([3cd82bb](https://github.com/linode/apl-console/commit/3cd82bb08671ce58a20bfc0f1e7e04e4d7aca045))
+- update add new helm chart ([#524](https://github.com/linode/apl-console/issues/524)) ([3d94fb2](https://github.com/linode/apl-console/commit/3d94fb2a3fe11636ab5764f9a0ff4487df95fa4c))
+
 ## [3.6.0](https://github.com/linode/apl-console/compare/v3.5.0...v3.6.0) (2025-03-07)
 
 ### Features
