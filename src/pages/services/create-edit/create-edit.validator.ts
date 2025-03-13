@@ -86,12 +86,18 @@ export const serviceApiResponseSchema = object({
     enabled: boolean().optional(),
     weightV1: number().when('enabled', {
       is: true,
-      then: number().required('WeightV1 is required when "trafficControl" is enabled'),
+      then: number()
+        .required('WeightV1 is required when "trafficControl" is enabled')
+        .min(0, 'Must be a minimum of 0')
+        .max(100, 'Must be a maximum of 100'),
       otherwise: number().optional(),
     }),
     weightV2: number().when('enabled', {
       is: true,
-      then: number().required('WeightV2 is required when "trafficControl" is enabled'),
+      then: number()
+        .required('WeightV2 is required when "trafficControl" is enabled')
+        .min(0, 'Must be a minimum of 0')
+        .max(100, 'Must be a maximum of 100'),
       otherwise: number().optional(),
     }),
   }).optional(),

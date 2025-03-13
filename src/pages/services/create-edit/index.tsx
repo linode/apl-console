@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Button, Divider, Grid } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
@@ -392,6 +392,12 @@ export default function ({
                     labelB='Version B'
                     valueMax={100}
                     disabled={!TrafficControlEnabled}
+                    error={!!errors.trafficControl?.weightV1 || !!errors.trafficControl?.weightV2}
+                    helperText={
+                      errors.trafficControl?.weightV1 || errors.trafficControl?.weightV2
+                        ? 'The values must be in a range of "0" and "100"'
+                        : undefined
+                    }
                   />
 
                   <Divider sx={{ mt: 4, mb: 2 }} />
@@ -409,24 +415,29 @@ export default function ({
                 </StyledAccordionDetails>
               </StyledAccordion>
             </Section>
-            {serviceId && (
-              <DeleteButton
-                onDelete={() => del({ teamId, serviceId })}
-                resourceName={watch('name')}
-                resourceType='service'
-                data-cy='button-delete-service'
-                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-              />
-            )}
-            <Button
-              disabled={isEmpty(service)}
-              type='submit'
-              variant='contained'
-              color='primary'
-              sx={{ float: 'right', textTransform: 'none' }}
-            >
-              {serviceId ? 'Edit Service' : 'Add Service'}
-            </Button>
+            <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
+                Your service will be created as: {keyValue}
+              </Typography>
+              {serviceId && (
+                <DeleteButton
+                  onDelete={() => del({ teamId, serviceId })}
+                  resourceName={watch('name')}
+                  resourceType='service'
+                  data-cy='button-delete-service'
+                  sx={{ marginRight: '10px', textTransform: 'capitalize', ml: 2 }}
+                />
+              )}
+              <Button
+                disabled={isEmpty(service)}
+                type='submit'
+                variant='contained'
+                color='primary'
+                sx={{ textTransform: 'none' }}
+              >
+                {serviceId ? 'Edit Service' : 'Add Service'}
+              </Button>
+            </Box>
           </form>
         </FormProvider>
       </PaperLayout>

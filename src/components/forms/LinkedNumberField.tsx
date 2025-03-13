@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, FormHelperText } from '@mui/material'
 import { useEffect } from 'react'
 import { TextField } from './TextField'
 import FormRow from './FormRow'
@@ -16,9 +16,19 @@ interface LinkedNumberFieldProps {
   valueMax: number
   disabled: boolean
   registers: Registers
+  helperText?: string
+  error?: boolean
 }
 
-export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, registers }: LinkedNumberFieldProps) {
+export default function LinkedNumberField({
+  labelA,
+  labelB,
+  valueMax,
+  disabled,
+  registers,
+  error,
+  helperText,
+}: LinkedNumberFieldProps) {
   const { setValue, watch } = registers
 
   const valueA: number = watch('trafficControl.weightV1') ?? valueMax / 2
@@ -65,6 +75,7 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           onDecrement={decrementA}
           suffixSymbol='%'
           disabled={disabled}
+          error={error}
         />
         <TextField
           {...registers.registerB}
@@ -77,8 +88,10 @@ export default function LinkedNumberField({ labelA, labelB, valueMax, disabled, 
           onDecrement={decrementB}
           suffixSymbol='%'
           disabled={disabled}
+          error={error}
         />
       </FormRow>
+      {helperText && <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>}
     </Box>
   )
 }
