@@ -55,8 +55,19 @@ export default function ({ error }: Props): React.ReactElement {
         {text}
       </Button>
     )
+    if (errorCode === 401) {
+      return (
+        <Box sx={{ display: 'flex', gap: '16px' }}>
+          {renderButton(t('Logout', { ns: 'error' }) as string, () => {
+            window.location.href = '/logout-otomi'
+          })}
+          {renderButton(t('Reload', { ns: 'error' }) as string, () => {
+            window.location.reload()
+          })}
+        </Box>
+      )
+    }
     if (
-      errorCode === 401 ||
       errorCode === 503 ||
       errorCode === 504 ||
       err instanceof ApiErrorUnauthorized ||

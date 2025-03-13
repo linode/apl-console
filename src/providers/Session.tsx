@@ -238,8 +238,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
     // return the logout page if the error is a fetch error (session expired)
     if (status === 'FETCH_ERROR') return <Logout fetchError />
-    const errorMessage: string = data.error || 'Session error.'
-    const errorCode: number = status || 401
+    // if we have a session error which not fits the above, we throw a generic error
+    const errorMessage: string = data.error || data || 'Session error'
+    const errorCode: number = originalStatus || typeof status === 'number' ? status : 401
     throw new HttpError(errorMessage, errorCode)
   }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
