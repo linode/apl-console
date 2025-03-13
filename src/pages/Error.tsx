@@ -9,6 +9,7 @@ interface Props {
 }
 
 export default function ({ error }: Props): React.ReactElement {
+  console.log('error page', error)
   return (
     <MainLayout title='Error Boundary'>
       <Container maxWidth='lg'>

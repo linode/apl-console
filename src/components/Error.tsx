@@ -22,6 +22,7 @@ export default function ({ error }: Props): React.ReactElement {
   // return the logout page if the error is a fetch error (session expired)
   if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
+  console.log('error comp', { title, message, data, code, originalStatus, status })
   const errorMessage = title ? `${title}: ${message}` : message || data?.error
   const errorCode = code || originalStatus || status || message || data?.error
   const messageKey = errorCode || 'Unknown'
@@ -32,7 +33,10 @@ export default function ({ error }: Props): React.ReactElement {
   const tError = `${t('ERROR', { ns: 'error', code: errorCode, msg: t(messageKey) })}`
 
   let icon
-  switch (code) {
+  switch (errorCode) {
+    case 401:
+      icon = 'ant-design:lock-filled'
+      break
     case 403:
       icon = 'ic:baseline-do-not-disturb'
       break
@@ -52,8 +56,9 @@ export default function ({ error }: Props): React.ReactElement {
       </Button>
     )
     if (
-      code === 503 ||
-      code === 504 ||
+      errorCode === 401 ||
+      errorCode === 503 ||
+      errorCode === 504 ||
       err instanceof ApiErrorUnauthorized ||
       err instanceof ApiErrorUnauthorizedNoGroups
     ) {

@@ -23,6 +23,7 @@ import {
   ApiErrorServiceUnavailable,
   ApiErrorUnauthorized,
   ApiErrorUnauthorizedNoGroups,
+  HttpError,
 } from 'utils/error'
 import snack from 'utils/snack'
 
@@ -231,11 +232,15 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (sessionError) {
-    const { originalStatus, status } = sessionError as any
+    console.log('sessionError', sessionError)
+    const { originalStatus, status, data } = sessionError as any
     if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
     // return the logout page if the error is a fetch error (session expired)
     if (status === 'FETCH_ERROR') return <Logout fetchError />
+    const errorMessage: string = data.error || 'Session error.'
+    const errorCode: number = status || 401
+    throw new HttpError(errorMessage, errorCode)
   }
   if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
