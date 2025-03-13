@@ -135,6 +135,7 @@ export default function ({
     formState: { errors },
     setValue,
   } = methods
+
   useEffect(() => {
     if (data) {
       reset(data)
@@ -187,10 +188,10 @@ export default function ({
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
 
   const getKeyValue = () => {
-    if (data !== undefined) {
-      return data.ksvc?.predeployed
-        ? `${data.name}-team-${teamId}.${cluster.domainSuffix}/`
-        : `${data.name}-${teamId}.${cluster.domainSuffix}/`
+    if (service !== undefined) {
+      return service.managedByKnative
+        ? `${service.name}-team-${teamId}.${cluster.domainSuffix}/`
+        : `${service.name}-${teamId}.${cluster.domainSuffix}/`
     }
     return `*-${teamId}.${cluster.domainSuffix}/`
   }
@@ -209,7 +210,15 @@ export default function ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='General'>
               <FormRow spacing={10}>
-                {teamId === 'admin' && <TextField label='Namespace' width='large' {...register('namespace')} />}
+                {teamId === 'admin' && (
+                  <TextField
+                    label='Namespace'
+                    width='large'
+                    {...register('namespace')}
+                    error={!!errors.namespace}
+                    helperText={errors.namespace?.message?.toString()}
+                  />
+                )}
               </FormRow>
               <FormRow key={1} spacing={10}>
                 <TextField
@@ -288,6 +297,13 @@ export default function ({
                   />
 
                   <Divider sx={{ mt: 4, mb: 2 }} />
+                  <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '14px' }}>
+                    Domain aliases (CNAME)
+                  </Typography>
+                  <Typography sx={{ fontSize: '12px' }}>
+                    You can have multiple urls directing to the same url as above . You need to make sure that the DNS
+                    provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1
+                  </Typography>
                   <FormRow key={1} spacing={10}>
                     <TextField
                       label='Domain'

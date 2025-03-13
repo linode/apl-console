@@ -77,7 +77,7 @@ export const serviceApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
   name: string().required('Service name is required'),
-  namespace: string().optional(),
+  namespace: string().required('Namespace is required'),
   port: number().required('Port is required'),
   ksvc: object({
     predeployed: boolean().optional(),
