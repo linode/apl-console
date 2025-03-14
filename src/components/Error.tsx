@@ -22,7 +22,7 @@ export default function ({ error }: Props): React.ReactElement {
   // return the logout page if the error is a fetch error (session expired)
   if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
-  const errorMessage = title ? `${title}: ${message}` : message || data?.error
+  const errorMessage = title ? `${title}: ${message}` : message || data?.error || data
   const errorCode = code || originalStatus || status || message || data?.error
   const messageKey = errorCode || 'Unknown'
 
@@ -32,7 +32,9 @@ export default function ({ error }: Props): React.ReactElement {
   const tError = `${t('ERROR', { ns: 'error', code: errorCode, msg: t(messageKey) })}`
 
   let icon
-  switch (code) {
+  switch (errorCode) {
+    case 'PARSING_ERROR':
+    case 401:
     case 403:
       icon = 'ic:baseline-do-not-disturb'
       break
@@ -51,9 +53,21 @@ export default function ({ error }: Props): React.ReactElement {
         {text}
       </Button>
     )
+    if (errorCode === 'PARSING_ERROR' || errorCode === 401) {
+      return (
+        <Box sx={{ display: 'flex', gap: '16px' }}>
+          {renderButton(t('Logout', { ns: 'error' }) as string, () => {
+            window.location.href = '/logout-otomi'
+          })}
+          {renderButton(t('Reload', { ns: 'error' }) as string, () => {
+            window.location.reload()
+          })}
+        </Box>
+      )
+    }
     if (
-      code === 503 ||
-      code === 504 ||
+      errorCode === 503 ||
+      errorCode === 504 ||
       err instanceof ApiErrorUnauthorized ||
       err instanceof ApiErrorUnauthorizedNoGroups
     ) {
