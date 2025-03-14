@@ -6,11 +6,8 @@ const pathsValidation = array()
     const { forwardPath } = this.parent
     if (forwardPath) if (paths.length === 0) return false
     const includesSlash = paths.some((path) => {
-      console.log('PATH: ', path)
-      if (path.includes('/')) {
-        console.log('PATH INCLUDES /')
-        return true
-      }
+      if (path.includes('/')) return true
+
       return false
     })
 

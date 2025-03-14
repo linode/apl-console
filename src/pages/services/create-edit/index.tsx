@@ -203,7 +203,7 @@ export default function ({
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/get-started/labs/expose-services'
+          docsLink='https://apl-docs.net/docs/for-devs/console/services'
           title='Service'
         />
         <FormProvider {...methods}>
