@@ -111,6 +111,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
       fontSize: '25px',
       marginRight: '5px',
     },
+    '& input::placeholder': {
+      color: '#838383',
+    },
   },
 }))
 
@@ -197,6 +200,10 @@ interface BaseProps {
   trimmed?: boolean
   value?: Value
   width?: TextboxWidth
+  /**
+   * If true, places the label to the left of the text field.
+   */
+  isHorizontalLabel?: boolean
 }
 
 type Value = null | number | string | undefined
@@ -265,9 +272,10 @@ Error messages are an indicator of system status: they let users know that a hur
 ### Overview
 
 Number Text Fields are used for strictly numerical input
- */
+*/
 export const TextField = React.forwardRef(function TextField(props: TextFieldProps, ref) {
   const { classes, cx } = useStyles()
+  const theme = useTheme()
 
   const {
     InputLabelProps,
@@ -306,18 +314,11 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
     type,
     value,
     width = 'medium',
+    isHorizontalLabel = false,
     ...textFieldProps
   } = props
 
   const [_value, setValue] = React.useState<Value>(value)
-  const theme = useTheme()
-
-  const widthMap: Record<TextboxWidth, string> = {
-    small: '100px',
-    medium: '200px',
-    large: '400px',
-    fullwidth: '100%',
-  }
 
   React.useEffect(() => {
     setValue(value)
@@ -334,47 +335,20 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const numberTypes = ['tel', 'number']
-
-    // Because !!0 is falsy :(
     const minAndMaxExist = typeof min === 'number' && typeof max === 'number'
-
-    /**
-     * If we've provided a min and max value, make sure the user
-     * input doesn't go outside of those bounds ONLY if the input
-     * type matches a number type.
-     */
     const cleanedValue =
       minAndMaxExist && numberTypes.some((eachType) => eachType === type) && e.target.value !== ''
         ? clamp(min, max, +e.target.value)
         : e.target.value
 
-    /**
-     * If the cleanedValue is undefined, set the value to an empty
-     * string but this shouldn't happen.
-     */
     setValue(cleanedValue || '')
 
-    // Invoke the onChange prop if one is provided with the cleaned value.
     if (onChange) {
-      /**
-       * Create clone of event node only if our cleanedValue
-       * is different from the e.target.value
-       *
-       * This solves for a specific scenario where the e.target on
-       * the MUI TextField select variants were actually a plain object
-       * rather than a DOM node.
-       *
-       * So e.target on a text field === <input />
-       * while e.target on the select variant === { value: 10, name: undefined }
-       *
-       * See GitHub issue: https://github.com/mui-org/material-ui/issues/16470
-       */
       if (e.target.value !== cleanedValue) {
         const clonedEvent = {
           ...e,
           target: e.target.cloneNode(),
         } as React.ChangeEvent<HTMLInputElement>
-
         clonedEvent.target.value = `${cleanedValue}`
         onChange(clonedEvent)
       } else onChange(e)
@@ -382,7 +356,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
   }
 
   let errorScrollClassName = ''
-
   if (errorText) errorScrollClassName = errorGroup ? `error-for-scroll-${errorGroup}` : `error-for-scroll`
 
   const validInputId = inputId || (label ? convertToKebabCase(`${label}`) : undefined)
@@ -397,31 +370,28 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
         },
         containerProps?.className,
       )}
+      display='flex'
+      flexDirection={isHorizontalLabel ? 'row' : 'column'}
+      alignItems={isHorizontalLabel ? 'center' : 'flex-start'}
+      sx={{
+        ...(!noMarginTop && { marginTop: theme.spacing(2) }),
+        gap: isHorizontalLabel ? theme.spacing(2) : 0,
+      }}
     >
-      <Box
-        className={cx({
-          'visually-hidden': hideLabel,
-        })}
-        sx={{
-          marginBottom: 0,
-          ...(!noMarginTop && { marginTop: theme.spacing(2) }),
-        }}
-        alignItems='center'
-        data-testid='inputLabelWrapper'
-        display='flex'
-      >
+      {!hideLabel && (
         <InputLabel
           className={cx({
             [classes.noTransform]: true,
           })}
+          htmlFor={validInputId}
           sx={{
-            marginTop: 0,
-            marginBottom: 0,
-            fontWeight: '500',
+            fontWeight: 500,
             fontSize: '0.875rem',
+            marginBottom: isHorizontalLabel ? 0 : theme.spacing(1),
+            width: isHorizontalLabel ? 250 : 'auto',
+            // textAlign: isHorizontalLabel ? 'right' : 'left',
           }}
           data-qa-textfield-label={label}
-          htmlFor={validInputId}
         >
           {label}
           {/* eslint-disable-next-line no-nested-ternary */}
@@ -431,99 +401,100 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             <span className={classes.label}> (optional)</span>
           ) : null}
         </InputLabel>
-      </Box>
-
-      {helperText && helperTextPosition === 'top' && (
-        <FormHelperText className={classes.helperTextTop} data-qa-textfield-helper-text>
-          {helperText}
-        </FormHelperText>
       )}
-      <div
-        className={cx({
-          [classes.helpWrapperContainer]: Boolean(tooltipText),
-        })}
-      >
-        <MuiTextField
-          {...textFieldProps}
-          {...dataAttrs}
-          inputRef={ref}
-          InputLabelProps={{
-            ...InputLabelProps,
-            required: false,
-            shrink: true,
-          }}
-          InputProps={{
-            className: cx(
-              'input',
+
+      <Box display='flex' flexDirection='column' sx={{ width: isHorizontalLabel ? 'auto' : '100%' }}>
+        {helperText && helperTextPosition === 'top' && (
+          <FormHelperText className={classes.helperTextTop} data-qa-textfield-helper-text>
+            {helperText}
+          </FormHelperText>
+        )}
+        <div
+          className={cx({
+            [classes.helpWrapperContainer]: Boolean(tooltipText),
+          })}
+        >
+          <MuiTextField
+            {...textFieldProps}
+            {...dataAttrs}
+            inputRef={ref}
+            InputLabelProps={{
+              ...InputLabelProps,
+              required: false,
+              shrink: true,
+            }}
+            InputProps={{
+              className: cx(
+                'input',
+                {
+                  [classes.expand]: expand,
+                },
+                className,
+                classes.TempMuiInput,
+              ),
+              disableUnderline: true,
+              endAdornment: loading && (
+                <InputAdornment position='end'>
+                  <CircleProgress size='sm' />
+                </InputAdornment>
+              ),
+              ...InputProps,
+            }}
+            SelectProps={{
+              IconComponent: KeyboardArrowDown,
+              MenuProps: {
+                MenuListProps: { className: 'selectMenuList' },
+                PaperProps: { className: 'selectMenuDropdown' },
+                anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+                transformOrigin: { horizontal: 'left', vertical: 'top' },
+              },
+              disableUnderline: true,
+              ...SelectProps,
+            }}
+            className={cx(
               {
-                [classes.expand]: expand,
+                [classes.helpWrapperTextField]: Boolean(tooltipText),
+                [classes.root]: true,
               },
               className,
-              classes.TempMuiInput,
-            ),
-            disableUnderline: true,
-            endAdornment: loading && (
-              <InputAdornment position='end'>
-                <CircleProgress size='sm' />
-              </InputAdornment>
-            ),
-            ...InputProps,
-          }}
-          SelectProps={{
-            IconComponent: KeyboardArrowDown,
-            MenuProps: {
-              MenuListProps: { className: 'selectMenuList' },
-              PaperProps: { className: 'selectMenuDropdown' },
-              anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
-              transformOrigin: { horizontal: 'left', vertical: 'top' },
-            },
-            disableUnderline: true,
-            ...SelectProps,
-          }}
-          className={cx(
-            {
-              [classes.helpWrapperTextField]: Boolean(tooltipText),
-              [classes.root]: true,
-            },
-            className,
-          )}
-          error={!!error || !!errorText}
-          sx={{ width: widthMap[width] }}
-          helperText=''
-          /**
-           * Set _helperText_ and _label_ to no value because we want to
-           * have the ability to put the helper text under the label at the top.
-           */
-          label=''
-          onBlur={handleBlur}
-          onChange={handleChange}
-          type={type}
-          /*
-           * Let us explicitly pass an empty string to the input
-           * See UserDefinedFieldsPanel.tsx for a verbose explanation why.
-           */
-          value={_value}
-          variant='standard'
-        >
-          {children}
-        </MuiTextField>
-      </div>
-      {errorText && (
-        <FormHelperText
-          className={cx({
-            [classes.absolute]: editable || hasAbsoluteError,
-            [classes.editable]: editable,
-            [classes.errorText]: true,
-          })}
-          data-qa-textfield-error-text={label}
-          role='alert'
-        >
-          {errorText}
-        </FormHelperText>
-      )}
-      {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
-        <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
-      )}
+            )}
+            error={!!error || !!errorText}
+            sx={{
+              width: {
+                small: '100px',
+                medium: '200px',
+                large: '400px',
+                fullwidth: '100%',
+              }[width],
+            }}
+            helperText=''
+            label=''
+            onBlur={handleBlur}
+            onChange={handleChange}
+            type={type}
+            value={_value}
+            variant='standard'
+          >
+            {children}
+          </MuiTextField>
+        </div>
+        {errorText && (
+          <FormHelperText
+            className={cx({
+              [classes.absolute]: editable || hasAbsoluteError,
+              [classes.editable]: editable,
+              [classes.errorText]: true,
+            })}
+            data-qa-textfield-error-text={label}
+            role='alert'
+          >
+            {errorText}
+          </FormHelperText>
+        )}
+        {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
+          <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
+        )}
+      </Box>
     </Box>
   )
 })
