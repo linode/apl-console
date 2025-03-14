@@ -1,5 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Divider, Grid } from '@mui/material'
-import { styled } from '@mui/material/styles'
+import { Box, Button, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
@@ -24,42 +23,14 @@ import FormRow from 'components/forms/FormRow'
 import Section from 'components/Section'
 import { TextField } from 'components/forms/TextField'
 import { MenuItem } from 'components/List'
-import { KeyboardArrowRight } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { isEmpty } from 'lodash'
 import LinkedNumberField from 'components/forms/LinkedNumberField'
+import AdvancedSettings from 'components/AdvancedSettings'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
-
-const StyledAccordion = styled(Accordion)(({ theme }) => ({
-  backgroundColor: 'transparent', // Remove background color
-  boxShadow: 'none !important', // Remove shadow
-  margin: '0px !important', // No top margin
-  '&:before': {
-    display: 'none', // Remove the default border above the accordion
-  },
-}))
-
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
-  backgroundColor: 'transparent', // Remove background color
-  boxShadow: 'none', // Remove shadow
-  marginTop: '0px', // No top margin
-  padding: 0,
-  '&:before': {
-    display: 'none', // Remove the default border above the accordion
-  },
-}))
-
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
-  padding: '0', // Remove padding
-  '.MuiAccordionSummary-content': {
-    margin: '0', // Remove margin between text and icon
-  },
-  marginTop: '0px !important',
-  display: 'inline-flex',
-}))
 
 interface Params {
   teamId: string
@@ -301,164 +272,148 @@ export default function ({
                 <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
             </Section>
-            <Section>
-              <StyledAccordion disableGutters>
-                <StyledAccordionSummary
-                  expandIcon={<KeyboardArrowRight />}
-                  aria-controls='advanced-settings-content'
-                  id='advanced-settings-header'
-                  sx={{
-                    '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
-                      transform: 'rotate(90deg)',
-                    },
-                  }}
-                >
-                  <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '16px' }}>
-                    Advanced Settings
-                  </Typography>
-                </StyledAccordionSummary>
-                <StyledAccordionDetails>
-                  <KeyValue
-                    title='URL paths'
-                    subTitle='These define where your service is available. For example, login could point to your app’s login page.'
-                    keyDisabled
-                    keyValue={url}
-                    keyLabel='Domain'
-                    valueLabel='Path'
-                    showLabel={false}
-                    addLabel='Add another URL path'
-                    onlyValue
-                    keySize='large'
-                    valueSize='medium'
-                    name='ingress.paths'
-                    error={!!errors.ingress?.paths}
-                    helperText={errors.ingress?.paths?.root?.message?.toString()}
-                    {...register('ingress.paths')}
-                  />
+            <AdvancedSettings title='Advanced Settings'>
+              <Section>
+                <KeyValue
+                  title='URL paths'
+                  subTitle='These define where your service is available. For example, login could point to your app’s login page.'
+                  keyDisabled
+                  keyValue={url}
+                  keyLabel='Domain'
+                  valueLabel='Path'
+                  showLabel={false}
+                  addLabel='Add another URL path'
+                  onlyValue
+                  keySize='large'
+                  valueSize='medium'
+                  name='ingress.paths'
+                  error={!!errors.ingress?.paths}
+                  helperText={errors.ingress?.paths?.root?.message?.toString()}
+                  {...register('ingress.paths')}
+                />
 
-                  <Divider sx={{ mt: 4, mb: 2 }} />
-                  <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '14px' }}>
-                    Domain aliases (CNAME)
-                  </Typography>
-                  <Typography sx={{ fontSize: '12px' }}>
-                    You can have multiple urls directing to the same url as above . You need to make sure that the DNS
-                    provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1
-                  </Typography>
-                  <FormRow key={1} spacing={10}>
-                    <TextField
-                      label='Domain'
-                      error={!!errors.ingress?.cname}
-                      helperText={errors.ingress?.cname?.root?.message?.toString()}
-                      width='large'
-                      type='text'
-                      {...register('ingress.cname.domain')}
-                    />
-                    <TextField
-                      label='TLS Secret'
-                      width='medium'
-                      {...register('ingress.cname.tlsSecretName')}
-                      select
-                      error={!!errors.ingress?.cname}
-                      onChange={(e) => {
-                        const value = e.target.value
-                        setValue('ingress.cname.tlsSecretName', value)
-                      }}
-                      value={watch('ingress.cname.tlsSecretName') || ''}
-                    >
-                      <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
-                        TLS certificate
-                      </MenuItem>
-                      {teamSecrets.map((secret) => {
-                        return (
-                          <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
-                            {secret?.name}
-                          </MenuItem>
-                        )
-                      })}
-                    </TextField>
-                  </FormRow>
-
-                  <Divider sx={{ mt: 4, mb: 2 }} />
-
+                <Divider sx={{ mt: 4, mb: 2 }} />
+                <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '14px' }}>
+                  Domain aliases (CNAME)
+                </Typography>
+                <Typography sx={{ fontSize: '12px' }}>
+                  You can have multiple urls directing to the same url as above . You need to make sure that the DNS
+                  provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1
+                </Typography>
+                <FormRow key={1} spacing={10}>
                   <TextField
-                    label='Ingress Class Name'
-                    fullWidth
-                    {...register('ingress.ingressClassName')}
+                    label='Domain'
+                    error={!!errors.ingress?.cname}
+                    helperText={errors.ingress?.cname?.root?.message?.toString()}
                     width='large'
-                    value='platform'
+                    type='text'
+                    {...register('ingress.cname.domain')}
+                  />
+                  <TextField
+                    label='TLS Secret'
+                    width='medium'
+                    {...register('ingress.cname.tlsSecretName')}
                     select
+                    error={!!errors.ingress?.cname}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('ingress.cname.tlsSecretName', value)
+                    }}
+                    value={watch('ingress.cname.tlsSecretName') || ''}
                   >
-                    {settingsInfo?.ingressClassNames.map((ingressClassName) => {
+                    <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
+                      TLS certificate
+                    </MenuItem>
+                    {teamSecrets.map((secret) => {
                       return (
-                        <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
-                          {ingressClassName}
+                        <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
+                          {secret?.name}
                         </MenuItem>
                       )
                     })}
                   </TextField>
+                </FormRow>
 
-                  <Divider sx={{ mt: 4, mb: 2 }} />
+                <Divider sx={{ mt: 4, mb: 2 }} />
 
-                  <ControlledCheckbox
-                    sx={{ my: 2 }}
-                    name='ingress.tlsPass'
-                    control={control}
-                    label='TLS Passthrough'
-                    explainertext='Requests will be forwarded to the backend service without being decrypted'
-                  />
+                <TextField
+                  label='Ingress Class Name'
+                  fullWidth
+                  {...register('ingress.ingressClassName')}
+                  width='large'
+                  value='platform'
+                  select
+                >
+                  {settingsInfo?.ingressClassNames.map((ingressClassName) => {
+                    return (
+                      <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
+                        {ingressClassName}
+                      </MenuItem>
+                    )
+                  })}
+                </TextField>
 
-                  <ControlledCheckbox
-                    sx={{ my: 2 }}
-                    disabled={TLSEnabled}
-                    name='ingress.forwardPath'
-                    control={control}
-                    label='Forward Path'
-                    explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
-                  />
+                <Divider sx={{ mt: 4, mb: 2 }} />
 
-                  <ControlledCheckbox
-                    sx={{ my: 2 }}
-                    disabled={TLSEnabled}
-                    name='trafficControl.enabled'
-                    control={control}
-                    label='Enable Traffic Mangement'
-                    explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='ingress.tlsPass'
+                  control={control}
+                  label='TLS Passthrough'
+                  explainertext='Requests will be forwarded to the backend service without being decrypted'
+                />
+
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  disabled={TLSEnabled}
+                  name='ingress.forwardPath'
+                  control={control}
+                  label='Forward Path'
+                  explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
+                />
+
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  disabled={TLSEnabled}
+                  name='trafficControl.enabled'
+                  control={control}
+                  label='Enable Traffic Mangement'
+                  explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
                     deployments behind that service)'
-                  />
-                  <LinkedNumberField
-                    registers={{
-                      registerA: { ...register('trafficControl.weightV1') },
-                      registerB: { ...register('trafficControl.weightV2') },
-                      setValue,
-                      watch,
-                    }}
-                    labelA='Version A'
-                    labelB='Version B'
-                    valueMax={100}
-                    disabled={!TrafficControlEnabled}
-                    error={!!errors.trafficControl?.weightV1 || !!errors.trafficControl?.weightV2}
-                    helperText={
-                      errors.trafficControl?.weightV1 || errors.trafficControl?.weightV2
-                        ? 'The values must be in a range of "0" and "100"'
-                        : undefined
-                    }
-                  />
+                />
+                <LinkedNumberField
+                  registers={{
+                    registerA: { ...register('trafficControl.weightV1') },
+                    registerB: { ...register('trafficControl.weightV2') },
+                    setValue,
+                    watch,
+                  }}
+                  labelA='Version A'
+                  labelB='Version B'
+                  valueMax={100}
+                  disabled={!TrafficControlEnabled}
+                  error={!!errors.trafficControl?.weightV1 || !!errors.trafficControl?.weightV2}
+                  helperText={
+                    errors.trafficControl?.weightV1 || errors.trafficControl?.weightV2
+                      ? 'The values must be in a range of "0" and "100"'
+                      : undefined
+                  }
+                />
 
-                  <Divider sx={{ mt: 4, mb: 2 }} />
+                <Divider sx={{ mt: 4, mb: 2 }} />
 
-                  <KeyValue
-                    title='HTTP Response Headers'
-                    keyLabel='Name'
-                    valueLabel='Value'
-                    addLabel='Add another response header'
-                    name='ingress.headers.response.set'
-                    error={!!errors.ingress?.headers}
-                    helperText={errors.ingress?.headers ? '"Name" and "Value" must both be filled in' : undefined}
-                    {...register('ingress.headers.response.set')}
-                  />
-                </StyledAccordionDetails>
-              </StyledAccordion>
-            </Section>
+                <KeyValue
+                  title='HTTP Response Headers'
+                  keyLabel='Name'
+                  valueLabel='Value'
+                  addLabel='Add another response header'
+                  name='ingress.headers.response.set'
+                  error={!!errors.ingress?.headers}
+                  helperText={errors.ingress?.headers ? '"Name" and "Value" must both be filled in' : undefined}
+                  {...register('ingress.headers.response.set')}
+                />
+              </Section>
+            </AdvancedSettings>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
                 Your service will be {serviceName ? 'edited' : 'created'} as: {url}
