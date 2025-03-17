@@ -11,9 +11,6 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getAllSecrets: build.query<GetAllSecretsApiResponse, GetAllSecretsApiArg>({
-      query: () => ({ url: `/secrets` }),
-    }),
     getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
       query: () => ({ url: `/services` }),
     }),
@@ -42,17 +39,17 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
     }),
     editService: build.mutation<EditServiceApiResponse, EditServiceApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`,
+        url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}`, method: 'DELETE' }),
     }),
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
       query: () => ({ url: `/sealedsecrets` }),
@@ -70,36 +67,20 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
     }),
     getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}` }),
     }),
     editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`,
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.secretId}`, method: 'DELETE' }),
-    }),
-    getSecrets: build.query<GetSecretsApiResponse, GetSecretsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets` }),
-    }),
-    createSecret: build.mutation<CreateSecretApiResponse, CreateSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets`, method: 'POST', body: queryArg.body }),
-    }),
-    getSecret: build.query<GetSecretApiResponse, GetSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}` }),
-    }),
-    editSecret: build.mutation<EditSecretApiResponse, EditSecretApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`,
-        method: 'PUT',
-        body: queryArg.body,
+        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
+        method: 'DELETE',
       }),
-    }),
-    deleteSecret: build.mutation<DeleteSecretApiResponse, DeleteSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/secrets/${queryArg.secretId}`, method: 'DELETE' }),
     }),
     getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
       query: () => ({ url: `/netpols` }),
@@ -111,17 +92,17 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
     }),
     getNetpol: build.query<GetNetpolApiResponse, GetNetpolApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}` }),
     }),
     editNetpol: build.mutation<EditNetpolApiResponse, EditNetpolApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`,
+        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteNetpol: build.mutation<DeleteNetpolApiResponse, DeleteNetpolApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
     }),
     getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
       query: () => ({ url: `/backups` }),
@@ -133,14 +114,14 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
     }),
     deleteBackup: build.mutation<DeleteBackupApiResponse, DeleteBackupApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
     }),
     getBackup: build.query<GetBackupApiResponse, GetBackupApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
     }),
     editBackup: build.mutation<EditBackupApiResponse, EditBackupApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/backups/${queryArg.backupId}`,
+        url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
@@ -158,14 +139,14 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
     }),
     deleteBuild: build.mutation<DeleteBuildApiResponse, DeleteBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`, method: 'DELETE' }),
     }),
     getBuild: build.query<GetBuildApiResponse, GetBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}` }),
     }),
     editBuild: build.mutation<EditBuildApiResponse, EditBuildApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildId}`,
+        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
@@ -223,39 +204,42 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects`, method: 'POST', body: queryArg.body }),
     }),
     deleteProject: build.mutation<DeleteProjectApiResponse, DeleteProjectApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}`, method: 'DELETE' }),
     }),
     getProject: build.query<GetProjectApiResponse, GetProjectApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}` }),
     }),
     editProject: build.mutation<EditProjectApiResponse, EditProjectApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/projects/${queryArg.projectId}`,
+        url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
-    getAllCoderepos: build.query<GetAllCodereposApiResponse, GetAllCodereposApiArg>({
+    getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
       query: () => ({ url: `/coderepos` }),
     }),
-    getTeamCoderepos: build.query<GetTeamCodereposApiResponse, GetTeamCodereposApiArg>({
+    getTeamCodeRepos: build.query<GetTeamCodeReposApiResponse, GetTeamCodeReposApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos` }),
     }),
-    createCoderepo: build.mutation<CreateCoderepoApiResponse, CreateCoderepoApiArg>({
+    createCodeRepo: build.mutation<CreateCodeRepoApiResponse, CreateCodeRepoApiArg>({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
     }),
-    getCoderepo: build.query<GetCoderepoApiResponse, GetCoderepoApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}` }),
+    getCodeRepo: build.query<GetCodeRepoApiResponse, GetCodeRepoApiArg>({
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}` }),
     }),
-    editCoderepo: build.mutation<EditCoderepoApiResponse, EditCoderepoApiArg>({
+    editCodeRepo: build.mutation<EditCodeRepoApiResponse, EditCodeRepoApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`,
+        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
-    deleteCoderepo: build.mutation<DeleteCoderepoApiResponse, DeleteCoderepoApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.coderepoId}`, method: 'DELETE' }),
+    deleteCodeRepo: build.mutation<DeleteCodeRepoApiResponse, DeleteCodeRepoApiArg>({
+      query: (queryArg) => ({
+        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
+        method: 'DELETE',
+      }),
     }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/workloads` }),
@@ -276,24 +260,24 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
     }),
     deleteWorkload: build.mutation<DeleteWorkloadApiResponse, DeleteWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`, method: 'DELETE' }),
     }),
     getWorkload: build.query<GetWorkloadApiResponse, GetWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}` }),
     }),
     editWorkload: build.mutation<EditWorkloadApiResponse, EditWorkloadApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}`,
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getWorkloadValues: build.query<GetWorkloadValuesApiResponse, GetWorkloadValuesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values` }),
+      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values` }),
     }),
     editWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadId}/values`,
+        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values`,
         method: 'PUT',
         body: queryArg.body,
       }),
@@ -354,26 +338,6 @@ export type GetValuesApiArg = {
   excludeSecrets?: 'true' | 'false'
   withWorkloadValues?: 'true' | 'false'
 }
-export type GetAllSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}[]
-export type GetAllSecretsApiArg = void
 export type GetAllServicesApiResponse = /** status 200 Successfully obtained all services */ {
   id?: string
   teamId?: string
@@ -1031,8 +995,8 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
 export type GetServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
-  serviceId: string
+  /** Name of the service */
+  serviceName: string
 }
 export type EditServiceApiResponse = /** status 200 Successfully edited service */ {
   id?: string
@@ -1086,8 +1050,8 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
 export type EditServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
-  serviceId: string
+  /** Name of the service */
+  serviceName: string
   /** Service object that contains updated values */
   body: {
     id?: string
@@ -1143,8 +1107,8 @@ export type DeleteServiceApiResponse = /** status 200 Successfully deleted a ser
 export type DeleteServiceApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the service */
-  serviceId: string
+  /** Name of the service */
+  serviceName: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
   id?: string
@@ -1313,8 +1277,8 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
 export type GetSealedSecretApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the secret */
-  secretId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
 }
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
   id?: string
@@ -1348,8 +1312,8 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
 export type EditSealedSecretApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the secret */
-  secretId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
   /** SealedSecret object that contains updated values */
   body: {
     id?: string
@@ -1385,151 +1349,8 @@ export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted 
 export type DeleteSealedSecretApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the secret */
-  secretId: string
-}
-export type GetSecretsApiResponse = /** status 200 Successfully obtained secrets */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}[]
-export type GetSecretsApiArg = {
-  /** ID of team to return */
-  teamId: string
-}
-export type CreateSecretApiResponse = /** status 200 Successfully stored secret configuration */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}
-export type CreateSecretApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Service object */
-  body: {
-    id?: string
-    name: string
-    namespace?: string
-    secret:
-      | {
-          type: 'generic'
-          entries: string[]
-        }
-      | {
-          type: 'docker-registry'
-        }
-      | {
-          type: 'tls'
-          crt: string
-          key?: string
-          ca?: string
-        }
-  }
-}
-export type GetSecretApiResponse = /** status 200 Successfully obtained secret configuration */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}
-export type GetSecretApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the secret */
-  secretId: string
-}
-export type EditSecretApiResponse = /** status 200 Successfully edited a team secret */ {
-  id?: string
-  name: string
-  namespace?: string
-  secret:
-    | {
-        type: 'generic'
-        entries: string[]
-      }
-    | {
-        type: 'docker-registry'
-      }
-    | {
-        type: 'tls'
-        crt: string
-        key?: string
-        ca?: string
-      }
-}
-export type EditSecretApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the secret */
-  secretId: string
-  /** Secret object that contains updated values */
-  body: {
-    id?: string
-    name: string
-    namespace?: string
-    secret:
-      | {
-          type: 'generic'
-          entries: string[]
-        }
-      | {
-          type: 'docker-registry'
-        }
-      | {
-          type: 'tls'
-          crt: string
-          key?: string
-          ca?: string
-        }
-  }
-}
-export type DeleteSecretApiResponse = /** status 200 Successfully deleted a team secret */ undefined
-export type DeleteSecretApiArg = {
-  /** ID of team to return */
-  teamId: string
-  /** ID of the secret */
-  secretId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
 }
 export type GetAllNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
   id?: string
@@ -1669,8 +1490,8 @@ export type GetNetpolApiResponse = /** status 200 Successfully obtained network 
 export type GetNetpolApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the network policy */
-  netpolId: string
+  /** Name of the network policy */
+  netpolName: string
 }
 export type EditNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
   id?: string
@@ -1700,8 +1521,8 @@ export type EditNetpolApiResponse = /** status 200 Successfully edited a team ne
 export type EditNetpolApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the network policy */
-  netpolId: string
+  /** Name of the network policy */
+  netpolName: string
   /** Netwok policy object that contains updated values */
   body: {
     id?: string
@@ -1733,8 +1554,8 @@ export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team
 export type DeleteNetpolApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the network policy */
-  netpolId: string
+  /** Name of the network policy */
+  netpolName: string
 }
 export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
   id?: string
@@ -1798,8 +1619,8 @@ export type DeleteBackupApiResponse = /** status 200 Successfully deleted a back
 export type DeleteBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
-  backupId: string
+  /** Name of the backup */
+  backupName: string
 }
 export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
   id?: string
@@ -1816,8 +1637,8 @@ export type GetBackupApiResponse = /** status 200 Successfully obtained backup c
 export type GetBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
-  backupId: string
+  /** Name of the backup */
+  backupName: string
 }
 export type EditBackupApiResponse = /** status 200 Successfully edited a team backup */ {
   id?: string
@@ -1834,8 +1655,8 @@ export type EditBackupApiResponse = /** status 200 Successfully edited a team ba
 export type EditBackupApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the backup */
-  backupId: string
+  /** Name of the backup */
+  backupName: string
   /** Backup object that contains updated values */
   body: {
     id?: string
@@ -2009,8 +1830,8 @@ export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build
 export type DeleteBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
-  buildId: string
+  /** Name of the build */
+  buildName: string
 }
 export type GetBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
   id?: string
@@ -2050,8 +1871,8 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
 export type GetBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
-  buildId: string
+  /** Name of the build */
+  buildName: string
 }
 export type EditBuildApiResponse = /** status 200 Successfully edited a team build */ {
   id?: string
@@ -2091,8 +1912,8 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
 export type EditBuildApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the build */
-  buildId: string
+  /** Name of the build */
+  buildName: string
   /** Build object that contains updated values */
   body: {
     id?: string
@@ -3076,8 +2897,8 @@ export type DeleteProjectApiResponse = /** status 200 Successfully deleted a pro
 export type DeleteProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
-  projectId: string
+  /** Name of the project */
+  projectName: string
 }
 export type GetProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
   id?: string
@@ -3217,8 +3038,8 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
 export type GetProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
-  projectId: string
+  /** Name of the project */
+  projectName: string
 }
 export type EditProjectApiResponse = /** status 200 Successfully edited a team project */ {
   id?: string
@@ -3358,103 +3179,103 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
 export type EditProjectApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the project */
-  projectId: string
+  /** Name of the project */
+  projectName: string
   /** Project object that contains updated values */
   body: object
 }
-export type GetAllCodereposApiResponse = /** status 200 Successfully obtained all code repositories */ {
+export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
   teamId?: string
-  label: string
+  name: string
   gitService: 'gitea' | 'github' | 'gitlab'
   repositoryUrl: string
   private?: boolean
   secret?: string
 }[]
-export type GetAllCodereposApiArg = void
-export type GetTeamCodereposApiResponse = /** status 200 Successfully obtained code repositories */ {
+export type GetAllCodeReposApiArg = void
+export type GetTeamCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ {
   id?: string
   teamId?: string
-  label: string
+  name: string
   gitService: 'gitea' | 'github' | 'gitlab'
   repositoryUrl: string
   private?: boolean
   secret?: string
 }[]
-export type GetTeamCodereposApiArg = {
+export type GetTeamCodeReposApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type CreateCoderepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
+export type CreateCodeRepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
   id?: string
   teamId?: string
-  label: string
+  name: string
   gitService: 'gitea' | 'github' | 'gitlab'
   repositoryUrl: string
   private?: boolean
   secret?: string
 }
-export type CreateCoderepoApiArg = {
+export type CreateCodeRepoApiArg = {
   /** ID of team */
   teamId: string
-  /** Coderepo object */
+  /** CodeRepo object */
   body: {
     id?: string
     teamId?: string
-    label: string
+    name: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
     secret?: string
   }
 }
-export type GetCoderepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
+export type GetCodeRepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
   id?: string
   teamId?: string
-  label: string
+  name: string
   gitService: 'gitea' | 'github' | 'gitlab'
   repositoryUrl: string
   private?: boolean
   secret?: string
 }
-export type GetCoderepoApiArg = {
+export type GetCodeRepoApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the code repo */
-  coderepoId: string
+  /** Name of the code repository */
+  codeRepositoryName: string
 }
-export type EditCoderepoApiResponse = /** status 200 Successfully edited a team code repo */ {
+export type EditCodeRepoApiResponse = /** status 200 Successfully edited a team code repo */ {
   id?: string
   teamId?: string
-  label: string
+  name: string
   gitService: 'gitea' | 'github' | 'gitlab'
   repositoryUrl: string
   private?: boolean
   secret?: string
 }
-export type EditCoderepoApiArg = {
+export type EditCodeRepoApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the code repo */
-  coderepoId: string
-  /** Coderepo object that contains updated values */
+  /** Name of the code repository */
+  codeRepositoryName: string
+  /** CodeRepo object that contains updated values */
   body: {
     id?: string
     teamId?: string
-    label: string
+    name: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
     secret?: string
   }
 }
-export type DeleteCoderepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
-export type DeleteCoderepoApiArg = {
+export type DeleteCodeRepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
+export type DeleteCodeRepoApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the code repo */
-  coderepoId: string
+  /** Name of the code repository */
+  codeRepositoryName: string
 }
 export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   id?: string
@@ -3648,8 +3469,8 @@ export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a wo
 export type DeleteWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
-  workloadId: string
+  /** Name of the workload */
+  workloadName: string
 }
 export type GetWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
   id?: string
@@ -3694,8 +3515,8 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
 export type GetWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
-  workloadId: string
+  /** Name of the workload */
+  workloadName: string
 }
 export type EditWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   id?: string
@@ -3740,8 +3561,8 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
 export type EditWorkloadApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
-  workloadId: string
+  /** Name of the workload */
+  workloadName: string
   /** Workload object that contains updated values */
   body: {
     id?: string
@@ -3793,8 +3614,8 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
 export type GetWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
-  workloadId: string
+  /** Name of the workload */
+  workloadName: string
 }
 export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited workload values */ {
   id?: string
@@ -3805,8 +3626,8 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
 export type EditWorkloadValuesApiArg = {
   /** ID of team to return */
   teamId: string
-  /** ID of the workload */
-  workloadId: string
+  /** Name of the workload */
+  workloadName: string
   /** Workload values */
   body: {
     id?: string
@@ -3884,8 +3705,8 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     isPreInstalled?: boolean
     hasExternalIDP?: boolean
   }
-  smtp: {
-    smarthost: string
+  smtp?: {
+    smarthost?: string
   }
   ingressClassNames?: string[]
 }
@@ -4179,6 +4000,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }[]
     version: string
   }
+  versions?: {
+    version: string
+  }
   smtp?: {
     auth_identity?: string
     auth_password?: string
@@ -4458,6 +4282,9 @@ export type EditSettingsApiArg = {
       }[]
       version: string
     }
+    versions?: {
+      version: string
+    }
     smtp?: {
       auth_identity?: string
       auth_password?: string
@@ -4510,7 +4337,6 @@ export type EditAppApiArg = {
 }
 export const {
   useGetValuesQuery,
-  useGetAllSecretsQuery,
   useGetAllServicesQuery,
   useGetTeamsQuery,
   useCreateTeamMutation,
@@ -4531,11 +4357,6 @@ export const {
   useGetSealedSecretQuery,
   useEditSealedSecretMutation,
   useDeleteSealedSecretMutation,
-  useGetSecretsQuery,
-  useCreateSecretMutation,
-  useGetSecretQuery,
-  useEditSecretMutation,
-  useDeleteSecretMutation,
   useGetAllNetpolsQuery,
   useGetTeamNetpolsQuery,
   useCreateNetpolMutation,
@@ -4574,12 +4395,12 @@ export const {
   useDeleteProjectMutation,
   useGetProjectQuery,
   useEditProjectMutation,
-  useGetAllCodereposQuery,
-  useGetTeamCodereposQuery,
-  useCreateCoderepoMutation,
-  useGetCoderepoQuery,
-  useEditCoderepoMutation,
-  useDeleteCoderepoMutation,
+  useGetAllCodeReposQuery,
+  useGetTeamCodeReposQuery,
+  useCreateCodeRepoMutation,
+  useGetCodeRepoQuery,
+  useEditCodeRepoMutation,
+  useDeleteCodeRepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
   useGetHelmChartContentQuery,

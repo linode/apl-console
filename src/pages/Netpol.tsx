@@ -15,18 +15,21 @@ import {
 
 interface Params {
   teamId: string
-  netpolId?: string
+  netpolName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, netpolId },
+    params: { teamId, netpolName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetNetpolQuery({ teamId, netpolId }, { skip: !netpolId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetNetpolQuery(
+    { teamId, netpolName },
+    { skip: !netpolName },
+  )
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -43,12 +46,12 @@ export default function ({
     if (mode === 'AllowAll' && type === 'ingress') unset(formData, 'ruleType.ingress.allow')
     if (type === 'ingress') unset(formData, 'ruleType.egress')
     else unset(formData, 'ruleType.ingress')
-    if (netpolId) update({ teamId, netpolId, body: omit(formData, ['id', 'teamId']) as any })
+    if (netpolName) update({ teamId, netpolName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, netpolId: deleteId })
+  const handleDelete = () => del({ teamId, netpolName })
   const comp = !isError && (
     <Netpol onSubmit={handleSubmit} netpol={data} onDelete={handleDelete} teamId={teamId} mutating={mutating} />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_NETPOL', { netpolId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_NETPOL', { netpolName, role: 'team' })} />
 }

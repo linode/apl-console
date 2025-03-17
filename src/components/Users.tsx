@@ -71,7 +71,7 @@ function UserTeamSelector({
 }) {
   const user = users.find((user) => user.id === row.id)
   const isDisabled =
-    sessionUser.email === row.email || user.isPlatformAdmin || (user.isTeamAdmin && user.teams.includes(teamId))
+    sessionUser.email === row.email || user?.isPlatformAdmin || (user?.isTeamAdmin && user?.teams.includes(teamId))
   const handleUserTeamToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isSelected = event.target.checked
     setUsers((users: GetAllUsersApiResponse) =>
@@ -89,7 +89,7 @@ function UserTeamSelector({
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Checkbox disabled={isDisabled} checked={row.teams.includes(teamId)} onChange={handleUserTeamToggle} />
+      <Checkbox disabled={isDisabled} checked={row?.teams?.includes(teamId)} onChange={handleUserTeamToggle} />
     </Box>
   )
 }
