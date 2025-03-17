@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/linode/apl-console/compare/v3.6.0...v4.0.0) (2025-03-17)
+
+### Features
+
+- change the use of id to name ([#518](https://github.com/linode/apl-console/issues/518)) ([f9d91ec](https://github.com/linode/apl-console/commit/f9d91ecd2cf999145165b17bfc9c15bb885cc7af))
+
 ### [3.6.1](https://github.com/linode/apl-console/compare/v3.5.0...v3.6.1) (2025-03-13)
 
 ### Features
