@@ -34,4 +34,7 @@ export const useStyles = makeStyles()((theme: Theme) => ({
       backgroundColor: 'transparent',
     },
   },
+  keyValueWrapper: {
+    marginTop: '32px',
+  },
 }))

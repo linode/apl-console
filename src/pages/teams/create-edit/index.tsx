@@ -9,6 +9,8 @@ import AdvancedSettings from 'components/AdvancedSettings'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import { useState } from 'react'
 import TextfieldList from 'components/TextfieldList'
+import KeyValue from 'components/KeyValue'
+import { PermissionsTable } from 'components/PermissionTable'
 import { useStyles } from './create-edit-teams.styles'
 
 type NotificationReceiver = 'slack' | 'teams' | 'opsgenie' | 'email'
@@ -39,7 +41,23 @@ export default function CreateEditTeams() {
     },
   ]
 
-  const methods = useForm<any>({})
+  const methods = useForm<any>({
+    defaultValues: {
+      resourcequotas: {
+        count: [
+          { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+          { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+          { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+        ],
+        computeresourcequota: [
+          { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+          { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+          { key: 'limits.memory', value: 500, decorator: 'Mi' },
+          { key: 'requests.memory', value: 500, decorator: 'Mi' },
+        ],
+      },
+    },
+  })
 
   const {
     control,
@@ -176,22 +194,52 @@ export default function CreateEditTeams() {
                 collapsable
                 description='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
               >
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='Enable alerts'
-                  control={control}
-                  label='Enable alerts'
-                  explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
-                />
+                <Box className={classes.keyValueWrapper}>
+                  <KeyValue
+                    title='Count quota'
+                    keyLabel='key'
+                    valueLabel='value'
+                    compressed
+                    keyDisabled
+                    valueDisabled
+                    valueSize='medium'
+                    keySize='medium'
+                    showLabel={false}
+                    name='resourcequotas.count'
+                    {...register('resourcequotas.count')}
+                  />
+                </Box>
+                <Box className={classes.keyValueWrapper}>
+                  <KeyValue
+                    title='Compute resource quota'
+                    keyLabel='key'
+                    valueLabel='value'
+                    compressed
+                    keyDisabled
+                    valueSize='medium'
+                    keySize='medium'
+                    showLabel={false}
+                    name='resourcequotas.computeresourcequota'
+                    {...register('resourcequotas.computeresourcequota')}
+                  />
+                </Box>
+                <Box className={classes.keyValueWrapper}>
+                  <KeyValue
+                    title='Custom resource quota'
+                    keyLabel='key'
+                    valueLabel='value'
+                    compressed
+                    valueSize='medium'
+                    keySize='medium'
+                    showLabel={false}
+                    name='resourcequotas.customesourcequota'
+                    addLabel='Add custom resource quota'
+                    {...register('resourcequotas.customesourcequota')}
+                  />
+                </Box>
               </Section>
               <Section title='Permissions' collapsable>
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='Enable alerts'
-                  control={control}
-                  label='Enable alerts'
-                  explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
-                />
+                <PermissionsTable name='permissions' />
               </Section>
             </AdvancedSettings>
           </form>
