@@ -103,6 +103,14 @@ export default function ({
     refetch: refetchK8sServices,
   } = useGetTeamK8SServicesQuery({ teamId })
 
+  const filteredK8Services = k8sServices?.filter(
+    (service: K8Service) =>
+      !service.name.includes('grafana') &&
+      !service.name.includes('prometheus') &&
+      !service.name.includes('alertmanager') &&
+      !service.name.includes('tekton-dashboard'),
+  )
+
   const {
     data: teamSealedSecrets,
     isLoading: isLoadingTeamSecrets,
@@ -140,7 +148,7 @@ export default function ({
     if (data) {
       reset(data)
       setActiveService(data.name)
-      setService(k8sServices?.find((service) => service.name === data.name) as unknown as K8Service)
+      setService(filteredK8Services?.find((service) => service.name === data.name) as unknown as K8Service)
     }
 
     if (!isEmpty(data?.ingress?.paths)) {
@@ -154,7 +162,7 @@ export default function ({
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
   function setActiveService(name: string) {
-    const activeService = k8sServices?.find((service) => service.name === name) as unknown as K8Service
+    const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
     if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
@@ -237,7 +245,7 @@ export default function ({
                   <MenuItem value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
-                  {k8sServices.map((service) => {
+                  {filteredK8Services.map((service) => {
                     return (
                       <MenuItem value={service.name} classes={undefined}>
                         {service.name}
@@ -248,13 +256,27 @@ export default function ({
                 <TextField
                   label='Port'
                   width='small'
-                  type='number'
                   {...register('port')}
-                  min={1}
-                  max={65535}
+                  select
+                  onChange={(e) => {
+                    const value = Number(e.target.value)
+                    setValue('port', value)
+                  }}
+                  value={watch('port', data?.port)}
                   error={!!errors.port}
                   helperText={errors.port?.message?.toString()}
-                />
+                >
+                  <MenuItem value='' disabled classes={undefined}>
+                    Select a port
+                  </MenuItem>
+                  {service?.ports.map((port) => {
+                    return (
+                      <MenuItem value={port} classes={undefined}>
+                        {port}
+                      </MenuItem>
+                    )
+                  })}
+                </TextField>
               </FormRow>
             </Section>
             <Section title='Service Exposure'>
@@ -325,7 +347,7 @@ export default function ({
                       }}
                       value={watch('ingress.cname.tlsSecretName', data?.ingress?.cname?.tlsSecretName)}
                     >
-                      <MenuItem value='' classes={undefined}>
+                      <MenuItem value={undefined} classes={undefined}>
                         TLS certificate
                       </MenuItem>
                       {teamSecrets.map((secret) => {
