@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/linode/apl-console/compare/v3.6.0...v4.0.0) (2025-03-17)
+
+
+### Features
+
+* change the use of id to name ([#518](https://github.com/linode/apl-console/issues/518)) ([f9d91ec](https://github.com/linode/apl-console/commit/f9d91ecd2cf999145165b17bfc9c15bb885cc7af))
+* hide code repositories pages ([#526](https://github.com/linode/apl-console/issues/526)) ([852a340](https://github.com/linode/apl-console/commit/852a34089fbe64fa013f33e32e7a6dc0353bdbb6))
+* update add new helm chart ([#524](https://github.com/linode/apl-console/issues/524)) ([e5cd2d5](https://github.com/linode/apl-console/commit/e5cd2d58daa627f5081317a4ea146c283834e856))
+
+
+### Others
+
+* update main branch ([#528](https://github.com/linode/apl-console/issues/528)) ([38f184d](https://github.com/linode/apl-console/commit/38f184d96ef90d260572e71741f5beababc00350)), closes [#526](https://github.com/linode/apl-console/issues/526) [#524](https://github.com/linode/apl-console/issues/524)
+
 ### [3.6.1](https://github.com/linode/apl-console/compare/v3.5.0...v3.6.1) (2025-03-13)
 
 ### Features
