@@ -8,13 +8,13 @@ import { useAppSelector } from 'redux/hooks'
 import {
   CreateBuildApiResponse,
   GetBuildApiResponse,
-  GetCoderepoApiResponse,
+  GetCodeRepoApiResponse,
   useCreateBuildMutation,
   useDeleteBuildMutation,
   useEditBuildMutation,
   useGetBuildQuery,
   useGetRepoBranchesQuery,
-  useGetTeamCodereposQuery,
+  useGetTeamCodeReposQuery,
 } from 'redux/otomiApi'
 import { cloneDeep, filter, isEmpty, pick } from 'lodash'
 import { LandingHeader } from 'components/LandingHeader'
@@ -32,12 +32,12 @@ import { buildApiResponseSchema } from './create-edit.validator'
 
 interface Params {
   teamId: string
-  buildId?: string
+  buildName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, buildId },
+    params: { teamId, buildName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
@@ -69,14 +69,14 @@ export default function ({
     isFetching,
     isError,
     refetch,
-  } = useGetBuildQuery({ teamId, buildId }, { skip: !buildId })
+  } = useGetBuildQuery({ teamId, buildName }, { skip: !buildName })
   const {
     data: codeRepos,
     isLoading: isLoadingCodeRepos,
     isFetching: isFetchingCodeRepos,
     isError: isErrorCodeRepos,
     refetch: refetchCodeRepos,
-  } = useGetTeamCodereposQuery({ teamId })
+  } = useGetTeamCodeReposQuery({ teamId })
   const {
     data: repoBranches,
     isLoading: isLoadingRepoBranches,
@@ -101,8 +101,8 @@ export default function ({
   // END HOOKS
 
   useEffect(() => {
-    if (buildId) setData(buildData)
-  }, [buildData, buildId])
+    if (buildName) setData(buildData)
+  }, [buildData, buildName])
   // END HOOKS
 
   // form state
@@ -155,18 +155,18 @@ export default function ({
       )
     }
     body.mode = pick(body.mode, ['type', modeType]) as GetBuildApiResponse['mode']
-    if (buildId) update({ teamId, buildId, body })
+    if (buildName) update({ teamId, buildName, body })
     else create({ teamId, body })
   }
 
   const loading = isLoading
 
-  if (loading || isError || (buildId && !buildData) || isLoadingCodeRepos)
+  if (loading || isError || (buildName && !buildData) || isLoadingCodeRepos)
     return <PaperLayout loading title={t('TITLE_BUILD')} />
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={loading} title={t('TITLE_BUILD', { buildId, role: 'team' })}>
+      <PaperLayout loading={loading} title={t('TITLE_BUILD', { buildName, role: 'team' })}>
         <LandingHeader docsLabel='Docs' docsLink='https://apl-docs.net/docs/get-started/overview' title='Build' />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -226,7 +226,7 @@ export default function ({
                   </MenuItem>
                   {codeRepos &&
                     codeRepos.length > 0 &&
-                    codeRepos.map((codeRepo: GetCoderepoApiResponse) => (
+                    codeRepos.map((codeRepo: GetCodeRepoApiResponse) => (
                       <MenuItem
                         key={codeRepo.repositoryUrl}
                         value={codeRepo.repositoryUrl}
@@ -239,7 +239,7 @@ export default function ({
                           }
                         }}
                       >
-                        {codeRepo.label}
+                        {codeRepo.name}
                       </MenuItem>
                     ))}
                 </TextField>
@@ -311,9 +311,9 @@ export default function ({
                 />
               </Box>
             </Section>
-            {buildId && (
+            {buildName && (
               <DeleteButton
-                onDelete={() => del({ teamId, buildId })}
+                onDelete={() => del({ teamId, buildName })}
                 resourceName={watch('name')}
                 resourceType='build'
                 data-cy='button-delete-build'
@@ -321,7 +321,7 @@ export default function ({
               />
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {buildId ? 'Edit Build' : 'Create Build'}
+              {buildName ? 'Edit Build' : 'Create Build'}
             </Button>
           </form>
         </FormProvider>
