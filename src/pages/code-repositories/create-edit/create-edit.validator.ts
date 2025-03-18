@@ -13,7 +13,7 @@ const urlValidation = string().test('is-valid-url', 'Invalid URL for the selecte
 export const coderepoApiResponseSchema = object({
   id: string().optional(),
   teamId: string().optional(),
-  label: string()
+  name: string()
     .required('Code repository label is a required field.')
     .matches(
       /^[a-z]([-a-z0-9]*[a-z0-9])+$/,

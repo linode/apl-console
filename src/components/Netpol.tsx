@@ -23,9 +23,14 @@ export const getNetpolSchema = (teamId: string, formData: any): any => {
   return schema
 }
 
-export const getNetpolUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getNetpolUiSchema = (
+  user: GetSessionApiResponse['user'],
+  teamId: string,
+  isNameEditable: boolean,
+): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     teamId: { 'ui:widget': 'hidden' },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'netpol')
@@ -46,7 +51,7 @@ export default function ({ netpol, teamId, ...other }: Props): React.ReactElemen
   // END HOOKS
   const formData = cloneDeep(data)
   const schema = getNetpolSchema(teamId, formData)
-  const uiSchema = getNetpolUiSchema(user, teamId)
+  const uiSchema = getNetpolUiSchema(user, teamId, !netpol?.name)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Netpol' {...other} />
   )
