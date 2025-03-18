@@ -27,7 +27,7 @@ interface Row {
 }
 
 const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.id)}`
+  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -190,7 +190,7 @@ export default function ({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.builds?.[row.id]),
+      renderer: (row: Row) => getStatus(status?.builds?.[row.name]),
     },
   ]
 
