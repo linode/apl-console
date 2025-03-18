@@ -18,7 +18,7 @@ interface Row {
 }
 
 const getWorkloadLink = (row: Row) => {
-  const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.id)}`
+  const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -89,7 +89,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.workloads?.[row.id]),
+      renderer: (row: Row) => getStatus(status?.workloads?.[row.name]),
     },
   ]
 

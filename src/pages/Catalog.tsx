@@ -17,13 +17,13 @@ import {
 
 interface Params {
   teamId: string
-  workloadId?: string
+  workloadName?: string
   catalogName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, workloadId, catalogName },
+    params: { teamId, workloadName, catalogName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
@@ -34,7 +34,7 @@ export default function ({
     isFetching: isFetchingWorkload,
     isError: isErrorWorkload,
     refetch: refetchWorkload,
-  } = useGetWorkloadQuery({ teamId, workloadId }, { skip: !workloadId })
+  } = useGetWorkloadQuery({ teamId, workloadName }, { skip: !workloadName })
   const [createWorkload] = useCreateWorkloadMutation()
   const [updateWorkload] = useEditWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
@@ -45,7 +45,7 @@ export default function ({
     isFetching: isFetchingValues,
     isError: isErrorValues,
     refetch: refetchValues,
-  } = useGetWorkloadValuesQuery({ teamId, workloadId }, { skip: !workloadId })
+  } = useGetWorkloadValuesQuery({ teamId, workloadName }, { skip: !workloadName })
   const [updateWorkloadValues] = useEditWorkloadValuesMutation()
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
@@ -55,13 +55,15 @@ export default function ({
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
   useEffect(() => {
-    if (workloadId) {
-      getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-        const { catalog }: { catalog: any[] } = res.data
-        const item = catalog.find((item) => item.name === workload.path)
-        const { readme } = item
-        setReadme(readme)
-      })
+    if (workloadName) {
+      if (workload?.name) {
+        getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
+          const { catalog }: { catalog: any[] } = res.data
+          const item = catalog.find((item) => item.name === workload.path)
+          const { readme } = item
+          setReadme(readme)
+        })
+      }
       return
     }
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
@@ -81,8 +83,8 @@ export default function ({
     })
   }, [workload])
 
-  const workloadData = workloadId ? workload : catalogItem
-  const valuesData = workloadId ? values?.values : catalogItem?.values
+  const workloadData = workloadName ? workload : catalogItem
+  const valuesData = workloadName ? values?.values : catalogItem?.values
 
   useEffect(() => {
     if (isDirty !== false) return
@@ -97,7 +99,7 @@ export default function ({
     <Catalog
       teamId={teamId}
       workload={workloadData}
-      workloadId={workloadId}
+      workloadName={workloadName}
       values={valuesData}
       createWorkload={createWorkload}
       updateWorkload={updateWorkload}
@@ -111,7 +113,7 @@ export default function ({
     <PaperLayout
       loading={isLoadingWorkload || isLoadingValues || isLoadingCatalog}
       comp={comp}
-      title={t('TITLE_WORKLOAD', { workloadId, role: 'team' })}
+      title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}
     />
   )
 }

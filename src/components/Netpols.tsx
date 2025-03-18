@@ -8,11 +8,13 @@ import ListTable from './ListTable'
 
 const getNetpolLink = (isAdmin, ownerId) =>
   function (row) {
-    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, name }: { teamId: string; id: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path =
-      isAdmin && !ownerId ? `/netpols/${encodeURIComponent(id)}` : `/teams/${teamId}/netpols/${encodeURIComponent(id)}`
+      isAdmin && !ownerId
+        ? `/netpols/${encodeURIComponent(name)}`
+        : `/teams/${teamId}/netpols/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}

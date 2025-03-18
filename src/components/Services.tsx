@@ -12,9 +12,9 @@ import { getStatus } from './Workloads'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, name }: { teamId: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
-    const path = `/teams/${teamId}/services/${encodeURIComponent(id)}`
+    const path = `/teams/${teamId}/services/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}
@@ -68,7 +68,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(status?.services?.[row.id]),
+      renderer: (row) => getStatus(status?.services?.[row.name]),
     },
   ]
   if (!teamId) {

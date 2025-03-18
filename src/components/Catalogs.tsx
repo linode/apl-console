@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
-import { useHistory } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import CatalogCard from './CatalogCard'
 import TableToolbar from './TableToolbar'
@@ -49,25 +48,18 @@ const developerCatalogInfo = [
 interface Props {
   teamId: string
   catalogs: any[]
+  fetchCatalog: () => void
 }
 
 // TODO: this needs to be fetched from APL Api
 interface NewChartValues {
-  url: string
-  chartName: string
+  gitRepositoryUrl: string
+  chartTargetDirName: string
   chartIcon?: string
-  chartPath: string
-  revision: string
   allowTeams: boolean
 }
 
-interface NewChartPayload extends NewChartValues {
-  teamId: string
-  userSub: string
-}
-
-export default function ({ teamId, catalogs }: Props): React.ReactElement {
-  const history = useHistory()
+export default function ({ teamId, catalogs, fetchCatalog }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
@@ -89,25 +81,10 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
     setFilteredCatalog(filtered)
   }
 
-  const addChart = async (values: NewChartValues) => {
-    let finalUrl = ''
-
+  const addChart = async (data: NewChartValues) => {
     try {
-      const parsedUrl = new URL(values.url)
-      // Split the pathname into segments and filter out empty values.
-      const segments = parsedUrl.pathname.split('/').filter(Boolean)
-      if (segments.length < 2) throw new Error('Invalid repository URL: not enough segments.')
-
-      // Construct the base URL using only the first two segments.
-      // This gives you: https://github.com/{company}/{project}.git
-      finalUrl = `${parsedUrl.protocol}//${parsedUrl.hostname}/${segments[0]}/${segments[1]}.git`
-    } catch (error) {
-      return
-    }
-
-    const payload: NewChartPayload = { ...values, teamId, userSub: user.sub, url: finalUrl }
-    try {
-      const result = await createWorkloadCatalog({ body: payload }).unwrap()
+      const result = await createWorkloadCatalog({ body: data }).unwrap()
+      fetchCatalog()
       if (result) enqueueSnackbar('Chart successfully added', { variant: 'success' })
       else enqueueSnackbar('Error adding chart', { variant: 'error' })
 
@@ -160,11 +137,12 @@ export default function ({ teamId, catalogs }: Props): React.ReactElement {
       </Box>
       <NewChartModal
         actionButtonColor='primary'
-        actionButtonText='Add Chart'
+        actionButtonText='Submit'
         title='Add Helm Chart'
         open={openNewChartModal}
         handleAction={(handleActionValues) => addChart(handleActionValues)}
         handleClose={() => setOpenNewChartModal(false)}
+        chartDirectories={filteredCatalog.map((item) => item.name) || []}
       />
     </>
   )
