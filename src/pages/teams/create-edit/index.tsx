@@ -1,7 +1,8 @@
 import { Box, Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
+import { RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
@@ -11,12 +12,33 @@ import { useState } from 'react'
 import TextfieldList from 'components/TextfieldList'
 import KeyValue from 'components/KeyValue'
 import { PermissionsTable } from 'components/PermissionTable'
+import {
+  CreateTeamApiResponse,
+  useCreateTeamMutation,
+  useDeleteTeamMutation,
+  useEditTeamMutation,
+  useGetTeamQuery,
+} from 'redux/otomiApi'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useStyles } from './create-edit-teams.styles'
+import { createTeamApiResponseSchema } from './create-edit-teams.validator'
 
 type NotificationReceiver = 'slack' | 'teams' | 'opsgenie' | 'email'
 
-export default function CreateEditTeams() {
+interface Params {
+  teamId?: string
+}
+
+export default function CreateEditTeams({
+  match: {
+    params: { teamId },
+  },
+}: RouteComponentProps<Params>) {
   const { classes } = useStyles()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
+  const { data, isLoading, isFetching, isError, refetch } = useGetTeamQuery({ teamId }, { skip: !teamId })
   const [activeNotificationReceiver, setActiveNotificationReceiver] = useState<NotificationReceiver>('slack')
   const notificationReceiverOptions = [
     {
@@ -29,34 +51,35 @@ export default function CreateEditTeams() {
       label: 'Teams',
       imgSrc: '/logos/teams_logo.svg',
     },
-    {
-      value: 'opsgenie',
-      label: 'OpsGenie',
-      imgSrc: '/logos/opsGenie_logo.svg',
-    },
+    // {
+    //   value: 'opsgenie',
+    //   label: 'OpsGenie',
+    //   imgSrc: '/logos/opsGenie_logo.svg',
+    // },
     {
       value: 'email',
       label: 'Email',
       imgSrc: '/logos/email_logo.svg',
     },
   ]
-
-  const methods = useForm<any>({
-    defaultValues: {
-      resourcequotas: {
-        count: [
-          { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-          { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-          { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-        ],
-        computeresourcequota: [
-          { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-          { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-          { key: 'limits.memory', value: 500, decorator: 'Mi' },
-          { key: 'requests.memory', value: 500, decorator: 'Mi' },
-        ],
-      },
-    },
+  // defaultValues: {
+  //   resourcequotas: {
+  //     count: [
+  //       { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+  //       { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+  //       { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+  //     ],
+  //     computeresourcequota: [
+  //       { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+  //       { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+  //       { key: 'limits.memory', value: 500, decorator: 'Mi' },
+  //       { key: 'requests.memory', value: 500, decorator: 'Mi' },
+  //     ],
+  //   },
+  // },
+  const methods = useForm<CreateTeamApiResponse>({
+    resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
+    defaultValues: data,
   })
 
   const {
@@ -154,7 +177,7 @@ export default function CreateEditTeams() {
                     />
                   </>
                 )}
-                {activeNotificationReceiver === 'opsgenie' && (
+                {/* {activeNotificationReceiver === 'opsgenie' && (
                   <>
                     <TextField
                       isHorizontalLabel
@@ -165,7 +188,7 @@ export default function CreateEditTeams() {
                     />
                     <TextField isHorizontalLabel label='OpsGenie API-Key:' width='large' placeholder='API-key' />
                   </>
-                )}
+                )} */}
                 {activeNotificationReceiver === 'email' && (
                   <Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px' }}>
                     <TextfieldList
