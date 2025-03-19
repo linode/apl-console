@@ -27,6 +27,7 @@ export const getTeamSchema = (
       filter((schema as any).properties.alerts.properties.receivers.items.enum, (item) => item !== 'email'),
     )
   }
+
   deleteAlertEndpoints(schema.properties.alerts, team?.alerts)
   if (!otomi.hasExternalIDP) unset(schema, 'properties.oidc')
   return schema
