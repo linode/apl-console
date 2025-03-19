@@ -135,6 +135,7 @@ export const getServiceUiSchema = (
   formData: GetServiceApiResponse,
   user: GetSessionApiResponse['user'],
   teamId: string,
+  isNameEditable: boolean,
   isKsvc = false,
 ): any => {
   const ing = formData?.ingress as Record<string, any>
@@ -145,6 +146,7 @@ export const getServiceUiSchema = (
     : { 'ui:widget': 'hidden' }
   const uiSchema: any = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     teamId: { 'ui:widget': 'hidden' },
     ksvc: { 'ui:widget': ksvcWidget },
     ingress: {
@@ -214,7 +216,7 @@ export default function ({ service, k8sServices, secrets, teamId, ...other }: Pr
   updateIngressField(formData, defaultSubdomain, isKsvc)
   // pass to the schema getters that manipulate the schemas based on form data
   const schema = getServiceSchema(appsEnabled, settings, formData, teamId, secrets, k8sServices)
-  const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId, isKsvc)
+  const uiSchema = getServiceUiSchema(appsEnabled, formData, user, teamId, !service?.name, isKsvc)
   return (
     <Form schema={schema} uiSchema={uiSchema} data={formData} onChange={setData} resourceType='Service' {...other} />
   )

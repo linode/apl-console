@@ -34,9 +34,10 @@ const getProjectSchema = (): any => {
   return schema
 }
 
-const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+const getProjectUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isNameEditable: boolean): any => {
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
     teamId: { 'ui:widget': 'hidden' },
     build: { 'ui:widget': 'hidden' },
     workload: { 'ui:widget': 'hidden' },
@@ -54,7 +55,7 @@ const getWorkloadSchema = (
   helmChart?: string,
   helmChartVersion?: string,
   helmChartDescription?: string,
-  workloadId?: string,
+  workloadName?: string,
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Workload)
   const chartMetadata = {
@@ -69,7 +70,7 @@ const getWorkloadSchema = (
       title: 'Helm chart',
       default: helmChart,
       listNotShort: true,
-      ...(!workloadId && { enum: helmCharts }),
+      ...(!workloadName && { enum: helmCharts }),
     },
     helmChartVersion: {
       type: 'null',
@@ -135,7 +136,7 @@ interface Props extends CrudProps {
   teamId: string
   create: any
   update: any
-  projectId?: string
+  projectName?: string
   project?: any
   onDelete?: any
 }
@@ -144,7 +145,7 @@ export default function ({
   teamId,
   create,
   update,
-  projectId,
+  projectName,
   project,
   onDelete,
   ...other
@@ -222,10 +223,10 @@ export default function ({
   }, [project])
 
   const projectSchema = getProjectSchema()
-  const projectUiSchema = getProjectUiSchema(user, teamId)
+  const projectUiSchema = getProjectUiSchema(user, teamId, !project?.name)
 
   const buildSchema = getBuildSchema(teamId)
-  const buildUiSchema = getBuildUiSchema(user, teamId, formData?.build)
+  const buildUiSchema = getBuildUiSchema(user, teamId, formData?.build, !project?.build?.name)
   buildUiSchema.name = { 'ui:widget': 'hidden' }
 
   const helmChart: string = data?.workload?.chartMetadata?.helmChart || data?.workload?.path || helmCharts?.[0]
@@ -246,7 +247,7 @@ export default function ({
   const { data: k8sServices } = useGetTeamK8SServicesQuery({ teamId })
   const { data: secrets } = useGetSecretsFromK8SQuery({ teamId })
   const serviceSchema = getServiceSchema(appsEnabled, settings, formData?.service, teamId, secrets, k8sServices)
-  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId)
+  const serviceUiSchema = getServiceUiSchema(appsEnabled, formData?.service, user, teamId, !formData?.service?.name)
   serviceUiSchema.name = { 'ui:widget': 'hidden' }
 
   const teamSubdomain = getHost(formData?.name, teamId)
@@ -264,7 +265,7 @@ export default function ({
 
   const handleCreateProject = () => {
     const { name } = formData
-    if (formData?.id) {
+    if (projectName) {
       if (!formData.service.name) setData({ ...formData, service: { name } })
       if (selectedPath === 'useExisting') {
         delete formData.build
@@ -303,7 +304,7 @@ export default function ({
     }
     const res = await update({
       teamId,
-      projectId,
+      projectName,
       body,
     })
     if (res.error) return
@@ -311,7 +312,7 @@ export default function ({
   }
 
   const handleDeleteProject = () => {
-    onDelete({ teamId, projectId })
+    onDelete({ teamId, projectName })
     history.push(user.isPlatformAdmin ? `/projects` : `/teams/${teamId}/projects`)
   }
 
@@ -331,7 +332,7 @@ export default function ({
   return (
     <Box>
       <Box sx={{ position: 'absolute', right: '24px' }}>
-        {projectId && (
+        {projectName && (
           <DeleteButton
             onDelete={handleDeleteProject}
             resourceName={project?.name}

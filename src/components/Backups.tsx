@@ -15,7 +15,7 @@ interface Row {
 }
 
 const getBackupNames = (row: Row) => {
-  const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.id)}`
+  const path = `/teams/${row.teamId}/backups/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}

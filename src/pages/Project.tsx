@@ -14,12 +14,12 @@ import {
 
 interface Params {
   teamId: string
-  projectId?: string
+  projectName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, projectId },
+    params: { teamId, projectName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: createData }] =
@@ -27,8 +27,8 @@ export default function ({
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditProjectMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteProjectMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetProjectQuery(
-    { teamId, projectId },
-    { skip: !projectId },
+    { teamId, projectName },
+    { skip: !projectName },
   )
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
@@ -45,10 +45,10 @@ export default function ({
       mutating={mutating}
       create={create}
       update={update}
-      projectId={createData?.id || projectId}
+      projectName={createData?.name || projectName}
       project={data}
       onDelete={del}
     />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { projectId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_BUILD', { projectName, role: 'team' })} />
 }

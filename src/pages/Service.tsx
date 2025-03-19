@@ -17,12 +17,12 @@ import { getRole } from 'utils/data'
 
 interface Params {
   teamId: string
-  serviceId?: string
+  serviceName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, serviceId },
+    params: { teamId, serviceName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
@@ -34,7 +34,7 @@ export default function ({
     isFetching: isFetchingService,
     isError: isErrorService,
     refetch: refetchService,
-  } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  } = useGetServiceQuery({ teamId, serviceName }, { skip: !serviceName })
   const {
     data: k8sServices,
     isLoading: isLoadingK8sServices,
@@ -62,10 +62,10 @@ export default function ({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/services`} />
   const handleSubmit = (formData) => {
-    if (serviceId) update({ teamId, serviceId, body: omit(formData, ['id', 'teamId']) as typeof formData })
+    if (serviceName) update({ teamId, serviceName, body: omit(formData, ['id', 'teamId']) as typeof formData })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (serviceId) => del({ teamId, serviceId })
+  const handleDelete = () => del({ teamId, serviceName })
   const loading = isLoadingService || isLoadingSecrets || isLoadingK8sServices
   const isError = isErrorService || isErrorSecrets
   const comp = !isError && (

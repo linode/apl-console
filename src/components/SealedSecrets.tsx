@@ -13,13 +13,13 @@ import InformationBanner from './InformationBanner'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
-    const { teamId, id, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, name }: { teamId: string; name: string } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path =
       isAdmin && !ownerId
-        ? `/sealed-secrets/${encodeURIComponent(id)}`
-        : `/teams/${teamId}/sealed-secrets/${encodeURIComponent(id)}`
+        ? `/sealed-secrets/${encodeURIComponent(name)}`
+        : `/teams/${teamId}/sealed-secrets/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}
@@ -28,11 +28,11 @@ const getSecretLink = (isAdmin, ownerId) =>
   }
 
 interface Props {
-  secrets: GetSealedSecretsApiResponse
+  sealedSecrets: GetSealedSecretsApiResponse
   teamId?: string
 }
 
-export default function ({ secrets, teamId }: Props): React.ReactElement {
+export default function ({ sealedSecrets, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
     user: { isPlatformAdmin },
@@ -54,7 +54,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(status?.sealedSecrets?.[row.id]),
+      renderer: (row) => getStatus(status?.sealedSecrets?.[row.name]),
     },
   ]
   if (!teamId) {
@@ -74,7 +74,7 @@ export default function ({ secrets, teamId }: Props): React.ReactElement {
           </MuiLink>
         </InformationBanner>
       )}
-      <ListTable teamId={teamId} headCells={headCells} rows={secrets} resourceType='SealedSecret' />
+      <ListTable teamId={teamId} headCells={headCells} rows={sealedSecrets} resourceType='SealedSecret' />
     </Box>
   )
 }
