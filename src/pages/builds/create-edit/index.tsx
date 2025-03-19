@@ -27,6 +27,7 @@ import ImgButtonGroup from 'components/ImgButtonGroup'
 import { Divider } from 'components/Divider'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
+import { Autocomplete } from 'components/forms/Autocomplete'
 import { useStyles } from './create-edit.styles'
 import { buildApiResponseSchema } from './create-edit.validator'
 
@@ -164,6 +165,8 @@ export default function ({
   if (loading || isError || (buildName && !buildData) || isLoadingCodeRepos)
     return <PaperLayout loading title={t('TITLE_BUILD')} />
 
+  const myRepoBranches = repoBranchesSet || []
+
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading} title={t('TITLE_BUILD', { buildName, role: 'team' })}>
@@ -244,7 +247,7 @@ export default function ({
                     ))}
                 </TextField>
 
-                <TextField
+                {/* <TextField
                   label='Branch'
                   fullWidth
                   {...register(`mode.${watch('mode.type')}.revision`)}
@@ -267,7 +270,36 @@ export default function ({
                         {branch}
                       </MenuItem>
                     ))}
-                </TextField>
+                </TextField> */}
+
+                <Autocomplete
+                  errorText=''
+                  onChange={(
+                    _,
+                    newValue: {
+                      label: string
+                      value: string
+                    },
+                    reason,
+                  ) => {
+                    console.log('reason', reason)
+                    console.log('newValue', newValue)
+                  }}
+                  textFieldProps={{
+                    labelTooltipText:
+                      'Represents the metric you want to receive alerts for. Choose the one that helps you evaluate performance of your service in the most efficient way. For multiple metrics we use the AND method by default.',
+                  }}
+                  value={watch(`mode.${watch('mode.type')}.revision`)}
+                  disabled={false}
+                  label='Branch'
+                  loading={false}
+                  noMarginTop
+                  onBlur={null}
+                  // @ts-ignore
+                  options={myRepoBranches}
+                  placeholder='Select a branch'
+                  width='medium'
+                />
 
                 <TextField
                   label='Path'
