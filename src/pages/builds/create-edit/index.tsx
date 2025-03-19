@@ -85,14 +85,11 @@ export default function ({
     isError: isErrorRepoBranches,
     refetch: refetchRepoBranches,
   } = useGetRepoBranchesQuery({ url: repoUrl, teamId, secret: secretName }, { skip: !repoUrl })
-  console.log('repoBranches', repoBranches)
 
   const buildDataModeType = buildData?.mode?.type
   const buildDataModeRevision: string = buildData?.mode?.[`${buildDataModeType}`]?.revision || ''
   let repoBranchesSet = [buildDataModeRevision]
   if (repoBranches) repoBranchesSet = Array.from(new Set([...(repoBranches as string[]), buildDataModeRevision]))
-
-  console.log('repoBranchesSet', repoBranchesSet)
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -134,9 +131,10 @@ export default function ({
   }, [watch('mode.type')])
 
   useEffect(() => {
-    console.log('data', data)
-    console.log('buildData', buildData)
-    if (buildData) reset(buildData)
+    if (buildData) {
+      reset(buildData)
+      setRepoUrl(watch(`mode.${watch('mode.type')}.repoUrl`))
+    }
   }, [buildData, setValue])
 
   console.log(watch(), errors)
@@ -156,16 +154,16 @@ export default function ({
       )
     }
     body.mode = pick(body.mode, ['type', modeType]) as GetBuildApiResponse['mode']
+    console.log('body', body)
     if (buildName) update({ teamId, buildName, body })
     else create({ teamId, body })
   }
 
   const loading = isLoading
-
-  if (loading || isError || (buildName && !buildData) || isLoadingCodeRepos)
-    return <PaperLayout loading title={t('TITLE_BUILD')} />
-
   const myRepoBranches = repoBranchesSet || []
+
+  if (loading || isError || (buildName && !buildData) || isLoadingCodeRepos || isLoadingRepoBranches)
+    return <PaperLayout loading title={t('TITLE_BUILD')} />
 
   return (
     <Grid className={classes.root}>
@@ -247,47 +245,11 @@ export default function ({
                     ))}
                 </TextField>
 
-                {/* <TextField
-                  label='Branch'
-                  fullWidth
-                  {...register(`mode.${watch('mode.type')}.revision`)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setValue(`mode.${watch('mode.type')}.revision`, value)
-                  }}
-                  error={!!errors.mode}
-                  width='medium'
-                  value={watch(`mode.${watch('mode.type')}.revision`)}
-                  select
-                >
-                  <MenuItem value='' disabled>
-                    Select a branch
-                  </MenuItem>
-                  {repoBranches &&
-                    repoBranches.length > 0 &&
-                    repoBranches.map((branch) => (
-                      <MenuItem key={branch} value={branch}>
-                        {branch}
-                      </MenuItem>
-                    ))}
-                </TextField> */}
-
                 <Autocomplete
                   errorText=''
-                  onChange={(
-                    _,
-                    newValue: {
-                      label: string
-                      value: string
-                    },
-                    reason,
-                  ) => {
-                    console.log('reason', reason)
-                    console.log('newValue', newValue)
-                  }}
-                  textFieldProps={{
-                    labelTooltipText:
-                      'Represents the metric you want to receive alerts for. Choose the one that helps you evaluate performance of your service in the most efficient way. For multiple metrics we use the AND method by default.',
+                  onChange={(_, value) => {
+                    console.log('value', value)
+                    setValue(`mode.${watch('mode.type')}.revision`, value as string)
                   }}
                   value={watch(`mode.${watch('mode.type')}.revision`)}
                   disabled={false}
@@ -299,6 +261,8 @@ export default function ({
                   options={myRepoBranches}
                   placeholder='Select a branch'
                   width='medium'
+                  {...register(`mode.${watch('mode.type')}.revision`)}
+                  setValue={(value) => setValue(`mode.${watch('mode.type')}.revision`, value as string)}
                 />
 
                 <TextField

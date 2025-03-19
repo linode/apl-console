@@ -1,11 +1,11 @@
 import MuiAutocomplete from '@mui/material/Autocomplete'
-import React, { JSX } from 'react'
+import React, { JSX, useState } from 'react'
 
 import type { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
 import ArrowDropUpIcon from '@mui/icons-material/ExpandLess'
 import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
-import { CircleProgress } from '../CircleProgress'
-import { InputAdornment } from '../InputAdornment'
+import { InputAdornment } from '@mui/material'
+import { CircleProgress } from 'components/CircleProgress'
 import { TextField } from './TextField'
 
 import type { TextFieldProps } from './TextField'
@@ -33,6 +33,7 @@ export interface EnhancedAutocompleteProps<
   /** Label for the "select all" option. */
   selectAllLabel?: string
   textFieldProps?: Partial<TextFieldProps>
+  setValue?: any
 }
 
 /**
@@ -68,7 +69,6 @@ export function Autocomplete<
     limitTags = 2,
     loading = false,
     loadingText,
-    multiple,
     noMarginTop,
     noOptionsText,
     onBlur,
@@ -80,36 +80,26 @@ export function Autocomplete<
     selectAllLabel = '',
     textFieldProps,
     value,
+    setValue,
     ...rest
   } = props
-
-  const isSelectAllActive = multiple && Array.isArray(value) && value.length === options.length
-
-  const selectAllText = isSelectAllActive ? 'Deselect All' : 'Select All'
-
-  const selectAllOption = { label: `${selectAllText} ${selectAllLabel}` }
-
-  const optionsWithSelectAll = [selectAllOption, ...options] as T[]
+  const [inPlaceholder, setInPlaceholder] = useState('')
 
   return (
     <MuiAutocomplete
-      options={multiple && !disableSelectAll && options.length > 0 ? optionsWithSelectAll : options}
+      options={options}
       renderInput={
         renderInput ||
         ((params) => (
           // @ts-ignore
           <TextField
-            errorText={errorText}
-            helperText={helperText}
-            inputId={params.id}
             label={label}
+            width='medium'
             loading={loading}
-            noMarginTop={noMarginTop}
-            placeholder={placeholder ?? 'Select an option'}
-            required={textFieldProps?.InputProps?.required}
-            tooltipText={textFieldProps?.tooltipText}
+            placeholder={inPlaceholder || (placeholder ?? 'Select an option')}
             {...params}
-            {...textFieldProps}
+            error={!!errorText}
+            helperText={helperText}
             InputProps={{
               ...params.InputProps,
               ...textFieldProps?.InputProps,
@@ -132,25 +122,21 @@ export function Autocomplete<
       clearOnBlur={clearOnBlur}
       data-qa-autocomplete={label}
       defaultValue={defaultValue}
-      disableCloseOnSelect={multiple}
       disablePortal={disablePortal}
       limitTags={limitTags}
       loading={loading}
       loadingText={loadingText || 'Loading...'}
-      multiple={multiple}
       noOptionsText={noOptionsText || <i>You have no options to choose from</i>}
       onBlur={onBlur}
+      onOpen={() => setInPlaceholder('Search')}
+      onClose={() => setInPlaceholder(placeholder || '')}
       popupIcon={<ArrowDropDownIcon data-testid='KeyboardArrowDownIcon' />}
       value={value}
       {...rest}
       onChange={(e, value, reason, details) => {
-        if (onChange) {
-          if (details?.option === selectAllOption) {
-            if (isSelectAllActive) {
-              if (typeof value === typeof []) onChange(e, [] as T[] as typeof value, reason, details)
-            } else if (typeof value === typeof options) onChange(e, options as typeof value, reason, details)
-          } else onChange(e, value, reason, details)
-        }
+        console.log('auto value', value)
+        setValue(value)
+        onChange(e, value, reason, details)
       }}
     />
   )

@@ -502,6 +502,9 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             shrink: true,
           }}
           InputProps={{
+            disableUnderline: true,
+            endAdornment: finalEndAdornment,
+            ...InputProps,
             className: cx(
               'input',
               {
@@ -510,9 +513,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
               className,
               classes.TempMuiInput,
             ),
-            disableUnderline: true,
-            endAdornment: finalEndAdornment,
-            ...InputProps,
           }}
           SelectProps={{
             IconComponent: KeyboardArrowDown,
