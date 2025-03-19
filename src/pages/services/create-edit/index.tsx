@@ -62,7 +62,7 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
 
 interface Params {
   teamId: string
-  serviceId?: string
+  serviceName?: string
 }
 
 interface K8Service {
@@ -73,7 +73,7 @@ interface K8Service {
 
 export default function ({
   match: {
-    params: { teamId, serviceId },
+    params: { teamId, serviceName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
@@ -94,7 +94,7 @@ export default function ({
     isFetching,
     isError,
     refetch: refetchService,
-  } = useGetServiceQuery({ teamId, serviceId }, { skip: !serviceId })
+  } = useGetServiceQuery({ teamId, serviceName }, { skip: !serviceName })
   const {
     data: k8sServices,
     isLoading: isLoadingK8sServices,
@@ -181,7 +181,7 @@ export default function ({
       submitData.ingress.subdomain = `${submitData.ingress.subdomain}-${teamId}`
 
     // eslint-disable-next-line object-shorthand
-    if (serviceId) update({ teamId, serviceId: serviceId, body: submitData })
+    if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
     else create({ teamId, body: submitData })
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -441,9 +441,9 @@ export default function ({
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
                 Your service will be created as: {keyValue}
               </Typography>
-              {serviceId && (
+              {serviceName && (
                 <DeleteButton
-                  onDelete={() => del({ teamId, serviceId })}
+                  onDelete={() => del({ teamId, serviceName })}
                   resourceName={watch('name')}
                   resourceType='service'
                   data-cy='button-delete-service'
@@ -457,7 +457,7 @@ export default function ({
                 color='primary'
                 sx={{ textTransform: 'none' }}
               >
-                {serviceId ? 'Edit Service' : 'Add Service'}
+                {serviceName ? 'Edit Service' : 'Create Service'}
               </Button>
             </Box>
           </form>
