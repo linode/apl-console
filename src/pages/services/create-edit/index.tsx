@@ -242,12 +242,12 @@ export default function ({
                   }}
                   value={watch('name', data?.name)}
                 >
-                  <MenuItem value='' disabled classes={undefined}>
+                  <MenuItem key='select-a-service' value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
                   {filteredK8Services.map((service) => {
                     return (
-                      <MenuItem value={service.name} classes={undefined}>
+                      <MenuItem key={service.name} value={service.name} classes={undefined}>
                         {service.name}
                       </MenuItem>
                     )
@@ -266,12 +266,12 @@ export default function ({
                   error={!!errors.port}
                   helperText={errors.port?.message?.toString()}
                 >
-                  <MenuItem value='' disabled classes={undefined}>
+                  <MenuItem key='select-a-port' value='' disabled classes={undefined}>
                     Select a port
                   </MenuItem>
                   {service?.ports.map((port) => {
                     return (
-                      <MenuItem value={port} classes={undefined}>
+                      <MenuItem key={`service-${port}`} value={port} classes={undefined}>
                         {port}
                       </MenuItem>
                     )
@@ -347,12 +347,12 @@ export default function ({
                       }}
                       value={watch('ingress.cname.tlsSecretName', data?.ingress?.cname?.tlsSecretName)}
                     >
-                      <MenuItem value={undefined} classes={undefined}>
+                      <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
                         TLS certificate
                       </MenuItem>
                       {teamSecrets.map((secret) => {
                         return (
-                          <MenuItem value={secret?.name} classes={undefined}>
+                          <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
                             {secret?.name}
                           </MenuItem>
                         )
@@ -370,7 +370,7 @@ export default function ({
                     value='platform'
                     select
                   >
-                    <MenuItem id='platform' value='platform' classes={undefined}>
+                    <MenuItem key='platform' id='platform' value='platform' classes={undefined}>
                       platform
                     </MenuItem>
                   </TextField>
@@ -439,7 +439,7 @@ export default function ({
             </Section>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
-                Your service will be created as: {keyValue}
+                Your service will be {serviceName ? 'edited' : 'created'} as: {keyValue}
               </Typography>
               {serviceName && (
                 <DeleteButton
