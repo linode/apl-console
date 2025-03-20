@@ -207,9 +207,10 @@ export default function ({
     return <Redirect to={`/teams/${teamId}/services`} />
 
   const loading = isLoading || isLoadingK8sServices || isLoadingTeamSecrets
+  const fetching = isFetching || isFetchingK8sServices || isFetchingTeamSecrets
   const error = isError || isErrorK8sServices || isErrorTeamSecrets
 
-  if (loading) return <PaperLayout loading title={t('TITLE_SERVICE')} />
+  if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
 
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
 
