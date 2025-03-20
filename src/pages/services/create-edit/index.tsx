@@ -83,6 +83,19 @@ export default function ({
     settings: { cluster },
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
+  const [url, setUrl] = useState<string | undefined>(undefined)
+
+  const getKeyValue = () => {
+    console.log('HERE')
+    let compositeUrl = ''
+    if (service !== undefined) {
+      compositeUrl = service.managedByKnative
+        ? `${service.name}-team-${teamId}.${cluster.domainSuffix}/`
+        : `${service.name}-${teamId}.${cluster.domainSuffix}/`
+    } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}/`
+    console.log('compositeUrl: ', compositeUrl)
+    return compositeUrl
+  }
 
   // api calls
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
@@ -146,9 +159,9 @@ export default function ({
 
   useEffect(() => {
     if (data) {
+      console.log('DATA: ', data)
       reset(data)
       setActiveService(data.name)
-      setService(filteredK8Services?.find((service) => service.name === data.name) as unknown as K8Service)
     }
 
     if (!isEmpty(data?.ingress?.paths)) {
@@ -158,6 +171,11 @@ export default function ({
     }
     setValue('ingress.domain', cluster.domainSuffix)
   }, [data, setValue])
+
+  useEffect(() => {
+    setUrl(getKeyValue())
+  }, [service])
+
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
@@ -194,17 +212,6 @@ export default function ({
   if (loading) return <PaperLayout loading title={t('TITLE_SERVICE')} />
 
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
-
-  const getKeyValue = () => {
-    if (service !== undefined) {
-      return service.managedByKnative
-        ? `${service.name}-team-${teamId}.${cluster.domainSuffix}/`
-        : `${service.name}-${teamId}.${cluster.domainSuffix}/`
-    }
-    return `*-${teamId}.${cluster.domainSuffix}/`
-  }
-
-  const keyValue = getKeyValue()
 
   return (
     <Grid className={classes.root}>
@@ -245,7 +252,7 @@ export default function ({
                   <MenuItem key='select-a-service' value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
-                  {filteredK8Services.map((service) => {
+                  {filteredK8Services?.map((service) => {
                     return (
                       <MenuItem key={service.name} value={service.name} classes={undefined}>
                         {service.name}
@@ -262,7 +269,7 @@ export default function ({
                     const value = Number(e.target.value)
                     setValue('port', value)
                   }}
-                  value={watch('port', data?.port)}
+                  value={watch('port') || ''}
                   error={!!errors.port}
                   helperText={errors.port?.message?.toString()}
                 >
@@ -281,7 +288,7 @@ export default function ({
             </Section>
             <Section title='Service Exposure'>
               <FormRow spacing={10}>
-                <TextField label='URL' width='large' disabled value={keyValue} />
+                <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
               <Divider sx={{ mt: 4, mb: 2 }} />
               <StyledAccordion disableGutters>
@@ -304,7 +311,7 @@ export default function ({
                     title='URL paths'
                     subTitle='These define where your service is available. For example, login could point to your app’s login page.'
                     keyDisabled
-                    keyValue={keyValue}
+                    keyValue={url}
                     keyLabel='Domain'
                     valueLabel='Path'
                     showLabel={false}
@@ -345,7 +352,7 @@ export default function ({
                         const value = e.target.value
                         setValue('ingress.cname.tlsSecretName', value)
                       }}
-                      value={watch('ingress.cname.tlsSecretName', data?.ingress?.cname?.tlsSecretName)}
+                      value={watch('ingress.cname.tlsSecretName') || ''}
                     >
                       <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
                         TLS certificate
@@ -439,7 +446,7 @@ export default function ({
             </Section>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
-                Your service will be {serviceName ? 'edited' : 'created'} as: {keyValue}
+                Your service will be {serviceName ? 'edited' : 'created'} as: {url}
               </Typography>
               {serviceName && (
                 <DeleteButton
