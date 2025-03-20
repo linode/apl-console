@@ -83,6 +83,7 @@ export default function ({
     settings: { cluster },
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
+  const [filteredK8Services, setFilteredK8Services] = useState<K8Service[] | undefined>([])
   const [url, setUrl] = useState<string | undefined>(undefined)
 
   const getKeyValue = (activeService: K8Service) => {
@@ -115,14 +116,6 @@ export default function ({
     isError: isErrorK8sServices,
     refetch: refetchK8sServices,
   } = useGetTeamK8SServicesQuery({ teamId })
-
-  const filteredK8Services = k8sServices?.filter(
-    (service: K8Service) =>
-      !service.name.includes('grafana') &&
-      !service.name.includes('prometheus') &&
-      !service.name.includes('alertmanager') &&
-      !service.name.includes('tekton-dashboard'),
-  )
 
   const {
     data: teamSealedSecrets,
@@ -176,12 +169,28 @@ export default function ({
     setUrl(getKeyValue(service))
   }, [service])
 
+  useEffect(() => {
+    const filtered = k8sServices?.filter(
+      (service: K8Service) =>
+        !service.name.includes('grafana') &&
+        !service.name.includes('prometheus') &&
+        !service.name.includes('alertmanager') &&
+        !service.name.includes('tekton-dashboard'),
+    ) as K8Service[]
+    setFilteredK8Services(filtered)
+  }, k8sServices)
+
+  useEffect(() => {
+    if (filteredK8Services?.length && data?.name) setActiveService(data.name)
+  }, [filteredK8Services, data])
+
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
 
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
+    console.log('ACTIVE SERVICE: ', service)
     if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
   }
