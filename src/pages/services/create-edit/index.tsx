@@ -85,13 +85,13 @@ export default function ({
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
 
-  const getKeyValue = () => {
+  const getKeyValue = (activeService: K8Service) => {
     console.log('HERE')
     let compositeUrl = ''
-    if (service !== undefined) {
-      compositeUrl = service.managedByKnative
-        ? `${service.name}-team-${teamId}.${cluster.domainSuffix}/`
-        : `${service.name}-${teamId}.${cluster.domainSuffix}/`
+    if (activeService !== undefined) {
+      compositeUrl = activeService.managedByKnative
+        ? `${activeService.name}-team-${teamId}.${cluster.domainSuffix}/`
+        : `${activeService.name}-${teamId}.${cluster.domainSuffix}/`
     } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}/`
     console.log('compositeUrl: ', compositeUrl)
     return compositeUrl
@@ -173,7 +173,7 @@ export default function ({
   }, [data, setValue])
 
   useEffect(() => {
-    setUrl(getKeyValue())
+    setUrl(getKeyValue(service))
   }, [service])
 
   const TLSEnabled = watch('ingress.tlsPass')
