@@ -9,11 +9,11 @@ import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
 import {
-  CreateCoderepoApiResponse,
-  useCreateCoderepoMutation,
-  useDeleteCoderepoMutation,
-  useEditCoderepoMutation,
-  useGetCoderepoQuery,
+  CreateCodeRepoApiResponse,
+  useCreateCodeRepoMutation,
+  useDeleteCodeRepoMutation,
+  useEditCodeRepoMutation,
+  useGetCodeRepoQuery,
   useGetInternalRepoUrlsQuery,
   useGetSealedSecretsQuery,
   useGetTestRepoConnectQuery,
@@ -39,19 +39,19 @@ const extractRepoName = (url: string): string => {
 
 interface Params {
   teamId: string
-  coderepositoryId?: string
+  codeRepositoryName?: string
 }
 
 export default function CreateEditCodeRepositories({
   match: {
-    params: { teamId, coderepositoryId },
+    params: { teamId, codeRepositoryName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
   const history = useHistory()
   const location = useLocation()
   const locationState = location?.state as any
-  const prefilledData = locationState?.prefilled as CreateCoderepoApiResponse
+  const prefilledData = locationState?.prefilled as CreateCodeRepoApiResponse
   const { t } = useTranslation()
   const theme = useTheme()
   const { classes } = useStyles()
@@ -81,12 +81,12 @@ export default function CreateEditCodeRepositories({
   ]
 
   // api calls
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateCoderepoMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditCoderepoMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteCoderepoMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetCoderepoQuery(
-    { teamId, coderepoId: coderepositoryId },
-    { skip: !coderepositoryId },
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateCodeRepoMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditCodeRepoMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteCodeRepoMutation()
+  const { data, isLoading, isFetching, isError, refetch } = useGetCodeRepoQuery(
+    { teamId, codeRepositoryName },
+    { skip: !codeRepositoryName },
   )
   const {
     data: teamSealedSecrets,
@@ -121,8 +121,8 @@ export default function CreateEditCodeRepositories({
 
   // form state
   const defaultValues = { gitService: 'gitea' as 'gitea' | 'github' | 'gitlab', ...prefilledData }
-  const methods = useForm<CreateCoderepoApiResponse>({
-    resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCoderepoApiResponse>,
+  const methods = useForm<CreateCodeRepoApiResponse>({
+    resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCodeRepoApiResponse>,
     defaultValues: data || defaultValues,
   })
   const {
@@ -185,15 +185,15 @@ export default function CreateEditCodeRepositories({
     setShowConnectResult(true)
   }
 
-  const onSubmit = (data: CreateCoderepoApiResponse) => {
-    if (coderepositoryId) update({ teamId, coderepoId: coderepositoryId, body: data })
+  const onSubmit = (data: CreateCodeRepoApiResponse) => {
+    if (codeRepositoryName) update({ teamId, codeRepositoryName, body: data })
     else create({ teamId, body: data })
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/coderepositories`} />
 
-  const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (coderepositoryId && !internalRepoUrls)
+  const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (codeRepositoryName && !internalRepoUrls)
   const error = isError || isErrorTeamSecrets || isErrorRepoUrls
 
   if (loading) return <PaperLayout loading title={t('TITLE_CODEREPOSITORY')} />
@@ -213,13 +213,13 @@ export default function CreateEditCodeRepositories({
                 <TextField
                   label='Code Repository Label'
                   width='large'
-                  {...register('label')}
+                  {...register('name')}
                   onChange={(e) => {
                     const value = e.target.value
-                    setValue('label', value)
+                    setValue('name', value)
                   }}
-                  error={!!errors.label}
-                  helperText={errors.label?.message?.toString()}
+                  error={!!errors.name}
+                  helperText={errors.name?.message?.toString()}
                 />
               </FormRow>
             </Section>
@@ -388,17 +388,17 @@ export default function CreateEditCodeRepositories({
                 </Box>
               )}
             </Section>
-            {coderepositoryId && (
+            {codeRepositoryName && (
               <DeleteButton
-                onDelete={() => del({ teamId, coderepoId: coderepositoryId })}
-                resourceName={watch('label')}
+                onDelete={() => del({ teamId, codeRepositoryName })}
+                resourceName={watch('name')}
                 resourceType='coderepo'
                 data-cy='button-delete-coderepo'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
               />
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {coderepositoryId ? 'Edit Code Repository' : 'Add Code Repository'}
+              {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
             </Button>
           </form>
         </FormProvider>

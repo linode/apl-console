@@ -15,12 +15,12 @@ import {
 
 interface Params {
   teamId: string
-  secretId?: string
+  sealedSecretName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, secretId },
+    params: { teamId, sealedSecretName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const history = useHistory()
@@ -33,8 +33,8 @@ export default function ({
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSealedSecretMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetSealedSecretQuery(
-    { teamId, secretId },
-    { skip: !secretId },
+    { teamId, sealedSecretName },
+    { skip: !sealedSecretName },
   )
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -51,10 +51,10 @@ export default function ({
   }
 
   const handleSubmit = (formData) => {
-    if (secretId) update({ teamId, secretId, body: omit(formData, ['id', 'teamId']) as any })
+    if (sealedSecretName) update({ teamId, sealedSecretName, body: omit(formData, ['id', 'teamId']) as any })
     else create({ teamId, body: formData })
   }
-  const handleDelete = (deleteId) => del({ teamId, secretId: deleteId })
+  const handleDelete = () => del({ teamId, sealedSecretName })
   const comp = !isError && (
     <SealedSecret
       onSubmit={handleSubmit}
@@ -65,5 +65,5 @@ export default function ({
       isCoderepository={isCoderepository}
     />
   )
-  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { secretId, role: 'team' })} />
+  return <PaperLayout loading={isLoading} comp={comp} title={t('TITLE_SECRET', { sealedSecretName, role: 'team' })} />
 }

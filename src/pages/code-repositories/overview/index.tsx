@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
-import { useGetAllCodereposQuery, useGetTeamCodereposQuery } from 'redux/otomiApi'
+import { useGetAllCodeReposQuery, useGetTeamCodeReposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
 import { Typography } from '@mui/material'
 import { HeadCell } from '../../../components/EnhancedTable'
@@ -13,11 +13,11 @@ import ListTable from '../../../components/ListTable'
 
 const getCodeRepoLabel = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, id, label }: { teamId: string; id: string; label: string } = row
-    const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(id)}`
+    const { teamId, name }: { teamId: string; name: string } = row
+    const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(name)}`
     return (
-      <RLink to={path} label={label}>
-        {label}
+      <RLink to={path} label={name}>
+        {name}
       </RLink>
     )
   }
@@ -66,13 +66,13 @@ export default function ({
     isLoading: isLoadingAllCodeRepositories,
     isFetching: isFetchingAllCodeRepositories,
     refetch: refetchAllCodeRepositories,
-  } = useGetAllCodereposQuery(teamId ? skipToken : undefined)
+  } = useGetAllCodeReposQuery(teamId ? skipToken : undefined)
   const {
     data: teamCodeRepositories,
     isLoading: isLoadingTeamCodeRepositories,
     isFetching: isFetchingTeamCodeRepositories,
     refetch: refetchTeamCodeRepositories,
-  } = useGetTeamCodereposQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return

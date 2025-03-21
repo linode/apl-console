@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next'
 import { useHistory, useLocation } from 'react-router-dom'
 import { useSession } from 'providers/Session'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
@@ -85,7 +85,7 @@ export const getWorkloadSchema = (): any => {
   return cloneDeep(getSpec().components.schemas.Workload)
 }
 
-export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string): any => {
+export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId: string, isNameEditable): any => {
   const uiSchema = {
     'ui:description': ' ',
     id: { 'ui:widget': 'hidden' },
@@ -100,6 +100,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
     namespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
     createNamespace: teamId !== 'admin' && { 'ui:widget': 'hidden' },
     sidecarInject: teamId !== 'admin' && { 'ui:widget': 'hidden' },
+    name: { 'ui:readonly': !isNameEditable },
   }
   applyAclToUiSchema(uiSchema, user, teamId, 'workload')
   return uiSchema
@@ -108,7 +109,7 @@ export const getWorkloadUiSchema = (user: GetSessionApiResponse['user'], teamId:
 interface Props extends CrudProps {
   teamId: string
   workload?: any
-  workloadId?: string
+  workloadName?: string
   values?: any
   createWorkload: any
   updateWorkload: any
@@ -120,7 +121,7 @@ interface Props extends CrudProps {
 export default function ({
   teamId,
   workload,
-  workloadId,
+  workloadName,
   values,
   createWorkload,
   updateWorkload,
@@ -135,7 +136,6 @@ export default function ({
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const { user } = useSession()
-  const globalError = useAppSelector(({ global: { error } }) => error)
   const hash = location.hash.substring(1)
   const hashMap = {
     info: 0,
@@ -145,24 +145,12 @@ export default function ({
   const [tab, setTab] = useState(defTab)
   const handleTabChange = (event, tab) => {
     // on the values tab, reset the values to see the comments in the code editor
-    if (tab === 1 && !workloadId) setWorkloadValues(values)
+    if (tab === 1 && !workloadName) setWorkloadValues(values)
     setTab(tab)
   }
   const [data, setData] = useState<any>(workload)
   const [workloadValues, setWorkloadValues] = useState<any>(values)
-  const [scrollPosition, setScrollPosition] = useState(0)
   const icon = data?.icon || '/logos/akamai_logo.svg'
-
-  const handleScroll = () => {
-    const position = window.scrollY
-    setScrollPosition(position)
-  }
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [])
 
   useEffect(() => {
     if (!workload) return
@@ -176,20 +164,20 @@ export default function ({
     const path = workload?.path
     const body = { ...workloadBody, chartMetadata, url: workload?.url, path }
     let res
-    if (workloadId) {
+    if (workloadName) {
       dispatch(setError(undefined))
-      res = await updateWorkload({ teamId, workloadId, body })
-      res = await updateWorkloadValues({ teamId, workloadId, body: { values: workloadValues } })
+      res = await updateWorkload({ teamId, workloadName, body })
+      res = await updateWorkloadValues({ teamId, workloadName, body: { values: workloadValues } })
     } else {
       res = await createWorkload({ teamId, body })
-      res = await updateWorkloadValues({ teamId, workloadId: res.data.id, body: { values: workloadValues } })
+      res = await updateWorkloadValues({ teamId, workloadName: res.data.name, body: { values: workloadValues } })
     }
     if (res.error) return
     history.push(`/teams/${teamId}/workloads`)
   }
 
   const schema = getWorkloadSchema()
-  const uiSchema = getWorkloadUiSchema(user, teamId)
+  const uiSchema = getWorkloadUiSchema(user, teamId, !workload?.name)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -223,9 +211,9 @@ export default function ({
                 Submit
               </Button>
             )}
-            {workloadId && (
+            {workloadName && (
               <DeleteButton
-                onDelete={() => deleteWorkload({ teamId, workloadId })}
+                onDelete={() => deleteWorkload({ teamId, workloadName })}
                 resourceName={workload?.name}
                 resourceType='workload'
                 data-cy='button-delete-workload'
@@ -347,9 +335,9 @@ export default function ({
                 Submit
               </Button>
             )}
-            {workloadId && (
+            {workloadName && (
               <DeleteButton
-                onDelete={() => deleteWorkload({ teamId, workloadId })}
+                onDelete={() => deleteWorkload({ teamId, workloadName })}
                 resourceName={workload?.name}
                 resourceType='workload'
                 data-cy='button-delete-workload'
