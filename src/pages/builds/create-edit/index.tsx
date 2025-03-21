@@ -1,4 +1,4 @@
-import { Box, Button, Grid, MenuItem } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
@@ -8,7 +8,6 @@ import { useAppSelector } from 'redux/hooks'
 import {
   CreateBuildApiResponse,
   GetBuildApiResponse,
-  GetCodeRepoApiResponse,
   useCreateBuildMutation,
   useDeleteBuildMutation,
   useEditBuildMutation,
@@ -28,6 +27,8 @@ import { Divider } from 'components/Divider'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
+import { Typography } from 'components/Typography'
+import { useSession } from 'providers/Session'
 import { useStyles } from './create-edit.styles'
 import { buildApiResponseSchema } from './create-edit.validator'
 
@@ -47,6 +48,15 @@ export default function ({
   const [data, setData]: any = useState()
   const [repoUrl, setRepoUrl] = useState('')
   const [secretName, setSecretName] = useState('')
+  const [gitService, setGitService] = useState('')
+  const [customize, setCustomize] = useState(false)
+  console.log('gitService', gitService)
+
+  const {
+    settings: {
+      cluster: { domainSuffix },
+    },
+  } = useSession()
 
   const options = [
     {
@@ -105,7 +115,6 @@ export default function ({
 
   // form state
   const defaultValues = {
-    tag: 'latest',
     mode: { type: 'docker', docker: { path: './Dockerfile', envVars: [] } },
     externalRepo: false,
   }
@@ -137,11 +146,11 @@ export default function ({
     }
   }, [buildData, setValue])
 
-  console.log(watch(), errors)
+  console.log(watch())
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/builds`} />
-  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/builds/`} />
+  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/container-images`} />
+  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/container-images/`} />
 
   const onSubmit = () => {
     const body = cloneDeep(watch()) // Clone the form data
@@ -162,26 +171,32 @@ export default function ({
   const loading = isLoading
   const myRepoBranches = repoBranchesSet || []
 
-  if (loading || isError || (buildName && !buildData) || isLoadingCodeRepos || isLoadingRepoBranches)
-    return <PaperLayout loading title={t('TITLE_BUILD')} />
+  if (loading || isError || (buildName && !watch('name')))
+    return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={loading} title={t('TITLE_BUILD', { buildName, role: 'team' })}>
-        <LandingHeader docsLabel='Docs' docsLink='https://apl-docs.net/docs/get-started/overview' title='Build' />
+      <PaperLayout loading={loading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
+        <LandingHeader
+          docsLabel='Docs'
+          docsLink='https://apl-docs.net/docs/get-started/overview'
+          title='Container Image'
+        />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormRow spacing={10} sx={{ mb: 4 }}>
+            <FormRow spacing={10} sx={{ mb: 1 }}>
               <TextField
-                label='Label'
+                label='Image name'
                 width='medium'
                 {...register('name')}
+                value={watch('name')}
                 onChange={(e) => {
                   const value = e.target.value
                   setValue('name', value)
                 }}
                 error={!!errors.name}
                 helperText={errors?.name?.message?.toString()}
+                disabled={!!buildName}
               />
               <TextField
                 label='Tag'
@@ -193,11 +208,23 @@ export default function ({
                 }}
                 error={!!errors.tag}
                 helperText={errors?.tag?.message?.toString()}
+                disabled={!!buildName}
               />
             </FormRow>
+            <Typography
+              variant='body1'
+              sx={{
+                display: 'inline-block',
+                fontSize: 16,
+                fontWeight: 400,
+                mb: 4,
+              }}
+            >
+              {`harbor.${domainSuffix}/team-${teamId}/${watch('name') || '___'}:${watch('tag') || '___'}`}
+            </Typography>
             <Section
-              title='Create a build'
-              description='Select the desired build task and select the code repository to build from'
+              title={buildName ? 'Edit the container image' : 'Create a container image'}
+              description='Select the desired container image task and select the code repository to container image from'
             >
               <ImgButtonGroup
                 name='mode.type'
@@ -209,7 +236,7 @@ export default function ({
                 }}
               />
               <Box sx={{ display: 'flex', gap: 2 }}>
-                <TextField
+                {/* <TextField
                   label='Repository'
                   fullWidth
                   {...register(`mode.${watch('mode.type')}.repoUrl`)}
@@ -243,26 +270,54 @@ export default function ({
                         {codeRepo.name}
                       </MenuItem>
                     ))}
-                </TextField>
+                </TextField> */}
 
                 <Autocomplete
-                  errorText=''
-                  onChange={(_, value) => {
-                    console.log('value', value)
-                    setValue(`mode.${watch('mode.type')}.revision`, value as string)
+                  label='Repository'
+                  loading={isLoadingCodeRepos}
+                  options={codeRepos?.map((codeRepo) => {
+                    return { label: codeRepo.name }
+                  })}
+                  placeholder='Select a repository'
+                  {...register(`mode.${watch('mode.type')}.repoUrl`)}
+                  value={
+                    codeRepos?.find(
+                      ({ repositoryUrl }) => repositoryUrl === watch(`mode.${watch('mode.type')}.repoUrl`),
+                    )?.name
+                  }
+                  onChange={(event, value) => {
+                    const { label } = (value as any) || {}
+                    console.log('label', label)
+                    const codeRepo = codeRepos?.find(({ name }) => name === label)
+                    console.log('codeRepo', codeRepo)
+                    setValue('name', codeRepo.name)
+                    setValue(`mode.${watch('mode.type')}.repoUrl`, codeRepo.repositoryUrl)
+                    setValue('externalRepo', codeRepo.gitService !== 'gitea')
+                    setGitService(codeRepo.gitService)
+                    setRepoUrl(codeRepo.repositoryUrl)
+                    if (codeRepo?.private) {
+                      setValue('secretName', codeRepo.secret)
+                      setSecretName(codeRepo.secret)
+                    }
                   }}
-                  value={watch(`mode.${watch('mode.type')}.revision`)}
-                  disabled={false}
-                  label='Branch'
-                  loading={false}
-                  noMarginTop
-                  onBlur={null}
-                  // @ts-ignore
-                  options={myRepoBranches}
-                  placeholder='Select a branch'
-                  width='medium'
+                  helperText={errors?.[`mode.${watch('mode.type')}.repoUrl`]?.message?.toString()}
+                />
+
+                <Autocomplete
+                  label='Reference'
+                  loading={isLoadingRepoBranches}
+                  options={myRepoBranches?.map((branch) => {
+                    return { label: branch }
+                  })}
+                  placeholder='Select a reference'
                   {...register(`mode.${watch('mode.type')}.revision`)}
-                  setValue={(value) => setValue(`mode.${watch('mode.type')}.revision`, value as string)}
+                  value={watch(`mode.${watch('mode.type')}.revision`)}
+                  onChange={(event, value) => {
+                    const { label } = (value as any) || {}
+                    setValue(`mode.${watch('mode.type')}.revision`, label as string)
+                    setValue('tag', label)
+                  }}
+                  helperText={errors?.[`mode.${watch('mode.type')}.revision`]?.message?.toString()}
                 />
 
                 <TextField
@@ -291,13 +346,15 @@ export default function ({
                   name={`mode.${watch('mode.type')}.envVars`}
                   {...register(`mode.${watch('mode.type')}.envVars`)}
                 />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='trigger'
-                  control={control}
-                  label='Create webhook listener'
-                  explainertext='Select to trigger the build based on a repository webhook event'
-                />
+                {gitService === 'gitea' && (
+                  <ControlledCheckbox
+                    sx={{ my: 2 }}
+                    name='trigger'
+                    control={control}
+                    label='Create webhook listener'
+                    explainertext='Select to trigger the build based on a repository webhook event'
+                  />
+                )}
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='scanSource'
@@ -317,7 +374,7 @@ export default function ({
               />
             )}
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {buildName ? 'Edit Build' : 'Create Build'}
+              {buildName ? 'Submit' : 'Create container image'}
             </Button>
           </form>
         </FormProvider>

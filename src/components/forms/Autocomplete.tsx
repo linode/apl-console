@@ -2,10 +2,7 @@ import MuiAutocomplete from '@mui/material/Autocomplete'
 import React, { JSX, useState } from 'react'
 
 import type { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
-import ArrowDropUpIcon from '@mui/icons-material/ExpandLess'
 import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
-import { InputAdornment } from '@mui/material'
-import { CircleProgress } from 'components/CircleProgress'
 import { TextField } from './TextField'
 
 import type { TextFieldProps } from './TextField'
@@ -33,7 +30,6 @@ export interface EnhancedAutocompleteProps<
   /** Label for the "select all" option. */
   selectAllLabel?: string
   textFieldProps?: Partial<TextFieldProps>
-  setValue?: any
 }
 
 /**
@@ -69,18 +65,14 @@ export function Autocomplete<
     limitTags = 2,
     loading = false,
     loadingText,
-    noMarginTop,
     noOptionsText,
     onBlur,
-    onChange,
     options,
     placeholder,
     renderInput,
-    renderOption,
-    selectAllLabel = '',
     textFieldProps,
     value,
-    setValue,
+    onChange,
     ...rest
   } = props
   const [inPlaceholder, setInPlaceholder] = useState('')
@@ -103,22 +95,27 @@ export function Autocomplete<
             InputProps={{
               ...params.InputProps,
               ...textFieldProps?.InputProps,
-              endAdornment: (
-                <>
-                  {loading && (
-                    <InputAdornment position='end'>
-                      <CircleProgress noPadding size='xs' />
-                    </InputAdornment>
-                  )}
-                  {textFieldProps?.InputProps?.endAdornment}
-                  {params.InputProps.endAdornment}
-                </>
-              ),
+              sx: {
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                paddingRight: '44px',
+              },
+              // endAdornment: (
+              //   <>
+              //     {loading && (
+              //       <InputAdornment position='end'>
+              //         <CircleProgress noPadding size='xs' />
+              //       </InputAdornment>
+              //     )}
+              //     {textFieldProps?.InputProps?.endAdornment}
+              //     {params.InputProps.endAdornment}
+              //   </>
+              // ),
             }}
           />
         ))
       }
-      ChipProps={{ deleteIcon: <ArrowDropUpIcon /> }}
       clearOnBlur={clearOnBlur}
       data-qa-autocomplete={label}
       defaultValue={defaultValue}
@@ -130,14 +127,10 @@ export function Autocomplete<
       onBlur={onBlur}
       onOpen={() => setInPlaceholder('Search')}
       onClose={() => setInPlaceholder(placeholder || '')}
-      popupIcon={<ArrowDropDownIcon data-testid='KeyboardArrowDownIcon' />}
+      popupIcon={<ArrowDropDownIcon />}
       value={value}
       {...rest}
-      onChange={(e, value, reason, details) => {
-        console.log('auto value', value)
-        setValue(value)
-        onChange(e, value, reason, details)
-      }}
+      onChange={onChange}
     />
   )
 }

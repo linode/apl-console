@@ -29,9 +29,8 @@ export default function NavConfig() {
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
         { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
-        // TODO: Uncomment the following line(s) when the new build page is ready
-        // { title: 'Code Repositories', path: '/coderepositories', icon: getIcon('coderepositories_icon.svg') },
-        { title: 'Builds', path: '/builds', icon: getIcon('builds_icon.svg') },
+        { title: 'Code Repositories', path: '/coderepositories', icon: getIcon('coderepositories_icon.svg') },
+        { title: 'Container Images', path: '/container-images', icon: getIcon('builds_icon.svg') },
         { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: '/netpols', icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
@@ -59,13 +58,12 @@ export default function NavConfig() {
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
         },
-        // TODO: Uncomment the following line(s) when the new build page is ready
-        // {
-        //   title: 'Code Repositories',
-        //   path: `/teams/${oboTeamId}/coderepositories`,
-        //   icon: getIcon('coderepositories_icon.svg'),
-        // },
-        { title: 'Builds', path: `/teams/${oboTeamId}/builds`, icon: getIcon('builds_icon.svg') },
+        {
+          title: 'Code Repositories',
+          path: `/teams/${oboTeamId}/coderepositories`,
+          icon: getIcon('coderepositories_icon.svg'),
+        },
+        { title: 'Container Images', path: `/teams/${oboTeamId}/container-images`, icon: getIcon('builds_icon.svg') },
         { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },

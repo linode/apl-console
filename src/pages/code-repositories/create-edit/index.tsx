@@ -97,7 +97,8 @@ export default function ({
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const teamSecrets =
     teamSealedSecrets?.filter(
-      (secret) => secret.type === 'kubernetes.io/basic-auth' || secret.type === 'kubernetes.io/ssh-auth',
+      (secret: any) =>
+        secret.template.type === 'kubernetes.io/basic-auth' || secret.template.type === 'kubernetes.io/ssh-auth',
     ) || []
   const {
     data: internalRepoUrls,

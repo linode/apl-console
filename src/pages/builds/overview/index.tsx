@@ -27,7 +27,7 @@ interface Row {
 }
 
 const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.name)}`
+  const path = `/teams/${row.teamId}/container-images/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -206,7 +206,7 @@ export default function ({
 
   const customButtonText = () => (
     <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
-      Create Build
+      Create container image
     </Typography>
   )
 
@@ -218,9 +218,9 @@ export default function ({
       teamId={teamId}
       headCells={headCells}
       rows={builds}
-      resourceType='Build'
+      resourceType='Container-image'
       customButtonText={customButtonText()}
     />
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILDS', { scope: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CONTAINER_IMAGES', { scope: getRole(teamId) })} />
 }
