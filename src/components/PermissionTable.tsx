@@ -20,8 +20,8 @@ const permissionDefinitions: PermissionDefinition[] = [
   { id: 'useCloudShell', label: 'Use Cloud Shell' },
   { id: 'downloadKubeconfig', label: 'Download kubeconfig file' },
   { id: 'downloadDockerLogin', label: 'Download docker login credentials' },
-  { id: 'enableMonitoring', label: 'Enable Monitoring' },
-  { id: 'configureAlerts', label: 'Configure Alert Engine' },
+  // { id: 'enableMonitoring', label: 'Enable Monitoring' },
+  // { id: 'configureAlerts', label: 'Configure Alert Engine' },
 ]
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -57,9 +57,9 @@ export function PermissionsTable({ name }: PermissionsTableProps) {
           <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
             <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>Team Members</Typography>
           </TableCell>
-          <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
+          {/* <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
             <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>Team Admins</Typography>
-          </TableCell>
+          </TableCell> */}
         </TableRow>
       </TableHead>
       <TableBody className={classes.tableBody}>
@@ -69,9 +69,9 @@ export function PermissionsTable({ name }: PermissionsTableProps) {
             <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
               <Checkbox {...register(`${name}.${permission.id}.teamMembers`)} />
             </TableCell>
-            <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
+            {/* <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
               <Checkbox {...register(`${name}.${permission.id}.teamAdmins`)} />
-            </TableCell>
+            </TableCell> */}
           </TableRow>
         ))}
       </TableBody>

@@ -37,52 +37,51 @@ const alertsSchema = yup.object({
       lowPrio: yup.string().optional(),
     })
     .optional(),
-  opsgenie: yup
-    .object({
-      apiKey: yup.string().optional(),
-      url: yup.string().optional(),
-      responders: yup.array().of(responderSchema).optional(),
-    })
-    .optional(),
-  email: yup
-    .object({
-      critical: yup.string().optional(),
-      nonCritical: yup.string().optional(),
-    })
-    .optional(),
 })
 
 // Define the selfService schema
 const selfServiceSchema = yup.object({
-  service: yup
-    .array()
-    .of(yup.string().oneOf(['ingress']))
-    .optional(),
-  policies: yup
-    .array()
-    .of(yup.string().oneOf(['edit policies']))
-    .optional(),
-  team: yup
-    .array()
-    .of(yup.string().oneOf(['oidc', 'managedMonitoring', 'alerts', 'resourceQuota', 'networkPolicy']))
-    .optional(),
-  apps: yup
-    .array()
-    .of(yup.string().oneOf(['argocd', 'gitea']))
-    .optional(),
-  access: yup
-    .array()
-    .of(yup.string().oneOf(['shell', 'downloadKubeConfig', 'downloadDockerConfig', 'downloadCertificateAuthority']))
-    .optional(),
+  teamMembers: yup
+    .object({
+      createServices: yup.boolean().required('Create services permission is required'),
+      editSecurityPolicies: yup.boolean().required('Edit security policies permission is required'),
+      useCloudShell: yup.boolean().required('Cloud shell usage permission is required'),
+      downloadKubeconfig: yup.boolean().required('Download kubeconfig permission is required'),
+      downloadDockerLogin: yup.boolean().required('Download docker login permission is required'),
+    })
+    .required('Team members permissions are required'),
 })
 
-// Define the resourceQuota schema
-const resourceQuotaSchema = yup.array().of(
-  yup.object({
-    name: yup.string().required('Resource quota name is required'),
-    value: yup.string().required('Resource quota value is required'),
-  }),
-)
+// Define a schema for a single ResourceQuota item.
+const resourceQuotaItemSchema = yup.object({
+  key: yup.string().required('Resource quota key is required'),
+  value: yup.number().required('Resource quota value is required'),
+  mutable: yup.boolean().optional(),
+  decorator: yup.string().optional(),
+})
+
+// Define the resourceQuota object schema containing countQuota, computeResourceQuota, and customQuota.
+const resourceQuotaObjectSchema = yup.object({
+  enabled: yup.boolean().default(true),
+  countQuota: yup
+    .array()
+    .of(resourceQuotaItemSchema)
+    .default([
+      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+    ]),
+  computeResourceQuota: yup
+    .array()
+    .of(resourceQuotaItemSchema)
+    .default([
+      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+      { key: 'limits.memory', value: 500, decorator: 'Mi' },
+      { key: 'requests.memory', value: 500, decorator: 'Mi' },
+    ]),
+  customQuota: yup.array().of(resourceQuotaItemSchema).default([]),
+})
 
 // Main CreateTeamApiResponse schema
 export const createTeamApiResponseSchema = yup.object({
@@ -101,7 +100,21 @@ export const createTeamApiResponseSchema = yup.object({
     })
     .optional(),
   alerts: alertsSchema.optional(),
-  resourceQuota: resourceQuotaSchema.optional(),
+  resourceQuota: resourceQuotaObjectSchema.default({
+    enabled: true,
+    countQuota: [
+      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+    ],
+    computeResourceQuota: [
+      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+      { key: 'limits.memory', value: 500, decorator: 'Mi' },
+      { key: 'requests.memory', value: 500, decorator: 'Mi' },
+    ],
+    customQuota: [],
+  }),
   networkPolicy: yup
     .object({
       ingressPrivate: yup.boolean().optional(),

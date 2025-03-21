@@ -39,7 +39,7 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const team = !isLoadingTeams && find(teams, { id: teamId })
-  const editPolicies = team?.selfService?.policies?.includes('edit policies') || teamId === 'admin' || isPlatformAdmin
+  const editPolicies = team?.selfService?.teamMembers?.editSecurityPolicies || teamId === 'admin' || isPlatformAdmin
   const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />

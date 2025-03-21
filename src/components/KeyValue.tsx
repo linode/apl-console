@@ -128,8 +128,6 @@ export default function KeyValue(props: KeyValueProps) {
     name,
   })
 
-  console.log('halo key fields', fields)
-
   const handleAddItem = () => {
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
   }

@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Button, Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
@@ -9,9 +9,7 @@ import { TextField } from 'components/forms/TextField'
 import AdvancedSettings from 'components/AdvancedSettings'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import { useState } from 'react'
-import TextfieldList from 'components/TextfieldList'
 import KeyValue from 'components/KeyValue'
-import { PermissionsTable } from 'components/PermissionTable'
 import {
   CreateTeamApiResponse,
   useCreateTeamMutation,
@@ -20,6 +18,7 @@ import {
   useGetTeamQuery,
 } from 'redux/otomiApi'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { PermissionsTable } from 'components/PermissionTable'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
 
@@ -56,30 +55,43 @@ export default function CreateEditTeams({
     //   label: 'OpsGenie',
     //   imgSrc: '/logos/opsGenie_logo.svg',
     // },
-    {
-      value: 'email',
-      label: 'Email',
-      imgSrc: '/logos/email_logo.svg',
-    },
+    // {
+    //   value: 'email',
+    //   label: 'Email',
+    //   imgSrc: '/logos/email_logo.svg',
+    // },
   ]
-  // defaultValues: {
-  //   resourcequotas: {
-  //     count: [
-  //       { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-  //       { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-  //       { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-  //     ],
-  //     computeresourcequota: [
-  //       { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-  //       { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-  //       { key: 'limits.memory', value: 500, decorator: 'Mi' },
-  //       { key: 'requests.memory', value: 500, decorator: 'Mi' },
-  //     ],
-  //   },
-  // },
+
+  const defaultResourceQuotas = {
+    countQuota: [
+      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+    ],
+    computeResourceQuota: [
+      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+      { key: 'limits.memory', value: 500, decorator: 'Mi' },
+      { key: 'requests.memory', value: 500, decorator: 'Mi' },
+    ],
+
+    customQuota: [], // User can define additional quotas as needed.
+  }
+
+  const mergedDefaultValues = {
+    ...data,
+    // If resourceQuota is missing or empty, populate it with the default quotas
+    resourceQuota: (data && data.resourceQuota) ?? {
+      enabled: true,
+      countQuota: defaultResourceQuotas.countQuota,
+      computeResourceQuota: defaultResourceQuotas.computeResourceQuota,
+      customQuota: defaultResourceQuotas.customQuota,
+    },
+  }
+
   const methods = useForm<CreateTeamApiResponse>({
     resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
-    defaultValues: data,
+    defaultValues: mergedDefaultValues,
   })
 
   const {
@@ -94,8 +106,10 @@ export default function CreateEditTeams({
     trigger,
   } = methods
 
-  const onSubmit = () => {
-    console.log('onsubmit teams')
+  console.log('methods', watch())
+
+  const onSubmit = (submitData) => {
+    console.log('onsubmit teams', submitData)
   }
 
   return (
@@ -105,13 +119,13 @@ export default function CreateEditTeams({
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
-              <TextField label='Team label' width='large' noMarginTop />
+              <TextField label='Team label' width='large' noMarginTop {...register('name')} />
             </Section>
             <AdvancedSettings>
               <Section title='Dashboards' collapsable>
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='Enable dashboards'
+                  name='managedMonitoring.grafana'
                   control={control}
                   label='Enable dashboards'
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
@@ -120,7 +134,7 @@ export default function CreateEditTeams({
               <Section title='Alerts' collapsable>
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='Enable alerts'
+                  name='managedMonitoring.alertManager'
                   control={control}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
@@ -144,6 +158,7 @@ export default function CreateEditTeams({
                       width='large'
                       noMarginTop
                       placeholder='Endpoint URL'
+                      {...register('alerts.slack.url')}
                     />
                     <br />
                     <TextField
@@ -151,12 +166,14 @@ export default function CreateEditTeams({
                       label='Slack channel for non-critical alerts:'
                       width='large'
                       placeholder='Channel name'
+                      {...register('alerts.slack.channel')}
                     />
                     <TextField
                       isHorizontalLabel
                       label='Slack channel for critical alerts:'
                       width='large'
                       placeholder='Channel name'
+                      {...register('alerts.slack.channelCrit')}
                     />
                   </>
                 )}
@@ -168,12 +185,14 @@ export default function CreateEditTeams({
                       width='large'
                       noMarginTop
                       placeholder='web hook URL'
+                      {...register('alerts.msteams.lowPrio')}
                     />
                     <TextField
                       isHorizontalLabel
                       label='Teams web hook for critical alerts:'
                       width='large'
                       placeholder='web hook URL'
+                      {...register('alerts.msteams.highPrio')}
                     />
                   </>
                 )}
@@ -189,7 +208,7 @@ export default function CreateEditTeams({
                     <TextField isHorizontalLabel label='OpsGenie API-Key:' width='large' placeholder='API-key' />
                   </>
                 )} */}
-                {activeNotificationReceiver === 'email' && (
+                {/* {activeNotificationReceiver === 'email' && (
                   <Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px' }}>
                     <TextfieldList
                       title='Critrical alerts Email list:'
@@ -197,7 +216,7 @@ export default function CreateEditTeams({
                       valueSize='large'
                       showLabel={false}
                       name='alerts.email.criticalemails'
-                      {...register('alerts.email.criticalemails')}
+                      {...register('alerts.email.critical')}
                       addLabel='add email adress'
                     />
                     <TextfieldList
@@ -206,17 +225,20 @@ export default function CreateEditTeams({
                       valueSize='large'
                       showLabel={false}
                       name='alerts.email.noncriticalemails'
-                      {...register('alerts.email.noncriticalemails')}
+                      {...register('alerts.email.nonCritical')}
                       addLabel='add email adress'
                     />
                   </Box>
-                )}
+                )} */}
               </Section>
-              <Section
-                title='Resource Quotas'
-                collapsable
-                description='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
-              >
+              <Section title='Resource Quotas' collapsable>
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='resourceQuota.enabled'
+                  control={control}
+                  label='Enable resource quotas'
+                  explainertext='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
+                />
                 <Box className={classes.keyValueWrapper}>
                   <KeyValue
                     title='Count quota'
@@ -228,8 +250,8 @@ export default function CreateEditTeams({
                     valueSize='medium'
                     keySize='medium'
                     showLabel={false}
-                    name='resourcequotas.count'
-                    {...register('resourcequotas.count')}
+                    name='resourceQuota.countQuota'
+                    {...register('resourceQuota.countQuota')}
                   />
                 </Box>
                 <Box className={classes.keyValueWrapper}>
@@ -242,8 +264,8 @@ export default function CreateEditTeams({
                     valueSize='medium'
                     keySize='medium'
                     showLabel={false}
-                    name='resourcequotas.computeresourcequota'
-                    {...register('resourcequotas.computeresourcequota')}
+                    name='resourceQuota.computeResourceQuota'
+                    {...register('resourceQuota.computeResourceQuota')}
                   />
                 </Box>
                 <Box className={classes.keyValueWrapper}>
@@ -255,16 +277,70 @@ export default function CreateEditTeams({
                     valueSize='medium'
                     keySize='medium'
                     showLabel={false}
-                    name='resourcequotas.customesourcequota'
+                    name='resourceQuota.customQuota'
                     addLabel='Add custom resource quota'
-                    {...register('resourcequotas.customesourcequota')}
+                    {...register('resourceQuota.customQuota')}
                   />
                 </Box>
               </Section>
+              <Section title='Network Policies' collapsable>
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='networkPolicy.ingressPrivate'
+                  control={control}
+                  label='Ingress control'
+                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled) '
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='networkPolicy.egressPublic'
+                  control={control}
+                  label='Egress control'
+                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled)   '
+                />
+              </Section>
               <Section title='Permissions' collapsable>
-                <PermissionsTable name='permissions' />
+                <PermissionsTable name='selfService' />
+                {/* <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='selfService.service'
+                  control={control}
+                  label='Create Services'
+                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='selfService.policies'
+                  control={control}
+                  label='Edit Security Policies'
+                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='selfService.access.shell'
+                  control={control}
+                  label='Use Cloud Shell'
+                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='selfService.access.downloadKubeConfig'
+                  control={control}
+                  label='Download kubeconfig file'
+                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='selfService.access.downloadDockerConfig'
+                  control={control}
+                  label='Download docker login credentials'
+                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
+                /> */}
               </Section>
             </AdvancedSettings>
+            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+              {teamId ? 'Edit Team' : 'Create Team'}
+            </Button>
           </form>
         </FormProvider>
       </PaperLayout>
