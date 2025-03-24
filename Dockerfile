@@ -1,5 +1,5 @@
 # --------------- dev stage for developers to override sources
-FROM node:20.18.2-alpine as dev
+FROM node:20.19.0-alpine as dev
 
 RUN apk --no-cache add make gcc g++ python3
 ENV NODE_ENV=development
