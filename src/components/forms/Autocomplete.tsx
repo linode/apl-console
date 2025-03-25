@@ -13,8 +13,6 @@ export interface EnhancedAutocompleteProps<
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
 > extends Omit<AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>, 'renderInput'> {
-  /** Removes "select all" option for multiselect */
-  disableSelectAll?: boolean
   /** Provides a hint with error styling to assist users. */
   errorText?: string
   /** Provides a hint with normal styling to assist users. */
@@ -58,7 +56,6 @@ export function Autocomplete<
     clearOnBlur,
     defaultValue,
     disablePortal = true,
-    disableSelectAll = false,
     errorText = '',
     helperText,
     label,
@@ -91,7 +88,7 @@ export function Autocomplete<
             placeholder={inPlaceholder || (placeholder ?? 'Select an option')}
             {...params}
             error={!!errorText}
-            helperText={helperText}
+            helperText={errorText || helperText}
             InputProps={{
               ...params.InputProps,
               ...textFieldProps?.InputProps,
@@ -101,17 +98,6 @@ export function Autocomplete<
                 textOverflow: 'ellipsis',
                 paddingRight: '44px',
               },
-              // endAdornment: (
-              //   <>
-              //     {loading && (
-              //       <InputAdornment position='end'>
-              //         <CircleProgress noPadding size='xs' />
-              //       </InputAdornment>
-              //     )}
-              //     {textFieldProps?.InputProps?.endAdornment}
-              //     {params.InputProps.endAdornment}
-              //   </>
-              // ),
             }}
           />
         ))

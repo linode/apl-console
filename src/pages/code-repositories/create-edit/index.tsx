@@ -200,7 +200,7 @@ export default function ({
   if (loading) return <PaperLayout loading title={t('TITLE_CODEREPOSITORY')} />
 
   return (
-    <Grid className={classes.root}>
+    <Grid>
       <PaperLayout loading={loading || error} title={t('TITLE_CODEREPOSITORY')}>
         <LandingHeader
           docsLabel='Docs'

@@ -3,6 +3,7 @@ import { Box, Button, IconButton, StandardTextFieldProps } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
+import font from 'theme/font'
 import { Add, Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
@@ -15,6 +16,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
     padding: '16px',
     backgroundColor: '#424242',
     borderRadius: '8px',
+  },
+  inputLabel: {
+    color: theme.palette.cm.headline,
+    fontFamily: font.bold,
+    fontSize: '1rem',
+    lineHeight: '1.5rem',
   },
   itemRow: {
     marginBottom: '20px',
@@ -112,7 +119,7 @@ export default function KeyValue(props: KeyValueProps) {
         [errorScrollClassName]: !!errorText,
       })}
     >
-      <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
+      <InputLabel className={classes.inputLabel}>{title}</InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
       {fields.map((item, index) => (
