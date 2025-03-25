@@ -16,6 +16,7 @@ import {
   useGetCodeRepoQuery,
   useGetInternalRepoUrlsQuery,
   useGetSealedSecretsQuery,
+  useGetTeamCodeReposQuery,
   useGetTestRepoConnectQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
@@ -89,6 +90,12 @@ export default function ({
     { skip: !codeRepositoryName },
   )
   const {
+    data: teamCodeRepositories,
+    isLoading: isLoadingTeamCodeRepositories,
+    isFetching: isFetchingTeamCodeRepositories,
+    refetch: refetchTeamCodeRepositories,
+  } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
+  const {
     data: teamSealedSecrets,
     isLoading: isLoadingTeamSecrets,
     isFetching: isFetchingTeamSecrets,
@@ -122,9 +129,11 @@ export default function ({
 
   // form state
   const defaultValues = { gitService: 'gitea' as 'gitea' | 'github' | 'gitlab', ...prefilledData }
+  const codeRepoUrls = (teamCodeRepositories || []).map((codeRepo) => codeRepo.repositoryUrl)
   const methods = useForm<CreateCodeRepoApiResponse>({
     resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCodeRepoApiResponse>,
     defaultValues: data || defaultValues,
+    context: { codeRepoUrls },
   })
   const {
     control,
