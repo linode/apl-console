@@ -1,5 +1,5 @@
 import React from 'react'
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
 import { Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
@@ -44,7 +44,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }))
 
 export function PermissionsTable({ name }: PermissionsTableProps) {
-  const { register } = useFormContext()
+  const { register, control } = useFormContext()
   const { classes, cx } = useStyles()
 
   return (
@@ -67,7 +67,13 @@ export function PermissionsTable({ name }: PermissionsTableProps) {
           <TableRow key={permission.id}>
             <TableCell className={classes.tableCell}>{permission.label}</TableCell>
             <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
-              <Checkbox {...register(`${name}.${permission.id}.teamMembers`)} />
+              <Controller
+                name={`${name}.teamMembers.${permission.id}`}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
+                )}
+              />
             </TableCell>
             {/* <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
               <Checkbox {...register(`${name}.${permission.id}.teamAdmins`)} />

@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
@@ -8,7 +8,7 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
 import AdvancedSettings from 'components/AdvancedSettings'
 import ImgButtonGroup from 'components/ImgButtonGroup'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import KeyValue from 'components/KeyValue'
 import {
   CreateTeamApiResponse,
@@ -19,6 +19,7 @@ import {
 } from 'redux/otomiApi'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { PermissionsTable } from 'components/PermissionTable'
+import ControlledBox from 'components/ControlledBox'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
 
@@ -51,43 +52,13 @@ export default function CreateEditTeams({
       imgSrc: '/logos/teams_logo.svg',
     },
     // {
-    //   value: 'opsgenie',
-    //   label: 'OpsGenie',
-    //   imgSrc: '/logos/opsGenie_logo.svg',
-    // },
-    // {
     //   value: 'email',
     //   label: 'Email',
     //   imgSrc: '/logos/email_logo.svg',
     // },
   ]
 
-  const defaultResourceQuotas = {
-    countQuota: [
-      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-    ],
-    computeResourceQuota: [
-      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-      { key: 'limits.memory', value: 500, decorator: 'Mi' },
-      { key: 'requests.memory', value: 500, decorator: 'Mi' },
-    ],
-
-    customQuota: [], // User can define additional quotas as needed.
-  }
-
-  const mergedDefaultValues = {
-    ...data,
-    // If resourceQuota is missing or empty, populate it with the default quotas
-    resourceQuota: (data && data.resourceQuota) ?? {
-      enabled: true,
-      countQuota: defaultResourceQuotas.countQuota,
-      computeResourceQuota: defaultResourceQuotas.computeResourceQuota,
-      customQuota: defaultResourceQuotas.customQuota,
-    },
-  }
+  const mergedDefaultValues = createTeamApiResponseSchema.cast(data)
 
   const methods = useForm<CreateTeamApiResponse>({
     resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
@@ -106,10 +77,22 @@ export default function CreateEditTeams({
     trigger,
   } = methods
 
+  // checkbox logic
+  const controlledResourceQuotaInput = watch('resourceQuota.enabled')
+  const controlledAlertmanagerInput = watch('managedMonitoring.alertmanager')
+
   console.log('methods', watch())
+
+  useEffect(() => {
+    if (data) {
+      console.log('data effect', data)
+      reset(data)
+    }
+  }, [data])
 
   const onSubmit = (submitData) => {
     console.log('onsubmit teams', submitData)
+    create({ body: submitData })
   }
 
   return (
@@ -134,81 +117,72 @@ export default function CreateEditTeams({
               <Section title='Alerts' collapsable>
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='managedMonitoring.alertManager'
+                  name='managedMonitoring.alertmanager'
                   control={control}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
                 />
-                <ImgButtonGroup
-                  title='Notification Receivers'
-                  description='Optionally configure notification receivers.'
-                  name='notificationReceivers'
-                  control={control}
-                  options={notificationReceiverOptions}
-                  value={activeNotificationReceiver}
-                  onChange={(value) => {
-                    setActiveNotificationReceiver(value as NotificationReceiver)
-                  }}
-                />
-                {activeNotificationReceiver === 'slack' && (
-                  <>
-                    <TextField
-                      isHorizontalLabel
-                      label='Slack Endpoint URL:'
-                      width='large'
-                      noMarginTop
-                      placeholder='Endpoint URL'
-                      {...register('alerts.slack.url')}
-                    />
-                    <br />
-                    <TextField
-                      isHorizontalLabel
-                      label='Slack channel for non-critical alerts:'
-                      width='large'
-                      placeholder='Channel name'
-                      {...register('alerts.slack.channel')}
-                    />
-                    <TextField
-                      isHorizontalLabel
-                      label='Slack channel for critical alerts:'
-                      width='large'
-                      placeholder='Channel name'
-                      {...register('alerts.slack.channelCrit')}
-                    />
-                  </>
-                )}
-                {activeNotificationReceiver === 'teams' && (
-                  <>
-                    <TextField
-                      isHorizontalLabel
-                      label='Teams webhook for non-critical alerts:'
-                      width='large'
-                      noMarginTop
-                      placeholder='web hook URL'
-                      {...register('alerts.msteams.lowPrio')}
-                    />
-                    <TextField
-                      isHorizontalLabel
-                      label='Teams web hook for critical alerts:'
-                      width='large'
-                      placeholder='web hook URL'
-                      {...register('alerts.msteams.highPrio')}
-                    />
-                  </>
-                )}
-                {/* {activeNotificationReceiver === 'opsgenie' && (
-                  <>
-                    <TextField
-                      isHorizontalLabel
-                      label='OpsGenie Endpoint URL:'
-                      width='large'
-                      noMarginTop
-                      placeholder='Endpoint URL'
-                    />
-                    <TextField isHorizontalLabel label='OpsGenie API-Key:' width='large' placeholder='API-key' />
-                  </>
-                )} */}
-                {/* {activeNotificationReceiver === 'email' && (
+                <ControlledBox sx={{ mt: 3 }} disabled={!controlledAlertmanagerInput}>
+                  <ImgButtonGroup
+                    title='Notification Receivers'
+                    description='Optionally configure notification receivers.'
+                    name='notificationReceivers'
+                    control={control}
+                    options={notificationReceiverOptions}
+                    value={activeNotificationReceiver}
+                    onChange={(value) => {
+                      setActiveNotificationReceiver(value as NotificationReceiver)
+                    }}
+                  />
+                  {activeNotificationReceiver === 'slack' && (
+                    <>
+                      <TextField
+                        isHorizontalLabel
+                        label='Slack Endpoint URL:'
+                        width='large'
+                        noMarginTop
+                        placeholder='Endpoint URL'
+                        {...register('alerts.slack.url')}
+                      />
+                      <br />
+                      <TextField
+                        isHorizontalLabel
+                        label='Slack channel for non-critical alerts:'
+                        width='large'
+                        placeholder='Channel name'
+                        {...register('alerts.slack.channel')}
+                      />
+                      <TextField
+                        isHorizontalLabel
+                        label='Slack channel for critical alerts:'
+                        width='large'
+                        placeholder='Channel name'
+                        {...register('alerts.slack.channelCrit')}
+                      />
+                    </>
+                  )}
+                  {activeNotificationReceiver === 'teams' && (
+                    <>
+                      <TextField
+                        isHorizontalLabel
+                        label='Teams webhook for non-critical alerts:'
+                        width='large'
+                        noMarginTop
+                        placeholder='web hook URL'
+                        {...register('alerts.msteams.lowPrio')}
+                      />
+                      <TextField
+                        isHorizontalLabel
+                        label='Teams web hook for critical alerts:'
+                        width='large'
+                        placeholder='web hook URL'
+                        {...register('alerts.msteams.highPrio')}
+                      />
+                    </>
+                  )}
+                  {/* NOTE: keep this code in case email notification receiver will be re-enabled
+
+                {activeNotificationReceiver === 'email' && (
                   <Box sx={{ display: 'flex', flexDirection: 'row', gap: '50px' }}>
                     <TextfieldList
                       title='Critrical alerts Email list:'
@@ -230,6 +204,7 @@ export default function CreateEditTeams({
                     />
                   </Box>
                 )} */}
+                </ControlledBox>
               </Section>
               <Section title='Resource Quotas' collapsable>
                 <ControlledCheckbox
@@ -239,11 +214,12 @@ export default function CreateEditTeams({
                   label='Enable resource quotas'
                   explainertext='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
                 />
-                <Box className={classes.keyValueWrapper}>
+                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
                   <KeyValue
                     title='Count quota'
                     keyLabel='key'
                     valueLabel='value'
+                    frozen={!controlledResourceQuotaInput}
                     compressed
                     keyDisabled
                     valueDisabled
@@ -253,8 +229,8 @@ export default function CreateEditTeams({
                     name='resourceQuota.countQuota'
                     {...register('resourceQuota.countQuota')}
                   />
-                </Box>
-                <Box className={classes.keyValueWrapper}>
+                </ControlledBox>
+                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
                   <KeyValue
                     title='Compute resource quota'
                     keyLabel='key'
@@ -267,8 +243,8 @@ export default function CreateEditTeams({
                     name='resourceQuota.computeResourceQuota'
                     {...register('resourceQuota.computeResourceQuota')}
                   />
-                </Box>
-                <Box className={classes.keyValueWrapper}>
+                </ControlledBox>
+                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
                   <KeyValue
                     title='Custom resource quota'
                     keyLabel='key'
@@ -281,7 +257,7 @@ export default function CreateEditTeams({
                     addLabel='Add custom resource quota'
                     {...register('resourceQuota.customQuota')}
                   />
-                </Box>
+                </ControlledBox>
               </Section>
               <Section title='Network Policies' collapsable>
                 <ControlledCheckbox
@@ -301,41 +277,6 @@ export default function CreateEditTeams({
               </Section>
               <Section title='Permissions' collapsable>
                 <PermissionsTable name='selfService' />
-                {/* <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='selfService.service'
-                  control={control}
-                  label='Create Services'
-                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
-                />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='selfService.policies'
-                  control={control}
-                  label='Edit Security Policies'
-                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
-                />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='selfService.access.shell'
-                  control={control}
-                  label='Use Cloud Shell'
-                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
-                />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='selfService.access.downloadKubeConfig'
-                  control={control}
-                  label='Download kubeconfig file'
-                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
-                />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='selfService.access.downloadDockerConfig'
-                  control={control}
-                  label='Download docker login credentials'
-                  // explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
-                /> */}
               </Section>
             </AdvancedSettings>
             <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>

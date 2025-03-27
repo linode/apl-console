@@ -89,6 +89,8 @@ interface KeyValueProps {
   name: string
   // determines the margin-top between key/value pairs
   compressed?: boolean
+  // used when section is disabled by checkbox, prevent user input but leaves styling untouched
+  frozen?: boolean
   keySize?: 'small' | 'medium' | 'large'
   valueSize?: 'small' | 'medium' | 'large'
   onlyValue?: boolean
@@ -106,6 +108,7 @@ export default function KeyValue(props: KeyValueProps) {
     valueLabel,
     addLabel,
     compressed = false,
+    frozen = false,
     name,
     label,
     helperText,
@@ -165,6 +168,7 @@ export default function KeyValue(props: KeyValueProps) {
               noMarginTop={compressed}
               {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
               InputProps={{
+                ...{ readOnly: frozen },
                 endAdornment: item.decorator ? (
                   <InputAdornment className={classes.decorator} position='end'>
                     <Typography className={classes.decoratortext}>{item.decorator}</Typography>

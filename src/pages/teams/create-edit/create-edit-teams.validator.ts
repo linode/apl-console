@@ -1,40 +1,24 @@
 import * as yup from 'yup'
 
-// Define a schema for a responder used in alerts.opsgenie.responders
-const responderSchema = yup
-  .object({
-    type: yup
-      .string()
-      .oneOf(['team', 'user', 'escalation', 'schedule'], 'Invalid responder type')
-      .required('Responder type is required'),
-    // Only one of these should be provided – we require at least one.
-    id: yup.string(),
-    name: yup.string(),
-    username: yup.string(),
-  })
-  .test('at-least-one', 'At least one of id, name, or username must be provided', (value) =>
-    Boolean(value && (value.id || value.name || value.username)),
-  )
-
 // Define the alerts schema
 const alertsSchema = yup.object({
-  repeatInterval: yup.string().optional(),
-  groupInterval: yup.string().optional(),
+  repeatInterval: yup.string().optional().default(undefined),
+  groupInterval: yup.string().optional().default(undefined),
   receivers: yup
     .array()
     .of(yup.string().oneOf(['slack', 'msteams', 'opsgenie', 'email', 'none']))
     .optional(),
   slack: yup
     .object({
-      channel: yup.string().optional(),
-      channelCrit: yup.string().optional(),
-      url: yup.string().optional(),
+      channel: yup.string().optional().default(undefined),
+      channelCrit: yup.string().optional().default(undefined),
+      url: yup.string().optional().default(undefined),
     })
     .optional(),
   msteams: yup
     .object({
-      highPrio: yup.string().optional(),
-      lowPrio: yup.string().optional(),
+      highPrio: yup.string().optional().default(undefined),
+      lowPrio: yup.string().optional().default(undefined),
     })
     .optional(),
 })
@@ -43,11 +27,11 @@ const alertsSchema = yup.object({
 const selfServiceSchema = yup.object({
   teamMembers: yup
     .object({
-      createServices: yup.boolean().required('Create services permission is required'),
-      editSecurityPolicies: yup.boolean().required('Edit security policies permission is required'),
-      useCloudShell: yup.boolean().required('Cloud shell usage permission is required'),
-      downloadKubeconfig: yup.boolean().required('Download kubeconfig permission is required'),
-      downloadDockerLogin: yup.boolean().required('Download docker login permission is required'),
+      createServices: yup.boolean().required('Create services permission is required').default(false),
+      editSecurityPolicies: yup.boolean().required('Edit security policies permission is required').default(false),
+      useCloudShell: yup.boolean().required('Cloud shell usage permission is required').default(false),
+      downloadKubeconfig: yup.boolean().required('Download kubeconfig permission is required').default(false),
+      downloadDockerLogin: yup.boolean().required('Download docker login permission is required').default(false),
     })
     .required('Team members permissions are required'),
 })
@@ -62,7 +46,7 @@ const resourceQuotaItemSchema = yup.object({
 
 // Define the resourceQuota object schema containing countQuota, computeResourceQuota, and customQuota.
 const resourceQuotaObjectSchema = yup.object({
-  enabled: yup.boolean().default(true),
+  enabled: yup.boolean().default(false),
   countQuota: yup
     .array()
     .of(resourceQuotaItemSchema)
@@ -85,23 +69,23 @@ const resourceQuotaObjectSchema = yup.object({
 
 // Main CreateTeamApiResponse schema
 export const createTeamApiResponseSchema = yup.object({
-  id: yup.string().optional(),
+  id: yup.string().optional().default(undefined),
   name: yup.string().required('Team name is required'),
   oidc: yup
     .object({
-      groupMapping: yup.string().optional(),
+      groupMapping: yup.string().optional().default(undefined),
     })
     .optional(),
-  password: yup.string().optional(),
+  password: yup.string().optional().default(undefined),
   managedMonitoring: yup
     .object({
-      grafana: yup.boolean().optional(),
-      alertmanager: yup.boolean().optional(),
+      grafana: yup.boolean().optional().default(false),
+      alertmanager: yup.boolean().optional().default(false),
     })
     .optional(),
   alerts: alertsSchema.optional(),
   resourceQuota: resourceQuotaObjectSchema.default({
-    enabled: true,
+    enabled: false,
     countQuota: [
       { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
       { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
@@ -117,8 +101,8 @@ export const createTeamApiResponseSchema = yup.object({
   }),
   networkPolicy: yup
     .object({
-      ingressPrivate: yup.boolean().optional(),
-      egressPublic: yup.boolean().optional(),
+      ingressPrivate: yup.boolean().optional().default(true),
+      egressPublic: yup.boolean().optional().default(true),
     })
     .optional(),
   selfService: selfServiceSchema.optional(),
