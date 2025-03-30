@@ -11,7 +11,7 @@ import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
 
-const getCodeRepoLabel = (): CallableFunction =>
+const getCodeRepoName = (): CallableFunction =>
   function (row): string | React.ReactElement {
     const { teamId, name }: { teamId: string; name: string } = row
     const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(name)}`
@@ -85,9 +85,9 @@ export default function ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'label',
-      label: t('Label'),
-      renderer: getCodeRepoLabel(),
+      id: 'name',
+      label: t('Name'),
+      renderer: getCodeRepoName(),
     },
     {
       id: 'url',

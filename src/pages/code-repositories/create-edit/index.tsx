@@ -105,7 +105,7 @@ export default function ({
   const teamSecrets =
     teamSealedSecrets?.filter(
       (secret: any) =>
-        secret.template.type === 'kubernetes.io/basic-auth' || secret.template.type === 'kubernetes.io/ssh-auth',
+        secret.template?.type === 'kubernetes.io/basic-auth' || secret.template?.type === 'kubernetes.io/ssh-auth',
     ) || []
   const {
     data: internalRepoUrls,
@@ -221,7 +221,7 @@ export default function ({
             <Section noPaddingTop>
               <FormRow spacing={10}>
                 <TextField
-                  label='Code Repository Label'
+                  label='Code Repository Name'
                   width='large'
                   {...register('name')}
                   onChange={(e) => {
@@ -230,6 +230,7 @@ export default function ({
                   }}
                   error={!!errors.name}
                   helperText={errors.name?.message?.toString()}
+                  disabled={!!codeRepositoryName}
                 />
               </FormRow>
             </Section>
@@ -260,6 +261,7 @@ export default function ({
                     width='large'
                     value={watch('repositoryUrl') || ''}
                     select
+                    disabled={!!codeRepositoryName}
                   >
                     <MenuItem value='' disabled>
                       Select a code repository
@@ -291,6 +293,7 @@ export default function ({
                     error={!!errors.repositoryUrl}
                     helperText={errors.repositoryUrl?.message}
                     width='large'
+                    disabled={!!codeRepositoryName}
                   />
 
                   <ControlledCheckbox
