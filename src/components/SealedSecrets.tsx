@@ -49,7 +49,7 @@ export default function ({ sealedSecrets, teamId }: Props): React.ReactElement {
     {
       id: 'type',
       label: t('Type'),
-      renderer: (row) => row?.type,
+      renderer: (row) => row?.type || row?.template?.type,
     },
     {
       id: 'Status',
