@@ -1,7 +1,6 @@
 import { Box, Card, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
-import { GetTeamApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
@@ -92,7 +91,7 @@ const useStyles = makeStyles()((theme) => ({
 
 // types -----------------------------------------------------------
 interface Props {
-  team?: GetTeamApiResponse
+  team?: any
   inventory: any
 }
 
