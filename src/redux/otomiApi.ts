@@ -1687,7 +1687,6 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   teamId?: string
   name: string
   imageName?: string
-  codeRepoName?: string
   tag?: string
   mode?:
     | {
@@ -1725,7 +1724,6 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   teamId?: string
   name: string
   imageName?: string
-  codeRepoName?: string
   tag?: string
   mode?:
     | {
@@ -1766,7 +1764,6 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   teamId?: string
   name: string
   imageName?: string
-  codeRepoName?: string
   tag?: string
   mode?:
     | {
@@ -1807,7 +1804,6 @@ export type CreateBuildApiArg = {
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -1852,7 +1848,6 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   teamId?: string
   name: string
   imageName?: string
-  codeRepoName?: string
   tag?: string
   mode?:
     | {
@@ -1895,7 +1890,6 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   teamId?: string
   name: string
   imageName?: string
-  codeRepoName?: string
   tag?: string
   mode?:
     | {
@@ -1938,7 +1932,6 @@ export type EditBuildApiArg = {
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -2372,7 +2365,6 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -2510,7 +2502,6 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -2651,7 +2642,6 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -2792,7 +2782,6 @@ export type CreateProjectApiArg = {
       teamId?: string
       name: string
       imageName?: string
-      codeRepoName?: string
       tag?: string
       mode?:
         | {
@@ -2937,7 +2926,6 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {
@@ -3080,7 +3068,6 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     teamId?: string
     name: string
     imageName?: string
-    codeRepoName?: string
     tag?: string
     mode?:
       | {

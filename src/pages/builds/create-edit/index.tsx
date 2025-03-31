@@ -181,12 +181,15 @@ export default function ({
                   })}
                   placeholder='Select a repository'
                   {...register(`mode.${watch('mode.type')}.repoUrl`)}
-                  value={watch('codeRepoName') || ''}
+                  value={
+                    codeRepos?.find(
+                      (codeRepo) => codeRepo.repositoryUrl === watch(`mode.${watch('mode.type')}.repoUrl`),
+                    )?.name || watch(`mode.${watch('mode.type')}.repoUrl`)
+                  }
                   onChange={(e, value: { label: string; codeRepo: GetCodeRepoApiResponse }) => {
                     const label: string = value?.label || ''
                     const codeRepo: GetCodeRepoApiResponse = value?.codeRepo || ({} as GetCodeRepoApiResponse)
                     const { repositoryUrl, gitService, private: isPrivate, secret } = codeRepo
-                    setValue('codeRepoName', label)
                     if (!buildName) setValue('imageName', label)
                     setValue(`mode.${watch('mode.type')}.repoUrl`, repositoryUrl)
                     setValue(`mode.${watch('mode.type')}.revision`, undefined)
@@ -202,6 +205,7 @@ export default function ({
                     }
                   }}
                   errorText={errors?.mode?.[`${watch('mode.type')}`]?.repoUrl?.message?.toString()}
+                  disabled={!!buildName}
                 />
 
                 <Autocomplete
