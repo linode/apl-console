@@ -13,6 +13,7 @@ import {
   useEditServiceMutation,
   useGetSealedSecretsQuery,
   useGetServiceQuery,
+  useGetSettingsInfoQuery,
   useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
@@ -67,8 +68,8 @@ interface Params {
 
 interface K8Service {
   name: string
-  ports: number[]
-  managedByKnative: boolean
+  ports?: number[]
+  managedByKnative?: boolean
 }
 
 export default function ({
@@ -87,14 +88,12 @@ export default function ({
   const [url, setUrl] = useState<string | undefined>(undefined)
 
   const getKeyValue = (activeService: K8Service) => {
-    console.log('HERE')
     let compositeUrl = ''
     if (activeService !== undefined) {
-      compositeUrl = activeService.managedByKnative
+      compositeUrl = activeService?.managedByKnative
         ? `${activeService.name}-team-${teamId}.${cluster.domainSuffix}/`
         : `${activeService.name}-${teamId}.${cluster.domainSuffix}/`
     } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}/`
-    console.log('compositeUrl: ', compositeUrl)
     return compositeUrl
   }
 
@@ -124,6 +123,13 @@ export default function ({
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  const {
+    data: settingsInfo,
+    isLoading: isLoadingSettingsInfo,
+    isFetching: isFetchingSettingsInfo,
+    isError: isErrorSettingsInfo,
+    refetch: refetchSettingsInfo,
+  } = useGetSettingsInfoQuery()
 
   const teamSecrets = teamSealedSecrets?.filter((secret) => secret.type === 'kubernetes.io/tls') || []
 
@@ -133,6 +139,7 @@ export default function ({
     if (!isFetching) refetchService()
     if (!isFetchingTeamSecrets) refetchTeamSecrets()
     if (!isFetchingK8sServices) refetchK8sServices()
+    if (!isFetchingSettingsInfo) refetchSettingsInfo()
   }, [isDirty])
 
   // form state
@@ -151,11 +158,7 @@ export default function ({
   } = methods
 
   useEffect(() => {
-    if (data) {
-      console.log('DATA: ', data)
-      reset(data)
-      setActiveService(data.name)
-    }
+    if (data) reset(data)
 
     if (!isEmpty(data?.ingress?.paths)) {
       data.ingress.paths.forEach((path, index) => {
@@ -171,12 +174,12 @@ export default function ({
 
   useEffect(() => {
     const filtered = k8sServices?.filter(
-      (service: K8Service) =>
+      (service) =>
         !service.name.includes('grafana') &&
         !service.name.includes('prometheus') &&
         !service.name.includes('alertmanager') &&
         !service.name.includes('tekton-dashboard'),
-    ) as K8Service[]
+    )
     setFilteredK8Services(filtered)
   }, k8sServices)
 
@@ -190,7 +193,6 @@ export default function ({
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
-    console.log('ACTIVE SERVICE: ', service)
     if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
     else setValue('ksvc.predeployed', false)
   }
@@ -215,9 +217,9 @@ export default function ({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/services`} />
 
-  const loading = isLoading || isLoadingK8sServices || isLoadingTeamSecrets
-  const fetching = isFetching || isFetchingK8sServices || isFetchingTeamSecrets
-  const error = isError || isErrorK8sServices || isErrorTeamSecrets
+  const loading = isLoading || isLoadingK8sServices || isLoadingTeamSecrets || isLoadingSettingsInfo
+  const fetching = isFetching || isFetchingK8sServices || isFetchingTeamSecrets || isFetchingSettingsInfo
+  const error = isError || isErrorK8sServices || isErrorTeamSecrets || isErrorSettingsInfo
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
 
@@ -295,12 +297,11 @@ export default function ({
                   })}
                 </TextField>
               </FormRow>
-            </Section>
-            <Section title='Service Exposure'>
               <FormRow spacing={10}>
                 <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
-              <Divider sx={{ mt: 4, mb: 2 }} />
+            </Section>
+            <Section>
               <StyledAccordion disableGutters>
                 <StyledAccordionSummary
                   expandIcon={<KeyboardArrowRight />}
@@ -387,9 +388,13 @@ export default function ({
                     value='platform'
                     select
                   >
-                    <MenuItem key='platform' id='platform' value='platform' classes={undefined}>
-                      platform
-                    </MenuItem>
+                    {settingsInfo?.ingressClassNames.map((ingressClassName) => {
+                      return (
+                        <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
+                          {ingressClassName}
+                        </MenuItem>
+                      )
+                    })}
                   </TextField>
 
                   <Divider sx={{ mt: 4, mb: 2 }} />
