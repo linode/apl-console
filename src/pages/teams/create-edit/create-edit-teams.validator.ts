@@ -64,7 +64,30 @@ const resourceQuotaObjectSchema = yup.object({
       { key: 'limits.memory', value: 500, decorator: 'Mi' },
       { key: 'requests.memory', value: 500, decorator: 'Mi' },
     ]),
-  customQuota: yup.array().of(resourceQuotaItemSchema).default([]),
+  customQuota: yup
+    .array()
+    .of(resourceQuotaItemSchema)
+    .default([])
+    .test(
+      'customQuota-not-default',
+      'custom resource quota may not be the same as defined above',
+      function (customQuota) {
+        const countQuotaDefaults = [
+          { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
+          { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
+          { key: 'count', value: 5, mutable: true, decorator: 'pods' },
+        ]
+        const computeQuotaDefaults = [
+          { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
+          { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
+          { key: 'limits.memory', value: 500, decorator: 'Mi' },
+          { key: 'requests.memory', value: 500, decorator: 'Mi' },
+        ]
+        const defaultQuotaKeys = new Set([...countQuotaDefaults, ...computeQuotaDefaults].map((quota) => quota.key))
+        if (!customQuota) return true
+        return customQuota.every((quota) => !defaultQuotaKeys.has(quota.key))
+      },
+    ),
 })
 
 // Main CreateTeamApiResponse schema

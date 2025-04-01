@@ -1,8 +1,8 @@
-import { Button, Grid } from '@mui/material'
+import { Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
@@ -20,6 +20,11 @@ import {
 import { yupResolver } from '@hookform/resolvers/yup'
 import { PermissionsTable } from 'components/PermissionTable'
 import ControlledBox from 'components/ControlledBox'
+import { useSession } from 'providers/Session'
+import InformationBanner from 'components/InformationBanner'
+import { Link } from 'components/LinkUrl/LinkUrl'
+import LoadingButton from '@mui/lab/LoadingButton'
+import DeleteButton from 'components/DeleteButton'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
 
@@ -35,6 +40,7 @@ export default function CreateEditTeams({
   },
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
+  const { appsEnabled } = useSession()
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
@@ -72,7 +78,7 @@ export default function CreateEditTeams({
     resetField,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
     trigger,
   } = methods
@@ -86,14 +92,19 @@ export default function CreateEditTeams({
   useEffect(() => {
     if (data) {
       console.log('data effect', data)
+      console.log('team id for edit?', teamId)
       reset(data)
     }
   }, [data])
 
   const onSubmit = (submitData) => {
     console.log('onsubmit teams', submitData)
-    create({ body: submitData })
+    if (teamId) update({ teamId, body: submitData })
+    else create({ body: submitData })
   }
+
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
 
   return (
     <Grid className={classes.root}>
@@ -106,19 +117,42 @@ export default function CreateEditTeams({
             </Section>
             <AdvancedSettings>
               <Section title='Dashboards' collapsable>
+                {!appsEnabled.grafana && (
+                  <InformationBanner
+                    small
+                    message={
+                      <>
+                        Dashboards require Grafana to be enabled. Click <Link to='/apps/admin'>here</Link> to enable it.
+                      </>
+                    }
+                  />
+                )}
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='managedMonitoring.grafana'
                   control={control}
+                  disabled={!appsEnabled.grafana}
                   label='Enable dashboards'
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
               <Section title='Alerts' collapsable>
+                {!appsEnabled.alertmanager && (
+                  <InformationBanner
+                    small
+                    message={
+                      <>
+                        Alerts require Prometheus and AlertManager to be enabled. Click{' '}
+                        <Link to='/apps/admin'>here</Link> to enable them.
+                      </>
+                    }
+                  />
+                )}
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='managedMonitoring.alertmanager'
                   control={control}
+                  disabled={!appsEnabled.alertmanager}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
                 />
@@ -279,9 +313,23 @@ export default function CreateEditTeams({
                 <PermissionsTable name='selfService' />
               </Section>
             </AdvancedSettings>
-            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+            {teamId && (
+              <DeleteButton
+                onDelete={() => del({ teamId })}
+                resourceName={watch('name')}
+                resourceType='team'
+                data-cy='button-delete-team'
+              />
+            )}
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='primary'
+              loading={isLoadingCreate || isLoadingUpdate}
+              sx={{ float: 'right', textTransform: 'none' }}
+            >
               {teamId ? 'Edit Team' : 'Create Team'}
-            </Button>
+            </LoadingButton>
           </form>
         </FormProvider>
       </PaperLayout>
