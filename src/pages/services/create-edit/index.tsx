@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -55,8 +55,9 @@ export default function ({
     settings: { cluster },
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
-  const [filteredK8Services, setFilteredK8Services] = useState<K8Service[] | undefined>([])
   const [url, setUrl] = useState<string | undefined>(undefined)
+  const [hasSetActiveService, setHasSetActiveService] = useState(false)
+  const hasMounted = useRef(false)
 
   const getKeyValue = (activeService: K8Service) => {
     let compositeUrl = ''
@@ -143,20 +144,28 @@ export default function ({
     setUrl(getKeyValue(service))
   }, [service])
 
-  useEffect(() => {
-    const filtered = k8sServices?.filter(
-      (service) =>
-        !service.name.includes('grafana') &&
-        !service.name.includes('prometheus') &&
-        !service.name.includes('alertmanager') &&
-        !service.name.includes('tekton-dashboard'),
+  const filteredK8Services = useMemo(() => {
+    return (
+      k8sServices?.filter(
+        (service) =>
+          !service.name.includes('grafana') &&
+          !service.name.includes('prometheus') &&
+          !service.name.includes('alertmanager') &&
+          !service.name.includes('tekton-dashboard'),
+      ) || []
     )
-    setFilteredK8Services(filtered)
-  }, k8sServices)
+  }, [k8sServices])
 
   useEffect(() => {
-    if (filteredK8Services?.length && data?.name) setActiveService(data.name)
-  }, [filteredK8Services, data])
+    if (!hasSetActiveService && filteredK8Services.length > 0 && data?.name) {
+      if (!hasMounted.current) {
+        hasMounted.current = true
+        return
+      }
+      setActiveService(data.name)
+      setHasSetActiveService(true)
+    }
+  }, [filteredK8Services, hasSetActiveService, data?.name])
 
   const TLSEnabled = watch('ingress.tlsPass')
   const TrafficControlEnabled = watch('trafficControl.enabled')
@@ -193,7 +202,6 @@ export default function ({
   const error = isError || isErrorK8sServices || isErrorTeamSecrets || isErrorSettingsInfo
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
-
   if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
 
   return (
@@ -235,13 +243,11 @@ export default function ({
                   <MenuItem key='select-a-service' value='' disabled classes={undefined}>
                     Select a service
                   </MenuItem>
-                  {filteredK8Services?.map((service) => {
-                    return (
-                      <MenuItem key={service.name} value={service.name} classes={undefined}>
-                        {service.name}
-                      </MenuItem>
-                    )
-                  })}
+                  {filteredK8Services?.map((service) => (
+                    <MenuItem key={service.name} value={service.name} classes={undefined}>
+                      {service.name}
+                    </MenuItem>
+                  ))}
                 </TextField>
                 <TextField
                   label='Port'
@@ -259,13 +265,11 @@ export default function ({
                   <MenuItem key='select-a-port' value='' disabled classes={undefined}>
                     Select a port
                   </MenuItem>
-                  {service?.ports.map((port) => {
-                    return (
-                      <MenuItem key={`service-${port}`} value={port} classes={undefined}>
-                        {port}
-                      </MenuItem>
-                    )
-                  })}
+                  {service?.ports.map((port) => (
+                    <MenuItem key={`service-${port}`} value={port} classes={undefined}>
+                      {port}
+                    </MenuItem>
+                  ))}
                 </TextField>
               </FormRow>
               <FormRow spacing={10}>
@@ -319,18 +323,16 @@ export default function ({
                       const value = e.target.value
                       setValue('ingress.cname.tlsSecretName', value)
                     }}
-                    value={watch('ingress.cname.tlsSecretName') || ''}
+                    value={watch('ingress.cname.tlsSecretName') || undefined}
                   >
                     <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
                       TLS certificate
                     </MenuItem>
-                    {teamSecrets.map((secret) => {
-                      return (
-                        <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
-                          {secret?.name}
-                        </MenuItem>
-                      )
-                    })}
+                    {teamSecrets.map((secret) => (
+                      <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
+                        {secret?.name}
+                      </MenuItem>
+                    ))}
                   </TextField>
                 </FormRow>
 
@@ -344,13 +346,11 @@ export default function ({
                   value='platform'
                   select
                 >
-                  {settingsInfo?.ingressClassNames.map((ingressClassName) => {
-                    return (
-                      <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
-                        {ingressClassName}
-                      </MenuItem>
-                    )
-                  })}
+                  {settingsInfo?.ingressClassNames.map((ingressClassName) => (
+                    <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
+                      {ingressClassName}
+                    </MenuItem>
+                  ))}
                 </TextField>
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
