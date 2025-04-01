@@ -36,9 +36,7 @@ const getBuildLink = (row: Row) => {
 }
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
-  const formattedTag = row.tag.replace(/[._]/g, '-')
-
-  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${formattedTag}`
+  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}`
   const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`

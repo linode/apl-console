@@ -162,7 +162,7 @@ export default function ({
                     const previousType = isDocker ? 'buildpacks' : 'docker'
                     const nextMode = {
                       ...watch(`mode.${previousType}`),
-                      path: isDocker ? './Dockerfile' : './',
+                      path: isDocker ? './Dockerfile' : '',
                     }
 
                     setValue(`mode.${selectedType as 'docker' | 'buildpacks'}`, nextMode)
