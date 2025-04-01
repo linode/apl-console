@@ -201,9 +201,6 @@ export default function ({
     })
   }
 
-  if (!appsEnabled.harbor)
-    return <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
-
   const customButtonText = () => (
     <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
       Create container image
@@ -213,14 +210,18 @@ export default function ({
   const loading = isLoadingAllBuilds || isLoadingTeamBuilds
   const builds = teamId ? teamBuilds : allBuilds
 
-  const comp = builds && (
-    <ListTable
-      teamId={teamId}
-      headCells={headCells}
-      rows={builds}
-      resourceType='Container-image'
-      customButtonText={customButtonText()}
-    />
+  const comp = !appsEnabled.harbor ? (
+    <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
+  ) : (
+    builds && (
+      <ListTable
+        teamId={teamId}
+        headCells={headCells}
+        rows={builds}
+        resourceType='Container-image'
+        customButtonText={customButtonText()}
+      />
+    )
   )
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CONTAINER_IMAGES', { scope: getRole(teamId) })} />
 }
