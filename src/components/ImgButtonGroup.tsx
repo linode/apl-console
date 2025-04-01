@@ -35,9 +35,10 @@ interface ImgButtonGroupProps {
   value: string
   options: { value: string; label: string; imgSrc: string }[]
   onChange?: (value: string) => void
+  disabled?: boolean
 }
 
-function ImgButtonGroup({ title, name, control, value, options, onChange }: ImgButtonGroupProps) {
+function ImgButtonGroup({ title, name, control, value, options, onChange, disabled = false }: ImgButtonGroupProps) {
   return (
     <Controller
       name={name}
@@ -57,6 +58,7 @@ function ImgButtonGroup({ title, name, control, value, options, onChange }: ImgB
               <StyledButton
                 key={option.value}
                 onClick={() => {
+                  if (disabled) return
                   field.onChange(option.value)
                   onChange?.(option.value)
                 }}

@@ -133,7 +133,7 @@ export default function ({
   const methods = useForm<CreateCodeRepoApiResponse>({
     resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCodeRepoApiResponse>,
     defaultValues: data || defaultValues,
-    context: { codeRepoUrls },
+    context: { codeRepoUrls, validateOnSubmit: !codeRepositoryName },
   })
   const {
     control,
@@ -245,6 +245,7 @@ export default function ({
                 onChange={(value) => {
                   setGitProvider(value)
                 }}
+                disabled={!!codeRepositoryName}
               />
 
               {gitProvider === 'gitea' && internalRepoUrls ? (
@@ -410,9 +411,12 @@ export default function ({
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
               />
             )}
-            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
-            </Button>
+            {/* Hide edit button for Gitea */}
+            {!(codeRepositoryName && gitProvider === 'gitea') && (
+              <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+                {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
+              </Button>
+            )}
           </form>
         </FormProvider>
       </PaperLayout>

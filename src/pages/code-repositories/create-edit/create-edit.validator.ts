@@ -10,7 +10,9 @@ const urlValidation = string()
     return true
   })
   .test('is-unique', 'Repository URL must be unique.', function (value) {
-    const { codeRepoUrls } = this.options.context || {}
+    const { codeRepoUrls, validateOnSubmit } = this.options.context || {}
+    // Only validate uniqueness if `validateOnSubmit` is true
+    if (!validateOnSubmit) return true
     return !codeRepoUrls.some((repoUrl) => repoUrl === value)
   })
 
