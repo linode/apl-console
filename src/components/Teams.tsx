@@ -20,13 +20,13 @@ export default function ({ teams }: Props): React.ReactElement {
     {
       id: 'name',
       label: t('Name'),
-      renderer: ({ id }: any) =>
+      renderer: ({ name }: any) =>
         isPlatformAdmin ? (
-          <RLink to={`/teams/${id}`} label={id}>
-            {id}
+          <RLink to={`/teams/${name}`} label={name}>
+            {name}
           </RLink>
         ) : (
-          id
+          name
         ),
     },
   ]
