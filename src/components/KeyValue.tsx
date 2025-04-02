@@ -155,6 +155,7 @@ export default function KeyValue(props: KeyValueProps) {
               value={keyValue}
               noMarginTop={compressed}
               label={showLabel && index === 0 ? keyLabel : ''}
+              error={error}
               {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
             />
             <TextField

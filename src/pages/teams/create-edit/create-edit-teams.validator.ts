@@ -72,6 +72,7 @@ const resourceQuotaObjectSchema = yup.object({
       'customQuota-not-default',
       'custom resource quota may not be the same as defined above',
       function (customQuota) {
+        const { path, createError } = this
         const countQuotaDefaults = [
           { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
           { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
@@ -85,7 +86,10 @@ const resourceQuotaObjectSchema = yup.object({
         ]
         const defaultQuotaKeys = new Set([...countQuotaDefaults, ...computeQuotaDefaults].map((quota) => quota.key))
         if (!customQuota) return true
-        return customQuota.every((quota) => !defaultQuotaKeys.has(quota.key))
+        const invalidEntry = customQuota.find((quota) => defaultQuotaKeys.has(quota.key))
+        return invalidEntry
+          ? createError({ path, message: 'custom resource quota may not contain duplicated quota' })
+          : true
       },
     ),
 })
@@ -93,7 +97,7 @@ const resourceQuotaObjectSchema = yup.object({
 // Main CreateTeamApiResponse schema
 export const createTeamApiResponseSchema = yup.object({
   id: yup.string().optional().default(undefined),
-  name: yup.string().required('Team name is required'),
+  name: yup.string().required('Team label is required'),
   oidc: yup
     .object({
       groupMapping: yup.string().optional().default(undefined),

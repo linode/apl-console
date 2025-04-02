@@ -87,18 +87,11 @@ export default function CreateEditTeams({
   const controlledResourceQuotaInput = watch('resourceQuota.enabled')
   const controlledAlertmanagerInput = watch('managedMonitoring.alertmanager')
 
-  console.log('methods', watch())
-
   useEffect(() => {
-    if (data) {
-      console.log('data effect', data)
-      console.log('team id for edit?', teamId)
-      reset(data)
-    }
+    if (data) reset(data)
   }, [data])
 
   const onSubmit = (submitData) => {
-    console.log('onsubmit teams', submitData)
     if (teamId) update({ teamId, body: submitData })
     else create({ body: submitData })
   }
@@ -113,7 +106,14 @@ export default function CreateEditTeams({
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
-              <TextField label='Team label' width='large' noMarginTop {...register('name')} />
+              <TextField
+                label='Team label'
+                width='large'
+                noMarginTop
+                {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+              />
             </Section>
             <AdvancedSettings>
               <Section title='Dashboards' collapsable>
@@ -289,6 +289,8 @@ export default function CreateEditTeams({
                     showLabel={false}
                     name='resourceQuota.customQuota'
                     addLabel='Add custom resource quota'
+                    error={!!errors.resourceQuota?.customQuota}
+                    errorText={errors.resourceQuota?.customQuota?.root?.message}
                     {...register('resourceQuota.customQuota')}
                   />
                 </ControlledBox>

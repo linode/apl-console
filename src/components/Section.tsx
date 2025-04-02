@@ -28,6 +28,9 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   padding: 0,
   flexDirection: 'column',
   alignItems: 'flex-start',
+  '& .MuiAccordionSummary-content': {
+    margin: 0,
+  },
 }))
 
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
