@@ -22,6 +22,7 @@ interface Row {
   tag: string
   id: string
   name: string
+  imageName: string
   trigger: boolean
   mode: { type: string }
 }
@@ -88,7 +89,7 @@ function WebhookUrlRenderer({ row }: { row: Row }) {
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [copied, setCopied] = useState(false)
-  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
+  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.imageName}`
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(repository)
