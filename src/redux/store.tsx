@@ -5,6 +5,7 @@ import globalReducer, { GlobalState, setDirty, setError } from 'redux/reducers'
 
 const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (action: AnyAction) => {
   const { error, payload, meta } = action
+  console.log({ error, payload, meta })
   const { dispatch } = api
   if (!error) {
     if (meta) {
@@ -25,7 +26,11 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
     }
   } else if (payload) {
     // eslint-disable-next-line no-console
-    console.error('We got a rejected action with payload: ', payload)
+    console.error('Rejected action detected:', {
+      type: action.type,
+      payload,
+      meta,
+    })
     dispatch(setError(payload))
     dispatch(setDirty(false))
   }
