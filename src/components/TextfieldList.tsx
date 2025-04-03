@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from 'react'
 import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
