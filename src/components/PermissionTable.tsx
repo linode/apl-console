@@ -30,9 +30,13 @@ const useStyles = makeStyles()((theme: Theme) => ({
     padding: '0px 10px 15px 10px',
     marginBottom: '10px',
   },
+  tableHeadText: {
+    fontWeight: 'bold',
+    color: theme.palette.cm.headline,
+  },
   tableBody: {
     '& tr:nth-of-type(even)': {
-      backgroundColor: '#47474D',
+      backgroundColor: theme.palette.cm.rowAlter,
     },
   },
   tableCell: {
@@ -52,13 +56,13 @@ export function PermissionsTable({ name }: PermissionsTableProps) {
       <TableHead>
         <TableRow>
           <TableCell className={classes.tableHead}>
-            <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>Action</Typography>
+            <Typography className={classes.tableHeadText}>Action</Typography>
           </TableCell>
           <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
-            <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>Team Members</Typography>
+            <Typography className={classes.tableHeadText}>Team Members</Typography>
           </TableCell>
           {/* <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
-            <Typography sx={{ fontWeight: 'bold', color: '#fff' }}>Team Admins</Typography>
+            <Typography className={classes.tableHeadText}>Team Admins</Typography>
           </TableCell> */}
         </TableRow>
       </TableHead>

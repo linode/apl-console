@@ -402,7 +402,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string

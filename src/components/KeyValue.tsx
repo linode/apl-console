@@ -56,7 +56,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   decoratortext: {
     fontWeight: 'bold',
     fontSize: '10px',
-    color: '#777777',
+    color: theme.palette.cl.text.title,
   },
 }))
 

@@ -6,6 +6,7 @@ import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
+import { GetTeamApiResponse } from 'redux/otomiApi'
 import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
@@ -91,7 +92,7 @@ const useStyles = makeStyles()((theme) => ({
 
 // types -----------------------------------------------------------
 interface Props {
-  team?: any
+  team?: GetTeamApiResponse
   inventory: any
 }
 

@@ -26,8 +26,10 @@ const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ th
   [theme.breakpoints.up('md')]: {
     paddingLeft: `calc(${theme.spacing(4)} + 14px)`, // 46
   },
-  lineHeight: '0.875rem',
+  lineHeight: 'normal',
   color: theme.palette.cl.text.subTitle,
+  maxWidth: '75%',
+  fontSize: 'medium',
 }))
 
 interface ControlledCheckboxProps {
