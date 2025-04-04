@@ -23,6 +23,7 @@ import {
   ApiErrorServiceUnavailable,
   ApiErrorUnauthorized,
   ApiErrorUnauthorizedNoGroups,
+  HttpError,
 } from 'utils/error'
 import snack from 'utils/snack'
 
@@ -70,28 +71,6 @@ type DbMessage = {
   editor: string
   reason: 'deploy' | 'revert' | 'restore' | 'conflict' | 'started' | 'restored' | 'reloaded'
   sha: string
-}
-
-type DroneRepo = {
-  id: string
-}
-type DroneBuild = {
-  after: string
-  id: string
-  link: string
-  status: 'pending' | 'started' | 'success' | 'failed'
-  timestamp: number
-  created: number
-  started: number
-  updated: number
-  finished: number
-}
-type DroneBuildEvent = {
-  id: number
-  action: 'created' | 'updated' | 'completed'
-  event: 'build' | 'repo'
-  repo: DroneRepo
-  build: DroneBuild
 }
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
@@ -231,21 +210,25 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (sessionError) {
-    const { originalStatus, status } = sessionError as any
+    const { originalStatus, status, data } = sessionError as any
     if (originalStatus === 503) throw new ApiErrorServiceUnavailable()
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
     // return the logout page if the error is a fetch error (session expired)
     if (status === 'FETCH_ERROR') return <Logout fetchError />
+    // if we have a session error which not fits the above, we throw a generic error
+    const errorMessage: string = data?.error || data || 'Session error'
+    const errorCode: number = originalStatus || status || 500
+    throw new HttpError(errorMessage, errorCode)
   }
-  if (!session.user.isPlatformAdmin && session.user.teams.length === 0) throw new ApiErrorUnauthorizedNoGroups()
+  if (!session?.user?.isPlatformAdmin && session?.user?.teams?.length === 0) throw new ApiErrorUnauthorizedNoGroups()
   if (isLoadingApiDocs || isLoadingApps || isLoadingSession || isLoadingSettings) return <LoadingScreen />
   if (apiDocs) setSpec(apiDocs)
   // set obo to first team if not set
-  if (!isPlatformAdmin && !teams.includes(oboTeamId)) setOboTeamId(undefined)
+  if (!isPlatformAdmin && !teams?.includes(oboTeamId)) setOboTeamId(undefined)
   if (!oboTeamId) {
     if (isPlatformAdmin) setOboTeamId('admin')
     else if (!isPlatformAdmin) {
-      if (teams.length) {
+      if (teams?.length) {
         setOboTeamId(teams[0])
         return <LoadingScreen />
       }
