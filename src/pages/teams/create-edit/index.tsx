@@ -107,7 +107,7 @@ export default function CreateEditTeams({
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
               <TextField
-                label='Team label'
+                label='Team name'
                 width='large'
                 noMarginTop
                 {...register('name')}
@@ -202,14 +202,14 @@ export default function CreateEditTeams({
                         label='Teams webhook for non-critical alerts:'
                         width='large'
                         noMarginTop
-                        placeholder='web hook URL'
+                        placeholder='Webhook URL'
                         {...register('alerts.msteams.lowPrio')}
                       />
                       <TextField
                         isHorizontalLabel
-                        label='Teams web hook for critical alerts:'
+                        label='Teams webhook for critical alerts:'
                         width='large'
-                        placeholder='web hook URL'
+                        placeholder='Webhook URL'
                         {...register('alerts.msteams.highPrio')}
                       />
                     </>
@@ -301,14 +301,14 @@ export default function CreateEditTeams({
                   name='networkPolicy.ingressPrivate'
                   control={control}
                   label='Ingress control'
-                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled) '
+                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled).'
                 />
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='networkPolicy.egressPublic'
                   control={control}
                   label='Egress control'
-                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled)   '
+                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled).'
                 />
               </Section>
               <Section title='Permissions' collapsable>
@@ -321,6 +321,7 @@ export default function CreateEditTeams({
                 resourceName={watch('name')}
                 resourceType='team'
                 data-cy='button-delete-team'
+                loading={isLoadingDelete}
               />
             )}
             <LoadingButton
