@@ -73,28 +73,6 @@ type DbMessage = {
   sha: string
 }
 
-type DroneRepo = {
-  id: string
-}
-type DroneBuild = {
-  after: string
-  id: string
-  link: string
-  status: 'pending' | 'started' | 'success' | 'failed'
-  timestamp: number
-  created: number
-  started: number
-  updated: number
-  finished: number
-}
-type DroneBuildEvent = {
-  id: number
-  action: 'created' | 'updated' | 'completed'
-  event: 'build' | 'repo'
-  repo: DroneRepo
-  build: DroneBuild
-}
-
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const skipFetch = pathname === '/logout' || pathname === '/logout-otomi'
