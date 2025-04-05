@@ -107,7 +107,7 @@ export default function ({ secret, teamId, isCoderepository, ...other }: Props):
   }, [secret])
 
   useEffect(() => {
-    if (data?.name) return
+    if (secret?.name) return
     setData((prev: any) => {
       if (!prev?.type) return prev
       const data = { ...prev }

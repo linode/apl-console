@@ -28,25 +28,37 @@ export const buildApiResponseSchema = object({
     .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Image name can only contain lowercase letters, numbers, and hyphens.')
     .test(
       'name-matches-build-name',
-      'Invalid name. The combined image name and tag must not exceed 128 characters.',
+      'Invalid container image name, the combined image name and tag must not exceed 128 characters.',
       function (imageName) {
         const { tag } = this.parent
         const expectedBuildName = `${imageName}-${tag}`
         return expectedBuildName.length <= 128
       },
+    )
+    .test(
+      'is-unique',
+      'Container image name already exists, the combined image name and tag must be unique.',
+      function (value) {
+        const { names } = this.options.context || {}
+        const { tag } = this.parent
+        const expectedBuildName = `${value}-${tag}`
+        return !names.some((name) => name === expectedBuildName)
+      },
     ),
   tag: string()
     .required('Tag is required')
     .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Tag can only contain lowercase letters, numbers, and hyphens.')
-    .test(
-      'tag-matches-build-name',
-      'Invalid name. The combined image name and tag must not exceed 128 characters.',
-      function (tag) {
-        const { imageName } = this.parent
-        const expectedBuildName = `${imageName}-${tag}`
-        return expectedBuildName.length <= 128
-      },
-    ),
+    .test('tag-matches-build-name', '', function (tag) {
+      const { imageName } = this.parent
+      const expectedBuildName = `${imageName}-${tag}`
+      return expectedBuildName.length <= 128
+    })
+    .test('is-unique', '', function (value) {
+      const { names } = this.options.context || {}
+      const { imageName } = this.parent
+      const expectedBuildName = `${imageName}-${value}`
+      return !names.some((name) => name === expectedBuildName)
+    }),
   mode: object({
     type: string().required('Mode type is required').oneOf(['docker', 'buildpacks'], 'Invalid mode type'),
     docker: mixed().when('type', {

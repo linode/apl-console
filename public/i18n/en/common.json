@@ -1,7 +1,6 @@
 {
   "App": "App",
   "Apps": "Apps",
-  "Container Image": "Container Image",
   "BUTTON_NEW_RESOURCE": "Create {{model}}",
   "CREATE_MODEL": "Create a {{model}}",
   "CREATE_MODEL_FOR_TEAM": "Create a {{model}} for team {{teamName}}",
@@ -78,8 +77,6 @@
   "TITLE_PROJECTS": "Projects",
   "TITLE_PROJECT": "Project details",
   "DELETE_PROJECT_WARNING": "Deleting this project will permanently remove all associated collections (build, workload, service) and their data. This action cannot be undone.",
-  "TITLE_CONTAINER_IMAGES": "Container Images",
-  "TITLE_CONTAINER_IMAGE": "Container image details",
   "Team_plural": "Teams",
   "Teams": "Teams",
   "Workload": "Workload",
@@ -90,7 +87,6 @@
   "User": "User",
   "User_plural": "Users",
   "Project_plural": "Projects",
-  "Container-image_plural": "Container Images",
   "WELCOME_DASHBOARD": "Team <1>{{teamName}}</1> dashboard",
   "add item": "add item",
   "admin": "admin",
@@ -101,8 +97,12 @@
   "enabled": "enabled",
   "help": "help",
   "submit": "submit",
-  "CodeRepository": "Code Repository",
-  "CodeRepository_plural": "Code Repositories",
-  "TITLE_CODEREPOSITORY": "Code Repository Details",
-  "TITLE_CODEREPOSITORIES": "Code Repositories - {{scope}}"
+  "Container-image": "Container Image",
+  "Container-image_plural": "Container Images",
+  "TITLE_CONTAINER_IMAGE": "Container image details",
+  "TITLE_CONTAINER_IMAGES": "Container images - {{scope}}",
+  "Code-repository": "Code Repository",
+  "Code-repository_plural": "Code Repositories",
+  "TITLE_CODE_REPOSITORY": "Code repository details",
+  "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}"
 }

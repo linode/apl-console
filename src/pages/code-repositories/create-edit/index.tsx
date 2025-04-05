@@ -89,12 +89,7 @@ export default function ({
     { teamId, codeRepositoryName },
     { skip: !codeRepositoryName },
   )
-  const {
-    data: teamCodeRepositories,
-    isLoading: isLoadingTeamCodeRepositories,
-    isFetching: isFetchingTeamCodeRepositories,
-    refetch: refetchTeamCodeRepositories,
-  } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
+  const { data: teamCodeRepositories } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
   const {
     data: teamSealedSecrets,
     isLoading: isLoadingTeamSecrets,
@@ -104,8 +99,7 @@ export default function ({
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const teamSecrets =
     teamSealedSecrets?.filter(
-      (secret: any) =>
-        secret.template?.type === 'kubernetes.io/basic-auth' || secret.template?.type === 'kubernetes.io/ssh-auth',
+      (secret) => secret?.type === 'kubernetes.io/basic-auth' || secret?.type === 'kubernetes.io/ssh-auth',
     ) || []
   const {
     data: internalRepoUrls,
@@ -201,16 +195,16 @@ export default function ({
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
-    return <Redirect to={`/teams/${teamId}/coderepositories`} />
+    return <Redirect to={`/teams/${teamId}/code-repositories`} />
 
   const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (codeRepositoryName && !internalRepoUrls)
   const error = isError || isErrorTeamSecrets || isErrorRepoUrls
 
-  if (loading) return <PaperLayout loading title={t('TITLE_CODEREPOSITORY')} />
+  if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
 
   return (
     <Grid>
-      <PaperLayout loading={loading || error} title={t('TITLE_CODEREPOSITORY')}>
+      <PaperLayout loading={loading || error} title={t('TITLE_CODE_REPOSITORY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/get-started/overview'

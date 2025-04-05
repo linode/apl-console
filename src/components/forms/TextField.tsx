@@ -468,6 +468,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             marginBottom: 0,
             fontWeight: '500',
             fontSize: '0.875rem',
+            color: theme.palette.cl.text.subTitle,
           }}
           data-qa-textfield-label={label}
           htmlFor={validInputId}

@@ -12,7 +12,7 @@ import { Link, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllBuildsQuery, useGetTeamBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 import RLink from '../../../components/Link'
@@ -125,6 +125,14 @@ export default function ({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const { t } = useTranslation()
+  const {
+    appsEnabled,
+    settings: {
+      cluster: { domainSuffix },
+    },
+  } = useSession()
+  const status = useStatus()
   const {
     data: allBuilds,
     isLoading: isLoadingAllBuilds,
@@ -143,17 +151,6 @@ export default function ({
     if (!teamId && !isFetchingAllBuilds) refetchAllBuilds()
     else if (teamId && !isFetchingTeamBuilds) refetchTeamBuilds()
   }, [isDirty])
-
-  const { t } = useTranslation()
-  // END HOOKS
-
-  const {
-    appsEnabled,
-    settings: {
-      cluster: { domainSuffix },
-    },
-  } = useSession()
-  const status = useStatus()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -200,11 +197,7 @@ export default function ({
     })
   }
 
-  const customButtonText = () => (
-    <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
-      Create container image
-    </Typography>
-  )
+  const customButtonText = () => <span>Create container image</span>
 
   const loading = isLoadingAllBuilds || isLoadingTeamBuilds
   const builds = teamId ? teamBuilds : allBuilds

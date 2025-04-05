@@ -5,8 +5,6 @@ import * as React from 'react'
 import { omittedProps } from '../utils/omittedProps'
 
 export interface DividerProps extends _DividerProps {
-  dark?: boolean
-  light?: boolean
   spacingBottom?: number
   spacingTop?: number
 }
@@ -17,7 +15,7 @@ export function Divider(props: DividerProps) {
 
 const StyledDivider = styled(_Divider, {
   label: 'StyledDivider',
-  shouldForwardProp: omittedProps(['spacingTop', 'spacingBottom', 'light', 'dark']),
+  shouldForwardProp: omittedProps(['spacingTop', 'spacingBottom']),
 })<DividerProps>(({ theme, ...props }) => ({
   marginBottom: props.spacingBottom,
   marginTop: props.spacingTop,

@@ -18,8 +18,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
     borderRadius: '8px',
   },
   inputLabel: {
-    color: theme.palette.cm.headline,
+    color: theme.palette.cl.text.title,
     fontFamily: font.bold,
+    fontWeight: 700,
     fontSize: '1rem',
     lineHeight: '1.5rem',
   },
@@ -29,7 +30,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     alignItems: 'center',
   },
   addItemButton: {
-    marginLeft: '-10px',
+    marginLeft: '-2px',
     display: 'flex',
     alignItems: 'center',
     textTransform: 'none',

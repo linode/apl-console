@@ -1,4 +1,4 @@
-import { Box, Button, Grid } from '@mui/material'
+import { Box, Button, Grid, Typography, useTheme } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
@@ -13,6 +13,7 @@ import {
   useEditBuildMutation,
   useGetBuildQuery,
   useGetRepoBranchesQuery,
+  useGetTeamBuildsQuery,
   useGetTeamCodeReposQuery,
 } from 'redux/otomiApi'
 import { cloneDeep } from 'lodash'
@@ -27,7 +28,6 @@ import { Divider } from 'components/Divider'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
-import { Typography } from 'components/Typography'
 import { useSession } from 'providers/Session'
 import { buildApiResponseSchema } from './create-edit.validator'
 
@@ -43,6 +43,7 @@ export default function ({
 }: RouteComponentProps<Params>): React.ReactElement {
   // state
   const { t } = useTranslation()
+  const theme = useTheme()
   const [data, setData]: any = useState()
   const [repoUrl, setRepoUrl] = useState('')
   const [secretName, setSecretName] = useState('')
@@ -77,6 +78,7 @@ export default function ({
     isError,
     refetch,
   } = useGetBuildQuery({ teamId, buildName }, { skip: !buildName })
+  const { data: teamBuilds } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
   const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamCodeReposQuery({ teamId })
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
     { url: repoUrl, teamId, secret: secretName },
@@ -88,7 +90,6 @@ export default function ({
     if (isDirty !== false) return
     if (!isFetching) refetch()
   }, [isDirty])
-  // END HOOKS
 
   useEffect(() => {
     if (buildName) setData(buildData)
@@ -103,6 +104,7 @@ export default function ({
   const methods = useForm<CreateBuildApiResponse>({
     resolver: yupResolver(buildApiResponseSchema) as Resolver<any>,
     defaultValues: data || defaultValues,
+    context: { names: teamBuilds?.map((build) => build.name) },
   })
   const {
     control,
@@ -150,8 +152,9 @@ export default function ({
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section title='Select build task'>
-              <FormRow spacing={10} sx={{ mb: 1 }}>
+            <Section>
+              <Typography variant='h6'>Select build task</Typography>
+              <FormRow spacing={10} sx={{ my: 2 }}>
                 <ImgButtonGroup
                   name='mode.type'
                   control={control}
@@ -220,7 +223,7 @@ export default function ({
                   onChange={(e, value: { label: string }) => {
                     const label: string = value?.label || ''
                     setValue(`mode.${watch('mode.type')}.revision`, label)
-                    if (!buildName) setValue('tag', label)
+                    if (!buildName) setValue('tag', label.toLowerCase())
                   }}
                   errorText={errors?.mode?.[`${watch('mode.type')}`]?.revision?.message?.toString()}
                 />
@@ -277,6 +280,7 @@ export default function ({
                   display: 'inline-block',
                   fontSize: 16,
                   fontWeight: 400,
+                  color: theme.palette.cl.text.subTitle,
                 }}
               >
                 {buildName
