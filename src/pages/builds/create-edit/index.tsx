@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
@@ -29,6 +29,7 @@ import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useSession } from 'providers/Session'
+import { LoadingButton } from '@mui/lab'
 import { buildApiResponseSchema } from './create-edit.validator'
 
 interface Params {
@@ -331,11 +332,20 @@ export default function ({
                 resourceType='build'
                 data-cy='button-delete-build'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+                loading={isLoadingDelete}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
             )}
-            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='primary'
+              sx={{ float: 'right', textTransform: 'none' }}
+              loading={isLoadingCreate || isLoadingUpdate}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+            >
               {buildName ? 'Edit container image' : 'Create container image'}
-            </Button>
+            </LoadingButton>
           </form>
         </FormProvider>
       </PaperLayout>

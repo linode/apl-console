@@ -403,13 +403,22 @@ export default function ({
                 resourceType='coderepo'
                 data-cy='button-delete-coderepo'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+                loading={isLoadingDelete}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
             )}
             {/* Hide edit button for Gitea */}
             {!(codeRepositoryName && gitProvider === 'gitea') && (
-              <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                color='primary'
+                sx={{ float: 'right', textTransform: 'none' }}
+                loading={isLoadingCreate || isLoadingUpdate}
+                disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              >
                 {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
-              </Button>
+              </LoadingButton>
             )}
           </form>
         </FormProvider>
