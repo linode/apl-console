@@ -22,7 +22,7 @@ export default function ({ error }: Props): React.ReactElement {
   // return the logout page if the error is a fetch error (session expired)
   if (err?.status === 'FETCH_ERROR') return <Logout fetchError />
   const { title, message, data, code, originalStatus, status } = err || {}
-  const errorMessage = title ? `${title}: ${message}` : message || data?.error
+  const errorMessage = title ? `${title}: ${message}` : message || data?.error || data
   const errorCode = code || originalStatus || status || message || data?.error
   const messageKey = errorCode || 'Unknown'
 
@@ -32,7 +32,9 @@ export default function ({ error }: Props): React.ReactElement {
   const tError = `${t('ERROR', { ns: 'error', code: errorCode, msg: t(messageKey) })}`
 
   let icon
-  switch (code) {
+  switch (errorCode) {
+    case 'PARSING_ERROR':
+    case 401:
     case 403:
       icon = 'ic:baseline-do-not-disturb'
       break
@@ -46,23 +48,54 @@ export default function ({ error }: Props): React.ReactElement {
   }
 
   const buttons = () => {
-    const renderButton = (text: string, onClick: () => void) => (
-      <Button variant='contained' color='primary' onClick={onClick}>
-        {text}
-      </Button>
-    )
+    if (errorCode === 'PARSING_ERROR' || errorCode === 401) {
+      return (
+        <Box sx={{ display: 'flex', gap: '16px' }}>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              window.location.href = '/logout-otomi'
+            }}
+          >
+            {t('Logout', { ns: 'error' })}
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => {
+              window.location.reload()
+            }}
+          >
+            {t('Reload', { ns: 'error' })}
+          </Button>
+        </Box>
+      )
+    }
+
     if (
-      code === 503 ||
-      code === 504 ||
+      errorCode === 503 ||
+      errorCode === 504 ||
       err instanceof ApiErrorUnauthorized ||
       err instanceof ApiErrorUnauthorizedNoGroups
     ) {
-      return renderButton(t('Logout', { ns: 'error' }) as string, () => {
-        window.location.href = '/logout-otomi'
-      })
+      return (
+        <Button
+          variant='contained'
+          color='primary'
+          onClick={() => {
+            window.location.href = '/logout-otomi'
+          }}
+        >
+          {t('Logout', { ns: 'error' })}
+        </Button>
+      )
     }
-    return renderButton(t('Back', { ns: 'error' }) as string, () =>
-      globalError ? clearError() : window.history.back(),
+
+    return (
+      <Button variant='contained' color='primary' onClick={() => (globalError ? clearError() : window.history.back())}>
+        {t('Back', { ns: 'error' })}
+      </Button>
     )
   }
 
