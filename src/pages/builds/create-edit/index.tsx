@@ -104,7 +104,7 @@ export default function ({
   const methods = useForm<CreateBuildApiResponse>({
     resolver: yupResolver(buildApiResponseSchema) as Resolver<any>,
     defaultValues: data || defaultValues,
-    context: { names: teamBuilds?.map((build) => build.name) },
+    context: { buildNames: teamBuilds?.map((build) => build.name), validateOnSubmit: !buildName },
   })
   const {
     control,

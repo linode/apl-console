@@ -39,10 +39,12 @@ export const buildApiResponseSchema = object({
       'is-unique',
       'Container image name already exists, the combined image name and tag must be unique.',
       function (value) {
-        const { names } = this.options.context || {}
+        const { buildNames, validateOnSubmit } = this.options.context || {}
+        // Only validate uniqueness if `validateOnSubmit` is true
+        if (!validateOnSubmit) return true
         const { tag } = this.parent
         const expectedBuildName = `${value}-${tag}`
-        return !names.some((name) => name === expectedBuildName)
+        return !buildNames.some((name) => name === expectedBuildName)
       },
     ),
   tag: string()
@@ -54,10 +56,12 @@ export const buildApiResponseSchema = object({
       return expectedBuildName.length <= 128
     })
     .test('is-unique', '', function (value) {
-      const { names } = this.options.context || {}
+      const { buildNames, validateOnSubmit } = this.options.context || {}
+      // Only validate uniqueness if `validateOnSubmit` is true
+      if (!validateOnSubmit) return true
       const { imageName } = this.parent
       const expectedBuildName = `${imageName}-${value}`
-      return !names.some((name) => name === expectedBuildName)
+      return !buildNames.some((name) => name === expectedBuildName)
     }),
   mode: object({
     type: string().required('Mode type is required').oneOf(['docker', 'buildpacks'], 'Invalid mode type'),
