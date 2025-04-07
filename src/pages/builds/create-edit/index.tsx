@@ -344,7 +344,7 @@ export default function ({
               loading={isLoadingCreate || isLoadingUpdate}
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
             >
-              {buildName ? 'Edit container image' : 'Create container image'}
+              {buildName ? 'Edit Container Image' : 'Create Container Image'}
             </LoadingButton>
           </form>
         </FormProvider>
