@@ -118,10 +118,13 @@ export default function ({
   } = methods
 
   useEffect(() => {
-    if (buildData) {
-      reset(buildData)
-      setRepoName(watch(`mode.${watch('mode.type')}.repoUrl`))
-    }
+    if (!buildData) return
+    reset(buildData)
+    const modeType = watch('mode.type')
+    const repoUrl = watch(`mode.${modeType}.repoUrl`)
+    const codeRepo = codeRepos?.find((codeRepo) => codeRepo.repositoryUrl === repoUrl)
+    setRepoName(codeRepo?.name || '')
+    setGitService(codeRepo?.gitService || '')
   }, [buildData, setValue])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete || isLoadingCodeRepos
