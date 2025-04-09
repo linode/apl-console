@@ -7,8 +7,8 @@ import { GetPolicyApiResponse, GetSessionApiResponse } from 'redux/otomiApi'
 import { Box, Button } from '@mui/material'
 import Form from './rjsf/Form'
 
-export const getPolicySchema = (policyId): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Policies.properties[policyId])
+export const getPolicySchema = (policyName): any => {
+  const schema = cloneDeep(getSpec().components.schemas.Policies.properties[policyName])
   return schema
 }
 
@@ -23,10 +23,10 @@ interface Props extends CrudProps {
   policy?: GetPolicyApiResponse
   onSubmit: (formData: any) => void
   editPolicies: boolean
-  policyId?: string
+  policyName?: string
 }
 
-export default function ({ policy, teamId, onSubmit, editPolicies, policyId, ...other }: Props): React.ReactElement {
+export default function ({ policy, teamId, onSubmit, editPolicies, policyName, ...other }: Props): React.ReactElement {
   const { user } = useSession()
   const [data, setData] = useState<GetPolicyApiResponse>(policy)
   useEffect(() => {
@@ -34,14 +34,14 @@ export default function ({ policy, teamId, onSubmit, editPolicies, policyId, ...
   }, [policy])
   // END HOOKS
   const formData = cloneDeep(data)
-  const schema = getPolicySchema(policyId)
+  const schema = getPolicySchema(policyName)
   const uiSchema = getPolicyUiSchema(user, teamId)
   return (
     <Box>
       <Form
         schema={schema}
         uiSchema={uiSchema}
-        data={{ ...formData, id: policyId, name: policyId }}
+        data={{ ...formData, id: policyName, name: policyName }}
         onChange={setData}
         resourceType='Policy'
         children
