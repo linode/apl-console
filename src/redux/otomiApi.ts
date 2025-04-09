@@ -300,7 +300,7 @@ const injectedRtkApi = api.injectEndpoints({
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
       query: (queryArg) => ({
         url: `/repoBranches`,
-        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
       }),
     }),
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
@@ -3733,11 +3733,9 @@ export type GetSettingsInfoApiArg = void
 export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
 export type GetRepoBranchesApiArg = {
   /** URL of the repository */
-  url?: string
+  codeRepoName?: string
   /** Id of the team */
   teamId?: string
-  /** Name of the secret for private repositories */
-  secret?: string
 }
 export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string

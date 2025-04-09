@@ -46,8 +46,7 @@ export default function ({
   const { t } = useTranslation()
   const theme = useTheme()
   const [data, setData]: any = useState()
-  const [repoUrl, setRepoUrl] = useState('')
-  const [secretName, setSecretName] = useState('')
+  const [repoName, setRepoName] = useState('')
   const [gitService, setGitService] = useState('')
 
   const {
@@ -82,8 +81,8 @@ export default function ({
   const { data: teamBuilds } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
   const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamCodeReposQuery({ teamId })
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
-    { url: repoUrl, teamId, secret: secretName },
-    { skip: !repoUrl },
+    { codeRepoName: repoName, teamId },
+    { skip: !repoName },
   )
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -121,7 +120,7 @@ export default function ({
   useEffect(() => {
     if (buildData) {
       reset(buildData)
-      setRepoUrl(watch(`mode.${watch('mode.type')}.repoUrl`))
+      setRepoName(watch(`mode.${watch('mode.type')}.repoUrl`))
     }
   }, [buildData, setValue])
 
@@ -199,14 +198,9 @@ export default function ({
                     setValue(`mode.${watch('mode.type')}.revision`, undefined)
                     setValue('externalRepo', gitService !== 'gitea')
                     setGitService(gitService)
-                    setRepoUrl(repositoryUrl)
-                    if (isPrivate) {
-                      setValue('secretName', secret)
-                      setSecretName(secret)
-                    } else {
-                      unregister('secretName')
-                      setSecretName('')
-                    }
+                    setRepoName(label)
+                    if (isPrivate) setValue('secretName', secret)
+                    else unregister('secretName')
                   }}
                   errorText={errors?.mode?.[`${watch('mode.type')}`]?.repoUrl?.message?.toString()}
                   disabled={!!buildName}
