@@ -1,7 +1,7 @@
 import { Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
-import { FormProvider, Resolver, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, get, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
@@ -89,6 +89,12 @@ export default function CreateEditTeams({
 
   useEffect(() => {
     if (data) reset(data)
+
+    const teamsWebhookLow = get(data, 'alerts.msteams.lowPrio')
+    const teamsWebhookHigh = get(data, 'alerts.msteams.highPrio')
+
+    if (teamsWebhookLow || teamsWebhookHigh) setActiveNotificationReceiver('teams')
+    else setActiveNotificationReceiver('slack')
   }, [data])
 
   const onSubmit = (submitData) => {
