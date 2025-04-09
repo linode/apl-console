@@ -110,6 +110,7 @@ export default function CreateEditTeams({
                 label='Team name'
                 width='large'
                 noMarginTop
+                disabled={!!teamId}
                 {...register('name')}
                 error={!!errors.name}
                 helperText={errors.name?.message}
@@ -321,6 +322,7 @@ export default function CreateEditTeams({
                 resourceName={watch('name')}
                 resourceType='team'
                 data-cy='button-delete-team'
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
                 loading={isLoadingDelete}
               />
             )}
@@ -329,6 +331,7 @@ export default function CreateEditTeams({
               variant='contained'
               color='primary'
               loading={isLoadingCreate || isLoadingUpdate}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
               sx={{ float: 'right', textTransform: 'none' }}
             >
               {teamId ? 'Edit Team' : 'Create Team'}
