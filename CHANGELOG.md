@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/linode/apl-console/compare/v4.0.0...v4.1.0) (2025-04-07)
+
+
+### Bug Fixes
+
+* improve error handling ([#527](https://github.com/linode/apl-console/issues/527)) ([eb68c56](https://github.com/linode/apl-console/commit/eb68c569aba779e63f3cdaceb2cc8463b5861fdb))
+* show sealed secrets  ([#534](https://github.com/linode/apl-console/issues/534)) ([9931c4a](https://github.com/linode/apl-console/commit/9931c4a168217b942300d64aa65d216ee34b218c))
+* use name instead of id for teams ([#537](https://github.com/linode/apl-console/issues/537)) ([50f4a2a](https://github.com/linode/apl-console/commit/50f4a2abdbb9199f517e7f821fefc41478d20406))
+
 ## [4.0.0](https://github.com/linode/apl-console/compare/v3.6.0...v4.0.0) (2025-03-17)
 
 ### Features

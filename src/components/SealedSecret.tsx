@@ -38,6 +38,7 @@ export const getSecretUiSchema = (user: GetSessionApiResponse['user'], teamId: s
   }
   const uiSchema = {
     id: { 'ui:widget': 'hidden' },
+    isDisabled: { 'ui:widget': 'hidden' },
     name: { 'ui:readonly': formData?.id },
     type: { 'ui:readonly': formData?.id },
     encryptedData: {
