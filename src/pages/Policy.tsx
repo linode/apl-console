@@ -11,19 +11,22 @@ import { GetPolicyApiResponse, useEditPolicyMutation, useGetPolicyQuery, useGetT
 
 interface Params {
   teamId: string
-  policyId?: string
+  policyName?: string
 }
 
 export default function ({
   match: {
-    params: { teamId, policyId },
+    params: { teamId, policyName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const {
     user: { isPlatformAdmin },
   } = useAuthzSession(teamId)
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditPolicyMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery({ teamId, policyId }, { skip: !policyId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetPolicyQuery(
+    { teamId, policyName },
+    { skip: !policyName },
+  )
   const {
     data: teams,
     isLoading: isLoadingTeams,
@@ -45,7 +48,7 @@ export default function ({
   if (!mutating && isSuccessUpdate) return <Redirect to={`/teams/${teamId}/policies`} />
   const handleSubmit = (formData) => {
     if (!editPolicies) return
-    if (policyId) update({ teamId, policyId, body: omit(formData, ['id', 'name']) as GetPolicyApiResponse })
+    if (policyName) update({ teamId, policyName, body: omit(formData, ['id', 'name']) as GetPolicyApiResponse })
   }
   const comp = teams && !isError && (
     <Policy
@@ -54,8 +57,8 @@ export default function ({
       policy={data}
       teamId={teamId}
       mutating={mutating}
-      policyId={policyId}
+      policyName={policyName}
     />
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyId, role: 'team' })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyName, role: 'team' })} />
 }
