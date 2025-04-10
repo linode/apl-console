@@ -49,7 +49,11 @@ export const buildApiResponseSchema = object({
     ),
   tag: string()
     .required('Tag is required')
-    .matches(/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/, 'Tag can only contain lowercase letters, numbers, and hyphens.')
+    // https://pkg.go.dev/github.com/distribution/reference#pkg-overview
+    .matches(
+      /^[\w][\w.-]{0,127}$/,
+      'Tag must start with a letter, digit, or underscore, and can include dots, hyphens, underscores.',
+    )
     .test('tag-matches-build-name', '', function (tag) {
       const { imageName } = this.parent
       const expectedBuildName = `${imageName}-${tag}`

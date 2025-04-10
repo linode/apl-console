@@ -137,7 +137,12 @@ export default function ({
       body.name = buildData.name
       update({ teamId, buildName, body })
     } else {
-      body.name = `${body.imageName}-${body.tag}`
+      const name = `${body.imageName}-${body.tag}`
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/gi, '-') // Replace invalid characters with hyphens
+        .replace(/-+/g, '-') // Replace multiple consecutive hyphens with a single hyphen
+        .replace(/^-|-$/g, '') // Remove leading or trailing hyphens
+      body.name = name
       create({ teamId, body })
     }
   }
