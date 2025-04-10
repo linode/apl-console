@@ -496,7 +496,7 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
       query: (queryArg) => ({
-        url: `/repoBranches`,
+        url: `/v1/repoBranches`,
         params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
       }),
     }),
@@ -3523,6 +3523,7 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3580,6 +3581,7 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3640,6 +3642,7 @@ export type CreateAplBuildApiResponse = /** status 200 Successfully stored build
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3700,6 +3703,7 @@ export type CreateAplBuildApiArg = {
       id?: string
       teamId?: string
       name?: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -3750,6 +3754,7 @@ export type GetAplBuildApiResponse = /** status 200 Successfully obtained build 
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3812,6 +3817,7 @@ export type EditAplBuildApiResponse = /** status 200 Successfully edited a team 
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3874,6 +3880,7 @@ export type EditAplBuildApiArg = {
       id?: string
       teamId?: string
       name?: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5315,6 +5322,7 @@ export type GetAllAplProjectsApiResponse = /** status 200 Successfully obtained 
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5471,6 +5479,7 @@ export type GetTeamAplProjectsApiResponse = /** status 200 Successfully obtained
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5630,6 +5639,7 @@ export type CreateAplProjectApiResponse = /** status 200 Successfully stored pro
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5775,6 +5785,7 @@ export type CreateAplProjectApiArg = {
         id?: string
         teamId?: string
         name: string
+        imageName?: string
         tag?: string
         mode?:
           | {
@@ -5938,6 +5949,7 @@ export type GetAplProjectApiResponse = /** status 200 Successfully obtained proj
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -7245,7 +7257,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
 export type GetSettingsInfoApiArg = void
 export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
 export type GetRepoBranchesApiArg = {
-  /** URL of the repository */
+  /** Name of the code repository */
   codeRepoName?: string
   /** Id of the team */
   teamId?: string
