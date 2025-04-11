@@ -2,7 +2,19 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { LoadingButton } from '@mui/lab'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { darken, styled } from '@mui/material'
 import DeleteDialog from './DeleteDialog'
+
+const StyledDeleteButton = styled(LoadingButton)(({ theme }) => ({
+  float: 'right',
+  textTransform: 'capitalize',
+  marginLeft: theme.spacing(2),
+  color: 'white',
+  backgroundColor: theme.palette.cm.red,
+  '&:hover': {
+    backgroundColor: darken(theme.palette.cm.red as string, 0.2),
+  },
+}))
 
 interface DeleteButtonProps {
   disabled?: boolean
@@ -17,18 +29,16 @@ export default function ({ loading, disabled, sx, ...other }: DeleteButtonProps)
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
-
   const onButtonClick = () => {
     setDialogOpen(true)
   }
-
   const onDialogCancel = () => {
     setDialogOpen(false)
   }
   return (
     <>
       {dialogOpen && <DeleteDialog onCancel={onDialogCancel} loading={loading} {...other} />}
-      <LoadingButton
+      <StyledDeleteButton
         disabled={disabled}
         startIcon={<DeleteIcon />}
         onClick={onButtonClick}
@@ -37,7 +47,7 @@ export default function ({ loading, disabled, sx, ...other }: DeleteButtonProps)
         sx={{ ...sx }}
       >
         {t('delete')}
-      </LoadingButton>
+      </StyledDeleteButton>
     </>
   )
 }

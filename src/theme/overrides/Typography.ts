@@ -47,6 +47,13 @@ export default function Typography(theme: Theme) {
           fontSize: '1rem',
           lineHeight: '1.4rem',
         },
+        h6: {
+          color: theme.palette.cl.text.title,
+          fontFamily: font.bold,
+          fontWeight: 700,
+          fontSize: '1rem',
+          lineHeight: '1.125rem',
+        },
         subtitle1: {
           color: theme.palette.cm.primaryText,
           fontSize: '1.075rem',

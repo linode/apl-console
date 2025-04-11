@@ -494,6 +494,12 @@ const injectedRtkApi = api.injectEndpoints({
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
       query: () => ({ url: `/v1/settingsInfo` }),
     }),
+    getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/repoBranches`,
+        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
+      }),
+    }),
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
       query: (queryArg) => ({
         url: `/v1/testRepoConnect`,
@@ -3233,6 +3239,7 @@ export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all b
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -3269,6 +3276,7 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -3308,6 +3316,7 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -3347,6 +3356,7 @@ export type CreateBuildApiArg = {
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3390,6 +3400,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -3431,6 +3442,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -3472,6 +3484,7 @@ export type EditBuildApiArg = {
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3510,6 +3523,7 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3567,6 +3581,7 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3627,6 +3642,7 @@ export type CreateAplBuildApiResponse = /** status 200 Successfully stored build
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3687,6 +3703,7 @@ export type CreateAplBuildApiArg = {
       id?: string
       teamId?: string
       name?: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -3737,6 +3754,7 @@ export type GetAplBuildApiResponse = /** status 200 Successfully obtained build 
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3799,6 +3817,7 @@ export type EditAplBuildApiResponse = /** status 200 Successfully edited a team 
     id?: string
     teamId?: string
     name?: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -3861,6 +3880,7 @@ export type EditAplBuildApiArg = {
       id?: string
       teamId?: string
       name?: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -4432,6 +4452,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -4568,6 +4589,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -4707,6 +4729,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -4846,6 +4869,7 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -4989,6 +5013,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -5130,6 +5155,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -5296,6 +5322,7 @@ export type GetAllAplProjectsApiResponse = /** status 200 Successfully obtained 
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5452,6 +5479,7 @@ export type GetTeamAplProjectsApiResponse = /** status 200 Successfully obtained
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5611,6 +5639,7 @@ export type CreateAplProjectApiResponse = /** status 200 Successfully stored pro
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -5756,6 +5785,7 @@ export type CreateAplProjectApiArg = {
         id?: string
         teamId?: string
         name: string
+        imageName?: string
         tag?: string
         mode?:
           | {
@@ -5919,6 +5949,7 @@ export type GetAplProjectApiResponse = /** status 200 Successfully obtained proj
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -7224,6 +7255,13 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
+export type GetRepoBranchesApiArg = {
+  /** Name of the code repository */
+  codeRepoName?: string
+  /** Id of the team */
+  teamId?: string
+}
 export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
@@ -7981,6 +8019,7 @@ export const {
   useGetSessionQuery,
   useApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetRepoBranchesQuery,
   useGetTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,

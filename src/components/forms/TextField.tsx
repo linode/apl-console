@@ -1,6 +1,8 @@
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import ArrowDropUpIcon from '@mui/icons-material/ExpandLess'
+import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
 import { Theme, useTheme } from '@mui/material/styles'
-import { TextField as MuiTextField, StandardTextFieldProps } from '@mui/material'
+import { IconButton, TextField as MuiTextField, StandardTextFieldProps } from '@mui/material'
 import { clamp } from 'ramda'
 import * as React from 'react'
 import { makeStyles } from 'tss-react/mui'
@@ -13,6 +15,7 @@ import { FormHelperText } from '../FormHelperText'
 import { InputAdornment } from '../InputAdornment'
 import { InputLabel } from '../InputLabel'
 import { TooltipProps } from '../Tooltip'
+import { Typography } from '../Typography'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   absolute: {
@@ -114,6 +117,24 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
 }))
 
+/**
+ * Extend your existing TextField props with optional number-spinner props.
+ */
+interface SpinnerProps {
+  /**
+   * Function to call when the up arrow is clicked.
+   */
+  onIncrement?: () => void
+  /**
+   * Function to call when the down arrow is clicked.
+   */
+  onDecrement?: () => void
+  /**
+   * Optional suffix symbol (e.g. '%') to show before the spinner.
+   */
+  suffixSymbol?: string
+}
+
 interface BaseProps {
   /**
    * className to apply to the underlying TextField component
@@ -150,6 +171,10 @@ interface BaseProps {
    * @default false
    */
   hasAbsoluteError?: boolean
+  /**
+   * Adds optional helper text to the Textfield
+   */
+  helperText?: string
   /**
    * Placement of the `helperText`
    * @default bottom
@@ -215,57 +240,14 @@ interface InputToolTipProps {
 }
 
 interface TextFieldPropsOverrides extends StandardTextFieldProps {
-  // We override this prop to make it required
   label: string
 }
 
-export type TextFieldProps = BaseProps & TextFieldPropsOverrides & LabelToolTipProps & InputToolTipProps
-
 /**
-### Overview
-
-Text fields allow users to enter text into a UI.
-
-### Usage
-
-- Input fields should be sized to the data being entered (ex. the entry for a street address should be wider than a zip code).
-- Ensure that the field can accommodate at least one more character than the maximum number to be entered.
-
-### Rules
-
-- Every input must have a descriptive label of what that field is.
-- Required fields should include the text “(Required)” as part of the input label.
-- If most fields are required, then indicate the optional fields with the text “(Optional)” instead.
-- Avoid long labels; use succinct, short and descriptive labels (a word or two) so users can quickly scan your form. <br/> Label text shouldn’t take up multiple lines.
-- Placeholder text is the text that users see before they interact with a field. It should be a useful guide to the input type and format <br/> Don’t make the user guess what format they should use for the field. Tell this information up front.
-
-### Best Practices
-
-- A single column form with input fields stacked sequentially is the easiest to understand and leads to the highest success rate. Input fields in multiple columns can be overlooked or add unnecessary visual clutter.
-- Grouping related inputs (ex. mailing address) under a subhead or rule can add meaning and make the form feel more manageable.
-- Avoid breaking a single form into multiple “papers” unless those sections are truly independent of each other.
-- Consider sizing the input field to the data being entered (ex. the field for a street address should be wider than the field for a zip code). Balance this goal with the visual benefits of fields of the same length. A somewhat outsized input that aligns with the fields above and below it might be the best choice.
-
-## Textfield errors
-
-### Overview
-
-Error messages are an indicator of system status: they let users know that a hurdle was encountered and give solutions to fix it. Users should not have to memorize instructions in order to fix the error.
-
-### Main Principles
-
-- Should be easy to notice and understand.
-- Should give solutions to how to fix the error.
-- Users should not have to memorize instructions in order to fix the error.
-- Long error messages for short text fields can extend beyond the text field.
-- When the user has finished filling in a field and clicks the submit button, an indicator should appear if the field contains an error. Use red to differentiate error fields from normal ones.
-
-## Number Text Fields
-
-### Overview
-
-Number Text Fields are used for strictly numerical input
+ * Extend your TextFieldProps to include spinner props.
  */
+export type TextFieldProps = BaseProps & TextFieldPropsOverrides & LabelToolTipProps & InputToolTipProps & SpinnerProps
+
 export const TextField = React.forwardRef(function TextField(props: TextFieldProps, ref) {
   const { classes, cx } = useStyles()
 
@@ -287,7 +269,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
     helperTextPosition,
     hideLabel,
     inputId,
-    inputProps,
     label,
     labelTooltipText,
     loading,
@@ -306,6 +287,9 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
     type,
     value,
     width = 'medium',
+    onIncrement,
+    onDecrement,
+    suffixSymbol,
     ...textFieldProps
   } = props
 
@@ -374,7 +358,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           ...e,
           target: e.target.cloneNode(),
         } as React.ChangeEvent<HTMLInputElement>
-
         clonedEvent.target.value = `${cleanedValue}`
         onChange(clonedEvent)
       } else onChange(e)
@@ -382,10 +365,76 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
   }
 
   let errorScrollClassName = ''
-
   if (errorText) errorScrollClassName = errorGroup ? `error-for-scroll-${errorGroup}` : `error-for-scroll`
 
   const validInputId = inputId || (label ? convertToKebabCase(`${label}`) : undefined)
+
+  // Default handlers if spinner functions aren’t provided.
+  const handleDefaultIncrement = () => {
+    const current = typeof _value === 'number' ? _value : parseFloat(_value) || 0
+    const newVal = current + 1
+    setValue(newVal)
+    if (onChange) {
+      const event = {
+        target: { value: newVal.toString() },
+      } as React.ChangeEvent<HTMLInputElement>
+      onChange(event)
+    }
+  }
+
+  const handleDefaultDecrement = () => {
+    const current = typeof _value === 'number' ? _value : parseFloat(_value) || 0
+    const newVal = current - 1
+    setValue(newVal)
+    if (onChange) {
+      const event = {
+        target: { value: newVal.toString() },
+      } as React.ChangeEvent<HTMLInputElement>
+      onChange(event)
+    }
+  }
+
+  let finalEndAdornment
+
+  if (loading) {
+    finalEndAdornment = (
+      <InputAdornment position='end'>
+        <CircleProgress size='sm' />
+      </InputAdornment>
+    )
+  } else if (type === 'number') {
+    finalEndAdornment = (
+      <InputAdornment
+        position='end'
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          height: '32px',
+        }}
+      >
+        {suffixSymbol && <Typography sx={{ fontSize: '1.155rem', color: '#838383' }}>{suffixSymbol}</Typography>}
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <IconButton
+            sx={{ maxHeight: '13px' }}
+            onClick={onIncrement || handleDefaultIncrement}
+            size='small'
+            disabled={props.disabled}
+          >
+            <ArrowDropUpIcon fontSize='inherit' sx={{ mr: '0px !important' }} />
+          </IconButton>
+          <IconButton
+            sx={{ maxHeight: '13px' }}
+            onClick={onDecrement || handleDefaultDecrement}
+            size='small'
+            disabled={props.disabled}
+          >
+            <ArrowDropDownIcon fontSize='inherit' sx={{ mr: '0px !important' }} />
+          </IconButton>
+        </Box>
+      </InputAdornment>
+    )
+  } else finalEndAdornment = InputProps?.endAdornment
 
   return (
     <Box
@@ -419,6 +468,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             marginBottom: 0,
             fontWeight: '500',
             fontSize: '0.875rem',
+            color: theme.palette.cl.text.subTitle,
           }}
           data-qa-textfield-label={label}
           htmlFor={validInputId}
@@ -453,6 +503,9 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             shrink: true,
           }}
           InputProps={{
+            disableUnderline: true,
+            endAdornment: finalEndAdornment,
+            ...InputProps,
             className: cx(
               'input',
               {
@@ -461,13 +514,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
               className,
               classes.TempMuiInput,
             ),
-            disableUnderline: true,
-            endAdornment: loading && (
-              <InputAdornment position='end'>
-                <CircleProgress size='sm' />
-              </InputAdornment>
-            ),
-            ...InputProps,
           }}
           SelectProps={{
             IconComponent: KeyboardArrowDown,
@@ -490,18 +536,10 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           error={!!error || !!errorText}
           sx={{ width: widthMap[width] }}
           helperText=''
-          /**
-           * Set _helperText_ and _label_ to no value because we want to
-           * have the ability to put the helper text under the label at the top.
-           */
           label=''
           onBlur={handleBlur}
           onChange={handleChange}
           type={type}
-          /*
-           * Let us explicitly pass an empty string to the input
-           * See UserDefinedFieldsPanel.tsx for a verbose explanation why.
-           */
           value={_value}
           variant='standard'
         >
@@ -517,12 +555,15 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           })}
           data-qa-textfield-error-text={label}
           role='alert'
+          sx={{ width: widthMap[width] }}
         >
           {errorText}
         </FormHelperText>
       )}
       {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
-        <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
+        <FormHelperText data-qa-textfield-helper-text sx={{ width: widthMap[width] }}>
+          {helperText}
+        </FormHelperText>
       )}
     </Box>
   )
