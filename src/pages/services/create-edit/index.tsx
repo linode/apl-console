@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { Box, Button, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
@@ -6,12 +7,12 @@ import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
-  CreateServiceApiResponse,
-  useCreateServiceMutation,
-  useDeleteServiceMutation,
-  useEditServiceMutation,
+  CreateAplServiceApiResponse,
+  useCreateAplServiceMutation,
+  useDeleteAplServiceMutation,
+  useEditAplServiceMutation,
+  useGetAplServiceQuery,
   useGetSealedSecretsQuery,
-  useGetServiceQuery,
   useGetSettingsInfoQuery,
   useGetTeamK8SServicesQuery,
 } from 'redux/otomiApi'
@@ -70,16 +71,16 @@ export default function ({
   }
 
   // api calls
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateServiceMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditServiceMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteServiceMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplServiceMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplServiceMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplServiceMutation()
   const {
     data,
     isLoading,
     isFetching,
     isError,
     refetch: refetchService,
-  } = useGetServiceQuery({ teamId, serviceName }, { skip: !serviceName })
+  } = useGetAplServiceQuery({ teamId, serviceName }, { skip: !serviceName })
   const {
     data: k8sServices,
     isLoading: isLoadingK8sServices,
@@ -115,8 +116,8 @@ export default function ({
   }, [isDirty])
 
   // form state
-  const methods = useForm<CreateServiceApiResponse>({
-    resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateServiceApiResponse>,
+  const methods = useForm<CreateAplServiceApiResponse>({
+    resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateAplServiceApiResponse>,
     defaultValues: data,
   })
   const {
@@ -132,12 +133,12 @@ export default function ({
   useEffect(() => {
     if (data) reset(data)
 
-    if (!isEmpty(data?.ingress?.paths)) {
-      data.ingress.paths.forEach((path, index) => {
-        if (path.includes('/')) setValue(`ingress.paths.${index}`, path.replace(/^\/+/, ''))
+    if (!isEmpty(data?.spec?.paths)) {
+      data.spec?.paths.forEach((path, index) => {
+        if (path.includes('/')) setValue(`spec.paths.${index}`, path.replace(/^\/+/, ''))
       })
     }
-    setValue('ingress.domain', cluster.domainSuffix)
+    setValue('spec.domain', cluster.domainSuffix)
   }, [data, setValue])
 
   useEffect(() => {
@@ -157,38 +158,39 @@ export default function ({
   }, [k8sServices])
 
   useEffect(() => {
-    if (!hasSetActiveService && filteredK8Services.length > 0 && data?.name) {
+    if (!hasSetActiveService && filteredK8Services.length > 0 && data?.metadata.name) {
       if (!hasMounted.current) {
         hasMounted.current = true
         return
       }
-      setActiveService(data.name)
+      setActiveService(data?.metadata.name)
       setHasSetActiveService(true)
     }
-  }, [filteredK8Services, hasSetActiveService, data?.name])
+  }, [filteredK8Services, hasSetActiveService, data?.metadata.name])
 
-  const TLSEnabled = watch('ingress.tlsPass')
-  const TrafficControlEnabled = watch('trafficControl.enabled')
+  const TLSEnabled = watch('spec.tlsPass')
+  const TrafficControlEnabled = watch('spec.trafficControl.enabled')
 
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
-    if (activeService?.managedByKnative) setValue('ksvc.predeployed', true)
-    else setValue('ksvc.predeployed', false)
+    if (activeService?.managedByKnative) setValue('spec.ksvc.predeployed', true)
+    else setValue('spec.ksvc.predeployed', false)
   }
-
-  const onSubmit = (submitData: CreateServiceApiResponse) => {
-    if (!isEmpty(submitData.ingress.paths)) {
-      submitData.ingress.paths.forEach((path, index) => {
-        submitData.ingress.paths[index] = `/${path}`
+  console.log('methods', methods)
+  const onSubmit = (submitData: CreateAplServiceApiResponse) => {
+    console.log('submitData', submitData)
+    if (!isEmpty(submitData.spec?.paths)) {
+      submitData.spec?.paths.forEach((path, index) => {
+        submitData.spec.paths[index] = `/${path}`
       })
     }
-    if (submitData.ksvc?.predeployed) {
-      if (submitData.ingress.subdomain !== `${service.name}-team-${teamId}`)
-        submitData.ingress.subdomain = `${submitData.ingress.subdomain}-team-${teamId}`
-    } else if (submitData.ingress.subdomain !== `${service.name}-${teamId}`)
-      submitData.ingress.subdomain = `${submitData.ingress.subdomain}-${teamId}`
-
+    if (submitData.spec?.ksvc?.predeployed) {
+      if (submitData.spec?.domain !== `${service.name}-team-${teamId}`)
+        submitData.spec.domain = `${submitData.spec?.domain}-team-${teamId}`
+    } else if (submitData.spec?.domain !== `${service.name}-${teamId}`)
+      submitData.spec.domain = `${submitData.spec?.domain}-${teamId}`
+    if (submitData.spec?.cname?.tlsSecretName === 'empty') submitData.spec.cname.tlsSecretName = undefined
     // eslint-disable-next-line object-shorthand
     if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
     else create({ teamId, body: submitData })
@@ -202,8 +204,9 @@ export default function ({
   const error = isError || isErrorK8sServices || isErrorTeamSecrets || isErrorSettingsInfo
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
-  if (teamId !== 'admin') setValue('namespace', `team-${teamId}`)
+  if (teamId !== 'admin') setValue('spec.namespace', `team-${teamId}`)
 
+  console.log(data)
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
@@ -220,9 +223,9 @@ export default function ({
                   <TextField
                     label='Namespace'
                     width='large'
-                    {...register('namespace')}
-                    error={!!errors.namespace}
-                    helperText={errors.namespace?.message?.toString()}
+                    {...register('spec.namespace')}
+                    error={!!errors.spec?.namespace}
+                    helperText={errors.spec?.namespace?.message?.toString()}
                   />
                 )}
               </FormRow>
@@ -230,15 +233,16 @@ export default function ({
                 <TextField
                   label='Service Name'
                   width='large'
-                  {...register('name')}
+                  {...register('metadata.name')}
                   select
                   onChange={(e) => {
                     const value = e.target.value
-                    setValue('name', value)
-                    setValue('ingress.subdomain', value)
+                    setValue('metadata.name', value)
+                    setValue('metadata.labels', { 'apl.io/teamId': teamId })
+                    setValue('spec.domain', value)
                     setActiveService(value)
                   }}
-                  value={watch('name', data?.name)}
+                  value={watch('metadata.name', data?.metadata.name)}
                 >
                   <MenuItem key='select-a-service' value='' disabled classes={undefined}>
                     Select a service
@@ -252,15 +256,15 @@ export default function ({
                 <TextField
                   label='Port'
                   width='small'
-                  {...register('port')}
+                  {...register('spec.port')}
                   select
                   onChange={(e) => {
                     const value = Number(e.target.value)
-                    setValue('port', value)
+                    setValue('spec.port', value)
                   }}
-                  value={watch('port') || ''}
-                  error={!!errors.port}
-                  helperText={errors.port?.message?.toString()}
+                  value={watch('spec.port') || ''}
+                  error={!!errors.spec?.port}
+                  helperText={errors.spec?.port?.message?.toString()}
                 >
                   <MenuItem key='select-a-port' value='' disabled classes={undefined}>
                     Select a port
@@ -291,9 +295,9 @@ export default function ({
                   keySize='large'
                   valueSize='medium'
                   name='ingress.paths'
-                  error={!!errors.ingress?.paths}
-                  helperText={errors.ingress?.paths?.root?.message?.toString()}
-                  {...register('ingress.paths')}
+                  error={!!errors.spec?.paths}
+                  helperText={errors.spec?.paths?.root?.message?.toString()}
+                  {...register('spec.paths')}
                 />
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
@@ -307,25 +311,25 @@ export default function ({
                 <FormRow key={1} spacing={10}>
                   <TextField
                     label='Domain'
-                    error={!!errors.ingress?.cname}
-                    helperText={errors.ingress?.cname?.root?.message?.toString()}
+                    error={!!errors.spec?.cname}
+                    helperText={errors.spec?.cname?.root?.message?.toString()}
                     width='large'
                     type='text'
-                    {...register('ingress.cname.domain')}
+                    {...register('spec.cname.domain')}
                   />
                   <TextField
                     label='TLS Secret'
                     width='medium'
-                    {...register('ingress.cname.tlsSecretName')}
+                    {...register('spec.cname.tlsSecretName')}
                     select
-                    error={!!errors.ingress?.cname}
+                    error={!!errors.spec?.cname}
                     onChange={(e) => {
                       const value = e.target.value
-                      setValue('ingress.cname.tlsSecretName', value)
+                      setValue('spec.cname.tlsSecretName', value)
                     }}
-                    value={watch('ingress.cname.tlsSecretName') || undefined}
+                    value={watch('spec.cname.tlsSecretName') || undefined}
                   >
-                    <MenuItem key='tls-certificate' value={undefined} classes={undefined}>
+                    <MenuItem key='tls-certificate' value='empty' classes={undefined}>
                       TLS certificate
                     </MenuItem>
                     {teamSecrets.map((secret) => (
@@ -341,7 +345,7 @@ export default function ({
                 <TextField
                   label='Ingress Class Name'
                   fullWidth
-                  {...register('ingress.ingressClassName')}
+                  {...register('spec.ingressClassName')}
                   width='large'
                   value='platform'
                   select
@@ -383,8 +387,8 @@ export default function ({
                 />
                 <LinkedNumberField
                   registers={{
-                    registerA: { ...register('trafficControl.weightV1') },
-                    registerB: { ...register('trafficControl.weightV2') },
+                    registerA: { ...register('spec.trafficControl.weightV1') },
+                    registerB: { ...register('spec.trafficControl.weightV2') },
                     setValue,
                     watch,
                   }}
@@ -392,9 +396,9 @@ export default function ({
                   labelB='Version B'
                   valueMax={100}
                   disabled={!TrafficControlEnabled}
-                  error={!!errors.trafficControl?.weightV1 || !!errors.trafficControl?.weightV2}
+                  error={!!errors.spec?.trafficControl?.weightV1 || !!errors.spec?.trafficControl?.weightV2}
                   helperText={
-                    errors.trafficControl?.weightV1 || errors.trafficControl?.weightV2
+                    errors.spec?.trafficControl?.weightV1 || errors.spec?.trafficControl?.weightV2
                       ? 'The values must be in a range of "0" and "100"'
                       : undefined
                   }
@@ -408,9 +412,9 @@ export default function ({
                   valueLabel='Value'
                   addLabel='Add another response header'
                   name='ingress.headers.response.set'
-                  error={!!errors.ingress?.headers}
-                  helperText={errors.ingress?.headers ? '"Name" and "Value" must both be filled in' : undefined}
-                  {...register('ingress.headers.response.set')}
+                  error={!!errors.spec?.headers}
+                  helperText={errors.spec?.headers ? '"Name" and "Value" must both be filled in' : undefined}
+                  {...register('spec.headers.response.set')}
                 />
               </Section>
             </AdvancedSettings>
@@ -421,7 +425,7 @@ export default function ({
               {serviceName && (
                 <DeleteButton
                   onDelete={() => del({ teamId, serviceName })}
-                  resourceName={watch('name')}
+                  resourceName={watch('metadata.name')}
                   resourceType='service'
                   data-cy='button-delete-service'
                   sx={{ marginRight: '10px', textTransform: 'capitalize', ml: 2 }}

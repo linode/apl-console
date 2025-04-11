@@ -27,76 +27,92 @@ const cnameValidation = object({
   if (!value) return true
 
   const { domain, tlsSecretName } = value
-
+  if (!domain && tlsSecretName === 'empty') return true
   if ((domain && !tlsSecretName) || (!domain && tlsSecretName)) return false
 
   return true
 })
-// Ingress Validation
-const ingressPublicSchema = object({
-  ingressClassName: string().optional(),
-  tlsPass: boolean().optional(),
-  useDefaultHost: boolean().optional(),
-  subdomain: string().required(),
-  domain: string().required(),
-  useCname: boolean().optional(),
-  cname: cnameValidation.required(),
-  paths: pathsValidation.required(),
-  forwardPath: boolean().optional(),
-  hasCert: boolean().optional(),
-  certSelect: boolean().optional(),
-  certName: string().when('hasCert', {
-    is: true,
-    then: string().required('Certificate name is required if certificate is selected'),
-    otherwise: string().nullable(),
+
+// Main validation
+export const serviceApiResponseSchema = object({
+  kind: string().required().default('AplTeamService'),
+  metadata: object({
+    name: string().required('Name is required'),
+    labels: object({
+      'apl.io/teamId': string().required('Team ID is required'),
+    }).required(),
   }),
-  headers: object({
-    response: object({
-      set: array()
-        .of(
-          object({
-            name: string().required('Header name is required'),
-            value: string().required('Header value is required'),
-          }),
-        )
+  spec: object({
+    namespace: string().optional(),
+    port: number().optional(),
+    ksvc: object({
+      predeployed: boolean().optional(),
+    }).optional(),
+    trafficControl: object({
+      enabled: boolean().optional(),
+      weightV1: number().when('enabled', {
+        is: true,
+        then: number()
+          .required('WeightV1 is required when "trafficControl" is enabled')
+          .min(0, 'Must be a minimum of 0')
+          .max(100, 'Must be a maximum of 100'),
+        otherwise: number().optional(),
+      }),
+      weightV2: number().when('enabled', {
+        is: true,
+        then: number()
+          .required('WeightV2 is required when "trafficControl" is enabled')
+          .min(0, 'Must be a minimum of 0')
+          .max(100, 'Must be a maximum of 100'),
+        otherwise: number().optional(),
+      }),
+    }).optional(),
+    ingressClassName: string().optional(),
+    tlsPass: boolean().optional(),
+    // useDefaultHost: boolean().optional(),
+    // subdomain: string().required(),
+    domain: string().required(),
+    useCname: boolean().optional(),
+    cname: cnameValidation.required(),
+    paths: pathsValidation.required(),
+    forwardPath: boolean().optional(),
+    hasCert: boolean().optional(),
+    // certSelect: boolean().optional(),
+    certName: string().when('hasCert', {
+      is: true,
+      then: string().required('Certificate name is required if certificate is selected'),
+      otherwise: string().nullable(),
+    }),
+    headers: object({
+      response: object({
+        set: array()
+          .of(
+            object({
+              name: string().required('Header name is required'),
+              value: string().required('Header value is required'),
+            }),
+          )
+          .optional()
+          .nullable(),
+      })
         .optional()
         .nullable(),
     })
       .optional()
       .nullable(),
-  })
-    .optional()
-    .nullable(),
-})
-
-// Main validation
-export const serviceApiResponseSchema = object({
-  id: string().optional(),
-  teamId: string().optional(),
-  name: string().required('Service name is required'),
-  namespace: string().required('Namespace is required'),
-  port: number().required('Port is required'),
-  ksvc: object({
-    predeployed: boolean().optional(),
-  }).optional(),
-  trafficControl: object({
-    enabled: boolean().optional(),
-    weightV1: number().when('enabled', {
-      is: true,
-      then: number()
-        .required('WeightV1 is required when "trafficControl" is enabled')
-        .min(0, 'Must be a minimum of 0')
-        .max(100, 'Must be a maximum of 100'),
-      otherwise: number().optional(),
-    }),
-    weightV2: number().when('enabled', {
-      is: true,
-      then: number()
-        .required('WeightV2 is required when "trafficControl" is enabled')
-        .min(0, 'Must be a minimum of 0')
-        .max(100, 'Must be a maximum of 100'),
-      otherwise: number().optional(),
-    }),
-  }).optional(),
-  ingress: ingressPublicSchema,
+  }),
+  status: object({
+    conditions: array()
+      .of(
+        object({
+          type: string().optional(),
+          status: string().optional(),
+          message: string().optional(),
+          reason: string().optional(),
+          lastTransitionTime: string().optional(),
+        }),
+      )
+      .optional(),
+    phase: string().optional(),
+  }),
 })
