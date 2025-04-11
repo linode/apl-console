@@ -32,12 +32,20 @@ import { useSession } from 'providers/Session'
 import { LoadingButton } from '@mui/lab'
 import { buildApiResponseSchema } from './create-edit.validator'
 
+const getBuildName = (name: string, tag: string): string => {
+  return `${name}-${tag}`
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/gi, '-') // Replace invalid characters with hyphens
+    .replace(/-+/g, '-') // Replace multiple consecutive hyphens with a single hyphen
+    .replace(/^-|-$/g, '') // Remove leading or trailing hyphens
+}
+
 interface Params {
   teamId: string
   buildName?: string
 }
 
-export default function ({
+export default function CreateEditBuilds({
   match: {
     params: { teamId, buildName },
   },
@@ -137,12 +145,7 @@ export default function ({
       body.name = buildData.name
       update({ teamId, buildName, body })
     } else {
-      const name = `${body.imageName}-${body.tag}`
-        .toLowerCase()
-        .replace(/[^a-z0-9-]/gi, '-') // Replace invalid characters with hyphens
-        .replace(/-+/g, '-') // Replace multiple consecutive hyphens with a single hyphen
-        .replace(/^-|-$/g, '') // Remove leading or trailing hyphens
-      body.name = name
+      body.name = getBuildName(body.imageName, body.tag)
       create({ teamId, body })
     }
   }
@@ -226,7 +229,7 @@ export default function ({
                   onChange={(e, value: { label: string }) => {
                     const label: string = value?.label || ''
                     setValue(`mode.${watch('mode.type')}.revision`, label)
-                    if (!buildName) setValue('tag', label.toLowerCase())
+                    if (!buildName) setValue('tag', label)
                   }}
                   errorText={errors?.mode?.[`${watch('mode.type')}`]?.revision?.message?.toString()}
                 />

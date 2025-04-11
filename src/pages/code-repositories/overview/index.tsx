@@ -53,7 +53,7 @@ interface Params {
   teamId?: string
 }
 
-export default function ({
+export default function CodeRepositoriesOverview({
   match: {
     params: { teamId },
   },

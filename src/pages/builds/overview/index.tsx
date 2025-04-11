@@ -120,7 +120,7 @@ interface Params {
   teamId?: string
 }
 
-export default function ({
+export default function BuildsOverview({
   match: {
     params: { teamId },
   },

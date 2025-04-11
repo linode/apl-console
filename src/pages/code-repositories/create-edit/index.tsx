@@ -43,7 +43,7 @@ interface Params {
   codeRepositoryName?: string
 }
 
-export default function ({
+export default function CreateEditCodeRepositories({
   match: {
     params: { teamId, codeRepositoryName },
   },
