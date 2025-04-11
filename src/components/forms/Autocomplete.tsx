@@ -80,7 +80,6 @@ export function Autocomplete<
       renderInput={
         renderInput ||
         ((params) => (
-          // @ts-ignore
           <TextField
             label={label}
             width='medium'
@@ -88,7 +87,7 @@ export function Autocomplete<
             placeholder={inPlaceholder || (placeholder ?? 'Select an option')}
             {...params}
             error={!!errorText}
-            helperText={errorText || helperText}
+            helperText={helperText}
             InputProps={{
               ...params.InputProps,
               ...textFieldProps?.InputProps,
@@ -98,6 +97,9 @@ export function Autocomplete<
                 textOverflow: 'ellipsis',
                 paddingRight: '44px',
               },
+            }}
+            InputLabelProps={{
+              ...textFieldProps?.InputLabelProps,
             }}
           />
         ))
