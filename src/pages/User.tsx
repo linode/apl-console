@@ -53,7 +53,7 @@ export default function ({
   }
   const handleDelete = (deleteId) => del({ userId: deleteId })
   const teamIds = []
-  if (teamData) teamData.forEach((team) => teamIds.push(team.id))
+  if (teamData) teamData.forEach((team) => teamIds.push(team.name))
   const loading = isLoading || isLoadingTeams
   const comp = !isError && (
     <User

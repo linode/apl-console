@@ -56,7 +56,7 @@
   "TITLE_APPS": "Apps - {{role}}",
   "TITLE_DASHBOARD": "Dashboard - {{role}}",
   "TITLE_POLICIES": "Policies",
-  "TITLE_POLICY": "Policy {{policyId}}",
+  "TITLE_POLICY": "Policy {{policyName}}",
   "TITLE_SECRET": "Secret {{secretId}} - {{role}}",
   "TITLE_SEALEDSECRET": "Sealed Secret {{secretId}} - {{role}}",
   "TITLE_NETPOL": "Network Policy {{secretId}} - {{role}}",

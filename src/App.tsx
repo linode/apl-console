@@ -124,7 +124,12 @@ function App() {
                                 <PrivateRoute path='/create-team' component={Team} platformAdminRoute exact />
                                 <PrivateRoute path='/netpols' component={Netpols} platformAdminRoute exact />
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
-                                <PrivateRoute path='/policies/:policyId' component={Policy} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/policies/:policyName'
+                                  component={Policy}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/catalogs/:teamId' component={Catalogs} exact />
                                 <PrivateRoute path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
                                 <PrivateRoute
@@ -176,7 +181,7 @@ function App() {
                                 <PrivateRoute exact path='/teams/:teamId/builds' component={Builds} />
                                 <PrivateRoute path='/teams/:teamId/builds/:buildName' component={Build} exact />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
-                                <PrivateRoute path='/teams/:teamId/policies/:policyId' component={Policy} exact />
+                                <PrivateRoute path='/teams/:teamId/policies/:policyName' component={Policy} exact />
                                 <PrivateRoute path='/teams/:teamId/workloads' component={Workloads} exact />
                                 <PrivateRoute path='/teams/:teamId/services' component={Services} exact />
                                 <PrivateRoute path='/teams/:teamId/services/:serviceName' component={Service} exact />
