@@ -3,10 +3,10 @@ import { HEADER, NAVBAR } from 'config'
 import useOffSetTop from 'hooks/useOffSetTop'
 import useResponsive from 'hooks/useResponsive'
 import { useSession } from 'providers/Session'
-import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
 import useSettings from 'hooks/useSettings'
+import React from 'react'
 import AccountPopover from './AccountPopover'
 import { IconButtonAnimate } from './animate'
 import Iconify from './Iconify'
@@ -64,21 +64,25 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     setOboTeamId,
   } = useSession()
   const { data: allTeams } = useGetTeamsQuery()
-  const { t } = useTranslation()
   // END HOOKs
   let teams: GetTeamsApiResponse
 
   if (isPlatformAdmin) {
-    teams = ((allTeams as any) || []).map(({ id }) => ({
-      id,
-    }))
+    teams = [
+      { name: 'admin' }, // Ensure the "admin" team is always included for platform admins
+      ...((allTeams as any) || []).map(({ name }) => ({
+        name,
+      })),
+    ]
+    // Make the array unique by the `name` field
+    teams = Array.from(new Map(teams.map((team) => [team.name, team])).values())
   } else {
-    teams = ((userTeams as any) || []).map((id) => ({
-      id,
+    teams = ((userTeams as any) || []).map((name) => ({
+      name,
     }))
   }
 
-  const handleChangeView = (event) => {
+  const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     const view = event.target.value
     onChangeView(event)
     if (view === 'team' && oboTeamId === 'admin') history.push('/teams/admin/services')
@@ -150,18 +154,14 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {isPlatformAdmin && (
-              <MenuItem value='admin' data-cy='select-oboteam-admin'>
-                {t('admin')}
-              </MenuItem>
-            )}
-            {teams.map(({ id }) => (
-              <MenuItem key={id} value={id} data-cy={`select-oboteam-${id}`}>
-                {id}
-              </MenuItem>
-            ))}
+            {teams
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(({ name }) => (
+                <MenuItem key={name} value={name} data-cy={`select-oboteam-${name}`}>
+                  {name}
+                </MenuItem>
+              ))}
           </Select>
-
           <AccountPopover email={email} />
         </Stack>
       </Toolbar>
