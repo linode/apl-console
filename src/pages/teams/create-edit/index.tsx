@@ -9,7 +9,6 @@ import { TextField } from 'components/forms/TextField'
 import AdvancedSettings from 'components/AdvancedSettings'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import { useEffect, useState } from 'react'
-import KeyValue from 'components/KeyValue'
 import {
   CreateTeamApiResponse,
   useCreateTeamMutation,
@@ -27,6 +26,7 @@ import LoadingButton from '@mui/lab/LoadingButton'
 import DeleteButton from 'components/DeleteButton'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
+import ResourceQuotaKeyValue from './ResourceQuotaKeyValue'
 
 type NotificationReceiver = 'slack' | 'teams' | 'opsgenie' | 'email'
 
@@ -84,7 +84,7 @@ export default function CreateEditTeams({
   } = methods
 
   // checkbox logic
-  const controlledResourceQuotaInput = watch('resourceQuota.enabled')
+  // const controlledResourceQuotaInput = watch('resourceQuota.enabled')
   const controlledAlertmanagerInput = watch('managedMonitoring.alertmanager')
 
   useEffect(() => {
@@ -248,75 +248,7 @@ export default function CreateEditTeams({
                 </ControlledBox>
               </Section>
               <Section title='Resource Quotas' collapsable>
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='resourceQuota.enabled'
-                  control={control}
-                  label='Enable resource quotas'
-                  explainertext='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
-                />
-                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
-                  <KeyValue
-                    title='Count quota'
-                    keyLabel='key'
-                    valueLabel='value'
-                    frozen={!controlledResourceQuotaInput}
-                    compressed
-                    keyDisabled
-                    valueDisabled
-                    valueSize='medium'
-                    keySize='medium'
-                    showLabel={false}
-                    name='resourceQuota.countQuota'
-                    {...register('resourceQuota.countQuota')}
-                  />
-                </ControlledBox>
-                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
-                  <KeyValue
-                    title='Compute resource quota'
-                    keyLabel='key'
-                    valueLabel='value'
-                    compressed
-                    keyDisabled
-                    valueSize='medium'
-                    keySize='medium'
-                    showLabel={false}
-                    name='resourceQuota.computeResourceQuota'
-                    {...register('resourceQuota.computeResourceQuota')}
-                  />
-                </ControlledBox>
-                <ControlledBox className={classes.keyValueWrapper} disabled={!controlledResourceQuotaInput}>
-                  <KeyValue
-                    title='Custom resource quota'
-                    keyLabel='key'
-                    valueLabel='value'
-                    compressed
-                    valueSize='medium'
-                    keySize='medium'
-                    showLabel={false}
-                    name='resourceQuota.customQuota'
-                    addLabel='Add custom resource quota'
-                    error={!!errors.resourceQuota?.customQuota}
-                    errorText={errors.resourceQuota?.customQuota?.root?.message}
-                    {...register('resourceQuota.customQuota')}
-                  />
-                </ControlledBox>
-              </Section>
-              <Section title='Network Policies' collapsable>
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='networkPolicy.ingressPrivate'
-                  control={control}
-                  label='Ingress control'
-                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled).'
-                />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='networkPolicy.egressPublic'
-                  control={control}
-                  label='Egress control'
-                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled).'
-                />
+                <ResourceQuotaKeyValue name='resourceQuota' />
               </Section>
               <Section title='Permissions' collapsable>
                 <PermissionsTable name='selfService' />

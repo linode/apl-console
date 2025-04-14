@@ -388,63 +388,7 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
       )
 }[]
 export type GetAllServicesApiArg = void
-export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
-  id?: string
-  name: string
-  oidc?: {
-    groupMapping?: string
-  }
-  password?: string
-  managedMonitoring?: {
-    grafana?: boolean
-    alertmanager?: boolean
-  }
-  alerts?: {
-    repeatInterval?: string
-    groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'none')[]
-    slack?: {
-      channel?: string
-      channelCrit?: string
-      url?: string
-    }
-    msteams?: {
-      highPrio?: string
-      lowPrio?: string
-    }
-    email?: {
-      critical?: string[]
-      nonCritical?: string[]
-    }
-  }
-  resourceQuota?: {
-    enabled: boolean
-    countQuota: ResourceQuota[]
-    computeResourceQuota: ResourceQuota[]
-    customQuota?: ResourceQuota[]
-  }
-  networkPolicy?: {
-    ingressPrivate?: boolean
-    egressPublic?: boolean
-  }
-  selfService: {
-    teamMembers: {
-      createServices: boolean
-      editSecurityPolicies: boolean
-      useCloudShell: boolean
-      downloadKubeconfig: boolean
-      downloadDockerLogin: boolean
-    }
-  }
-}[]
-export type GetTeamsApiArg = void
-export type ResourceQuota = {
-  key: string
-  value: number
-  mutable?: boolean
-  decorator?: string
-}
-export type CreateTeamApiResponse = /** status 200 Successfully obtained teams collection */ {
+export type TeamApiBody = {
   id?: string
   name: string
   oidc?: {
@@ -474,11 +418,9 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     // }
   }
   resourceQuota?: {
-    enabled: boolean
-    countQuota: ResourceQuota[]
-    computeResourceQuota: ResourceQuota[]
-    customQuota?: ResourceQuota[]
-  }
+    name: string,
+    value: string
+  }[]
   networkPolicy?: {
     ingressPrivate?: boolean
     egressPublic?: boolean
@@ -493,226 +435,25 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     }
   }
 }
+export type GetTeamsApiResponse = TeamApiBody[]
+export type GetTeamsApiArg = void
+
+export type CreateTeamApiResponse = TeamApiBody
 export type CreateTeamApiArg = {
   /** Team object that needs to be added to the collection */
-  body: {
-    id?: string
-    name: string
-    oidc?: {
-      groupMapping?: string
-    }
-    password?: string
-    managedMonitoring?: {
-      grafana?: boolean
-      alertmanager?: boolean
-    }
-    alerts?: {
-      repeatInterval?: string
-      groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'none')[]
-      slack?: {
-        channel?: string
-        channelCrit?: string
-        url?: string
-      }
-      msteams?: {
-        highPrio?: string
-        lowPrio?: string
-      }
-      // email?: {
-      //   critical?: string[]
-      //   nonCritical?: string[]
-      // }
-    }
-    resourceQuota?: {
-      enabled: boolean
-      countQuota: ResourceQuota[]
-      computeResourceQuota: ResourceQuota[]
-      customQuota?: ResourceQuota[]
-    }
-    networkPolicy?: {
-      ingressPrivate?: boolean
-      egressPublic?: boolean
-    }
-    selfService: {
-      teamMembers: {
-        createServices: boolean
-        editSecurityPolicies: boolean
-        useCloudShell: boolean
-        downloadKubeconfig: boolean
-        downloadDockerLogin: boolean
-      }
-    }
-  }
+  body: TeamApiBody
 }
-export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
-  id?: string
-  name: string
-  oidc?: {
-    groupMapping?: string
-  }
-  password?: string
-  managedMonitoring?: {
-    grafana?: boolean
-    alertmanager?: boolean
-  }
-  alerts?: {
-    repeatInterval?: string
-    groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'none')[]
-    slack?: {
-      channel?: string
-      channelCrit?: string
-      url?: string
-    }
-    msteams?: {
-      highPrio?: string
-      lowPrio?: string
-    }
-    email?: {
-      critical?: string[]
-      nonCritical?: string[]
-    }
-  }
-  resourceQuota?: {
-    enabled: boolean
-    countQuota: ResourceQuota[]
-    computeResourceQuota: ResourceQuota[]
-    customQuota?: ResourceQuota[]
-  }
-  networkPolicy?: {
-    ingressPrivate?: boolean
-    egressPublic?: boolean
-  }
-  selfService: {
-    teamMembers: {
-      createServices: boolean
-      editSecurityPolicies: boolean
-      useCloudShell: boolean
-      downloadKubeconfig: boolean
-      downloadDockerLogin: boolean
-    }
-  }
-}
+export type GetTeamApiResponse = TeamApiBody
 export type GetTeamApiArg = {
   /** ID of team to return */
   teamId: string
 }
-export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
-  id?: string
-  name: string
-  oidc?: {
-    groupMapping?: string
-  }
-  password?: string
-  managedMonitoring?: {
-    grafana?: boolean
-    alertmanager?: boolean
-  }
-  alerts?: {
-    repeatInterval?: string
-    groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'none')[]
-    slack?: {
-      channel?: string
-      channelCrit?: string
-      url?: string
-    }
-    msteams?: {
-      highPrio?: string
-      lowPrio?: string
-    }
-    email?: {
-      critical?: string[]
-      nonCritical?: string[]
-    }
-  }
-  resourceQuota?: {
-    enabled: boolean
-    countQuota: ResourceQuota[]
-    computeResourceQuota: ResourceQuota[]
-    customQuota?: ResourceQuota[]
-  }
-  networkPolicy?: {
-    ingressPrivate?: boolean
-    egressPublic?: boolean
-  }
-  selfService: {
-    teamMembers: {
-      createServices: boolean
-      editSecurityPolicies: boolean
-      useCloudShell: boolean
-      downloadKubeconfig: boolean
-      downloadDockerLogin: boolean
-    }
-  }
-}
+export type EditTeamApiResponse = TeamApiBody
 export type EditTeamApiArg = {
   /** ID of team to return */
   teamId: string
   /** Team object that contains updated values */
-  body: {
-    id?: string
-    name: string
-    oidc?: {
-      groupMapping?: string
-    }
-    password?: string
-    managedMonitoring?: {
-      grafana?: boolean
-      alertmanager?: boolean
-    }
-    alerts?: {
-      repeatInterval?: string
-      groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
-      slack?: {
-        channel?: string
-        channelCrit?: string
-        url?: string
-      }
-      msteams?: {
-        highPrio?: string
-        lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
-      }
-    }
-    resourceQuota?: {
-      name: string
-      value: string
-    }[]
-    networkPolicy?: {
-      ingressPrivate?: boolean
-      egressPublic?: boolean
-    }
-    selfService?: {
-      service?: 'ingress'[]
-      policies?: 'edit policies'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-      apps?: ('argocd' | 'gitea')[]
-      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
-    }
-  }
+  body: TeamApiBody
 }
 export type DeleteTeamApiResponse = /** status 200 Successfully deleted a team */ undefined
 export type DeleteTeamApiArg = {

@@ -111,21 +111,23 @@ export const createTeamApiResponseSchema = yup.object({
     })
     .optional(),
   alerts: alertsSchema.optional(),
-  resourceQuota: resourceQuotaObjectSchema.default({
-    enabled: false,
-    countQuota: [
-      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-    ],
-    computeResourceQuota: [
-      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-      { key: 'limits.memory', value: 500, decorator: 'Mi' },
-      { key: 'requests.memory', value: 500, decorator: 'Mi' },
-    ],
-    customQuota: [],
-  }),
+  resourceQuota: yup
+    .array()
+    .of(
+      yup.object({
+        name: yup.string().required('Resource quota name is required'),
+        value: yup.string().required('Resource quota value is required'),
+      }),
+    )
+    .default([
+      { name: 'services.loadbalancers', value: '0' },
+      { name: 'services.nodeports', value: '0' },
+      { name: 'limits.cpu', value: '500m' },
+      { name: 'requests.cpu', value: '250m' },
+      { name: 'limits.memory', value: '500mi' },
+      { name: 'requests.memory', value: '500mi' },
+      { name: 'count/pods', value: '5' },
+    ]),
   networkPolicy: yup
     .object({
       ingressPrivate: yup.boolean().optional().default(true),

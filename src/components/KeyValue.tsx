@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Button, IconButton, StandardTextFieldProps } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
@@ -6,7 +6,7 @@ import { Theme } from '@mui/material/styles'
 import { Add, Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import FormRow from 'components/forms/FormRow'
 import { FormHelperText } from 'components/FormHelperText'
 import { InputAdornment } from './InputAdornment'
@@ -64,12 +64,9 @@ interface TextFieldPropsOverrides extends StandardTextFieldProps {
   label: string
 }
 
-interface KeyValueItem {
-  key: string
+export interface KeyValueItem {
+  name: string
   value: string
-  mutable?: boolean
-  // preferably not longer than 5 characters
-  decorator?: string
 }
 
 interface KeyValueProps {
@@ -95,6 +92,36 @@ interface KeyValueProps {
   valueSize?: 'small' | 'medium' | 'large'
   onlyValue?: boolean
   errorText?: string
+  // optional filter function. It receives a field and its original index.
+  filterFn?: (item: KeyValueItem & { id: string }, index: number) => boolean
+  decoratorMapping?: Record<string, string>
+}
+
+// This local subcomponent watches the key field (using its path) and checks the provided
+// decoratorMapping. If a matching decorator exists, it is rendered as an InputAdornment.
+function DecoratorAdornment({
+  name,
+  index,
+  keyLabel,
+  decoratorMapping,
+  classes,
+}: {
+  name: string
+  index: number
+  keyLabel: string
+  decoratorMapping: Record<string, string>
+  classes: Record<string, string>
+}) {
+  const { control } = useFormContext()
+  const keyFieldPath = `${name}.${index}.${keyLabel.toLowerCase()}`
+  const keyValue = useWatch({ control, name: keyFieldPath }) as string
+  const decorator = decoratorMapping[keyValue]
+  if (!decorator) return null
+  return (
+    <InputAdornment className={classes.decorator} position='end'>
+      <Typography className={classes.decoratortext}>{decorator}</Typography>
+    </InputAdornment>
+  )
 }
 
 export default function KeyValue(props: KeyValueProps) {
@@ -122,14 +149,18 @@ export default function KeyValue(props: KeyValueProps) {
     keyDisabled = false,
     showLabel = true,
     valueDisabled = false,
+    filterFn,
+    decoratorMapping,
   } = props
 
-  const [items, setItems] = useState([{ [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' }])
+  const { fields, append, remove } = useFieldArray({ control, name })
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name,
-  })
+  // Map fields with their original index.
+  const mappedFields = fields.map((field, index) => ({ field, index }))
+  // Apply filtering if filterFn is provided.
+  const filteredFields = filterFn
+    ? mappedFields.filter(({ field, index }) => filterFn(field as KeyValueItem & { id: string }, index))
+    : mappedFields
 
   const handleAddItem = () => {
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
@@ -145,8 +176,8 @@ export default function KeyValue(props: KeyValueProps) {
       <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
-      {(fields as (KeyValueItem & { id: string })[]).map((item, index) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      {filteredFields.map(({ field, index }, localIndex) => (
+        <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
           <FormRow spacing={10}>
             <TextField
               width={keySize}
@@ -154,26 +185,26 @@ export default function KeyValue(props: KeyValueProps) {
               disabled={keyDisabled}
               value={keyValue}
               noMarginTop={compressed}
-              label={showLabel && index === 0 ? keyLabel : ''}
+              label={showLabel && localIndex === 0 ? keyLabel : ''}
               error={error}
               {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
             />
             <TextField
               width={valueSize}
-              /**
-               *  First check if item is mutable, this has priorty over the valueDisabled prop
-               *  If the item is mutable and valueDisable is true, then the item will still be enabled
-               * */
-              disabled={!(item.mutable ?? !valueDisabled)}
-              label={showLabel && index === 0 ? valueLabel : ''}
+              disabled={valueDisabled}
+              label={showLabel && localIndex === 0 ? valueLabel : ''}
               noMarginTop={compressed}
               {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
               InputProps={{
-                ...{ readOnly: frozen },
-                endAdornment: item.decorator ? (
-                  <InputAdornment className={classes.decorator} position='end'>
-                    <Typography className={classes.decoratortext}>{item.decorator}</Typography>
-                  </InputAdornment>
+                readOnly: frozen,
+                endAdornment: decoratorMapping ? (
+                  <DecoratorAdornment
+                    name={name}
+                    index={index}
+                    keyLabel={keyLabel}
+                    decoratorMapping={decoratorMapping}
+                    classes={classes}
+                  />
                 ) : null,
               }}
             />
