@@ -82,6 +82,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     }))
   }
 
+  const sortedTeams = teams.sort((a, b) => {
+    if (a.name === 'admin') return -1 // "admin" comes first
+    if (b.name === 'admin') return 1 // "admin" comes first
+    return a.name.localeCompare(b.name) // Sort alphabetically for others
+  })
+
   const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     const view = event.target.value
     onChangeView(event)
@@ -154,13 +160,11 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {teams
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map(({ name }) => (
-                <MenuItem key={name} value={name} data-cy={`select-oboteam-${name}`}>
-                  {name}
-                </MenuItem>
-              ))}
+            {sortedTeams.map(({ name }) => (
+              <MenuItem key={name} value={name} data-cy={`select-oboteam-${name}`}>
+                {name}
+              </MenuItem>
+            ))}
           </Select>
           <AccountPopover email={email} />
         </Stack>
