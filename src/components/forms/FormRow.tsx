@@ -1,13 +1,14 @@
 import React from 'react'
-import { Box } from '@mui/material'
+import { Box, SxProps } from '@mui/material'
 
 interface FormRowProps {
   children: React.ReactNode
   spacing?: number // spacing in pixels
+  sx?: SxProps
 }
 
 export default function FormRow(props: FormRowProps) {
-  const { children, spacing = 0 } = props
+  const { children, spacing = 0, sx } = props
 
   return (
     <Box
@@ -18,6 +19,7 @@ export default function FormRow(props: FormRowProps) {
         '& > *:not(:last-child)': {
           marginRight: `${spacing}px`,
         },
+        ...sx,
       }}
     >
       {React.Children.map(children, (child) =>

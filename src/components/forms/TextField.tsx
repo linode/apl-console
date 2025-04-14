@@ -468,6 +468,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             marginBottom: 0,
             fontWeight: '500',
             fontSize: '0.875rem',
+            color: theme.palette.cl.text.subTitle,
           }}
           data-qa-textfield-label={label}
           htmlFor={validInputId}
@@ -502,6 +503,9 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             shrink: true,
           }}
           InputProps={{
+            disableUnderline: true,
+            endAdornment: finalEndAdornment,
+            ...InputProps,
             className: cx(
               'input',
               {
@@ -510,9 +514,6 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
               className,
               classes.TempMuiInput,
             ),
-            disableUnderline: true,
-            endAdornment: finalEndAdornment,
-            ...InputProps,
           }}
           SelectProps={{
             IconComponent: KeyboardArrowDown,
@@ -554,12 +555,15 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           })}
           data-qa-textfield-error-text={label}
           role='alert'
+          sx={{ width: widthMap[width] }}
         >
           {errorText}
         </FormHelperText>
       )}
       {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
-        <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
+        <FormHelperText data-qa-textfield-helper-text sx={{ width: widthMap[width] }}>
+          {helperText}
+        </FormHelperText>
       )}
     </Box>
   )

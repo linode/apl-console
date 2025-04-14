@@ -6,15 +6,14 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAllCodeReposQuery, useGetTeamCodeReposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
-import { Typography } from '@mui/material'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
 
-const getCodeRepoLabel = (): CallableFunction =>
+const getCodeRepoName = (): CallableFunction =>
   function (row): string | React.ReactElement {
     const { teamId, name }: { teamId: string; name: string } = row
-    const path = `/teams/${teamId}/coderepositories/${encodeURIComponent(name)}`
+    const path = `/teams/${teamId}/code-repositories/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}
@@ -54,7 +53,7 @@ interface Params {
   teamId?: string
 }
 
-export default function ({
+export default function CodeRepositoriesOverview({
   match: {
     params: { teamId },
   },
@@ -85,9 +84,9 @@ export default function ({
 
   const headCells: HeadCell[] = [
     {
-      id: 'label',
-      label: t('Label'),
-      renderer: getCodeRepoLabel(),
+      id: 'name',
+      label: t('Name'),
+      renderer: getCodeRepoName(),
     },
     {
       id: 'url',
@@ -107,20 +106,16 @@ export default function ({
     })
   }
 
-  const customButtonText = () => (
-    <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
-      Add Code Repository
-    </Typography>
-  )
+  const customButtonText = () => <span>Add Code Repository</span>
 
   const comp = (
     <ListTable
       teamId={teamId}
       headCells={headCells}
       rows={coderepos}
-      resourceType='CodeRepository'
+      resourceType='Code-repository'
       customButtonText={customButtonText()}
     />
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CODEREPOSITORIES', { scope: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CODE_REPOSITORIES', { scope: getRole(teamId) })} />
 }

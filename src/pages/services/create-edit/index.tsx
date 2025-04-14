@@ -30,6 +30,7 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { isEmpty } from 'lodash'
 import LinkedNumberField from 'components/forms/LinkedNumberField'
 import AdvancedSettings from 'components/AdvancedSettings'
+import font from 'theme/font'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
 
@@ -170,7 +171,7 @@ export default function ({
 
   const TLSEnabled = watch('spec.tlsPass')
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
-
+  console.log('TrafficControlEnabled', TrafficControlEnabled)
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
@@ -301,7 +302,15 @@ export default function ({
                 />
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
-                <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: '14px' }}>
+                <Typography
+                  sx={{
+                    fontSize: '1rem',
+                    lineHeight: '1.5rem',
+                    fontWeight: 700,
+                    color: 'white',
+                    fontFamily: font.bold,
+                  }}
+                >
                   Domain aliases (CNAME)
                 </Typography>
                 <Typography sx={{ fontSize: '12px' }}>
@@ -361,7 +370,7 @@ export default function ({
 
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='ingress.tlsPass'
+                  name='spec.tlsPass'
                   control={control}
                   label='TLS Passthrough'
                   explainertext='Requests will be forwarded to the backend service without being decrypted'
@@ -370,7 +379,7 @@ export default function ({
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   disabled={TLSEnabled}
-                  name='ingress.forwardPath'
+                  name='spec.forwardPath'
                   control={control}
                   label='Forward Path'
                   explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
@@ -379,7 +388,7 @@ export default function ({
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   disabled={TLSEnabled}
-                  name='trafficControl.enabled'
+                  name='spec.trafficControl.enabled'
                   control={control}
                   label='Enable Traffic Mangement'
                   explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two

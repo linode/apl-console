@@ -1,29 +1,34 @@
+import { skipToken } from '@reduxjs/toolkit/query/react'
+import { HeadCell } from 'components/EnhancedTable'
+import InformationBanner from 'components/InformationBanner'
+import ListTable from 'components/ListTable'
+import { getStatus } from 'components/Workloads'
+import useStatus from 'hooks/useStatus'
+import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Link, RouteComponentProps } from 'react-router-dom'
+import { useAppSelector } from 'redux/hooks'
+import { useGetAllBuildsQuery, useGetTeamBuildsQuery } from 'redux/otomiApi'
+import { getRole } from 'utils/data'
+import { Box, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
-import useStatus from 'hooks/useStatus'
-import { HeadCell } from './EnhancedTable'
-import RLink from './Link'
-import ListTable from './ListTable'
-import { getStatus } from './Workloads'
-import InformationBanner from './InformationBanner'
+import RLink from '../../../components/Link'
 
 interface Row {
   teamId: string
   tag: string
   id: string
   name: string
+  imageName: string
   trigger: boolean
   mode: { type: string }
 }
 
 const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/builds/${encodeURIComponent(row.name)}`
+  const path = `/teams/${row.teamId}/container-images/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -32,9 +37,7 @@ const getBuildLink = (row: Row) => {
 }
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
-  const formattedTag = row.tag.replace(/[._]/g, '-')
-
-  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}-${formattedTag}`
+  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}`
   const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
   const host = `https://tekton-${row.teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
@@ -86,7 +89,7 @@ function WebhookUrlRenderer({ row }: { row: Row }) {
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [copied, setCopied] = useState(false)
-  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.name}`
+  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.imageName}`
 
   const handleCopyToClipboard = () => {
     navigator.clipboard.writeText(repository)
@@ -113,12 +116,16 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
   )
 }
 
-interface Props {
-  builds: GetTeamBuildsApiResponse
+interface Params {
   teamId?: string
 }
 
-export default function ({ builds, teamId }: Props): React.ReactElement {
+export default function BuildsOverview({
+  match: {
+    params: { teamId },
+  },
+}: RouteComponentProps<Params>): React.ReactElement {
+  const { t } = useTranslation()
   const {
     appsEnabled,
     settings: {
@@ -126,8 +133,24 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     },
   } = useSession()
   const status = useStatus()
-
-  const { t } = useTranslation()
+  const {
+    data: allBuilds,
+    isLoading: isLoadingAllBuilds,
+    isFetching: isFetchingAllBuilds,
+    refetch: refetchAllBuilds,
+  } = useGetAllBuildsQuery(teamId ? skipToken : undefined)
+  const {
+    data: teamBuilds,
+    isLoading: isLoadingTeamBuilds,
+    isFetching: isFetchingTeamBuilds,
+    refetch: refetchTeamBuilds,
+  } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!teamId && !isFetchingAllBuilds) refetchAllBuilds()
+    else if (teamId && !isFetchingTeamBuilds) refetchTeamBuilds()
+  }, [isDirty])
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -174,22 +197,23 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     })
   }
 
-  if (!appsEnabled.harbor)
-    return <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
+  const customButtonText = () => <span>Create container image</span>
 
-  const customButtonText = () => (
-    <Typography variant='h6' sx={{ fontSize: 16, textTransform: 'none' }}>
-      Add Build
-    </Typography>
-  )
+  const loading = isLoadingAllBuilds || isLoadingTeamBuilds
+  const builds = teamId ? teamBuilds : allBuilds
 
-  return (
-    <ListTable
-      teamId={teamId}
-      headCells={headCells}
-      rows={builds}
-      resourceType='Build'
-      customButtonText={customButtonText()}
-    />
+  const comp = !appsEnabled.harbor ? (
+    <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
+  ) : (
+    builds && (
+      <ListTable
+        teamId={teamId}
+        headCells={headCells}
+        rows={builds}
+        resourceType='Container-image'
+        customButtonText={customButtonText()}
+      />
+    )
   )
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CONTAINER_IMAGES', { scope: getRole(teamId) })} />
 }
