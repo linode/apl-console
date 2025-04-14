@@ -69,12 +69,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   let teams: GetTeamsApiResponse
 
   if (isPlatformAdmin) {
-    teams = ((allTeams as any) || []).map(({ id }) => ({
-      id,
+    teams = ((allTeams as any) || []).map(({ name }) => ({
+      name,
     }))
   } else {
-    teams = ((userTeams as any) || []).map((id) => ({
-      id,
+    teams = ((userTeams as any) || []).map((name) => ({
+      name,
     }))
   }
 
@@ -155,9 +155,9 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
                 {t('admin')}
               </MenuItem>
             )}
-            {teams.map(({ id }) => (
-              <MenuItem key={id} value={id} data-cy={`select-oboteam-${id}`}>
-                {id}
+            {teams.map(({ name }) => (
+              <MenuItem key={name} value={name} data-cy={`select-oboteam-${name}`}>
+                {name}
               </MenuItem>
             ))}
           </Select>
