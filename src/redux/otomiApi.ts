@@ -7182,11 +7182,12 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   cluster?: {
-    name?: string
+    name: string
     domainSuffix?: string
     apiServer?: string
     k8sContext?: string
-    provider?: 'linode' | 'custom'
+    owner?: string
+    provider: 'linode' | 'custom'
   }
   platformBackups?: {
     gitea?: {
@@ -7464,11 +7465,12 @@ export type EditSettingsApiArg = {
       }
     }
     cluster?: {
-      name?: string
+      name: string
       domainSuffix?: string
       apiServer?: string
       k8sContext?: string
-      provider?: 'linode' | 'custom'
+      owner?: string
+      provider: 'linode' | 'custom'
     }
     platformBackups?: {
       gitea?: {
