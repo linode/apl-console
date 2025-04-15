@@ -2,7 +2,7 @@
 import { Box, Button, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -59,7 +59,6 @@ export default function ({
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
   const [hasSetActiveService, setHasSetActiveService] = useState(false)
-  const hasMounted = useRef(false)
 
   const getKeyValue = (activeService: K8Service) => {
     let compositeUrl = ''
@@ -139,13 +138,13 @@ export default function ({
         if (path.includes('/')) setValue(`spec.paths.${index}`, path.replace(/^\/+/, ''))
       })
     }
-    setValue('spec.domain', cluster.domainSuffix)
   }, [data, setValue])
 
   useEffect(() => {
-    setUrl(getKeyValue(service))
+    const serviceDomain = getKeyValue(service)
+    setUrl(serviceDomain)
+    setValue('spec.domain', serviceDomain)
   }, [service])
-
   const filteredK8Services = useMemo(() => {
     return (
       k8sServices?.filter(
@@ -160,10 +159,6 @@ export default function ({
 
   useEffect(() => {
     if (!hasSetActiveService && filteredK8Services.length > 0 && data?.metadata.name) {
-      if (!hasMounted.current) {
-        hasMounted.current = true
-        return
-      }
       setActiveService(data?.metadata.name)
       setHasSetActiveService(true)
     }
@@ -171,14 +166,13 @@ export default function ({
 
   const TLSEnabled = watch('spec.tlsPass')
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
-  console.log('TrafficControlEnabled', TrafficControlEnabled)
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
     setService(activeService)
+    setValue('spec.port', data?.spec?.port || activeService?.ports[0])
     if (activeService?.managedByKnative) setValue('spec.ksvc.predeployed', true)
     else setValue('spec.ksvc.predeployed', false)
   }
-  console.log('methods', methods)
   const onSubmit = (submitData: CreateAplServiceApiResponse) => {
     console.log('submitData', submitData)
     if (!isEmpty(submitData.spec?.paths)) {
@@ -186,12 +180,8 @@ export default function ({
         submitData.spec.paths[index] = `/${path}`
       })
     }
-    if (submitData.spec?.ksvc?.predeployed) {
-      if (submitData.spec?.domain !== `${service.name}-team-${teamId}`)
-        submitData.spec.domain = `${submitData.spec?.domain}-team-${teamId}`
-    } else if (submitData.spec?.domain !== `${service.name}-${teamId}`)
-      submitData.spec.domain = `${submitData.spec?.domain}-${teamId}`
     if (submitData.spec?.cname?.tlsSecretName === 'empty') submitData.spec.cname.tlsSecretName = undefined
+    console.log('submitData after changes', submitData)
     // eslint-disable-next-line object-shorthand
     if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
     else create({ teamId, body: submitData })
@@ -206,8 +196,7 @@ export default function ({
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
   if (teamId !== 'admin') setValue('spec.namespace', `team-${teamId}`)
-
-  console.log(data)
+  console.log('form data', data)
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
@@ -263,7 +252,7 @@ export default function ({
                     const value = Number(e.target.value)
                     setValue('spec.port', value)
                   }}
-                  value={watch('spec.port') || ''}
+                  value={watch('spec.port') || data?.spec?.port}
                   error={!!errors.spec?.port}
                   helperText={errors.spec?.port?.message?.toString()}
                 >
@@ -336,7 +325,7 @@ export default function ({
                       const value = e.target.value
                       setValue('spec.cname.tlsSecretName', value)
                     }}
-                    value={watch('spec.cname.tlsSecretName') || undefined}
+                    value={watch('spec.cname.tlsSecretName') || data?.spec?.cname?.tlsSecretName}
                   >
                     <MenuItem key='tls-certificate' value='empty' classes={undefined}>
                       TLS certificate
@@ -356,7 +345,7 @@ export default function ({
                   fullWidth
                   {...register('spec.ingressClassName')}
                   width='large'
-                  value='platform'
+                  value={watch('spec.ingressClassName') || data?.spec?.ingressClassName}
                   select
                 >
                   {settingsInfo?.ingressClassNames.map((ingressClassName) => (
