@@ -143,7 +143,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           <Select
             size='small'
             color='secondary'
-            value={(teams.length && oboTeamId) || ''}
+            value={(teams?.length && oboTeamId) || ''}
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
