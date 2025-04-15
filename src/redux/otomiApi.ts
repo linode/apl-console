@@ -3,7 +3,7 @@ const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
       query: (queryArg) => ({
-        url: `/otomi/values`,
+        url: `/v1/otomi/values`,
         params: {
           filesOnly: queryArg.filesOnly,
           excludeSecrets: queryArg.excludeSecrets,
@@ -11,321 +11,528 @@ const injectedRtkApi = api.injectEndpoints({
         },
       }),
     }),
-    getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
-      query: () => ({ url: `/services` }),
-    }),
     getTeams: build.query<GetTeamsApiResponse, GetTeamsApiArg>({
-      query: () => ({ url: `/teams` }),
+      query: () => ({ url: `/v1/teams` }),
     }),
     createTeam: build.mutation<CreateTeamApiResponse, CreateTeamApiArg>({
-      query: (queryArg) => ({ url: `/teams`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams`, method: 'POST', body: queryArg.body }),
     }),
     getTeam: build.query<GetTeamApiResponse, GetTeamApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}` }),
     }),
     editTeam: build.mutation<EditTeamApiResponse, EditTeamApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
     }),
     deleteTeam: build.mutation<DeleteTeamApiResponse, DeleteTeamApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}`, method: 'DELETE' }),
+    }),
+    getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
+      query: () => ({ url: `/v1/services` }),
     }),
     getTeamServices: build.query<GetTeamServicesApiResponse, GetTeamServicesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services` }),
     }),
     createService: build.mutation<CreateServiceApiResponse, CreateServiceApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
     }),
     getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/kubernetes/services` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
     }),
     editService: build.mutation<EditServiceApiResponse, EditServiceApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}`,
+        url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteService: build.mutation<DeleteServiceApiResponse, DeleteServiceApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/services/${queryArg.serviceName}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}`, method: 'DELETE' }),
+    }),
+    getAllAplServices: build.query<GetAllAplServicesApiResponse, GetAllAplServicesApiArg>({
+      query: () => ({ url: `/v2/services` }),
+    }),
+    getTeamAplServices: build.query<GetTeamAplServicesApiResponse, GetTeamAplServicesApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/services` }),
+    }),
+    createAplService: build.mutation<CreateAplServiceApiResponse, CreateAplServiceApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplService: build.query<GetAplServiceApiResponse, GetAplServiceApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
+    }),
+    editAplService: build.mutation<EditAplServiceApiResponse, EditAplServiceApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/services/${queryArg.serviceName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteAplService: build.mutation<DeleteAplServiceApiResponse, DeleteAplServiceApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/services/${queryArg.serviceName}`, method: 'DELETE' }),
     }),
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
-      query: () => ({ url: `/sealedsecrets` }),
+      query: () => ({ url: `/v1/sealedsecrets` }),
     }),
     downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
-      query: () => ({ url: `/sealedsecretskeys` }),
+      query: () => ({ url: `/v1/sealedsecretskeys` }),
     }),
     getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/k8sSecrets` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/k8sSecrets` }),
     }),
     getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/sealedsecrets` }),
     }),
     createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
     }),
     getSealedSecret: build.query<GetSealedSecretApiResponse, GetSealedSecretApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}` }),
     }),
     editSealedSecret: build.mutation<EditSealedSecretApiResponse, EditSealedSecretApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
+        url: `/v1/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteSealedSecret: build.mutation<DeleteSealedSecretApiResponse, DeleteSealedSecretApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
+        url: `/v1/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
+        method: 'DELETE',
+      }),
+    }),
+    getAllAplSecrets: build.query<GetAllAplSecretsApiResponse, GetAllAplSecretsApiArg>({
+      query: () => ({ url: `/v2/sealedsecrets` }),
+    }),
+    getAplSealedSecrets: build.query<GetAplSealedSecretsApiResponse, GetAplSealedSecretsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/sealedsecrets` }),
+    }),
+    createAplSealedSecret: build.mutation<CreateAplSealedSecretApiResponse, CreateAplSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/sealedsecrets`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplSealedSecret: build.query<GetAplSealedSecretApiResponse, GetAplSealedSecretApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}` }),
+    }),
+    editAplSealedSecret: build.mutation<EditAplSealedSecretApiResponse, EditAplSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteAplSealedSecret: build.mutation<DeleteAplSealedSecretApiResponse, DeleteAplSealedSecretApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/sealedsecrets/${queryArg.sealedSecretName}`,
         method: 'DELETE',
       }),
     }),
     getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
-      query: () => ({ url: `/netpols` }),
+      query: () => ({ url: `/v1/netpols` }),
     }),
     getTeamNetpols: build.query<GetTeamNetpolsApiResponse, GetTeamNetpolsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/netpols` }),
     }),
     createNetpol: build.mutation<CreateNetpolApiResponse, CreateNetpolApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
     }),
     getNetpol: build.query<GetNetpolApiResponse, GetNetpolApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}` }),
     }),
     editNetpol: build.mutation<EditNetpolApiResponse, EditNetpolApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`,
+        url: `/v1/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteNetpol: build.mutation<DeleteNetpolApiResponse, DeleteNetpolApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
+    }),
+    getAllAplNetpols: build.query<GetAllAplNetpolsApiResponse, GetAllAplNetpolsApiArg>({
+      query: () => ({ url: `/v2/netpols` }),
+    }),
+    getTeamAplNetpols: build.query<GetTeamAplNetpolsApiResponse, GetTeamAplNetpolsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols` }),
+    }),
+    createAplNetpol: build.mutation<CreateAplNetpolApiResponse, CreateAplNetpolApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplNetpol: build.query<GetAplNetpolApiResponse, GetAplNetpolApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}` }),
+    }),
+    editAplNetpol: build.mutation<EditAplNetpolApiResponse, EditAplNetpolApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteAplNetpol: build.mutation<DeleteAplNetpolApiResponse, DeleteAplNetpolApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
     }),
     getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
-      query: () => ({ url: `/backups` }),
+      query: () => ({ url: `/v1/backups` }),
     }),
     getTeamBackups: build.query<GetTeamBackupsApiResponse, GetTeamBackupsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups` }),
     }),
     createBackup: build.mutation<CreateBackupApiResponse, CreateBackupApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
     }),
     deleteBackup: build.mutation<DeleteBackupApiResponse, DeleteBackupApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
     }),
     getBackup: build.query<GetBackupApiResponse, GetBackupApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
     }),
     editBackup: build.mutation<EditBackupApiResponse, EditBackupApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
+        url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getAllAplBackups: build.query<GetAllAplBackupsApiResponse, GetAllAplBackupsApiArg>({
+      query: () => ({ url: `/v2/backups` }),
+    }),
+    getTeamAplBackups: build.query<GetTeamAplBackupsApiResponse, GetTeamAplBackupsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups` }),
+    }),
+    createAplBackup: build.mutation<CreateAplBackupApiResponse, CreateAplBackupApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteAplBackup: build.mutation<DeleteAplBackupApiResponse, DeleteAplBackupApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
+    }),
+    getAplBackup: build.query<GetAplBackupApiResponse, GetAplBackupApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
+    }),
+    editAplBackup: build.mutation<EditAplBackupApiResponse, EditAplBackupApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getDashboard: build.query<GetDashboardApiResponse, GetDashboardApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/dashboard` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/dashboard` }),
     }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
-      query: () => ({ url: `/builds` }),
+      query: () => ({ url: `/v1/builds` }),
     }),
     getTeamBuilds: build.query<GetTeamBuildsApiResponse, GetTeamBuildsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/builds` }),
     }),
     createBuild: build.mutation<CreateBuildApiResponse, CreateBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
     }),
     deleteBuild: build.mutation<DeleteBuildApiResponse, DeleteBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/builds/${queryArg.buildName}`, method: 'DELETE' }),
     }),
     getBuild: build.query<GetBuildApiResponse, GetBuildApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/builds/${queryArg.buildName}` }),
     }),
     editBuild: build.mutation<EditBuildApiResponse, EditBuildApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/builds/${queryArg.buildName}`,
+        url: `/v1/teams/${queryArg.teamId}/builds/${queryArg.buildName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getAllAplBuilds: build.query<GetAllAplBuildsApiResponse, GetAllAplBuildsApiArg>({
+      query: () => ({ url: `/v2/builds` }),
+    }),
+    getTeamAplBuilds: build.query<GetTeamAplBuildsApiResponse, GetTeamAplBuildsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/builds` }),
+    }),
+    createAplBuild: build.mutation<CreateAplBuildApiResponse, CreateAplBuildApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/builds`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteAplBuild: build.mutation<DeleteAplBuildApiResponse, DeleteAplBuildApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/builds/${queryArg.buildName}`, method: 'DELETE' }),
+    }),
+    getAplBuild: build.query<GetAplBuildApiResponse, GetAplBuildApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/builds/${queryArg.buildName}` }),
+    }),
+    editAplBuild: build.mutation<EditAplBuildApiResponse, EditAplBuildApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/builds/${queryArg.buildName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getAllPolicies: build.query<GetAllPoliciesApiResponse, GetAllPoliciesApiArg>({
-      query: () => ({ url: `/policies` }),
+      query: () => ({ url: `/v1/policies` }),
     }),
     getTeamPolicies: build.query<GetTeamPoliciesApiResponse, GetTeamPoliciesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/policies` }),
     }),
     getPolicy: build.query<GetPolicyApiResponse, GetPolicyApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/policies/${queryArg.policyName}` }),
     }),
     editPolicy: build.mutation<EditPolicyApiResponse, EditPolicyApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/policies/${queryArg.policyId}`,
+        url: `/v1/teams/${queryArg.teamId}/policies/${queryArg.policyName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getAllAplPolicies: build.query<GetAllAplPoliciesApiResponse, GetAllAplPoliciesApiArg>({
+      query: () => ({ url: `/v2/policies` }),
+    }),
+    getTeamAplPolicies: build.query<GetTeamAplPoliciesApiResponse, GetTeamAplPoliciesApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/policies` }),
+    }),
+    getAplPolicy: build.query<GetAplPolicyApiResponse, GetAplPolicyApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/policies/${queryArg.policyName}` }),
+    }),
+    editAplPolicy: build.mutation<EditAplPolicyApiResponse, EditAplPolicyApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/policies/${queryArg.policyName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
-      query: () => ({ url: `/k8sVersion` }),
+      query: () => ({ url: `/v1/k8sVersion` }),
     }),
     connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/cloudtty`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'POST', body: queryArg.body }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/cloudtty`, method: 'DELETE', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', body: queryArg.body }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
-      query: () => ({ url: `/users` }),
+      query: () => ({ url: `/v1/users` }),
     }),
     createUser: build.mutation<CreateUserApiResponse, CreateUserApiArg>({
-      query: (queryArg) => ({ url: `/users`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/users`, method: 'POST', body: queryArg.body }),
     }),
     getUser: build.query<GetUserApiResponse, GetUserApiArg>({
-      query: (queryArg) => ({ url: `/users/${queryArg.userId}` }),
+      query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}` }),
     }),
     editUser: build.mutation<EditUserApiResponse, EditUserApiArg>({
-      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}`, method: 'PUT', body: queryArg.body }),
     }),
     deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
-      query: (queryArg) => ({ url: `/users/${queryArg.userId}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}`, method: 'DELETE' }),
     }),
     editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
     getAllProjects: build.query<GetAllProjectsApiResponse, GetAllProjectsApiArg>({
-      query: () => ({ url: `/projects` }),
+      query: () => ({ url: `/v1/projects` }),
     }),
     getTeamProjects: build.query<GetTeamProjectsApiResponse, GetTeamProjectsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/projects` }),
     }),
     createProject: build.mutation<CreateProjectApiResponse, CreateProjectApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/projects`, method: 'POST', body: queryArg.body }),
     }),
     deleteProject: build.mutation<DeleteProjectApiResponse, DeleteProjectApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/projects/${queryArg.projectName}`, method: 'DELETE' }),
     }),
     getProject: build.query<GetProjectApiResponse, GetProjectApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/projects/${queryArg.projectName}` }),
     }),
     editProject: build.mutation<EditProjectApiResponse, EditProjectApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/projects/${queryArg.projectName}`,
+        url: `/v1/teams/${queryArg.teamId}/projects/${queryArg.projectName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
+    getAllAplProjects: build.query<GetAllAplProjectsApiResponse, GetAllAplProjectsApiArg>({
+      query: () => ({ url: `/v2/projects` }),
+    }),
+    getTeamAplProjects: build.query<GetTeamAplProjectsApiResponse, GetTeamAplProjectsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/projects` }),
+    }),
+    createAplProject: build.mutation<CreateAplProjectApiResponse, CreateAplProjectApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/projects`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteAplProject: build.mutation<DeleteAplProjectApiResponse, DeleteAplProjectApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/projects/${queryArg.projectName}`, method: 'DELETE' }),
+    }),
+    getAplProject: build.query<GetAplProjectApiResponse, GetAplProjectApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/projects/${queryArg.projectName}` }),
+    }),
     getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
-      query: () => ({ url: `/coderepos` }),
+      query: () => ({ url: `/v1/coderepos` }),
     }),
     getTeamCodeRepos: build.query<GetTeamCodeReposApiResponse, GetTeamCodeReposApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos` }),
     }),
     createCodeRepo: build.mutation<CreateCodeRepoApiResponse, CreateCodeRepoApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
     }),
     getCodeRepo: build.query<GetCodeRepoApiResponse, GetCodeRepoApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}` }),
     }),
     editCodeRepo: build.mutation<EditCodeRepoApiResponse, EditCodeRepoApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
+        url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     deleteCodeRepo: build.mutation<DeleteCodeRepoApiResponse, DeleteCodeRepoApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
+        url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
+        method: 'DELETE',
+      }),
+    }),
+    getAllAplCodeRepos: build.query<GetAllAplCodeReposApiResponse, GetAllAplCodeReposApiArg>({
+      query: () => ({ url: `/v2/coderepos` }),
+    }),
+    getTeamAplCodeRepos: build.query<GetTeamAplCodeReposApiResponse, GetTeamAplCodeReposApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos` }),
+    }),
+    createAplCodeRepo: build.mutation<CreateAplCodeRepoApiResponse, CreateAplCodeRepoApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplCodeRepo: build.query<GetAplCodeRepoApiResponse, GetAplCodeRepoApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}` }),
+    }),
+    editAplCodeRepo: build.mutation<EditAplCodeRepoApiResponse, EditAplCodeRepoApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteAplCodeRepo: build.mutation<DeleteAplCodeRepoApiResponse, DeleteAplCodeRepoApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
         method: 'DELETE',
       }),
     }),
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
-      query: () => ({ url: `/workloads` }),
+      query: () => ({ url: `/v1/workloads` }),
     }),
     workloadCatalog: build.mutation<WorkloadCatalogApiResponse, WorkloadCatalogApiArg>({
-      query: (queryArg) => ({ url: `/workloadCatalog`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/workloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
     getHelmChartContent: build.query<GetHelmChartContentApiResponse, GetHelmChartContentApiArg>({
-      query: (queryArg) => ({ url: `/helmChartContent`, params: { url: queryArg.url } }),
+      query: (queryArg) => ({ url: `/v1/helmChartContent`, params: { url: queryArg.url } }),
     }),
     createWorkloadCatalog: build.mutation<CreateWorkloadCatalogApiResponse, CreateWorkloadCatalogApiArg>({
-      query: (queryArg) => ({ url: `/createWorkloadCatalog`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/createWorkloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads` }),
     }),
     createWorkload: build.mutation<CreateWorkloadApiResponse, CreateWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
     }),
     deleteWorkload: build.mutation<DeleteWorkloadApiResponse, DeleteWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`, method: 'DELETE' }),
+      query: (queryArg) => ({
+        url: `/v1/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
+        method: 'DELETE',
+      }),
     }),
     getWorkload: build.query<GetWorkloadApiResponse, GetWorkloadApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}` }),
     }),
     editWorkload: build.mutation<EditWorkloadApiResponse, EditWorkloadApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
+        url: `/v1/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     getWorkloadValues: build.query<GetWorkloadValuesApiResponse, GetWorkloadValuesApiArg>({
-      query: (queryArg) => ({ url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values` }),
+      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values` }),
     }),
     editWorkloadValues: build.mutation<EditWorkloadValuesApiResponse, EditWorkloadValuesApiArg>({
       query: (queryArg) => ({
-        url: `/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values`,
+        url: `/v1/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}/values`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    getAllAplWorkloads: build.query<GetAllAplWorkloadsApiResponse, GetAllAplWorkloadsApiArg>({
+      query: () => ({ url: `/v2/workloads` }),
+    }),
+    getTeamAplWorkloads: build.query<GetTeamAplWorkloadsApiResponse, GetTeamAplWorkloadsApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/workloads` }),
+    }),
+    createAplWorkload: build.mutation<CreateAplWorkloadApiResponse, CreateAplWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/workloads`, method: 'POST', body: queryArg.body }),
+    }),
+    deleteAplWorkload: build.mutation<DeleteAplWorkloadApiResponse, DeleteAplWorkloadApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
+        method: 'DELETE',
+      }),
+    }),
+    getAplWorkload: build.query<GetAplWorkloadApiResponse, GetAplWorkloadApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}` }),
+    }),
+    editAplWorkload: build.mutation<EditAplWorkloadApiResponse, EditAplWorkloadApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/workloads/${queryArg.workloadName}`,
         method: 'PUT',
         body: queryArg.body,
       }),
     }),
     downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
-      query: (queryArg) => ({ url: `/kubecfg/${queryArg.teamId}` }),
+      query: (queryArg) => ({ url: `/v1/kubecfg/${queryArg.teamId}` }),
     }),
     downloadDockerConfig: build.query<DownloadDockerConfigApiResponse, DownloadDockerConfigApiArg>({
-      query: (queryArg) => ({ url: `/dockerconfig/${queryArg.teamId}` }),
+      query: (queryArg) => ({ url: `/v1/dockerconfig/${queryArg.teamId}` }),
     }),
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
-      query: () => ({ url: `/session` }),
+      query: () => ({ url: `/v1/session` }),
     }),
-    apiDocs: build.query<ApiDocsApiResponse, ApiDocsApiArg>({
-      query: () => ({ url: `/apiDocs` }),
+    v1ApiDocs: build.query<V1ApiDocsApiResponse, V1ApiDocsApiArg>({
+      query: () => ({ url: `/v1/apiDocs` }),
     }),
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
-      query: () => ({ url: `/settingsInfo` }),
+      query: () => ({ url: `/v1/settingsInfo` }),
+    }),
+    getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/repoBranches`,
+        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
+      }),
     }),
     getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
       query: (queryArg) => ({
-        url: `/testRepoConnect`,
+        url: `/v1/testRepoConnect`,
         params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
-      query: (queryArg) => ({ url: `/objwizard`, method: 'POST', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
     }),
     getSettings: build.query<GetSettingsApiResponse, GetSettingsApiArg>({
-      query: (queryArg) => ({ url: `/settings`, params: { ids: queryArg.ids } }),
+      query: (queryArg) => ({ url: `/v1/settings`, params: { ids: queryArg.ids } }),
     }),
     editSettings: build.mutation<EditSettingsApiResponse, EditSettingsApiArg>({
-      query: (queryArg) => ({ url: `/settings/${queryArg.settingId}`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/settings/${queryArg.settingId}`, method: 'PUT', body: queryArg.body }),
     }),
     getApps: build.query<GetAppsApiResponse, GetAppsApiArg>({
-      query: (queryArg) => ({ url: `/apps/${queryArg.teamId}`, params: { picks: queryArg.picks } }),
+      query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}`, params: { picks: queryArg.picks } }),
     }),
     toggleApps: build.mutation<ToggleAppsApiResponse, ToggleAppsApiArg>({
-      query: (queryArg) => ({ url: `/apps/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
     }),
     getApp: build.query<GetAppApiResponse, GetAppApiArg>({
-      query: (queryArg) => ({ url: `/apps/${queryArg.teamId}/${queryArg.appId}` }),
+      query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}/${queryArg.appId}` }),
     }),
     editApp: build.mutation<EditAppApiResponse, EditAppApiArg>({
-      query: (queryArg) => ({ url: `/apps/${queryArg.teamId}/${queryArg.appId}`, method: 'PUT', body: queryArg.body }),
+      query: (queryArg) => ({
+        url: `/v1/apps/${queryArg.teamId}/${queryArg.appId}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
     }),
   }),
   overrideExisting: false,
@@ -338,57 +545,7 @@ export type GetValuesApiArg = {
   excludeSecrets?: 'true' | 'false'
   withWorkloadValues?: 'true' | 'false'
 }
-export type GetAllServicesApiResponse = /** status 200 Successfully obtained all services */ {
-  id?: string
-  teamId?: string
-  name: string
-  namespace?: string
-  port?: number
-  ksvc?: {
-    predeployed?: boolean
-  }
-  trafficControl?: {
-    enabled?: boolean
-    weightV1?: number
-    weightV2?: number
-  }
-  ingress:
-    | ({
-        type?: 'cluster'
-      } | null)
-    | (
-        | ({
-            ingressClassName?: string
-            tlsPass?: boolean
-            useDefaultHost?: boolean
-            subdomain: string
-            domain: string
-            useCname?: boolean
-            cname?: {
-              domain?: string
-              tlsSecretName?: string
-            }
-            paths?: string[]
-            forwardPath?: boolean
-            hasCert?: boolean
-            certSelect?: boolean
-            certName?: string
-            headers?: {
-              response?: {
-                set?: {
-                  name: string
-                  value: string
-                }[]
-              }
-            }
-          } & {
-            type?: 'public'
-          })
-        | null
-      )
-}[]
-export type GetAllServicesApiArg = void
-export type TeamApiBody = {
+export type TeamApiBody = /** status 200 Successfully obtained teams collection */ {
   id?: string
   name: string
   oidc?: {
@@ -445,21 +602,71 @@ export type CreateTeamApiArg = {
 }
 export type GetTeamApiResponse = TeamApiBody
 export type GetTeamApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type EditTeamApiResponse = TeamApiBody
 export type EditTeamApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Team object that contains updated values */
   body: TeamApiBody
 }
 export type DeleteTeamApiResponse = /** status 200 Successfully deleted a team */ undefined
 export type DeleteTeamApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
+export type GetAllServicesApiResponse = /** status 200 Successfully obtained all services */ {
+  id?: string
+  teamId?: string
+  name: string
+  namespace?: string
+  port?: number
+  ksvc?: {
+    predeployed?: boolean
+  }
+  trafficControl?: {
+    enabled?: boolean
+    weightV1?: number
+    weightV2?: number
+  }
+  ingress:
+    | ({
+        type?: 'cluster'
+      } | null)
+    | (
+        | ({
+            ingressClassName?: string
+            tlsPass?: boolean
+            useDefaultHost?: boolean
+            subdomain: string
+            domain: string
+            useCname?: boolean
+            cname?: {
+              domain?: string
+              tlsSecretName?: string
+            }
+            paths?: string[]
+            forwardPath?: boolean
+            hasCert?: boolean
+            certSelect?: boolean
+            certName?: string
+            headers?: {
+              response?: {
+                set?: {
+                  name: string
+                  value: string
+                }[]
+              }
+            }
+          } & {
+            type?: 'public'
+          })
+        | null
+      )
+}[]
+export type GetAllServicesApiArg = void
 export type GetTeamServicesApiResponse = /** status 200 Successfully obtained services */ {
   id?: string
   teamId?: string
@@ -510,7 +717,7 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
       )
 }[]
 export type GetTeamServicesApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateServiceApiResponse = /** status 200 Successfully stored service configuration */ {
@@ -563,7 +770,7 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
       )
 }
 export type CreateServiceApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Service object */
   body: {
@@ -622,7 +829,7 @@ export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained
   managedByKnative?: boolean
 }[]
 export type GetTeamK8SServicesApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type GetServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
@@ -675,7 +882,7 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
       )
 }
 export type GetServiceApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the service */
   serviceName: string
@@ -730,7 +937,7 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
       )
 }
 export type EditServiceApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the service */
   serviceName: string
@@ -787,7 +994,436 @@ export type EditServiceApiArg = {
 }
 export type DeleteServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
 export type DeleteServiceApiArg = {
-  /** ID of team to return */
+  /** ID of team */
+  teamId: string
+  /** Name of the service */
+  serviceName: string
+}
+export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained all services */ ({
+  kind: 'AplTeamService'
+  spec: {
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+  } & (
+    | {
+        type: 'cluster'
+      }
+    | {
+        type: 'public'
+        ingressClassName?: string
+        tlsPass?: boolean
+        ownHost?: boolean
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
+  )
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplServicesApiArg = void
+export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained services */ ({
+  kind: 'AplTeamService'
+  spec: {
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+  } & (
+    | {
+        type: 'cluster'
+      }
+    | {
+        type: 'public'
+        ingressClassName?: string
+        tlsPass?: boolean
+        ownHost?: boolean
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
+  )
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplServicesApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplServiceApiResponse = /** status 200 Successfully stored service configuration */ {
+  kind: 'AplTeamService'
+  spec: {
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+  } & (
+    | {
+        type: 'cluster'
+      }
+    | {
+        type: 'public'
+        ingressClassName?: string
+        tlsPass?: boolean
+        ownHost?: boolean
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
+  )
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplServiceApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Service object */
+  body: {
+    kind: 'AplTeamService'
+    spec: {
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+    } & (
+      | {
+          type: 'cluster'
+        }
+      | {
+          type: 'public'
+          ingressClassName?: string
+          tlsPass?: boolean
+          ownHost?: boolean
+          domain?: string
+          useCname?: boolean
+          cname?: {
+            domain?: string
+            tlsSecretName?: string
+          }
+          paths?: string[]
+          forwardPath?: boolean
+          hasCert?: boolean
+          certName?: string
+          headers?: {
+            response?: {
+              set?: {
+                name: string
+                value: string
+              }[]
+            }
+          }
+        }
+    )
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type GetAplServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
+  kind: 'AplTeamService'
+  spec: {
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+  } & (
+    | {
+        type: 'cluster'
+      }
+    | {
+        type: 'public'
+        ingressClassName?: string
+        tlsPass?: boolean
+        ownHost?: boolean
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
+  )
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplServiceApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the service */
+  serviceName: string
+}
+export type EditAplServiceApiResponse = /** status 200 Successfully edited service */ {
+  kind: 'AplTeamService'
+  spec: {
+    namespace?: string
+    port?: number
+    ksvc?: {
+      predeployed?: boolean
+    }
+    trafficControl?: {
+      enabled?: boolean
+      weightV1?: number
+      weightV2?: number
+    }
+  } & (
+    | {
+        type: 'cluster'
+      }
+    | {
+        type: 'public'
+        ingressClassName?: string
+        tlsPass?: boolean
+        ownHost?: boolean
+        domain?: string
+        useCname?: boolean
+        cname?: {
+          domain?: string
+          tlsSecretName?: string
+        }
+        paths?: string[]
+        forwardPath?: boolean
+        hasCert?: boolean
+        certName?: string
+        headers?: {
+          response?: {
+            set?: {
+              name: string
+              value: string
+            }[]
+          }
+        }
+      }
+  )
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplServiceApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the service */
+  serviceName: string
+  /** Service object that contains updated values */
+  body: {
+    kind: 'AplTeamService'
+    spec: {
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+    } & (
+      | {
+          type: 'cluster'
+        }
+      | {
+          type: 'public'
+          ingressClassName?: string
+          tlsPass?: boolean
+          ownHost?: boolean
+          domain?: string
+          useCname?: boolean
+          cname?: {
+            domain?: string
+            tlsSecretName?: string
+          }
+          paths?: string[]
+          forwardPath?: boolean
+          hasCert?: boolean
+          certName?: string
+          headers?: {
+            response?: {
+              set?: {
+                name: string
+                value: string
+              }[]
+            }
+          }
+        }
+    )
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplServiceApiResponse = /** status 200 Successfully deleted a service */ undefined
+export type DeleteAplServiceApiArg = {
+  /** ID of team */
   teamId: string
   /** Name of the service */
   serviceName: string
@@ -820,6 +1456,7 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
       value: string
     }[]
   }
+  isDisabled?: boolean
 }[]
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
@@ -828,7 +1465,7 @@ export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained 
   name?: string
 }[]
 export type GetSecretsFromK8SApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
@@ -859,9 +1496,10 @@ export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained s
       value: string
     }[]
   }
+  isDisabled?: boolean
 }[]
 export type GetSealedSecretsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
@@ -892,6 +1530,7 @@ export type CreateSealedSecretApiResponse = /** status 200 Successfully stored s
       value: string
     }[]
   }
+  isDisabled?: boolean
 }
 export type CreateSealedSecretApiArg = {
   /** ID of team */
@@ -925,6 +1564,7 @@ export type CreateSealedSecretApiArg = {
         value: string
       }[]
     }
+    isDisabled?: boolean
   }
 }
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
@@ -955,9 +1595,10 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
       value: string
     }[]
   }
+  isDisabled?: boolean
 }
 export type GetSealedSecretApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the sealed secret */
   sealedSecretName: string
@@ -990,9 +1631,10 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
       value: string
     }[]
   }
+  isDisabled?: boolean
 }
 export type EditSealedSecretApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the sealed secret */
   sealedSecretName: string
@@ -1025,11 +1667,350 @@ export type EditSealedSecretApiArg = {
         value: string
       }[]
     }
+    isDisabled?: boolean
   }
 }
 export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
 export type DeleteSealedSecretApiArg = {
-  /** ID of team to return */
+  /** ID of team */
+  teamId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+}
+export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained all secrets */ ({
+  kind: 'AplTeamSecret'
+  spec: {
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData?: {
+      [key: string]: string
+    }
+    decryptedData?: {
+      [key: string]: string
+    }
+    metadata?: {
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplSecretsApiArg = void
+export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
+  kind: 'AplTeamSecret'
+  spec: {
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData?: {
+      [key: string]: string
+    }
+    decryptedData?: {
+      [key: string]: string
+    }
+    metadata?: {
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAplSealedSecretsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
+  kind: 'AplTeamSecret'
+  spec: {
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData?: {
+      [key: string]: string
+    }
+    decryptedData?: {
+      [key: string]: string
+    }
+    metadata?: {
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** SealedSecret object */
+  body: {
+    kind: 'AplTeamSecret'
+    spec: {
+      namespace?: string
+      immutable?: boolean
+      type:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/service-account-token'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      encryptedData?: {
+        [key: string]: string
+      }
+      decryptedData?: {
+        [key: string]: string
+      }
+      metadata?: {
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  kind: 'AplTeamSecret'
+  spec: {
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData?: {
+      [key: string]: string
+    }
+    decryptedData?: {
+      [key: string]: string
+    }
+    metadata?: {
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+}
+export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
+  kind: 'AplTeamSecret'
+  spec: {
+    namespace?: string
+    immutable?: boolean
+    type:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/service-account-token'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    encryptedData?: {
+      [key: string]: string
+    }
+    decryptedData?: {
+      [key: string]: string
+    }
+    metadata?: {
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplSealedSecretApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    kind: 'AplTeamSecret'
+    spec: {
+      namespace?: string
+      immutable?: boolean
+      type:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/service-account-token'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      encryptedData?: {
+        [key: string]: string
+      }
+      decryptedData?: {
+        [key: string]: string
+      }
+      metadata?: {
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
+export type DeleteAplSealedSecretApiArg = {
+  /** ID of team */
   teamId: string
   /** Name of the sealed secret */
   sealedSecretName: string
@@ -1086,7 +2067,7 @@ export type GetTeamNetpolsApiResponse = /** status 200 Successfully obtained tea
   }
 }[]
 export type GetTeamNetpolsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
@@ -1115,7 +2096,7 @@ export type CreateNetpolApiResponse = /** status 200 Successfully stored network
   }
 }
 export type CreateNetpolApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Network policy object */
   body: {
@@ -1170,7 +2151,7 @@ export type GetNetpolApiResponse = /** status 200 Successfully obtained network 
   }
 }
 export type GetNetpolApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the network policy */
   netpolName: string
@@ -1201,7 +2182,7 @@ export type EditNetpolApiResponse = /** status 200 Successfully edited a team ne
   }
 }
 export type EditNetpolApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the network policy */
   netpolName: string
@@ -1234,7 +2215,310 @@ export type EditNetpolApiArg = {
 }
 export type DeleteNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
 export type DeleteNetpolApiArg = {
-  /** ID of team to return */
+  /** ID of team */
+  teamId: string
+  /** Name of the network policy */
+  netpolName: string
+}
+export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ ({
+  kind: 'AplTeamNetworkControl'
+  spec: {
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplNetpolsApiArg = void
+export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ ({
+  kind: 'AplTeamNetworkControl'
+  spec: {
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplNetpolsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
+  kind: 'AplTeamNetworkControl'
+  spec: {
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplNetpolApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Network policy object */
+  body: {
+    kind: 'AplTeamNetworkControl'
+    spec: {
+      ruleType?: {
+        type?: 'ingress' | 'egress'
+        ingress?: {
+          toLabelName?: string
+          toLabelValue?: string
+          mode: 'AllowAll' | 'AllowOnly'
+          allow?: {
+            fromNamespace: string
+            fromLabelName?: string
+            fromLabelValue?: string
+          }[]
+        }
+        egress?: {
+          domain: string
+          ports?: {
+            number: number
+            protocol: 'HTTPS' | 'HTTP' | 'TCP'
+          }[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type GetAplNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
+  kind: 'AplTeamNetworkControl'
+  spec: {
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplNetpolApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the network policy */
+  netpolName: string
+}
+export type EditAplNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
+  kind: 'AplTeamNetworkControl'
+  spec: {
+    ruleType?: {
+      type?: 'ingress' | 'egress'
+      ingress?: {
+        toLabelName?: string
+        toLabelValue?: string
+        mode: 'AllowAll' | 'AllowOnly'
+        allow?: {
+          fromNamespace: string
+          fromLabelName?: string
+          fromLabelValue?: string
+        }[]
+      }
+      egress?: {
+        domain: string
+        ports?: {
+          number: number
+          protocol: 'HTTPS' | 'HTTP' | 'TCP'
+        }[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplNetpolApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the network policy */
+  netpolName: string
+  /** Netwok policy object that contains updated values */
+  body: {
+    kind: 'AplTeamNetworkControl'
+    spec: {
+      ruleType?: {
+        type?: 'ingress' | 'egress'
+        ingress?: {
+          toLabelName?: string
+          toLabelValue?: string
+          mode: 'AllowAll' | 'AllowOnly'
+          allow?: {
+            fromNamespace: string
+            fromLabelName?: string
+            fromLabelValue?: string
+          }[]
+        }
+        egress?: {
+          domain: string
+          ports?: {
+            number: number
+            protocol: 'HTTPS' | 'HTTP' | 'TCP'
+          }[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplNetpolApiResponse = /** status 200 Successfully deleted a team network policy */ undefined
+export type DeleteAplNetpolApiArg = {
+  /** ID of team */
   teamId: string
   /** Name of the network policy */
   netpolName: string
@@ -1265,7 +2549,7 @@ export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained tea
   ttl: string
 }[]
 export type GetTeamBackupsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
@@ -1281,7 +2565,7 @@ export type CreateBackupApiResponse = /** status 200 Successfully stored backup 
   ttl: string
 }
 export type CreateBackupApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Backup object */
   body: {
@@ -1299,7 +2583,7 @@ export type CreateBackupApiArg = {
 }
 export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
 export type DeleteBackupApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the backup */
   backupName: string
@@ -1317,7 +2601,7 @@ export type GetBackupApiResponse = /** status 200 Successfully obtained backup c
   ttl: string
 }
 export type GetBackupApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the backup */
   backupName: string
@@ -1335,7 +2619,7 @@ export type EditBackupApiResponse = /** status 200 Successfully edited a team ba
   ttl: string
 }
 export type EditBackupApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the backup */
   backupName: string
@@ -1353,15 +2637,228 @@ export type EditBackupApiArg = {
     ttl: string
   }
 }
+export type GetAllAplBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ ({
+  kind: 'AplTeamBackup'
+  spec: {
+    schedule: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplBackupsApiArg = void
+export type GetTeamAplBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ ({
+  kind: 'AplTeamBackup'
+  spec: {
+    schedule: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplBackupsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
+  kind: 'AplTeamBackup'
+  spec: {
+    schedule: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplBackupApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Backup object */
+  body: {
+    kind: 'AplTeamBackup'
+    spec: {
+      schedule: string
+      snapshotVolumes?: boolean
+      labelSelector?: {
+        name?: string
+        value?: string
+      }[]
+      ttl: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
+export type DeleteAplBackupApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the backup */
+  backupName: string
+}
+export type GetAplBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
+  kind: 'AplTeamBackup'
+  spec: {
+    schedule: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplBackupApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the backup */
+  backupName: string
+}
+export type EditAplBackupApiResponse = /** status 200 Successfully edited a team backup */ {
+  kind: 'AplTeamBackup'
+  spec: {
+    schedule: string
+    snapshotVolumes?: boolean
+    labelSelector?: {
+      name?: string
+      value?: string
+    }[]
+    ttl: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplBackupApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the backup */
+  backupName: string
+  /** Backup object that contains updated values */
+  body: {
+    kind: 'AplTeamBackup'
+    spec: {
+      schedule: string
+      snapshotVolumes?: boolean
+      labelSelector?: {
+        name?: string
+        value?: string
+      }[]
+      ttl: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
 export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ object
 export type GetDashboardApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -1398,6 +2895,7 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -1430,13 +2928,14 @@ export type GetTeamBuildsApiResponse = /** status 200 Successfully obtained team
   scanSource?: boolean
 }[]
 export type GetTeamBuildsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateBuildApiResponse = /** status 200 Successfully stored build configuration */ {
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -1469,13 +2968,14 @@ export type CreateBuildApiResponse = /** status 200 Successfully stored build co
   scanSource?: boolean
 }
 export type CreateBuildApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Build object */
   body: {
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -1510,7 +3010,7 @@ export type CreateBuildApiArg = {
 }
 export type DeleteBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
 export type DeleteBuildApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the build */
   buildName: string
@@ -1519,6 +3019,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -1551,7 +3052,7 @@ export type GetBuildApiResponse = /** status 200 Successfully obtained build con
   scanSource?: boolean
 }
 export type GetBuildApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the build */
   buildName: string
@@ -1560,6 +3061,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   id?: string
   teamId?: string
   name: string
+  imageName?: string
   tag?: string
   mode?:
     | {
@@ -1592,7 +3094,7 @@ export type EditBuildApiResponse = /** status 200 Successfully edited a team bui
   scanSource?: boolean
 }
 export type EditBuildApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the build */
   buildName: string
@@ -1601,6 +3103,7 @@ export type EditBuildApiArg = {
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -1631,6 +3134,386 @@ export type EditBuildApiArg = {
     secretName?: string
     trigger?: boolean
     scanSource?: boolean
+  }
+}
+export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ ({
+  kind: 'AplTeamBuild'
+  spec: {
+    imageName?: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'buildpacks'
+        }
+    externalRepo?: boolean
+    secretName?: string
+    trigger?: boolean
+    scanSource?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplBuildsApiArg = void
+export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ ({
+  kind: 'AplTeamBuild'
+  spec: {
+    imageName?: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'buildpacks'
+        }
+    externalRepo?: boolean
+    secretName?: string
+    trigger?: boolean
+    scanSource?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplBuildsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplBuildApiResponse = /** status 200 Successfully stored build configuration */ {
+  kind: 'AplTeamBuild'
+  spec: {
+    imageName?: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'buildpacks'
+        }
+    externalRepo?: boolean
+    secretName?: string
+    trigger?: boolean
+    scanSource?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplBuildApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Build object */
+  body: {
+    kind: 'AplTeamBuild'
+    spec: {
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplBuildApiResponse = /** status 200 Successfully deleted a build */ undefined
+export type DeleteAplBuildApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the build */
+  buildName: string
+}
+export type GetAplBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
+  kind: 'AplTeamBuild'
+  spec: {
+    imageName?: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'buildpacks'
+        }
+    externalRepo?: boolean
+    secretName?: string
+    trigger?: boolean
+    scanSource?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplBuildApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the build */
+  buildName: string
+}
+export type EditAplBuildApiResponse = /** status 200 Successfully edited a team build */ {
+  kind: 'AplTeamBuild'
+  spec: {
+    imageName?: string
+    tag?: string
+    mode?:
+      | {
+          docker: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'docker'
+        }
+      | {
+          buildpacks: {
+            repoUrl: string
+            path?: string
+            revision?: string
+            envVars?: {
+              name: string
+              value: string
+            }[]
+          }
+          type: 'buildpacks'
+        }
+    externalRepo?: boolean
+    secretName?: string
+    trigger?: boolean
+    scanSource?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplBuildApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the build */
+  buildName: string
+  /** Build object that contains updated values */
+  body: {
+    kind: 'AplTeamBuild'
+    spec: {
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+  } & {
+    metadata: {
+      name: string
+    }
   }
 }
 export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
@@ -1855,7 +3738,7 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
   }
 }
 export type GetTeamPoliciesApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type GetPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
@@ -1864,10 +3747,10 @@ export type GetPolicyApiResponse = /** status 200 Successfully obtained policy c
   customValues?: string[]
 }
 export type GetPolicyApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
-  /** ID of the policy */
-  policyId: string
+  /** Name of the policy */
+  policyName: string
 }
 export type EditPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
   action: 'Audit' | 'Enforce'
@@ -1875,15 +3758,149 @@ export type EditPolicyApiResponse = /** status 200 Successfully edited a team po
   customValues?: string[]
 }
 export type EditPolicyApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
-  /** ID of the policy */
-  policyId: string
+  /** Name of the policy */
+  policyName: string
   /** Policy object that contains updated values */
   body: {
     action: 'Audit' | 'Enforce'
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
+  }
+}
+export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ ({
+  kind: 'AplTeamPolicy'
+  spec: {
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplPoliciesApiArg = void
+export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ ({
+  kind: 'AplTeamPolicy'
+  spec: {
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplPoliciesApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type GetAplPolicyApiResponse = /** status 200 Successfully obtained policy configuration */ {
+  kind: 'AplTeamPolicy'
+  spec: {
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplPolicyApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the policy */
+  policyName: string
+}
+export type EditAplPolicyApiResponse = /** status 200 Successfully edited a team policy */ {
+  kind: 'AplTeamPolicy'
+  spec: {
+    action: 'Audit' | 'Enforce'
+    severity: 'low' | 'medium' | 'high'
+    customValues?: string[]
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplPolicyApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the policy */
+  policyName: string
+  /** Policy object that contains updated values */
+  body: {
+    kind: 'AplTeamPolicy'
+    spec: {
+      action: 'Audit' | 'Enforce'
+      severity: 'low' | 'medium' | 'high'
+      customValues?: string[]
+    }
+  } & {
+    metadata: {
+      name: string
+    }
   }
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
@@ -2014,7 +4031,7 @@ export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team
   initialPassword?: string
 }[]
 export type EditTeamUsersApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** User object that contains updated values */
   body: {
@@ -2033,6 +4050,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -2108,7 +4126,7 @@ export type GetAllProjectsApiResponse = /** status 200 Successfully obtained all
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
   }
   service?: {
     id?: string
@@ -2169,6 +4187,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -2244,7 +4263,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
   }
   service?: {
     id?: string
@@ -2297,7 +4316,7 @@ export type GetTeamProjectsApiResponse = /** status 200 Successfully obtained te
   }
 }[]
 export type GetTeamProjectsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateProjectApiResponse = /** status 200 Successfully stored project configuration */ {
@@ -2308,6 +4327,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -2383,7 +4403,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
   }
   service?: {
     id?: string
@@ -2436,7 +4456,7 @@ export type CreateProjectApiResponse = /** status 200 Successfully stored projec
   }
 }
 export type CreateProjectApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Project object */
   body: {
@@ -2447,6 +4467,7 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name: string
+      imageName?: string
       tag?: string
       mode?:
         | {
@@ -2522,7 +4543,7 @@ export type CreateProjectApiArg = {
       id?: string
       teamId?: string
       name?: string
-      values: object
+      values: object | string
     }
     service?: {
       id?: string
@@ -2577,7 +4598,7 @@ export type CreateProjectApiArg = {
 }
 export type DeleteProjectApiResponse = /** status 200 Successfully deleted a project */ undefined
 export type DeleteProjectApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the project */
   projectName: string
@@ -2590,6 +4611,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -2665,7 +4687,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
   }
   service?: {
     id?: string
@@ -2718,7 +4740,7 @@ export type GetProjectApiResponse = /** status 200 Successfully obtained project
   }
 }
 export type GetProjectApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the project */
   projectName: string
@@ -2731,6 +4753,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name: string
+    imageName?: string
     tag?: string
     mode?:
       | {
@@ -2806,7 +4829,7 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
   }
   service?: {
     id?: string
@@ -2859,12 +4882,781 @@ export type EditProjectApiResponse = /** status 200 Successfully edited a team p
   }
 }
 export type EditProjectApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the project */
   projectName: string
   /** Project object that contains updated values */
   body: object
+}
+export type GetAllAplProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ ({
+  kind: 'AplTeamProject'
+  spec: object
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+} & {
+  spec?: {
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+    } & {
+      values: string
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultHost?: boolean
+                subdomain: string
+                domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+    }
+  }
+})[]
+export type GetAllAplProjectsApiArg = void
+export type GetTeamAplProjectsApiResponse = /** status 200 Successfully obtained team projects configuration */ ({
+  kind: 'AplTeamProject'
+  spec: object
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+} & {
+  spec?: {
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+    } & {
+      values: string
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultHost?: boolean
+                subdomain: string
+                domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+    }
+  }
+})[]
+export type GetTeamAplProjectsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplProjectApiResponse = /** status 200 Successfully stored project configuration */ {
+  kind: 'AplTeamProject'
+  spec: object
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+} & {
+  spec?: {
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+    } & {
+      values: string
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultHost?: boolean
+                subdomain: string
+                domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+    }
+  }
+}
+export type CreateAplProjectApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Project object */
+  body: {
+    kind: 'AplTeamProject'
+    spec: object
+  } & {
+    metadata: {
+      name: string
+    }
+  } & {
+    spec?: {
+      build?: {
+        id?: string
+        teamId?: string
+        name: string
+        imageName?: string
+        tag?: string
+        mode?:
+          | {
+              docker: {
+                repoUrl: string
+                path?: string
+                revision?: string
+                envVars?: {
+                  name: string
+                  value: string
+                }[]
+              }
+              type: 'docker'
+            }
+          | {
+              buildpacks: {
+                repoUrl: string
+                path?: string
+                revision?: string
+                envVars?: {
+                  name: string
+                  value: string
+                }[]
+              }
+              type: 'buildpacks'
+            }
+        externalRepo?: boolean
+        secretName?: string
+        trigger?: boolean
+        scanSource?: boolean
+      }
+      workload?: {
+        id?: string
+        teamId?: string
+        name: string
+        icon?: string
+        url: string
+        chartProvider?: 'helm' | 'git'
+        path?: string
+        chart?: string
+        revision?: string
+        chartMetadata?: {
+          helmChartVersion?: string
+          helmChartDescription?: string
+        }
+        namespace?: string
+        createNamespace?: boolean
+        sidecarInject?: boolean
+        imageUpdateStrategy?:
+          | {
+              type?: 'disabled'
+            }
+          | {
+              digest?: {
+                imageRepository: string
+                tag: string
+                imageParameter?: string
+                tagParameter?: string
+              }
+              type?: 'digest'
+            }
+          | {
+              semver?: {
+                imageRepository: string
+                versionConstraint: string
+                imageParameter?: string
+                tagParameter?: string
+              }
+              type?: 'semver'
+            }
+      } & {
+        values: string
+      }
+      service?: {
+        id?: string
+        teamId?: string
+        name: string
+        namespace?: string
+        port?: number
+        ksvc?: {
+          predeployed?: boolean
+        }
+        trafficControl?: {
+          enabled?: boolean
+          weightV1?: number
+          weightV2?: number
+        }
+        ingress:
+          | ({
+              type?: 'cluster'
+            } | null)
+          | (
+              | ({
+                  ingressClassName?: string
+                  tlsPass?: boolean
+                  useDefaultHost?: boolean
+                  subdomain: string
+                  domain: string
+                  useCname?: boolean
+                  cname?: {
+                    domain?: string
+                    tlsSecretName?: string
+                  }
+                  paths?: string[]
+                  forwardPath?: boolean
+                  hasCert?: boolean
+                  certSelect?: boolean
+                  certName?: string
+                  headers?: {
+                    response?: {
+                      set?: {
+                        name: string
+                        value: string
+                      }[]
+                    }
+                  }
+                } & {
+                  type?: 'public'
+                })
+              | null
+            )
+      }
+    }
+  }
+}
+export type DeleteAplProjectApiResponse = /** status 200 Successfully deleted a project */ undefined
+export type DeleteAplProjectApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the project */
+  projectName: string
+}
+export type GetAplProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
+  kind: 'AplTeamProject'
+  spec: object
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+} & {
+  spec?: {
+    build?: {
+      id?: string
+      teamId?: string
+      name: string
+      imageName?: string
+      tag?: string
+      mode?:
+        | {
+            docker: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'docker'
+          }
+        | {
+            buildpacks: {
+              repoUrl: string
+              path?: string
+              revision?: string
+              envVars?: {
+                name: string
+                value: string
+              }[]
+            }
+            type: 'buildpacks'
+          }
+      externalRepo?: boolean
+      secretName?: string
+      trigger?: boolean
+      scanSource?: boolean
+    }
+    workload?: {
+      id?: string
+      teamId?: string
+      name: string
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+    } & {
+      values: string
+    }
+    service?: {
+      id?: string
+      teamId?: string
+      name: string
+      namespace?: string
+      port?: number
+      ksvc?: {
+        predeployed?: boolean
+      }
+      trafficControl?: {
+        enabled?: boolean
+        weightV1?: number
+        weightV2?: number
+      }
+      ingress:
+        | ({
+            type?: 'cluster'
+          } | null)
+        | (
+            | ({
+                ingressClassName?: string
+                tlsPass?: boolean
+                useDefaultHost?: boolean
+                subdomain: string
+                domain: string
+                useCname?: boolean
+                cname?: {
+                  domain?: string
+                  tlsSecretName?: string
+                }
+                paths?: string[]
+                forwardPath?: boolean
+                hasCert?: boolean
+                certSelect?: boolean
+                certName?: string
+                headers?: {
+                  response?: {
+                    set?: {
+                      name: string
+                      value: string
+                    }[]
+                  }
+                }
+              } & {
+                type?: 'public'
+              })
+            | null
+          )
+    }
+  }
+}
+export type GetAplProjectApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the project */
+  projectName: string
 }
 export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
@@ -2886,7 +5678,7 @@ export type GetTeamCodeReposApiResponse = /** status 200 Successfully obtained c
   secret?: string
 }[]
 export type GetTeamCodeReposApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateCodeRepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
@@ -2922,7 +5714,7 @@ export type GetCodeRepoApiResponse = /** status 200 Successfully obtained code r
   secret?: string
 }
 export type GetCodeRepoApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the code repository */
   codeRepositoryName: string
@@ -2937,7 +5729,7 @@ export type EditCodeRepoApiResponse = /** status 200 Successfully edited a team 
   secret?: string
 }
 export type EditCodeRepoApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the code repository */
   codeRepositoryName: string
@@ -2954,7 +5746,198 @@ export type EditCodeRepoApiArg = {
 }
 export type DeleteCodeRepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
 export type DeleteCodeRepoApiArg = {
-  /** ID of team to return */
+  /** ID of team */
+  teamId: string
+  /** Name of the code repository */
+  codeRepositoryName: string
+}
+export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ ({
+  kind: 'AplTeamCodeRepo'
+  spec: {
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplCodeReposApiArg = void
+export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ ({
+  kind: 'AplTeamCodeRepo'
+  spec: {
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplCodeReposApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplCodeRepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
+  kind: 'AplTeamCodeRepo'
+  spec: {
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplCodeRepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** CodeRepo object */
+  body: {
+    kind: 'AplTeamCodeRepo'
+    spec: {
+      gitService: 'gitea' | 'github' | 'gitlab'
+      repositoryUrl: string
+      private?: boolean
+      secret?: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type GetAplCodeRepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
+  kind: 'AplTeamCodeRepo'
+  spec: {
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplCodeRepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the code repository */
+  codeRepositoryName: string
+}
+export type EditAplCodeRepoApiResponse = /** status 200 Successfully edited a team code repo */ {
+  kind: 'AplTeamCodeRepo'
+  spec: {
+    gitService: 'gitea' | 'github' | 'gitlab'
+    repositoryUrl: string
+    private?: boolean
+    secret?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplCodeRepoApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the code repository */
+  codeRepositoryName: string
+  /** CodeRepo object that contains updated values */
+  body: {
+    kind: 'AplTeamCodeRepo'
+    spec: {
+      gitService: 'gitea' | 'github' | 'gitlab'
+      repositoryUrl: string
+      private?: boolean
+      secret?: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplCodeRepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
+export type DeleteAplCodeRepoApiArg = {
+  /** ID of team */
   teamId: string
   /** Name of the code repository */
   codeRepositoryName: string
@@ -3059,7 +6042,7 @@ export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained t
       }
 }[]
 export type GetTeamWorkloadsApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type CreateWorkloadApiResponse = /** status 200 Successfully stored workload configuration */ {
@@ -3103,7 +6086,7 @@ export type CreateWorkloadApiResponse = /** status 200 Successfully stored workl
       }
 }
 export type CreateWorkloadApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Workload object */
   body: {
@@ -3149,7 +6132,7 @@ export type CreateWorkloadApiArg = {
 }
 export type DeleteWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
 export type DeleteWorkloadApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the workload */
   workloadName: string
@@ -3195,7 +6178,7 @@ export type GetWorkloadApiResponse = /** status 200 Successfully obtained worklo
       }
 }
 export type GetWorkloadApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the workload */
   workloadName: string
@@ -3241,7 +6224,7 @@ export type EditWorkloadApiResponse = /** status 200 Successfully edited a team 
       }
 }
 export type EditWorkloadApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the workload */
   workloadName: string
@@ -3291,10 +6274,10 @@ export type GetWorkloadValuesApiResponse = /** status 200 Successfully obtained 
   id?: string
   teamId?: string
   name?: string
-  values: object
+  values: object | string
 }
 export type GetWorkloadValuesApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the workload */
   workloadName: string
@@ -3303,10 +6286,10 @@ export type EditWorkloadValuesApiResponse = /** status 200 Successfully edited w
   id?: string
   teamId?: string
   name?: string
-  values: object
+  values: object | string
 }
 export type EditWorkloadValuesApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
   /** Name of the workload */
   workloadName: string
@@ -3315,17 +6298,432 @@ export type EditWorkloadValuesApiArg = {
     id?: string
     teamId?: string
     name?: string
-    values: object
+    values: object | string
+  }
+}
+export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ ({
+  kind: 'AplTeamWorkload'
+  spec: {
+    icon?: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
+    namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'semver'
+        }
+    values?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplWorkloadsApiArg = void
+export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ ({
+  kind: 'AplTeamWorkload'
+  spec: {
+    icon?: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
+    namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'semver'
+        }
+    values?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetTeamAplWorkloadsApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type CreateAplWorkloadApiResponse = /** status 200 Successfully stored workload configuration */ {
+  kind: 'AplTeamWorkload'
+  spec: {
+    icon?: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
+    namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'semver'
+        }
+    values?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplWorkloadApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Workload object */
+  body: {
+    kind: 'AplTeamWorkload'
+    spec: {
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+      values?: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
+  }
+}
+export type DeleteAplWorkloadApiResponse = /** status 200 Successfully deleted a workload */ undefined
+export type DeleteAplWorkloadApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the workload */
+  workloadName: string
+}
+export type GetAplWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
+  kind: 'AplTeamWorkload'
+  spec: {
+    icon?: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
+    namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'semver'
+        }
+    values?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplWorkloadApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the workload */
+  workloadName: string
+}
+export type EditAplWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
+  kind: 'AplTeamWorkload'
+  spec: {
+    icon?: string
+    url: string
+    chartProvider?: 'helm' | 'git'
+    path?: string
+    chart?: string
+    revision?: string
+    chartMetadata?: {
+      helmChartVersion?: string
+      helmChartDescription?: string
+    }
+    namespace?: string
+    createNamespace?: boolean
+    sidecarInject?: boolean
+    imageUpdateStrategy?:
+      | {
+          type?: 'disabled'
+        }
+      | {
+          digest?: {
+            imageRepository: string
+            tag: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'digest'
+        }
+      | {
+          semver?: {
+            imageRepository: string
+            versionConstraint: string
+            imageParameter?: string
+            tagParameter?: string
+          }
+          type?: 'semver'
+        }
+    values?: string
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplWorkloadApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the workload */
+  workloadName: string
+  /** Workload object that contains updated values */
+  body: {
+    kind: 'AplTeamWorkload'
+    spec: {
+      icon?: string
+      url: string
+      chartProvider?: 'helm' | 'git'
+      path?: string
+      chart?: string
+      revision?: string
+      chartMetadata?: {
+        helmChartVersion?: string
+        helmChartDescription?: string
+      }
+      namespace?: string
+      createNamespace?: boolean
+      sidecarInject?: boolean
+      imageUpdateStrategy?:
+        | {
+            type?: 'disabled'
+          }
+        | {
+            digest?: {
+              imageRepository: string
+              tag: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'digest'
+          }
+        | {
+            semver?: {
+              imageRepository: string
+              versionConstraint: string
+              imageParameter?: string
+              tagParameter?: string
+            }
+            type?: 'semver'
+          }
+      values?: string
+    }
+  } & {
+    metadata: {
+      name: string
+    }
   }
 }
 export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadKubecfgApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type DownloadDockerConfigApiResponse = /** status 200 Succesfully finished the download */ Blob
 export type DownloadDockerConfigApiArg = {
-  /** ID of team to return */
+  /** ID of team */
   teamId: string
 }
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
@@ -3371,8 +6769,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   valuesSchema?: object
 }
 export type GetSessionApiArg = void
-export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
-export type ApiDocsApiArg = void
+export type V1ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
+export type V1ApiDocsApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
   cluster?: {
     name?: string
@@ -3393,6 +6791,13 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
+export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
+export type GetRepoBranchesApiArg = {
+  /** Name of the code repository */
+  codeRepoName?: string
+  /** Id of the team */
+  teamId?: string
+}
 export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
@@ -3459,11 +6864,12 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   cluster?: {
-    name?: string
+    name: string
     domainSuffix?: string
     apiServer?: string
     k8sContext?: string
-    provider?: 'linode' | 'custom'
+    owner?: string
+    provider: 'linode' | 'custom'
   }
   platformBackups?: {
     gitea?: {
@@ -3741,11 +7147,12 @@ export type EditSettingsApiArg = {
       }
     }
     cluster?: {
-      name?: string
+      name: string
       domainSuffix?: string
       apiServer?: string
       k8sContext?: string
-      provider?: 'linode' | 'custom'
+      owner?: string
+      provider: 'linode' | 'custom'
     }
     platformBackups?: {
       gitea?: {
@@ -4019,18 +7426,24 @@ export type EditAppApiArg = {
 }
 export const {
   useGetValuesQuery,
-  useGetAllServicesQuery,
   useGetTeamsQuery,
   useCreateTeamMutation,
   useGetTeamQuery,
   useEditTeamMutation,
   useDeleteTeamMutation,
+  useGetAllServicesQuery,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
   useGetTeamK8SServicesQuery,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
+  useGetAllAplServicesQuery,
+  useGetTeamAplServicesQuery,
+  useCreateAplServiceMutation,
+  useGetAplServiceQuery,
+  useEditAplServiceMutation,
+  useDeleteAplServiceMutation,
   useGetAllSealedSecretsQuery,
   useDownloadSealedSecretKeysQuery,
   useGetSecretsFromK8SQuery,
@@ -4039,18 +7452,36 @@ export const {
   useGetSealedSecretQuery,
   useEditSealedSecretMutation,
   useDeleteSealedSecretMutation,
+  useGetAllAplSecretsQuery,
+  useGetAplSealedSecretsQuery,
+  useCreateAplSealedSecretMutation,
+  useGetAplSealedSecretQuery,
+  useEditAplSealedSecretMutation,
+  useDeleteAplSealedSecretMutation,
   useGetAllNetpolsQuery,
   useGetTeamNetpolsQuery,
   useCreateNetpolMutation,
   useGetNetpolQuery,
   useEditNetpolMutation,
   useDeleteNetpolMutation,
+  useGetAllAplNetpolsQuery,
+  useGetTeamAplNetpolsQuery,
+  useCreateAplNetpolMutation,
+  useGetAplNetpolQuery,
+  useEditAplNetpolMutation,
+  useDeleteAplNetpolMutation,
   useGetAllBackupsQuery,
   useGetTeamBackupsQuery,
   useCreateBackupMutation,
   useDeleteBackupMutation,
   useGetBackupQuery,
   useEditBackupMutation,
+  useGetAllAplBackupsQuery,
+  useGetTeamAplBackupsQuery,
+  useCreateAplBackupMutation,
+  useDeleteAplBackupMutation,
+  useGetAplBackupQuery,
+  useEditAplBackupMutation,
   useGetDashboardQuery,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
@@ -4058,10 +7489,20 @@ export const {
   useDeleteBuildMutation,
   useGetBuildQuery,
   useEditBuildMutation,
+  useGetAllAplBuildsQuery,
+  useGetTeamAplBuildsQuery,
+  useCreateAplBuildMutation,
+  useDeleteAplBuildMutation,
+  useGetAplBuildQuery,
+  useEditAplBuildMutation,
   useGetAllPoliciesQuery,
   useGetTeamPoliciesQuery,
   useGetPolicyQuery,
   useEditPolicyMutation,
+  useGetAllAplPoliciesQuery,
+  useGetTeamAplPoliciesQuery,
+  useGetAplPolicyQuery,
+  useEditAplPolicyMutation,
   useGetK8SVersionQuery,
   useConnectCloudttyMutation,
   useDeleteCloudttyMutation,
@@ -4077,12 +7518,23 @@ export const {
   useDeleteProjectMutation,
   useGetProjectQuery,
   useEditProjectMutation,
+  useGetAllAplProjectsQuery,
+  useGetTeamAplProjectsQuery,
+  useCreateAplProjectMutation,
+  useDeleteAplProjectMutation,
+  useGetAplProjectQuery,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
   useCreateCodeRepoMutation,
   useGetCodeRepoQuery,
   useEditCodeRepoMutation,
   useDeleteCodeRepoMutation,
+  useGetAllAplCodeReposQuery,
+  useGetTeamAplCodeReposQuery,
+  useCreateAplCodeRepoMutation,
+  useGetAplCodeRepoQuery,
+  useEditAplCodeRepoMutation,
+  useDeleteAplCodeRepoMutation,
   useGetAllWorkloadsQuery,
   useWorkloadCatalogMutation,
   useGetHelmChartContentQuery,
@@ -4094,11 +7546,18 @@ export const {
   useEditWorkloadMutation,
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
+  useGetAllAplWorkloadsQuery,
+  useGetTeamAplWorkloadsQuery,
+  useCreateAplWorkloadMutation,
+  useDeleteAplWorkloadMutation,
+  useGetAplWorkloadQuery,
+  useEditAplWorkloadMutation,
   useDownloadKubecfgQuery,
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
-  useApiDocsQuery,
+  useV1ApiDocsQuery,
   useGetSettingsInfoQuery,
+  useGetRepoBranchesQuery,
   useGetTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,

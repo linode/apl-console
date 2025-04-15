@@ -29,11 +29,9 @@ export default function ({ loading, disabled, sx, ...other }: DeleteButtonProps)
   const [dialogOpen, setDialogOpen] = useState(false)
   const { t } = useTranslation()
   // END HOOKS
-
   const onButtonClick = () => {
     setDialogOpen(true)
   }
-
   const onDialogCancel = () => {
     setDialogOpen(false)
   }

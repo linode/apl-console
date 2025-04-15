@@ -29,16 +29,26 @@ const StyledTypography = styled(Typography)<{ selected: boolean }>(({ theme, sel
 }))
 
 interface ImgButtonGroupProps {
-  title: string
+  title?: string
   description?: string
   name: string
   control: any
   value: string
   options: { value: string; label: string; imgSrc: string }[]
   onChange?: (value: string) => void
+  disabled?: boolean
 }
 
-function ImgButtonGroup({ title, description, name, control, value, options, onChange }: ImgButtonGroupProps) {
+function ImgButtonGroup({
+  title,
+  description,
+  name,
+  control,
+  value,
+  options,
+  onChange,
+  disabled = false,
+}: ImgButtonGroupProps) {
   return (
     <Controller
       name={name}
@@ -46,17 +56,20 @@ function ImgButtonGroup({ title, description, name, control, value, options, onC
       defaultValue={value}
       render={({ field }) => (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
-          <Box>
-            <Typography variant='h6' sx={{ fontSize: 16, fontWeight: 400 }}>
-              {title}
-            </Typography>
-            {description && <Typography>{description}</Typography>}
-          </Box>
+          {title && (
+            <Box>
+              <Typography variant='h6' sx={{ fontSize: 16, fontWeight: 400 }}>
+                {title}
+              </Typography>
+              {description && <Typography>{description}</Typography>}
+            </Box>
+          )}
           <Box sx={{ display: 'flex', gap: 1 }}>
             {options.map((option) => (
               <StyledButton
                 key={option.value}
                 onClick={() => {
+                  if (disabled) return
                   field.onChange(option.value)
                   onChange?.(option.value)
                 }}

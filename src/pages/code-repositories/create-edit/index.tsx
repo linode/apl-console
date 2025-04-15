@@ -16,6 +16,7 @@ import {
   useGetCodeRepoQuery,
   useGetInternalRepoUrlsQuery,
   useGetSealedSecretsQuery,
+  useGetTeamCodeReposQuery,
   useGetTestRepoConnectQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
@@ -88,6 +89,7 @@ export default function CreateEditCodeRepositories({
     { teamId, codeRepositoryName },
     { skip: !codeRepositoryName },
   )
+  const { data: teamCodeRepositories } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
   const {
     data: teamSealedSecrets,
     isLoading: isLoadingTeamSecrets,
@@ -97,7 +99,7 @@ export default function CreateEditCodeRepositories({
   } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
   const teamSecrets =
     teamSealedSecrets?.filter(
-      (secret) => secret.type === 'kubernetes.io/basic-auth' || secret.type === 'kubernetes.io/ssh-auth',
+      (secret) => secret?.type === 'kubernetes.io/basic-auth' || secret?.type === 'kubernetes.io/ssh-auth',
     ) || []
   const {
     data: internalRepoUrls,
@@ -121,9 +123,11 @@ export default function CreateEditCodeRepositories({
 
   // form state
   const defaultValues = { gitService: 'gitea' as 'gitea' | 'github' | 'gitlab', ...prefilledData }
+  const codeRepoUrls = (teamCodeRepositories || []).map((codeRepo) => codeRepo.repositoryUrl)
   const methods = useForm<CreateCodeRepoApiResponse>({
     resolver: yupResolver(coderepoApiResponseSchema) as Resolver<CreateCodeRepoApiResponse>,
     defaultValues: data || defaultValues,
+    context: { codeRepoUrls, validateOnSubmit: !codeRepositoryName },
   })
   const {
     control,
@@ -191,16 +195,16 @@ export default function CreateEditCodeRepositories({
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
-    return <Redirect to={`/teams/${teamId}/coderepositories`} />
+    return <Redirect to={`/teams/${teamId}/code-repositories`} />
 
   const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (codeRepositoryName && !internalRepoUrls)
   const error = isError || isErrorTeamSecrets || isErrorRepoUrls
 
-  if (loading) return <PaperLayout loading title={t('TITLE_CODEREPOSITORY')} />
+  if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
 
   return (
-    <Grid className={classes.root}>
-      <PaperLayout loading={loading || error} title={t('TITLE_CODEREPOSITORY')}>
+    <Grid>
+      <PaperLayout loading={loading || error} title={t('TITLE_CODE_REPOSITORY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/get-started/overview'
@@ -211,7 +215,7 @@ export default function CreateEditCodeRepositories({
             <Section noPaddingTop>
               <FormRow spacing={10}>
                 <TextField
-                  label='Code Repository Label'
+                  label='Code Repository Name'
                   width='large'
                   {...register('name')}
                   onChange={(e) => {
@@ -220,6 +224,7 @@ export default function CreateEditCodeRepositories({
                   }}
                   error={!!errors.name}
                   helperText={errors.name?.message?.toString()}
+                  disabled={!!codeRepositoryName}
                 />
               </FormRow>
             </Section>
@@ -234,6 +239,7 @@ export default function CreateEditCodeRepositories({
                 onChange={(value) => {
                   setGitProvider(value)
                 }}
+                disabled={!!codeRepositoryName}
               />
 
               {gitProvider === 'gitea' && internalRepoUrls ? (
@@ -250,6 +256,7 @@ export default function CreateEditCodeRepositories({
                     width='large'
                     value={watch('repositoryUrl') || ''}
                     select
+                    disabled={!!codeRepositoryName}
                   >
                     <MenuItem value='' disabled>
                       Select a code repository
@@ -281,6 +288,7 @@ export default function CreateEditCodeRepositories({
                     error={!!errors.repositoryUrl}
                     helperText={errors.repositoryUrl?.message}
                     width='large'
+                    disabled={!!codeRepositoryName}
                   />
 
                   <ControlledCheckbox
@@ -395,11 +403,23 @@ export default function CreateEditCodeRepositories({
                 resourceType='coderepo'
                 data-cy='button-delete-coderepo'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+                loading={isLoadingDelete}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
             )}
-            <Button type='submit' variant='contained' color='primary' sx={{ float: 'right', textTransform: 'none' }}>
-              {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
-            </Button>
+            {/* Hide edit button for Gitea */}
+            {!(codeRepositoryName && gitProvider === 'gitea') && (
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                color='primary'
+                sx={{ float: 'right', textTransform: 'none' }}
+                loading={isLoadingCreate || isLoadingUpdate}
+                disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              >
+                {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
+              </LoadingButton>
+            )}
           </form>
         </FormProvider>
       </PaperLayout>

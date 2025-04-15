@@ -56,7 +56,9 @@ export const Crumbs = React.memo((props: Props) => {
                 data-qa-link-text
                 data-testid='link-text'
               >
-                {crumbOverrides && override ? override.label ?? crumb : crumb}
+                {crumbOverrides && override
+                  ? override.label.replaceAll('-', ' ') ?? crumb.replaceAll('-', ' ')
+                  : crumb.replaceAll('-', ' ')}
               </StyledTypography>
             </Link>
             <StyledSlashTypography>/</StyledSlashTypography>
