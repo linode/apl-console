@@ -147,7 +147,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {teams.map((teamName) => (
+            {teams?.map((teamName) => (
               <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
                 {teamName}
               </MenuItem>
