@@ -27,7 +27,7 @@ const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
   if (ingress.type === 'cluster') return `${name}.team-${teamId}`
   const { subdomain, domain, paths } = ingress
   // TODO: Replace functionality in apl-core so that / is not needed on path or domain
-  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0].replace('/', '') || ''}`
+  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0]?.replace('/', '') || ''}`
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
