@@ -4,7 +4,7 @@ import useOffSetTop from 'hooks/useOffSetTop'
 import useResponsive from 'hooks/useResponsive'
 import { useSession } from 'providers/Session'
 import { useHistory } from 'react-router-dom'
-import { GetTeamsApiResponse, useGetTeamsQuery } from 'redux/otomiApi'
+import { useGetTeamsQuery } from 'redux/otomiApi'
 import useSettings from 'hooks/useSettings'
 import React from 'react'
 import AccountPopover from './AccountPopover'
@@ -65,28 +65,15 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   } = useSession()
   const { data: allTeams } = useGetTeamsQuery()
   // END HOOKs
-  let teams: GetTeamsApiResponse
+  let teams: string[] = []
 
   if (isPlatformAdmin) {
-    teams = [
-      { name: 'admin' }, // Ensure the "admin" team is always included for platform admins
-      ...((allTeams as any) || []).map(({ name }) => ({
-        name,
-      })),
-    ]
-    // Make the array unique by the `name` field
-    teams = Array.from(new Map(teams.map((team) => [team.name, team])).values())
-  } else {
-    teams = ((userTeams as any) || []).map((name) => ({
-      name,
-    }))
-  }
-
-  const sortedTeams = teams.sort((a, b) => {
-    if (a.name === 'admin') return -1 // "admin" comes first
-    if (b.name === 'admin') return 1 // "admin" comes first
-    return a.name.localeCompare(b.name) // Sort alphabetically for others
-  })
+    teams = allTeams?.map((team) => team?.name) || []
+    teams = [...new Set(teams)]
+    teams = teams.filter((team) => team !== 'admin') // Remove "admin" from the list
+    teams.sort()
+    teams = ['admin', ...teams]
+  } else teams = userTeams
 
   const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     const view = event.target.value
@@ -160,9 +147,9 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {sortedTeams.map(({ name }) => (
-              <MenuItem key={name} value={name} data-cy={`select-oboteam-${name}`}>
-                {name}
+            {teams.map((teamName) => (
+              <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
+                {teamName}
               </MenuItem>
             ))}
           </Select>
