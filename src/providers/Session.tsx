@@ -12,10 +12,10 @@ import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
   GetSettingsInfoApiResponse,
-  useApiDocsQuery,
   useGetAppsQuery,
   useGetSessionQuery,
   useGetSettingsInfoQuery,
+  useV1ApiDocsQuery,
 } from 'redux/otomiApi'
 import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import {
@@ -95,7 +95,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
-  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useApiDocsQuery(skipFetch && skipToken)
+  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useV1ApiDocsQuery(skipFetch && skipToken)
   const { socket, error: errorSocket } = useSocket({ url, path })
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')

@@ -488,7 +488,7 @@ const injectedRtkApi = api.injectEndpoints({
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/v1/session` }),
     }),
-    apiDocs: build.query<ApiDocsApiResponse, ApiDocsApiArg>({
+    v1ApiDocs: build.query<V1ApiDocsApiResponse, V1ApiDocsApiArg>({
       query: () => ({ url: `/v1/apiDocs` }),
     }),
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
@@ -2492,9 +2492,6 @@ export type DeleteNetpolApiArg = {
 export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ ({
   kind: 'AplTeamNetworkControl'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     ruleType?: {
       type?: 'ingress' | 'egress'
       ingress?: {
@@ -2539,9 +2536,6 @@ export type GetAllAplNetpolsApiArg = void
 export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ ({
   kind: 'AplTeamNetworkControl'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     ruleType?: {
       type?: 'ingress' | 'egress'
       ingress?: {
@@ -2589,9 +2583,6 @@ export type GetTeamAplNetpolsApiArg = {
 export type CreateAplNetpolApiResponse = /** status 200 Successfully stored network policy configuration */ {
   kind: 'AplTeamNetworkControl'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     ruleType?: {
       type?: 'ingress' | 'egress'
       ingress?: {
@@ -2639,9 +2630,6 @@ export type CreateAplNetpolApiArg = {
   body: {
     kind: 'AplTeamNetworkControl'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       ruleType?: {
         type?: 'ingress' | 'egress'
         ingress?: {
@@ -2672,9 +2660,6 @@ export type CreateAplNetpolApiArg = {
 export type GetAplNetpolApiResponse = /** status 200 Successfully obtained network policy configuration */ {
   kind: 'AplTeamNetworkControl'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     ruleType?: {
       type?: 'ingress' | 'egress'
       ingress?: {
@@ -2724,9 +2709,6 @@ export type GetAplNetpolApiArg = {
 export type EditAplNetpolApiResponse = /** status 200 Successfully edited a team network policy */ {
   kind: 'AplTeamNetworkControl'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     ruleType?: {
       type?: 'ingress' | 'egress'
       ingress?: {
@@ -2776,9 +2758,6 @@ export type EditAplNetpolApiArg = {
   body: {
     kind: 'AplTeamNetworkControl'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       ruleType?: {
         type?: 'ingress' | 'egress'
         ingress?: {
@@ -2930,9 +2909,6 @@ export type EditBackupApiArg = {
 export type GetAllAplBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ ({
   kind: 'AplTeamBackup'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
@@ -2964,9 +2940,6 @@ export type GetAllAplBackupsApiArg = void
 export type GetTeamAplBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ ({
   kind: 'AplTeamBackup'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
@@ -3001,9 +2974,6 @@ export type GetTeamAplBackupsApiArg = {
 export type CreateAplBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
   kind: 'AplTeamBackup'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
@@ -3038,9 +3008,6 @@ export type CreateAplBackupApiArg = {
   body: {
     kind: 'AplTeamBackup'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       schedule: string
       snapshotVolumes?: boolean
       labelSelector?: {
@@ -3065,9 +3032,6 @@ export type DeleteAplBackupApiArg = {
 export type GetAplBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
   kind: 'AplTeamBackup'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
@@ -3104,9 +3068,6 @@ export type GetAplBackupApiArg = {
 export type EditAplBackupApiResponse = /** status 200 Successfully edited a team backup */ {
   kind: 'AplTeamBackup'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     schedule: string
     snapshotVolumes?: boolean
     labelSelector?: {
@@ -3143,9 +3104,6 @@ export type EditAplBackupApiArg = {
   body: {
     kind: 'AplTeamBackup'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       schedule: string
       snapshotVolumes?: boolean
       labelSelector?: {
@@ -3450,9 +3408,6 @@ export type EditBuildApiArg = {
 export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ ({
   kind: 'AplTeamBuild'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     imageName?: string
     tag?: string
     mode?:
@@ -3508,9 +3463,6 @@ export type GetAllAplBuildsApiArg = void
 export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ ({
   kind: 'AplTeamBuild'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     imageName?: string
     tag?: string
     mode?:
@@ -3569,9 +3521,6 @@ export type GetTeamAplBuildsApiArg = {
 export type CreateAplBuildApiResponse = /** status 200 Successfully stored build configuration */ {
   kind: 'AplTeamBuild'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     imageName?: string
     tag?: string
     mode?:
@@ -3630,9 +3579,6 @@ export type CreateAplBuildApiArg = {
   body: {
     kind: 'AplTeamBuild'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       imageName?: string
       tag?: string
       mode?:
@@ -3681,9 +3627,6 @@ export type DeleteAplBuildApiArg = {
 export type GetAplBuildApiResponse = /** status 200 Successfully obtained build configuration */ {
   kind: 'AplTeamBuild'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     imageName?: string
     tag?: string
     mode?:
@@ -3744,9 +3687,6 @@ export type GetAplBuildApiArg = {
 export type EditAplBuildApiResponse = /** status 200 Successfully edited a team build */ {
   kind: 'AplTeamBuild'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     imageName?: string
     tag?: string
     mode?:
@@ -3807,9 +3747,6 @@ export type EditAplBuildApiArg = {
   body: {
     kind: 'AplTeamBuild'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       imageName?: string
       tag?: string
       mode?:
@@ -5223,11 +5160,7 @@ export type EditProjectApiArg = {
 }
 export type GetAllAplProjectsApiResponse = /** status 200 Successfully obtained all projects configuration */ ({
   kind: 'AplTeamProject'
-  spec: {
-    id?: string
-    teamId?: string
-    name?: string
-  }
+  spec: object
 } & {
   metadata: {
     name: string
@@ -5380,11 +5313,7 @@ export type GetAllAplProjectsApiResponse = /** status 200 Successfully obtained 
 export type GetAllAplProjectsApiArg = void
 export type GetTeamAplProjectsApiResponse = /** status 200 Successfully obtained team projects configuration */ ({
   kind: 'AplTeamProject'
-  spec: {
-    id?: string
-    teamId?: string
-    name?: string
-  }
+  spec: object
 } & {
   metadata: {
     name: string
@@ -5540,11 +5469,7 @@ export type GetTeamAplProjectsApiArg = {
 }
 export type CreateAplProjectApiResponse = /** status 200 Successfully stored project configuration */ {
   kind: 'AplTeamProject'
-  spec: {
-    id?: string
-    teamId?: string
-    name?: string
-  }
+  spec: object
 } & {
   metadata: {
     name: string
@@ -5700,11 +5625,7 @@ export type CreateAplProjectApiArg = {
   /** Project object */
   body: {
     kind: 'AplTeamProject'
-    spec: {
-      id?: string
-      teamId?: string
-      name?: string
-    }
+    spec: object
   } & {
     metadata: {
       name: string
@@ -5850,11 +5771,7 @@ export type DeleteAplProjectApiArg = {
 }
 export type GetAplProjectApiResponse = /** status 200 Successfully obtained project configuration */ {
   kind: 'AplTeamProject'
-  spec: {
-    id?: string
-    teamId?: string
-    name?: string
-  }
+  spec: object
 } & {
   metadata: {
     name: string
@@ -6106,9 +6023,6 @@ export type DeleteCodeRepoApiArg = {
 export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ ({
   kind: 'AplTeamCodeRepo'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
@@ -6137,9 +6051,6 @@ export type GetAllAplCodeReposApiArg = void
 export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ ({
   kind: 'AplTeamCodeRepo'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
@@ -6171,9 +6082,6 @@ export type GetTeamAplCodeReposApiArg = {
 export type CreateAplCodeRepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
   kind: 'AplTeamCodeRepo'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
@@ -6205,9 +6113,6 @@ export type CreateAplCodeRepoApiArg = {
   body: {
     kind: 'AplTeamCodeRepo'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       gitService: 'gitea' | 'github' | 'gitlab'
       repositoryUrl: string
       private?: boolean
@@ -6222,9 +6127,6 @@ export type CreateAplCodeRepoApiArg = {
 export type GetAplCodeRepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
   kind: 'AplTeamCodeRepo'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
@@ -6258,9 +6160,6 @@ export type GetAplCodeRepoApiArg = {
 export type EditAplCodeRepoApiResponse = /** status 200 Successfully edited a team code repo */ {
   kind: 'AplTeamCodeRepo'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     gitService: 'gitea' | 'github' | 'gitlab'
     repositoryUrl: string
     private?: boolean
@@ -6294,9 +6193,6 @@ export type EditAplCodeRepoApiArg = {
   body: {
     kind: 'AplTeamCodeRepo'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       gitService: 'gitea' | 'github' | 'gitlab'
       repositoryUrl: string
       private?: boolean
@@ -6677,9 +6573,6 @@ export type EditWorkloadValuesApiArg = {
 export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ ({
   kind: 'AplTeamWorkload'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
@@ -6740,9 +6633,6 @@ export type GetAllAplWorkloadsApiArg = void
 export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ ({
   kind: 'AplTeamWorkload'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
@@ -6806,9 +6696,6 @@ export type GetTeamAplWorkloadsApiArg = {
 export type CreateAplWorkloadApiResponse = /** status 200 Successfully stored workload configuration */ {
   kind: 'AplTeamWorkload'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
@@ -6872,9 +6759,6 @@ export type CreateAplWorkloadApiArg = {
   body: {
     kind: 'AplTeamWorkload'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       icon?: string
       url: string
       chartProvider?: 'helm' | 'git'
@@ -6928,9 +6812,6 @@ export type DeleteAplWorkloadApiArg = {
 export type GetAplWorkloadApiResponse = /** status 200 Successfully obtained workload configuration */ {
   kind: 'AplTeamWorkload'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
@@ -6996,9 +6877,6 @@ export type GetAplWorkloadApiArg = {
 export type EditAplWorkloadApiResponse = /** status 200 Successfully edited a team workload */ {
   kind: 'AplTeamWorkload'
   spec: {
-    id?: string
-    teamId?: string
-    name?: string
     icon?: string
     url: string
     chartProvider?: 'helm' | 'git'
@@ -7064,9 +6942,6 @@ export type EditAplWorkloadApiArg = {
   body: {
     kind: 'AplTeamWorkload'
     spec: {
-      id?: string
-      teamId?: string
-      name?: string
       icon?: string
       url: string
       chartProvider?: 'helm' | 'git'
@@ -7163,8 +7038,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   valuesSchema?: object
 }
 export type GetSessionApiArg = void
-export type ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
-export type ApiDocsApiArg = void
+export type V1ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
+export type V1ApiDocsApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
   cluster?: {
     name?: string
@@ -7258,11 +7133,12 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
   }
   cluster?: {
-    name?: string
+    name: string
     domainSuffix?: string
     apiServer?: string
     k8sContext?: string
-    provider?: 'linode' | 'custom'
+    owner?: string
+    provider: 'linode' | 'custom'
   }
   platformBackups?: {
     gitea?: {
@@ -7540,11 +7416,12 @@ export type EditSettingsApiArg = {
       }
     }
     cluster?: {
-      name?: string
+      name: string
       domainSuffix?: string
       apiServer?: string
       k8sContext?: string
-      provider?: 'linode' | 'custom'
+      owner?: string
+      provider: 'linode' | 'custom'
     }
     platformBackups?: {
       gitea?: {
@@ -7947,7 +7824,7 @@ export const {
   useDownloadKubecfgQuery,
   useDownloadDockerConfigQuery,
   useGetSessionQuery,
-  useApiDocsQuery,
+  useV1ApiDocsQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
   useGetTestRepoConnectQuery,
