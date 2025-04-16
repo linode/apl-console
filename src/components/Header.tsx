@@ -3,7 +3,7 @@ import { HEADER, NAVBAR } from 'config'
 import useOffSetTop from 'hooks/useOffSetTop'
 import useResponsive from 'hooks/useResponsive'
 import { useSession } from 'providers/Session'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useGetTeamsQuery } from 'redux/otomiApi'
 import useSettings from 'hooks/useSettings'
 import React from 'react'
@@ -58,6 +58,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const isOffset = useOffSetTop(HEADER.DASHBOARD_DESKTOP_HEIGHT) && !verticalLayout
   const isDesktop = useResponsive('up', 'lg')
   const history = useHistory()
+  const { pathname } = useLocation()
   const {
     user: { email, teams: userTeams, isPlatformAdmin },
     oboTeamId,
@@ -76,30 +77,33 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   } else teams = userTeams
 
   const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const view = event.target.value
     onChangeView(event)
-    if (view === 'team' && oboTeamId === 'admin') history.push('/teams/admin/services')
-    else history.push('/')
+    history.push('/')
     event.preventDefault()
   }
 
-  const handleChangeTeam = (event) => {
-    const teamId = event.target.value as string
-    const path = window.location.pathname
-    const teamPart = `/teams/${oboTeamId}`
-    const newTeamPart = `/teams/${teamId}`
-    const hasTeamId = path.includes(teamId)
-    const hasTeamPart = path.includes(teamPart)
-    const hasIDvalue = path.split('/').length === 5
-    let url: string
-    if (teamId) {
-      if (hasTeamPart && !hasIDvalue) url = path.replace(teamPart, newTeamPart)
-      else if (hasTeamId && !hasIDvalue) url = path.replace(oboTeamId, teamId)
-      else url = `${newTeamPart}/services`
-    } else url = hasTeamPart ? path.replace(teamPart, '') : '/teams'
+  const redirectToDashboard = (nextTeamId: string): boolean => {
+    if (nextTeamId === 'admin') {
+      return (
+        pathname === `/apps/${oboTeamId}` ||
+        pathname === `/teams/${oboTeamId}/users` ||
+        pathname === `/teams/${oboTeamId}`
+      )
+    }
+    return false
+  }
 
-    setOboTeamId(teamId)
-    history.push(url)
+  const getNextPathname = (nextTeamId: string): string => {
+    if (redirectToDashboard(nextTeamId)) return '/'
+    return pathname.replace(oboTeamId, nextTeamId)
+  }
+
+  const handleChangeTeam = (event) => {
+    const nextTeamId = event.target.value as string
+    if (nextTeamId === oboTeamId) return
+    const nextPathname = getNextPathname(nextTeamId)
+    setOboTeamId(nextTeamId)
+    history.push(nextPathname)
     event.preventDefault()
   }
 
@@ -143,11 +147,11 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           <Select
             size='small'
             color='secondary'
-            value={(teams.length && oboTeamId) || ''}
+            value={(teams?.length && oboTeamId) || ''}
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {teams.map((teamName) => (
+            {teams?.map((teamName) => (
               <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
                 {teamName}
               </MenuItem>
