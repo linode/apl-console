@@ -37,9 +37,10 @@ const computeDecorators: Record<string, string> = {
 
 interface ResourceQuotaKeyValueProps {
   name: string
+  disabled?: boolean
 }
 
-export default function ResourceQuotaKeyValue({ name }: ResourceQuotaKeyValueProps) {
+export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaKeyValueProps) {
   const { classes } = useStyles()
 
   return (
@@ -57,6 +58,7 @@ export default function ResourceQuotaKeyValue({ name }: ResourceQuotaKeyValuePro
         valueSize='medium'
         keySize='medium'
         showLabel={false}
+        disabled={disabled}
       />
 
       {/* Compute Resource Quota Section */}
@@ -73,6 +75,7 @@ export default function ResourceQuotaKeyValue({ name }: ResourceQuotaKeyValuePro
           keySize='medium'
           showLabel={false}
           decoratorMapping={computeDecorators}
+          disabled={disabled}
         />
       </Box>
 
@@ -89,6 +92,7 @@ export default function ResourceQuotaKeyValue({ name }: ResourceQuotaKeyValuePro
           showLabel={false}
           filterFn={(item) => !countQuotaKeys.has(item.name) && !computeQuotaKeys.has(item.name)}
           addLabel='Add Custom Quota'
+          disabled={disabled}
         />
       </Box>
     </Box>

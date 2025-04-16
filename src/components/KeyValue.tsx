@@ -86,6 +86,8 @@ interface KeyValueProps {
   name: string
   // determines the margin-top between key/value pairs
   compressed?: boolean
+  // disable all fields and remove buttons
+  disabled?: boolean
   // used when section is disabled by checkbox, prevent user input but leaves styling untouched
   frozen?: boolean
   keySize?: 'small' | 'medium' | 'large'
@@ -135,6 +137,7 @@ export default function KeyValue(props: KeyValueProps) {
     valueLabel,
     addLabel,
     compressed = false,
+    disabled = false,
     frozen = false,
     name,
     label,
@@ -209,14 +212,14 @@ export default function KeyValue(props: KeyValueProps) {
               }}
             />
           </FormRow>
-          {addLabel && (
+          {addLabel && !disabled && (
             <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
               <Clear />
             </IconButton>
           )}
         </Box>
       ))}
-      {addLabel && (
+      {addLabel && !disabled && (
         <Button
           sx={{ fontSize: '10px', color: `${error ? 'red' : ''}` }}
           className={classes.addItemButton}

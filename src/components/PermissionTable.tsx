@@ -12,6 +12,7 @@ interface PermissionDefinition {
 
 interface PermissionsTableProps {
   name: string
+  disabled?: boolean
 }
 
 const permissionDefinitions: PermissionDefinition[] = [
@@ -47,7 +48,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
 }))
 
-export function PermissionsTable({ name }: PermissionsTableProps) {
+export function PermissionsTable({ name, disabled }: PermissionsTableProps) {
   const { register, control } = useFormContext()
   const { classes, cx } = useStyles()
 
@@ -73,9 +74,14 @@ export function PermissionsTable({ name }: PermissionsTableProps) {
             <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
               <Controller
                 name={`${name}.teamMembers.${permission.id}`}
+                disabled={disabled}
                 control={control}
                 render={({ field }) => (
-                  <Checkbox checked={field.value} onChange={(e) => field.onChange(e.target.checked)} />
+                  <Checkbox
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    disabled={disabled}
+                  />
                 )}
               />
             </TableCell>

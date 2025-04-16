@@ -40,7 +40,8 @@ export default function CreateEditTeams({
   },
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
-  const { appsEnabled } = useSession()
+  const { appsEnabled, user } = useSession()
+  const { isPlatformAdmin } = user
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
@@ -67,6 +68,7 @@ export default function CreateEditTeams({
   const mergedDefaultValues = createTeamApiResponseSchema.cast(data)
 
   const methods = useForm<CreateTeamApiResponse>({
+    disabled: !isPlatformAdmin,
     resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
     defaultValues: mergedDefaultValues,
   })
@@ -109,6 +111,8 @@ export default function CreateEditTeams({
     <Grid className={classes.root}>
       <PaperLayout>
         <LandingHeader docsLabel='Docs' title='Teams' />
+        {!isPlatformAdmin && <InformationBanner message='this page is readonly' sx={{ mb: 3 }} />}
+
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
@@ -124,7 +128,7 @@ export default function CreateEditTeams({
             </Section>
             <AdvancedSettings>
               <Section title='Dashboards' collapsable>
-                {!appsEnabled.grafana && (
+                {!appsEnabled.grafana && isPlatformAdmin && (
                   <InformationBanner
                     small
                     message={
@@ -138,13 +142,13 @@ export default function CreateEditTeams({
                   sx={{ my: 2 }}
                   name='managedMonitoring.grafana'
                   control={control}
-                  disabled={!appsEnabled.grafana}
+                  disabled={!appsEnabled.grafana || !isPlatformAdmin}
                   label='Enable dashboards'
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
               <Section title='Alerts' collapsable>
-                {!appsEnabled.alertmanager && (
+                {!appsEnabled.alertmanager && isPlatformAdmin && (
                   <InformationBanner
                     small
                     message={
@@ -159,7 +163,7 @@ export default function CreateEditTeams({
                   sx={{ my: 2 }}
                   name='managedMonitoring.alertmanager'
                   control={control}
-                  disabled={!appsEnabled.alertmanager}
+                  disabled={!appsEnabled.alertmanager || !isPlatformAdmin}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
                 />
@@ -248,10 +252,10 @@ export default function CreateEditTeams({
                 </ControlledBox>
               </Section>
               <Section title='Resource Quotas' collapsable>
-                <ResourceQuotaKeyValue name='resourceQuota' />
+                <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
               </Section>
               <Section title='Permissions' collapsable>
-                <PermissionsTable name='selfService' />
+                <PermissionsTable name='selfService' disabled={!isPlatformAdmin} />
               </Section>
             </AdvancedSettings>
             {teamId && (
@@ -260,7 +264,7 @@ export default function CreateEditTeams({
                 resourceName={watch('name')}
                 resourceType='team'
                 data-cy='button-delete-team'
-                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate || !isPlatformAdmin}
                 loading={isLoadingDelete}
               />
             )}
@@ -269,7 +273,7 @@ export default function CreateEditTeams({
               variant='contained'
               color='primary'
               loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || !isPlatformAdmin}
               sx={{ float: 'right', textTransform: 'none' }}
             >
               {teamId ? 'Edit Team' : 'Create Team'}
