@@ -278,7 +278,8 @@ export default function ({
                       value: ingressClassName,
                     }
                   })}
-                  placeholder='Select an Ingress Class Name'
+                  width='large'
+                  placeholder='Select a Ingress Class Name'
                   {...register('spec.ingressClassName')}
                   value={watch('spec.ingressClassName') || ''}
                   onChange={(e, value: { label: string }) => {
