@@ -23,15 +23,23 @@ const pathsValidation = array()
 const cnameValidation = object({
   domain: string().optional(),
   tlsSecretName: string().optional(),
-}).test('both-or-none', 'Both domain and tlsSecretName must be filled or empty', function (value) {
-  if (!value) return true
-
-  const { domain, tlsSecretName } = value
-  if (!domain && tlsSecretName === 'empty') return true
-  if ((domain && !tlsSecretName) || (!domain && tlsSecretName)) return false
-
-  return true
 })
+  .test('both-or-none', 'Both domain and tlsSecretName must be filled or empty', function (value) {
+    if (!value) return true
+
+    const { domain, tlsSecretName } = value
+    if (!domain && tlsSecretName === 'empty') return true
+    if ((domain && !tlsSecretName) || (!domain && tlsSecretName)) return false
+
+    return true
+  })
+  .test('domain-format', 'CNAME cannot contain domain suffix', function (value) {
+    if (!value) return true
+    const { domain } = value
+    const domainSuffix = this.options.context?.domainSuffix
+    if (domain.includes(domainSuffix)) return false
+    return true
+  })
 
 // Main validation
 export const serviceApiResponseSchema = object({
@@ -69,15 +77,12 @@ export const serviceApiResponseSchema = object({
     }).optional(),
     ingressClassName: string().optional(),
     tlsPass: boolean().optional(),
-    // useDefaultHost: boolean().optional(),
-    // subdomain: string().required(),
     domain: string().required(),
     useCname: boolean().optional(),
     cname: cnameValidation.required(),
     paths: pathsValidation.required(),
     forwardPath: boolean().optional(),
     hasCert: boolean().optional(),
-    // certSelect: boolean().optional(),
     certName: string().when('hasCert', {
       is: true,
       then: string().required('Certificate name is required if certificate is selected'),

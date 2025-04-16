@@ -120,6 +120,7 @@ export default function ({
   const methods = useForm<CreateAplServiceApiResponse>({
     resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateAplServiceApiResponse>,
     defaultValues: data,
+    context: { domainSuffix: cluster.domainSuffix },
   })
   const {
     control,
