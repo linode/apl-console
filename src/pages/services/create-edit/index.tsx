@@ -106,7 +106,7 @@ export default function ({
   } = useGetSettingsInfoQuery()
 
   const teamSecrets = teamSealedSecrets?.filter((secret) => secret.type === 'kubernetes.io/tls') || []
-
+  const updatedIngressClassNames = [...(settingsInfo?.ingressClassNames ?? []), 'platform']
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -175,7 +175,6 @@ export default function ({
     else setValue('spec.ksvc.predeployed', false)
   }
   const onSubmit = (submitData: CreateAplServiceApiResponse) => {
-    console.log('submitData', submitData)
     if (!isEmpty(submitData.spec?.paths)) {
       submitData.spec?.paths.forEach((path, index) => {
         submitData.spec.paths[index] = `/${path}`
@@ -183,7 +182,6 @@ export default function ({
     }
     if (submitData.spec?.cname?.tlsSecretName === '') submitData.spec.cname.tlsSecretName = undefined
     if (submitData.spec?.ingressClassName === '') submitData.spec.ingressClassName = undefined
-    console.log('submitData after changes', submitData)
     // eslint-disable-next-line object-shorthand
     if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
     else create({ teamId, body: submitData })
@@ -198,7 +196,6 @@ export default function ({
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
   if (teamId !== 'admin') setValue('spec.namespace', `team-${teamId}`)
-  console.log('form data', data)
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
@@ -271,6 +268,25 @@ export default function ({
               <FormRow spacing={10}>
                 <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
+              <FormRow spacing={10}>
+                <Autocomplete
+                  label='Ingress Class Name'
+                  loading={isLoadingSettingsInfo}
+                  options={(updatedIngressClassNames || []).map((ingressClassName) => {
+                    return {
+                      label: ingressClassName,
+                      value: ingressClassName,
+                    }
+                  })}
+                  placeholder='Select an Ingress Class Name'
+                  {...register('spec.ingressClassName')}
+                  value={watch('spec.ingressClassName') || ''}
+                  onChange={(e, value: { label: string }) => {
+                    const label: string = value?.label || ''
+                    setValue('spec.ingressClassName', label)
+                  }}
+                />
+              </FormRow>
             </Section>
             <AdvancedSettings title='Advanced Settings'>
               <Section>
@@ -330,33 +346,11 @@ export default function ({
                     {...register('spec.cname.tlsSecretName')}
                     value={watch('spec.cname.tlsSecretName') || ''}
                     onChange={(e, value: { label: string }) => {
-                      console.log('value', value)
                       const label: string = value?.label || ''
                       setValue('spec.cname.tlsSecretName', label)
                     }}
                   />
                 </FormRow>
-
-                <Divider sx={{ mt: 4, mb: 2 }} />
-
-                <Autocomplete
-                  label='Ingress Class Name'
-                  loading={isLoadingSettingsInfo}
-                  options={(settingsInfo?.ingressClassNames || []).map((ingressClassName) => {
-                    return {
-                      label: ingressClassName,
-                      value: ingressClassName,
-                    }
-                  })}
-                  placeholder='Select an Ingress Class Name'
-                  {...register('spec.ingressClassName')}
-                  value={watch('spec.ingressClassName') || ''}
-                  onChange={(e, value: { label: string }) => {
-                    console.log('value', value)
-                    const label: string = value?.label || ''
-                    setValue('spec.ingressClassName', label)
-                  }}
-                />
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
 
