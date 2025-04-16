@@ -111,7 +111,7 @@ export default function CreateEditTeams({
     <Grid className={classes.root}>
       <PaperLayout>
         <LandingHeader docsLabel='Docs' title='Teams' />
-        {!isPlatformAdmin && <InformationBanner message='this page is readonly' sx={{ mb: 3 }} />}
+        {!isPlatformAdmin && <InformationBanner message='This page is readonly' sx={{ mb: 3 }} />}
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
