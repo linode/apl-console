@@ -30,29 +30,29 @@ export default function LinkedNumberField({
   helperText,
 }: LinkedNumberFieldProps) {
   const { setValue, watch } = registers
-
-  const valueA: number = watch('trafficControl.weightV1') ?? valueMax / 2
-  const valueB: number = watch('trafficControl.weightV2') ?? valueMax / 2
+  const defaultValue = valueMax / 2
+  const valueA: number = watch(registers.registerA.name) ?? defaultValue
+  const valueB: number = watch(registers.registerB.name) ?? defaultValue
 
   useEffect(() => {
-    setValue('trafficControl.weightV1', valueMax / 2)
-    setValue('trafficControl.weightV2', valueMax / 2)
-  }, [setValue, valueMax])
+    setValue(registers.registerA.name, valueMax / 2)
+    setValue(registers.registerB.name, valueMax / 2)
+  }, [setValue])
 
   function calculateValues(updatedValue: number, isValueA: boolean) {
     if (updatedValue < 0) {
-      setValue('trafficControl.weightV1', isValueA ? 0 : valueMax)
-      setValue('trafficControl.weightV2', isValueA ? valueMax : 0)
+      setValue(registers.registerA.name, isValueA ? 0 : valueMax)
+      setValue(registers.registerB.name, isValueA ? valueMax : 0)
       return
     }
     if (updatedValue > valueMax) {
-      setValue('trafficControl.weightV1', isValueA ? valueMax : 0)
-      setValue('trafficControl.weightV2', isValueA ? 0 : valueMax)
+      setValue(registers.registerA.name, isValueA ? valueMax : 0)
+      setValue(registers.registerB.name, isValueA ? 0 : valueMax)
       return
     }
 
-    setValue('trafficControl.weightV1', isValueA ? updatedValue : valueMax - updatedValue)
-    setValue('trafficControl.weightV2', isValueA ? valueMax - updatedValue : updatedValue)
+    setValue(registers.registerA.name, isValueA ? updatedValue : valueMax - updatedValue)
+    setValue(registers.registerB.name, isValueA ? valueMax - updatedValue : updatedValue)
   }
 
   // Increment/Decrement helpers

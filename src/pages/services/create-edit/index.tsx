@@ -31,6 +31,7 @@ import { isEmpty } from 'lodash'
 import LinkedNumberField from 'components/forms/LinkedNumberField'
 import AdvancedSettings from 'components/AdvancedSettings'
 import font from 'theme/font'
+import { Autocomplete } from 'components/forms/Autocomplete'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
 
@@ -180,7 +181,8 @@ export default function ({
         submitData.spec.paths[index] = `/${path}`
       })
     }
-    if (submitData.spec?.cname?.tlsSecretName === 'empty') submitData.spec.cname.tlsSecretName = undefined
+    if (submitData.spec?.cname?.tlsSecretName === '') submitData.spec.cname.tlsSecretName = undefined
+    if (submitData.spec?.ingressClassName === '') submitData.spec.ingressClassName = undefined
     console.log('submitData after changes', submitData)
     // eslint-disable-next-line object-shorthand
     if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
@@ -315,45 +317,46 @@ export default function ({
                     type='text'
                     {...register('spec.cname.domain')}
                   />
-                  <TextField
+                  <Autocomplete
                     label='TLS Secret'
-                    width='medium'
+                    loading={isLoadingTeamSecrets}
+                    options={(teamSecrets || []).map((secret) => {
+                      return {
+                        label: secret.name,
+                        value: secret.name,
+                      }
+                    })}
+                    placeholder='Select a TLS Secret'
                     {...register('spec.cname.tlsSecretName')}
-                    select
-                    error={!!errors.spec?.cname}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      setValue('spec.cname.tlsSecretName', value)
+                    value={watch('spec.cname.tlsSecretName') || ''}
+                    onChange={(e, value: { label: string }) => {
+                      console.log('value', value)
+                      const label: string = value?.label || ''
+                      setValue('spec.cname.tlsSecretName', label)
                     }}
-                    value={watch('spec.cname.tlsSecretName') || data?.spec?.cname?.tlsSecretName}
-                  >
-                    <MenuItem key='tls-certificate' value='empty' classes={undefined}>
-                      TLS certificate
-                    </MenuItem>
-                    {teamSecrets.map((secret) => (
-                      <MenuItem key={secret?.name} value={secret?.name} classes={undefined}>
-                        {secret?.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  />
                 </FormRow>
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
 
-                <TextField
+                <Autocomplete
                   label='Ingress Class Name'
-                  fullWidth
+                  loading={isLoadingSettingsInfo}
+                  options={(settingsInfo?.ingressClassNames || []).map((ingressClassName) => {
+                    return {
+                      label: ingressClassName,
+                      value: ingressClassName,
+                    }
+                  })}
+                  placeholder='Select an Ingress Class Name'
                   {...register('spec.ingressClassName')}
-                  width='large'
-                  value={watch('spec.ingressClassName') || data?.spec?.ingressClassName}
-                  select
-                >
-                  {settingsInfo?.ingressClassNames.map((ingressClassName) => (
-                    <MenuItem key={ingressClassName} value={ingressClassName} classes={undefined}>
-                      {ingressClassName}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  value={watch('spec.ingressClassName') || ''}
+                  onChange={(e, value: { label: string }) => {
+                    console.log('value', value)
+                    const label: string = value?.label || ''
+                    setValue('spec.ingressClassName', label)
+                  }}
+                />
 
                 <Divider sx={{ mt: 4, mb: 2 }} />
 
