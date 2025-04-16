@@ -1,5 +1,4 @@
 import { Box, FormHelperText } from '@mui/material'
-import { useEffect } from 'react'
 import { TextField } from './TextField'
 import FormRow from './FormRow'
 
@@ -31,13 +30,8 @@ export default function LinkedNumberField({
 }: LinkedNumberFieldProps) {
   const { setValue, watch } = registers
   const defaultValue = valueMax / 2
-  const valueA: number = watch(registers.registerA.name) ?? defaultValue
-  const valueB: number = watch(registers.registerB.name) ?? defaultValue
-
-  useEffect(() => {
-    setValue(registers.registerA.name, valueMax / 2)
-    setValue(registers.registerB.name, valueMax / 2)
-  }, [setValue])
+  const valueA: number = watch(registers.registerA.name) || defaultValue
+  const valueB: number = watch(registers.registerB.name) || defaultValue
 
   function calculateValues(updatedValue: number, isValueA: boolean) {
     if (updatedValue < 0) {
