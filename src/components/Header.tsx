@@ -95,6 +95,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
 
   const getNextPathname = (nextTeamId: string): string => {
     if (redirectToDashboard(nextTeamId)) return '/'
+    if (pathname === '/apps/admin' && themeView === 'platform') return pathname
     return pathname.replace(oboTeamId, nextTeamId)
   }
 
