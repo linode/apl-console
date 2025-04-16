@@ -313,10 +313,10 @@ export default function ({
                 <Divider sx={{ mt: 4, mb: 2 }} />
                 <Typography
                   sx={{
+                    color: 'text.primary',
                     fontSize: '1rem',
                     lineHeight: '1.5rem',
                     fontWeight: 700,
-                    color: 'white',
                     fontFamily: font.bold,
                   }}
                 >
