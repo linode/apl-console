@@ -119,7 +119,7 @@ export default function CreateEditTeams({
               <TextField
                 label='Team name'
                 width='large'
-                {...register('name')}
+                noMarginTop
                 value={watch('name')}
                 onChange={(e) => {
                   const value = e.target.value
