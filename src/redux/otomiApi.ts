@@ -575,7 +575,7 @@ export type TeamApiBody = /** status 200 Successfully obtained teams collection 
     // }
   }
   resourceQuota?: {
-    name: string,
+    name: string
     value: string
   }[]
   networkPolicy?: {
