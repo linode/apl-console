@@ -119,11 +119,15 @@ export default function CreateEditTeams({
               <TextField
                 label='Team name'
                 width='large'
-                noMarginTop
-                disabled={!!teamId}
                 {...register('name')}
+                value={watch('name')}
+                onChange={(e) => {
+                  const value = e.target.value
+                  setValue('name', value)
+                }}
                 error={!!errors.name}
-                helperText={errors.name?.message}
+                helperText={errors.name?.message?.toString()}
+                disabled={!!teamId}
               />
             </Section>
             <AdvancedSettings>
