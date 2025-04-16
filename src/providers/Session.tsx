@@ -75,7 +75,7 @@ type DbMessage = {
 
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const { pathname } = useLocation()
-  const skipFetch = pathname === '/logout' || pathname === '/logout-otomi'
+  const skipFetch = pathname === '/logout' || pathname === '/platform-logout'
   const [oboTeamId, setOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const {
     data: session,
