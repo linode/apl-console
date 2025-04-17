@@ -68,9 +68,9 @@ export default function ({
     let compositeUrl = ''
     if (activeService !== undefined) {
       compositeUrl = activeService?.managedByKnative
-        ? `${activeService.name}-team-${teamId}.${cluster.domainSuffix}/`
-        : `${activeService.name}-${teamId}.${cluster.domainSuffix}/`
-    } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}/`
+        ? `${activeService.name}-team-${teamId}.${cluster.domainSuffix}`
+        : `${activeService.name}-${teamId}.${cluster.domainSuffix}`
+    } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}`
     return compositeUrl
   }
 
