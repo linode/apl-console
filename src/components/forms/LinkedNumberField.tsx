@@ -30,23 +30,23 @@ export default function LinkedNumberField({
 }: LinkedNumberFieldProps) {
   const { setValue, watch } = registers
   const defaultValue = valueMax / 2
-  const valueA: number = watch(registers.registerA.name) || defaultValue
-  const valueB: number = watch(registers.registerB.name) || defaultValue
+  const rawA = watch(registers.registerA.name)
+  const rawB = watch(registers.registerB.name)
+
+  const valueA: number = Math.min(Math.max(rawA ?? defaultValue, 0), valueMax)
+  const valueB: number = Math.min(Math.max(rawB ?? defaultValue, 0), valueMax)
 
   function calculateValues(updatedValue: number, isValueA: boolean) {
-    if (updatedValue < 0) {
-      setValue(registers.registerA.name, isValueA ? 0 : valueMax)
-      setValue(registers.registerB.name, isValueA ? valueMax : 0)
-      return
-    }
-    if (updatedValue > valueMax) {
-      setValue(registers.registerA.name, isValueA ? valueMax : 0)
-      setValue(registers.registerB.name, isValueA ? 0 : valueMax)
-      return
-    }
+    const clamped = Math.min(Math.max(updatedValue, 0), valueMax)
+    const complementary = valueMax - clamped
 
-    setValue(registers.registerA.name, isValueA ? updatedValue : valueMax - updatedValue)
-    setValue(registers.registerB.name, isValueA ? valueMax - updatedValue : updatedValue)
+    if (isValueA) {
+      setValue(registers.registerA.name, clamped)
+      setValue(registers.registerB.name, complementary)
+    } else {
+      setValue(registers.registerA.name, complementary)
+      setValue(registers.registerB.name, clamped)
+    }
   }
 
   // Increment/Decrement helpers
@@ -64,6 +64,7 @@ export default function LinkedNumberField({
           label={labelA}
           value={valueA}
           type='number'
+          inputProps={{ min: 0, max: valueMax }}
           onChange={(e) => calculateValues(Number(e.target.value), true)}
           onIncrement={incrementA}
           onDecrement={decrementA}
@@ -77,6 +78,7 @@ export default function LinkedNumberField({
           label={labelB}
           value={valueB}
           type='number'
+          inputProps={{ min: 0, max: valueMax }}
           onChange={(e) => calculateValues(Number(e.target.value), false)}
           onIncrement={incrementB}
           onDecrement={decrementB}
