@@ -26,8 +26,10 @@ const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ th
   [theme.breakpoints.up('md')]: {
     paddingLeft: `calc(${theme.spacing(4)} + 14px)`, // 46
   },
-  lineHeight: '0.875rem',
+  lineHeight: 'normal',
   color: theme.palette.cl.text.subTitle,
+  maxWidth: '75%',
+  fontSize: 'medium',
 }))
 
 interface ControlledCheckboxProps {
@@ -42,7 +44,7 @@ interface ControlledCheckboxProps {
 export default function ControlledCheckbox(props: ControlledCheckboxProps) {
   const { name, disabled, control, label, explainertext } = props
   return (
-    <Box sx={{ pl: '4px' }}>
+    <Box sx={{ pl: '4px', opacity: disabled ? 0.5 : 1 }}>
       <Controller
         name={name}
         control={control}
