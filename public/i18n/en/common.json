@@ -7,7 +7,7 @@
   "Cluster": "Cluster",
   "Cluster_plural": "Clusters",
   "Clusters": "Clusters",
-  "DELETE_RESOURCE": "Delete {{resourceName}} {{resourceType}}",
+  "DELETE_RESOURCE": "Delete {{resourceName}} {{resourceType}}?",
   "DELETE_RESOURCE_CONFIRMATION": "Type the name of the {{resourceType}} (\"{{resourceName}}\") to confirm.",
   "DRONE_MESSAGE": "Drone <1>build {{id}}</1> <strong>{{status}}</strong> for commit <6>{{sha}}</6> at {{datetime}}.",
   "Dashboard": "Dashboard",

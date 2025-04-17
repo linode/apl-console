@@ -1,12 +1,12 @@
 import { Box, Card, Grid, Typography, useTheme } from '@mui/material'
 import { useSession } from 'providers/Session'
 import * as React from 'react'
-import { GetTeamApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
+import { GetTeamApiResponse } from 'redux/otomiApi'
 import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
