@@ -445,7 +445,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           sx={{
             fontWeight: 500,
             fontSize: '0.875rem',
-            color: theme.palette.cl.text.subTitle,
+            color: theme.palette.cl.text.title,
             marginBottom: isHorizontalLabel ? 0 : theme.spacing(1),
             width: isHorizontalLabel ? 250 : 'auto',
             // textAlign: isHorizontalLabel ? 'right' : 'left',

@@ -52,6 +52,7 @@ export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaK
         valueLabel='Value'
         name={name}
         filterFn={(item) => countQuotaKeys.has(item.name)}
+        hideWhenEmpty
         compressed
         keyDisabled
         valueDisabled
@@ -69,6 +70,7 @@ export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaK
           valueLabel='Value'
           name={name}
           filterFn={(item) => computeQuotaKeys.has(item.name)}
+          hideWhenEmpty
           keyDisabled
           compressed
           valueSize='medium'

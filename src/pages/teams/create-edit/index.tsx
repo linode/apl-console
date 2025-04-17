@@ -131,7 +131,7 @@ export default function CreateEditTeams({
               />
             </Section>
             <AdvancedSettings>
-              <Section title='Dashboards' collapsable>
+              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana}>
                 {!appsEnabled.grafana && isPlatformAdmin && (
                   <InformationBanner
                     small
@@ -151,7 +151,7 @@ export default function CreateEditTeams({
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
-              <Section title='Alerts' collapsable>
+              <Section title='Alerts' collapsable noMarginTop={appsEnabled.alertmanager}>
                 {!appsEnabled.alertmanager && isPlatformAdmin && (
                   <InformationBanner
                     small
@@ -255,7 +255,11 @@ export default function CreateEditTeams({
                 )} */}
                 </ControlledBox>
               </Section>
-              <Section title='Resource Quotas' collapsable>
+              <Section
+                title='Resource Quotas'
+                collapsable
+                description='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
+              >
                 <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
               </Section>
               <Section title='Permissions' collapsable>

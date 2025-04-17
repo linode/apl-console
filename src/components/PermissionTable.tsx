@@ -33,6 +33,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   tableHeadText: {
     fontWeight: 'bold',
+    fontSize: '1rem',
     color: theme.palette.cm.headline,
   },
   tableBody: {

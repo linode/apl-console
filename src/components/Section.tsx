@@ -12,6 +12,9 @@ const StyledTitle = styled(Typography)(({ theme }) => ({
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
   color: theme.palette.cl.text.subTitle,
+  maxWidth: '85%',
+  fontSize: '0.9rem',
+  marginTop: '5px',
 }))
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
@@ -31,10 +34,18 @@ const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
   '& .MuiAccordionSummary-content': {
     margin: 0,
   },
+  minHeight: '0!important',
 }))
 
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+interface StyledAccordionDetailsProps {
+  noMarginTop?: boolean
+}
+
+const StyledAccordionDetails = styled(AccordionDetails, {
+  shouldForwardProp: (prop) => prop !== 'noMarginTop',
+})<StyledAccordionDetailsProps>(({ noMarginTop }) => ({
   padding: 0,
+  marginTop: noMarginTop ? '0px' : '20px',
 }))
 
 interface Props {
@@ -43,10 +54,11 @@ interface Props {
   title?: string
   children?: React.ReactNode
   noPaddingTop?: boolean
+  noMarginTop?: boolean
 }
 
 export default function Section(props: Props) {
-  const { title, description, collapsable, children, noPaddingTop } = props
+  const { title, description, collapsable, children, noPaddingTop, noMarginTop } = props
   const [expanded, setExpanded] = useState(true)
 
   const handleAccordionChange = () => {
@@ -70,7 +82,7 @@ export default function Section(props: Props) {
               {description && <StyledDescription>{description}</StyledDescription>}
             </Box>
           </StyledAccordionSummary>
-          <StyledAccordionDetails>{children}</StyledAccordionDetails>
+          <StyledAccordionDetails noMarginTop={noMarginTop}>{children}</StyledAccordionDetails>
         </StyledAccordion>
       </Paper>
     )

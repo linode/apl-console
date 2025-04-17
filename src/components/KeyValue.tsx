@@ -40,6 +40,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
     color: theme.palette.cl.text.subTitle,
     marginTop: 0,
   },
+  inputLabel: {
+    color: theme.palette.cl.text.title,
+  },
   label: {
     fontFamily: 'sans-serif',
   },
@@ -96,6 +99,8 @@ interface KeyValueProps {
   errorText?: string
   // optional filter function. It receives a field and its original index.
   filterFn?: (item: KeyValueItem & { id: string }, index: number) => boolean
+  // hide filtered fields when filterFn is provided and empty
+  hideWhenEmpty?: boolean
   decoratorMapping?: Record<string, string>
 }
 
@@ -152,6 +157,7 @@ export default function KeyValue(props: KeyValueProps) {
     keyDisabled = false,
     showLabel = true,
     valueDisabled = false,
+    hideWhenEmpty = false,
     filterFn,
     decoratorMapping,
   } = props
@@ -165,6 +171,8 @@ export default function KeyValue(props: KeyValueProps) {
     ? mappedFields.filter(({ field, index }) => filterFn(field as KeyValueItem & { id: string }, index))
     : mappedFields
 
+  if (filterFn && hideWhenEmpty && filteredFields.length === 0) return null
+
   const handleAddItem = () => {
     append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
   }
@@ -176,7 +184,9 @@ export default function KeyValue(props: KeyValueProps) {
         [errorScrollClassName]: !!errorText,
       })}
     >
-      <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
+      <InputLabel className={classes.inputLabel} sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+        {title}
+      </InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
       {filteredFields.map(({ field, index }, localIndex) => (
