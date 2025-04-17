@@ -120,7 +120,7 @@ function App() {
                                 />
                                 <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
                                 <PrivateRoute path='/create-team' component={Team} platformAdminRoute exact />
-                                <PrivateRoute path='/netpols' component={Netpols} platformAdminRoute exact />
+                                <PrivateRoute path='/network-policies' component={Netpols} platformAdminRoute exact />
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/policies/:policyName'
@@ -171,8 +171,12 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
-                                <PrivateRoute path='/teams/:teamId/netpols' component={Netpols} exact />
-                                <PrivateRoute path='/teams/:teamId/netpols/:netpolName' component={Netpol} exact />
+                                <PrivateRoute path='/teams/:teamId/network-policies' component={Netpols} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/network-policies/:netpolName'
+                                  component={Netpol}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                 <PrivateRoute path='/teams/:teamId/projects/:projectName' component={Project} exact />
                                 <PrivateRoute exact path='/teams/:teamId/container-images' component={Builds} />
