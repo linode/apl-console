@@ -55,7 +55,10 @@ export default function ({
   const { t } = useTranslation()
   const { classes } = useStyles()
   const {
-    settings: { cluster },
+    settings: {
+      cluster,
+      otomi: { isPreInstalled },
+    },
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
@@ -183,6 +186,7 @@ export default function ({
     }
     if (submitData.spec?.cname?.tlsSecretName === '') submitData.spec.cname.tlsSecretName = undefined
     if (submitData.spec?.ingressClassName === '') submitData.spec.ingressClassName = undefined
+    if (isPreInstalled) submitData.spec.ingressClassName = 'platform'
     // eslint-disable-next-line object-shorthand
     if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
     else create({ teamId, body: submitData })
@@ -243,54 +247,66 @@ export default function ({
                     </MenuItem>
                   ))}
                 </TextField>
-                <TextField
-                  label='Port'
-                  width='small'
-                  {...register('spec.port')}
-                  select
-                  onChange={(e) => {
-                    const value = Number(e.target.value)
-                    setValue('spec.port', value)
-                  }}
-                  value={watch('spec.port') || data?.spec?.port}
-                  error={!!errors.spec?.port}
-                  helperText={errors.spec?.port?.message?.toString()}
-                >
-                  <MenuItem key='select-a-port' value='' disabled classes={undefined}>
-                    Select a port
-                  </MenuItem>
-                  {service?.ports.map((port) => (
-                    <MenuItem key={`service-${port}`} value={port} classes={undefined}>
-                      {port}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                {service?.ports.length === 1 ? (
+                  <TextField
+                    label='Port'
+                    width='small'
+                    {...register('spec.port')}
+                    disabled
+                    value={watch('spec.port') || data?.spec?.port[0]}
+                    error={!!errors.spec?.port}
+                    helperText={errors.spec?.port?.message?.toString()}
+                  />
+                ) : (
+                  <TextField
+                    label='Port'
+                    width='small'
+                    {...register('spec.port')}
+                    select
+                    onChange={(e) => {
+                      const value = Number(e.target.value)
+                      setValue('spec.port', value)
+                    }}
+                    placeholder='Select a port'
+                    value={watch('spec.port') || data?.spec?.port}
+                    error={!!errors.spec?.port}
+                    helperText={errors.spec?.port?.message?.toString()}
+                  >
+                    {service?.ports.map((port) => (
+                      <MenuItem key={`service-${port}`} value={port} classes={undefined}>
+                        {port}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
               </FormRow>
               <FormRow spacing={10}>
                 <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
-              <FormRow spacing={10}>
-                <Autocomplete
-                  label='Ingress Class Name'
-                  loading={isLoadingSettingsInfo}
-                  options={(updatedIngressClassNames || []).map((ingressClassName) => {
-                    return {
-                      label: ingressClassName,
-                      value: ingressClassName,
-                    }
-                  })}
-                  width='large'
-                  placeholder='Select a Ingress Class Name'
-                  {...register('spec.ingressClassName')}
-                  value={watch('spec.ingressClassName') || ''}
-                  onChange={(e, value: { label: string }) => {
-                    const label: string = value?.label || ''
-                    setValue('spec.ingressClassName', label)
-                  }}
-                />
-              </FormRow>
+              {!isPreInstalled && (
+                <FormRow spacing={10}>
+                  <Autocomplete
+                    label='Ingress Class Name'
+                    loading={isLoadingSettingsInfo}
+                    options={(updatedIngressClassNames || []).map((ingressClassName) => {
+                      return {
+                        label: ingressClassName,
+                        value: ingressClassName,
+                      }
+                    })}
+                    width='large'
+                    placeholder='Select a Ingress Class Name'
+                    {...register('spec.ingressClassName')}
+                    value={watch('spec.ingressClassName') || 'platform'}
+                    onChange={(e, value: { label: string }) => {
+                      const label: string = value?.label || ''
+                      setValue('spec.ingressClassName', label)
+                    }}
+                  />
+                </FormRow>
+              )}
             </Section>
-            <AdvancedSettings title='Advanced Settings'>
+            <AdvancedSettings title='Advanced Settings' closed>
               <Section>
                 <KeyValue
                   title='URL paths'
@@ -300,7 +316,7 @@ export default function ({
                   keyLabel='Domain'
                   valueLabel='Path'
                   showLabel={false}
-                  addLabel='Add another URL path'
+                  addLabel='Add URL path'
                   onlyValue
                   keySize='large'
                   valueSize='medium'
@@ -320,11 +336,10 @@ export default function ({
                     fontFamily: font.bold,
                   }}
                 >
-                  Domain aliases (CNAME)
+                  Canonical Name (CNAME)
                 </Typography>
                 <Typography sx={{ fontSize: '12px' }}>
-                  You can have multiple urls directing to the same url as above . You need to make sure that the DNS
-                  provider where your URL is hosted is pointing to this IP-Adres: 172.0.0.1
+                  Use a Canonical Name (CNAME) that points to the Service domain name.
                 </Typography>
                 <FormRow key={1} spacing={10}>
                   <TextField
@@ -372,7 +387,7 @@ export default function ({
                   label='Forward Path'
                   explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
                 />
-
+                <Divider sx={{ mt: 4, mb: 2 }} />
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   disabled={TLSEnabled}
@@ -407,7 +422,7 @@ export default function ({
                   title='HTTP Response Headers'
                   keyLabel='Name'
                   valueLabel='Value'
-                  addLabel='Add another response header'
+                  addLabel='Add response header'
                   name='ingress.headers.response.set'
                   error={!!errors.spec?.headers}
                   helperText={errors.spec?.headers ? '"Name" and "Value" must both be filled in' : undefined}
@@ -417,7 +432,7 @@ export default function ({
             </AdvancedSettings>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
-                Your service will be {serviceName ? 'edited' : 'created'} as: {url}
+                Your service will be exposed as: {url}
               </Typography>
               {serviceName && (
                 <DeleteButton
