@@ -559,7 +559,7 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -568,27 +568,6 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     msteams?: {
       highPrio?: string
       lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -600,11 +579,13 @@ export type GetTeamsApiResponse = /** status 200 Successfully obtained teams col
     egressPublic?: boolean
   }
   selfService?: {
-    service?: 'ingress'[]
-    policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-    apps?: ('argocd' | 'gitea')[]
-    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+    teamMembers?: {
+      createServices: boolean
+      editSecurityPolicies: boolean
+      useCloudShell: boolean
+      downloadKubeconfig: boolean
+      downloadDockerLogin: boolean
+    }
   }
 }[]
 export type GetTeamsApiArg = void
@@ -622,7 +603,7 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -631,27 +612,6 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     msteams?: {
       highPrio?: string
       lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -663,11 +623,13 @@ export type CreateTeamApiResponse = /** status 200 Successfully obtained teams c
     egressPublic?: boolean
   }
   selfService?: {
-    service?: 'ingress'[]
-    policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-    apps?: ('argocd' | 'gitea')[]
-    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+    teamMembers?: {
+      createServices: boolean
+      editSecurityPolicies: boolean
+      useCloudShell: boolean
+      downloadKubeconfig: boolean
+      downloadDockerLogin: boolean
+    }
   }
 }
 export type CreateTeamApiArg = {
@@ -686,7 +648,7 @@ export type CreateTeamApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+      receivers?: ('slack' | 'msteams' | 'none')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -695,27 +657,6 @@ export type CreateTeamApiArg = {
       msteams?: {
         highPrio?: string
         lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -727,11 +668,13 @@ export type CreateTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      service?: 'ingress'[]
-      policies?: 'edit policies'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-      apps?: ('argocd' | 'gitea')[]
-      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
     }
   }
 }
@@ -749,7 +692,7 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -758,27 +701,6 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     msteams?: {
       highPrio?: string
       lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -790,11 +712,13 @@ export type GetTeamApiResponse = /** status 200 Successfully obtained team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    service?: 'ingress'[]
-    policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-    apps?: ('argocd' | 'gitea')[]
-    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+    teamMembers?: {
+      createServices: boolean
+      editSecurityPolicies: boolean
+      useCloudShell: boolean
+      downloadKubeconfig: boolean
+      downloadDockerLogin: boolean
+    }
   }
 }
 export type GetTeamApiArg = {
@@ -815,7 +739,7 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -824,27 +748,6 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     msteams?: {
       highPrio?: string
       lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
     }
   }
   resourceQuota?: {
@@ -856,11 +759,13 @@ export type EditTeamApiResponse = /** status 200 Successfully edited team */ {
     egressPublic?: boolean
   }
   selfService?: {
-    service?: 'ingress'[]
-    policies?: 'edit policies'[]
-    team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-    apps?: ('argocd' | 'gitea')[]
-    access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+    teamMembers?: {
+      createServices: boolean
+      editSecurityPolicies: boolean
+      useCloudShell: boolean
+      downloadKubeconfig: boolean
+      downloadDockerLogin: boolean
+    }
   }
 }
 export type EditTeamApiArg = {
@@ -881,7 +786,7 @@ export type EditTeamApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+      receivers?: ('slack' | 'msteams' | 'none')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -890,27 +795,6 @@ export type EditTeamApiArg = {
       msteams?: {
         highPrio?: string
         lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
       }
     }
     resourceQuota?: {
@@ -922,11 +806,13 @@ export type EditTeamApiArg = {
       egressPublic?: boolean
     }
     selfService?: {
-      service?: 'ingress'[]
-      policies?: 'edit policies'[]
-      team?: ('oidc' | 'managedMonitoring' | 'alerts' | 'resourceQuota' | 'networkPolicy')[]
-      apps?: ('argocd' | 'gitea')[]
-      access?: ('shell' | 'downloadKubeConfig' | 'downloadDockerConfig' | 'downloadCertificateAuthority')[]
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
     }
   }
 }
@@ -7149,7 +7035,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   alerts?: {
     repeatInterval?: string
     groupInterval?: string
-    receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+    receivers?: ('slack' | 'msteams' | 'none')[]
     slack?: {
       channel?: string
       channelCrit?: string
@@ -7158,27 +7044,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     msteams?: {
       highPrio?: string
       lowPrio?: string
-    }
-    opsgenie?: {
-      apiKey?: string
-      url?: string
-      responders?: ({
-        type: 'team' | 'user' | 'escalation' | 'schedule'
-      } & (
-        | {
-            id: string
-          }
-        | {
-            name: string
-          }
-        | {
-            username: string
-          }
-      ))[]
-    }
-    email?: {
-      critical?: string
-      nonCritical?: string
     }
   }
   cluster?: {
@@ -7432,7 +7297,7 @@ export type EditSettingsApiArg = {
     alerts?: {
       repeatInterval?: string
       groupInterval?: string
-      receivers?: ('slack' | 'msteams' | 'opsgenie' | 'email' | 'none')[]
+      receivers?: ('slack' | 'msteams' | 'none')[]
       slack?: {
         channel?: string
         channelCrit?: string
@@ -7441,27 +7306,6 @@ export type EditSettingsApiArg = {
       msteams?: {
         highPrio?: string
         lowPrio?: string
-      }
-      opsgenie?: {
-        apiKey?: string
-        url?: string
-        responders?: ({
-          type: 'team' | 'user' | 'escalation' | 'schedule'
-        } & (
-          | {
-              id: string
-            }
-          | {
-              name: string
-            }
-          | {
-              username: string
-            }
-        ))[]
-      }
-      email?: {
-        critical?: string
-        nonCritical?: string
       }
     }
     cluster?: {

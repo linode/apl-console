@@ -90,20 +90,20 @@ export default function NavConfig() {
           title: 'Shell',
           path: `/cloudtty`,
           icon: getIcon('shell_icon.svg'),
-          disabled: process.env.NODE_ENV !== 'production' || !canDo(user, oboTeamId, 'shell'),
+          disabled: process.env.NODE_ENV !== 'production' || !canDo(user, oboTeamId, 'useCloudShell'),
         },
         {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeConfig'),
+          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeconfig'),
           isDownload: true,
         },
         {
           title: 'Download DOCKERCFG',
           path: `/api/v1/dockerconfig/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: !appsEnabled?.harbor || !canDo(user, oboTeamId, 'downloadDockerConfig'),
+          disabled: !appsEnabled?.harbor || !canDo(user, oboTeamId, 'downloadDockerLogin'),
           isDownload: true,
         },
         {
