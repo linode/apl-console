@@ -169,7 +169,6 @@ export default function ({
     }
   }, [filteredK8Services, hasSetActiveService, data?.metadata.name])
 
-  const TLSEnabled = watch('spec.tlsPass')
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
     const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
@@ -310,7 +309,7 @@ export default function ({
               <Section>
                 <KeyValue
                   title='URL paths'
-                  subTitle='These define where your service is available. For example, login could point to your app’s login page.'
+                  subTitle='Add all URL paths that are allowed. URL paths that are not explicitly added here will result in a page not found error.'
                   keyDisabled
                   keyValue={url}
                   keyLabel='Domain'
@@ -379,18 +378,9 @@ export default function ({
                   explainertext='Requests will be forwarded to the backend service without being decrypted'
                 />
 
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  disabled={TLSEnabled}
-                  name='spec.forwardPath'
-                  control={control}
-                  label='Forward Path'
-                  explainertext='URL will be forwarded to the complete url path (.e.g /api/users) instead of ‘/’'
-                />
                 <Divider sx={{ mt: 4, mb: 2 }} />
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  disabled={TLSEnabled}
                   name='spec.trafficControl.enabled'
                   control={control}
                   label='Enable Traffic Mangement'
@@ -432,7 +422,7 @@ export default function ({
             </AdvancedSettings>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
-                Your service will be exposed as: {url}
+                The service will be exposed as: {url}
               </Typography>
               {serviceName && (
                 <DeleteButton
