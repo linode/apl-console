@@ -337,7 +337,7 @@ export default function ({
                 >
                   Canonical Name (CNAME)
                 </Typography>
-                <Typography sx={{ fontSize: '12px' }}>
+                <Typography sx={{ fontSize: '0.875rem', color: '#ABABAB', lineHeight: '1.25rem' }}>
                   Use a Canonical Name (CNAME) that points to the Service domain name.
                 </Typography>
                 <FormRow key={1} spacing={10}>
