@@ -46,10 +46,11 @@ interface Props {
   title?: string
   children?: React.ReactNode
   noPaddingTop?: boolean
+  closed?: boolean
 }
 
 export default function AdvancedSettings(props: Props) {
-  const { title = 'Advanced Settings', description, children, noPaddingTop } = props
+  const { title = 'Advanced Settings', description, children, noPaddingTop, closed = false } = props
   const [expanded, setExpanded] = useState(true)
 
   const handleAccordionChange = () => {
@@ -57,7 +58,7 @@ export default function AdvancedSettings(props: Props) {
   }
 
   return (
-    <StyledAccordion disableGutters expanded={expanded} onChange={handleAccordionChange}>
+    <StyledAccordion defaultExpanded={!closed} disableGutters onChange={handleAccordionChange}>
       <StyledAccordionSummary
         expandIcon={<KeyboardArrowRight />}
         sx={{
