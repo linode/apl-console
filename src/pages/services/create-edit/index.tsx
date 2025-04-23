@@ -440,7 +440,7 @@ export default function ({
                 color='primary'
                 sx={{ textTransform: 'none' }}
               >
-                {serviceName ? 'Edit Service' : 'Create Service'}
+                {serviceName ? 'Save Changes' : 'Create Service'}
               </Button>
             </Box>
           </form>
