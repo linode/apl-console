@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useState } from 'react'
 import { Box } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
