@@ -100,6 +100,26 @@ export default function CreateEditTeams({
   }, [data])
 
   const onSubmit = (submitData) => {
+    // if (teamId) update({ teamId, body: submitData })
+    // else create({ body: submitData })
+
+    if (submitData.managedMonitoring?.alertmanager) {
+      const receivers = submitData.alerts?.receivers ?? []
+      if (!receivers.includes('none')) {
+        submitData.alerts = {
+          ...submitData.alerts,
+          receivers: [...receivers, 'none'],
+        }
+      }
+    } else {
+      // if alertmanager disabled, strip out 'none'
+      const receivers = submitData.alerts?.receivers ?? []
+      submitData.alerts = {
+        ...submitData.alerts,
+        receivers: receivers.filter((r) => r !== 'none'),
+      }
+    }
+
     if (teamId) update({ teamId, body: submitData })
     else create({ body: submitData })
   }
