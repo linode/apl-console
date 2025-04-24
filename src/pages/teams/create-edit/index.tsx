@@ -300,7 +300,7 @@ export default function CreateEditTeams({
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || !isPlatformAdmin}
               sx={{ float: 'right', textTransform: 'none' }}
             >
-              {teamId ? 'Save Changess' : 'Create Team'}
+              {teamId ? 'Save Changes' : 'Create Team'}
             </LoadingButton>
           </form>
         </FormProvider>
