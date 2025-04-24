@@ -39,7 +39,7 @@ export default function ({
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
-    return <Redirect to={`/teams/${teamId}/netpols`} />
+    return <Redirect to={`/teams/${teamId}/network-policies`} />
   const handleSubmit = (formData) => {
     const type = formData.ruleType.type
     const mode = formData?.ruleType?.ingress?.mode
