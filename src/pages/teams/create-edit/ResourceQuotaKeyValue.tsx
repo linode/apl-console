@@ -29,10 +29,10 @@ const useStyles = makeStyles()((theme: Theme) => ({
 const countQuotaKeys = new Set(['services.loadbalancers', 'services.nodeports'])
 const computeQuotaKeys = new Set(['limits.cpu', 'requests.cpu', 'limits.memory', 'requests.memory'])
 const computeDecorators: Record<string, string> = {
-  'limits.cpu': 'mCPUs',
-  'requests.cpu': 'mCPUs',
-  'limits.memory': 'Mi',
-  'requests.memory': 'Mi',
+  'limits.cpu': 'Cores',
+  'requests.cpu': 'Cores',
+  'limits.memory': 'Gi',
+  'requests.memory': 'Gi',
 }
 
 interface ResourceQuotaKeyValueProps {
@@ -54,12 +54,12 @@ export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaK
         filterFn={(item) => countQuotaKeys.has(item.name)}
         hideWhenEmpty
         compressed
-        keyDisabled
-        valueDisabled
         valueSize='medium'
         keySize='medium'
         showLabel={false}
         disabled={disabled}
+        keyDisabled
+        valueDisabled
       />
 
       {/* Compute Resource Quota Section */}

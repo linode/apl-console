@@ -417,7 +417,7 @@ export default function CreateEditCodeRepositories({
                 loading={isLoadingCreate || isLoadingUpdate}
                 disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
               >
-                {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
+                {codeRepositoryName ? 'Save Changes' : 'Add Code Repository'}
               </LoadingButton>
             )}
           </form>

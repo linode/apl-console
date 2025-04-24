@@ -131,7 +131,7 @@ export default function CreateEditTeams({
               />
             </Section>
             <AdvancedSettings>
-              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana}>
+              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana || !isPlatformAdmin}>
                 {!appsEnabled.grafana && isPlatformAdmin && (
                   <InformationBanner
                     small
@@ -151,14 +151,14 @@ export default function CreateEditTeams({
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
-              <Section title='Alerts' collapsable noMarginTop={appsEnabled.alertmanager}>
+              <Section title='Alerts' collapsable noMarginTop={appsEnabled.alertmanager || !isPlatformAdmin}>
                 {!appsEnabled.alertmanager && isPlatformAdmin && (
                   <InformationBanner
                     small
                     message={
                       <>
-                        Alerts require Prometheus and AlertManager to be enabled. Click{' '}
-                        <Link to='/apps/admin'>here</Link> to enable them.
+                        Alerts requires Prometheus to be enabled. Click <Link to='/apps/admin'>here</Link> to enable
+                        Prometheus.
                       </>
                     }
                   />
@@ -262,6 +262,22 @@ export default function CreateEditTeams({
               >
                 <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
               </Section>
+              <Section title='Network Policies' collapsable noMarginTop>
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='networkPolicy.ingressPrivate'
+                  control={control}
+                  label='Ingress control'
+                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled)'
+                />
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='networkPolicy.egressPublic'
+                  control={control}
+                  label='Egress control'
+                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled)   '
+                />
+              </Section>
               <Section title='Permissions' collapsable>
                 <PermissionsTable name='selfService' disabled={!isPlatformAdmin} />
               </Section>
@@ -284,7 +300,7 @@ export default function CreateEditTeams({
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || !isPlatformAdmin}
               sx={{ float: 'right', textTransform: 'none' }}
             >
-              {teamId ? 'Edit Team' : 'Create Team'}
+              {teamId ? 'Save Changess' : 'Create Team'}
             </LoadingButton>
           </form>
         </FormProvider>

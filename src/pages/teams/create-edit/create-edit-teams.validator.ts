@@ -27,11 +27,11 @@ const alertsSchema = yup.object({
 const selfServiceSchema = yup.object({
   teamMembers: yup
     .object({
-      createServices: yup.boolean().required('Create services permission is required').default(false),
-      editSecurityPolicies: yup.boolean().required('Edit security policies permission is required').default(false),
-      useCloudShell: yup.boolean().required('Cloud shell usage permission is required').default(false),
-      downloadKubeconfig: yup.boolean().required('Download kubeconfig permission is required').default(false),
-      downloadDockerLogin: yup.boolean().required('Download docker login permission is required').default(false),
+      createServices: yup.boolean().required('Create services permission is required').default(true),
+      editSecurityPolicies: yup.boolean().required('Edit security policies permission is required').default(true),
+      useCloudShell: yup.boolean().required('Cloud shell usage permission is required').default(true),
+      downloadKubeconfig: yup.boolean().required('Download kubeconfig permission is required').default(true),
+      downloadDockerLogin: yup.boolean().required('Download docker login permission is required').default(true),
     })
     .required('Team members permissions are required'),
 })
@@ -44,60 +44,10 @@ const resourceQuotaItemSchema = yup.object({
   decorator: yup.string().optional(),
 })
 
-// Define the resourceQuota object schema containing countQuota, computeResourceQuota, and customQuota.
-const resourceQuotaObjectSchema = yup.object({
-  enabled: yup.boolean().default(false),
-  countQuota: yup
-    .array()
-    .of(resourceQuotaItemSchema)
-    .default([
-      { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-      { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-      { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-    ]),
-  computeResourceQuota: yup
-    .array()
-    .of(resourceQuotaItemSchema)
-    .default([
-      { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-      { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-      { key: 'limits.memory', value: 500, decorator: 'Mi' },
-      { key: 'requests.memory', value: 500, decorator: 'Mi' },
-    ]),
-  customQuota: yup
-    .array()
-    .of(resourceQuotaItemSchema)
-    .default([])
-    .test(
-      'customQuota-not-default',
-      'custom resource quota may not be the same as defined above',
-      function (customQuota) {
-        const { path, createError } = this
-        const countQuotaDefaults = [
-          { key: 'loadbalancers', value: 0, mutable: false, decorator: 'lbs' },
-          { key: 'nodeports', value: 0, mutable: false, decorator: 'nprts' },
-          { key: 'count', value: 5, mutable: true, decorator: 'pods' },
-        ]
-        const computeQuotaDefaults = [
-          { key: 'limits.cpu', value: 500, decorator: 'mCPUs' },
-          { key: 'requests.cpu', value: 250, decorator: 'mCPUs' },
-          { key: 'limits.memory', value: 500, decorator: 'Mi' },
-          { key: 'requests.memory', value: 500, decorator: 'Mi' },
-        ]
-        const defaultQuotaKeys = new Set([...countQuotaDefaults, ...computeQuotaDefaults].map((quota) => quota.key))
-        if (!customQuota) return true
-        const invalidEntry = customQuota.find((quota) => defaultQuotaKeys.has(quota.key))
-        return invalidEntry
-          ? createError({ path, message: 'custom resource quota may not contain duplicated quota' })
-          : true
-      },
-    ),
-})
-
 // Main CreateTeamApiResponse schema
 export const createTeamApiResponseSchema = yup.object({
   id: yup.string().optional().default(undefined),
-  name: yup.string().required('Team label is required'),
+  name: yup.string().required('Team label is required').max(30, 'Team label must be at most 30 characters'),
   oidc: yup
     .object({
       groupMapping: yup.string().optional().default(undefined),
@@ -122,10 +72,10 @@ export const createTeamApiResponseSchema = yup.object({
     .default([
       { name: 'services.loadbalancers', value: '0' },
       { name: 'services.nodeports', value: '0' },
-      { name: 'limits.cpu', value: '500m' },
-      { name: 'requests.cpu', value: '250m' },
-      { name: 'limits.memory', value: '500mi' },
-      { name: 'requests.memory', value: '500mi' },
+      { name: 'limits.cpu', value: '24' },
+      { name: 'requests.cpu', value: '24' },
+      { name: 'limits.memory', value: '32Gi' },
+      { name: 'requests.memory', value: '32Gi' },
       { name: 'count/pods', value: '5' },
     ]),
   networkPolicy: yup
