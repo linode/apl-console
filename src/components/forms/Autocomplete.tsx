@@ -28,6 +28,7 @@ export interface EnhancedAutocompleteProps<
   /** Label for the "select all" option. */
   selectAllLabel?: string
   textFieldProps?: Partial<TextFieldProps>
+  width?: 'small' | 'medium' | 'large'
 }
 
 /**
@@ -70,6 +71,7 @@ export function Autocomplete<
     textFieldProps,
     value,
     onChange,
+    width = 'medium',
     ...rest
   } = props
   const [inPlaceholder, setInPlaceholder] = useState('')
@@ -82,7 +84,7 @@ export function Autocomplete<
         ((params) => (
           <TextField
             label={label}
-            width='medium'
+            width={width}
             loading={loading}
             placeholder={inPlaceholder || (placeholder ?? 'Select an option')}
             {...params}

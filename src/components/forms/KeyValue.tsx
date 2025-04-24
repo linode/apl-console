@@ -150,7 +150,12 @@ export default function KeyValue(props: KeyValueProps) {
       ))}
       {addLabel && (
         <Button
-          sx={{ fontSize: '10px', color: `${error ? 'red' : ''}` }}
+          sx={{
+            paddingLeft: 'inherit',
+            fontSize: '10px',
+            color: `${error ? 'red' : ''}`,
+            ':hover': { backgroundColor: 'transparent' },
+          }}
           className={classes.addItemButton}
           onClick={handleAddItem}
         >
