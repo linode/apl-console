@@ -236,7 +236,7 @@ export default function CreateEditBuilds({
 
                 <TextField
                   label='Path'
-                  width='medium'
+                  width='large'
                   {...register(`mode.${watch('mode.type')}.path`)}
                   onChange={(e) => {
                     const value = e.target.value
