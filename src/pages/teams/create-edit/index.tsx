@@ -167,7 +167,7 @@ export default function CreateEditTeams({
                   sx={{ my: 2 }}
                   name='managedMonitoring.alertmanager'
                   control={control}
-                  disabled={!appsEnabled.alertmanager || !isPlatformAdmin}
+                  disabled={!appsEnabled.prometheus || !isPlatformAdmin}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
                 />
