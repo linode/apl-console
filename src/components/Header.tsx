@@ -143,11 +143,11 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           <Select
             size='small'
             color='secondary'
-            value={(teams.length && oboTeamId) || ''}
+            value={(teams?.length && oboTeamId) || ''}
             onChange={handleChangeTeam}
             data-cy='select-oboteam'
           >
-            {teams.map((teamName) => (
+            {teams?.map((teamName) => (
               <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
                 {teamName}
               </MenuItem>

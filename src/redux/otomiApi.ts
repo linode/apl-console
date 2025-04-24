@@ -1216,35 +1216,28 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       weightV1?: number
       weightV2?: number
     }
-  } & (
-    | {
-        type: 'cluster'
+    ingressClassName?: string
+    tlsPass?: boolean
+    ownHost?: boolean
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
       }
-    | {
-        type: 'public'
-        ingressClassName?: string
-        tlsPass?: boolean
-        ownHost?: boolean
-        domain?: string
-        useCname?: boolean
-        cname?: {
-          domain?: string
-          tlsSecretName?: string
-        }
-        paths?: string[]
-        forwardPath?: boolean
-        hasCert?: boolean
-        certName?: string
-        headers?: {
-          response?: {
-            set?: {
-              name: string
-              value: string
-            }[]
-          }
-        }
-      }
-  )
+    }
+  }
 } & {
   metadata: {
     name: string
@@ -1278,35 +1271,28 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       weightV1?: number
       weightV2?: number
     }
-  } & (
-    | {
-        type: 'cluster'
+    ingressClassName?: string
+    tlsPass?: boolean
+    ownHost?: boolean
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
       }
-    | {
-        type: 'public'
-        ingressClassName?: string
-        tlsPass?: boolean
-        ownHost?: boolean
-        domain?: string
-        useCname?: boolean
-        cname?: {
-          domain?: string
-          tlsSecretName?: string
-        }
-        paths?: string[]
-        forwardPath?: boolean
-        hasCert?: boolean
-        certName?: string
-        headers?: {
-          response?: {
-            set?: {
-              name: string
-              value: string
-            }[]
-          }
-        }
-      }
-  )
+    }
+  }
 } & {
   metadata: {
     name: string
@@ -1343,35 +1329,28 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       weightV1?: number
       weightV2?: number
     }
-  } & (
-    | {
-        type: 'cluster'
+    ingressClassName?: string
+    tlsPass?: boolean
+    ownHost?: boolean
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
       }
-    | {
-        type: 'public'
-        ingressClassName?: string
-        tlsPass?: boolean
-        ownHost?: boolean
-        domain?: string
-        useCname?: boolean
-        cname?: {
-          domain?: string
-          tlsSecretName?: string
-        }
-        paths?: string[]
-        forwardPath?: boolean
-        hasCert?: boolean
-        certName?: string
-        headers?: {
-          response?: {
-            set?: {
-              name: string
-              value: string
-            }[]
-          }
-        }
-      }
-  )
+    }
+  }
 } & {
   metadata: {
     name: string
@@ -1408,35 +1387,28 @@ export type CreateAplServiceApiArg = {
         weightV1?: number
         weightV2?: number
       }
-    } & (
-      | {
-          type: 'cluster'
+      ingressClassName?: string
+      tlsPass?: boolean
+      ownHost?: boolean
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
         }
-      | {
-          type: 'public'
-          ingressClassName?: string
-          tlsPass?: boolean
-          ownHost?: boolean
-          domain?: string
-          useCname?: boolean
-          cname?: {
-            domain?: string
-            tlsSecretName?: string
-          }
-          paths?: string[]
-          forwardPath?: boolean
-          hasCert?: boolean
-          certName?: string
-          headers?: {
-            response?: {
-              set?: {
-                name: string
-                value: string
-              }[]
-            }
-          }
-        }
-    )
+      }
+    }
   } & {
     metadata: {
       name: string
@@ -1456,35 +1428,28 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       weightV1?: number
       weightV2?: number
     }
-  } & (
-    | {
-        type: 'cluster'
+    ingressClassName?: string
+    tlsPass?: boolean
+    ownHost?: boolean
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
       }
-    | {
-        type: 'public'
-        ingressClassName?: string
-        tlsPass?: boolean
-        ownHost?: boolean
-        domain?: string
-        useCname?: boolean
-        cname?: {
-          domain?: string
-          tlsSecretName?: string
-        }
-        paths?: string[]
-        forwardPath?: boolean
-        hasCert?: boolean
-        certName?: string
-        headers?: {
-          response?: {
-            set?: {
-              name: string
-              value: string
-            }[]
-          }
-        }
-      }
-  )
+    }
+  }
 } & {
   metadata: {
     name: string
@@ -1523,35 +1488,28 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       weightV1?: number
       weightV2?: number
     }
-  } & (
-    | {
-        type: 'cluster'
+    ingressClassName?: string
+    tlsPass?: boolean
+    ownHost?: boolean
+    domain?: string
+    useCname?: boolean
+    cname?: {
+      domain?: string
+      tlsSecretName?: string
+    }
+    paths?: string[]
+    forwardPath?: boolean
+    hasCert?: boolean
+    certName?: string
+    headers?: {
+      response?: {
+        set?: {
+          name: string
+          value: string
+        }[]
       }
-    | {
-        type: 'public'
-        ingressClassName?: string
-        tlsPass?: boolean
-        ownHost?: boolean
-        domain?: string
-        useCname?: boolean
-        cname?: {
-          domain?: string
-          tlsSecretName?: string
-        }
-        paths?: string[]
-        forwardPath?: boolean
-        hasCert?: boolean
-        certName?: string
-        headers?: {
-          response?: {
-            set?: {
-              name: string
-              value: string
-            }[]
-          }
-        }
-      }
-  )
+    }
+  }
 } & {
   metadata: {
     name: string
@@ -1590,35 +1548,28 @@ export type EditAplServiceApiArg = {
         weightV1?: number
         weightV2?: number
       }
-    } & (
-      | {
-          type: 'cluster'
+      ingressClassName?: string
+      tlsPass?: boolean
+      ownHost?: boolean
+      domain?: string
+      useCname?: boolean
+      cname?: {
+        domain?: string
+        tlsSecretName?: string
+      }
+      paths?: string[]
+      forwardPath?: boolean
+      hasCert?: boolean
+      certName?: string
+      headers?: {
+        response?: {
+          set?: {
+            name: string
+            value: string
+          }[]
         }
-      | {
-          type: 'public'
-          ingressClassName?: string
-          tlsPass?: boolean
-          ownHost?: boolean
-          domain?: string
-          useCname?: boolean
-          cname?: {
-            domain?: string
-            tlsSecretName?: string
-          }
-          paths?: string[]
-          forwardPath?: boolean
-          hasCert?: boolean
-          certName?: string
-          headers?: {
-            response?: {
-              set?: {
-                name: string
-                value: string
-              }[]
-            }
-          }
-        }
-    )
+      }
+    }
   } & {
     metadata: {
       name: string
