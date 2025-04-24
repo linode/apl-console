@@ -151,8 +151,8 @@ export default function CreateEditTeams({
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
-              <Section title='Alerts' collapsable noMarginTop={appsEnabled.alertmanager || !isPlatformAdmin}>
-                {!appsEnabled.alertmanager && isPlatformAdmin && (
+              <Section title='Alerts' collapsable noMarginTop={appsEnabled.prometheus || !isPlatformAdmin}>
+                {!appsEnabled.prometheus && isPlatformAdmin && (
                   <InformationBanner
                     small
                     message={
