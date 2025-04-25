@@ -100,25 +100,19 @@ export default function CreateEditTeams({
   }, [data])
 
   const onSubmit = (submitData) => {
-    // if (teamId) update({ teamId, body: submitData })
-    // else create({ body: submitData })
+    const alertReceivers = submitData.alerts?.receivers ?? []
 
-    if (submitData.managedMonitoring?.alertmanager) {
-      const receivers = submitData.alerts?.receivers ?? []
-      if (!receivers.includes('none')) {
-        submitData.alerts = {
-          ...submitData.alerts,
-          receivers: [...receivers, 'none'],
-        }
-      }
-    } else {
-      // if alertmanager disabled, strip out 'none'
-      const receivers = submitData.alerts?.receivers ?? []
-      submitData.alerts = {
-        ...submitData.alerts,
-        receivers: receivers.filter((r) => r !== 'none'),
-      }
-    }
+    /**
+     * alerts.receivers has very weird behaviour in the core.
+     * It expects either an alert receiver like slack OR it expects string 'none' because
+     * alertManager needs to be configured with 'receivers: null' if there are no recievers and 'none' is currently
+     * the way to configure that.
+     */
+
+    // on submit remove none and only reintroduce it if no other receiver is configured
+    let receiverWithoutNone = alertReceivers.filter((receiver) => receiver !== 'none')
+
+    if (submitData.managedMonitoring?.alertmanager && receiverWithoutNone.length === 0) receiverWithoutNone = ['none']
 
     if (teamId) update({ teamId, body: submitData })
     else create({ body: submitData })
