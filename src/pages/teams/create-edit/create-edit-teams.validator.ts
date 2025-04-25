@@ -47,7 +47,7 @@ const resourceQuotaItemSchema = yup.object({
 // Main CreateTeamApiResponse schema
 export const createTeamApiResponseSchema = yup.object({
   id: yup.string().optional().default(undefined),
-  name: yup.string().required('Team label is required').max(30, 'Team name must be at most 30 characters'),
+  name: yup.string().required('Team name is required').max(30, 'Team name must be at most 30 characters'),
   oidc: yup
     .object({
       groupMapping: yup.string().optional().default(undefined),
