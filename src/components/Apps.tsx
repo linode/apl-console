@@ -306,9 +306,7 @@ function applySortFilter({
   if (!isAdmin) {
     tableData = tableData?.filter((item: Record<string, any>) => {
       const key = item.id.toLowerCase()
-      // if this is Alertmanager and alerting’s enabled in managedMonitoringApps, always show it
       if (key === 'alertmanager' && managedMonitoringApps?.alertmanager) return true
-      // otherwise fall back to your normal enabled-check
       return item.enabled !== false
     })
   }
