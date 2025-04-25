@@ -38,11 +38,12 @@ export default function (): React.ReactElement {
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const team = !isLoadingTeams && find(teams, { id: teamId })
+  const team = !isLoadingTeams && find(teams, { name: teamId })
   const loading = isFetchingDashboard || isLoadingTeams
   const teamInventory = themeView === 'platform' ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
   const inventory = [...teamInventory, ...dashboardInventory]
+  console.log('team', teamId)
   const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
     <Box sx={{ paddingTop: '3rem' }}>

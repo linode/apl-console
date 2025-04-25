@@ -278,7 +278,7 @@ export default function CreateEditTeams({
               <Section
                 title='Resource Quotas'
                 collapsable
-                description='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
+                description='A resource quota provides constraints that limit aggregated resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
               >
                 <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
               </Section>
