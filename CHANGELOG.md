@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/linode/apl-console/compare/v4.1.0...v4.2.0) (2025-04-25)
+
+
+### Features
+
+* build page using new form components ([#536](https://github.com/linode/apl-console/issues/536)) ([ae2ae8a](https://github.com/linode/apl-console/commit/ae2ae8a1c70ae6a18f3efcb63b39dda817d4e71a))
+* service page using form components ([#525](https://github.com/linode/apl-console/issues/525)) ([ccbc6df](https://github.com/linode/apl-console/commit/ccbc6df6fe10c624914821ea94b69599b95e3a28))
+* static team settings page  ([#531](https://github.com/linode/apl-console/issues/531)) ([14f08b2](https://github.com/linode/apl-console/commit/14f08b27febe805ad7c4340617e4d743d8d1c996))
+* update redirects between the theme view and team selection ([#544](https://github.com/linode/apl-console/issues/544)) ([a5d6d15](https://github.com/linode/apl-console/commit/a5d6d1562b7be02d9339f453771234da15d23c3d))
+
+
+### Bug Fixes
+
+* cluster settings ([#542](https://github.com/linode/apl-console/issues/542)) ([7011d9e](https://github.com/linode/apl-console/commit/7011d9e9379da4de82486e0ba2923fe416eb55c5))
+* header team dropdown selection ([#541](https://github.com/linode/apl-console/issues/541)) ([6831bfc](https://github.com/linode/apl-console/commit/6831bfc516ec213425220658dbff0bdea9a9a259))
+* redux store generation ([#540](https://github.com/linode/apl-console/issues/540)) ([b3f9603](https://github.com/linode/apl-console/commit/b3f960337c79a9e48463d55997011859e444c3c7))
+* team UI rework ([#547](https://github.com/linode/apl-console/issues/547)) ([40e2c48](https://github.com/linode/apl-console/commit/40e2c489bc7f135aa97ddd0be416da25a43a08f1))
+
 ## [4.1.0](https://github.com/linode/apl-console/compare/v4.0.0...v4.1.0) (2025-04-07)
 
 
