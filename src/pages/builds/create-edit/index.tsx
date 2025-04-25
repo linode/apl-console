@@ -242,9 +242,9 @@ export default function CreateEditBuilds({
                     const value = e.target.value
                     setValue(`mode.${watch('mode.type')}.path`, value)
                   }}
-                  error={!!errors[`mode.${watch('mode.type')}.path`]}
+                  error={!!errors?.mode?.[`${watch('mode.type')}`]?.path}
                   helperText={
-                    errors?.[`mode.${watch('mode.type')}.path`]?.message?.toString() ||
+                    errors?.mode?.[`${watch('mode.type')}`]?.path?.message?.toString() ||
                     'Relative sub-path to a source code directory'
                   }
                 />
