@@ -41,7 +41,7 @@ export default function (): React.ReactElement {
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const team = !isLoadingTeams && find(teams, { name: teamId })
+  const team = !isLoadingTeams && find(teams, { name: teamName })
   const loading = isFetchingDashboard || isLoadingTeams
   const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
