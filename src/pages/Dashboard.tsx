@@ -46,7 +46,6 @@ export default function (): React.ReactElement {
   const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
   const inventory = [...teamInventory, ...dashboardInventory]
-  console.log('team', teamId)
   const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
     <Box sx={{ paddingTop: '3rem' }}>
