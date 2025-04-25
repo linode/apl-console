@@ -26,7 +26,7 @@ export default function ({
   resourceType,
   adminOnly = false,
   noCrud = false,
-  idKey = 'id',
+  idKey = 'name',
   to,
   customButton = null,
   customButtonText = null,

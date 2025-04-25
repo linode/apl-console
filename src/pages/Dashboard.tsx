@@ -12,9 +12,10 @@ import { useGetDashboardQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const { themeView } = useSettings()
+  const isPlatformView = themeView === 'platform'
   const {
     user: { isPlatformAdmin },
-    oboTeamId: teamId,
+    oboTeamId,
   } = useSession()
 
   const {
@@ -24,23 +25,25 @@ export default function (): React.ReactElement {
     refetch: refetchTeams,
   } = useGetTeamsQuery()
 
+  const teamName = isPlatformView ? undefined : oboTeamId
+
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
     refetch: refetchDashboard,
-  } = useGetDashboardQuery({ teamId })
+  } = useGetDashboardQuery({ teamName })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
-    if (teamId && !isFetchingDashboard) refetchDashboard()
-    if (teamId && !isFetchingTeams) refetchTeams()
+    if (oboTeamId && !isFetchingDashboard) refetchDashboard()
+    if (oboTeamId && !isFetchingTeams) refetchTeams()
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
   const team = !isLoadingTeams && find(teams, { name: teamId })
   const loading = isFetchingDashboard || isLoadingTeams
-  const teamInventory = themeView === 'platform' ? [{ name: 'teams', count: teams?.length }] : []
+  const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
   const inventory = [...teamInventory, ...dashboardInventory]
   console.log('team', teamId)

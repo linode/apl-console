@@ -288,14 +288,14 @@ export default function CreateEditTeams({
                   name='networkPolicy.ingressPrivate'
                   control={control}
                   label='Ingress control'
-                  explainertext='Keep access to pods limited within the team. Turning this off will allow any pods from any namespace to connect with the team pods, (Recommended to keep this enabled)'
+                  explainertext='Control Pod network access. Turning this off allows any Pod from any namespace to connect to any Pod from the team. (Recommended to keep this enabled)'
                 />
                 <ControlledCheckbox
                   sx={{ my: 2 }}
                   name='networkPolicy.egressPublic'
                   control={control}
                   label='Egress control'
-                  explainertext='Keep access to public URLs limited to predefined endpoints. Turning this off allow any pods from the team to connect with any public URL (Recommended to keep this enabled)   '
+                  explainertext='Control Pod access to public URLs. Turning this off allows any Pod from the team to connect to any public URL.(Recommended to keep this enabled)'
                 />
               </Section>
               <Section title='Permissions' collapsable>

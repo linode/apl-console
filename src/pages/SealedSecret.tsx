@@ -46,7 +46,7 @@ export default function ({
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) {
     if (isCoderepository)
-      history.push(`/teams/${teamId}/create-coderepository`, { prefilled: { ...prefilled, secret: dataCreate.name } })
+      history.push(`/teams/${teamId}/create-code-repository`, { prefilled: { ...prefilled, secret: dataCreate.name } })
     else return <Redirect to={`/teams/${teamId}/sealed-secrets`} />
   }
 
