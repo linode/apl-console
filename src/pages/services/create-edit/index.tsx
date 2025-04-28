@@ -171,11 +171,14 @@ export default function ({
 
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
-    const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
-    setService(activeService)
-    setValue('spec.port', data?.spec?.port || activeService?.ports[0])
-    if (activeService?.managedByKnative) setValue('spec.ksvc.predeployed', true)
-    else setValue('spec.ksvc.predeployed', false)
+    if (teamId === 'admin') setService({ name, ports: [] })
+    else {
+      const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
+      setService(activeService)
+      setValue('spec.port', data?.spec?.port || activeService?.ports[0])
+      if (activeService?.managedByKnative) setValue('spec.ksvc.predeployed', true)
+      else setValue('spec.ksvc.predeployed', false)
+    }
   }
   const onSubmit = (submitData: CreateAplServiceApiResponse) => {
     if (!isEmpty(submitData.spec?.paths)) {
@@ -263,12 +266,12 @@ export default function ({
                   </TextField>
                 )}
 
-                {service?.ports.length === 1 ? (
+                {service?.ports.length === 1 || teamId === 'admin' ? (
                   <TextField
                     label='Port'
                     width='small'
                     {...register('spec.port')}
-                    disabled
+                    disabled={service?.ports.length > 1}
                     value={watch('spec.port') || data?.spec?.port[0]}
                     error={!!errors.spec?.port}
                     helperText={errors.spec?.port?.message?.toString()}
