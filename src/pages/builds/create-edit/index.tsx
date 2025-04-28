@@ -153,6 +153,8 @@ export default function CreateEditBuilds({
   if (isLoading || isError || (buildName && !watch('name')))
     return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
+  const pathHelperText = watch('mode.type') === 'docker' ? 'Path to the Dockerfile' : 'Path to the buildpacks directory'
+
   return (
     <Grid>
       <PaperLayout loading={isLoading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
@@ -243,10 +245,7 @@ export default function CreateEditBuilds({
                     setValue(`mode.${watch('mode.type')}.path`, value)
                   }}
                   error={!!errors?.mode?.[`${watch('mode.type')}`]?.path}
-                  helperText={
-                    errors?.mode?.[`${watch('mode.type')}`]?.path?.message?.toString() ||
-                    'Relative sub-path to a source code directory'
-                  }
+                  helperText={errors?.mode?.[`${watch('mode.type')}`]?.path?.message?.toString() || pathHelperText}
                 />
               </FormRow>
 
