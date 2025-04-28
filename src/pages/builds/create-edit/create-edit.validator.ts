@@ -79,8 +79,6 @@ export const buildApiResponseSchema = object({
         .required('Buildpacks configuration is required')
         .test('Does not contain "./"', '', function (value) {
           const { path } = value
-          console.log('path', path)
-          console.log('value', value)
           if (path && path.includes('./')) {
             return this.createError({
               path: 'mode.buildpacks.path',
