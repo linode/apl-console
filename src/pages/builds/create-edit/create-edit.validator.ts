@@ -75,7 +75,19 @@ export const buildApiResponseSchema = object({
     }),
     buildpacks: mixed().when('type', {
       is: 'buildpacks',
-      then: commonModeSchema.required('Buildpacks configuration is required'),
+      then: commonModeSchema
+        .required('Buildpacks configuration is required')
+        .test('Does not contain "./"', '', function (value) {
+          const { path } = value
+          if (path && path.includes('./')) {
+            return this.createError({
+              path: 'mode.buildpacks.path',
+              message: 'Path for Buildpacks cannot contain "./"',
+            })
+          }
+
+          return true
+        }),
     }),
   }).required('Mode configuration is required'),
   codeRepoName: string().optional(),
