@@ -58,35 +58,6 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
   )
 }
 
-function WebhookUrlRenderer({ row }: { row: Row }) {
-  const [copied, setCopied] = useState(false)
-  const webhookUrl = `http://el-gitea-webhook-${row.name}.team-${row.teamId}.svc.cluster.local:8080`
-
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(webhookUrl)
-    setCopied(true)
-    setTimeout(() => {
-      setCopied(false)
-    }, 3000)
-  }
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: webhookUrl }} target='_blank' />
-      <Box sx={{ width: '30px' }}>
-        {!copied ? (
-          <Tooltip title='Copy to clipboard'>
-            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
-          </Tooltip>
-        ) : (
-          <Tooltip title='Copied!'>
-            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
-          </Tooltip>
-        )}
-      </Box>
-    </Box>
-  )
-}
-
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [copied, setCopied] = useState(false)
   const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.imageName}`
@@ -162,11 +133,6 @@ export default function BuildsOverview({
       id: 'mode',
       label: t('Type'),
       renderer: (row) => row.mode.type,
-    },
-    {
-      id: 'trigger',
-      label: t('Webhook URL'),
-      renderer: (row: Row) => (row.trigger ? <WebhookUrlRenderer row={row} /> : ''),
     },
     {
       id: 'tekton',
