@@ -349,7 +349,7 @@ export default function CreateEditBuilds({
               loading={isLoadingCreate || isLoadingUpdate}
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
             >
-              {buildName ? 'Edit Container Image' : 'Create Container Image'}
+              {buildName ? 'Save Changes' : 'Create Container Image'}
             </LoadingButton>
           </form>
         </FormProvider>

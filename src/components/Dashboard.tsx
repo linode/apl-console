@@ -130,12 +130,16 @@ interface IFramesCardProps {
 
 // components ------------------------------------------------------
 function InventoryItem({ classes, item, themeView, teamId }: InventoryItemProps): React.ReactElement {
-  const prefix = themeView === 'team' ? `/teams/${teamId}` : ''
+  const isTeamView = themeView === 'team'
   return (
-    <Link component={RouterLink} to={`${prefix}/${item.name}`} data-cy={`link-${item.name}-count`}>
+    <Link
+      component={isTeamView ? RouterLink : Box}
+      to={`/teams/${teamId}/${item.name}`}
+      data-cy={`link-${item.name}-count`}
+    >
       <Box className={classes.inventoryItem}>
         <Typography className={classes.inventoryName} variant='h6'>
-          {item.name}
+          {item.name.replace('-', ' ')}
         </Typography>
         <Typography fontSize={14}>{item.count}</Typography>
       </Box>
@@ -292,7 +296,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
         <InventoryCard
           classes={classes}
           inventory={inventory}
-          teamId={team?.id}
+          teamId={oboTeamId}
           themeView={themeView}
           title='Inventory'
         />

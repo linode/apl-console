@@ -193,6 +193,7 @@ export default function KeyValue(props: KeyValueProps) {
         <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
           <FormRow spacing={10}>
             <TextField
+              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
               width={keySize}
               sx={{ color: '#B5B5BC' }}
               disabled={keyDisabled}
@@ -200,14 +201,13 @@ export default function KeyValue(props: KeyValueProps) {
               noMarginTop={compressed}
               label={showLabel && localIndex === 0 ? keyLabel : ''}
               error={error}
-              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
             />
             <TextField
+              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
               width={valueSize}
-              disabled={valueDisabled}
               label={showLabel && localIndex === 0 ? valueLabel : ''}
               noMarginTop={compressed}
-              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
+              disabled={valueDisabled}
               InputProps={{
                 readOnly: frozen,
                 endAdornment: decoratorMapping ? (
