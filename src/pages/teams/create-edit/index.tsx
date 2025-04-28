@@ -90,7 +90,22 @@ export default function CreateEditTeams({
   const controlledAlertmanagerInput = watch('managedMonitoring.alertmanager')
 
   useEffect(() => {
-    if (data) reset(data)
+    if (!data) return
+
+    /**
+     * strip off trailing “Gi” for memory quotas so the <ResourceQuotaKeyValue>
+     * number fields render just “32” instead of “32Gi”
+     */
+    const strippedDecorators = (data.resourceQuota ?? []).map(({ name, value }) => {
+      if (name.endsWith('.memory') && typeof value === 'string' && value.endsWith('Gi'))
+        return { name, value: value.slice(0, -2) } // drop the “Gi”
+
+      return { name, value }
+    })
+    reset({
+      ...data,
+      resourceQuota: strippedDecorators,
+    })
 
     const teamsWebhookLow = get(data, 'alerts.msteams.lowPrio')
     const teamsWebhookHigh = get(data, 'alerts.msteams.highPrio')
@@ -99,9 +114,38 @@ export default function CreateEditTeams({
     else setActiveNotificationReceiver('slack')
   }, [data])
 
-  const onSubmit = (submitData) => {
-    if (teamId) update({ teamId, body: submitData })
-    else create({ body: submitData })
+  const onSubmit = (submitData: CreateTeamApiResponse) => {
+    // 1) Re‐attach “Gi” to any memory quotas
+    const resourceQuota = submitData.resourceQuota.map(({ name, value }) => {
+      if (name.endsWith('.memory') && value != null) return { name, value: `${value}Gi` }
+
+      return { name, value }
+    })
+
+    /**
+     * 2) alerts.receivers has very weird behaviour in the core.
+     * It expects either an alert receiver like slack OR it expects string 'none' because
+     * alertManager needs to be configured with 'receivers: null' if there are no recievers and 'none' is currently
+     * the way to configure that.
+     */
+    const rawReceivers = submitData.alerts?.receivers ?? []
+    let receivers = rawReceivers.filter((r) => r !== 'none')
+
+    if (submitData.managedMonitoring?.alertmanager && receivers.length === 0) receivers = ['none']
+
+    // 3) Combine edge cases with submittedData for final payload
+    const payload: CreateTeamApiResponse = {
+      ...submitData,
+      resourceQuota,
+      alerts: {
+        ...submitData.alerts,
+        receivers,
+      },
+    }
+
+    // 4) Send it off
+    if (teamId) update({ teamId, body: payload })
+    else create({ body: payload })
   }
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -258,7 +302,7 @@ export default function CreateEditTeams({
               <Section
                 title='Resource Quotas'
                 collapsable
-                description='A resource quota provides constraints that limit aggregate resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
+                description='A resource quota provides constraints that limit aggregated resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
               >
                 <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
               </Section>

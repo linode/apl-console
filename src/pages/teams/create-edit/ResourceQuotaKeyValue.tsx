@@ -26,7 +26,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }))
 
 // Define which keys belong to each group.
-const countQuotaKeys = new Set(['services.loadbalancers', 'services.nodeports'])
+const countQuotaKeys = new Set(['services.loadbalancers', 'services.nodeports', 'pods', 'count/pods'])
 const computeQuotaKeys = new Set(['limits.cpu', 'requests.cpu', 'limits.memory', 'requests.memory'])
 const computeDecorators: Record<string, string> = {
   'limits.cpu': 'Cores',
@@ -34,6 +34,8 @@ const computeDecorators: Record<string, string> = {
   'limits.memory': 'Gi',
   'requests.memory': 'Gi',
 }
+// count/pods added just in case it's still lingering around somewhere
+const mutableValues = new Set(['pods', 'count/pods'])
 
 interface ResourceQuotaKeyValueProps {
   name: string
@@ -60,6 +62,8 @@ export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaK
         disabled={disabled}
         keyDisabled
         valueDisabled
+        valueIsNumber
+        mutableValue={mutableValues}
       />
 
       {/* Compute Resource Quota Section */}
@@ -72,6 +76,7 @@ export default function ResourceQuotaKeyValue({ name, disabled }: ResourceQuotaK
           filterFn={(item) => computeQuotaKeys.has(item.name)}
           hideWhenEmpty
           keyDisabled
+          valueIsNumber
           compressed
           valueSize='medium'
           keySize='medium'

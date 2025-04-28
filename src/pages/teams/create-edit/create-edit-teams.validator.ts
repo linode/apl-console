@@ -74,9 +74,9 @@ export const createTeamApiResponseSchema = yup.object({
       { name: 'services.nodeports', value: '0' },
       { name: 'limits.cpu', value: '24' },
       { name: 'requests.cpu', value: '24' },
-      { name: 'limits.memory', value: '32Gi' },
-      { name: 'requests.memory', value: '32Gi' },
-      { name: 'count/pods', value: '5' },
+      { name: 'limits.memory', value: '32' },
+      { name: 'requests.memory', value: '32' },
+      { name: 'pods', value: '50' },
     ]),
   networkPolicy: yup
     .object({

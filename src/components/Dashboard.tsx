@@ -264,7 +264,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '7', src: `${resourceStatus}9` },
           { id: '8', src: `${resourceStatus}10` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
+        show: team?.managedMonitoring?.grafana,
       },
       {
         title: 'Resource Utilization',
@@ -273,7 +273,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '9', src: `${resourceUtilization}8` },
           { id: '10', src: `${resourceUtilization}9` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
+        show: team?.managedMonitoring?.grafana,
       },
       {
         title: 'Vulnerabilities',
@@ -284,7 +284,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '13', src: `${vulnerabilities}50` },
           { id: '14', src: `${vulnerabilities}51` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana && appsEnabled.trivy,
+        show: team?.managedMonitoring?.grafana && appsEnabled.trivy,
       },
     ],
   }
