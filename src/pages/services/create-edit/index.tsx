@@ -223,29 +223,46 @@ export default function ({
                 )}
               </FormRow>
               <FormRow key={1} spacing={10}>
-                <TextField
-                  label='Service Name'
-                  width='large'
-                  {...register('metadata.name')}
-                  select
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setValue('metadata.name', value)
-                    setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                    setValue('spec.domain', value)
-                    setActiveService(value)
-                  }}
-                  value={watch('metadata.name', data?.metadata.name)}
-                >
-                  <MenuItem key='select-a-service' value='' disabled classes={undefined}>
-                    Select a service
-                  </MenuItem>
-                  {filteredK8Services?.map((service) => (
-                    <MenuItem key={service.name} value={service.name} classes={undefined}>
-                      {service.name}
+                {teamId === 'admin' ? (
+                  <TextField
+                    label='Service Name'
+                    width='large'
+                    {...register('metadata.name')}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('metadata.name', value)
+                      setValue('metadata.labels', { 'apl.io/teamId': teamId })
+                      setValue('spec.domain', value)
+                      setActiveService(value)
+                    }}
+                    value={watch('metadata.name', data?.metadata.name)}
+                  />
+                ) : (
+                  <TextField
+                    label='Service Name'
+                    width='large'
+                    {...register('metadata.name')}
+                    select
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('metadata.name', value)
+                      setValue('metadata.labels', { 'apl.io/teamId': teamId })
+                      setValue('spec.domain', value)
+                      setActiveService(value)
+                    }}
+                    value={watch('metadata.name', data?.metadata.name)}
+                  >
+                    <MenuItem key='select-a-service' value='' disabled classes={undefined}>
+                      Select a service
                     </MenuItem>
-                  ))}
-                </TextField>
+                    {filteredK8Services?.map((service) => (
+                      <MenuItem key={service.name} value={service.name} classes={undefined}>
+                        {service.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+
                 {service?.ports.length === 1 ? (
                   <TextField
                     label='Port'
@@ -309,7 +326,7 @@ export default function ({
               <Section>
                 <KeyValue
                   title='URL paths'
-                  subTitle='Add all URL paths that are allowed. URL paths that are not explicitly added here will result in a page not found error.'
+                  subTitle='By default all paths are allowed. If filled in, URL paths that are not explicitly added here will result in a page not found error.'
                   keyDisabled
                   keyValue={url}
                   keyLabel='Domain'

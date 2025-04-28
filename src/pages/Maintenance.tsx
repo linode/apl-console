@@ -27,14 +27,20 @@ export default function (): React.ReactElement {
   const comp = (
     <Box sx={{ p: 2 }}>
       <HeaderTitle title='Maintenance' resourceType='maintenance' altColor />
-      <Typography variant='h6'>Actions</Typography>
+      <Typography variant='h5'>Actions</Typography>
 
-      <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=false'>
-        Download APL values
+      <Link
+        sx={{ display: 'block', fontWeight: 500, fontSize: '16px' }}
+        href='/api/v1/otomi/values?excludeSecrets=false'
+      >
+        DOWNLOAD PLATFORM VALUES
       </Link>
 
-      <Link sx={{ display: 'block', mt: '6px' }} href='/api/v1/otomi/values?excludeSecrets=true'>
-        Download APL values (secrets redacted)
+      <Link
+        sx={{ display: 'block', fontWeight: 500, fontSize: '16px' }}
+        href='/api/v1/otomi/values?excludeSecrets=true'
+      >
+        DOWNLOAD PLATFORM VALUES (SECRETS REDACTED)
       </Link>
 
       {isPreInstalled && (
