@@ -12,7 +12,7 @@ function PrivateRoute({ component: Component, platformAdminRoute, teamAdminRoute
   let isAbleToAccess = true
   navs.forEach((group) => {
     group.items.forEach((item) => {
-      if (item.path.includes(rest.location.pathname) && item.hidden && themeView === 'team') isAbleToAccess = false
+      if (item.path === rest.location.pathname && item.hidden && themeView === 'team') isAbleToAccess = false
     })
   })
   const session = useSession()
