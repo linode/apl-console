@@ -153,7 +153,8 @@ export default function CreateEditBuilds({
   if (isLoading || isError || (buildName && !watch('name')))
     return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
-  const pathHelperText = watch('mode.type') === 'docker' ? 'Path to the Dockerfile' : 'Path to the buildpacks directory'
+  const pathHelperText =
+    watch('mode.type') === 'docker' ? 'Relative path to the Dockerfile' : 'Relative path to the buildpacks directory'
 
   return (
     <Grid>
