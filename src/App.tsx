@@ -147,7 +147,12 @@ function App() {
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
                                 <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
-                                <PrivateRoute path='/projects' component={Projects} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/projects'
+                                  component={Projects}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/container-images' component={Builds} platformAdminRoute exact />
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                 <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
