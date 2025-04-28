@@ -163,11 +163,11 @@ export default function ({
   }, [k8sServices])
 
   useEffect(() => {
-    if (!hasSetActiveService && filteredK8Services.length > 0 && data?.metadata.name) {
+    if (!hasSetActiveService && data?.metadata.name) {
       setActiveService(data?.metadata.name)
       setHasSetActiveService(true)
     }
-  }, [filteredK8Services, hasSetActiveService, data?.metadata.name])
+  }, [hasSetActiveService, data?.metadata.name])
 
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
