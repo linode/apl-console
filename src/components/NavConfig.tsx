@@ -50,6 +50,7 @@ export default function NavConfig() {
           title: 'Projects',
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
+          hidden: true,
         },
         {
           title: 'Code Repositories',

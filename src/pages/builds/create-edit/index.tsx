@@ -161,7 +161,7 @@ export default function CreateEditBuilds({
       <PaperLayout loading={isLoading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/get-started/overview'
+          docsLink='https://apl-docs.net/docs/for-devs/console/container-images'
           title='Container Image'
         />
         <FormProvider {...methods}>
