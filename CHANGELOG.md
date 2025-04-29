@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/linode/apl-console/compare/v4.1.0...v4.2.1) (2025-04-29)
+
+
+### Bug Fixes
+
+* ui team journal changes pt.2 ([#548](https://github.com/linode/apl-console/issues/548)) ([b6e86de](https://github.com/linode/apl-console/commit/b6e86de61a26d92dfdc5ee08cfca918aee25dfce))
+* ui team journal changes pt.3 ([#549](https://github.com/linode/apl-console/issues/549)) ([da4b6e2](https://github.com/linode/apl-console/commit/da4b6e25a3a67391b1411dba2988c73345668d16))
+* ui team journal changes pt.4 ([#550](https://github.com/linode/apl-console/issues/550)) ([418c8b5](https://github.com/linode/apl-console/commit/418c8b52aa64aad970a93a46373c2f9527de5d53))
+
+
 ## [4.2.0](https://github.com/linode/apl-console/compare/v4.1.0...v4.2.0) (2025-04-25)
 
 
