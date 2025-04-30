@@ -55,6 +55,9 @@ const useStyles = makeStyles()((theme) => ({
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
   },
+  tableBackground: {
+    backgroundColor: theme.palette.background.paper,
+  },
   noTabs: {
     padding: theme.spacing(3),
   },
@@ -274,7 +277,7 @@ export default function App({
         </Tabs>
       </AppBar>
       <TabPanel value={tab} index={hashMap.info}>
-        <Grid container direction='row'>
+        <Grid container direction='row' className={classes.tableBackground}>
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
               <TableContainer className={classes.legend}>
