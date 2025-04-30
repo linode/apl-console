@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.2](https://github.com/linode/apl-console/compare/v4.2.1...v4.2.2) (2025-04-30)
+
+
+### Bug Fixes
+
+* app header, no capital in team name and no dashboard team admin ([#552](https://github.com/linode/apl-console/issues/552)) ([aa4482d](https://github.com/linode/apl-console/commit/aa4482df8626098d5054ebe67ab3fe39bba1ad2f))
+
 ### [4.2.1](https://github.com/linode/apl-console/compare/v4.1.0...v4.2.1) (2025-04-29)
 
 
