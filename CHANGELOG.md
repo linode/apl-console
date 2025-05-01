@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.3](https://github.com/linode/apl-console/compare/v4.2.2...v4.2.3) (2025-05-01)
+
+
+### Bug Fixes
+
+* removed limits cpu and memory ([#553](https://github.com/linode/apl-console/issues/553)) ([b069b14](https://github.com/linode/apl-console/commit/b069b14c9438217b47a4548496a479d565fb03ba))
+
 ### [4.2.2](https://github.com/linode/apl-console/compare/v4.2.1...v4.2.2) (2025-04-30)
 
 
