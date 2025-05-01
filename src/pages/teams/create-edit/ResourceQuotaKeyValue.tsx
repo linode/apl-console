@@ -27,11 +27,9 @@ const useStyles = makeStyles()((theme: Theme) => ({
 
 // Define which keys belong to each group.
 const countQuotaKeys = new Set(['services.loadbalancers', 'services.nodeports', 'pods', 'count/pods'])
-const computeQuotaKeys = new Set(['limits.cpu', 'requests.cpu', 'limits.memory', 'requests.memory'])
+const computeQuotaKeys = new Set(['requests.cpu', 'requests.memory'])
 const computeDecorators: Record<string, string> = {
-  'limits.cpu': 'Cores',
   'requests.cpu': 'Cores',
-  'limits.memory': 'Gi',
   'requests.memory': 'Gi',
 }
 // count/pods added just in case it's still lingering around somewhere

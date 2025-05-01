@@ -76,9 +76,7 @@ export const createTeamApiResponseSchema = yup.object({
     .default([
       { name: 'services.loadbalancers', value: '0' },
       { name: 'services.nodeports', value: '0' },
-      { name: 'limits.cpu', value: '24' },
       { name: 'requests.cpu', value: '24' },
-      { name: 'limits.memory', value: '32' },
       { name: 'requests.memory', value: '32' },
       { name: 'pods', value: '50' },
     ]),
