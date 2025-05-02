@@ -113,8 +113,7 @@ interface EnhancedTableHeadProps {
 }
 
 export function EnhancedTableHead(props: EnhancedTableHeadProps) {
-  // eslint-disable-next-line prefer-const
-  let { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
+  const { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
     props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)

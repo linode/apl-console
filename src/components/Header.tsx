@@ -67,6 +67,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const { data: allTeams } = useGetTeamsQuery()
   // END HOOKs
   let teams: string[] = []
+
   if (isPlatformAdmin) {
     teams = allTeams?.map((team) => team?.name) || []
     teams = [...new Set(teams)]
