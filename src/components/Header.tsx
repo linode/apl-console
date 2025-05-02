@@ -69,12 +69,19 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   let teams: string[] = []
 
   if (isPlatformAdmin) {
-    teams = allTeams?.map((team) => team?.name) || []
-    teams = [...new Set(teams)]
-    teams = teams.filter((team) => team !== 'admin') // Remove "admin" from the list
-    teams.sort()
-    teams = ['admin', ...teams]
-  } else teams = userTeams
+    teams = [
+      { name: 'admin' }, // Ensure the "admin" team is always included for platform admins
+      ...((allTeams as any) || []).map(({ name }) => ({
+        name,
+      })),
+    ]
+    // Make the array unique by the `name` field
+    teams = Array.from(new Map(teams.map((team) => [team, team])).values())
+  } else {
+    teams = ((userTeams as any) || []).map((name) => ({
+      name,
+    }))
+  }
 
   const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChangeView(event)
