@@ -113,7 +113,8 @@ interface EnhancedTableHeadProps {
 }
 
 export function EnhancedTableHead(props: EnhancedTableHeadProps) {
-  const { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
+  // eslint-disable-next-line prefer-const
+  let { disableSelect, classes, order, orderBy, numSelected, rowCount, onSelectAllClick, onRequestSort, headCells } =
     props
   const createSortHandler = (property: string) => (event: MouseEvent<unknown>) => {
     onRequestSort(event, property)
@@ -132,7 +133,7 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
             />
           </TableCell>
         )}
-        {headCells.map((headCell) => (
+        {headCells?.map((headCell) => (
           <StyledTableHeaderCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -321,7 +322,7 @@ function applySortFilter({
   comparator,
   filterName,
 }: {
-  tableData: any
+  tableData: any[]
   comparator: (a: any, b: any) => number
   filterName: string
 }) {
