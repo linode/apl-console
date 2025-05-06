@@ -153,12 +153,15 @@ export default function CreateEditBuilds({
   if (isLoading || isError || (buildName && !watch('name')))
     return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
+  const pathHelperText =
+    watch('mode.type') === 'docker' ? 'Relative path to the Dockerfile' : 'Relative path to the buildpacks directory'
+
   return (
     <Grid>
       <PaperLayout loading={isLoading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/get-started/overview'
+          docsLink='https://apl-docs.net/docs/for-devs/console/container-images'
           title='Container Image'
         />
         <FormProvider {...methods}>
@@ -236,17 +239,14 @@ export default function CreateEditBuilds({
 
                 <TextField
                   label='Path'
-                  width='medium'
+                  width='large'
                   {...register(`mode.${watch('mode.type')}.path`)}
                   onChange={(e) => {
                     const value = e.target.value
                     setValue(`mode.${watch('mode.type')}.path`, value)
                   }}
-                  error={!!errors[`mode.${watch('mode.type')}.path`]}
-                  helperText={
-                    errors?.[`mode.${watch('mode.type')}.path`]?.message?.toString() ||
-                    'Relative sub-path to a source code directory'
-                  }
+                  error={!!errors?.mode?.[`${watch('mode.type')}`]?.path}
+                  helperText={errors?.mode?.[`${watch('mode.type')}`]?.path?.message?.toString() || pathHelperText}
                 />
               </FormRow>
 
@@ -349,7 +349,7 @@ export default function CreateEditBuilds({
               loading={isLoadingCreate || isLoadingUpdate}
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
             >
-              {buildName ? 'Edit Container Image' : 'Create Container Image'}
+              {buildName ? 'Save Changes' : 'Create Container Image'}
             </LoadingButton>
           </form>
         </FormProvider>

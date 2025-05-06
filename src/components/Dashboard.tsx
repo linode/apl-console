@@ -130,12 +130,16 @@ interface IFramesCardProps {
 
 // components ------------------------------------------------------
 function InventoryItem({ classes, item, themeView, teamId }: InventoryItemProps): React.ReactElement {
-  const prefix = themeView === 'team' ? `/teams/${teamId}` : ''
+  const isTeamView = themeView === 'team'
   return (
-    <Link component={RouterLink} to={`${prefix}/${item.name}`} data-cy={`link-${item.name}-count`}>
+    <Link
+      component={isTeamView ? RouterLink : Box}
+      to={`/teams/${teamId}/${item.name}`}
+      data-cy={`link-${item.name}-count`}
+    >
       <Box className={classes.inventoryItem}>
         <Typography className={classes.inventoryName} variant='h6'>
-          {item.name}
+          {item.name.replace('-', ' ')}
         </Typography>
         <Typography fontSize={14}>{item.count}</Typography>
       </Box>
@@ -229,7 +233,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/JcVjFgdZz/kubernetes-deployment?orgId=1&theme=${theme.palette.mode}&panelId=`
   const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-
   const views = {
     platform: [
       {
@@ -260,7 +263,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '7', src: `${resourceStatus}9` },
           { id: '8', src: `${resourceStatus}10` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
+        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin',
       },
       {
         title: 'Resource Utilization',
@@ -269,7 +272,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '9', src: `${resourceUtilization}8` },
           { id: '10', src: `${resourceUtilization}9` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana,
+        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin',
       },
       {
         title: 'Vulnerabilities',
@@ -280,7 +283,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '13', src: `${vulnerabilities}50` },
           { id: '14', src: `${vulnerabilities}51` },
         ],
-        show: appsEnabled.grafana && team?.managedMonitoring?.grafana && appsEnabled.trivy,
+        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin' && appsEnabled.trivy,
       },
     ],
   }
@@ -292,7 +295,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
         <InventoryCard
           classes={classes}
           inventory={inventory}
-          teamId={team?.id}
+          teamId={oboTeamId}
           themeView={themeView}
           title='Inventory'
         />

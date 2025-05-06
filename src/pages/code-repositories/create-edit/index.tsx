@@ -207,7 +207,7 @@ export default function CreateEditCodeRepositories({
       <PaperLayout loading={loading || error} title={t('TITLE_CODE_REPOSITORY')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/get-started/overview'
+          docsLink='https://apl-docs.net/docs/for-devs/console/code-repositories'
           title='Code Repository'
         />
         <FormProvider {...methods}>
@@ -417,7 +417,7 @@ export default function CreateEditCodeRepositories({
                 loading={isLoadingCreate || isLoadingUpdate}
                 disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
               >
-                {codeRepositoryName ? 'Edit Code Repository' : 'Add Code Repository'}
+                {codeRepositoryName ? 'Save Changes' : 'Add Code Repository'}
               </LoadingButton>
             )}
           </form>

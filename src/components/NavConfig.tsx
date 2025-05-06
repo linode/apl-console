@@ -25,15 +25,8 @@ export default function NavConfig() {
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
-        // { title: 'Policies', path: '/policies', icon: getIcon('policies_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
-        { title: 'Projects', path: '/projects', icon: getIcon('projects_icon.svg') },
-        { title: 'Code Repositories', path: '/code-repositories', icon: getIcon('coderepositories_icon.svg') },
-        { title: 'Container Images', path: '/container-images', icon: getIcon('builds_icon.svg') },
-        { title: 'Workloads', path: '/workloads', icon: getIcon('workloads_icon.svg') },
-        { title: 'Network Policies', path: '/netpols', icon: getIcon('policies_icon.svg') },
-        { title: 'Services', path: '/services', icon: getIcon('services_icon.svg') },
         { title: 'Backups', path: '/backups', icon: getIcon('backup_icon.svg'), hidden: isManaged }, // replace .svg
         { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
@@ -46,7 +39,7 @@ export default function NavConfig() {
     {
       subheader: `Team ${oboTeamId}`,
       items: [
-        { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg'), hidden: oboTeamId === 'admin' },
+        { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: oboTeamId === 'admin' },
         {
           title: 'Catalog',
@@ -57,6 +50,7 @@ export default function NavConfig() {
           title: 'Projects',
           path: `/teams/${oboTeamId}/projects`,
           icon: getIcon('projects_icon.svg'),
+          hidden: true,
         },
         {
           title: 'Code Repositories',
@@ -65,8 +59,8 @@ export default function NavConfig() {
         },
         { title: 'Container Images', path: `/teams/${oboTeamId}/container-images`, icon: getIcon('builds_icon.svg') },
         { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
-        { title: 'Workloads', path: `/teams/${oboTeamId}/workloads/`, icon: getIcon('workloads_icon.svg') },
-        { title: 'Network Policies', path: `/teams/${oboTeamId}/netpols/`, icon: getIcon('policies_icon.svg') },
+        { title: 'Workloads', path: `/teams/${oboTeamId}/workloads`, icon: getIcon('workloads_icon.svg') },
+        { title: 'Network Policies', path: `/teams/${oboTeamId}/network-policies`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
         { title: 'Security Policies', path: `/teams/${oboTeamId}/policies`, icon: getIcon('security_icon.svg') },
         {

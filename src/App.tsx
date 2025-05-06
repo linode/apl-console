@@ -18,8 +18,6 @@ import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
 import SealedSecret from 'pages/SealedSecret'
 import SealedSecrets from 'pages/SealedSecrets'
-import Service from 'pages/Service'
-import Services from 'pages/Services'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
 import Team from 'pages/teams/create-edit'
@@ -51,6 +49,8 @@ import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
+import Service from 'pages/services/create-edit'
+import Services from 'pages/services/overview'
 import CodeRepository from 'pages/code-repositories/create-edit'
 import CodeRepositories from 'pages/code-repositories/overview'
 import { HttpErrorBadRequest } from './utils/error'
@@ -120,7 +120,7 @@ function App() {
                                 />
                                 <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
                                 <PrivateRoute path='/create-team' component={Team} platformAdminRoute exact />
-                                <PrivateRoute path='/netpols' component={Netpols} platformAdminRoute exact />
+                                <PrivateRoute path='/network-policies' component={Netpols} platformAdminRoute exact />
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/policies/:policyName'
@@ -147,7 +147,12 @@ function App() {
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
                                 <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
-                                <PrivateRoute path='/projects' component={Projects} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/projects'
+                                  component={Projects}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/container-images' component={Builds} platformAdminRoute exact />
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                 <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
@@ -171,8 +176,12 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
-                                <PrivateRoute path='/teams/:teamId/netpols' component={Netpols} exact />
-                                <PrivateRoute path='/teams/:teamId/netpols/:netpolName' component={Netpol} exact />
+                                <PrivateRoute path='/teams/:teamId/network-policies' component={Netpols} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/network-policies/:netpolName'
+                                  component={Netpol}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                 <PrivateRoute path='/teams/:teamId/projects/:projectName' component={Project} exact />
                                 <PrivateRoute exact path='/teams/:teamId/container-images' component={Builds} />

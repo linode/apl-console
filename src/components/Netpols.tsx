@@ -13,8 +13,8 @@ const getNetpolLink = (isAdmin, ownerId) =>
 
     const path =
       isAdmin && !ownerId
-        ? `/netpols/${encodeURIComponent(name)}`
-        : `/teams/${teamId}/netpols/${encodeURIComponent(name)}`
+        ? `/network-policies/${encodeURIComponent(name)}`
+        : `/teams/${teamId}/network-policies/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}
