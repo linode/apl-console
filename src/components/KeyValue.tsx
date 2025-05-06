@@ -85,12 +85,19 @@ interface KeyValueProps {
   valueDisabled?: boolean
   addLabel?: string
   label?: string
+  // set to true when the value is a number field so only numbers can be parsed
+  valueIsNumber?: boolean
   error?: boolean
   name: string
   // determines the margin-top between key/value pairs
   compressed?: boolean
   // disable all fields and remove buttons
   disabled?: boolean
+  /**
+   * Somewhat of an edge case to enable specific value fields where the rest of the value fields are disabled
+   *  e.g. count quota in team settings page.
+   */
+  mutableValue?: Set<string>
   // used when section is disabled by checkbox, prevent user input but leaves styling untouched
   frozen?: boolean
   keySize?: 'small' | 'medium' | 'large'
@@ -144,10 +151,12 @@ export default function KeyValue(props: KeyValueProps) {
     compressed = false,
     disabled = false,
     frozen = false,
+    mutableValue,
     name,
     label,
     helperText,
     helperTextPosition,
+    valueIsNumber,
     onlyValue,
     keyValue,
     keySize = 'medium',
@@ -163,9 +172,11 @@ export default function KeyValue(props: KeyValueProps) {
   } = props
 
   const { fields, append, remove } = useFieldArray({ control, name })
+  // 'fields' parameter from 'useFieldArray' does not come with the correct type for some reason
+  const typedFields = fields as Array<KeyValueItem & { id: string }>
 
   // Map fields with their original index.
-  const mappedFields = fields.map((field, index) => ({ field, index }))
+  const mappedFields = typedFields.map((field, index) => ({ field, index }))
   // Apply filtering if filterFn is provided.
   const filteredFields = filterFn
     ? mappedFields.filter(({ field, index }) => filterFn(field as KeyValueItem & { id: string }, index))
@@ -193,21 +204,22 @@ export default function KeyValue(props: KeyValueProps) {
         <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
           <FormRow spacing={10}>
             <TextField
+              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
               width={keySize}
               sx={{ color: '#B5B5BC' }}
-              disabled={keyDisabled}
               value={keyValue}
+              disabled={keyDisabled}
               noMarginTop={compressed}
               label={showLabel && localIndex === 0 ? keyLabel : ''}
               error={error}
-              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
             />
             <TextField
+              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
               width={valueSize}
-              disabled={valueDisabled}
               label={showLabel && localIndex === 0 ? valueLabel : ''}
               noMarginTop={compressed}
-              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
+              type={valueIsNumber ? 'number' : undefined}
+              disabled={mutableValue?.has(field.name) ? false : valueDisabled}
               InputProps={{
                 readOnly: frozen,
                 endAdornment: decoratorMapping ? (

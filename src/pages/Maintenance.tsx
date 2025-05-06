@@ -6,6 +6,24 @@ import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
 import { useGetSettingsQuery } from 'redux/otomiApi'
+import Section from 'components/Section'
+
+const classes = {
+  actionLink: {
+    display: 'block',
+    fontWeight: 400,
+    fontSize: '14px',
+  },
+  actionButton: {
+    mt: 1,
+    px: 0,
+    fontWeight: 400,
+    fontSize: '14px',
+    '&.MuiButton-root:hover': {
+      bgcolor: 'transparent',
+    },
+  },
+}
 
 export default function (): React.ReactElement {
   const {
@@ -24,41 +42,44 @@ export default function (): React.ReactElement {
     setShowObjWizard(true)
     window.location.reload()
   }
+
   const comp = (
     <Box sx={{ p: 2 }}>
-      <HeaderTitle title='Maintenance' resourceType='maintenance' altColor />
-      <Typography variant='h6'>Actions</Typography>
+      <HeaderTitle title='Maintenance' resourceType='maintenance' />
 
-      <Link sx={{ display: 'block' }} href='/api/v1/otomi/values?excludeSecrets=false'>
-        Download APL values
-      </Link>
+      <Section>
+        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+          Actions
+        </Typography>
+        <Box sx={{ mt: 2 }}>
+          <Link sx={classes.actionLink} href='/api/v1/otomi/values?excludeSecrets=false'>
+            DOWNLOAD PLATFORM VALUES
+          </Link>
 
-      <Link sx={{ display: 'block', mt: '6px' }} href='/api/v1/otomi/values?excludeSecrets=true'>
-        Download APL values (secrets redacted)
-      </Link>
+          <Link sx={classes.actionLink} href='/api/v1/otomi/values?excludeSecrets=true'>
+            DOWNLOAD PLATFORM VALUES (SECRETS REDACTED)
+          </Link>
+        </Box>
 
-      {isPreInstalled && (
-        <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
-          <span>
-            <Button
-              variant='text'
-              color='primary'
-              sx={{
-                px: 0,
-                fontWeight: 500,
-                fontSize: '16px',
-                '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-              }}
-              onClick={handleShowObjWizard}
-              disabled={isObjStorageConfigured()}
-            >
-              Start Object Storage Wizard
-            </Button>
-          </span>
-        </Tooltip>
-      )}
+        {isPreInstalled && (
+          <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
+            <span>
+              <Button
+                variant='text'
+                color='primary'
+                sx={classes.actionButton}
+                onClick={handleShowObjWizard}
+                disabled={isObjStorageConfigured()}
+              >
+                Start Object Storage Wizard
+              </Button>
+            </span>
+          </Tooltip>
+        )}
+      </Section>
     </Box>
   )
+
   // title is set in component as it knows more to put in the url (like tab chosen)
   return <PaperLayout comp={comp} loading={false} />
 }
