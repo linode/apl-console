@@ -1,9 +1,9 @@
 # Local development
 
-Run keycloak locally with `APL` theme mounted.
+Run keycloak locally with `APL` theme mounted, from the main project directory.
 
-```
-docker run -p 8084:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin -v $PWD/keycloak/themes/APL:/opt/keycloak/themes/APL console -v $PWD/keycloak/providers:/opt/keycloak/providers keycloak/keycloak start-dev
+```sh
+docker run --name keycloak --rm -p 8084:8080 -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v $PWD/console-keycloak/APL/theme/APL:/opt/keycloak/themes/APL keycloak/keycloak start-dev
 ```
 
 Next:

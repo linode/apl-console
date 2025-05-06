@@ -55,7 +55,7 @@ export default function ({ error }: Props): React.ReactElement {
             variant='contained'
             color='primary'
             onClick={() => {
-              window.location.href = '/logout-otomi'
+              window.location.href = '/platform-logout'
             }}
           >
             {t('Logout', { ns: 'error' })}
@@ -84,7 +84,7 @@ export default function ({ error }: Props): React.ReactElement {
           variant='contained'
           color='primary'
           onClick={() => {
-            window.location.href = '/logout-otomi'
+            window.location.href = '/platform-logout'
           }}
         >
           {t('Logout', { ns: 'error' })}
