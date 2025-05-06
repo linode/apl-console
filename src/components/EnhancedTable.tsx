@@ -132,7 +132,7 @@ export function EnhancedTableHead(props: EnhancedTableHeadProps) {
             />
           </TableCell>
         )}
-        {headCells.map((headCell) => (
+        {headCells?.map((headCell) => (
           <StyledTableHeaderCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -321,7 +321,7 @@ function applySortFilter({
   comparator,
   filterName,
 }: {
-  tableData: any
+  tableData: any[]
   comparator: (a: any, b: any) => number
   filterName: string
 }) {
