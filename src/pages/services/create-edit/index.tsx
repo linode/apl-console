@@ -403,7 +403,7 @@ export default function ({
                   sx={{ my: 2 }}
                   name='spec.trafficControl.enabled'
                   control={control}
-                  label='Enable Traffic Mangement'
+                  label='Enable Traffic Management'
                   explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
                     deployments behind that service)'
                 />
