@@ -210,6 +210,8 @@ export default function ({
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/services'
           title={serviceName ? data.metadata.name : 'New Service'}
+          // hides the first two crumbs (e.g. /teams/teamName)
+          hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
