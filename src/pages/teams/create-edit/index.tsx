@@ -159,7 +159,7 @@ export default function CreateEditTeams({
       <PaperLayout>
         <LandingHeader
           docsLabel='https://apl-docs.net/docs/for-ops/console/teams'
-          title={teamId || 'Create'}
+          title={themeView === 'team' ? `${teamId} Settings` : teamId || 'Create'}
           // hides the first crumb for the teamSettings page (e.g. /teams)
           hideCrumbX={themeView === 'team' ? [0] : []}
         />
