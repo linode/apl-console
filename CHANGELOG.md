@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/linode/apl-console/compare/v4.2.0...v4.3.0) (2025-05-14)
+
+
+### Features
+
+* update logout parameters as required by Keycloak and clean up theme ([#545](https://github.com/linode/apl-console/issues/545)) ([9456acf](https://github.com/linode/apl-console/commit/9456acfb1bb2d1a210f2acf10af873903b0415c3))
+
+
+### Bug Fixes
+
+* app header, no capital in team name and no dashboard team admin ([#552](https://github.com/linode/apl-console/issues/552)) ([e57e13e](https://github.com/linode/apl-console/commit/e57e13e1aa4fbfaf69bc0c6fba03223e1d59805a))
+* map undefined error ([#554](https://github.com/linode/apl-console/issues/554)) ([4e72c94](https://github.com/linode/apl-console/commit/4e72c9487d8cddc4903c9454989250600f13e568))
+* navconfig permission function ([#555](https://github.com/linode/apl-console/issues/555)) ([911341c](https://github.com/linode/apl-console/commit/911341c4e4622c01bedcf32642ec3443bd4a14a5))
+* removed limits cpu and memory ([#553](https://github.com/linode/apl-console/issues/553)) ([6ef7510](https://github.com/linode/apl-console/commit/6ef75104a8a2a07c5c9aa5c8705d3a39b133506f))
+* ui team journal changes pt.2 ([#548](https://github.com/linode/apl-console/issues/548)) ([43c4e02](https://github.com/linode/apl-console/commit/43c4e02581dba85eebda52e8d3d51e77b218b369))
+* ui team journal changes pt.3 ([#549](https://github.com/linode/apl-console/issues/549)) ([bc00f0e](https://github.com/linode/apl-console/commit/bc00f0e4486468f5d3b6ba594704776421f80af9))
+* ui team journal changes pt.4 ([#550](https://github.com/linode/apl-console/issues/550)) ([9b11b64](https://github.com/linode/apl-console/commit/9b11b640b284dc2f5297ac7ede128a7a96e40428))
+
+
+### Others
+
+* **deps:** bump nginx from 1.27.3-alpine to 1.27.5-alpine ([#546](https://github.com/linode/apl-console/issues/546)) ([bdfedef](https://github.com/linode/apl-console/commit/bdfedef765be296f0461731e70e7a419896541b0))
+* **deps:** bump node from 20.18.2-alpine to 20.19.1-alpine ([#551](https://github.com/linode/apl-console/issues/551)) ([8e99f15](https://github.com/linode/apl-console/commit/8e99f158565126ec76cdc15c575b0401ef14fd76))
+
 ## [4.2.0](https://github.com/linode/apl-console/compare/v4.1.0...v4.2.0) (2025-04-25)
 
 
