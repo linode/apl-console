@@ -133,7 +133,6 @@ export default function CreateEditTeams({
     const rawReceivers = submitData.alerts?.receivers ?? []
     let receivers = rawReceivers.filter((r) => r !== 'none')
 
-    // @ts-ignore
     if (submitData.managedMonitoring?.alertmanager && receivers.length === 0) receivers = ['none']
 
     // 3) Combine edge cases with submittedData for final payload
