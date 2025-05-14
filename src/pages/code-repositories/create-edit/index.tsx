@@ -208,7 +208,7 @@ export default function CreateEditCodeRepositories({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/code-repositories'
-          title={codeRepositoryName ? data.name : 'New Code Repository'}
+          title={codeRepositoryName ? data.name : 'Add'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
         />

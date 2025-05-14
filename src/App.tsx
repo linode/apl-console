@@ -99,7 +99,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/teams/:teamId/create-code-repository'
+                                  path='/teams/:teamId/code-repositories/create'
                                   component={CodeRepository}
                                   exact
                                 />
@@ -119,7 +119,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
-                                <PrivateRoute path='/create-team' component={Team} platformAdminRoute exact />
+                                <PrivateRoute path='/teams/create' component={Team} platformAdminRoute exact />
                                 <PrivateRoute path='/network-policies' component={Netpols} platformAdminRoute exact />
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
@@ -157,17 +157,17 @@ function App() {
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                 <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId' component={Team} exact />
-                                <PrivateRoute path='/teams/:teamId/create-backup' component={Backup} exact />
-                                <PrivateRoute path='/teams/:teamId/create-netpol' component={Netpol} exact />
+                                <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
+                                <PrivateRoute path='/teams/:teamId/network-policies/create' component={Netpol} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/create-sealedsecret'
+                                  path='/teams/:teamId/sealed-secrets/create'
                                   component={SealedSecret}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/create-service' component={Service} exact />
-                                <PrivateRoute path='/teams/:teamId/create-user' component={User} exact />
-                                <PrivateRoute path='/teams/:teamId/create-project' component={Project} exact />
-                                <PrivateRoute path='/teams/:teamId/create-container-image' component={Build} exact />
+                                <PrivateRoute path='/teams/:teamId/services/create' component={Service} exact />
+                                <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
+                                <PrivateRoute path='/teams/:teamId/projects/create' component={Project} exact />
+                                <PrivateRoute path='/teams/:teamId/container-images/create' component={Build} exact />
                                 <PrivateRoute path='/teams/:teamId/sealed-secrets' component={SealedSecrets} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/sealed-secrets/:sealedSecretName'

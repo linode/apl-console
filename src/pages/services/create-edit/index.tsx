@@ -209,7 +209,7 @@ export default function ({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/services'
-          title={serviceName ? data.metadata.name : 'New Service'}
+          title={serviceName ? data.metadata.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
         />
