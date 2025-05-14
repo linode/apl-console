@@ -209,7 +209,7 @@ export default function ({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/services'
-          title='Service'
+          title={serviceName ? data.metadata.name : 'New Service'}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

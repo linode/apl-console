@@ -131,6 +131,7 @@ export default function CreateEditTeams({
     const rawReceivers = submitData.alerts?.receivers ?? []
     let receivers = rawReceivers.filter((r) => r !== 'none')
 
+    // @ts-ignore
     if (submitData.managedMonitoring?.alertmanager && receivers.length === 0) receivers = ['none']
 
     // 3) Combine edge cases with submittedData for final payload
@@ -154,7 +155,7 @@ export default function CreateEditTeams({
   return (
     <Grid className={classes.root}>
       <PaperLayout>
-        <LandingHeader docsLabel='Docs' title='Teams' />
+        <LandingHeader docsLabel='https://apl-docs.net/docs/for-ops/console/teams' title={teamId || 'New Team'} />
         {!isPlatformAdmin && <InformationBanner message='This page is readonly' sx={{ mb: 3 }} />}
 
         <FormProvider {...methods}>

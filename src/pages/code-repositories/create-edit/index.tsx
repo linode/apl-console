@@ -208,7 +208,7 @@ export default function CreateEditCodeRepositories({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/code-repositories'
-          title='Code Repository'
+          title={codeRepositoryName ? data.name : 'New Code Repository'}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
