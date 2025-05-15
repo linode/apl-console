@@ -41,6 +41,10 @@ export interface BreadcrumbProps {
    * A number indicating the position of the crumb to remove. Not zero indexed.
    */
   removeCrumbX?: number | number[]
+  /**
+   * A number indicating the position of the crumb to hide. Starts from 0.
+   */
+  hideCrumbX?: number[]
 }
 
 /**
@@ -59,6 +63,7 @@ export function Breadcrumb(props: BreadcrumbProps) {
     onEditHandlers,
     pathname,
     removeCrumbX,
+    hideCrumbX,
   } = props
 
   const url = pathname && pathname.slice(1)
@@ -88,6 +93,7 @@ export function Breadcrumb(props: BreadcrumbProps) {
           labelTitle={labelTitle}
           onEditHandlers={onEditHandlers}
           pathMap={pathMap}
+          hideCrumbX={hideCrumbX}
         />
       </StyledPreContainerDiv>
     </StyledRootDiv>
