@@ -52,7 +52,6 @@ const useStyles = makeStyles()((theme) => {
       color: theme.palette.text.primary,
       fontWeight: 'bold',
       fontSize: '1rem',
-      textTransform: 'capitalize',
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
     },
