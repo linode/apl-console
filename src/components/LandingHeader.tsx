@@ -25,6 +25,7 @@ export interface LandingHeaderProps {
   onButtonKeyPress?: (e: React.KeyboardEvent<HTMLButtonElement>) => void
   onDocsClick?: () => void
   removeCrumbX?: number | number[]
+  hideCrumbX?: number[]
   shouldHideDocsAndCreateButtons?: boolean
   title?: React.JSX.Element | string
 }
@@ -51,6 +52,7 @@ export function LandingHeader({
   onButtonKeyPress,
   onDocsClick,
   removeCrumbX,
+  hideCrumbX,
   shouldHideDocsAndCreateButtons,
   title,
 }: LandingHeaderProps) {
@@ -74,6 +76,7 @@ export function LandingHeader({
           // eslint-disable-next-line no-restricted-globals
           pathname={location.pathname}
           removeCrumbX={removeCrumbX}
+          hideCrumbX={hideCrumbX}
           {...breadcrumbDataAttrs}
           {...breadcrumbProps}
           disabledBreadcrumbEditButton={disabledBreadcrumbEditButton}
