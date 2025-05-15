@@ -219,7 +219,7 @@ export default function KeyValue(props: KeyValueProps) {
               label={showLabel && localIndex === 0 ? valueLabel : ''}
               noMarginTop={compressed}
               type={valueIsNumber ? 'number' : undefined}
-              disabled={mutableValue?.has(field.name) ? false : valueDisabled}
+              disabled={mutableValue?.has(field.name) ? disabled : valueDisabled}
               InputProps={{
                 readOnly: frozen,
                 endAdornment: decoratorMapping ? (
