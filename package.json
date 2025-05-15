@@ -56,7 +56,7 @@
     "react-use": "^17.6.0",
     "simplebar-react": "2.4.3",
     "socket.io-react-hook": "^1.0.17",
-    "tss-react": "3.7.0",
+    "tss-react": "4.9.18",
     "typeface-comfortaa": "1.1.13",
     "typeface-roboto": "0.0.75",
     "yaml": "^2.7.0",
