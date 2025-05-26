@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.3.1](https://github.com/linode/apl-console/compare/v4.2.0...v4.3.1) (2025-05-26)
+
+
+### Bug Fixes
+
+* alertmanager not showing if disabled and isAdmin ([#570](https://github.com/linode/apl-console/issues/570)) ([3298f28](https://github.com/linode/apl-console/commit/3298f28a572439e9e3686612b2db018398e95f11))
+
+
 ## [4.3.0](https://github.com/linode/apl-console/compare/v4.2.0...v4.3.0) (2025-05-14)
 
 
