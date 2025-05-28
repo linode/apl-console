@@ -10,6 +10,7 @@ import { useFieldArray, useFormContext, useWatch } from 'react-hook-form'
 import FormRow from 'components/forms/FormRow'
 import { FormHelperText } from 'components/FormHelperText'
 import { InputAdornment } from './InputAdornment'
+import { AutoResizableTextarea } from './TextArea'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
@@ -109,6 +110,8 @@ interface KeyValueProps {
   // hide filtered fields when filterFn is provided and empty
   hideWhenEmpty?: boolean
   decoratorMapping?: Record<string, string>
+  // render the value field as a textarea when true
+  isTextArea?: boolean
 }
 
 // This local subcomponent watches the key field (using its path) and checks the provided
@@ -169,6 +172,7 @@ export default function KeyValue(props: KeyValueProps) {
     hideWhenEmpty = false,
     filterFn,
     decoratorMapping,
+    isTextArea = false,
   } = props
 
   const { fields, append, remove } = useFieldArray({ control, name })
@@ -191,6 +195,7 @@ export default function KeyValue(props: KeyValueProps) {
   const errorScrollClassName = 'error-for-scroll'
   return (
     <Box
+      sx={{ mt: 3 }}
       className={cx({
         [errorScrollClassName]: !!errorText,
       })}
@@ -200,47 +205,53 @@ export default function KeyValue(props: KeyValueProps) {
       </InputLabel>
       {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
 
-      {filteredFields.map(({ field, index }, localIndex) => (
-        <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
-          <FormRow spacing={10}>
-            <TextField
-              {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
-              width={keySize}
-              sx={{ color: '#B5B5BC' }}
-              value={keyValue}
-              disabled={keyDisabled}
-              noMarginTop={compressed}
-              label={showLabel && localIndex === 0 ? keyLabel : ''}
-              error={error}
-            />
-            <TextField
-              {...register(onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`)}
-              width={valueSize}
-              label={showLabel && localIndex === 0 ? valueLabel : ''}
-              noMarginTop={compressed}
-              type={valueIsNumber ? 'number' : undefined}
-              disabled={mutableValue?.has(field.name) ? disabled : valueDisabled}
-              InputProps={{
-                readOnly: frozen,
-                endAdornment: decoratorMapping ? (
-                  <DecoratorAdornment
-                    name={name}
-                    index={index}
-                    keyLabel={keyLabel}
-                    decoratorMapping={decoratorMapping}
-                    classes={classes}
-                  />
-                ) : null,
-              }}
-            />
-          </FormRow>
-          {addLabel && !disabled && (
-            <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
-              <Clear />
-            </IconButton>
-          )}
-        </Box>
-      ))}
+      {filteredFields.map(({ field, index }, localIndex) => {
+        const valuePath = onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`
+        const isFieldDisabled = mutableValue?.has(field.name) ? disabled : valueDisabled
+        const commonProps = {
+          ...register(valuePath),
+          width: valueSize,
+          label: showLabel && localIndex === 0 ? valueLabel : '',
+          noMarginTop: compressed,
+          disabled: isFieldDisabled,
+          type: valueIsNumber ? 'number' : undefined,
+          InputProps: {
+            readOnly: frozen,
+            endAdornment: decoratorMapping ? (
+              <DecoratorAdornment
+                name={name}
+                index={index}
+                keyLabel={keyLabel}
+                decoratorMapping={decoratorMapping}
+                classes={classes}
+              />
+            ) : null,
+          },
+        }
+
+        return (
+          <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
+            <FormRow spacing={10}>
+              <TextField
+                {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
+                width={keySize}
+                sx={{ color: '#B5B5BC' }}
+                value={keyValue}
+                disabled={keyDisabled}
+                noMarginTop={compressed}
+                label={showLabel && localIndex === 0 ? keyLabel : ''}
+                error={error}
+              />
+              {isTextArea ? <AutoResizableTextarea {...commonProps} /> : <TextField {...commonProps} />}
+            </FormRow>
+            {addLabel && !disabled && (
+              <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
+                <Clear />
+              </IconButton>
+            )}
+          </Box>
+        )
+      })}
       {addLabel && !disabled && (
         <Button
           sx={{ fontSize: '10px', color: `${error ? 'red' : ''}` }}

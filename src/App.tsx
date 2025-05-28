@@ -16,8 +16,6 @@ import Clusters from 'pages/Clusters'
 import Catalogs from 'pages/Catalogs'
 import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
-import SealedSecret from 'pages/SealedSecret'
-import SealedSecrets from 'pages/SealedSecrets'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
 import Team from 'pages/teams/create-edit'
@@ -53,6 +51,8 @@ import Service from 'pages/services/create-edit'
 import Services from 'pages/services/overview'
 import CodeRepository from 'pages/code-repositories/create-edit'
 import CodeRepositories from 'pages/code-repositories/overview'
+import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
+import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -136,12 +136,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/services' component={Services} platformAdminRoute exact />
-                                <PrivateRoute
-                                  path='/sealed-secrets'
-                                  component={SealedSecrets}
-                                  platformAdminRoute
-                                  exact
-                                />
+                                <PrivateRoute path='/secrets' component={SecretOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/workloads' component={Workloads} platformAdminRoute exact />
                                 <PrivateRoute path='/settings' component={SettingsOverview} platformAdminRoute exact />
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
@@ -160,23 +155,27 @@ function App() {
                                 <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
                                 <PrivateRoute path='/teams/:teamId/network-policies/create' component={Netpol} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/sealed-secrets/create'
-                                  component={SealedSecret}
+                                  path='/teams/:teamId/secrets/create'
+                                  component={SecretCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/services/create' component={Service} exact />
                                 <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
                                 <PrivateRoute path='/teams/:teamId/projects/create' component={Project} exact />
                                 <PrivateRoute path='/teams/:teamId/container-images/create' component={Build} exact />
-                                <PrivateRoute path='/teams/:teamId/sealed-secrets' component={SealedSecrets} exact />
+                                <PrivateRoute path='/teams/:teamId/secrets' component={SecretOverviewPage} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/sealed-secrets/:sealedSecretName'
-                                  component={SealedSecret}
+                                  path='/teams/:teamId/secrets/:sealedSecretName'
+                                  component={SecretCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
-                                <PrivateRoute path='/teams/:teamId/network-policies' component={Netpols} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/network-policies'
+                                  component={SecretOverviewPage}
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/teams/:teamId/network-policies/:netpolName'
                                   component={Netpol}
