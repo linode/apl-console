@@ -162,7 +162,9 @@ export default function CreateEditBuilds({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/container-images'
-          title='Container Image'
+          title={buildName ? buildData.name : 'Create'}
+          // hides the first two crumbs (e.g. /teams/teamName)
+          hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

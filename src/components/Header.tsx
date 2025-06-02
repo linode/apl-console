@@ -1,3 +1,4 @@
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import { AppBar, Box, MenuItem, Select, Stack, Toolbar, Typography, styled } from '@mui/material'
 import { HEADER, NAVBAR } from 'config'
 import useOffSetTop from 'hooks/useOffSetTop'
@@ -64,7 +65,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     oboTeamId,
     setOboTeamId,
   } = useSession()
-  const { data: allTeams } = useGetTeamsQuery()
+  const { data: allTeams } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
   // END HOOKs
   let teams: string[] = []
 
@@ -143,21 +144,24 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
               </Select>
             </>
           )}
-
-          <Typography variant='body1'>team:</Typography>
-          <Select
-            size='small'
-            color='secondary'
-            value={(teams?.length && oboTeamId) || ''}
-            onChange={handleChangeTeam}
-            data-cy='select-oboteam'
-          >
-            {teams?.map((teamName) => (
-              <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
-                {teamName}
-              </MenuItem>
-            ))}
-          </Select>
+          {themeView === 'team' && (
+            <>
+              <Typography variant='body1'>team:</Typography>
+              <Select
+                size='small'
+                color='secondary'
+                value={(teams?.length && oboTeamId) || ''}
+                onChange={handleChangeTeam}
+                data-cy='select-oboteam'
+              >
+                {teams?.map((teamName) => (
+                  <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
+                    {teamName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </>
+          )}
           <AccountPopover email={email} />
         </Stack>
       </Toolbar>

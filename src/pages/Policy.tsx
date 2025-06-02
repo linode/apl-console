@@ -41,7 +41,7 @@ export default function ({
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const team = !isLoadingTeams && find(teams, { id: teamId })
+  const team = !isLoadingTeams && find(teams, { name: teamId })
   const editPolicies = team?.selfService?.teamMembers?.editSecurityPolicies || teamId === 'admin' || isPlatformAdmin
   const loading = isLoading || isLoadingTeams
   const mutating = isLoadingUpdate
@@ -60,5 +60,5 @@ export default function ({
       policyName={policyName}
     />
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_BUILD', { policyName, role: 'team' })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_POLICY', { policyName, role: 'team' })} />
 }
