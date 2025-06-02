@@ -315,7 +315,7 @@ secret'
                   showLabel={false}
                   compressed
                   keySize='medium'
-                  valueSize='medium'
+                  valueSize='large'
                   addLabel='add finalizers'
                 />
               </Section>

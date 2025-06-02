@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
 import { Box } from '@mui/material'
@@ -41,8 +41,8 @@ export function AutoResizableTextarea({
   label = '',
   minRows = 1,
   maxRows = 40,
-  minWidth,
-  maxWidth,
+  minWidth = 200,
+  maxWidth = 800,
   minHeight,
   maxHeight = 800,
   style,
@@ -53,6 +53,39 @@ export function AutoResizableTextarea({
 }: AutoResizableTextareaProps) {
   const { classes, cx } = useStyles()
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const rulerRef = useRef<HTMLSpanElement | null>(null)
+
+  useEffect(() => {
+    const ruler = document.createElement('span')
+    ruler.style.position = 'absolute'
+    ruler.style.visibility = 'hidden'
+    ruler.style.whiteSpace = 'pre'
+    document.body.appendChild(ruler)
+    rulerRef.current = ruler
+
+    return () => {
+      if (rulerRef.current) document.body.removeChild(rulerRef.current)
+    }
+  }, [])
+
+  const getCalculatedWidth = (value: string) => {
+    const textarea = textareaRef.current
+    const ruler = rulerRef.current
+    if (!textarea || !ruler) return 0
+    const lines = value.split('\n')
+    const style = getComputedStyle(textarea)
+    ruler.style.font = style.font
+    ruler.style.fontSize = style.fontSize
+    ruler.style.fontFamily = style.fontFamily
+    let maxWidth = 0
+    lines.forEach((line) => {
+      ruler.textContent = line || ' '
+      const lineWidth = ruler.offsetWidth
+      maxWidth = Math.max(maxWidth, lineWidth)
+    })
+    const calculatedWidth = maxWidth + 10
+    return calculatedWidth
+  }
 
   const adjustSize = () => {
     const el = textareaRef.current
@@ -80,8 +113,12 @@ export function AutoResizableTextarea({
     el.style.maxHeight = maxH
 
     // Set min/max width
-    if (el.value.includes('BEGIN CERTIFICATE')) el.style.minWidth = '800px'
-    else el.style.minWidth = typeof minWidth === 'number' ? `${minWidth}px` : minWidth
+    const calculatedWidth = getCalculatedWidth(el.value)
+    if (calculatedWidth > Number(minWidth)) {
+      if (calculatedWidth > Number(maxWidth)) el.style.width = '800px'
+      else el.style.width = `${calculatedWidth}px`
+    } else el.style.minWidth = typeof minWidth === 'number' ? `${minWidth}px` : minWidth
+
     if (maxWidth !== undefined && maxWidth !== null)
       el.style.maxWidth = typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth
     else el.style.maxWidth = '100%'
@@ -93,7 +130,7 @@ export function AutoResizableTextarea({
     el.style.height = `${newHeight}px`
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     adjustSize()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rest.value])
@@ -125,7 +162,10 @@ export function AutoResizableTextarea({
           onPaste?.(e)
           setTimeout(adjustSize, 0)
         }}
-        onChange={onChange}
+        onChange={(e) => {
+          onChange?.(e)
+          adjustSize()
+        }}
       />
     </Box>
   )
