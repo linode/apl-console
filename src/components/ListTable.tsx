@@ -43,8 +43,8 @@ export default function ({
   if ((adminOnly || !teamId) && !hasTeamScope) title = t('LIST_TITLE_NOSCOPE', { model: t(resourceTypePlural) })
   if ((adminOnly || !teamId) && hasTeamScope) title = t('LIST_TITLE', { model: t(resourceTypePlural) })
   if (!adminOnly && teamId) title = t('LIST_TITLE_TEAM', { model: t(resourceTypePlural), teamId })
-  const resourceTypeLow = resourceType.toLowerCase()
-  const redirect = to || (adminOnly ? `/create-${resourceTypeLow}` : `/teams/${oboTeamId}/create-${resourceTypeLow}`)
+  const resourceTypeLow = t(resourceTypePlural).replaceAll(' ', '-').toLowerCase()
+  const redirect = to || (adminOnly ? `/${resourceTypeLow}/create` : `/teams/${oboTeamId}/${resourceTypeLow}/create`)
   return (
     <>
       <Box sx={{ backgroundColor: 'background.default' }}>

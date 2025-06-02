@@ -299,9 +299,11 @@ function applySortFilter({
       tableData = tableData?.filter((entry: Record<string, any>) => entry.id.toLowerCase() !== 'loki')
 
     // Filter out any entries in tableData where the corresponding managedMonitoringApps entry is false
-    tableData = tableData?.filter(
-      (entry: Record<string, any>) => managedMonitoringApps[entry.id.toLowerCase()] !== false,
-    )
+    if (!isAdmin) {
+      tableData = tableData?.filter(
+        (entry: Record<string, any>) => managedMonitoringApps[entry.id.toLowerCase()] !== false,
+      )
+    }
   }
   if (!isAdmin) {
     tableData = tableData?.filter((item: Record<string, any>) => {
