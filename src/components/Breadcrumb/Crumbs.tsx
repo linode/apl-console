@@ -22,6 +22,7 @@ interface Props {
   labelTitle?: string
   onEditHandlers?: EditableProps
   pathMap: string[]
+  hideCrumbX?: number[]
 }
 
 export const Crumbs = React.memo((props: Props) => {
@@ -33,6 +34,7 @@ export const Crumbs = React.memo((props: Props) => {
     labelTitle,
     onEditHandlers,
     pathMap,
+    hideCrumbX = [],
   } = props
 
   const allCrumbsButLast = pathMap.slice(0, -1)
@@ -43,6 +45,9 @@ export const Crumbs = React.memo((props: Props) => {
   return (
     <>
       {finalCrumbs.map((crumb: string, key: number) => {
+        // Skip rendering if the crumb is in the hideCrumbX array
+        if (hideCrumbX.includes(key)) return null
+
         const link = `/${pathMap.slice(0, -(pathMap.length - (key + 1))).join('/')}`
         const override = crumbOverrides && crumbOverrides.find((e) => e.position === key + 1)
 

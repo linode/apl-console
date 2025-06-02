@@ -24,6 +24,7 @@ import InformationBanner from 'components/InformationBanner'
 import { Link } from 'components/LinkUrl/LinkUrl'
 import LoadingButton from '@mui/lab/LoadingButton'
 import DeleteButton from 'components/DeleteButton'
+import useSettings from 'hooks/useSettings'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
 import ResourceQuotaKeyValue from './ResourceQuotaKeyValue'
@@ -41,6 +42,7 @@ export default function CreateEditTeams({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
   const { appsEnabled, user } = useSession()
+  const { themeView } = useSettings()
   const { isPlatformAdmin } = user
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
@@ -154,7 +156,12 @@ export default function CreateEditTeams({
   return (
     <Grid className={classes.root}>
       <PaperLayout>
-        <LandingHeader docsLabel='Docs' title='Teams' />
+        <LandingHeader
+          docsLabel='https://apl-docs.net/docs/for-ops/console/teams'
+          title={themeView === 'team' ? `${teamId} Settings` : teamId || 'Create'}
+          // hides the first crumb for the teamSettings page (e.g. /teams)
+          hideCrumbX={themeView === 'team' ? [0] : []}
+        />
         {!isPlatformAdmin && <InformationBanner message='This page is readonly' sx={{ mb: 3 }} />}
 
         <FormProvider {...methods}>

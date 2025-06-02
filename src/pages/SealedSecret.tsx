@@ -45,9 +45,11 @@ export default function ({
   // END HOOKS
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) {
-    if (isCoderepository)
-      history.push(`/teams/${teamId}/create-code-repository`, { prefilled: { ...prefilled, secret: dataCreate.name } })
-    else return <Redirect to={`/teams/${teamId}/sealed-secrets`} />
+    if (isCoderepository) {
+      history.push(`/teams/${teamId}/code-repositories/create`, {
+        prefilled: { ...prefilled, secret: dataCreate.name },
+      })
+    } else return <Redirect to={`/teams/${teamId}/sealed-secrets`} />
   }
 
   const handleSubmit = (formData) => {

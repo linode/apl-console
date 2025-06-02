@@ -1,5 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import { Box } from '@mui/material'
+import { skipToken } from '@reduxjs/toolkit/dist/query'
 import Dashboard from 'components/Dashboard'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
@@ -8,7 +9,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
-import { useGetDashboardQuery, useGetTeamsQuery } from 'redux/otomiApi'
+import { useGetDashboardQuery, useGetTeamQuery, useGetTeamsQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const { themeView } = useSettings()
@@ -23,10 +24,10 @@ export default function (): React.ReactElement {
     isLoading: isLoadingTeams,
     isFetching: isFetchingTeams,
     refetch: refetchTeams,
-  } = useGetTeamsQuery()
+  } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
+  const { data: teamData } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
 
   const teamName = isPlatformView ? undefined : oboTeamId
-
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
@@ -41,12 +42,12 @@ export default function (): React.ReactElement {
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const team = !isLoadingTeams && find(teams, { name: teamName })
+  const team = !isLoadingTeams && (find(teams, { name: teamName }) || teamData)
   const loading = isFetchingDashboard || isLoadingTeams
   const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
   const inventory = [...teamInventory, ...dashboardInventory]
-  const comp = teams && dashboard && <Dashboard team={team} inventory={inventory} />
+  const comp = (teams || team) && dashboard && <Dashboard team={team} inventory={inventory} />
   return (
     <Box sx={{ paddingTop: '3rem' }}>
       <PaperLayout
