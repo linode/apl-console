@@ -1967,7 +1967,6 @@ export type DeleteAplServiceApiArg = {
   serviceName: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -1991,7 +1990,6 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
       additionalProperties?: string
     }
   }
-  isDisabled?: boolean
 }[]
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
@@ -2004,7 +2002,6 @@ export type GetSecretsFromK8SApiArg = {
   teamId: string
 }
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -2028,14 +2025,12 @@ export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained s
       additionalProperties?: string
     }
   }
-  isDisabled?: boolean
 }[]
 export type GetSealedSecretsApiArg = {
   /** ID of team */
   teamId: string
 }
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -2059,14 +2054,12 @@ export type CreateSealedSecretApiResponse = /** status 200 Successfully stored s
       additionalProperties?: string
     }
   }
-  isDisabled?: boolean
 }
 export type CreateSealedSecretApiArg = {
   /** ID of team */
   teamId: string
   /** SealedSecret object */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
@@ -2090,11 +2083,9 @@ export type CreateSealedSecretApiArg = {
         additionalProperties?: string
       }
     }
-    isDisabled?: boolean
   }
 }
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -2118,7 +2109,6 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
       additionalProperties?: string
     }
   }
-  isDisabled?: boolean
 }
 export type GetSealedSecretApiArg = {
   /** ID of team */
@@ -2127,7 +2117,6 @@ export type GetSealedSecretApiArg = {
   sealedSecretName: string
 }
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
@@ -2151,7 +2140,6 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
       additionalProperties?: string
     }
   }
-  isDisabled?: boolean
 }
 export type EditSealedSecretApiArg = {
   /** ID of team */
@@ -2160,7 +2148,6 @@ export type EditSealedSecretApiArg = {
   sealedSecretName: string
   /** SealedSecret object that contains updated values */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
@@ -2184,7 +2171,6 @@ export type EditSealedSecretApiArg = {
         additionalProperties?: string
       }
     }
-    isDisabled?: boolean
   }
 }
 export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined

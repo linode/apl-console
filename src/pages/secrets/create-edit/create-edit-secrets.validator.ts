@@ -52,7 +52,6 @@ const metadataSchema = yup
 
 // 5) Main CreateSealedSecretApiResponse schema
 export const createSealedSecretApiResponseSchema = yup.object({
-  id: yup.string().optional().default(undefined),
   name: yup.string().required('Secret name is required'),
   namespace: yup.string().optional().default(undefined),
   immutable: yup.boolean().optional().default(undefined),
@@ -68,5 +67,4 @@ export const createSealedSecretApiResponseSchema = yup.object({
     .min(1, 'At least one encrypted data entry is required')
     .default(() => [{ key: '', value: '' }]), // default to one empty entry
   metadata: metadataSchema,
-  isDisabled: yup.boolean().optional().default(undefined),
 })

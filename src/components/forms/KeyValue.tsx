@@ -265,7 +265,10 @@ export default function KeyValue(props: KeyValueProps) {
               </Box>
             </FormRow>
             {addLabel && !disabled && (
-              <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
+              <IconButton
+                sx={{ alignSelf: 'flex-start', mt: localIndex === 0 ? '48px' : '20px' }}
+                onClick={() => remove(index)}
+              >
                 <Clear />
               </IconButton>
             )}

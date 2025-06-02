@@ -4,27 +4,43 @@ import { Theme } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import { InputLabel } from 'components/InputLabel'
 
-const useStyles = makeStyles()((theme: Theme) => ({
-  inputLabel: {
-    color: theme.palette.cl.text.title,
-    marginBottom: theme.spacing(2),
-  },
-  textarea: {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.cl.text.title,
-    padding: theme.spacing(1),
-    border: `1px solid ${theme.palette.cm.inputBorder}`,
-    boxSizing: 'border-box',
-    fontSize: '1rem',
-    fontFamily: theme.typography.fontFamily,
-    width: '100%',
-    resize: 'both',
-    display: 'block',
-    whiteSpace: 'pre-wrap',
-    overflowWrap: 'anywhere',
-    wordBreak: 'break-word',
-  },
-}))
+const useStyles = makeStyles<{ disabled?: boolean }>()((theme: Theme, { disabled }) => {
+  const disabledStyles = disabled
+    ? {
+        backgroundColor: theme.palette.cm.disabledBackground,
+        borderColor: theme.palette.cm.disabledBorder,
+        color: theme.palette.cm.disabledText,
+      }
+    : {}
+  return {
+    inputLabel: {
+      color: theme.palette.cl.text.title,
+      marginBottom: theme.spacing(2),
+    },
+    textarea: {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.cl.text.title,
+      padding: theme.spacing(1),
+      border: `1px solid ${theme.palette.cm.inputBorder}`,
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      fontFamily: 'monospace',
+      fontSize: '14px',
+      resize: 'both',
+      display: 'inline-block',
+      whiteSpace: 'pre-wrap',
+      overflowWrap: 'anywhere',
+      wordBreak: 'break-word',
+      minWidth: '200px',
+      minHeight: '34px',
+      maxWidth: '850px',
+      maxHeight: '800px',
+      width: 'auto',
+      height: 'auto',
+      ...disabledStyles,
+    },
+  }
+})
 
 export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'> {
   label?: string
@@ -43,7 +59,7 @@ export function AutoResizableTextarea({
   maxRows = 40,
   minWidth = 200,
   maxWidth = 850,
-  minHeight,
+  minHeight = 34,
   maxHeight = 800,
   style,
   onInput,
@@ -51,7 +67,7 @@ export function AutoResizableTextarea({
   onChange,
   ...rest
 }: AutoResizableTextareaProps) {
-  const { classes, cx } = useStyles()
+  const { classes, cx } = useStyles(rest.disabled ? { disabled: true } : {})
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const rulerRef = useRef<HTMLSpanElement | null>(null)
 
@@ -152,7 +168,6 @@ export function AutoResizableTextarea({
         {...rest}
         ref={textareaRef}
         className={cx(classes.textarea)}
-        style={style}
         rows={minRows}
         onInput={(e) => {
           onInput?.(e)
@@ -166,6 +181,7 @@ export function AutoResizableTextarea({
           onChange?.(e)
           adjustSize()
         }}
+        disabled={rest.disabled}
       />
     </Box>
   )

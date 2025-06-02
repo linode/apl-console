@@ -1,7 +1,7 @@
 import { Grid, MenuItem } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
 import {
   CreateSealedSecretApiResponse,
   useCreateSealedSecretMutation,
@@ -26,6 +26,7 @@ import { useSession } from 'providers/Session'
 import { useTranslation } from 'react-i18next'
 import { mapObjectToKeyValueArray, valueArrayToObject } from 'utils/helpers'
 import { useAppSelector } from 'redux/hooks'
+import InformationBanner from 'components/InformationBanner'
 import { useStyles } from './create-edit-secrets.styles'
 import { createSealedSecretApiResponseSchema, secretTypes } from './create-edit-secrets.validator'
 import { SecretTypeFields } from './SecretTypeFields'
@@ -85,14 +86,21 @@ export default function SecretCreateEditPage({
   const { t } = useTranslation()
   const { classes } = useStyles()
   const { sealedSecretsPEM } = useSession()
+  const history = useHistory()
+  const location = useLocation()
+  const locationState = location?.state as any
+  const isCoderepository = locationState?.coderepository
+  const prefilled = locationState?.prefilled || {}
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSealedSecretMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
+    useCreateSealedSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSealedSecretMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetSealedSecretQuery(
     { teamId, sealedSecretName },
     { skip: !sealedSecretName },
   )
+  const isImmutable = data?.immutable || false
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -109,10 +117,8 @@ export default function SecretCreateEditPage({
   }
 
   const mergedDefaultValues = createSealedSecretApiResponseSchema.cast(formData)
-
   const methods = useForm<SealedSecretFormData>({
-    // @ts-ignore
-    resolver: yupResolver(createSealedSecretApiResponseSchema) as Resolver<CreateSealedSecretApiResponse>,
+    resolver: yupResolver(createSealedSecretApiResponseSchema) as Resolver<SealedSecretFormData>,
     defaultValues: mergedDefaultValues,
   })
 
@@ -146,8 +152,14 @@ export default function SecretCreateEditPage({
   }, [watch('type'), sealedSecretName])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/secrets`} />
-  if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/secrets`} />
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) {
+    if (isCoderepository) {
+      history.push(`/teams/${teamId}/code-repositories/create`, {
+        coderepository: false,
+        prefilled: { ...prefilled, secret: dataCreate.name },
+      })
+    } else return <Redirect to={`/teams/${teamId}/secrets`} />
+  }
 
   const onSubmit = async () => {
     const body = cloneDeep(watch())
@@ -227,6 +239,12 @@ export default function SecretCreateEditPage({
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
         />
+        {sealedSecretName && isImmutable && (
+          <InformationBanner
+            sx={{ my: '1rem' }}
+            message='This secret is marked as immutable and therefore values cannot be changed, only deleted.'
+          />
+        )}
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
@@ -250,22 +268,27 @@ export default function SecretCreateEditPage({
                 value={watch('type') || 'kubernetes.io/opaque'}
                 disabled={!!sealedSecretName}
               >
-                {/** default will be basic auth */}
-                {/* <MenuItem key='select-a-secret'>Select a secret type</MenuItem> */}
                 {secretTypes.map((t) => (
                   <MenuItem key={t} value={t}>
                     {t}
                   </MenuItem>
                 ))}
               </TextField>
-              <SecretTypeFields />
-              <Divider />
+              {sealedSecretName && !isImmutable && (
+                <InformationBanner
+                  sx={{ mt: '2rem' }}
+                  message='You can add new values to override existing values, but be aware that applications using this token might need to be adapted.'
+                />
+              )}
+              <SecretTypeFields immutable={sealedSecretName && watch('immutable')} />
+              <Divider sx={{ mb: 1 }} />
               <ControlledCheckbox
                 sx={{ my: 2 }}
                 name='immutable'
                 control={control}
                 label='Immutable'
                 explainertext='If set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified).'
+                disabled={sealedSecretName && isImmutable}
               />
             </Section>
             <AdvancedSettings>
