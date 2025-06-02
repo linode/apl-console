@@ -60,12 +60,13 @@ export const createSealedSecretApiResponseSchema = yup.object({
     .mixed<SecretType>() // ensures TS sees this as one of SecretType
     .oneOf([...secretTypes], 'Secret type must be one of the allowed Kubernetes secret types')
     .required('Secret type is required')
-    .default('kubernetes.io/basic-auth'),
+    .default('kubernetes.io/opaque'), // default to 'kubernetes.io/opaque' if not provided
   encryptedData: yup
     .array()
     .of(encryptedDataItemSchema)
     .required('Encrypted data is required')
-    .min(1, 'At least one encrypted data entry is required'),
+    .min(1, 'At least one encrypted data entry is required')
+    .default(() => [{ key: '', value: '' }]), // default to one empty entry
   metadata: metadataSchema,
   isDisabled: yup.boolean().optional().default(undefined),
 })

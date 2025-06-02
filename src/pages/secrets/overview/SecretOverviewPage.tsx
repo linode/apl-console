@@ -22,8 +22,8 @@ const getSecretLink = (isAdmin, ownerId) =>
 
     const path =
       isAdmin && !ownerId
-        ? `/sealed-secrets/${encodeURIComponent(name)}`
-        : `/teams/${teamId}/sealed-secrets/${encodeURIComponent(name)}`
+        ? `/secrets/${encodeURIComponent(name)}`
+        : `/teams/${teamId}/secrets/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}

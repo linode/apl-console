@@ -2,7 +2,7 @@ import React from 'react'
 import { Box } from '@mui/material'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
-import KeyValue from 'components/KeyValue'
+import KeyValue from 'components/forms/KeyValue'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   decorator: {

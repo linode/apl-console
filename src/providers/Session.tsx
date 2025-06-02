@@ -46,6 +46,7 @@ const Context = React.createContext<SessionContext>({
   oboTeamId: undefined,
   setOboTeamId: undefined,
   settings: undefined,
+  sealedSecretsPEM: undefined,
   user: {
     teams: undefined,
     name: undefined,
