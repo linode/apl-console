@@ -238,7 +238,7 @@ export default function KeyValue(props: KeyValueProps) {
 
         return (
           <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormRow spacing={hideKeyField ? 0 : 10} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+            <FormRow spacing={hideKeyField ? 0 : 10} sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
               {!hideKeyField && (
                 <TextField
                   {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
@@ -252,15 +252,17 @@ export default function KeyValue(props: KeyValueProps) {
                   error={error}
                 />
               )}
-              {isTextArea ? (
-                <Controller
-                  name={valuePath}
-                  control={control}
-                  render={({ field }) => <AutoResizableTextarea {...commonProps} {...field} />}
-                />
-              ) : (
-                <TextField {...commonProps} />
-              )}
+              <Box sx={{ flex: 1 }}>
+                {isTextArea ? (
+                  <Controller
+                    name={valuePath}
+                    control={control}
+                    render={({ field }) => <AutoResizableTextarea {...commonProps} {...field} />}
+                  />
+                ) : (
+                  <TextField {...commonProps} />
+                )}
+              </Box>
             </FormRow>
             {addLabel && !disabled && (
               <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>

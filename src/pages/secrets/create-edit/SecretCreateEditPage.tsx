@@ -1,6 +1,5 @@
 import { Grid, MenuItem } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
-import useSettings from 'hooks/useSettings'
 import { LandingHeader } from 'components/LandingHeader'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -25,9 +24,53 @@ import DeleteButton from 'components/DeleteButton'
 import { encryptSecretItem } from 'utils/sealedSecretsUtils'
 import { useSession } from 'providers/Session'
 import { useTranslation } from 'react-i18next'
+import { mapObjectToKeyValueArray, valueArrayToObject } from 'utils/helpers'
+import { useAppSelector } from 'redux/hooks'
 import { useStyles } from './create-edit-secrets.styles'
 import { createSealedSecretApiResponseSchema, secretTypes } from './create-edit-secrets.validator'
 import { SecretTypeFields } from './SecretTypeFields'
+
+function getDefaultEncryptedDataForType(type: string) {
+  switch (type) {
+    case 'kubernetes.io/opaque':
+      return [{ key: '', value: '' }]
+    case 'kubernetes.io/service-account-token':
+      return [{ key: 'extra', value: '' }]
+    case 'kubernetes.io/dockercfg':
+      return [{ key: '.dockercfg', value: '' }]
+    case 'kubernetes.io/dockerconfigjson':
+      return [{ key: '.dockerconfigjson', value: '' }]
+    case 'kubernetes.io/basic-auth':
+      return [
+        { key: 'username', value: '' },
+        { key: 'password', value: '' },
+      ]
+    case 'kubernetes.io/ssh-auth':
+      return [{ key: 'ssh-privatekey', value: '' }]
+    case 'kubernetes.io/tls':
+      return [
+        { key: 'tls.crt', value: '' },
+        { key: 'tls.key', value: '' },
+      ]
+    default:
+      return [{ key: '', value: '' }]
+  }
+}
+
+type SealedSecretFormData =
+  | CreateSealedSecretApiResponse
+  | {
+      name: string
+      namespace?: string
+      immutable?: boolean
+      type: string
+      encryptedData: { key: string; value: string }[]
+      metadata: {
+        labels?: { key: string; value: string }[]
+        annotations?: { key: string; value: string }[]
+        finalizers?: string[]
+      }
+    }
 
 interface Params {
   teamId?: string
@@ -41,11 +84,9 @@ export default function SecretCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { t } = useTranslation()
   const { classes } = useStyles()
-  const { themeView } = useSettings()
   const { sealedSecretsPEM } = useSession()
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
-    useCreateSealedSecretMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateSealedSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteSealedSecretMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetSealedSecretQuery(
@@ -53,31 +94,25 @@ export default function SecretCreateEditPage({
     { skip: !sealedSecretName },
   )
 
-  const newData = cloneDeep(data)
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetching) refetch()
+  }, [isDirty])
+
+  // If we have a sealedSecretName, we are converting the data to the form format
+  const formData = cloneDeep(data) as SealedSecretFormData
   if (!isEmpty(data)) {
-    // @ts-ignore
-    newData.encryptedData = Object.entries(newData?.encryptedData || {}).map(([key, value]) => ({
-      key,
-      value,
-    }))
-    // @ts-ignore
-    newData.metadata.annotations = Object.entries(newData?.metadata?.annotations || {}).map(([key, value]) => ({
-      key,
-      value,
-    }))
-    // @ts-ignore
-    newData.metadata.labels = Object.entries(newData?.metadata?.labels || {}).map(([key, value]) => ({
-      key,
-      value,
-    }))
+    formData.encryptedData = mapObjectToKeyValueArray(formData?.encryptedData as Record<string, string>)
+    formData.metadata.annotations = mapObjectToKeyValueArray(formData?.metadata?.annotations as Record<string, string>)
+    formData.metadata.labels = mapObjectToKeyValueArray(formData?.metadata?.labels as Record<string, string>)
   }
 
-  const mergedDefaultValues = createSealedSecretApiResponseSchema.cast(newData)
+  const mergedDefaultValues = createSealedSecretApiResponseSchema.cast(formData)
 
-  const methods = useForm<CreateSealedSecretApiResponse>({
+  const methods = useForm<SealedSecretFormData>({
     // @ts-ignore
     resolver: yupResolver(createSealedSecretApiResponseSchema) as Resolver<CreateSealedSecretApiResponse>,
-    // @ts-ignore
     defaultValues: mergedDefaultValues,
   })
 
@@ -85,77 +120,29 @@ export default function SecretCreateEditPage({
     control,
     register,
     reset,
-    resetField,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     setValue,
-    trigger,
   } = methods
 
   useEffect(() => {
+    // If we have data, we reset the form with the converted data
     if (data) {
-      const newData = cloneDeep(data)
-      // @ts-ignore
-      newData.encryptedData = Object.entries(newData.encryptedData || {}).map(([key, value]) => ({
-        key,
-        value,
-      }))
-      // @ts-ignore
-      newData.metadata.annotations = Object.entries(newData?.metadata?.annotations || {}).map(([key, value]) => ({
-        key,
-        value,
-      }))
-      // @ts-ignore
-      newData.metadata.labels = Object.entries(newData?.metadata?.labels || {}).map(([key, value]) => ({
-        key,
-        value,
-      }))
-      // Reset form with fetched data
-      reset(newData)
+      const formData = cloneDeep(data) as SealedSecretFormData
+      formData.encryptedData = mapObjectToKeyValueArray(formData?.encryptedData as Record<string, string>)
+      formData.metadata.annotations = mapObjectToKeyValueArray(
+        formData?.metadata?.annotations as Record<string, string>,
+      )
+      formData.metadata.labels = mapObjectToKeyValueArray(formData?.metadata?.labels as Record<string, string>)
+      reset(formData as CreateSealedSecretApiResponse)
     }
   }, [data])
 
   useEffect(() => {
     if (sealedSecretName) return
-    switch (watch('type')) {
-      case 'kubernetes.io/opaque':
-        // @ts-ignore
-        setValue('encryptedData', [{ key: '', value: '' }])
-        break
-      case 'kubernetes.io/service-account-token':
-        // @ts-ignore
-        setValue('encryptedData', [{ key: 'extra', value: '' }])
-        break
-      case 'kubernetes.io/dockercfg':
-        // @ts-ignore
-        setValue('encryptedData', [{ key: '.dockercfg', value: '' }])
-        break
-      case 'kubernetes.io/dockerconfigjson':
-        // @ts-ignore
-        setValue('encryptedData', [{ key: '.dockerconfigjson', value: '' }])
-        break
-      case 'kubernetes.io/basic-auth':
-        // @ts-ignore
-        setValue('encryptedData', [
-          { key: 'username', value: '' },
-          { key: 'password', value: '' },
-        ])
-        break
-      case 'kubernetes.io/ssh-auth':
-        // @ts-ignore
-        setValue('encryptedData', [{ key: 'ssh-privatekey', value: '' }])
-        break
-      case 'kubernetes.io/tls':
-        // @ts-ignore
-        setValue('encryptedData', [
-          { key: 'tls.crt', value: '' },
-          { key: 'tls.key', value: '' },
-        ])
-        break
-      default:
-        break
-    }
+    const type = watch('type')
+    setValue('encryptedData', getDefaultEncryptedDataForType(type))
   }, [watch('type'), sealedSecretName])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
@@ -164,25 +151,20 @@ export default function SecretCreateEditPage({
 
   const onSubmit = async () => {
     const body = cloneDeep(watch())
+
+    // Re-convert the metadata to the schema(api) format
     body.metadata = {
       ...body.metadata,
-      // @ts-ignore
-      labels: body?.metadata?.labels?.reduce((acc: Record<string, string>, item: { key: string; value: string }) => {
-        if (item.key) acc[item.key] = item.value
-        return acc
-      }, {}),
-      // @ts-ignore
-      annotations: body?.metadata?.annotations?.reduce(
-        (acc: Record<string, string>, item: { key: string; value: string }) => {
-          if (item.key) acc[item.key] = item.value
-          return acc
-        },
-        {},
-      ),
+      labels: valueArrayToObject(body?.metadata?.labels as { key: string; value: string }[]),
+      annotations: valueArrayToObject(body?.metadata?.annotations as { key: string; value: string }[]),
       finalizers: body?.metadata?.finalizers?.filter((item: string) => item.trim() !== ''),
     }
+
+    // If we have a sealedSecretName, we are updating an existing secret
+    // Re-convert the encryptedData to the schema(api) format
     if (sealedSecretName) {
       const originalEncryptedData: Record<string, string> = {}
+      let encryptedEntries: [string, string][] = []
       if (Array.isArray(data?.encryptedData)) {
         data.encryptedData.forEach((item: any) => {
           if (item.key && item.value) originalEncryptedData[item.key] = item.value
@@ -190,23 +172,31 @@ export default function SecretCreateEditPage({
       } else if (typeof data?.encryptedData === 'object' && data?.encryptedData !== null)
         Object.assign(originalEncryptedData, data.encryptedData)
 
-      const encryptedEntries = await Promise.all(
-        // @ts-ignore
-        // eslint-disable-next-line prettier/prettier
-        body.encryptedData.filter((item: any) => item.key && item.value)
-          .map(async (item: any) => {
-            const originalValue = originalEncryptedData[item.key]
-            if (!originalValue || item.value !== originalValue)
-              return [item.key, await encryptSecretItem(sealedSecretsPEM, `team-${teamId}`, item.value)]
+      if (Array.isArray(body?.encryptedData)) {
+        encryptedEntries = await Promise.all(
+          body.encryptedData
+            .filter((item: any) => item.key && item.value)
+            .map(async (item: any) => {
+              const originalValue = originalEncryptedData[item.key]
+              // Compare the encrypted texts
+              // If the original value is not set or the current value is different, encrypt it
+              if (!originalValue || item.value !== originalValue)
+                return [item.key, await encryptSecretItem(sealedSecretsPEM, `team-${teamId}`, item.value)]
 
-            return [item.key, originalValue]
-          }),
-      )
+              return [item.key, originalValue]
+            }),
+        )
+      }
       if (encryptedEntries.length > 0) body.encryptedData = Object.fromEntries(encryptedEntries)
       else delete body.encryptedData
-
-      update({ teamId, sealedSecretName, body })
+      update({ teamId, sealedSecretName, body } as {
+        teamId: string
+        sealedSecretName: string
+        body: CreateSealedSecretApiResponse
+      })
     } else {
+      // If we don't have a sealedSecretName, we are creating a new secret
+      // Encrypt the encryptedData values using the session sealedSecretsPEM
       if (Array.isArray(body.encryptedData)) {
         const encryptedEntries = await Promise.all(
           body.encryptedData
@@ -219,15 +209,17 @@ export default function SecretCreateEditPage({
         if (encryptedEntries.length > 0) body.encryptedData = Object.fromEntries(encryptedEntries)
         else delete body.encryptedData
       }
-      create({ teamId, body })
+      create({ teamId, body } as { teamId: string; body: CreateSealedSecretApiResponse })
     }
   }
 
-  if (isLoading || (sealedSecretName && !data?.name)) return <PaperLayout loading title={t('TITLE_SEALEDSECRET')} />
+  const loading = isLoading || isFetching
+  const error = isError
+  if (loading || (sealedSecretName && !data?.name)) return <PaperLayout loading title={t('TITLE_SEALEDSECRET')} />
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={isLoading} title={t('TITLE_SEALEDSECRET', { sealedSecretName, role: 'team' })}>
+      <PaperLayout loading={loading || error} title={t('TITLE_SEALEDSECRET', { sealedSecretName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://apl-docs.net/docs/for-devs/console/secrets'
@@ -243,6 +235,8 @@ export default function SecretCreateEditPage({
                 width='large'
                 noMarginTop
                 {...register('name')}
+                error={!!errors.name}
+                helperText={errors.name?.message?.toString()}
                 disabled={!!sealedSecretName}
               />
               <Divider />

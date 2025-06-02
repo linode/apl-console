@@ -42,7 +42,7 @@ export function AutoResizableTextarea({
   minRows = 1,
   maxRows = 40,
   minWidth = 200,
-  maxWidth = 800,
+  maxWidth = 850,
   minHeight,
   maxHeight = 800,
   style,
@@ -83,7 +83,7 @@ export function AutoResizableTextarea({
       const lineWidth = ruler.offsetWidth
       maxWidth = Math.max(maxWidth, lineWidth)
     })
-    const calculatedWidth = maxWidth + 10
+    const calculatedWidth = maxWidth + 20 // Add padding for better appearance
     return calculatedWidth
   }
 
@@ -115,7 +115,7 @@ export function AutoResizableTextarea({
     // Set min/max width
     const calculatedWidth = getCalculatedWidth(el.value)
     if (calculatedWidth > Number(minWidth)) {
-      if (calculatedWidth > Number(maxWidth)) el.style.width = '800px'
+      if (calculatedWidth > Number(maxWidth)) el.style.width = `100%`
       else el.style.width = `${calculatedWidth}px`
     } else el.style.minWidth = typeof minWidth === 'number' ? `${minWidth}px` : minWidth
 
@@ -136,7 +136,7 @@ export function AutoResizableTextarea({
   }, [rest.value])
 
   return (
-    <Box sx={{}}>
+    <Box>
       <InputLabel
         className={classes.inputLabel}
         sx={{
