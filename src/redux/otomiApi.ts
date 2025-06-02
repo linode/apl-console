@@ -26,6 +26,21 @@ const injectedRtkApi = api.injectEndpoints({
     deleteTeam: build.mutation<DeleteTeamApiResponse, DeleteTeamApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}`, method: 'DELETE' }),
     }),
+    getAplTeams: build.query<GetAplTeamsApiResponse, GetAplTeamsApiArg>({
+      query: () => ({ url: `/v2/teams` }),
+    }),
+    createAplTeam: build.mutation<CreateAplTeamApiResponse, CreateAplTeamApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplTeam: build.query<GetAplTeamApiResponse, GetAplTeamApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}` }),
+    }),
+    editAplTeam: build.mutation<EditAplTeamApiResponse, EditAplTeamApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
+    }),
+    deleteAplTeam: build.mutation<DeleteAplTeamApiResponse, DeleteAplTeamApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}`, method: 'DELETE' }),
+    }),
     getAllServices: build.query<GetAllServicesApiResponse, GetAllServicesApiArg>({
       query: () => ({ url: `/v1/services` }),
     }),
@@ -818,6 +833,374 @@ export type EditTeamApiArg = {
 }
 export type DeleteTeamApiResponse = /** status 200 Successfully deleted a team */ undefined
 export type DeleteTeamApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams collection */ ({
+  kind: 'AplTeamSettingSet'
+  spec: {
+    oidc?: {
+      groupMapping?: string
+    }
+    password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      alertmanager?: boolean
+    }
+    alerts?: {
+      repeatInterval?: string
+      groupInterval?: string
+      receivers?: ('slack' | 'msteams' | 'none')[]
+      slack?: {
+        channel?: string
+        channelCrit?: string
+        url?: string
+      }
+      msteams?: {
+        highPrio?: string
+        lowPrio?: string
+      }
+    }
+    resourceQuota?: {
+      name: string
+      value: string
+    }[]
+    networkPolicy?: {
+      ingressPrivate?: boolean
+      egressPublic?: boolean
+    }
+    selfService?: {
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAplTeamsApiArg = void
+export type CreateAplTeamApiResponse = /** status 200 Successfully obtained teams collection */ {
+  kind: 'AplTeamSettingSet'
+  spec: {
+    oidc?: {
+      groupMapping?: string
+    }
+    password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      alertmanager?: boolean
+    }
+    alerts?: {
+      repeatInterval?: string
+      groupInterval?: string
+      receivers?: ('slack' | 'msteams' | 'none')[]
+      slack?: {
+        channel?: string
+        channelCrit?: string
+        url?: string
+      }
+      msteams?: {
+        highPrio?: string
+        lowPrio?: string
+      }
+    }
+    resourceQuota?: {
+      name: string
+      value: string
+    }[]
+    networkPolicy?: {
+      ingressPrivate?: boolean
+      egressPublic?: boolean
+    }
+    selfService?: {
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplTeamApiArg = {
+  /** Team object that needs to be added to the collection */
+  body: {
+    kind: 'AplTeamSettingSet'
+    spec: {
+      oidc?: {
+        groupMapping?: string
+      }
+      password?: string
+      managedMonitoring?: {
+        grafana?: boolean
+        alertmanager?: boolean
+      }
+      alerts?: {
+        repeatInterval?: string
+        groupInterval?: string
+        receivers?: ('slack' | 'msteams' | 'none')[]
+        slack?: {
+          channel?: string
+          channelCrit?: string
+          url?: string
+        }
+        msteams?: {
+          highPrio?: string
+          lowPrio?: string
+        }
+      }
+      resourceQuota?: {
+        name: string
+        value: string
+      }[]
+      networkPolicy?: {
+        ingressPrivate?: boolean
+        egressPublic?: boolean
+      }
+      selfService?: {
+        teamMembers?: {
+          createServices: boolean
+          editSecurityPolicies: boolean
+          useCloudShell: boolean
+          downloadKubeconfig: boolean
+          downloadDockerLogin: boolean
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      labels: {
+        'apl.io/teamId': string
+      }
+    }
+  }
+}
+export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */ {
+  kind: 'AplTeamSettingSet'
+  spec: {
+    oidc?: {
+      groupMapping?: string
+    }
+    password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      alertmanager?: boolean
+    }
+    alerts?: {
+      repeatInterval?: string
+      groupInterval?: string
+      receivers?: ('slack' | 'msteams' | 'none')[]
+      slack?: {
+        channel?: string
+        channelCrit?: string
+        url?: string
+      }
+      msteams?: {
+        highPrio?: string
+        lowPrio?: string
+      }
+    }
+    resourceQuota?: {
+      name: string
+      value: string
+    }[]
+    networkPolicy?: {
+      ingressPrivate?: boolean
+      egressPublic?: boolean
+    }
+    selfService?: {
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplTeamApiArg = {
+  /** ID of team */
+  teamId: string
+}
+export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ {
+  kind: 'AplTeamSettingSet'
+  spec: {
+    oidc?: {
+      groupMapping?: string
+    }
+    password?: string
+    managedMonitoring?: {
+      grafana?: boolean
+      alertmanager?: boolean
+    }
+    alerts?: {
+      repeatInterval?: string
+      groupInterval?: string
+      receivers?: ('slack' | 'msteams' | 'none')[]
+      slack?: {
+        channel?: string
+        channelCrit?: string
+        url?: string
+      }
+      msteams?: {
+        highPrio?: string
+        lowPrio?: string
+      }
+    }
+    resourceQuota?: {
+      name: string
+      value: string
+    }[]
+    networkPolicy?: {
+      ingressPrivate?: boolean
+      egressPublic?: boolean
+    }
+    selfService?: {
+      teamMembers?: {
+        createServices: boolean
+        editSecurityPolicies: boolean
+        useCloudShell: boolean
+        downloadKubeconfig: boolean
+        downloadDockerLogin: boolean
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplTeamApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Team object that contains updated values */
+  body: {
+    kind: 'AplTeamSettingSet'
+    spec: {
+      oidc?: {
+        groupMapping?: string
+      }
+      password?: string
+      managedMonitoring?: {
+        grafana?: boolean
+        alertmanager?: boolean
+      }
+      alerts?: {
+        repeatInterval?: string
+        groupInterval?: string
+        receivers?: ('slack' | 'msteams' | 'none')[]
+        slack?: {
+          channel?: string
+          channelCrit?: string
+          url?: string
+        }
+        msteams?: {
+          highPrio?: string
+          lowPrio?: string
+        }
+      }
+      resourceQuota?: {
+        name: string
+        value: string
+      }[]
+      networkPolicy?: {
+        ingressPrivate?: boolean
+        egressPublic?: boolean
+      }
+      selfService?: {
+        teamMembers?: {
+          createServices: boolean
+          editSecurityPolicies: boolean
+          useCloudShell: boolean
+          downloadKubeconfig: boolean
+          downloadDockerLogin: boolean
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      labels: {
+        'apl.io/teamId': string
+      }
+    }
+  }
+}
+export type DeleteAplTeamApiResponse = /** status 200 Successfully deleted a team */ undefined
+export type DeleteAplTeamApiArg = {
   /** ID of team */
   teamId: string
 }
@@ -7544,6 +7927,11 @@ export const {
   useGetTeamQuery,
   useEditTeamMutation,
   useDeleteTeamMutation,
+  useGetAplTeamsQuery,
+  useCreateAplTeamMutation,
+  useGetAplTeamQuery,
+  useEditAplTeamMutation,
+  useDeleteAplTeamMutation,
   useGetAllServicesQuery,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
