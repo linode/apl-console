@@ -52,7 +52,13 @@ const metadataSchema = yup
 
 // 5) Main CreateSealedSecretApiResponse schema
 export const createSealedSecretApiResponseSchema = yup.object({
-  name: yup.string().required('Secret name is required'),
+  name: yup
+    .string()
+    .required('Secret name is required')
+    .matches(
+      /^[a-z]([-a-z0-9]*[a-z0-9])+$/,
+      'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
+    ),
   namespace: yup.string().optional().default(undefined),
   immutable: yup.boolean().optional().default(undefined),
   type: yup
