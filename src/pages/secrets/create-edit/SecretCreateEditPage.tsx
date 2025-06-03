@@ -31,6 +31,14 @@ import { useStyles } from './create-edit-secrets.styles'
 import { createSealedSecretApiResponseSchema, secretTypes } from './create-edit-secrets.validator'
 import { SecretTypeFields } from './SecretTypeFields'
 
+const isDev = process.env.NODE_ENV === 'development'
+
+async function encryptValue(sealedSecretsPEM: string, namespace: string, value: string): Promise<string> {
+  if (isDev && !sealedSecretsPEM) return value
+  const encryptedText = await encryptSecretItem(sealedSecretsPEM, namespace, value)
+  return encryptedText
+}
+
 function getDefaultEncryptedDataForType(type: string) {
   switch (type) {
     case 'kubernetes.io/opaque':
@@ -155,7 +163,7 @@ export default function SecretCreateEditPage({
 
   const onSubmit = async () => {
     const body = cloneDeep(watch())
-
+    body.namespace = body.namespace || `team-${teamId}`
     // Re-convert the metadata to the schema(api) format
     body.metadata = {
       ...body.metadata,
@@ -163,15 +171,14 @@ export default function SecretCreateEditPage({
       annotations: valueArrayToObject(body?.metadata?.annotations as { key: string; value: string }[]),
       finalizers: body?.metadata?.finalizers?.filter((item: string) => item.trim() !== ''),
     }
-
     // If we have a sealedSecretName, we are updating an existing secret
     // Re-convert the encryptedData to the schema(api) format
     if (sealedSecretName) {
       const originalEncryptedData: Record<string, string> = {}
       let encryptedEntries: [string, string][] = []
       if (Array.isArray(data?.encryptedData)) {
-        data.encryptedData.forEach((item: any) => {
-          if (item.key && item.value) originalEncryptedData[item.key] = item.value
+        data.encryptedData.forEach(({ key, value }: { key: string; value: string }) => {
+          if (key && value) originalEncryptedData[key] = value
         })
       } else if (typeof data?.encryptedData === 'object' && data?.encryptedData !== null)
         Object.assign(originalEncryptedData, data.encryptedData)
@@ -179,15 +186,15 @@ export default function SecretCreateEditPage({
       if (Array.isArray(body?.encryptedData)) {
         encryptedEntries = await Promise.all(
           body.encryptedData
-            .filter((item: any) => item.key && item.value)
-            .map(async (item: any) => {
-              const originalValue = originalEncryptedData[item.key]
+            .filter(({ key, value }: { key: string; value: string }) => key && value)
+            .map(async ({ key, value }: { key: string; value: string }) => {
+              const originalValue = originalEncryptedData[key]
               // Compare the encrypted texts
               // If the original value is not set or the current value is different, encrypt it
-              if (!originalValue || item.value !== originalValue)
-                return [item.key, await encryptSecretItem(sealedSecretsPEM, `team-${teamId}`, item.value)]
+              if (!originalValue || value !== originalValue)
+                return [key, await encryptValue(sealedSecretsPEM, body.namespace, value)]
 
-              return [item.key, originalValue]
+              return [key, originalValue]
             }),
         )
       }
@@ -204,16 +211,15 @@ export default function SecretCreateEditPage({
       if (Array.isArray(body.encryptedData)) {
         const encryptedEntries = await Promise.all(
           body.encryptedData
-            .filter((item: any) => item.key && item.value)
-            .map(async (item: any) => [
-              item.key,
-              await encryptSecretItem(sealedSecretsPEM, `team-${teamId}`, item.value),
+            .filter(({ key, value }: { key: string; value: string }) => key && value)
+            .map(async ({ key, value }: { key: string; value: string }) => [
+              key,
+              await encryptValue(sealedSecretsPEM, body.namespace, value),
             ]),
         )
         if (encryptedEntries.length > 0) body.encryptedData = Object.fromEntries(encryptedEntries)
         else delete body.encryptedData
       }
-      body.namespace = body.namespace || `team-${teamId}`
       create({ teamId, body } as { teamId: string; body: CreateSealedSecretApiResponse })
     }
   }

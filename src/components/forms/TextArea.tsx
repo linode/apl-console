@@ -25,7 +25,7 @@ const useStyles = makeStyles<{ disabled?: boolean }>()((theme: Theme, { disabled
       boxSizing: 'border-box',
       overflow: 'hidden',
       fontFamily: 'monospace',
-      fontSize: '14px',
+      fontSize: '12px',
       resize: 'both',
       display: 'inline-block',
       whiteSpace: 'pre-wrap',
