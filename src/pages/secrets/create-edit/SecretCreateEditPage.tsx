@@ -213,6 +213,7 @@ export default function SecretCreateEditPage({
         if (encryptedEntries.length > 0) body.encryptedData = Object.fromEntries(encryptedEntries)
         else delete body.encryptedData
       }
+      body.namespace = body.namespace || `team-${teamId}`
       create({ teamId, body } as { teamId: string; body: CreateSealedSecretApiResponse })
     }
   }
