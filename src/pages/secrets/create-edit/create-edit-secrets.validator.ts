@@ -56,7 +56,7 @@ export const createSealedSecretApiResponseSchema = yup.object({
     .string()
     .required('Secret name is required')
     .matches(
-      /^[a-z]([-a-z0-9]*[a-z0-9])+$/,
+      /^[a-z](?:-[a-z0-9]+|[a-z0-9])+$/,
       'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
     ),
   namespace: yup.string().optional().default(undefined),
