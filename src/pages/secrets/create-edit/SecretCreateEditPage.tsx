@@ -18,7 +18,7 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import AdvancedSettings from 'components/AdvancedSettings'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useEffect } from 'react'
-import { cloneDeep, isEmpty } from 'lodash'
+import { cloneDeep, isEmpty, isEqual } from 'lodash'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { encryptSecretItem } from 'utils/sealedSecretsUtils'
@@ -134,15 +134,7 @@ export default function SecretCreateEditPage({
 
   useEffect(() => {
     // If we have data, we reset the form with the converted data
-    if (data) {
-      const formData = cloneDeep(data) as SealedSecretFormData
-      formData.encryptedData = mapObjectToKeyValueArray(formData?.encryptedData as Record<string, string>)
-      formData.metadata.annotations = mapObjectToKeyValueArray(
-        formData?.metadata?.annotations as Record<string, string>,
-      )
-      formData.metadata.labels = mapObjectToKeyValueArray(formData?.metadata?.labels as Record<string, string>)
-      reset(formData as CreateSealedSecretApiResponse)
-    }
+    if (data) reset(formData as CreateSealedSecretApiResponse)
   }, [data])
 
   useEffect(() => {
@@ -341,8 +333,8 @@ secret'
               <DeleteButton
                 onDelete={() => del({ teamId, sealedSecretName })}
                 resourceName={watch('name')}
-                resourceType='sealed-secret'
-                data-cy='button-delete-sealed-secret'
+                resourceType='secret'
+                data-cy='button-delete-secret'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
                 loading={isLoadingDelete}
                 disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
@@ -354,7 +346,7 @@ secret'
               color='primary'
               sx={{ float: 'right', textTransform: 'none' }}
               loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(formData, watch())}
             >
               {sealedSecretName ? 'Save Changes' : 'Create Secret'}
             </LoadingButton>
