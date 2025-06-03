@@ -48,5 +48,5 @@ export default function ({
     )
   }
   const comp = policies && <Policies policies={policies} teamId={teamId} />
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_POLICIES', { scope: getRole(teamId) })} />
 }
