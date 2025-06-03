@@ -5,7 +5,17 @@ import { secretTypes } from './create-edit-secrets.validator'
  * Renders the secret-specific form fields based on selected secret type.
  * Expects encryptedData to be part of form schema.
  */
-export function SecretTypeFields({ namePrefix = '', immutable = false }: { namePrefix?: string; immutable?: boolean }) {
+export function SecretTypeFields({
+  namePrefix = '',
+  immutable = false,
+  error,
+  helperText,
+}: {
+  namePrefix?: string
+  immutable?: boolean
+  error?: boolean
+  helperText?: string
+}) {
   const { control } = useFormContext()
   const typePath = namePrefix ? `${namePrefix}.type` : 'type'
   const dataPath = namePrefix ? `${namePrefix}.encryptedData` : 'encryptedData'
@@ -23,6 +33,8 @@ export function SecretTypeFields({ namePrefix = '', immutable = false }: { nameP
           keyLabel='Key'
           valueLabel='Value'
           addLabel='Add another'
+          error={error}
+          helperText={helperText}
           isTextArea
           {...disabled}
         />
@@ -40,6 +52,8 @@ export function SecretTypeFields({ namePrefix = '', immutable = false }: { nameP
           keyDisabled
           keyLabel='Key'
           valueLabel='Value'
+          error={error}
+          helperText={helperText}
           isTextArea
           {...disabled}
         />
@@ -53,6 +67,8 @@ export function SecretTypeFields({ namePrefix = '', immutable = false }: { nameP
           name={dataPath}
           keyLabel='Key'
           valueLabel='Value'
+          error={error}
+          helperText={helperText}
           {...disabled}
         />
       )

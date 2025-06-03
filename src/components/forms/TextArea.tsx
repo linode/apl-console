@@ -4,12 +4,17 @@ import { Theme } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import { InputLabel } from 'components/InputLabel'
 
-const useStyles = makeStyles<{ disabled?: boolean }>()((theme: Theme, { disabled }) => {
+const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: Theme, { disabled, error }) => {
   const disabledStyles = disabled
     ? {
         backgroundColor: theme.palette.cm.disabledBackground,
         borderColor: theme.palette.cm.disabledBorder,
         color: theme.palette.cm.disabledText,
+      }
+    : {}
+  const errorStyles = error
+    ? {
+        borderColor: 'red',
       }
     : {}
   return {
@@ -38,6 +43,7 @@ const useStyles = makeStyles<{ disabled?: boolean }>()((theme: Theme, { disabled
       width: 'auto',
       height: 'auto',
       ...disabledStyles,
+      ...errorStyles,
     },
   }
 })
@@ -51,6 +57,7 @@ export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttri
   minHeight?: number | string
   maxHeight?: number | string
   style?: React.CSSProperties
+  error?: boolean
 }
 
 export function AutoResizableTextarea({
@@ -62,12 +69,13 @@ export function AutoResizableTextarea({
   minHeight = 34,
   maxHeight = 800,
   style,
+  error = false,
   onInput,
   onPaste,
   onChange,
   ...rest
 }: AutoResizableTextareaProps) {
-  const { classes, cx } = useStyles(rest.disabled ? { disabled: true } : {})
+  const { classes, cx } = useStyles(rest.disabled ? { disabled: true, error } : { disabled: false, error })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const rulerRef = useRef<HTMLSpanElement | null>(null)
 

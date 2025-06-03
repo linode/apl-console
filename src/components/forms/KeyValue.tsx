@@ -257,10 +257,10 @@ export default function KeyValue(props: KeyValueProps) {
                   <Controller
                     name={valuePath}
                     control={control}
-                    render={({ field }) => <AutoResizableTextarea {...commonProps} {...field} />}
+                    render={({ field }) => <AutoResizableTextarea {...commonProps} {...field} error={error} />}
                   />
                 ) : (
-                  <TextField {...commonProps} />
+                  <TextField {...commonProps} error={error} />
                 )}
               </Box>
             </FormRow>

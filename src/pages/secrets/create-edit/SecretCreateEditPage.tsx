@@ -262,7 +262,11 @@ export default function SecretCreateEditPage({
                 select
                 width='large'
                 helperTextPosition='top'
-                helperText='Kubernetes offers different types of secrets, please see: https://kubernetes.io/docs/concepts/configuration/secret/ for which secret type fits your use case best. '
+                error={!!errors.type}
+                helperText={
+                  errors.type?.message?.toString() ||
+                  'Kubernetes offers different types of secrets, please see: https://kubernetes.io/docs/concepts/configuration/secret/ for which secret type fits your use case best.'
+                }
                 {...register('type')}
                 value={watch('type') || 'kubernetes.io/opaque'}
                 disabled={!!sealedSecretName}
@@ -279,7 +283,11 @@ export default function SecretCreateEditPage({
                   message='You can add new values to override existing values, but be aware that applications using this token might need to be adapted.'
                 />
               )}
-              <SecretTypeFields immutable={sealedSecretName && watch('immutable')} />
+              <SecretTypeFields
+                immutable={sealedSecretName && watch('immutable')}
+                error={!!errors.encryptedData}
+                helperText={errors.encryptedData?.message?.toString()}
+              />
               <Divider sx={{ mb: 1 }} />
               <ControlledCheckbox
                 sx={{ my: 2 }}
