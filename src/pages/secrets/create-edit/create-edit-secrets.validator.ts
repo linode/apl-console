@@ -25,27 +25,9 @@ const encryptedDataItemSchema = yup.object({
 // 4) Schema for metadata sub-object
 const metadataSchema = yup
   .object({
-    annotations: yup
-      .array()
-      .of(
-        yup.object({
-          key: yup.string().required('Annotation key is required'),
-          value: yup.string().required('Annotation value is required'),
-        }),
-      )
-      .optional()
-      .default(undefined),
+    annotations: yup.array().of(yup.object()).optional().default(undefined),
     finalizers: yup.array().of(yup.string()).optional().default(undefined),
-    labels: yup
-      .array()
-      .of(
-        yup.object({
-          key: yup.string().required('Label key is required'),
-          value: yup.string().required('Label value is required'),
-        }),
-      )
-      .optional()
-      .default(undefined),
+    labels: yup.array().of(yup.object()).optional().default(undefined),
   })
   .optional()
   .default(undefined)

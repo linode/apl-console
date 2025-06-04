@@ -46,9 +46,10 @@ export function valueArrayToObject(
 
   const obj = {}
   array.forEach((item) => {
+    if (!item || !item.key) return
     obj[item.key] = item.value
   })
-  return obj
+  return isEmpty(obj) ? undefined : obj
 }
 
 export function mapObjectToKeyValueArray(obj?: Record<string, string>): { key: string; value: string }[] | undefined {

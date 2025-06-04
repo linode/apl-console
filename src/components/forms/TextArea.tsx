@@ -22,6 +22,9 @@ const useStyles = makeStyles<{ disabled?: boolean; error?: boolean; showLock?: b
     const lockStyles = showLock
       ? {
           cursor: 'not-allowed',
+          backgroundColor: theme.palette.cm.disabledBackground,
+          borderColor: theme.palette.cm.disabledBorder,
+          color: theme.palette.cm.disabledText,
         }
       : {}
     return {
@@ -68,6 +71,7 @@ export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttri
   style?: React.CSSProperties
   error?: boolean
   isEncrypted?: boolean
+  isAddLabel?: boolean
 }
 
 export function AutoResizableTextarea({
@@ -81,6 +85,7 @@ export function AutoResizableTextarea({
   style,
   error = false,
   isEncrypted,
+  isAddLabel,
   onInput,
   onPaste,
   onChange,
@@ -88,7 +93,11 @@ export function AutoResizableTextarea({
 }: AutoResizableTextareaProps) {
   const [showLock, setShowLock] = React.useState(!!(isEncrypted && rest.value && !rest.disabled))
   const [value, setValue] = React.useState(isEncrypted && rest.value ? '****' : rest.value)
-  const { classes, cx } = useStyles(rest.disabled ? { disabled: true, error } : { disabled: false, error, showLock })
+  const { classes, cx } = useStyles(
+    rest.disabled
+      ? { disabled: true, error, showLock: showLock && !!value }
+      : { disabled: false, error, showLock: showLock && !!value && !isAddLabel }, // Show lock types only if not adding a label
+  )
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const rulerRef = useRef<HTMLSpanElement | null>(null)
 

@@ -282,7 +282,7 @@ export default function SecretCreateEditPage({
                   sx={{ mt: '2rem' }}
                   message={
                     !isEqual(formData.encryptedData, watch('encryptedData'))
-                      ? 'You are about to override secret values, you’re changes will go into effect once you click the "Save Changes" button.'
+                      ? 'You are about to override secret values, your changes will go into effect once you click the "Save Changes" button.'
                       : 'You can add new values to override existing values, but be aware that applications using this token might need to be adapted.'
                   }
                 />
@@ -291,7 +291,9 @@ export default function SecretCreateEditPage({
                 isEncrypted={!!sealedSecretName}
                 immutable={sealedSecretName && watch('immutable')}
                 error={!!errors.encryptedData}
-                helperText={errors.encryptedData?.message?.toString()}
+                helperText={
+                  errors.encryptedData?.message?.toString() || errors.encryptedData?.root?.message?.toString()
+                }
               />
               <Divider sx={{ mb: 1 }} />
               <ControlledCheckbox
