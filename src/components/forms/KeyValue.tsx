@@ -238,6 +238,16 @@ export default function KeyValue(props: KeyValueProps) {
           },
         }
 
+        const clearButtonMarginTop = () => {
+          if (compressed) {
+            if (localIndex === 0) return showLabel ? '32px' : '12px'
+            if (isTextArea && !showLabel) return '4px'
+            return showLabel ? '12px' : '14px'
+          }
+
+          return localIndex === 0 ? '48px' : '28px'
+        }
+
         return (
           <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
             <FormRow
@@ -261,7 +271,7 @@ export default function KeyValue(props: KeyValueProps) {
                   error={error}
                 />
               )}
-              <Box sx={{ flex: 1, mt: localIndex !== 0 && isTextArea && '4px', width: '100%' }}>
+              <Box sx={{ flex: 1, mt: localIndex !== 0 && isTextArea && '-4px', width: '100%' }}>
                 {isTextArea ? (
                   <Controller
                     name={valuePath}
@@ -278,7 +288,7 @@ export default function KeyValue(props: KeyValueProps) {
             {addLabel && !disabled && (
               <IconButton
                 // eslint-disable-next-line no-nested-ternary
-                sx={{ alignSelf: 'flex-start', mt: isTextArea ? (localIndex === 0 ? '48px' : '20px') : '12px' }}
+                sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop() }}
                 onClick={() => remove(index)}
               >
                 <Clear />

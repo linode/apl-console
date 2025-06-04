@@ -34,6 +34,8 @@ export function SecretTypeFields({
           name={dataPath}
           keyLabel='Key'
           valueLabel='Value'
+          showLabel={false}
+          compressed
           addLabel='Add another'
           error={error}
           helperText={helperText}
@@ -55,6 +57,8 @@ export function SecretTypeFields({
           keyDisabled
           keyLabel='Key'
           valueLabel='Value'
+          showLabel={false}
+          compressed
           error={error}
           helperText={helperText}
           isEncrypted={isEncrypted}
@@ -71,6 +75,8 @@ export function SecretTypeFields({
           name={dataPath}
           keyLabel='Key'
           valueLabel='Value'
+          showLabel={false}
+          compressed
           error={error}
           isEncrypted={isEncrypted}
           helperText={helperText}
