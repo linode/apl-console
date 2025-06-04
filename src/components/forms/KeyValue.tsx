@@ -118,6 +118,7 @@ interface KeyValueProps {
   decoratorMapping?: Record<string, string>
   // render the value field as a textarea when true
   isTextArea?: boolean
+  isEncrypted?: boolean
 }
 
 // This local subcomponent watches the key field (using its path) and checks the provided
@@ -180,6 +181,7 @@ export default function KeyValue(props: KeyValueProps) {
     filterFn,
     decoratorMapping,
     isTextArea = false,
+    isEncrypted,
   } = props
 
   const { fields, append, remove } = useFieldArray({ control, name })
@@ -238,7 +240,14 @@ export default function KeyValue(props: KeyValueProps) {
 
         return (
           <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormRow spacing={hideKeyField ? 0 : 10} sx={{ display: 'flex', alignItems: 'flex-start', width: '100%' }}>
+            <FormRow
+              spacing={hideKeyField ? 0 : 10}
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                maxWidth: 'calc(100% - 40px)',
+              }}
+            >
               {!hideKeyField && (
                 <TextField
                   {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
@@ -252,12 +261,14 @@ export default function KeyValue(props: KeyValueProps) {
                   error={error}
                 />
               )}
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, mt: localIndex !== 0 && isTextArea && '4px', width: '100%' }}>
                 {isTextArea ? (
                   <Controller
                     name={valuePath}
                     control={control}
-                    render={({ field }) => <AutoResizableTextarea {...commonProps} {...field} error={error} />}
+                    render={({ field }) => (
+                      <AutoResizableTextarea {...commonProps} {...field} error={error} isEncrypted={isEncrypted} />
+                    )}
                   />
                 ) : (
                   <TextField {...commonProps} error={error} />
@@ -266,7 +277,8 @@ export default function KeyValue(props: KeyValueProps) {
             </FormRow>
             {addLabel && !disabled && (
               <IconButton
-                sx={{ alignSelf: 'flex-start', mt: localIndex === 0 ? '48px' : '20px' }}
+                // eslint-disable-next-line no-nested-ternary
+                sx={{ alignSelf: 'flex-start', mt: isTextArea ? (localIndex === 0 ? '48px' : '20px') : '12px' }}
                 onClick={() => remove(index)}
               >
                 <Clear />

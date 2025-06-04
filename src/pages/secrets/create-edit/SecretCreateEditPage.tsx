@@ -280,10 +280,15 @@ export default function SecretCreateEditPage({
               {sealedSecretName && !isImmutable && (
                 <InformationBanner
                   sx={{ mt: '2rem' }}
-                  message='You can add new values to override existing values, but be aware that applications using this token might need to be adapted.'
+                  message={
+                    !isEqual(formData.encryptedData, watch('encryptedData'))
+                      ? 'You are about to override secret values, you’re changes will go into effect once you click the "Save Changes" button.'
+                      : 'You can add new values to override existing values, but be aware that applications using this token might need to be adapted.'
+                  }
                 />
               )}
               <SecretTypeFields
+                isEncrypted={!!sealedSecretName}
                 immutable={sealedSecretName && watch('immutable')}
                 error={!!errors.encryptedData}
                 helperText={errors.encryptedData?.message?.toString()}

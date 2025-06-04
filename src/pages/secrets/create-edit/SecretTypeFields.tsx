@@ -10,11 +10,13 @@ export function SecretTypeFields({
   immutable = false,
   error,
   helperText,
+  isEncrypted,
 }: {
   namePrefix?: string
   immutable?: boolean
   error?: boolean
   helperText?: string
+  isEncrypted?: boolean
 }) {
   const { control } = useFormContext()
   const typePath = namePrefix ? `${namePrefix}.type` : 'type'
@@ -35,6 +37,7 @@ export function SecretTypeFields({
           addLabel='Add another'
           error={error}
           helperText={helperText}
+          isEncrypted={isEncrypted}
           isTextArea
           {...disabled}
         />
@@ -54,6 +57,7 @@ export function SecretTypeFields({
           valueLabel='Value'
           error={error}
           helperText={helperText}
+          isEncrypted={isEncrypted}
           isTextArea
           {...disabled}
         />
@@ -68,7 +72,9 @@ export function SecretTypeFields({
           keyLabel='Key'
           valueLabel='Value'
           error={error}
+          isEncrypted={isEncrypted}
           helperText={helperText}
+          isTextArea
           {...disabled}
         />
       )

@@ -3,50 +3,59 @@ import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
 import { Box } from '@mui/material'
 import { InputLabel } from 'components/InputLabel'
+import TextAreaLock from 'components/forms/TextAreaLock'
 
-const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: Theme, { disabled, error }) => {
-  const disabledStyles = disabled
-    ? {
-        backgroundColor: theme.palette.cm.disabledBackground,
-        borderColor: theme.palette.cm.disabledBorder,
-        color: theme.palette.cm.disabledText,
-      }
-    : {}
-  const errorStyles = error
-    ? {
-        borderColor: 'red',
-      }
-    : {}
-  return {
-    inputLabel: {
-      color: theme.palette.cl.text.title,
-      marginBottom: theme.spacing(2),
-    },
-    textarea: {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.cl.text.title,
-      padding: theme.spacing(1),
-      border: `1px solid ${theme.palette.cm.inputBorder}`,
-      boxSizing: 'border-box',
-      overflow: 'hidden',
-      fontFamily: 'monospace',
-      fontSize: '12px',
-      resize: 'both',
-      display: 'inline-block',
-      whiteSpace: 'pre-wrap',
-      overflowWrap: 'anywhere',
-      wordBreak: 'break-word',
-      minWidth: '200px',
-      minHeight: '34px',
-      maxWidth: '850px',
-      maxHeight: '800px',
-      width: 'auto',
-      height: 'auto',
-      ...disabledStyles,
-      ...errorStyles,
-    },
-  }
-})
+const useStyles = makeStyles<{ disabled?: boolean; error?: boolean; showLock?: boolean }>()(
+  (theme: Theme, { disabled, error, showLock }) => {
+    const disabledStyles = disabled
+      ? {
+          backgroundColor: theme.palette.cm.disabledBackground,
+          borderColor: theme.palette.cm.disabledBorder,
+          color: theme.palette.cm.disabledText,
+        }
+      : {}
+    const errorStyles = error
+      ? {
+          borderColor: 'red',
+        }
+      : {}
+    const lockStyles = showLock
+      ? {
+          cursor: 'not-allowed',
+        }
+      : {}
+    return {
+      inputLabel: {
+        color: theme.palette.cl.text.title,
+        marginBottom: theme.spacing(2),
+      },
+      textarea: {
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.cl.text.title,
+        padding: theme.spacing(1),
+        border: `1px solid ${theme.palette.cm.inputBorder}`,
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        fontFamily: 'monospace',
+        fontSize: '12px',
+        resize: disabled || showLock ? 'none' : 'both',
+        display: 'inline-block',
+        whiteSpace: 'pre-wrap',
+        overflowWrap: 'anywhere',
+        wordBreak: 'break-word',
+        minWidth: '200px',
+        minHeight: '34px',
+        maxWidth: '850px',
+        maxHeight: '800px',
+        width: 'auto',
+        height: 'auto',
+        ...disabledStyles,
+        ...errorStyles,
+        ...lockStyles,
+      },
+    }
+  },
+)
 
 export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'> {
   label?: string
@@ -58,6 +67,7 @@ export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttri
   maxHeight?: number | string
   style?: React.CSSProperties
   error?: boolean
+  isEncrypted?: boolean
 }
 
 export function AutoResizableTextarea({
@@ -70,16 +80,20 @@ export function AutoResizableTextarea({
   maxHeight = 800,
   style,
   error = false,
+  isEncrypted,
   onInput,
   onPaste,
   onChange,
   ...rest
 }: AutoResizableTextareaProps) {
-  const { classes, cx } = useStyles(rest.disabled ? { disabled: true, error } : { disabled: false, error })
+  const [showLock, setShowLock] = React.useState(!!(isEncrypted && rest.value && !rest.disabled))
+  const [value, setValue] = React.useState(isEncrypted && rest.value ? '****' : rest.value)
+  const { classes, cx } = useStyles(rest.disabled ? { disabled: true, error } : { disabled: false, error, showLock })
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const rulerRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
+    if (showLock) textareaRef.current.disabled = true
     const ruler = document.createElement('span')
     ruler.style.position = 'absolute'
     ruler.style.visibility = 'hidden'
@@ -167,30 +181,53 @@ export function AutoResizableTextarea({
           fontWeight: 'bold',
           fontSize: '14px',
           visibility: label ? 'visible' : 'hidden',
-          marginTop: label ? '16px' : '8px',
+          marginTop: label ? '16px' : '0px',
         }}
       >
         {label}
       </InputLabel>
-      <textarea
-        {...rest}
-        ref={textareaRef}
-        className={cx(classes.textarea)}
-        rows={minRows}
-        onInput={(e) => {
-          onInput?.(e)
-          adjustSize()
+      <Box
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '8px',
         }}
-        onPaste={(e) => {
-          onPaste?.(e)
-          setTimeout(adjustSize, 0)
-        }}
-        onChange={(e) => {
-          onChange?.(e)
-          adjustSize()
-        }}
-        disabled={rest.disabled}
-      />
+      >
+        <textarea
+          {...rest}
+          ref={textareaRef}
+          className={cx(classes.textarea)}
+          rows={minRows}
+          onInput={(e) => {
+            onInput?.(e)
+            adjustSize()
+          }}
+          onPaste={(e) => {
+            onPaste?.(e)
+            setTimeout(adjustSize, 0)
+          }}
+          onChange={(e) => {
+            onChange?.(e)
+            setValue(e.target.value)
+            adjustSize()
+          }}
+          disabled={rest.disabled}
+          value={value}
+        />
+        {showLock && (
+          <TextAreaLock
+            onUnlock={() => {
+              setValue('')
+              setTimeout(() => {
+                setShowLock(false)
+              }, 1000)
+              textareaRef.current.disabled = false
+              textareaRef.current.focus()
+            }}
+          />
+        )}
+      </Box>
     </Box>
   )
 }
