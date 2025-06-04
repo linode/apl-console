@@ -267,13 +267,7 @@ export default function KeyValue(props: KeyValueProps) {
                     name={valuePath}
                     control={control}
                     render={({ field }) => (
-                      <AutoResizableTextarea
-                        {...commonProps}
-                        {...field}
-                        error={error}
-                        isEncrypted={isEncrypted}
-                        isAddLabel={!!addLabel}
-                      />
+                      <AutoResizableTextarea {...commonProps} {...field} error={error} isEncrypted={isEncrypted} />
                     )}
                   />
                 ) : (

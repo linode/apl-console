@@ -5,60 +5,50 @@ import { Box } from '@mui/material'
 import { InputLabel } from 'components/InputLabel'
 import TextAreaLock from 'components/forms/TextAreaLock'
 
-const useStyles = makeStyles<{ disabled?: boolean; error?: boolean; showLock?: boolean }>()(
-  (theme: Theme, { disabled, error, showLock }) => {
-    const disabledStyles = disabled
-      ? {
-          backgroundColor: theme.palette.cm.disabledBackground,
-          borderColor: theme.palette.cm.disabledBorder,
-          color: theme.palette.cm.disabledText,
-        }
-      : {}
-    const errorStyles = error
-      ? {
-          borderColor: 'red',
-        }
-      : {}
-    const lockStyles = showLock
-      ? {
-          cursor: 'not-allowed',
-          backgroundColor: theme.palette.cm.disabledBackground,
-          borderColor: theme.palette.cm.disabledBorder,
-          color: theme.palette.cm.disabledText,
-        }
-      : {}
-    return {
-      inputLabel: {
-        color: theme.palette.cl.text.title,
-        marginBottom: theme.spacing(2),
-      },
-      textarea: {
-        backgroundColor: theme.palette.background.default,
-        color: theme.palette.cl.text.title,
-        padding: theme.spacing(1),
-        border: `1px solid ${theme.palette.cm.inputBorder}`,
-        boxSizing: 'border-box',
-        overflow: 'hidden',
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        resize: disabled || showLock ? 'none' : 'both',
-        display: 'inline-block',
-        whiteSpace: 'pre-wrap',
-        overflowWrap: 'anywhere',
-        wordBreak: 'break-word',
-        minWidth: '200px',
-        minHeight: '34px',
-        maxWidth: '850px',
-        maxHeight: '800px',
-        width: 'auto',
-        height: 'auto',
-        ...disabledStyles,
-        ...errorStyles,
-        ...lockStyles,
-      },
-    }
-  },
-)
+const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: Theme, { disabled, error }) => {
+  const disabledStyles = disabled
+    ? {
+        cursor: 'not-allowed',
+        backgroundColor: theme.palette.cm.disabledBackground,
+        borderColor: theme.palette.cm.disabledBorder,
+        color: theme.palette.cm.disabledText,
+      }
+    : {}
+  const errorStyles = error
+    ? {
+        borderColor: 'red',
+      }
+    : {}
+  return {
+    inputLabel: {
+      color: theme.palette.cl.text.title,
+      marginBottom: theme.spacing(2),
+    },
+    textarea: {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.cl.text.title,
+      padding: theme.spacing(1),
+      border: `1px solid ${theme.palette.cm.inputBorder}`,
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      fontFamily: 'monospace',
+      fontSize: '12px',
+      resize: disabled ? 'none' : 'both',
+      display: 'inline-block',
+      whiteSpace: 'pre-wrap',
+      overflowWrap: 'anywhere',
+      wordBreak: 'break-word',
+      minWidth: '200px',
+      minHeight: '34px',
+      maxWidth: '850px',
+      maxHeight: '800px',
+      width: 'auto',
+      height: 'auto',
+      ...disabledStyles,
+      ...errorStyles,
+    },
+  }
+})
 
 export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'style'> {
   label?: string
@@ -71,7 +61,6 @@ export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttri
   style?: React.CSSProperties
   error?: boolean
   isEncrypted?: boolean
-  isAddLabel?: boolean
 }
 
 export function AutoResizableTextarea({
@@ -85,7 +74,6 @@ export function AutoResizableTextarea({
   style,
   error = false,
   isEncrypted,
-  isAddLabel,
   onInput,
   onPaste,
   onChange,
@@ -93,12 +81,11 @@ export function AutoResizableTextarea({
 }: AutoResizableTextareaProps) {
   const [showLock, setShowLock] = React.useState(!!(isEncrypted && rest.value && !rest.disabled))
   const [value, setValue] = React.useState(isEncrypted && rest.value ? '****' : rest.value)
-  const { classes, cx } = useStyles(
-    rest.disabled
-      ? { disabled: true, error, showLock: showLock && !!value }
-      : { disabled: false, error, showLock: showLock && !!value && !isAddLabel }, // Show lock types only if not adding a label
-  )
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const { classes, cx } = useStyles({
+    disabled: textareaRef?.current?.disabled,
+    error,
+  })
   const rulerRef = useRef<HTMLSpanElement | null>(null)
 
   useEffect(() => {
