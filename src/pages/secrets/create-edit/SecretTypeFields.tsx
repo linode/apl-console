@@ -44,7 +44,6 @@ export function SecretTypeFields({
           {...disabled}
         />
       )
-    case 'kubernetes.io/service-account-token':
     case 'kubernetes.io/dockercfg':
     case 'kubernetes.io/dockerconfigjson':
     case 'kubernetes.io/ssh-auth':

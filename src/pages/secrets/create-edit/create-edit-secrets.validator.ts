@@ -5,7 +5,6 @@ import * as yup from 'yup'
 // 1) Define the allowed secret types as a const array
 export const secretTypes = [
   'kubernetes.io/opaque',
-  'kubernetes.io/service-account-token',
   'kubernetes.io/dockercfg',
   'kubernetes.io/dockerconfigjson',
   'kubernetes.io/basic-auth',

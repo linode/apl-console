@@ -1972,7 +1972,6 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
@@ -2007,7 +2006,6 @@ export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained s
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
@@ -2036,7 +2034,6 @@ export type CreateSealedSecretApiResponse = /** status 200 Successfully stored s
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
@@ -2065,7 +2062,6 @@ export type CreateSealedSecretApiArg = {
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2091,7 +2087,6 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
@@ -2122,7 +2117,6 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
@@ -2153,7 +2147,6 @@ export type EditSealedSecretApiArg = {
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2187,7 +2180,6 @@ export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained a
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2233,7 +2225,6 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2282,7 +2273,6 @@ export type CreateAplSealedSecretApiResponse = /** status 200 Successfully store
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2331,7 +2321,6 @@ export type CreateAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
@@ -2363,7 +2352,6 @@ export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2414,7 +2402,6 @@ export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited 
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
@@ -2465,7 +2452,6 @@ export type EditAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'

@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
@@ -93,7 +91,20 @@ function LockComponent({ onUnlock }: { onUnlock?: () => void }) {
 
   return (
     <Box className={classes.container}>
-      <span className={`${classes.lock} ${isUnlocked ? classes.unlocked : ''}`} onClick={handleLockClick} />
+      <span
+        className={`${classes.lock} ${isUnlocked ? classes.unlocked : ''}`}
+        onClick={handleLockClick}
+        role='button'
+        tabIndex={0}
+        aria-label={isUnlocked ? 'Unlock' : 'Lock'}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            handleLockClick()
+          }
+        }}
+        aria-pressed={isUnlocked}
+      />
     </Box>
   )
 }

@@ -43,8 +43,6 @@ function getDefaultEncryptedDataForType(type: string) {
   switch (type) {
     case 'kubernetes.io/opaque':
       return [{ key: '', value: '' }]
-    case 'kubernetes.io/service-account-token':
-      return [{ key: 'extra', value: '' }]
     case 'kubernetes.io/dockercfg':
       return [{ key: '.dockercfg', value: '' }]
     case 'kubernetes.io/dockerconfigjson':

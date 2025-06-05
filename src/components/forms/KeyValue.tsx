@@ -286,11 +286,7 @@ export default function KeyValue(props: KeyValueProps) {
               </Box>
             </FormRow>
             {addLabel && !disabled && (
-              <IconButton
-                // eslint-disable-next-line no-nested-ternary
-                sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop() }}
-                onClick={() => remove(index)}
-              >
+              <IconButton sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop() }} onClick={() => remove(index)}>
                 <Clear />
               </IconButton>
             )}
