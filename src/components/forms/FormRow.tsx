@@ -22,14 +22,12 @@ export default function FormRow(props: FormRowProps) {
         ...sx,
       }}
     >
-      {React.Children.map(children, (child) =>
-        React.isValidElement(child) && child?.type === 'IconButton' ? (
-          // Directly render IconButton to apply its own alignSelf flex behavior
-          <Box sx={{ alignSelf: 'flex-end' }}>{child}</Box>
-        ) : (
-          <Box>{child}</Box> // Wrap other children normally
-        ),
-      )}
+      {React.Children.map(children, (child) => {
+        const childSx = (child as React.ReactElement)?.props?.sx || {}
+        if (React.isValidElement(child) && child?.type === 'IconButton')
+          return <Box sx={{ alignSelf: 'flex-end' }}>{child}</Box>
+        return <Box sx={{ ...childSx }}>{child}</Box>
+      })}
     </Box>
   )
 }

@@ -323,7 +323,7 @@ export default function CreateEditCodeRepositories({
                           Select a secret
                         </MenuItem>
                         {teamSecrets?.map((secret) => (
-                          <MenuItem key={secret?.id} id={secret?.id} value={secret?.name}>
+                          <MenuItem key={secret?.name} id={secret?.name} value={secret?.name}>
                             {secret?.name}
                           </MenuItem>
                         ))}
@@ -331,7 +331,7 @@ export default function CreateEditCodeRepositories({
                       <Button
                         className={classes.link}
                         onClick={() =>
-                          history.push(`/teams/${teamId}/create-sealedsecret`, {
+                          history.push(`/teams/${teamId}/secrets/create`, {
                             coderepository: true,
                             prefilled: watch(),
                           })
