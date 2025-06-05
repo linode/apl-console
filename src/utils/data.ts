@@ -109,6 +109,14 @@ const getBetaApp = (session, appId) => {
   return app?.isBeta
 }
 
+const getAlfaApp = (session, appId) => {
+  const {
+    core: { appsInfo },
+  }: any = session
+  const app = appsInfo[appId]
+  return app?.isAlfa
+}
+
 const getDeprecationInfo = (session, appId) => {
   const {
     core: { appsInfo },
@@ -169,6 +177,7 @@ export const getAppData = (
   const deps = coreApp.deps
   const isDeprecated = getDeprecatedApp(session, appId)
   const isBeta = getBetaApp(session, appId)
+  const isAlfa = getAlfaApp(session, appId)
   const deprecationInfo = getDeprecationInfo(session, appId)
   const replacementUrl = `https://${deprecationInfo?.replacement}.${cluster.domainSuffix}${deprecationInfo?.path ?? ''}`
   return {
@@ -186,6 +195,7 @@ export const getAppData = (
     hasShortcuts: !!ingress || useHost,
     isDeprecated,
     isBeta,
+    isAlfa,
     deprecationInfo,
     replacementUrl,
   }
