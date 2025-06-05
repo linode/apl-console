@@ -1,4 +1,4 @@
-import { takeRight } from 'lodash'
+import { isEmpty, takeRight } from 'lodash'
 
 export interface VersionUpdates {
   currentVersionUpdates?: VersionInfo[]
@@ -32,4 +32,28 @@ export function parseUpdates(updates: VersionInfo[], currentVersion: string): Ve
   return {
     currentVersionUpdates: takeRight(currentVersionUpdates, 5),
   }
+}
+
+export function valueArrayToObject(
+  array?:
+    | {
+        key: string
+        value: string
+      }[]
+    | undefined,
+): Record<string, string> | undefined {
+  if (!array || isEmpty(array)) return undefined
+
+  const obj = {}
+  array.forEach((item) => {
+    if (!item || !item.key) return
+    obj[item.key] = item.value
+  })
+  return isEmpty(obj) ? undefined : obj
+}
+
+export function mapObjectToKeyValueArray(obj?: Record<string, string>): { key: string; value: string }[] | undefined {
+  if (!obj || isEmpty(obj)) return undefined
+
+  return Object.entries(obj).map(([key, value]) => ({ key, value }))
 }

@@ -306,6 +306,7 @@ export default function CreateEditBuilds({
                 keyLabel='Name'
                 valueLabel='Value'
                 addLabel='Add argument'
+                compressed
                 name={`mode.${watch('mode.type')}.envVars`}
                 {...register(`mode.${watch('mode.type')}.envVars`)}
               />

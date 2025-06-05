@@ -50,7 +50,10 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   helperTextTop: {
     color: theme.palette.cl.text.subTitle,
-    marginTop: 0,
+    marginTop: '-5px',
+    fontSize: '13px',
+    inlineSize: '70%',
+    letterSpacing: 'normal',
   },
   label: {
     fontFamily: 'sans-serif',
