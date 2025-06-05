@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/linode/apl-console/compare/v4.3.0...v4.4.0) (2025-06-03)
+
+
+### Features
+
+* breadcrumb calibration ([#563](https://github.com/linode/apl-console/issues/563)) ([f7efe03](https://github.com/linode/apl-console/commit/f7efe038ab9a94385e920bc5d095535c16f30268))
+* only have team select on team view ([#562](https://github.com/linode/apl-console/issues/562)) ([713e0d8](https://github.com/linode/apl-console/commit/713e0d8cb75fb20dc9344fb6744c89579129c64d))
+
+
+### Bug Fixes
+
+* alertmanager not showing if disabled and isAdmin ([#570](https://github.com/linode/apl-console/issues/570)) ([9b8b96a](https://github.com/linode/apl-console/commit/9b8b96a732bcfaa422a3763aa3f8347c1134a35f))
+* getTeam(s) queries ([#571](https://github.com/linode/apl-console/issues/571)) ([d8f1c2e](https://github.com/linode/apl-console/commit/d8f1c2ead822c6d2ee91fc7e35a8b0668634594f))
+* policy pages ([#569](https://github.com/linode/apl-console/issues/569)) ([4d57d6d](https://github.com/linode/apl-console/commit/4d57d6d1e227baa4ebf0bcf6483e785bde04f3b3))
+* read only view permissions for team settings page ([#565](https://github.com/linode/apl-console/issues/565)) ([7b883f7](https://github.com/linode/apl-console/commit/7b883f7f7dcae7b3b80f7a1021924d11cbc08a7d))
+* remove capitalize from catalog card title ([#566](https://github.com/linode/apl-console/issues/566)) ([5885d91](https://github.com/linode/apl-console/commit/5885d91c3964feb5bda5e7c7a9f2acc14bf9d7bb))
+
+
+### Others
+
+* add code owners ([#564](https://github.com/linode/apl-console/issues/564)) ([315f107](https://github.com/linode/apl-console/commit/315f107dd75a41b4b961e3c56079101f015315da))
+* **deps:** bump @hkdobrev/run-if-changed from 0.3.1 to 0.6.3 ([#561](https://github.com/linode/apl-console/issues/561)) ([35f6437](https://github.com/linode/apl-console/commit/35f64378a253d93c360e6d32044cdaad56b83d20))
+* **deps:** bump @monaco-editor/react from 4.6.0 to 4.7.0 ([#558](https://github.com/linode/apl-console/issues/558)) ([efcbd4a](https://github.com/linode/apl-console/commit/efcbd4a36d8dc36044a2b012ddcc390b63b4e52d))
+* **deps:** bump @testing-library/react from 16.2.0 to 16.3.0 ([#560](https://github.com/linode/apl-console/issues/560)) ([d54dccc](https://github.com/linode/apl-console/commit/d54dcccc71f4015dd83946e860fcf339bdb7dfb2))
+* **deps:** bump cspell from 5.21.2 to 9.0.2 ([#572](https://github.com/linode/apl-console/issues/572)) ([2f0c7a0](https://github.com/linode/apl-console/commit/2f0c7a09e0dde09dd8bc9be54e356cfb09a72196))
+* **deps:** bump node from 20.19.1-alpine to 20.19.2-alpine ([#568](https://github.com/linode/apl-console/issues/568)) ([c6d698d](https://github.com/linode/apl-console/commit/c6d698d097241645cc3df0c9eb803c576b0edf91))
+* **deps:** bump tss-react from 3.7.0 to 4.9.18 ([#559](https://github.com/linode/apl-console/issues/559)) ([cbcbf17](https://github.com/linode/apl-console/commit/cbcbf17870d79f2bd83627c37123f600c78d75e5))
+
 ## [4.3.0](https://github.com/linode/apl-console/compare/v4.2.0...v4.3.0) (2025-05-14)
 
 

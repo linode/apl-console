@@ -16,7 +16,7 @@ export function Divider(props: DividerProps) {
 const StyledDivider = styled(_Divider, {
   label: 'StyledDivider',
   shouldForwardProp: omittedProps(['spacingTop', 'spacingBottom']),
-})<DividerProps>(({ theme, ...props }) => ({
-  marginBottom: props.spacingBottom,
-  marginTop: props.spacingTop,
+})<DividerProps>(({ theme, spacingTop = '30px', spacingBottom = '30px' }) => ({
+  marginBottom: spacingBottom,
+  marginTop: spacingTop,
 }))

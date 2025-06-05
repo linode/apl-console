@@ -1967,34 +1967,28 @@ export type DeleteAplServiceApiArg = {
   serviceName: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }[]
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
@@ -2007,133 +2001,109 @@ export type GetSecretsFromK8SApiArg = {
   teamId: string
 }
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }[]
 export type GetSealedSecretsApiArg = {
   /** ID of team */
   teamId: string
 }
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type CreateSealedSecretApiArg = {
   /** ID of team */
   teamId: string
   /** SealedSecret object */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     metadata?: {
       annotations?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
       finalizers?: string[]
       labels?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
     }
-    isDisabled?: boolean
   }
 }
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type GetSealedSecretApiArg = {
   /** ID of team */
@@ -2142,34 +2112,28 @@ export type GetSealedSecretApiArg = {
   sealedSecretName: string
 }
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type EditSealedSecretApiArg = {
   /** ID of team */
@@ -2178,34 +2142,28 @@ export type EditSealedSecretApiArg = {
   sealedSecretName: string
   /** SealedSecret object that contains updated values */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     metadata?: {
       annotations?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
       finalizers?: string[]
       labels?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
     }
-    isDisabled?: boolean
   }
 }
 export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
@@ -2222,16 +2180,12 @@ export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained a
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2271,16 +2225,12 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2323,16 +2273,12 @@ export type CreateAplSealedSecretApiResponse = /** status 200 Successfully store
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2375,16 +2321,12 @@ export type CreateAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
         | 'kubernetes.io/ssh-auth'
         | 'kubernetes.io/tls'
       encryptedData?: {
-        [key: string]: string
-      }
-      decryptedData?: {
         [key: string]: string
       }
       metadata?: {
@@ -2410,16 +2352,12 @@ export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2464,16 +2402,12 @@ export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited 
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2518,16 +2452,12 @@ export type EditAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
         | 'kubernetes.io/ssh-auth'
         | 'kubernetes.io/tls'
       encryptedData?: {
-        [key: string]: string
-      }
-      decryptedData?: {
         [key: string]: string
       }
       metadata?: {
@@ -7286,6 +7216,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     roles: string[]
     sub?: string
   }
+  sealedSecretsPEM?: string
   defaultPlatformAdminEmail?: string
   objectStorage?: {
     showWizard?: boolean

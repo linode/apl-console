@@ -337,6 +337,7 @@ export default function ({
                   keyLabel='Domain'
                   valueLabel='Path'
                   showLabel={false}
+                  compressed
                   addLabel='Add URL path'
                   onlyValue
                   keySize='large'
