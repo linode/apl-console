@@ -169,7 +169,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
 
   const out = (items) =>
     items?.map((item) => {
-      const { enabled, externalUrl, id, logo, logoAlt, isDeprecated, isAlfa, isBeta } = getAppData(
+      const { enabled, externalUrl, id, logo, logoAlt, isDeprecated, isAlpha, isBeta } = getAppData(
         session,
         teamId,
         item,
@@ -192,7 +192,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
             toggleApp={() => toggleApp(id)}
             isDeprecated={isDeprecated}
             isBeta={isBeta}
-            isAlfa={isAlfa}
+            isAlpha={isAlpha}
             openModal={() => setOpenModal(id)}
           />
         </Grid>
