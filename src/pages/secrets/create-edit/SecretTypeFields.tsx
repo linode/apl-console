@@ -22,7 +22,7 @@ export function SecretTypeFields({
   const typePath = namePrefix ? `${namePrefix}.type` : 'type'
   const dataPath = namePrefix ? `${namePrefix}.encryptedData` : 'encryptedData'
   const selectedType = useWatch({ control, name: typePath }) as typeof secretTypes[number]
-  const title = 'Encrypted Data'
+  const title = 'Secret Data'
   const disabled = immutable && { keyDisabled: true, valueDisabled: true, disabled: true }
 
   switch (selectedType) {
@@ -30,7 +30,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
-          subTitle='A Kubernetes Opaque Secret is simply the "generic" secret type—perfect any time you need to stash arbitrary key-value data that doesn’t fit one of the built‐in types'
+          subTitle='Add arbitrary key-value data.'
           name={dataPath}
           keyLabel='Key'
           valueLabel='Value'
@@ -45,13 +45,64 @@ export function SecretTypeFields({
         />
       )
     case 'kubernetes.io/dockercfg':
+      return (
+        <KeyValue
+          title={title}
+          subTitle='Add the contents of a serialized ~/.dockercfg file.'
+          name={dataPath}
+          keyDisabled
+          keyLabel='Key'
+          valueLabel='Value'
+          showLabel={false}
+          compressed
+          error={error}
+          helperText={helperText}
+          isEncrypted={isEncrypted}
+          isTextArea
+          {...disabled}
+        />
+      )
     case 'kubernetes.io/dockerconfigjson':
+      return (
+        <KeyValue
+          title={title}
+          subTitle='Add the contents of a serialized ~/.docker/config.json file.'
+          name={dataPath}
+          keyDisabled
+          keyLabel='Key'
+          valueLabel='Value'
+          showLabel={false}
+          compressed
+          error={error}
+          helperText={helperText}
+          isEncrypted={isEncrypted}
+          isTextArea
+          {...disabled}
+        />
+      )
     case 'kubernetes.io/ssh-auth':
+      return (
+        <KeyValue
+          title={title}
+          subTitle='Add credentials for SSH authentication.'
+          name={dataPath}
+          keyDisabled
+          keyLabel='Key'
+          valueLabel='Value'
+          showLabel={false}
+          compressed
+          error={error}
+          helperText={helperText}
+          isEncrypted={isEncrypted}
+          isTextArea
+          {...disabled}
+        />
+      )
     case 'kubernetes.io/tls':
       return (
         <KeyValue
           title={title}
-          subTitle={`Enter key-value pairs for the "${selectedType}" secret type`}
+          subTitle='Add the data for a TLS client or server.'
           name={dataPath}
           keyDisabled
           keyLabel='Key'
@@ -69,7 +120,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
-          subTitle='Basic-auth Secret exists out of a username and password'
+          subTitle='Add credentials (username and password) for basic authentication.'
           keyDisabled
           name={dataPath}
           keyLabel='Key'
