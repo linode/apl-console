@@ -171,11 +171,7 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
-                                <PrivateRoute
-                                  path='/teams/:teamId/network-policies'
-                                  component={SecretOverviewPage}
-                                  exact
-                                />
+                                <PrivateRoute path='/teams/:teamId/network-policies' component={Netpols} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/network-policies/:netpolName'
                                   component={Netpol}
