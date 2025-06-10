@@ -314,11 +314,11 @@ const injectedRtkApi = api.injectEndpoints({
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/v1/k8sVersion` }),
     }),
-    connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'POST', body: queryArg.body }),
+    connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', body: queryArg.body }),
+      query: () => ({ url: `/v1/cloudtty`, method: 'DELETE' }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
@@ -4374,42 +4374,14 @@ export type EditAplPolicyApiArg = {
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
 export type GetK8SVersionApiArg = void
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
-  id?: string
-  teamId: string
-  domain: string
-  emailNoSymbols: string
   iFrameUrl?: string
-  isAdmin: boolean
-  userTeams?: string[]
-  sub?: string
 }
 export type ConnectCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
+  /** Id of the team */
+  teamId?: string
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
-}
+export type DeleteCloudttyApiArg = void
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
@@ -7936,7 +7908,7 @@ export const {
   useGetAplPolicyQuery,
   useEditAplPolicyMutation,
   useGetK8SVersionQuery,
-  useConnectCloudttyMutation,
+  useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
   useGetAllUsersQuery,
   useCreateUserMutation,

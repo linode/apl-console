@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Box, CircularProgress, Tooltip, Typography, styled } from '@mui/material'
 import useShellDrawer from 'hooks/useShellDrawer'
-import { ConnectCloudttyApiResponse, useConnectCloudttyMutation, useDeleteCloudttyMutation } from 'redux/otomiApi'
+import { useConnectCloudttyQuery, useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import SvgIconStyle from 'components/SvgIconStyle'
 import useResponsive from 'hooks/useResponsive'
@@ -155,24 +155,13 @@ function Shell({ collapseClick }: Props): React.ReactElement {
   const { user, oboTeamId } = useSession()
   const isDesktop = useResponsive('up', 'lg')
   const [transparency, setTransparency] = useState(false)
-  const [connect, { isLoading }] = useConnectCloudttyMutation()
-  const [del] = useDeleteCloudttyMutation()
-
   const teamId = oboTeamId
-  const hostname = window.location.hostname
-  const domain = getDomain(hostname)
-  const emailNoSymbols = getEmailNoSymbols(user.email)
-  const userTeams = getUserTeams(user)
+  const { data, isLoading } = useConnectCloudttyQuery({ teamId }, { skip: !isShell })
+  const [deleteCloudtty] = useDeleteCloudttyMutation()
 
   useEffect(() => {
-    if (isShell) {
-      connect({
-        body: { teamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams, sub: user.sub },
-      }).then(({ data }: { data: ConnectCloudttyApiResponse }) => {
-        onSetIFrameUrl(data.iFrameUrl)
-      })
-    }
-  }, [isShell])
+    if (data?.iFrameUrl) onSetIFrameUrl(data.iFrameUrl)
+  }, [data?.iFrameUrl])
 
   const handleMouseDown = () => {
     setTransparency(true)
@@ -200,7 +189,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    del({ body: { teamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams } })
+    deleteCloudtty()
   }
 
   return (

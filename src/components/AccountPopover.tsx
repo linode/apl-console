@@ -2,8 +2,6 @@ import { Avatar, Box, Divider, MenuItem, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import React, { useState } from 'react'
 import { useDeleteCloudttyMutation } from 'redux/otomiApi'
-import { useSession } from 'providers/Session'
-import { getDomain, getEmailNoSymbols, getUserTeams } from 'layouts/Shell'
 import { clearLocalStorage } from 'hooks/useLocalStorage'
 import { useHistory } from 'react-router-dom'
 import MenuPopover from './MenuPopover'
@@ -17,12 +15,7 @@ type Props = {
 export default function AccountPopover({ email }: Props) {
   const history = useHistory()
   const [open, setOpen] = useState<HTMLElement | null>(null)
-  const [del] = useDeleteCloudttyMutation()
-  const { user, oboTeamId } = useSession()
-  const hostname = window.location.hostname
-  const domain = getDomain(hostname)
-  const emailNoSymbols = getEmailNoSymbols(user.email)
-  const userTeams = getUserTeams(user)
+  const [deleteCloudtty] = useDeleteCloudttyMutation()
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setOpen(event.currentTarget)
@@ -33,9 +26,7 @@ export default function AccountPopover({ email }: Props) {
   }
 
   const handleLogout = () => {
-    del({
-      body: { teamId: oboTeamId, domain, emailNoSymbols, isAdmin: user.isPlatformAdmin, userTeams },
-    }).finally(() => {
+    deleteCloudtty().finally(() => {
       clearLocalStorage('oboTeamId')
       history.push('/logout')
     })
