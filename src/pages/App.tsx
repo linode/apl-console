@@ -20,7 +20,10 @@ export default function ({
   const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
   const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetAppQuery({ teamId, appId })
+  const { data, isLoading, isFetching, isError, refetch } = useGetAppQuery(
+    { teamId, appId },
+    { skip: teamId !== 'admin' },
+  )
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
