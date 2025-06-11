@@ -66,7 +66,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
-          subTitle='Add the contents of a serialized ~/.docker/config.json file.'
+          subTitle='Add contents from a serialized ~/.docker/config.json file.'
           name={dataPath}
           keyDisabled
           keyLabel='Key'
