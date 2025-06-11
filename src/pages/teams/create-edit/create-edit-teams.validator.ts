@@ -50,8 +50,8 @@ export const createTeamApiResponseSchema = yup.object({
   name: yup
     .string()
     .required('Team name is required')
-    .max(30, 'Team name must be at most 30 characters')
-    .matches(/^[^A-Z]*$/, 'Team name cannot contain capital letters'),
+    .max(10, 'Team name must be at most 10 characters')
+    .matches(/^[^A-Z_]*$/, 'Team name cannot contain capital letters or underscores'),
   oidc: yup
     .object({
       groupMapping: yup.string().optional().default(undefined),
