@@ -263,7 +263,7 @@ export default function SecretCreateEditPage({
                 error={!!errors.type}
                 helperText={
                   errors.type?.message?.toString() ||
-                  'Select the Secret type for the required handling of the Secret data.'
+                  'Select the Secret type for the appropriate handling of the Secret data.'
                 }
                 {...register('type')}
                 value={watch('type') || 'kubernetes.io/opaque'}
