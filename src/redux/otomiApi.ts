@@ -314,6 +314,12 @@ const injectedRtkApi = api.injectEndpoints({
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/v1/k8sVersion` }),
     }),
+    connectAplCloudtty: build.query<ConnectAplCloudttyApiResponse, ConnectAplCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v2/cloudtty`, params: { teamId: queryArg.teamId } }),
+    }),
+    deleteAplCloudtty: build.mutation<DeleteAplCloudttyApiResponse, DeleteAplCloudttyApiArg>({
+      query: () => ({ url: `/v2/cloudtty`, method: 'DELETE' }),
+    }),
     connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
       query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
@@ -4373,6 +4379,15 @@ export type EditAplPolicyApiArg = {
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
 export type GetK8SVersionApiArg = void
+export type ConnectAplCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
+  iFrameUrl?: string
+}
+export type ConnectAplCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
+export type DeleteAplCloudttyApiResponse = unknown
+export type DeleteAplCloudttyApiArg = void
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   iFrameUrl?: string
 }
@@ -7908,6 +7923,8 @@ export const {
   useGetAplPolicyQuery,
   useEditAplPolicyMutation,
   useGetK8SVersionQuery,
+  useConnectAplCloudttyQuery,
+  useDeleteAplCloudttyMutation,
   useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
   useGetAllUsersQuery,
