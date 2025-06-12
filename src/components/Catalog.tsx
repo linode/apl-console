@@ -177,6 +177,7 @@ export default function ({
         err.id = 'root-name-error'
         err.textContent = `Workload name cannot be longer than 16 characters`
         err.style.color = 'red'
+        err.style.fontSize = '12px'
         input.parentNode.insertBefore(err, input.nextSibling)
       }
       window.scrollTo({ top: 0, behavior: 'smooth' })
