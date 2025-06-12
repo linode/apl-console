@@ -7244,6 +7244,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   cluster?: {
     name?: string
     domainSuffix?: string
+    apiServer?: string
     provider?: 'linode' | 'custom'
   }
   dns?: {
