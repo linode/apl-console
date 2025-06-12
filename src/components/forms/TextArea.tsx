@@ -25,7 +25,7 @@ const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: 
       marginBottom: theme.spacing(2),
     },
     textarea: {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.cm.textBox,
       color: theme.palette.cl.text.title,
       padding: theme.spacing(1),
       border: `1px solid ${theme.palette.cm.inputBorder}`,
