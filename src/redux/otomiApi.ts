@@ -314,11 +314,17 @@ const injectedRtkApi = api.injectEndpoints({
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/v1/k8sVersion` }),
     }),
-    connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'POST', body: queryArg.body }),
+    connectAplCloudtty: build.query<ConnectAplCloudttyApiResponse, ConnectAplCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v2/cloudtty`, params: { teamId: queryArg.teamId } }),
+    }),
+    deleteAplCloudtty: build.mutation<DeleteAplCloudttyApiResponse, DeleteAplCloudttyApiArg>({
+      query: () => ({ url: `/v2/cloudtty`, method: 'DELETE' }),
+    }),
+    connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', body: queryArg.body }),
+      query: () => ({ url: `/v1/cloudtty`, method: 'DELETE' }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
@@ -1967,34 +1973,28 @@ export type DeleteAplServiceApiArg = {
   serviceName: string
 }
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }[]
 export type GetAllSealedSecretsApiArg = void
 export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
@@ -2007,133 +2007,109 @@ export type GetSecretsFromK8SApiArg = {
   teamId: string
 }
 export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }[]
 export type GetSealedSecretsApiArg = {
   /** ID of team */
   teamId: string
 }
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type CreateSealedSecretApiArg = {
   /** ID of team */
   teamId: string
   /** SealedSecret object */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     metadata?: {
       annotations?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
       finalizers?: string[]
       labels?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
     }
-    isDisabled?: boolean
   }
 }
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type GetSealedSecretApiArg = {
   /** ID of team */
@@ -2142,34 +2118,28 @@ export type GetSealedSecretApiArg = {
   sealedSecretName: string
 }
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
-  id?: string
   name: string
   namespace?: string
   immutable?: boolean
   type:
     | 'kubernetes.io/opaque'
-    | 'kubernetes.io/service-account-token'
     | 'kubernetes.io/dockercfg'
     | 'kubernetes.io/dockerconfigjson'
     | 'kubernetes.io/basic-auth'
     | 'kubernetes.io/ssh-auth'
     | 'kubernetes.io/tls'
   encryptedData: {
-    key: string
-    value: string
-  }[]
+    additionalProperties?: string
+  }
   metadata?: {
     annotations?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     finalizers?: string[]
     labels?: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
   }
-  isDisabled?: boolean
 }
 export type EditSealedSecretApiArg = {
   /** ID of team */
@@ -2178,34 +2148,28 @@ export type EditSealedSecretApiArg = {
   sealedSecretName: string
   /** SealedSecret object that contains updated values */
   body: {
-    id?: string
     name: string
     namespace?: string
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData: {
-      key: string
-      value: string
-    }[]
+      additionalProperties?: string
+    }
     metadata?: {
       annotations?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
       finalizers?: string[]
       labels?: {
-        key: string
-        value: string
-      }[]
+        additionalProperties?: string
+      }
     }
-    isDisabled?: boolean
   }
 }
 export type DeleteSealedSecretApiResponse = /** status 200 Successfully deleted a team sealed secret */ undefined
@@ -2222,16 +2186,12 @@ export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained a
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2271,16 +2231,12 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2323,16 +2279,12 @@ export type CreateAplSealedSecretApiResponse = /** status 200 Successfully store
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2375,16 +2327,12 @@ export type CreateAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
         | 'kubernetes.io/ssh-auth'
         | 'kubernetes.io/tls'
       encryptedData?: {
-        [key: string]: string
-      }
-      decryptedData?: {
         [key: string]: string
       }
       metadata?: {
@@ -2410,16 +2358,12 @@ export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2464,16 +2408,12 @@ export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited 
     immutable?: boolean
     type:
       | 'kubernetes.io/opaque'
-      | 'kubernetes.io/service-account-token'
       | 'kubernetes.io/dockercfg'
       | 'kubernetes.io/dockerconfigjson'
       | 'kubernetes.io/basic-auth'
       | 'kubernetes.io/ssh-auth'
       | 'kubernetes.io/tls'
     encryptedData?: {
-      [key: string]: string
-    }
-    decryptedData?: {
       [key: string]: string
     }
     metadata?: {
@@ -2518,16 +2458,12 @@ export type EditAplSealedSecretApiArg = {
       immutable?: boolean
       type:
         | 'kubernetes.io/opaque'
-        | 'kubernetes.io/service-account-token'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
         | 'kubernetes.io/ssh-auth'
         | 'kubernetes.io/tls'
       encryptedData?: {
-        [key: string]: string
-      }
-      decryptedData?: {
         [key: string]: string
       }
       metadata?: {
@@ -4443,43 +4379,24 @@ export type EditAplPolicyApiArg = {
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
 export type GetK8SVersionApiArg = void
-export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
-  id?: string
-  teamId: string
-  domain: string
-  emailNoSymbols: string
+export type ConnectAplCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   iFrameUrl?: string
-  isAdmin: boolean
-  userTeams?: string[]
-  sub?: string
+}
+export type ConnectAplCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
+export type DeleteAplCloudttyApiResponse = unknown
+export type DeleteAplCloudttyApiArg = void
+export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
+  iFrameUrl?: string
 }
 export type ConnectCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
+  /** Id of the team */
+  teamId?: string
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
-}
+export type DeleteCloudttyApiArg = void
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
@@ -7286,6 +7203,7 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     roles: string[]
     sub?: string
   }
+  sealedSecretsPEM?: string
   defaultPlatformAdminEmail?: string
   objectStorage?: {
     showWizard?: boolean
@@ -7313,6 +7231,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   cluster?: {
     name?: string
     domainSuffix?: string
+    apiServer?: string
     provider?: 'linode' | 'custom'
   }
   dns?: {
@@ -8005,7 +7924,9 @@ export const {
   useGetAplPolicyQuery,
   useEditAplPolicyMutation,
   useGetK8SVersionQuery,
-  useConnectCloudttyMutation,
+  useConnectAplCloudttyQuery,
+  useDeleteAplCloudttyMutation,
+  useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
   useGetAllUsersQuery,
   useCreateUserMutation,

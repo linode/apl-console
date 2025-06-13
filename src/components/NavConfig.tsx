@@ -13,6 +13,8 @@ export default function NavConfig() {
   const { ca, appsEnabled, oboTeamId, user, settings } = useSession()
   const hasExternalIDP = settings?.otomi?.hasExternalIDP ?? false
   const isManaged = settings?.otomi?.isPreInstalled ?? false
+  const hasApiServerConfigured = settings?.cluster?.apiServer ?? false
+
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -58,7 +60,7 @@ export default function NavConfig() {
           icon: getIcon('coderepositories_icon.svg'),
         },
         { title: 'Container Images', path: `/teams/${oboTeamId}/container-images`, icon: getIcon('builds_icon.svg') },
-        { title: 'Sealed Secrets', path: `/teams/${oboTeamId}/sealed-secrets`, icon: getIcon('shield_lock_icon.svg') },
+        { title: 'Secrets', path: `/teams/${oboTeamId}/secrets`, icon: getIcon('shield_lock_icon.svg') },
         { title: 'Workloads', path: `/teams/${oboTeamId}/workloads`, icon: getIcon('workloads_icon.svg') },
         { title: 'Network Policies', path: `/teams/${oboTeamId}/network-policies`, icon: getIcon('policies_icon.svg') },
         { title: 'Services', path: `/teams/${oboTeamId}/services`, icon: getIcon('services_icon.svg') },
@@ -90,7 +92,7 @@ export default function NavConfig() {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeconfig'),
+          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeconfig') || !hasApiServerConfigured,
           isDownload: true,
         },
         {

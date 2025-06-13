@@ -36,6 +36,7 @@ export interface SessionContext extends GetSessionApiResponse {
   refetchSession?: () => void
   refetchSettings?: () => void
   settings?: GetSettingsInfoApiResponse
+  sealedSecretsPEM?: string
 }
 
 const Context = React.createContext<SessionContext>({
@@ -46,6 +47,7 @@ const Context = React.createContext<SessionContext>({
   oboTeamId: undefined,
   setOboTeamId: undefined,
   settings: undefined,
+  sealedSecretsPEM: undefined,
   user: {
     teams: undefined,
     name: undefined,

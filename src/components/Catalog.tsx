@@ -159,6 +159,31 @@ export default function ({
   }, [workload, values])
 
   const handleCreateUpdateWorkload = async () => {
+    /** this is very temporary solution to add max character limit to workloads
+     *
+     *  REMOVE THIS WHEN MIGRATING TO THE NEW UI
+     */
+    const input = document.getElementById('root_name').parentElement as HTMLInputElement | null
+    if (input) {
+      input.style.border = ''
+      const oldErr = document.getElementById('root-name-error')
+      if (oldErr) oldErr.remove()
+    }
+
+    if ((data.name || '').length > 16) {
+      if (input) {
+        input.style.border = '1px solid red'
+        const err = document.createElement('p')
+        err.id = 'root-name-error'
+        err.textContent = `Workload name cannot be longer than 16 characters`
+        err.style.color = 'red'
+        err.style.fontSize = '12px'
+        input.parentNode.insertBefore(err, input.nextSibling)
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
     const workloadBody = omit(data, ['chartProvider', 'chart', 'revision', 'values'])
     const chartMetadata = omit(data?.chartMetadata, ['helmChartCatalog', 'helmChart'])
     const path = workload?.path
