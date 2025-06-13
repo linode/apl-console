@@ -45,7 +45,20 @@ export default function Scrollbar({ children, sx, ...other }: Props) {
 
   return (
     <Box sx={{ overflowX: 'hidden', ...sx }} {...other}>
-      {typeof children === 'function' ? children({ scrollableNodeRef: null, contentNodeRef: null }) : children}
+      {typeof children === 'function'
+        ? children({
+            scrollableNodeRef: null,
+            contentNodeRef: null,
+            scrollableNodeProps: {
+              className: '',
+              ref: undefined,
+            },
+            contentNodeProps: {
+              className: '',
+              ref: undefined,
+            },
+          })
+        : children}
     </Box>
   )
 }
