@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { Socket, io } from 'socket.io-client'
 
-type Statuses = Record<string, any>
+type StatusValue = 'Succeeded' | 'Unknown' | 'Pending' | 'NotFound'
+
+type Statuses = {
+  workloads?: Record<string, StatusValue>
+  builds?: Record<string, StatusValue>
+  services?: Record<string, StatusValue>
+  secrets?: Record<string, StatusValue>
+}
 
 type SocketContextType = {
   socket: Socket | null
