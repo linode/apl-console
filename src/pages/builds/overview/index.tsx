@@ -3,7 +3,6 @@ import { HeadCell } from 'components/EnhancedTable'
 import InformationBanner from 'components/InformationBanner'
 import ListTable from 'components/ListTable'
 import { getStatus } from 'components/Workloads'
-import useStatus from 'hooks/useStatus'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -15,6 +14,7 @@ import { getRole } from 'utils/data'
 import { Box, Tooltip } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
+import { useSocket } from 'providers/Socket'
 import RLink from '../../../components/Link'
 
 interface Row {
@@ -103,7 +103,7 @@ export default function BuildsOverview({
       cluster: { domainSuffix },
     },
   } = useSession()
-  const status = useStatus()
+  const { statuses } = useSocket()
   const {
     data: allBuilds,
     isLoading: isLoadingAllBuilds,
@@ -152,7 +152,7 @@ export default function BuildsOverview({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.builds?.[row.name]),
+      renderer: (row: Row) => getStatus(statuses?.builds?.[row.name]),
     },
   ]
 

@@ -3,7 +3,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetAllServicesApiResponse, GetTeamServicesApiResponse } from 'redux/otomiApi'
-import useStatus from 'hooks/useStatus'
+import { useSocket } from 'providers/Socket'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -47,7 +47,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     oboTeamId,
   } = useSession()
   const { t } = useTranslation()
-  const status = useStatus()
+  const { statuses } = useSocket()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -69,7 +69,7 @@ export default function ({ services, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(status?.services?.[row.name]),
+      renderer: (row) => getStatus(statuses?.services?.[row.name]),
     },
   ]
   if (!teamId) {

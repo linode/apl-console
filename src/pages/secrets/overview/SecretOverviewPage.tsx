@@ -2,7 +2,6 @@ import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Box } from '@mui/material'
-import useStatus from 'hooks/useStatus'
 import PaperLayout from 'layouts/Paper'
 import MuiLink from 'components/MuiLink'
 import { HeadCell } from 'components/EnhancedTable'
@@ -14,6 +13,7 @@ import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { RouteComponentProps } from 'react-router-dom'
 import { useGetAllSealedSecretsQuery, useGetSealedSecretsQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
+import { useSocket } from 'providers/Socket'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
@@ -65,7 +65,7 @@ export default function SecretOverviewPage({
     user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
-  const status = useStatus()
+  const { statuses } = useSocket()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -81,7 +81,7 @@ export default function SecretOverviewPage({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(status?.sealedSecrets?.[row.name]),
+      renderer: (row) => getStatus(statuses?.secrets?.[row.name]),
     },
   ]
   if (!teamId) {
