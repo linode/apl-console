@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/linode/apl-console/compare/v4.4.0...v4.5.0) (2025-06-17)
+
+
+### Features
+
+* new sealed secret form ([#573](https://github.com/linode/apl-console/issues/573)) ([0d39ba6](https://github.com/linode/apl-console/commit/0d39ba6a7a603d7469c7ea949c0beab07215c062))
+* simplify the connect cloudtty flow ([#583](https://github.com/linode/apl-console/issues/583)) ([b47ca1b](https://github.com/linode/apl-console/commit/b47ca1b5df61bc3c278b0b17871249a8c2c27efa))
+
+
+### Bug Fixes
+
+* app.tsx router ([#580](https://github.com/linode/apl-console/issues/580)) ([82d25e9](https://github.com/linode/apl-console/commit/82d25e9f6108c4ba6c060a48fba9a8a691301050))
+* disable download kubeconfig when apiserver not configured ([#584](https://github.com/linode/apl-console/issues/584)) ([5597ffa](https://github.com/linode/apl-console/commit/5597ffad4f3aabd937bcd63867d384da41c46a69))
+* get team app details ([#582](https://github.com/linode/apl-console/issues/582)) ([2844057](https://github.com/linode/apl-console/commit/284405722c0d33c5e3a5c61afcdc847370f2e09a))
+* secret descriptions ([#581](https://github.com/linode/apl-console/issues/581)) ([18494d6](https://github.com/linode/apl-console/commit/18494d64dd39455d87402147e3d18e9963f942df))
+* very tempory fix for workload character limit ([#585](https://github.com/linode/apl-console/issues/585)) ([fbeb18e](https://github.com/linode/apl-console/commit/fbeb18e05116d79388153d1c27aff900723b0d4d))
+
+
+### Others
+
+* **deps:** bump @commitlint/config-conventional from 11.0.0 to 19.8.1 ([#576](https://github.com/linode/apl-console/issues/576)) ([b79902a](https://github.com/linode/apl-console/commit/b79902a79dd2936602a7876a8c6216124ff2a2d1))
+* **deps:** bump i18next-http-backend from 1.4.1 to 3.0.2 ([#577](https://github.com/linode/apl-console/issues/577)) ([c90319d](https://github.com/linode/apl-console/commit/c90319d87fbec337383439ccfe3177eeef1f291c))
+* **deps:** bump react-hook-form from 7.54.2 to 7.57.0 ([#575](https://github.com/linode/apl-console/issues/575)) ([a4b602d](https://github.com/linode/apl-console/commit/a4b602d4a16b62484d4a6774a39d0797fdbcaeff))
+* **deps:** bump simplebar-react from 2.4.3 to 3.3.1 ([#574](https://github.com/linode/apl-console/issues/574)) ([991a5bf](https://github.com/linode/apl-console/commit/991a5bf5366eea8e57ac100c69148af058b0d3ed))
+
+
+### Code Refactoring
+
+* socket dependency and clean up code ([#586](https://github.com/linode/apl-console/issues/586)) ([810ee59](https://github.com/linode/apl-console/commit/810ee59f23fe7e62da89df6d12515e885e66c5e6))
+
 ## [4.4.0](https://github.com/linode/apl-console/compare/v4.3.0...v4.4.0) (2025-06-03)
 
 
