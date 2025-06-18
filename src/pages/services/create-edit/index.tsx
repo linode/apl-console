@@ -208,7 +208,7 @@ export default function ({
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/for-devs/console/services'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/team-services'
           title={serviceName ? data.metadata.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
