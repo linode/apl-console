@@ -231,7 +231,7 @@ export default function SecretCreateEditPage({
       <PaperLayout loading={loading || error} title={t('TITLE_SEALEDSECRET', { sealedSecretName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/for-devs/console/secrets'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/team-secrets'
           title={sealedSecretName ? data.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
