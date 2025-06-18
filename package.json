@@ -55,7 +55,7 @@
     "react-scripts": "5.0.1",
     "react-use": "^17.6.0",
     "simplebar-react": "3.3.1",
-    "socket.io-react-hook": "^1.0.17",
+    "socket.io-client": "^4.8.1",
     "tss-react": "4.9.18",
     "typeface-comfortaa": "1.1.13",
     "typeface-roboto": "0.0.75",
@@ -63,8 +63,8 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
-    "@commitlint/cli": "11.0.0",
-    "@commitlint/config-conventional": "19.8.1",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@hkdobrev/run-if-changed": "0.6.3",
     "@mui/types": "^7.2.21",
     "@rtk-query/codegen-openapi": "1.0.0-alpha.1",
@@ -154,5 +154,5 @@
       "tag": true
     }
   },
-  "version": "4.4.0"
+  "version": "4.5.0"
 }

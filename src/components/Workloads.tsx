@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
 import { CircularProgress } from '@mui/material'
-import useStatus from 'hooks/useStatus'
+import { useSocket } from 'providers/Socket'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -68,7 +68,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     },
   } = useSession()
   const { t } = useTranslation()
-  const status = useStatus()
+  const { statuses } = useSocket()
   // END HOOKS
   const headCells: HeadCell[] = [
     {
@@ -89,7 +89,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.workloads?.[row.name]),
+      renderer: (row: Row) => getStatus(statuses?.workloads?.[row.name]),
     },
   ]
 
