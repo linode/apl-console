@@ -94,7 +94,9 @@ export default function ({
   const initialNameRef = useRef(data?.[nameProp]) // Store initial name once
   const initialName = initialNameRef.current // Always refer to the initial name
   const docUrl =
-    schema && schema['x-externalDocsPath'] ? `https://apl-docs.net/${schema['x-externalDocsPath']}` : undefined
+    schema && schema['x-externalDocsPath']
+      ? `https://techdocs.akamai.com/app-platform/docs/${schema['x-externalDocsPath']}`
+      : undefined
   const keepValues = [[{}]] // rjsf structs that open parts of the form, may not be stripped
   const onChangeWrapper = ({ formData, errors }: IChangeEvent<Record<string, unknown>>) => {
     // lets check if form data is dirty (has meaningful changes)

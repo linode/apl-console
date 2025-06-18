@@ -161,7 +161,7 @@ export default function CreateEditBuilds({
       <PaperLayout loading={isLoading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/for-devs/console/container-images'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/team-container-images'
           title={buildName ? buildData.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
