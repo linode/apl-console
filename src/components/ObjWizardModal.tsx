@@ -131,7 +131,7 @@ export default function StyledModal() {
               />
               <Typography variant='body2' mt={2}>
                 <Link
-                  href='https://apl-docs.net/docs/get-started/installation/akamai-connected-cloud#provision-object-storage-for-the-application-platform'
+                  href='https://techdocs.akamai.com/app-platform/docs/lke-automatic-install#provision-object-storage-for-the-app-platform'
                   target='_blank'
                   rel='noopener'
                 >
