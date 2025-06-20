@@ -6,7 +6,7 @@ import { GetTeamBuildsApiResponse } from 'redux/otomiApi'
 import { Box, Tooltip, Typography } from '@mui/material'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
-import useStatus from 'hooks/useStatus'
+import { useSocket } from 'providers/Socket'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
@@ -125,7 +125,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
       cluster: { domainSuffix },
     },
   } = useSession()
-  const status = useStatus()
+  const { statuses } = useSocket()
 
   const { t } = useTranslation()
   // END HOOKS
@@ -163,7 +163,7 @@ export default function ({ builds, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(status?.builds?.[row.name]),
+      renderer: (row: Row) => getStatus(statuses?.builds?.[row.name]),
     },
   ]
 

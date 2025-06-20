@@ -314,11 +314,17 @@ const injectedRtkApi = api.injectEndpoints({
     getK8SVersion: build.query<GetK8SVersionApiResponse, GetK8SVersionApiArg>({
       query: () => ({ url: `/v1/k8sVersion` }),
     }),
-    connectCloudtty: build.mutation<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'POST', body: queryArg.body }),
+    connectAplCloudtty: build.query<ConnectAplCloudttyApiResponse, ConnectAplCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v2/cloudtty`, params: { teamId: queryArg.teamId } }),
+    }),
+    deleteAplCloudtty: build.mutation<DeleteAplCloudttyApiResponse, DeleteAplCloudttyApiArg>({
+      query: () => ({ url: `/v2/cloudtty`, method: 'DELETE' }),
+    }),
+    connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
+      query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', body: queryArg.body }),
+      query: () => ({ url: `/v1/cloudtty`, method: 'DELETE' }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
@@ -4373,43 +4379,24 @@ export type EditAplPolicyApiArg = {
 }
 export type GetK8SVersionApiResponse = /** status 200 Successfully obtained k8s version */ string
 export type GetK8SVersionApiArg = void
-export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
-  id?: string
-  teamId: string
-  domain: string
-  emailNoSymbols: string
+export type ConnectAplCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   iFrameUrl?: string
-  isAdmin: boolean
-  userTeams?: string[]
-  sub?: string
+}
+export type ConnectAplCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
+export type DeleteAplCloudttyApiResponse = unknown
+export type DeleteAplCloudttyApiArg = void
+export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
+  iFrameUrl?: string
 }
 export type ConnectCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
+  /** Id of the team */
+  teamId?: string
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = {
-  /** Cloudtty object */
-  body: {
-    id?: string
-    teamId: string
-    domain: string
-    emailNoSymbols: string
-    iFrameUrl?: string
-    isAdmin: boolean
-    userTeams?: string[]
-    sub?: string
-  }
-}
+export type DeleteCloudttyApiArg = void
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
@@ -4490,13 +4477,7 @@ export type DeleteUserApiArg = {
 }
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
-  email: string
-  firstName: string
-  lastName: string
-  isPlatformAdmin?: boolean
-  isTeamAdmin?: boolean
   teams?: string[]
-  initialPassword?: string
 }[]
 export type EditTeamUsersApiArg = {
   /** ID of team */
@@ -4504,9 +4485,6 @@ export type EditTeamUsersApiArg = {
   /** User object that contains updated values */
   body: {
     id?: string
-    email?: string
-    isPlatformAdmin?: boolean
-    isTeamAdmin?: boolean
     teams?: string[]
   }[]
 }
@@ -7939,7 +7917,9 @@ export const {
   useGetAplPolicyQuery,
   useEditAplPolicyMutation,
   useGetK8SVersionQuery,
-  useConnectCloudttyMutation,
+  useConnectAplCloudttyQuery,
+  useDeleteAplCloudttyMutation,
+  useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
   useGetAllUsersQuery,
   useCreateUserMutation,

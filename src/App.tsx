@@ -22,6 +22,7 @@ import Team from 'pages/teams/create-edit'
 import Teams from 'pages/teams/overview'
 import Policies from 'pages/Policies'
 import SessionProvider from 'providers/Session'
+import SocketProvider from 'providers/Socket'
 import ThemeProvider from 'theme'
 import React, { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -29,7 +30,6 @@ import Helmet from 'react-helmet'
 import { Provider } from 'react-redux'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { store } from 'redux/store'
-import { IoProvider } from 'socket.io-react-hook'
 import Backup from 'pages/Backup'
 import Netpol from 'pages/Netpol'
 import LoadingScreen from 'components/LoadingScreen'
@@ -77,7 +77,7 @@ function App() {
               <Router basename={contextPath}>
                 <ErrorBoundary FallbackComponent={Error}>
                   <CacheProvider value={muiCache}>
-                    <IoProvider>
+                    <SocketProvider>
                       <SessionProvider>
                         <ShellDrawerProvider>
                           <CollapseDrawerProvider>
@@ -200,7 +200,7 @@ function App() {
                           </CollapseDrawerProvider>
                         </ShellDrawerProvider>
                       </SessionProvider>
-                    </IoProvider>
+                    </SocketProvider>
                   </CacheProvider>
                 </ErrorBoundary>
               </Router>
