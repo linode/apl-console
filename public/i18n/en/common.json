@@ -45,6 +45,8 @@
   "SealedSecret_plural": "Sealed Secrets",
   "Netpol": "Network Policy",
   "Netpol_plural": "Network Policies",
+  "Inbound Rule_plural": "Inbound Rules",
+  "Outbound Rule_plural": "Outbound Rules",
   "Secrets": "Secrets",
   "Service": "Service",
   "Service_plural": "Services",
