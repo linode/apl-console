@@ -145,7 +145,7 @@ export default function ({
       })
     }
 
-    if (teamId === 'admin' && !serviceName) setValue('spec.namespace', `team-admin`)
+    if (teamId !== 'admin' && !serviceName) setValue('spec.namespace', `team-${teamId}`)
   }, [data, setValue])
 
   useEffect(() => {
