@@ -4477,13 +4477,7 @@ export type DeleteUserApiArg = {
 }
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
-  email: string
-  firstName: string
-  lastName: string
-  isPlatformAdmin?: boolean
-  isTeamAdmin?: boolean
   teams?: string[]
-  initialPassword?: string
 }[]
 export type EditTeamUsersApiArg = {
   /** ID of team */
@@ -4491,9 +4485,6 @@ export type EditTeamUsersApiArg = {
   /** User object that contains updated values */
   body: {
     id?: string
-    email?: string
-    isPlatformAdmin?: boolean
-    isTeamAdmin?: boolean
     teams?: string[]
   }[]
 }

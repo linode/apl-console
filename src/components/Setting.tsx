@@ -65,6 +65,7 @@ export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, setting
       isMultitenant: { 'ui:widget': 'hidden' },
       isPreInstalled: { 'ui:widget': 'hidden' },
       adminPassword: { 'ui:widget': 'hidden' },
+      useORCS: { 'ui:widget': 'hidden' },
     },
     kms: {
       sops: {
