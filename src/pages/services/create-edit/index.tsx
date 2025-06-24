@@ -196,7 +196,6 @@ export default function ({
     } else if (body.spec?.cname?.tlsSecretName) body.spec.useCname = true
 
     if (body.spec?.ingressClassName === '') body.spec.ingressClassName = undefined
-    if (isPreInstalled) body.spec.ingressClassName = 'platform'
     if (serviceName) update({ teamId, serviceName, body })
     else create({ teamId, body })
   }
