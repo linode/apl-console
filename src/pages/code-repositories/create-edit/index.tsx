@@ -207,7 +207,7 @@ export default function CreateEditCodeRepositories({
       <PaperLayout loading={loading || error} title={t('TITLE_CODE_REPOSITORY')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/for-devs/console/code-repositories'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/code-repositories'
           title={codeRepositoryName ? data.name : 'Add'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
