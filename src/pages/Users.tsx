@@ -30,6 +30,6 @@ export default function ({
 
   const { t } = useTranslation()
   // END HOOKS
-  const comp = allUsers && <Users users={allUsers} teamId={teamId} />
+  const comp = allUsers && <Users users={allUsers} refetch={refetchAllUsers} teamId={teamId} />
   return <PaperLayout loading={isLoadingAllUsers} comp={comp} title={t('TITLE_USERS', { scope: getRole(teamId) })} />
 }

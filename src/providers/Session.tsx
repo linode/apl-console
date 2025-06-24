@@ -105,7 +105,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
-  const { corrupt, editor, user } = ctx
+  const { editor, user } = ctx
   const { isPlatformAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
@@ -114,20 +114,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     snack.close(keys[key])
     delete keys[key]
   }
-  // special one for corrupt state
-  useEffect(() => {
-    if (corrupt) {
-      keys.conflict = snack.error(
-        `${t('Git conflict detected due to upstream changes. The database has been restored.')}`,
-        {
-          persist: true,
-          onClick: () => {
-            closeKey('conflict')
-          },
-        },
-      )
-    } else closeKey('conflict')
-  }, [corrupt])
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
     if (isDirty === undefined) return

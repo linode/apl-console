@@ -89,7 +89,18 @@ function UserTeamSelector({
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Checkbox disabled={isDisabled} checked={row?.teams?.includes(teamId)} onChange={handleUserTeamToggle} />
+      <Tooltip
+        title={
+          isDisabled
+            ? 'Team admins are permitted to add or remove users only within the teams they manage. However, they cannot remove themselves or other team admins from those teams.'
+            : ''
+        }
+        placement='right'
+      >
+        <span>
+          <Checkbox disabled={isDisabled} checked={row?.teams?.includes(teamId)} onChange={handleUserTeamToggle} />
+        </span>
+      </Tooltip>
     </Box>
   )
 }
@@ -105,9 +116,10 @@ const updateUsers = (onClick: () => void, disabled: boolean) => {
 interface Props {
   users: GetAllUsersApiResponse
   teamId?: string
+  refetch: () => void
 }
 
-export default function ({ users: inUsers, teamId }: Props): React.ReactElement {
+export default function ({ users: inUsers, teamId, refetch }: Props): React.ReactElement {
   const [users, setUsers] = useState<GetAllUsersApiResponse>(inUsers)
   const {
     user: sessionUser,
@@ -157,7 +169,13 @@ export default function ({ users: inUsers, teamId }: Props): React.ReactElement 
   ]
 
   const handleUpdateUsers = () => {
-    update({ teamId, body: users })
+    const body = users.map((user) => ({
+      id: user.id,
+      teams: user.teams || [],
+    }))
+    update({ teamId, body }).then(() => {
+      refetch()
+    })
   }
 
   if (hasExternalIDP) {
