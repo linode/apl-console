@@ -13,6 +13,8 @@ export default function NavConfig() {
   const { ca, appsEnabled, oboTeamId, user, settings } = useSession()
   const hasExternalIDP = settings?.otomi?.hasExternalIDP ?? false
   const isManaged = settings?.otomi?.isPreInstalled ?? false
+  const hasApiServerConfigured = settings?.cluster?.apiServer ?? false
+
   const downloadOpts = {
     data: ca ?? '',
     title: 'Click to download the custom root CA used to generate the browser certs.',
@@ -90,7 +92,7 @@ export default function NavConfig() {
           title: 'Download KUBECFG',
           path: `/api/v1/kubecfg/${oboTeamId}`,
           icon: getIcon('download_icon.svg'),
-          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeconfig'),
+          disabled: oboTeamId === 'admin' || !canDo(user, oboTeamId, 'downloadKubeconfig') || !hasApiServerConfigured,
           isDownload: true,
         },
         {

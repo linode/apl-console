@@ -1,9 +1,8 @@
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { setSpec } from 'common/api-spec'
 import LoadingScreen from 'components/LoadingScreen'
-import MessageTekton from 'components/MessageTekton'
 import { useLocalStorage } from 'hooks/useLocalStorage'
-import { ProviderContext, SnackbarKey } from 'notistack'
+import { SnackbarKey } from 'notistack'
 import Logout from 'pages/Logout'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +16,6 @@ import {
   useGetSettingsInfoQuery,
   useV1ApiDocsQuery,
 } from 'redux/otomiApi'
-import { useSocket, useSocketEvent } from 'socket.io-react-hook'
 import {
   ApiErrorGatewayTimeout,
   ApiErrorServiceUnavailable,
@@ -68,13 +66,6 @@ interface Props {
   children: any
 }
 
-type DbMessage = {
-  state: 'clean' | 'corrupt' | 'dirty'
-  editor: string
-  reason: 'deploy' | 'revert' | 'restore' | 'conflict' | 'started' | 'restored' | 'reloaded'
-  sha: string
-}
-
 export default function SessionProvider({ children }: Props): React.ReactElement {
   const { pathname } = useLocation()
   const skipFetch = pathname === '/logout' || pathname === '/platform-logout'
@@ -85,8 +76,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     refetch: refetchSession,
     error: sessionError,
   } = useGetSessionQuery(skipFetch && skipToken)
-  const url = `${window.location.origin.replace(/^http/, 'ws')}`
-  const path = '/api/ws'
   const {
     data: settings,
     isLoading: isLoadingSettings,
@@ -97,12 +86,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
-  const { data: apiDocs, isLoading: isLoadingApiDocs, error: errorApiDocs } = useV1ApiDocsQuery(skipFetch && skipToken)
-  const { socket, error: errorSocket } = useSocket({ url, path })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const { lastMessage: lastDbMessage } = useSocketEvent<DbMessage>(socket, 'db')
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const { lastMessage: lastTektonMessage } = useSocketEvent<any>(socket, 'tekton')
+  const { data: apiDocs, isLoading: isLoadingApiDocs } = useV1ApiDocsQuery(skipFetch && skipToken)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo
@@ -121,7 +105,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     }),
     [appsEnabled, oboTeamId, session, settings],
   )
-  const { corrupt, editor, user } = ctx
+  const { editor, user } = ctx
   const { isPlatformAdmin, teams } = user || {}
   const { t } = useTranslation()
   const [keys] = useState<Record<string, SnackbarKey | undefined>>({})
@@ -130,46 +114,6 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     snack.close(keys[key])
     delete keys[key]
   }
-  useEffect(() => {
-    if (!lastDbMessage) return
-    const { state, reason } = lastDbMessage
-
-    // initiated by system
-    if (state === 'clean') {
-      if (reason === 'conflict') {
-        snack.info(
-          `${t('The database updated to the latest commit (reason: {{reason}}).', {
-            editor: 'system',
-            reason,
-          })}`,
-        )
-      }
-      if (reason === 'restored') {
-        snack.info(
-          `${t('The database restored to the previous commit (reason: {{reason}}).', {
-            editor: 'system',
-            reason,
-          })}`,
-        )
-      }
-    }
-    // global messages
-    if (state === 'corrupt' && reason === 'deploy') refetchSession()
-  }, [lastDbMessage])
-  // special one for corrupt state
-  useEffect(() => {
-    if (corrupt) {
-      keys.conflict = snack.error(
-        `${t('Git conflict detected due to upstream changes. The database has been restored.')}`,
-        {
-          persist: true,
-          onClick: () => {
-            closeKey('conflict')
-          },
-        },
-      )
-    } else closeKey('conflict')
-  }, [corrupt])
   // separate one for isDirty so we can be sure only that has changed
   useEffect(() => {
     if (isDirty === undefined) return
@@ -185,31 +129,9 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (isDirty) refetchSession()
   }, [isDirty])
 
-  // Tekton events
-  useEffect(() => {
-    if (!lastTektonMessage) return
-    const domainSuffix = settings?.cluster?.domainSuffix
-    const { order, name, completionTime, sha, status } = lastTektonMessage
-    const interest = [
-      { type: 'error', cond: status === 'failed', time: completionTime },
-      { type: 'success', cond: ['succeeded', 'completed'].includes(status), time: completionTime },
-    ]
-    interest.forEach((msg) => {
-      const datetime = new Date(msg.time).toLocaleTimeString(window.navigator.language)
-      if (!msg.cond) return
-      keys[`tekton-${msg.type}`] = (snack[msg.type] as ProviderContext['enqueueSnackbar'])(
-        <MessageTekton {...{ datetime, domainSuffix, order, name, sha, status }} />,
-      )
-      // pull in latest state as it might have changed
-      if (status !== 'pending') refetchSession()
-    })
-  }, [lastTektonMessage])
-
   // END HOOKS
   if (isLoadingSession) return <LoadingScreen />
   // if an error occured we keep rendering and let the error component show what happened
-  if (errorSocket)
-    keys.socket = snack.warning(`${t('Could not establish socket connection. Retrying...')}`, { key: keys.socket })
   // no error and we stopped loading, so we can check the user
   if (sessionError) {
     const { originalStatus, status, data } = sessionError as any
