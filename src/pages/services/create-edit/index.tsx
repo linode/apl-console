@@ -1,5 +1,5 @@
 /* eslint-disable dot-notation */
-import { Box, Button, Divider, Grid } from '@mui/material'
+import { Box, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -27,11 +27,12 @@ import { MenuItem } from 'components/List'
 import { Typography } from 'components/Typography'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
-import { isEmpty } from 'lodash'
+import { cloneDeep, isEmpty, isEqual } from 'lodash'
 import LinkedNumberField from 'components/forms/LinkedNumberField'
 import AdvancedSettings from 'components/AdvancedSettings'
 import font from 'theme/font'
 import { Autocomplete } from 'components/forms/Autocomplete'
+import { LoadingButton } from '@mui/lab'
 import { useStyles } from './create-edit.styles'
 import { serviceApiResponseSchema } from './create-edit.validator'
 
@@ -143,6 +144,8 @@ export default function ({
         if (path.includes('/')) setValue(`spec.paths.${index}`, path.replace(/^\/+/, ''))
       })
     }
+
+    if (teamId !== 'admin' && !serviceName) setValue('spec.namespace', `team-${teamId}`)
   }, [data, setValue])
 
   useEffect(() => {
@@ -181,17 +184,20 @@ export default function ({
     }
   }
   const onSubmit = (submitData: CreateAplServiceApiResponse) => {
-    if (!isEmpty(submitData.spec?.paths)) {
-      submitData.spec?.paths.forEach((path, index) => {
-        submitData.spec.paths[index] = `/${path}`
+    const body = cloneDeep(submitData)
+    if (!isEmpty(body.spec?.paths)) {
+      body.spec?.paths.forEach((path, index) => {
+        body.spec.paths[index] = `/${path}`
       })
     }
-    if (submitData.spec?.cname?.tlsSecretName === '') submitData.spec.cname.tlsSecretName = undefined
-    if (submitData.spec?.ingressClassName === '') submitData.spec.ingressClassName = undefined
-    if (isPreInstalled) submitData.spec.ingressClassName = 'platform'
-    // eslint-disable-next-line object-shorthand
-    if (serviceName) update({ teamId, serviceName: serviceName, body: submitData })
-    else create({ teamId, body: submitData })
+    if (body.spec?.cname?.tlsSecretName === '') {
+      body.spec.cname.tlsSecretName = undefined
+      body.spec.useCname = false
+    } else if (body.spec?.cname?.tlsSecretName) body.spec.useCname = true
+
+    if (body.spec?.ingressClassName === '') body.spec.ingressClassName = undefined
+    if (serviceName) update({ teamId, serviceName, body })
+    else create({ teamId, body })
   }
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
@@ -202,7 +208,7 @@ export default function ({
   const error = isError || isErrorK8sServices || isErrorTeamSecrets || isErrorSettingsInfo
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
-  if (teamId !== 'admin') setValue('spec.namespace', `team-${teamId}`)
+
   return (
     <Grid className={classes.root}>
       <PaperLayout loading={loading || error} title={t('TITLE_SERVICE')}>
@@ -454,17 +460,20 @@ export default function ({
                   resourceType='service'
                   data-cy='button-delete-service'
                   sx={{ marginRight: '10px', textTransform: 'capitalize', ml: 2 }}
+                  loading={isLoadingDelete}
+                  disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
                 />
               )}
-              <Button
-                disabled={isEmpty(service)}
+              <LoadingButton
                 type='submit'
                 variant='contained'
                 color='primary'
                 sx={{ textTransform: 'none' }}
+                loading={isLoadingCreate || isLoadingUpdate}
+                disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(watch(), data)}
               >
                 {serviceName ? 'Save Changes' : 'Create Service'}
-              </Button>
+              </LoadingButton>
             </Box>
           </form>
         </FormProvider>
