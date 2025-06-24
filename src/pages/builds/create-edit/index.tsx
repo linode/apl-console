@@ -126,14 +126,14 @@ export default function CreateEditBuilds({
   } = methods
 
   useEffect(() => {
-    if (!buildData) return
+    if (!buildData || isLoadingCodeRepos) return
     reset(buildData)
     const modeType = watch('mode.type')
     const repoUrl = watch(`mode.${modeType}.repoUrl`)
     const codeRepo = codeRepos?.find((codeRepo) => codeRepo.repositoryUrl === repoUrl)
     setRepoName(codeRepo?.name || '')
     setGitService(codeRepo?.gitService || '')
-  }, [buildData, setValue])
+  }, [buildData, isLoadingCodeRepos, setValue])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete || isLoadingCodeRepos
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/container-images`} />
@@ -161,7 +161,7 @@ export default function CreateEditBuilds({
       <PaperLayout loading={isLoading} title={t('TITLE_CONTAINER_IMAGE', { buildName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://apl-docs.net/docs/for-devs/console/container-images'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/team-container-images'
           title={buildName ? buildData.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
