@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Grid, MenuItem } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
@@ -6,12 +6,18 @@ import {
   useCreateNetpolMutation,
   useDeleteNetpolMutation,
   useEditNetpolMutation,
+  useGetAllAplWorkloadsQuery,
+  useGetK8SWorkloadPodLabelsQuery,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useEffect, useState } from 'react'
+import { TextField } from 'components/forms/TextField'
+import { Autocomplete } from 'components/forms/Autocomplete'
+import FormRow from 'components/forms/FormRow'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 
@@ -27,6 +33,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
 
+  const [activeWorkload, setActiveWorkload] = useState('')
+
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
     useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
@@ -34,6 +42,18 @@ export default function NetworkPoliciesIngressCreateEditPage({
   const { data, isLoading, isFetching, isError, refetch } = useGetNetpolQuery(
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
+  )
+  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
+  const {
+    data: workloadPodLabels,
+    isLoading: isLoadingWorkloadPodlabels,
+    refetch: refetchWorkloadPodLabels,
+  } = useGetK8SWorkloadPodLabelsQuery(
+    {
+      teamId,
+      workloadName: activeWorkload,
+    },
+    { skip: !activeWorkload },
   )
 
   const mergedDefaultValues = createIngressSchema.cast(data)
@@ -52,6 +72,23 @@ export default function NetworkPoliciesIngressCreateEditPage({
     setValue,
   } = methods
 
+  useEffect(() => {
+    if (aplWorkloads) console.log('Available APL Workloads:', aplWorkloads)
+  }, [aplWorkloads])
+
+  useEffect(() => {
+    if (activeWorkload) {
+      console.log('activeworkload', activeWorkload)
+      refetchWorkloadPodLabels()
+    }
+  }, [activeWorkload])
+
+  useEffect(() => {
+    if (workloadPodLabels) console.log('workloadpodlabels', workloadPodLabels)
+  }, [workloadPodLabels])
+
+  if (isLoading || isLoadingAplWorkloads) return <PaperLayout loading />
+
   return (
     <Grid className={classes.root}>
       <PaperLayout>
@@ -64,7 +101,35 @@ export default function NetworkPoliciesIngressCreateEditPage({
         />
         <FormProvider {...methods}>
           <form>
-            <Section>{/* <Textfield /> */}</Section>
+            <Section title='Add inbound rule'>
+              <FormRow spacing={10}>
+                <TextField
+                  label='Workload'
+                  width='large'
+                  select
+                  onChange={(e) => {
+                    const value = e.target.value
+                    setActiveWorkload(value)
+                  }}
+                >
+                  <MenuItem key='select-a-workload' value='' disabled classes={undefined}>
+                    Select a workload
+                  </MenuItem>
+                  {aplWorkloads?.map((workload) => (
+                    <MenuItem key={workload.metadata.name} value={workload.metadata.name} classes={undefined}>
+                      {workload.metadata.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Autocomplete
+                  label='Label(s)'
+                  multiple
+                  width='large'
+                  disablePortal={false}
+                  options={Object.entries(workloadPodLabels ?? {}).map(([key, value]) => `${key}: ${value}`)}
+                />
+              </FormRow>
+            </Section>
           </form>
         </FormProvider>
       </PaperLayout>
