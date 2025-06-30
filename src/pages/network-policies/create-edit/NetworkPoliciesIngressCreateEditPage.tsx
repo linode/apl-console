@@ -1,4 +1,4 @@
-import { Grid, MenuItem } from '@mui/material'
+import { Grid } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
@@ -7,19 +7,21 @@ import {
   useDeleteNetpolMutation,
   useEditNetpolMutation,
   useGetAllAplWorkloadsQuery,
-  useGetK8SWorkloadPodLabelsQuery,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
-import { RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { useEffect, useState } from 'react'
+import { Divider } from 'components/Divider'
+import { InputLabel } from 'components/InputLabel'
 import { TextField } from 'components/forms/TextField'
-import { Autocomplete } from 'components/forms/Autocomplete'
-import FormRow from 'components/forms/FormRow'
+import { LoadingButton } from '@mui/lab'
+import DeleteButton from 'components/DeleteButton'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
+import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
+import NetworkPolicyTargetLabelRow from './NetworkPolicyTargetPodLabelRow'
 
 interface Params {
   teamId?: string
@@ -33,8 +35,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
 
-  const [activeWorkload, setActiveWorkload] = useState('')
-
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
     useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
@@ -44,22 +44,20 @@ export default function NetworkPoliciesIngressCreateEditPage({
     { skip: !networkPolicyName },
   )
   const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
-  const {
-    data: workloadPodLabels,
-    isLoading: isLoadingWorkloadPodlabels,
-    refetch: refetchWorkloadPodLabels,
-  } = useGetK8SWorkloadPodLabelsQuery(
-    {
-      teamId,
-      workloadName: activeWorkload,
-    },
-    { skip: !activeWorkload },
-  )
 
   const mergedDefaultValues = createIngressSchema.cast(data)
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createIngressSchema) as Resolver<CreateNetpolApiResponse>,
-    defaultValues: mergedDefaultValues,
+    defaultValues: {
+      teamId,
+      ruleType: {
+        type: 'ingress',
+        ingress: {
+          mode: 'AllowOnly',
+          allow: [], // start with empty array
+        },
+      },
+    },
   })
 
   const {
@@ -72,22 +70,19 @@ export default function NetworkPoliciesIngressCreateEditPage({
     setValue,
   } = methods
 
-  useEffect(() => {
-    if (aplWorkloads) console.log('Available APL Workloads:', aplWorkloads)
-  }, [aplWorkloads])
+  console.log('current values', watch())
 
-  useEffect(() => {
-    if (activeWorkload) {
-      console.log('activeworkload', activeWorkload)
-      refetchWorkloadPodLabels()
-    }
-  }, [activeWorkload])
+  console.log('paramparamparam', teamId, networkPolicyName)
 
-  useEffect(() => {
-    if (workloadPodLabels) console.log('workloadpodlabels', workloadPodLabels)
-  }, [workloadPodLabels])
+  const onSubmit = (body: CreateNetpolApiResponse) => {
+    create({ teamId, body })
+  }
 
   if (isLoading || isLoadingAplWorkloads) return <PaperLayout loading />
+
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
+    return <Redirect to={`/teams/${teamId}/network-policies`} />
 
   return (
     <Grid className={classes.root}>
@@ -100,36 +95,48 @@ export default function NetworkPoliciesIngressCreateEditPage({
           hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='Add inbound rule'>
-              <FormRow spacing={10}>
-                <TextField
-                  label='Workload'
-                  width='large'
-                  select
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setActiveWorkload(value)
-                  }}
-                >
-                  <MenuItem key='select-a-workload' value='' disabled classes={undefined}>
-                    Select a workload
-                  </MenuItem>
-                  {aplWorkloads?.map((workload) => (
-                    <MenuItem key={workload.metadata.name} value={workload.metadata.name} classes={undefined}>
-                      {workload.metadata.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <Autocomplete
-                  label='Label(s)'
-                  multiple
-                  width='large'
-                  disablePortal={false}
-                  options={Object.entries(workloadPodLabels ?? {}).map(([key, value]) => `${key}: ${value}`)}
-                />
-              </FormRow>
+              <TextField
+                label='Inbound rule name'
+                width='large'
+                value={watch('name')}
+                onChange={(e) => {
+                  const value = e.target.value
+                  setValue('name', value)
+                }}
+              />
+              <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
+              <NetworkPolicyPodLabelRow
+                aplWorkloads={aplWorkloads}
+                teamId={teamId}
+                fieldArrayName='ruleType.ingress.allow'
+              />
+              <Divider />
+              <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
+              <NetworkPolicyTargetLabelRow aplWorkloads={aplWorkloads} teamId={teamId} prefixName='ruleType.ingress' />
             </Section>
+            {networkPolicyName && (
+              <DeleteButton
+                onDelete={() => del({ teamId, netpolName: networkPolicyName })}
+                resourceName='blue-to-green'
+                resourceType='netpol'
+                data-cy='button-delete-netpol'
+                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+                loading={isLoadingDelete}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+              />
+            )}
+            <LoadingButton
+              type='submit'
+              variant='contained'
+              color='primary'
+              loading={isLoadingCreate || isLoadingUpdate}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              sx={{ float: 'right', textTransform: 'none' }}
+            >
+              {networkPolicyName ? 'Save Changes' : 'Create Network Policy'}
+            </LoadingButton>
           </form>
         </FormProvider>
       </PaperLayout>

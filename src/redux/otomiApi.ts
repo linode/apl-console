@@ -53,6 +53,12 @@ const injectedRtkApi = api.injectEndpoints({
     getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
+    getK8SWorkloadPodLabels: build.query<GetK8SWorkloadPodLabelsApiResponse, GetK8SWorkloadPodLabelsApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/teams/${queryArg.teamId}/kubernetes/networkpolicies`,
+        params: { workloadName: queryArg.workloadName, namespace: queryArg['namespace'] },
+      }),
+    }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
     }),
@@ -1416,7 +1422,7 @@ export type CreateServiceApiArg = {
         )
   }
 }
-export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
+export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kubernetes services */ {
   name: string
   ports?: number[]
   managedByKnative?: boolean
@@ -1424,6 +1430,16 @@ export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained
 export type GetTeamK8SServicesApiArg = {
   /** ID of team */
   teamId: string
+}
+export type GetK8SWorkloadPodLabelsApiResponse =
+  /** status 200 Successfully obtained Podlabels from given workload */ any
+export type GetK8SWorkloadPodLabelsApiArg = {
+  /** ID of team */
+  teamId: string
+  /** name of the workload to get Podlabels from */
+  workloadName?: string
+  /** namespace of the workload to get Podlabels from */
+  namespace?: string
 }
 export type GetServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
   id?: string
@@ -7514,6 +7530,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       value?: string
     }[]
     version: string
+    useORCS?: boolean
   }
   versions?: {
     version: string
@@ -7776,6 +7793,7 @@ export type EditSettingsApiArg = {
         value?: string
       }[]
       version: string
+      useORCS?: boolean
     }
     versions?: {
       version: string
@@ -7846,6 +7864,7 @@ export const {
   useGetTeamServicesQuery,
   useCreateServiceMutation,
   useGetTeamK8SServicesQuery,
+  useGetK8SWorkloadPodLabelsQuery,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,

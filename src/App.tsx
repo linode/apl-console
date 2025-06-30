@@ -193,7 +193,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/teams/:teamId/network-policies/:netpolName'
+                                  path='/teams/:teamId/network-policies/:networkPolicyName'
                                   component={NetworkPoliciesCreateEditPage}
                                   exact
                                 />
