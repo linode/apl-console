@@ -1,4 +1,4 @@
-import { Grid } from '@mui/material'
+import { Button, Grid, IconButton } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
@@ -9,7 +9,7 @@ import {
   useGetAllAplWorkloadsQuery,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
-import { FormProvider, Resolver, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import Section from 'components/Section'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -18,6 +18,8 @@ import { InputLabel } from 'components/InputLabel'
 import { TextField } from 'components/forms/TextField'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
+import { Delete as DeleteIcon } from '@mui/icons-material'
+import { useEffect } from 'react'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -35,17 +37,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
-    useCreateNetpolMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
-  )
-  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
-
-  const mergedDefaultValues = createIngressSchema.cast(data)
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createIngressSchema) as Resolver<CreateNetpolApiResponse>,
     defaultValues: {
@@ -54,31 +45,57 @@ export default function NetworkPoliciesIngressCreateEditPage({
         type: 'ingress',
         ingress: {
           mode: 'AllowOnly',
-          allow: [], // start with empty array
+          allow: [],
         },
       },
     },
   })
-
   const {
     control,
-    register,
-    reset,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
-    setValue,
   } = methods
 
-  console.log('current values', watch())
+  // FieldArray for multiple source rows
+  const {
+    fields: sourceFields,
+    append: appendSource,
+    remove: removeSource,
+  } = useFieldArray({ control, name: 'ruleType.ingress.allow' })
 
-  console.log('paramparamparam', teamId, networkPolicyName)
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
+  const {
+    data,
+    isLoading: isLoadingFetch,
+    refetch,
+  } = useGetNetpolQuery({ teamId, netpolName: networkPolicyName }, { skip: !networkPolicyName })
+  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
+
+  // When editing, reset form with fetched data
+  useEffect(() => {
+    if (data) {
+      const defaultValues = createIngressSchema.cast(data)
+      reset(defaultValues)
+    }
+  }, [data, reset])
+
+  console.log('watch values', watch())
+  console.log('error values', errors)
 
   const onSubmit = (body: CreateNetpolApiResponse) => {
-    create({ teamId, body })
+    const rawAllow = body.ruleType.ingress.allow as any[]
+    const merged = rawAllow.flat ? rawAllow.flat() : rawAllow
+    body.ruleType.ingress.allow = merged
+
+    if (networkPolicyName) update({ teamId, body })
+    else create({ teamId, body })
   }
 
-  if (isLoading || isLoadingAplWorkloads) return <PaperLayout loading />
+  if (isLoadingFetch || isLoadingAplWorkloads) return <PaperLayout loading />
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
@@ -90,8 +107,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'
-          title={networkPolicyName ? data.name : 'Create'}
-          // hides the first two crumbs (e.g. /teams/teamName)
+          title={networkPolicyName ? data?.name : 'Create'}
           hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
@@ -101,25 +117,51 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 label='Inbound rule name'
                 width='large'
                 value={watch('name')}
-                onChange={(e) => {
-                  const value = e.target.value
-                  setValue('name', value)
-                }}
+                onChange={(e) => methods.setValue('name', e.target.value)}
               />
+
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
-              <NetworkPolicyPodLabelRow
-                aplWorkloads={aplWorkloads}
-                teamId={teamId}
-                fieldArrayName='ruleType.ingress.allow'
-              />
-              <Divider />
+
+              {sourceFields.map((field, index) => (
+                <div
+                  key={field.id}
+                  style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}
+                >
+                  <NetworkPolicyPodLabelRow
+                    aplWorkloads={aplWorkloads}
+                    teamId={teamId}
+                    fieldArrayName={`ruleType.ingress.allow.${index}`}
+                  />
+                  <IconButton
+                    aria-label='remove source'
+                    onClick={() => removeSource(index)}
+                    size='small'
+                    sx={{ mt: 1 }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+
+              <Button
+                variant='outlined'
+                onClick={() => appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })}
+              >
+                Add Source
+              </Button>
+
+              <Divider sx={{ marginY: 4 }} />
+
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
+
+              {/* Similar multi-row setup can be done for targets if needed */}
               <NetworkPolicyTargetLabelRow aplWorkloads={aplWorkloads} teamId={teamId} prefixName='ruleType.ingress' />
             </Section>
+
             {networkPolicyName && (
               <DeleteButton
                 onDelete={() => del({ teamId, netpolName: networkPolicyName })}
-                resourceName='blue-to-green'
+                resourceName={networkPolicyName}
                 resourceType='netpol'
                 data-cy='button-delete-netpol'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
@@ -127,6 +169,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
             )}
+
             <LoadingButton
               type='submit'
               variant='contained'
