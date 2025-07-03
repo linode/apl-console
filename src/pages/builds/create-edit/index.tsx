@@ -150,6 +150,15 @@ export default function CreateEditBuilds({
     }
   }
 
+  const extraArgumentsError = () => {
+    const envVarErrors = errors?.mode?.[`${watch('mode.type')}`]?.envVars
+    if (!envVarErrors) return undefined
+    const idx = envVarErrors.findIndex((envVar) => envVar?.name?.message)
+    if (idx === -1) return undefined
+    const message = envVarErrors[idx]?.name?.message?.toString()
+    return `Error in argument ${Number(idx) + 1}: ${message}`
+  }
+
   if (isLoading || isError || (buildName && !watch('name')))
     return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
@@ -304,11 +313,12 @@ export default function CreateEditBuilds({
                 title='Extra arguments'
                 subTitle='Additional arguments to pass on to the build executor'
                 keyLabel='Name'
-                valueLabel='Value'
+                valueLabel='Value (optional)'
                 addLabel='Add argument'
                 compressed
                 name={`mode.${watch('mode.type')}.envVars`}
                 {...register(`mode.${watch('mode.type')}.envVars`)}
+                errorText={extraArgumentsError()}
               />
 
               <Divider sx={{ mt: 2, mb: 2 }} />
