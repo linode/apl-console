@@ -2,12 +2,11 @@
 
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
-import { TextField } from 'components/forms/TextField'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
-import { MenuItem } from '@mui/material'
-import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel } from './NetworkPolicyPodLabelMatchHelper'
+// field‐array logic for react-hook-form
 
 interface Props {
   aplWorkloads: any[]
@@ -21,9 +20,15 @@ interface PodLabelMatch {
   fromLabelValue?: string
 }
 
+interface ActiveLabel {
+  label: string
+  namespace: string
+}
+
 export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName }: Props) {
   const { control } = useFormContext()
   const [activeWorkload, setActiveWorkload] = useState<string>('')
+  const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
 
   // derive namespace from the selected workload
   const namespace = useMemo(() => {
@@ -32,18 +37,33 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
     return `team-${teamLabel}`
   }, [activeWorkload, aplWorkloads])
 
+  // 1) build and sort workload options
+  const workloadOptions = useMemo(() => {
+    return aplWorkloads
+      .map((w) => {
+        const ns = `team-${w.metadata.labels?.['apl.io/teamId'] || ''}`
+        return { name: w.metadata.name, namespace: ns }
+      })
+      .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
+  }, [aplWorkloads])
+
+  // 2) find the currently selected option object
+  const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
+
   // fetch pod‐labels for the active workload
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
     { teamId, workloadName: activeWorkload },
     { skip: !activeWorkload },
   )
+  const { data: podNames } = useListUniquePodNamesByLabelQuery(
+    { teamId, labelSelector: activeLabel.label, namespace: activeLabel.namespace },
+    { skip: !activeLabel.label },
+  )
 
-  // we'll only ever store one entry here
-  const { fields, replace } = useFieldArray<PodLabelMatch>({
+  const { fields, replace } = useFieldArray({
     control,
     name: fieldArrayName,
   })
-
   // 1) clear out any old label whenever the workload changes
   useEffect(() => {
     replace([])
@@ -76,39 +96,34 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
 
   return (
     <FormRow spacing={10}>
-      <TextField
+      {/* === NEW AUTOCOMPLETE FOR WORKLOAD === */}
+      <Autocomplete
         label='Workload'
-        select
-        value={activeWorkload}
-        onChange={(e) => setActiveWorkload(e.target.value)}
         width='large'
-      >
-        <MenuItem value='' disabled>
-          Select a workload
-        </MenuItem>
-        {aplWorkloads.map((w) => (
-          <MenuItem key={w.metadata.name} value={w.metadata.name}>
-            {w.metadata.name}
-          </MenuItem>
-        ))}
-      </TextField>
+        multiple={false}
+        disablePortal={false}
+        options={workloadOptions}
+        groupBy={(opt) => opt.namespace}
+        getOptionLabel={(opt) => opt.name}
+        value={selectedWorkloadOption}
+        onChange={(_e, opt) => {
+          setActiveWorkload(opt?.name ?? '')
+        }}
+      />
 
+      {/* === your existing Label Autocomplete === */}
       <Autocomplete
         label='Label'
         width='large'
         multiple={false}
+        disablePortal={false}
         options={Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`)}
-        value={selected}
+        value={fields[0] ? `${fields[0].fromLabelName}:${fields[0].fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
           if (!raw) return replace([])
           const [name, value] = raw.split(':', 2)
-          replace([
-            {
-              fromNamespace: namespace,
-              fromLabelName: name,
-              fromLabelValue: value,
-            },
-          ])
+          replace([{ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value }])
+          setActiveLabel({ label: `${name}=${value}`, namespace })
         }}
       />
     </FormRow>

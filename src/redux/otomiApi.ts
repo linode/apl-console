@@ -59,6 +59,12 @@ const injectedRtkApi = api.injectEndpoints({
         params: { workloadName: queryArg.workloadName, namespace: queryArg['namespace'] },
       }),
     }),
+    listUniquePodNamesByLabel: build.query<ListUniquePodNamesByLabelApiResponse, ListUniquePodNamesByLabelApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/teams/${queryArg.teamId}/kubernetes/fetchPodsFromLabel`,
+        params: { labelSelector: queryArg.labelSelector, namespace: queryArg['namespace'] },
+      }),
+    }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
     }),
@@ -1438,6 +1444,15 @@ export type GetK8SWorkloadPodLabelsApiArg = {
   teamId: string
   /** name of the workload to get Podlabels from */
   workloadName?: string
+  /** namespace of the workload to get Podlabels from */
+  namespace?: string
+}
+export type ListUniquePodNamesByLabelApiResponse = /** status 200 Successfully obtained pods from given label */ any
+export type ListUniquePodNamesByLabelApiArg = {
+  /** ID of team */
+  teamId: string
+  /** name of the label to get pods name from */
+  labelSelector?: string
   /** namespace of the workload to get Podlabels from */
   namespace?: string
 }
@@ -7865,6 +7880,7 @@ export const {
   useCreateServiceMutation,
   useGetTeamK8SServicesQuery,
   useGetK8SWorkloadPodLabelsQuery,
+  useListUniquePodNamesByLabelQuery,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,

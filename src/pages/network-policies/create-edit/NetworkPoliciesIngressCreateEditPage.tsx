@@ -24,6 +24,7 @@ import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
 import NetworkPolicyTargetLabelRow from './NetworkPolicyTargetPodLabelRow'
+import NetworkPoliciesFlowRenderer from './NetworkPoliciesFlowRenderer'
 
 interface Params {
   teamId?: string
@@ -178,10 +179,11 @@ export default function NetworkPoliciesIngressCreateEditPage({
               disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
               sx={{ float: 'right', textTransform: 'none' }}
             >
-              {networkPolicyName ? 'Save Changes' : 'Create Network Policy'}
+              {networkPolicyName ? 'Save Changes' : 'Create Inbound Rule'}
             </LoadingButton>
           </form>
         </FormProvider>
+        <NetworkPoliciesFlowRenderer />
       </PaperLayout>
     </Grid>
   )
