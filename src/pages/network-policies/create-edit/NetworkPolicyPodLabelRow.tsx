@@ -12,6 +12,7 @@ interface Props {
   aplWorkloads: any[]
   teamId: string
   fieldArrayName: string
+  rowIndex?: number
 }
 
 interface PodLabelMatch {
@@ -25,7 +26,7 @@ interface ActiveLabel {
   namespace: string
 }
 
-export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName }: Props) {
+export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName, rowIndex }: Props) {
   const { control } = useFormContext()
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
@@ -98,6 +99,7 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
     <FormRow spacing={10}>
       {/* === NEW AUTOCOMPLETE FOR WORKLOAD === */}
       <Autocomplete
+        hideLabel={rowIndex !== 0}
         label='Workload'
         width='large'
         multiple={false}
@@ -113,6 +115,7 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
 
       {/* === your existing Label Autocomplete === */}
       <Autocomplete
+        hideLabel={rowIndex !== 0}
         label='Label'
         width='large'
         multiple={false}

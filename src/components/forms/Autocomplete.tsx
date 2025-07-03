@@ -31,6 +31,8 @@ export interface EnhancedAutocompleteProps<
   helperText?: TextFieldProps['helperText']
   /** A required label for the Autocomplete to ensure accessibility. */
   label: string
+  /** Optional field to hide label, mostly used in Key value components */
+  hideLabel?: boolean
   /** Removes the top margin from the input label, if desired. */
   noMarginTop?: boolean
   /** Element to show when the Autocomplete search yields no results. */
@@ -57,6 +59,7 @@ export function Autocomplete<
     disablePortal = true,
     errorText = '',
     helperText,
+    hideLabel = false,
     label,
     limitTags = 2,
     loading = false,
@@ -117,6 +120,7 @@ export function Autocomplete<
         renderInput ||
         ((params) => (
           <TextField
+            hideLabel={hideLabel}
             label={label}
             width={width}
             loading={loading}

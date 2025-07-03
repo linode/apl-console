@@ -124,13 +124,11 @@ export default function NetworkPoliciesIngressCreateEditPage({
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
 
               {sourceFields.map((field, index) => (
-                <div
-                  key={field.id}
-                  style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' }}
-                >
+                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
                   <NetworkPolicyPodLabelRow
                     aplWorkloads={aplWorkloads}
                     teamId={teamId}
+                    rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
                   />
                   <IconButton
@@ -145,6 +143,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
               ))}
 
               <Button
+                sx={{ mt: 3 }}
                 variant='outlined'
                 onClick={() => appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })}
               >
