@@ -313,7 +313,7 @@ export default function CreateEditBuilds({
                 title='Extra arguments'
                 subTitle='Additional arguments to pass on to the build executor'
                 keyLabel='Name'
-                valueLabel='Value'
+                valueLabel='Value (optional)'
                 addLabel='Add argument'
                 compressed
                 name={`mode.${watch('mode.type')}.envVars`}
