@@ -3,8 +3,8 @@ import { array, boolean, mixed, object, string } from 'yup'
 const envVarSchema = object({
   name: string()
     .required('Environment variable name is required')
-    .matches(/^[a-zA-Z_][a-zA-Z0-9_]*$/, 'Invalid environment variable name'),
-  value: string().required('Environment variable value is required'),
+    .matches(/^-*[a-zA-Z_][a-zA-Z0-9_-]*$/, 'Invalid environment variable name'),
+  value: string().optional(),
 })
 
 const commonModeSchema = object({
