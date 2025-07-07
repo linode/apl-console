@@ -13,6 +13,8 @@ interface Props {
   teamId: string
   fieldArrayName: string
   rowIndex?: number
+  role: 'source' | 'target'
+  onPodNamesChange: (namespace: string, podNames: string[], role: 'source' | 'target') => void
 }
 
 interface PodLabelMatch {
@@ -26,7 +28,14 @@ interface ActiveLabel {
   namespace: string
 }
 
-export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName, rowIndex }: Props) {
+export default function NetworkPolicyPodLabelRow({
+  aplWorkloads,
+  teamId,
+  fieldArrayName,
+  rowIndex,
+  role,
+  onPodNamesChange,
+}: Props) {
   const { control } = useFormContext()
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
@@ -91,6 +100,13 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
       ])
     }
   }, [activeWorkload, podLabels, namespace, fields.length, replace])
+
+  useEffect(() => {
+    if (podNames && podNames.length) {
+      console.log('podnames', podNames)
+      onPodNamesChange(namespace, podNames, role)
+    }
+  }, [podNames])
 
   // render the current "key:value" or empty
   const selected = fields[0] ? `${fields[0].fromLabelName}:${fields[0].fromLabelValue ?? ''}` : null
