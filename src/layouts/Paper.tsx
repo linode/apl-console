@@ -21,20 +21,18 @@ export default function ({ loading, comp, title, children }: Props): React.React
   const dashboardStyle =
     location.pathname === '/' ? { backgroundColor: 'background.contrast' } : { backgroundColor: 'transparent' }
   const dispatch = useAppDispatch()
-  const error = useAppSelector(({ global: { error } }) => error)
+  const globalError = useAppSelector(({ global: { error } }) => error)
   useEffect(() => {
-    return () => {
-      // clear 409 Conflict error when navigating away from the page to prevent it from reappearing
-      if (error && error.status === 409) dispatch(setError(undefined))
-    }
-  }, [error])
+    // clear global error when pathname changes to prevent the error from reappearing
+    if (globalError) dispatch(setError(undefined))
+  }, [location.pathname])
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>
         <Card sx={{ ...dashboardStyle }}>
           <Error />
-          {loading && <LoadingScreen />}
-          <Box sx={{ display: error && 'none' }}>
+          {loading && !globalError && <LoadingScreen />}
+          <Box sx={{ display: globalError && 'none' }}>
             {!loading && comp}
             {children}
           </Box>
