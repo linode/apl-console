@@ -2,6 +2,7 @@ import generateDownloadLink from 'generate-download-link'
 import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
 import { canDo } from 'utils/permission'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -10,7 +11,9 @@ const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ wi
 // it's SVG format.
 
 export default function NavConfig() {
-  const { ca, appsEnabled, oboTeamId, user, settings } = useSession()
+  const { ca, appsEnabled, oboTeamId: sessionOboTeamId, user, settings } = useSession()
+  const [localOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
+  const oboTeamId = sessionOboTeamId || localOboTeamId || undefined
   const hasExternalIDP = settings?.otomi?.hasExternalIDP ?? false
   const isManaged = settings?.otomi?.isPreInstalled ?? false
   const hasApiServerConfigured = settings?.cluster?.apiServer ?? false
