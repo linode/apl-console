@@ -88,12 +88,7 @@ export default function NetworkPolicyPodLabelRow({
   // 2) once podLabels arrive, and ONLY if there is no existing entry,
   //    apply the default match
   useEffect(() => {
-    if (
-      !activeWorkload ||
-      !podLabels ||
-      fields.length > 0 // <-- DON'T overwrite if user already has a value
-    )
-      return
+    if (!activeWorkload || !podLabels) return
 
     const match = getDefaultPodLabel(activeWorkload, podLabels)
     if (match) {
@@ -105,7 +100,7 @@ export default function NetworkPolicyPodLabelRow({
         },
       ])
     }
-  }, [activeWorkload, podLabels, namespace, fields.length, replace])
+  }, [activeWorkload, podLabels])
 
   useEffect(() => {
     if (podNames && podNames.length) onPodNamesChange(namespace, podNames, rowType)

@@ -3,6 +3,7 @@ import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
+import { getDefaultPodLabel } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
   aplWorkloads: any[]
@@ -42,7 +43,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
       }))
       .filter((o) => o.namespace === `team-${teamId}`)
       .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
-  }, [aplWorkloads])
+  }, [aplWorkloads, teamId])
 
   // find the currently selected option object
   const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
@@ -54,7 +55,18 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
 
-  // 6) once the user has picked a toName/toValue, fetch matching pod names
+  // 6) once podLabels arrive, and no explicit toName, apply default
+  useEffect(() => {
+    if (activeWorkload && podLabels) {
+      const match = getDefaultPodLabel(activeWorkload, podLabels)
+      if (match) {
+        setValue(`${prefixName}.toLabelName`, match.name)
+        setValue(`${prefixName}.toLabelValue`, match.value)
+      }
+    }
+  }, [activeWorkload, podLabels])
+
+  // 7) once the user has picked or defaulted a toName/toValue, fetch matching pod names
   const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
   const { data: podNames } = useListUniquePodNamesByLabelQuery(
     {
@@ -65,7 +77,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     { skip: !rawSelector },
   )
 
-  // 7) when podNames arrive, bubble up to the parent
+  // 8) when podNames arrive, bubble up to the parent
   useEffect(() => {
     if (podNames && podNames.length > 0) onPodNamesChange(namespace, podNames, 'target')
   }, [podNames])
