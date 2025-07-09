@@ -3,6 +3,7 @@ import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
   CreateNetpolApiResponse,
+  EditNetpolApiResponse,
   useCreateNetpolMutation,
   useDeleteNetpolMutation,
   useEditNetpolMutation,
@@ -56,6 +57,10 @@ export default function NetworkPoliciesEgressCreateEditPage({
     handleSubmit,
   } = methods
 
+  const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
+    console.log('hello', body)
+  }
+
   return (
     <Grid className={classes.root}>
       <PaperLayout>
@@ -66,7 +71,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
           hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(networkPolicyName ? update : create)}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='Add outbound rule'>
               <TextField
                 label='Outbound rule name'
@@ -100,8 +105,8 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 // so protocol stays text, number field is the "key"
                 // KeyValue lowercases keyLabel => `.number`
                 // so `ports[index].number` will be numeric
-                error={!!errors.ports}
-                errorText={Array.isArray(errors.ports) ? '' : (errors.ports as any)?.message}
+                // error={!!errors.ports}
+                // errorText={Array.isArray(errors.ports) ? '' : (errors.ports as any)?.message}
               />
             </Section>
             {/* ... your submit/delete buttons here ... */}

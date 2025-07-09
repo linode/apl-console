@@ -10,20 +10,33 @@ export interface PodLabelMatch {
  * @returns A PodLabelMatch with the selected label name and value, or null if none matched.
  */
 export function getDefaultPodLabel(workloadName: string, podLabels: Record<string, string>): PodLabelMatch | null {
+  console.log('what is going on here', workloadName, 'podLabels', podLabels)
+
   // 1. Exact match on app.kubernetes.io/instance
   const instanceKey = 'app.kubernetes.io/instance'
   const instanceValue = podLabels[instanceKey]
-  if (instanceValue && instanceValue === workloadName) return { name: instanceKey, value: instanceValue }
+  if (instanceValue === workloadName) return { name: instanceKey, value: instanceValue }
 
-  // 2. For ksvc workloads, match service.istio.io/canonical-name
-  //    e.g. workloadName 'ksvc-hello-world'
+  // 2. RabbitMQ component label: key must be 'app.kubernetes.io/component' and value 'rabbitmq'
+  const componentKey = 'app.kubernetes.io/component'
+  const componentValue = podLabels[componentKey]
+  if (componentValue === 'rabbitmq') return { name: instanceKey, value: `${workloadName}-${componentValue}` }
+
+  // 3. Knative serving label
+  const knativeKey = Object.keys(podLabels).find((key) => key.startsWith('serving.knative.dev/service'))
+  if (knativeKey) return { name: knativeKey, value: podLabels[knativeKey] }
+
+  // 4. cnpg cluster label
+  const cnpgKey = Object.keys(podLabels).find((key) => key.startsWith('cnpg.io/cluster'))
+  if (cnpgKey) return { name: cnpgKey, value: podLabels[cnpgKey] }
+
+  // 5. Istio canonical name for ksvc workloads
+  const istioKey = 'service.istio.io/canonical-name'
   if (workloadName.startsWith('ksvc-')) {
-    const istioKey = 'service.istio.io/canonical-name'
     const istioValue = podLabels[istioKey]
-    if (istioValue && istioValue === workloadName) return { name: istioKey, value: istioValue }
+    if (istioValue === workloadName) return { name: istioKey, value: istioValue }
   }
 
-  // Add other matchers here as needed
-
+  // No match found
   return null
 }

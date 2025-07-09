@@ -3,6 +3,7 @@ import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
   CreateNetpolApiResponse,
+  EditNetpolApiResponse,
   useCreateNetpolMutation,
   useDeleteNetpolMutation,
   useEditNetpolMutation,
@@ -87,19 +88,19 @@ export default function NetworkPoliciesIngressCreateEditPage({
     }
   }, [data, reset])
 
+  useEffect(() => {
+    if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
+  }, [])
+
   console.log('watch values', watch())
   console.log('error values', errors)
 
-  useEffect(() => {
-    if (sourcesByNs) console.log('sources ? ', sourcesByNs)
-  }, [sourcesByNs])
-
-  const onSubmit = (body: CreateNetpolApiResponse) => {
+  const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
     const rawAllow = body.ruleType.ingress.allow as any[]
     const merged = rawAllow.flat ? rawAllow.flat() : rawAllow
     body.ruleType.ingress.allow = merged
 
-    if (networkPolicyName) update({ teamId, body })
+    if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
     else create({ teamId, body })
   }
 
@@ -137,7 +138,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     teamId={teamId}
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
-                    role='source'
+                    rowType='source'
                     onPodNamesChange={(ns, podNames, role) => {
                       setSourcesByNs((prev) => ({ ...prev, [ns]: podNames }))
                     }}

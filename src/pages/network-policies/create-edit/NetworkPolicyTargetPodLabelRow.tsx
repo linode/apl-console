@@ -1,8 +1,5 @@
-// NetworkPolicyTargetLabelRow.tsx
-import { MenuItem } from '@mui/material'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
-import { TextField } from 'components/forms/TextField'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
@@ -14,31 +11,50 @@ interface Props {
   onPodNamesChange: (namespace: string, podNames: string[], role: 'target') => void
 }
 
+interface WorkloadOption {
+  name: string
+  namespace: string
+}
+
 export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, onPodNamesChange }: Props) {
   const { watch, setValue } = useFormContext()
 
   // 1) track which workload is selected
-  const [activeWorkload, setActiveWorkload] = useState('')
+  const [activeWorkload, setActiveWorkload] = useState<string>('')
 
   // 2) pull out the saved toLabelName/value from RHF
   const toName = watch(`${prefixName}.toLabelName`) || ''
   const toValue = watch(`${prefixName}.toLabelValue`) || ''
 
-  // 3) when user picks a workload, derive its namespace
+  // 3) derive namespace from selected workload
   const namespace = useMemo(() => {
     const w = aplWorkloads.find((w) => w.metadata.name === activeWorkload)
     const teamLabel = w?.metadata.labels?.['apl.io/teamId'] || ''
     return `team-${teamLabel}`
   }, [activeWorkload, aplWorkloads])
 
-  // 4) fetch the label‐>value map for that pod spec
+  // 4) build workload options, but only those in this team’s namespace
+  const workloadOptions = useMemo<WorkloadOption[]>(() => {
+    return aplWorkloads
+      .map((w) => ({
+        name: w.metadata.name,
+        namespace: `team-${w.metadata.labels?.['apl.io/teamId'] || ''}`,
+      }))
+      .filter((o) => o.namespace === `team-${teamId}`)
+      .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
+  }, [aplWorkloads])
+
+  // find the currently selected option object
+  const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
+
+  // 5) fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
     { teamId, workloadName: activeWorkload },
     { skip: !activeWorkload },
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
 
-  // 5) once the user has picked a toName/toValue, fetch matching pod names
+  // 6) once the user has picked a toName/toValue, fetch matching pod names
   const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
   const { data: podNames } = useListUniquePodNamesByLabelQuery(
     {
@@ -49,38 +65,32 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     { skip: !rawSelector },
   )
 
-  // 6) when podNames arrives, bubble up to the parent
+  // 7) when podNames arrive, bubble up to the parent
   useEffect(() => {
     if (podNames && podNames.length > 0) onPodNamesChange(namespace, podNames, 'target')
   }, [podNames])
 
-  // 7) render
-  const selected = rawSelector
-
   return (
     <FormRow spacing={10}>
-      <TextField
+      <Autocomplete<WorkloadOption, false, false, false>
         label='Workload'
-        select
-        value={activeWorkload}
-        onChange={(e) => setActiveWorkload(e.target.value)}
         width='large'
-      >
-        <MenuItem value='' disabled>
-          Select a workload
-        </MenuItem>
-        {aplWorkloads.map((w) => (
-          <MenuItem key={w.metadata.name} value={w.metadata.name}>
-            {w.metadata.name}
-          </MenuItem>
-        ))}
-      </TextField>
+        multiple={false}
+        disablePortal={false}
+        options={workloadOptions}
+        groupBy={(opt) => opt.namespace}
+        getOptionLabel={(opt) => opt.name}
+        value={selectedWorkloadOption}
+        onChange={(_e, opt) => {
+          setActiveWorkload(opt?.name ?? '')
+        }}
+      />
 
       <Autocomplete
         label='To label'
         multiple={false}
         options={labelOptions}
-        value={selected || null}
+        value={rawSelector || null}
         width='large'
         onChange={(_e, newVal) => {
           if (!newVal) {
@@ -88,7 +98,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
             setValue(`${prefixName}.toLabelValue`, '')
             return
           }
-          const [name, value] = newVal.split(':')
+          const [name, value] = newVal.split(':', 2)
           setValue(`${prefixName}.toLabelName`, name)
           setValue(`${prefixName}.toLabelValue`, value)
         }}

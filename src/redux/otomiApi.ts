@@ -1437,8 +1437,9 @@ export type GetTeamK8SServicesApiArg = {
   /** ID of team */
   teamId: string
 }
-export type GetK8SWorkloadPodLabelsApiResponse =
-  /** status 200 Successfully obtained Podlabels from given workload */ any
+export type GetK8SWorkloadPodLabelsApiResponse = /** status 200 Successfully obtained Podlabels from given workload */ {
+  [key: string]: string
+}
 export type GetK8SWorkloadPodLabelsApiArg = {
   /** ID of team */
   teamId: string
@@ -1447,7 +1448,8 @@ export type GetK8SWorkloadPodLabelsApiArg = {
   /** namespace of the workload to get Podlabels from */
   namespace?: string
 }
-export type ListUniquePodNamesByLabelApiResponse = /** status 200 Successfully obtained pods from given label */ any
+export type ListUniquePodNamesByLabelApiResponse =
+  /** status 200 Successfully obtained pods from given label */ string[]
 export type ListUniquePodNamesByLabelApiArg = {
   /** ID of team */
   teamId: string

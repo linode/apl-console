@@ -1,19 +1,16 @@
-// NetworkPolicyPodLabelRow.tsx
-
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel } from './NetworkPolicyPodLabelMatchHelper'
-// field‐array logic for react-hook-form
 
 interface Props {
   aplWorkloads: any[]
   teamId: string
   fieldArrayName: string
   rowIndex?: number
-  role: 'source' | 'target'
+  rowType: 'source' | 'target'
   onPodNamesChange: (namespace: string, podNames: string[], role: 'source' | 'target') => void
 }
 
@@ -28,15 +25,24 @@ interface ActiveLabel {
   namespace: string
 }
 
+interface WorkloadOption {
+  name: string
+  namespace: string
+}
+
+interface FormValues {
+  [key: string]: PodLabelMatch[]
+}
+
 export default function NetworkPolicyPodLabelRow({
   aplWorkloads,
   teamId,
   fieldArrayName,
   rowIndex,
-  role,
+  rowType,
   onPodNamesChange,
 }: Props) {
-  const { control } = useFormContext()
+  const { control } = useFormContext<FormValues>()
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
 
@@ -70,7 +76,7 @@ export default function NetworkPolicyPodLabelRow({
     { skip: !activeLabel.label },
   )
 
-  const { fields, replace } = useFieldArray({
+  const { fields, replace } = useFieldArray<FormValues>({
     control,
     name: fieldArrayName,
   })
@@ -102,21 +108,14 @@ export default function NetworkPolicyPodLabelRow({
   }, [activeWorkload, podLabels, namespace, fields.length, replace])
 
   useEffect(() => {
-    if (podNames && podNames.length) {
-      console.log('podnames', podNames)
-      onPodNamesChange(namespace, podNames, role)
-    }
+    if (podNames && podNames.length) onPodNamesChange(namespace, podNames, rowType)
   }, [podNames])
-
-  // render the current "key:value" or empty
-  const selected = fields[0] ? `${fields[0].fromLabelName}:${fields[0].fromLabelValue ?? ''}` : null
 
   return (
     <FormRow spacing={10}>
-      {/* === NEW AUTOCOMPLETE FOR WORKLOAD === */}
-      <Autocomplete
-        hideLabel={rowIndex !== 0}
+      <Autocomplete<WorkloadOption, false, false, false>
         label='Workload'
+        hideLabel={rowIndex !== 0}
         width='large'
         multiple={false}
         disablePortal={false}
@@ -129,17 +128,15 @@ export default function NetworkPolicyPodLabelRow({
         }}
       />
 
-      {/* === your existing Label Autocomplete === */}
       <Autocomplete
         hideLabel={rowIndex !== 0}
         label='Label'
         width='large'
         multiple={false}
         disablePortal={false}
-        options={Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`)}
+        options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([key, value]) => `${key}:${value}`)}
         value={fields[0] ? `${fields[0].fromLabelName}:${fields[0].fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
-          if (!raw) return replace([])
           const [name, value] = raw.split(':', 2)
           replace([{ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value }])
           setActiveLabel({ label: `${name}=${value}`, namespace })

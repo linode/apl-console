@@ -1,26 +1,18 @@
-// @ts-nocheck
-
-/**
- * ^^^^^^^^^^^^^
- *
- * remove this
- *
- *
- *
- *
- *
- */
-
 import MuiAutocomplete from '@mui/material/Autocomplete'
 import React, { JSX, useState } from 'react'
 import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
 
-import type { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
+import type {
+  AutocompleteChangeDetails,
+  AutocompleteChangeReason,
+  AutocompleteProps,
+  AutocompleteRenderInputParams,
+} from '@mui/material/Autocomplete'
 import { TextField } from './TextField'
 import type { TextFieldProps } from './TextField'
 
 export interface EnhancedAutocompleteProps<
-  T extends { label: string },
+  T,
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
@@ -48,7 +40,7 @@ export interface EnhancedAutocompleteProps<
 }
 
 export function Autocomplete<
-  T extends { label: string },
+  T,
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
@@ -85,16 +77,21 @@ export function Autocomplete<
   const isSelectAllActive = multiple && Array.isArray(value) && value.length === options.length
 
   const selectAllText = isSelectAllActive ? 'Deselect All' : 'Select All'
-  const selectAllOption = { label: `${selectAllText} ${selectAllLabel}` } as T
+  const selectAllOption = { label: `${selectAllText} ${selectAllLabel}` } as unknown as T
   const optionsWithSelectAll = [selectAllOption, ...options]
 
-  const handleChange = (e: React.SyntheticEvent, newValue: T | T[], reason: any, details?: any) => {
+  const handleChange: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>['onChange'] = (
+    e,
+    newValue,
+    reason: AutocompleteChangeReason,
+    details?: AutocompleteChangeDetails<T>,
+  ) => {
     if (!onChange) return
 
     // if they clicked the "Select All" option
     if (details?.option === selectAllOption) {
-      if (isSelectAllActive) onChange(e, [] as T[] as typeof newValue, reason, details)
-      else onChange(e, options as typeof newValue, reason, details)
+      const next = isSelectAllActive ? ([] as unknown as typeof newValue) : (options as unknown as typeof newValue)
+      onChange(e, next, reason, details)
     } else onChange(e, newValue, reason, details)
   }
   // --------------------------
@@ -132,13 +129,9 @@ export function Autocomplete<
               ...params.InputProps,
               ...textFieldProps?.InputProps,
               sx: {
-                // overflow: 'hidden',
-                // whiteSpace: 'nowrap',
-                // textOverflow: 'ellipsis',
-                // paddingRight: '44px',
                 display: 'flex',
                 flexWrap: 'wrap',
-                gap: 1, // small gap between chips
+                gap: 1,
                 paddingRight: '44px',
               },
             }}
