@@ -1,4 +1,4 @@
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
@@ -31,7 +31,13 @@ interface WorkloadOption {
 }
 
 interface FormValues {
-  [key: string]: PodLabelMatch[]
+  ruleType: {
+    ingress: {
+      allow: PodLabelMatch[]
+    }
+    // other rule types if needed
+  }
+  [key: string]: any
 }
 
 export default function NetworkPolicyPodLabelRow({
@@ -43,6 +49,12 @@ export default function NetworkPolicyPodLabelRow({
   onPodNamesChange,
 }: Props) {
   const { control } = useFormContext<FormValues>()
+  const { field } = useController<PodLabelMatch>({
+    control,
+    // Bind to a single element in the parent array
+    name: fieldArrayName as any,
+  })
+
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
 
@@ -53,7 +65,7 @@ export default function NetworkPolicyPodLabelRow({
     return `team-${teamLabel}`
   }, [activeWorkload, aplWorkloads])
 
-  // 1) build and sort workload options
+  // build and sort workload options
   const workloadOptions = useMemo(() => {
     return aplWorkloads
       .map((w) => {
@@ -63,10 +75,10 @@ export default function NetworkPolicyPodLabelRow({
       .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
   }, [aplWorkloads])
 
-  // 2) find the currently selected option object
+  // find the currently selected option
   const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
 
-  // fetch pod‐labels for the active workload
+  // fetch pod‐labels & pod-names
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
     { teamId, workloadName: activeWorkload },
     { skip: !activeWorkload },
@@ -76,32 +88,28 @@ export default function NetworkPolicyPodLabelRow({
     { skip: !activeLabel.label },
   )
 
-  const { fields, replace } = useFieldArray<FormValues>({
-    control,
-    name: fieldArrayName,
-  })
   // 1) clear out any old label whenever the workload changes
   useEffect(() => {
-    replace([])
-  }, [activeWorkload, replace])
+    field.onChange({ fromNamespace: '', fromLabelName: '', fromLabelValue: undefined })
+    setActiveLabel({ label: '', namespace: '' })
+  }, [activeWorkload])
 
-  // 2) once podLabels arrive, and ONLY if there is no existing entry,
-  //    apply the default match
+  // 2) once podLabels arrive, and ONLY if there is no existing entry, apply default match
   useEffect(() => {
     if (!activeWorkload || !podLabels) return
-
+    if (field.value?.fromLabelName) return
     const match = getDefaultPodLabel(activeWorkload, podLabels)
     if (match) {
-      replace([
-        {
-          fromNamespace: namespace,
-          fromLabelName: match.name,
-          fromLabelValue: match.value,
-        },
-      ])
+      field.onChange({
+        fromNamespace: namespace,
+        fromLabelName: match.name,
+        fromLabelValue: match.value,
+      })
+      setActiveLabel({ label: `${match.name}=${match.value}`, namespace })
     }
   }, [activeWorkload, podLabels])
 
+  // notify parent of pod names
   useEffect(() => {
     if (podNames && podNames.length) onPodNamesChange(namespace, podNames, rowType)
   }, [podNames])
@@ -118,9 +126,7 @@ export default function NetworkPolicyPodLabelRow({
         groupBy={(opt) => opt.namespace}
         getOptionLabel={(opt) => opt.name}
         value={selectedWorkloadOption}
-        onChange={(_e, opt) => {
-          setActiveWorkload(opt?.name ?? '')
-        }}
+        onChange={(_e, opt) => setActiveWorkload(opt?.name ?? '')}
       />
 
       <Autocomplete
@@ -130,10 +136,10 @@ export default function NetworkPolicyPodLabelRow({
         multiple={false}
         disablePortal={false}
         options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([key, value]) => `${key}:${value}`)}
-        value={fields[0] ? `${fields[0].fromLabelName}:${fields[0].fromLabelValue ?? ''}` : null}
+        value={field.value ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
-          const [name, value] = raw.split(':', 2)
-          replace([{ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value }])
+          const [name, value] = raw?.split(':', 2) ?? []
+          field.onChange({ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value })
           setActiveLabel({ label: `${name}=${value}`, namespace })
         }}
       />
