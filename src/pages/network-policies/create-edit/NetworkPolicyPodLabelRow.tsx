@@ -35,6 +35,7 @@ interface FormValues {
     ingress: {
       allow: PodLabelMatch[]
     }
+    // potentially other rule types
   }
   [key: string]: any
 }
@@ -86,8 +87,9 @@ export default function NetworkPolicyPodLabelRow({
     { skip: !activeLabel.label },
   )
 
-  // 1) clear out any old label whenever the workload changes
+  // 1) clear out any old label whenever a workload is selected
   useEffect(() => {
+    if (!activeWorkload) return // only clear when a workload is chosen
     field.onChange({ fromNamespace: '', fromLabelName: '', fromLabelValue: undefined })
     setActiveLabel({ label: '', namespace: '' })
   }, [activeWorkload])
@@ -134,7 +136,10 @@ export default function NetworkPolicyPodLabelRow({
         multiple={false}
         disablePortal={false}
         options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([key, value]) => `${key}:${value}`)}
-        value={field.value ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
+        value={
+          // only show label when a name exists
+          field.value?.fromLabelName ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null
+        }
         onChange={(_e, raw: string | null) => {
           const [name, value] = raw?.split(':', 2) ?? []
           field.onChange({ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value })
