@@ -1,4 +1,4 @@
-import { useController, useFormContext } from 'react-hook-form'
+import { FieldPath, useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
@@ -8,7 +8,7 @@ import { getDefaultPodLabel } from './NetworkPolicyPodLabelMatchHelper'
 interface Props {
   aplWorkloads: any[]
   teamId: string
-  fieldArrayName: string
+  fieldArrayName: FieldPath<FormValues>
   rowIndex?: number
   rowType: 'source' | 'target'
   onPodNamesChange: (namespace: string, podNames: string[], role: 'source' | 'target') => void
@@ -35,7 +35,6 @@ interface FormValues {
     ingress: {
       allow: PodLabelMatch[]
     }
-    // other rule types if needed
   }
   [key: string]: any
 }
@@ -49,10 +48,9 @@ export default function NetworkPolicyPodLabelRow({
   onPodNamesChange,
 }: Props) {
   const { control } = useFormContext<FormValues>()
-  const { field } = useController<PodLabelMatch>({
+  const { field } = useController<FormValues>({
     control,
-    // Bind to a single element in the parent array
-    name: fieldArrayName as any,
+    name: fieldArrayName,
   })
 
   const [activeWorkload, setActiveWorkload] = useState<string>('')
