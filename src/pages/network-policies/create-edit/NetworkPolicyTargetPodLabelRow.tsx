@@ -3,7 +3,7 @@ import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
-import { getDefaultPodLabel } from './NetworkPolicyPodLabelMatchHelper'
+import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
   aplWorkloads: any[]
@@ -54,6 +54,14 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     { skip: !activeWorkload },
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
+
+  // Initial edit-mode hydrate: set activeLabel so podNames query fires
+  useEffect(() => {
+    if (toValue) {
+      const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
+      setActiveWorkload(initialActiveWorkload)
+    }
+  }, [])
 
   // 6) once podLabels arrive, and no explicit toName, apply default
   useEffect(() => {

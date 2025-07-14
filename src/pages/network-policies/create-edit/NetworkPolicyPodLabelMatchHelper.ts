@@ -3,6 +3,12 @@ export interface PodLabelMatch {
   value: string
 }
 
+interface PodLabel {
+  fromNamespace: string
+  fromLabelName: string
+  fromLabelValue?: string
+}
+
 /**
  * Attempts to find a default pod label for the given workload.
  * @param workloadName The name of the workload (e.g. 'blue' or 'ksvc-hello-world')
@@ -39,4 +45,19 @@ export function getDefaultPodLabel(workloadName: string, podLabels: Record<strin
 
   // No match found
   return null
+}
+
+export function getInitialActiveWorkload(labelValue: string, workloads: Array<{ metadata: { name: string } }>): string {
+  if (!labelValue) return 'unknown'
+
+  const suffix = 'rabbitMQ'
+  if (labelValue.endsWith(suffix)) labelValue = labelValue.slice(0, -suffix.length)
+
+  const matches = workloads.filter((w) => w.metadata.name === labelValue)
+
+  if (matches.length > 1) return 'multiple'
+
+  if (matches.length === 0) return 'unknown'
+
+  return matches[0].metadata.name
 }
