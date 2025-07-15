@@ -1,4 +1,3 @@
-// NetworkPolicyPodLabelRow.tsx
 import { FieldPath, useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
@@ -85,7 +84,7 @@ export default function NetworkPolicyPodLabelRow({
     { skip: !activeLabel.label },
   )
 
-  // Initial edit-mode hydrate: set activeLabel so podNames query fires
+  // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
     const { fromLabelValue } = field.value as PodLabelMatch
     if (fromLabelValue) {

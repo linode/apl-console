@@ -8,7 +8,7 @@ import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPod
 interface Props {
   aplWorkloads: any[]
   teamId: string
-  prefixName: string // e.g. "ruleType.ingress"
+  prefixName: string
   onPodNamesChange: (namespace: string, podNames: string[], role: 'target') => void
 }
 
@@ -20,22 +20,19 @@ interface WorkloadOption {
 export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, onPodNamesChange }: Props) {
   const { watch, setValue } = useFormContext()
   const [circuitBreaker, setCircuitBreaker] = useState(true)
-
-  // 1) track which workload is selected
   const [activeWorkload, setActiveWorkload] = useState<string>('')
 
-  // 2) pull out the saved toLabelName/value from RHF
   const toName = watch(`${prefixName}.toLabelName`) || ''
   const toValue = watch(`${prefixName}.toLabelValue`) || ''
 
-  // 3) derive namespace from selected workload
+  // derive namespace from selected workload
   const namespace = useMemo(() => {
     const w = aplWorkloads.find((w) => w.metadata.name === activeWorkload)
     const teamLabel = w?.metadata.labels?.['apl.io/teamId'] || ''
     return `team-${teamLabel}`
   }, [activeWorkload, aplWorkloads])
 
-  // 4) build workload options, but only those in this team’s namespace
+  // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
     return aplWorkloads
       .map((w) => ({
@@ -49,14 +46,14 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   // find the currently selected option object
   const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
 
-  // 5) fetch the label→value map for that pod spec
+  // fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
     { teamId, workloadName: activeWorkload },
     { skip: !activeWorkload },
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
 
-  // Initial edit-mode hydrate: set activeLabel so podNames query fires
+  // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
@@ -65,7 +62,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     }
   }, [toValue])
 
-  // 6) once podLabels arrive, and no explicit toName, apply default
+  // once podLabels arrive, and no explicit toName, apply default
   useEffect(() => {
     if (activeWorkload && podLabels) {
       const match = getDefaultPodLabel(activeWorkload, podLabels)
@@ -76,7 +73,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     }
   }, [activeWorkload, podLabels])
 
-  // 7) once the user has picked or defaulted a toName/toValue, fetch matching pod names
+  // once the user has picked or defaulted a toName/toValue, fetch matching pod names
   const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
   const { data: podNames } = useListUniquePodNamesByLabelQuery(
     {
@@ -87,7 +84,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     { skip: !rawSelector },
   )
 
-  // 8) when podNames arrive, bubble up to the parent
+  // notify parent of podNames
   useEffect(() => {
     if (podNames && podNames.length > 0) onPodNamesChange(namespace, podNames, 'target')
   }, [podNames])

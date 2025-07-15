@@ -163,7 +163,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
 
-              {/* Similar multi-row setup can be done for targets if needed */}
+              {/* Target row needs seperate component becuase of data shape */}
               <NetworkPolicyTargetLabelRow
                 aplWorkloads={aplWorkloads}
                 teamId={teamId}

@@ -67,7 +67,6 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         value={displayValue}
         onChange={(_e, v) => {
           if (!v) {
-            // cleared or blank → clear the field
             numberField.onChange(undefined)
             return
           }
@@ -75,7 +74,7 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
           const m = v.match(/\((\d+)\)$/)
           const str = m ? m[1] : v
           const parsed = parseInt(str, 10)
-          if (!isNaN(parsed)) numberField.onChange(parsed)
+          if (!Number.isNaN(parsed)) numberField.onChange(parsed)
           else {
             // best‐effort: if they typed garbage, clear and let validation catch it
             numberField.onChange(undefined)

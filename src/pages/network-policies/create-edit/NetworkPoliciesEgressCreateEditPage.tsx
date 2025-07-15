@@ -36,7 +36,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
 
-  // 1) set up form with defaultValues (empty ports array)
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createEgressSchema) as Resolver<CreateNetpolApiResponse>,
     defaultValues: {
@@ -52,7 +51,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
     formState: { errors },
   } = methods
 
-  // 2) load existing policy when editing
   const { data, isLoading: isFetching } = useGetNetpolQuery(
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
@@ -61,7 +59,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
     if (data) reset(createEgressSchema.cast(data))
   }, [data, reset])
 
-  // 3) manage ports array exactly like sources in ingress
   const {
     fields: portFields,
     append: appendPort,
@@ -73,7 +70,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
     if (!networkPolicyName) appendPort({ protocol: 'TCP', number: 0 })
   }, [networkPolicyName, appendPort])
 
-  // 4) mutations & redirect logic
   const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isDeleting, isSuccess: didDelete }] = useDeleteNetpolMutation()
