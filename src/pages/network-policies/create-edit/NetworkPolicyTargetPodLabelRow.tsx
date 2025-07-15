@@ -19,6 +19,7 @@ interface WorkloadOption {
 
 export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, onPodNamesChange }: Props) {
   const { watch, setValue } = useFormContext()
+  const [circuitBreaker, setCircuitBreaker] = useState(true)
 
   // 1) track which workload is selected
   const [activeWorkload, setActiveWorkload] = useState<string>('')
@@ -57,11 +58,12 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
 
   // Initial edit-mode hydrate: set activeLabel so podNames query fires
   useEffect(() => {
-    if (toValue) {
+    if (toValue && circuitBreaker) {
+      setCircuitBreaker(false)
       const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
       setActiveWorkload(initialActiveWorkload)
     }
-  }, [])
+  }, [toValue])
 
   // 6) once podLabels arrive, and no explicit toName, apply default
   useEffect(() => {

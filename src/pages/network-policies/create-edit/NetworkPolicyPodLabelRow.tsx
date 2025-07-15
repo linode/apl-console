@@ -53,6 +53,7 @@ export default function NetworkPolicyPodLabelRow({
 
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
+  const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
 
   // derive namespace from the selected workload
   const namespace = useMemo(() => {
@@ -90,7 +91,7 @@ export default function NetworkPolicyPodLabelRow({
     if (fromLabelValue) {
       const initialActiveWorkload = getInitialActiveWorkload(fromLabelValue, aplWorkloads)
       setActiveWorkload(initialActiveWorkload)
-    }
+    } else setCircuitBreaker(false)
   }, [])
 
   // notify parent of podNames
@@ -100,15 +101,15 @@ export default function NetworkPolicyPodLabelRow({
 
   // clear label when workload manually selected
   useEffect(() => {
-    if (!activeWorkload) return
+    if (circuitBreaker || !activeWorkload) return
     field.onChange({ fromNamespace: '', fromLabelName: '', fromLabelValue: undefined })
     setActiveLabel({ label: '', namespace: '' })
   }, [activeWorkload])
 
   // default match on create
   useEffect(() => {
+    if (podLabels && circuitBreaker) setCircuitBreaker(false)
     if (!activeWorkload || !podLabels) return
-    if (field.value?.fromLabelName) return
     const match = getDefaultPodLabel(activeWorkload, podLabels)
     if (match) {
       field.onChange({ fromNamespace: namespace, fromLabelName: match.name, fromLabelValue: match.value })

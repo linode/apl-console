@@ -92,9 +92,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
     if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
   }, [])
 
-  console.log('watch values', watch())
-  console.log('error values', errors)
-
   const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
     const rawAllow = body.ruleType.ingress.allow as any[]
     const merged = rawAllow.flat ? rawAllow.flat() : rawAllow

@@ -1,6 +1,16 @@
-import { Grid } from '@mui/material'
+// NetworkPoliciesEgressCreateEditPage.tsx
+import { useEffect } from 'react'
+import { Button, FormHelperText, Grid, IconButton } from '@mui/material'
+import { Delete as DeleteIcon } from '@mui/icons-material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
+import Section from 'components/Section'
+import { LoadingButton } from '@mui/lab'
+import DeleteButton from 'components/DeleteButton'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { TextField } from 'components/forms/TextField'
 import {
   CreateNetpolApiResponse,
   EditNetpolApiResponse,
@@ -9,16 +19,10 @@ import {
   useEditNetpolMutation,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
-import { FormProvider, Resolver, useForm } from 'react-hook-form'
-import { RouteComponentProps } from 'react-router-dom'
-import Section from 'components/Section'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { TextField } from 'components/forms/TextField'
-import KeyValue from 'components/forms/KeyValue'
-import { LoadingButton } from '@mui/lab'
-import DeleteButton from 'components/DeleteButton'
-import { useStyles } from './create-edit-networkPolicies.styles'
+import { Divider } from 'components/Divider'
 import { createEgressSchema } from './create-edit-networkPolicies.validator'
+import { useStyles } from './create-edit-networkPolicies.styles'
+import NetworkPolicyEgressPortRow from './NetworkPolicyEgressPortRow'
 
 interface Params {
   teamId?: string
@@ -32,34 +36,57 @@ export default function NetworkPoliciesEgressCreateEditPage({
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
-    useCreateNetpolMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
-  )
-
-  // merge default values from fetched data into the yup schema
-  const mergedDefaultValues = createEgressSchema.cast(data)
+  // 1) set up form with defaultValues (empty ports array)
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createEgressSchema) as Resolver<CreateNetpolApiResponse>,
-    defaultValues: mergedDefaultValues,
+    defaultValues: {
+      name: '',
+      ruleType: { type: 'egress', egress: { domain: '', ports: [] } },
+    },
   })
-
   const {
-    register,
     control,
     watch,
     setValue,
+    reset,
     formState: { errors },
-    handleSubmit,
   } = methods
 
+  // 2) load existing policy when editing
+  const { data, isLoading: isFetching } = useGetNetpolQuery(
+    { teamId, netpolName: networkPolicyName },
+    { skip: !networkPolicyName },
+  )
+  useEffect(() => {
+    if (data) reset(createEgressSchema.cast(data))
+  }, [data, reset])
+
+  // 3) manage ports array exactly like sources in ingress
+  const {
+    fields: portFields,
+    append: appendPort,
+    remove: removePort,
+  } = useFieldArray({ control, name: 'ruleType.egress.ports' })
+
+  // on create, give the user one blank row
+  useEffect(() => {
+    if (!networkPolicyName) appendPort({ protocol: 'TCP', number: 0 })
+  }, [networkPolicyName, appendPort])
+
+  // 4) mutations & redirect logic
+  const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateNetpolMutation()
+  const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditNetpolMutation()
+  const [del, { isLoading: isDeleting, isSuccess: didDelete }] = useDeleteNetpolMutation()
+
   const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
-    console.log('hello', body)
+    if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
+    else create({ teamId, body })
   }
+
+  if (isFetching) return <PaperLayout loading />
+
+  const busy = isCreating || isUpdating || isDeleting
+  if (!busy && (didCreate || didUpdate || didDelete)) return <Redirect to={`/teams/${teamId}/network-policies`} />
 
   return (
     <Grid className={classes.root}>
@@ -70,8 +97,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
           title={networkPolicyName ? data.name : 'Create'}
           hideCrumbX={[0, 1]}
         />
+
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={methods.handleSubmit(onSubmit)}>
             <Section title='Add outbound rule'>
               <TextField
                 label='Outbound rule name'
@@ -81,6 +109,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 error={!!errors.name}
                 helperText={errors.name?.message}
               />
+
               <TextField
                 label='Domain name or IP address'
                 width='large'
@@ -89,36 +118,41 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 error={!!errors.ruleType?.egress?.domain}
                 helperText={errors.ruleType?.egress?.domain?.message}
               />
-              <KeyValue
-                title='Ports'
-                keyLabel='Protocol'
-                valueLabel='Port'
-                addLabel='Add port'
-                name='ports'
-                keySize='large'
-                compressed
-                valueSize='large'
-                // allow only numbers in the port field
-                // this will apply type="number" on the value field,
-                // but our KeyValue uses `valueIsNumber` for the value.
-                // Instead we treat the key as the number:
-                // so protocol stays text, number field is the "key"
-                // KeyValue lowercases keyLabel => `.number`
-                // so `ports[index].number` will be numeric
-                // error={!!errors.ports}
-                // errorText={Array.isArray(errors.ports) ? '' : (errors.ports as any)?.message}
-              />
+
+              <Divider />
+
+              {portFields.map((field, idx) => (
+                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+                  <NetworkPolicyEgressPortRow
+                    key={field.id}
+                    fieldArrayName={`ruleType.egress.ports.${idx}`}
+                    rowIndex={idx}
+                  />
+                  <IconButton aria-label='remove source' onClick={() => removePort(idx)} size='small' sx={{ mt: 1 }}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+
+              <Button variant='outlined' sx={{ mt: 2 }} onClick={() => appendPort({ protocol: 'TCP', number: 0 })}>
+                Add Port
+              </Button>
+
+              {errors.ruleType?.egress?.ports && (
+                <FormHelperText error sx={{ mt: 1 }}>
+                  {(errors.ruleType.egress.ports as any).message}
+                </FormHelperText>
+              )}
             </Section>
-            {/* ... your submit/delete buttons here ... */}
+
             {networkPolicyName && (
               <DeleteButton
                 onDelete={() => del({ teamId, netpolName: networkPolicyName })}
                 resourceName={networkPolicyName}
                 resourceType='netpol'
-                data-cy='button-delete-netpol'
-                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                loading={isLoadingDelete}
-                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+                sx={{ float: 'right', ml: 2 }}
+                loading={isDeleting}
+                disabled={busy}
               />
             )}
 
@@ -126,9 +160,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
               type='submit'
               variant='contained'
               color='primary'
-              loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
-              sx={{ float: 'right', textTransform: 'none' }}
+              loading={isCreating || isUpdating}
+              disabled={busy}
+              sx={{ float: 'right' }}
             >
               {networkPolicyName ? 'Save Changes' : 'Create Outbound Rule'}
             </LoadingButton>

@@ -3,12 +3,6 @@ export interface PodLabelMatch {
   value: string
 }
 
-interface PodLabel {
-  fromNamespace: string
-  fromLabelName: string
-  fromLabelValue?: string
-}
-
 /**
  * Attempts to find a default pod label for the given workload.
  * @param workloadName The name of the workload (e.g. 'blue' or 'ksvc-hello-world')
