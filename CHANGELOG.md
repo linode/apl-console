@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/linode/apl-console/compare/v4.5.0...v4.6.0) (2025-06-24)
+
+
+### Features
+
+* update users table for team admins ([#594](https://github.com/linode/apl-console/issues/594)) ([e8c46de](https://github.com/linode/apl-console/commit/e8c46dea83d8ddf69453c04c6a54861939626a58))
+
+
+### Bug Fixes
+
+* enhance service creation form with correct useCname data ([#598](https://github.com/linode/apl-console/issues/598)) ([830783a](https://github.com/linode/apl-console/commit/830783a4fa3130ea2a92fca8ed6f0669681497c8))
+* form validation error for useORCS ([#596](https://github.com/linode/apl-console/issues/596)) ([7bfe3c5](https://github.com/linode/apl-console/commit/7bfe3c528de252542b9aa18dc81a21673de23748))
+* remove session corrupt state notification ([#599](https://github.com/linode/apl-console/issues/599)) ([00fe560](https://github.com/linode/apl-console/commit/00fe560ec125227574f1da81de73a219b0cf2401))
+* replaced apl-docs with techdocs ([#587](https://github.com/linode/apl-console/issues/587)) ([b7d2ef1](https://github.com/linode/apl-console/commit/b7d2ef111870b1aca89f385feb620dd104f93708))
+* webhook inconsistent render issue ([#595](https://github.com/linode/apl-console/issues/595)) ([5a3c2fe](https://github.com/linode/apl-console/commit/5a3c2fec46c777a598523a2fdf8dd4f4632d7d23))
+
+
+### CI
+
+* added pr auto updater ([#597](https://github.com/linode/apl-console/issues/597)) ([a5b4aa4](https://github.com/linode/apl-console/commit/a5b4aa45a41d30769801b9e22bb0b44f804e969f))
+
 ## [4.5.0](https://github.com/linode/apl-console/compare/v4.4.0...v4.5.0) (2025-06-17)
 
 

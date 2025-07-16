@@ -8,6 +8,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useGetTeamsQuery } from 'redux/otomiApi'
 import useSettings from 'hooks/useSettings'
 import React from 'react'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import AccountPopover from './AccountPopover'
 import { IconButtonAnimate } from './animate'
 import Iconify from './Iconify'
@@ -62,9 +63,11 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const { pathname } = useLocation()
   const {
     user: { email, teams: userTeams, isPlatformAdmin },
-    oboTeamId,
+    oboTeamId: sessionOboTeamId,
     setOboTeamId,
   } = useSession()
+  const [localOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
+  const oboTeamId = sessionOboTeamId || localOboTeamId || undefined
   const { data: allTeams } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
   // END HOOKs
   let teams: string[] = []
@@ -108,6 +111,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     history.push(nextPathname)
     event.preventDefault()
   }
+  if (!teams && oboTeamId) teams = [oboTeamId]
 
   return (
     <RootStyle
