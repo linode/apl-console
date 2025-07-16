@@ -48,7 +48,7 @@ export function Autocomplete<
   const {
     clearOnBlur,
     defaultValue,
-    disablePortal = true,
+    disablePortal = false,
     errorText = '',
     helperText,
     hideLabel = false,

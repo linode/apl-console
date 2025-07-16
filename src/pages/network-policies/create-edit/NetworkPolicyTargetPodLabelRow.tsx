@@ -95,7 +95,6 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
         label='Workload'
         width='large'
         multiple={false}
-        disablePortal={false}
         options={workloadOptions}
         groupBy={(opt) => opt.namespace}
         getOptionLabel={(opt) => opt.name}

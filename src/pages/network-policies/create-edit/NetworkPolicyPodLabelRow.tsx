@@ -123,7 +123,6 @@ export default function NetworkPolicyPodLabelRow({
         hideLabel={rowIndex !== 0}
         width='large'
         multiple={false}
-        disablePortal={false}
         options={workloadOptions}
         groupBy={(opt) => opt.namespace}
         getOptionLabel={(opt) => opt.name}
@@ -136,7 +135,6 @@ export default function NetworkPolicyPodLabelRow({
         label='Label'
         width='large'
         multiple={false}
-        disablePortal={false}
         options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([k, v]) => `${k}:${v}`)}
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {

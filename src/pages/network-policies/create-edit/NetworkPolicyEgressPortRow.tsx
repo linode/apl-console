@@ -7,15 +7,7 @@ import FormRow from 'components/forms/FormRow'
 type Protocol = 'HTTP' | 'HTTPS' | 'TCP'
 const PROTOCOL_OPTIONS: Protocol[] = ['HTTP', 'HTTPS', 'TCP']
 
-const COMMON_PORT_OPTIONS = [
-  'HTTPS (443)',
-  'HTTP (80)',
-  'SSH (22)',
-  'DNS (53)',
-  'SMTP (25)',
-  'MySQL (3306)',
-  'PostgreSQL (5432)',
-]
+const COMMON_PORT_OPTIONS = ['HTTPS (443)', 'HTTP (80)', 'SMTP (25)', 'MySQL (3306)', 'PostgreSQL (5432)']
 
 interface FormValues {
   ruleType: {
@@ -58,7 +50,6 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         onChange={(_e, v) => protocolField.onChange(v)}
         label={rowIndex === 0 ? 'Protocol' : ''}
         width='large'
-        disablePortal={false}
       />
 
       <Autocomplete<string, false, true, true>
@@ -82,7 +73,6 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         }}
         label={rowIndex === 0 ? 'Port' : ''}
         width='large'
-        disablePortal={false}
       />
     </FormRow>
   )

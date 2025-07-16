@@ -3,7 +3,7 @@ import { Box, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useMemo, useState } from 'react'
-import { FormProvider, Resolver, useForm } from 'react-hook-form'
+import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -136,6 +136,19 @@ export default function ({
     setValue,
   } = methods
 
+  const { field: ingressClassField } = useController<CreateAplServiceApiResponse>({
+    control,
+    name: 'spec.ingressClassName' as FieldPath<CreateAplServiceApiResponse>,
+  })
+  const { field: tlsSecretField } = useController<CreateAplServiceApiResponse>({
+    control,
+    name: 'spec.cname.tlsSecretName' as FieldPath<CreateAplServiceApiResponse>,
+  })
+  const { field: nameField } = useController<CreateAplServiceApiResponse>({
+    control,
+    name: 'metadata.name' as FieldPath<CreateAplServiceApiResponse>,
+  })
+
   useEffect(() => {
     if (data) reset(data)
 
@@ -249,29 +262,21 @@ export default function ({
                     value={watch('metadata.name', data?.metadata.name)}
                   />
                 ) : (
-                  <TextField
+                  <Autocomplete<string, false, false, false>
                     label='Service Name'
                     width='large'
-                    {...register('metadata.name')}
-                    select
-                    onChange={(e) => {
-                      const value = e.target.value
-                      setValue('metadata.name', value)
+                    options={filteredK8Services.map((service) => service.name)}
+                    getOptionLabel={(service) => service}
+                    placeholder='Select a service'
+                    value={typeof nameField.value === 'string' ? nameField.value : ''}
+                    onChange={(_e, value) => {
+                      nameField.onChange(value ?? '')
                       setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                      setValue('spec.domain', value)
-                      setActiveService(value)
+                      setValue('spec.domain', value ?? '')
+                      setActiveService(value ?? '')
                     }}
-                    value={watch('metadata.name', data?.metadata.name)}
-                  >
-                    <MenuItem key='select-a-service' value='' disabled classes={undefined}>
-                      Select a service
-                    </MenuItem>
-                    {filteredK8Services?.map((service) => (
-                      <MenuItem key={service.name} value={service.name} classes={undefined}>
-                        {service.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    errorText={errors.metadata?.name?.message?.toString()}
+                  />
                 )}
 
                 {service?.ports.length === 1 || teamId === 'admin' ? (
@@ -312,23 +317,14 @@ export default function ({
               </FormRow>
               {!isPreInstalled && (
                 <FormRow spacing={10}>
-                  <Autocomplete
+                  <Autocomplete<string, false, false, false>
                     label='Ingress Class Name'
-                    loading={isLoadingSettingsInfo}
-                    options={(updatedIngressClassNames || []).map((ingressClassName) => {
-                      return {
-                        label: ingressClassName,
-                        value: ingressClassName,
-                      }
-                    })}
                     width='large'
-                    placeholder='Select a Ingress Class Name'
-                    {...register('spec.ingressClassName')}
-                    value={watch('spec.ingressClassName') || 'platform'}
-                    onChange={(e, value: { label: string }) => {
-                      const label: string = value?.label || ''
-                      setValue('spec.ingressClassName', label)
-                    }}
+                    loading={isLoadingSettingsInfo}
+                    options={updatedIngressClassNames}
+                    placeholder='Select an Ingress Class Name'
+                    value={typeof ingressClassField.value === 'string' ? ingressClassField.value : ''}
+                    onChange={(_e, value) => ingressClassField.onChange(value ?? '')}
                   />
                 </FormRow>
               )}
@@ -378,22 +374,14 @@ export default function ({
                     type='text'
                     {...register('spec.cname.domain')}
                   />
-                  <Autocomplete
+                  <Autocomplete<string, false, false, false>
                     label='TLS Secret'
                     loading={isLoadingTeamSecrets}
-                    options={(teamSecrets || []).map((secret) => {
-                      return {
-                        label: secret.name,
-                        value: secret.name,
-                      }
-                    })}
+                    width='large'
+                    options={teamSecrets.map((secret) => secret.name)}
                     placeholder='Select a TLS Secret'
-                    {...register('spec.cname.tlsSecretName')}
-                    value={watch('spec.cname.tlsSecretName') || ''}
-                    onChange={(e, value: { label: string }) => {
-                      const label: string = value?.label || ''
-                      setValue('spec.cname.tlsSecretName', label)
-                    }}
+                    value={typeof tlsSecretField.value === 'string' ? tlsSecretField.value : ''}
+                    onChange={(_e, value) => tlsSecretField.onChange(value ?? '')}
                   />
                 </FormRow>
 

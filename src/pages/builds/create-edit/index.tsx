@@ -18,7 +18,7 @@ import {
 } from 'redux/otomiApi'
 import { cloneDeep } from 'lodash'
 import { LandingHeader } from 'components/LandingHeader'
-import { FormProvider, Resolver, useForm } from 'react-hook-form'
+import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
 import FormRow from 'components/forms/FormRow'
 import DeleteButton from 'components/DeleteButton'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -125,6 +125,16 @@ export default function CreateEditBuilds({
     unregister,
   } = methods
 
+  const modeType = watch('mode.type')
+  const { field: repoField } = useController<CreateBuildApiResponse>({
+    control,
+    name: `mode.${modeType}.repoUrl` as FieldPath<CreateBuildApiResponse>,
+  })
+  const { field: revField } = useController<CreateBuildApiResponse>({
+    control,
+    name: `mode.${modeType}.revision` as FieldPath<CreateBuildApiResponse>,
+  })
+
   useEffect(() => {
     if (!buildData || isLoadingCodeRepos) return
     reset(buildData)
@@ -201,51 +211,41 @@ export default function CreateEditBuilds({
 
               <Typography variant='h6'>Select code repository</Typography>
               <FormRow spacing={10} sx={{ alignItems: 'flex-start' }}>
-                <Autocomplete
+                <Autocomplete<GetCodeRepoApiResponse, false, false, false>
                   label='Repository'
                   loading={isLoadingCodeRepos}
-                  options={(codeRepos || []).map((codeRepo) => {
-                    return { label: codeRepo.name, codeRepo }
-                  })}
+                  options={codeRepos || []}
+                  getOptionLabel={(codeRepo) => codeRepo.name}
                   placeholder='Select a repository'
-                  {...register(`mode.${watch('mode.type')}.repoUrl`)}
-                  value={
-                    codeRepos?.find(
-                      (codeRepo) => codeRepo.repositoryUrl === watch(`mode.${watch('mode.type')}.repoUrl`),
-                    )?.name || watch(`mode.${watch('mode.type')}.repoUrl`)
-                  }
-                  onChange={(e, value: { label: string; codeRepo: GetCodeRepoApiResponse }) => {
-                    const label: string = value?.label || ''
-                    const codeRepo: GetCodeRepoApiResponse = value?.codeRepo || ({} as GetCodeRepoApiResponse)
-                    const { repositoryUrl, gitService, private: isPrivate, secret } = codeRepo
-                    if (!buildName) setValue('imageName', label)
-                    setValue(`mode.${watch('mode.type')}.repoUrl`, repositoryUrl)
-                    setValue(`mode.${watch('mode.type')}.revision`, undefined)
+                  value={codeRepos?.find((codeRepo) => codeRepo.repositoryUrl === repoField.value) || null}
+                  onChange={(_e, repo) => {
+                    repoField.onChange(repo?.repositoryUrl ?? '')
+                    if (!repo) return
+                    const { name, gitService, private: isPrivate, secret } = repo
+                    if (!buildName) setValue('imageName', name)
+                    setValue(`mode.${modeType}.revision`, undefined)
                     setValue('externalRepo', gitService !== 'gitea')
+                    setRepoName(name)
                     setGitService(gitService)
-                    setRepoName(label)
                     if (isPrivate) setValue('secretName', secret)
                     else unregister('secretName')
                   }}
-                  errorText={errors?.mode?.[`${watch('mode.type')}`]?.repoUrl?.message?.toString()}
+                  errorText={errors?.mode?.[modeType]?.repoUrl?.message?.toString()}
                   disabled={!!buildName}
                 />
 
-                <Autocomplete
+                <Autocomplete<string, false, false, false>
                   label='Reference'
                   loading={isLoadingRepoBranches}
-                  options={(repoBranches || []).map((branch) => {
-                    return { label: branch }
-                  })}
+                  options={repoBranches || []}
+                  getOptionLabel={(repoBranch) => repoBranch}
                   placeholder='Select a reference'
-                  {...register(`mode.${watch('mode.type')}.revision`)}
-                  value={watch(`mode.${watch('mode.type')}.revision`) || ''}
-                  onChange={(e, value: { label: string }) => {
-                    const label: string = value?.label || ''
-                    setValue(`mode.${watch('mode.type')}.revision`, label)
-                    if (!buildName) setValue('tag', label)
+                  value={(revField.value as string) ?? ''}
+                  onChange={(_e, branch) => {
+                    revField.onChange(branch ?? '')
+                    if (!buildName) setValue('tag', branch ?? '')
                   }}
-                  errorText={errors?.mode?.[`${watch('mode.type')}`]?.revision?.message?.toString()}
+                  errorText={errors?.mode?.[modeType]?.revision?.message?.toString()}
                 />
 
                 <TextField
