@@ -101,6 +101,7 @@ export default function ({
   toggleApp,
   isDeprecated,
   isBeta,
+  isAlpha,
   openModal,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
@@ -151,6 +152,16 @@ export default function ({
             <Chip
               className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
               label='BETA'
+              variant='outlined'
+            />
+          </Box>
+        )}
+
+        {isAlpha && (
+          <Box>
+            <Chip
+              className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
+              label='ALPHA'
               variant='outlined'
             />
           </Box>
