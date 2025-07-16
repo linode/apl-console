@@ -7347,6 +7347,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               tempo?: string
               gitea?: string
               thanos?: string
+              kfp?: string
             }
           }
           type: 'linode'
@@ -7609,6 +7610,7 @@ export type EditSettingsApiArg = {
                 tempo?: string
                 gitea?: string
                 thanos?: string
+                kfp?: string
               }
             }
             type: 'linode'
