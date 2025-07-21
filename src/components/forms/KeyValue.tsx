@@ -119,6 +119,7 @@ interface KeyValueProps {
   // render the value field as a textarea when true
   isTextArea?: boolean
   isEncrypted?: boolean
+  isValueOptional?: boolean
 }
 
 // This local subcomponent watches the key field (using its path) and checks the provided
@@ -182,6 +183,7 @@ export default function KeyValue(props: KeyValueProps) {
     decoratorMapping,
     isTextArea = false,
     isEncrypted,
+    isValueOptional = false,
   } = props
 
   const { fields, append, remove } = useFieldArray({ control, name })
@@ -220,7 +222,7 @@ export default function KeyValue(props: KeyValueProps) {
         const commonProps = {
           ...register(valuePath),
           width: valueSize,
-          label: showLabel && localIndex === 0 ? valueLabel : '',
+          label: showLabel && localIndex === 0 ? `${valueLabel}${isValueOptional ? ' (optional)' : ''}` : '',
           noMarginTop: compressed,
           disabled: isFieldDisabled,
           type: valueIsNumber ? 'number' : undefined,
