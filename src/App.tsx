@@ -161,12 +161,12 @@ function App() {
                                 <PrivateRoute path='/teams/:teamId' component={Team} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/inbound-rules/create'
+                                  path='/teams/:teamId/network-policies/inbound-rules/create'
                                   component={NetworkPoliciesIngressCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/teams/:teamId/outbound-rules/create'
+                                  path='/teams/:teamId/network-policies/outbound-rules/create'
                                   component={NetworkPoliciesEgressCreateEditPage}
                                   exact
                                 />

@@ -114,7 +114,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'
           title={networkPolicyName ? data?.name : 'Create'}
-          hideCrumbX={[0, 1]}
+          hideCrumbX={[0, 1, 3]}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -140,14 +140,16 @@ export default function NetworkPoliciesIngressCreateEditPage({
                       setSourcesByNs((prev) => ({ ...prev, [ns]: podNames }))
                     }}
                   />
-                  <IconButton
-                    aria-label='remove source'
-                    onClick={() => removeSource(index)}
-                    size='small'
-                    sx={{ mt: 1 }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
+                  {index !== 0 && (
+                    <IconButton
+                      aria-label='remove source'
+                      onClick={() => removeSource(index)}
+                      size='small'
+                      sx={{ mt: 1 }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
                 </div>
               ))}
 

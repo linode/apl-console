@@ -101,8 +101,20 @@ export default function NetworkPoliciesOverviewPage({
   const loading = isLoadingAllNetpols || isLoadingTeamNetpols
   const comp = (
     <Box>
-      <ListTable teamId={teamId} headCells={ingressHeadCells} rows={ingressRows} resourceType='Inbound Rule' />
-      <ListTable teamId={teamId} headCells={egressHeadCells} rows={egressRows} resourceType='Outbound Rule' />
+      <ListTable
+        teamId={teamId}
+        headCells={ingressHeadCells}
+        rows={ingressRows}
+        resourceType='Inbound Rule'
+        to={`/teams/${teamId}/network-policies/inbound-rules/create`}
+      />
+      <ListTable
+        teamId={teamId}
+        headCells={egressHeadCells}
+        rows={egressRows}
+        resourceType='Outbound Rule'
+        to={`/teams/${teamId}/network-policies/outbound-rules/create`}
+      />
     </Box>
   )
   return <PaperLayout loading={loading} comp={comp} title={t('Network Policies', { role: getRole(teamId) })} />
