@@ -313,12 +313,13 @@ export default function CreateEditBuilds({
                 title='Extra arguments'
                 subTitle='Additional arguments to pass on to the build executor'
                 keyLabel='Name'
-                valueLabel='Value (optional)'
+                valueLabel='Value'
                 addLabel='Add argument'
                 compressed
                 name={`mode.${watch('mode.type')}.envVars`}
                 {...register(`mode.${watch('mode.type')}.envVars`)}
                 errorText={extraArgumentsError()}
+                isValueOptional
               />
 
               <Divider sx={{ mt: 2, mb: 2 }} />
