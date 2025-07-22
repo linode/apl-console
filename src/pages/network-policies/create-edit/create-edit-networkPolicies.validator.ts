@@ -53,8 +53,8 @@ export const createIngressSchema = yup.object({
       type: yup.mixed<IngressRuleType['type']>().oneOf(['ingress']).required(),
       ingress: yup
         .object({
-          toLabelName: yup.string().required('Destination label name is required'),
-          toLabelValue: yup.string().required('Destination label value is required'),
+          toLabelName: yup.string().required('Target label is required'),
+          toLabelValue: yup.string().required('Target label is required'),
           mode: yup
             .mixed<IngressRuleType['ingress']['mode']>()
             .oneOf(['AllowAll', 'AllowOnly'])

@@ -12,16 +12,21 @@ import { useAppSelector } from 'redux/hooks'
 import { useGetAllNetpolsQuery, useGetTeamNetpolsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
+interface NetworkPolicyType {
+  type?: 'ingress' | 'egress'
+}
+
 // We should remove the linter rule that removes the braces around the function body
 const getNetpolLink = (isAdmin, ownerId) =>
   function (row) {
-    const { teamId, name }: { teamId: string; id: string; name: string } = row
+    const { teamId, name, ruleType }: { teamId: string; id: string; name: string; ruleType: NetworkPolicyType } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
+    const type = ruleType.type === 'ingress' ? 'inbound-rules' : 'outbound-rules'
     const path =
       isAdmin && !ownerId
-        ? `/network-policies/${encodeURIComponent(name)}`
-        : `/teams/${teamId}/network-policies/${encodeURIComponent(name)}`
+        ? `/network-policies/${type}/${encodeURIComponent(name)}`
+        : `/teams/${teamId}/network-policies/${type}/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}

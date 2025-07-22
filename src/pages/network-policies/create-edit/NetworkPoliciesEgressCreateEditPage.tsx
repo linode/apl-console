@@ -91,7 +91,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'
           title={networkPolicyName ? data.name : 'Create'}
-          hideCrumbX={[0, 1]}
+          hideCrumbX={[0, 1, 3]}
         />
 
         <FormProvider {...methods}>

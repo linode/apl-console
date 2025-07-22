@@ -52,7 +52,6 @@ import CodeRepositories from 'pages/code-repositories/overview'
 import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
 import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
-import NetworkPoliciesCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
 import { HttpErrorBadRequest } from './utils/error'
@@ -193,8 +192,13 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/teams/:teamId/network-policies/:networkPolicyName'
-                                  component={NetworkPoliciesCreateEditPage}
+                                  path='/teams/:teamId/network-policies/inbound-rules/:networkPolicyName'
+                                  component={NetworkPoliciesIngressCreateEditPage}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/network-policies/outbound-rules/:networkPolicyName'
+                                  component={NetworkPoliciesEgressCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
