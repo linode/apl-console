@@ -124,6 +124,9 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 width='large'
                 value={watch('name')}
                 onChange={(e) => methods.setValue('name', e.target.value)}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                placeholder='e.g. backend-to-database'
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>

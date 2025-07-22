@@ -47,7 +47,7 @@ export interface CreateEgressNetpolApiResponse {
 export const createIngressSchema = yup.object({
   id: yup.string().optional(),
   teamId: yup.string().optional(),
-  name: yup.string().required('Name is required'),
+  name: yup.string().required('Inbound rule name is required'),
   ruleType: yup
     .object({
       type: yup.mixed<IngressRuleType['type']>().oneOf(['ingress']).required(),
@@ -70,8 +70,13 @@ export const createIngressSchema = yup.object({
             )
             .when('mode', {
               is: 'AllowOnly',
-              then: (sch) => sch.min(1, 'At least one allow rule is required'),
-              otherwise: (sch) => sch.notRequired(),
+              then: (schema) =>
+                schema.test(
+                  'at-least-one-label',
+                  'At least one source label is required',
+                  (arr) => Array.isArray(arr) && arr.some((item) => !!item.fromLabelName?.trim()),
+                ),
+              otherwise: (schema) => schema.notRequired(),
             }),
         })
         .required(),

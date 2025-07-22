@@ -47,12 +47,17 @@ export default function NetworkPolicyPodLabelRow({
   rowType,
   onPodNamesChange,
 }: Props) {
-  const { control } = useFormContext<FormValues>()
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<FormValues>()
   const { field } = useController<FormValues>({ control, name: fieldArrayName })
 
   const [activeWorkload, setActiveWorkload] = useState<string>('')
   const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
   const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
+
+  const arrayError = (errors.ruleType?.ingress.allow?.root as any)?.message as string | undefined
 
   // derive namespace from the selected workload
   const namespace = useMemo(() => {
@@ -132,9 +137,11 @@ export default function NetworkPolicyPodLabelRow({
 
       <Autocomplete
         hideLabel={rowIndex !== 0}
-        label='Label'
+        label='Label(s)'
         width='large'
         multiple={false}
+        errorText={arrayError && rowIndex === 0 ? arrayError : ''}
+        helperText={arrayError && rowIndex === 0 ? arrayError : ''}
         options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([k, v]) => `${k}:${v}`)}
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {

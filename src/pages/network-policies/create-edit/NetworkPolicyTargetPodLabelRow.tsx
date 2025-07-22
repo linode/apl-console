@@ -17,13 +17,29 @@ interface WorkloadOption {
   namespace: string
 }
 
+interface FormValues {
+  ruleType: {
+    ingress: {
+      toLabelName?: string
+      toLabelValue?: string
+    }
+  }
+  [key: string]: any
+}
+
 export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, onPodNamesChange }: Props) {
-  const { watch, setValue } = useFormContext()
+  const {
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<FormValues>()
   const [circuitBreaker, setCircuitBreaker] = useState(true)
   const [activeWorkload, setActiveWorkload] = useState<string>('')
 
   const toName = watch(`${prefixName}.toLabelName`) || ''
   const toValue = watch(`${prefixName}.toLabelValue`) || ''
+
+  const targetValueError = errors.ruleType?.ingress?.toLabelName?.message
 
   // derive namespace from selected workload
   const namespace = useMemo(() => {
@@ -105,7 +121,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
       />
 
       <Autocomplete
-        label='To label'
+        label='Label'
         multiple={false}
         options={labelOptions}
         value={rawSelector || null}
@@ -120,6 +136,8 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
           setValue(`${prefixName}.toLabelName`, name)
           setValue(`${prefixName}.toLabelValue`, value)
         }}
+        errorText={targetValueError || ''}
+        helperText={targetValueError || ''}
       />
     </FormRow>
   )
