@@ -19,6 +19,7 @@ import {
   useEditNetpolMutation,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
+import { useTranslation } from 'react-i18next'
 import { Divider } from 'components/Divider'
 import { createEgressSchema } from './create-edit-networkPolicies.validator'
 import { useStyles } from './create-edit-networkPolicies.styles'
@@ -35,6 +36,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
   },
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
+  const { t } = useTranslation()
 
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createEgressSchema) as Resolver<CreateNetpolApiResponse>,
@@ -86,7 +88,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout>
+      <PaperLayout loading={isFetching} title={t('TITLE_CODE_NETWORK_POLICY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'

@@ -21,6 +21,7 @@ import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -38,6 +39,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
   },
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
+  const { t } = useTranslation()
 
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createIngressSchema) as Resolver<CreateNetpolApiResponse>,
@@ -109,7 +111,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout>
+      <PaperLayout loading={isLoadingFetch} title={t('TITLE_CODE_NETWORK_POLICY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'

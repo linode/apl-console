@@ -106,5 +106,7 @@
   "Code-repository": "Code Repository",
   "Code-repository_plural": "Code Repositories",
   "TITLE_CODE_REPOSITORY": "Code repository details",
-  "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}"
+  "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}",
+  "TITLE_CODE_NETWORK_POLICY": "Network policy details",
+  "TITLE_CODE_NETWORK_POLICIES": "Network policies - {{scope}}"
 }
