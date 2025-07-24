@@ -12,14 +12,23 @@ import { useAppSelector } from 'redux/hooks'
 import { useGetAllNetpolsQuery, useGetTeamNetpolsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
+interface Params {
+  teamId: string
+}
+
 interface NetworkPolicyType {
   type?: 'ingress' | 'egress'
 }
 
-// We should remove the linter rule that removes the braces around the function body
-const getNetpolLink = (isAdmin, ownerId) =>
+// Helper to truncate long strings
+const truncate = (str?: string, max = 50) => {
+  if (!str) return ''
+  return str.length > max ? `${str.slice(0, max)}…` : str
+}
+
+const getNetpolLink = (isAdmin: boolean, ownerId?: string) =>
   function (row) {
-    const { teamId, name, ruleType }: { teamId: string; id: string; name: string; ruleType: NetworkPolicyType } = row
+    const { teamId, name, ruleType }: { teamId: string; name: string; ruleType: NetworkPolicyType } = row
     if (!(isAdmin || teamId === ownerId)) return name
 
     const type = ruleType.type === 'ingress' ? 'inbound-rules' : 'outbound-rules'
@@ -27,16 +36,13 @@ const getNetpolLink = (isAdmin, ownerId) =>
       isAdmin && !ownerId
         ? `/network-policies/${type}/${encodeURIComponent(name)}`
         : `/teams/${teamId}/network-policies/${type}/${encodeURIComponent(name)}`
+
     return (
       <RLink to={path} label={name}>
         {name}
       </RLink>
     )
   }
-
-interface Params {
-  teamId: string
-}
 
 export default function NetworkPoliciesOverviewPage({
   match: {
@@ -56,6 +62,7 @@ export default function NetworkPoliciesOverviewPage({
     refetch: refetchTeamNetpols,
   } = useGetTeamNetpolsQuery({ teamId }, { skip: !teamId })
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllNetpols) refetchAllNetpols()
@@ -67,43 +74,64 @@ export default function NetworkPoliciesOverviewPage({
     user: { isPlatformAdmin },
   } = useSession()
   const { t } = useTranslation()
-  // END HOOKS
 
-  const baseHeadCells: HeadCell[] = [
+  const netpols = teamId ? teamNetpols : allNetpols
+
+  // Define columns for ingress (Inbound Rule)
+  const ingressHeadCells: HeadCell[] = [
     {
       id: 'name',
       label: t('Name'),
       renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'type',
-      label: t('ruleType'),
-      renderer: (row) => row?.ruleType?.type,
+      id: 'source',
+      label: t('Source'),
+      renderer: (row) => truncate(row.ruleType?.ingress?.toLabelValue),
+    },
+    {
+      id: 'target',
+      label: t('Target'),
+      renderer: (row) => {
+        const names = row.ruleType?.ingress?.allow
+          ?.map((a) => a.fromLabelValue)
+          .filter(Boolean)
+          .join(', ')
+        return truncate(names)
+      },
     },
   ]
 
-  // Include Team column if no specific teamId
-  const teamCell: HeadCell = {
-    id: 'namespace',
-    label: t('Team'),
-    renderer: (row) => row.namespace || `team-${row.teamId}`,
-  }
-
-  // Clone for ingress and egress
-  const ingressHeadCells = [...baseHeadCells]
-  const egressHeadCells = [...baseHeadCells]
-  if (!teamId) {
-    ingressHeadCells.splice(2, 0, teamCell)
-    egressHeadCells.splice(2, 0, teamCell)
-  }
-
-  const netpols = teamId ? teamNetpols : allNetpols
+  // Define columns for egress (Outbound Rule)
+  const egressHeadCells: HeadCell[] = [
+    {
+      id: 'name',
+      label: t('Name'),
+      renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
+    },
+    {
+      id: 'domain',
+      label: t('Domain'),
+      renderer: (row) => row.ruleType?.egress?.domain || '',
+    },
+    {
+      id: 'port',
+      label: t('Port'),
+      renderer: (row) => row.ruleType?.egress?.ports?.map((p) => p.number).join(', ') || '',
+    },
+    {
+      id: 'protocol',
+      label: t('Protocol'),
+      renderer: (row) => row.ruleType?.egress?.ports?.map((p) => p.protocol).join(', ') || '',
+    },
+  ]
 
   // Separate rows by rule type
   const ingressRows = netpols?.filter((row) => row.ruleType?.type === 'ingress')
   const egressRows = netpols?.filter((row) => row.ruleType?.type === 'egress')
 
   const loading = isLoadingAllNetpols || isLoadingTeamNetpols
+
   const comp = (
     <Box>
       <ListTable
@@ -122,5 +150,6 @@ export default function NetworkPoliciesOverviewPage({
       />
     </Box>
   )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_NETWORK_POLICIES', { role: getRole(teamId) })} />
 }
