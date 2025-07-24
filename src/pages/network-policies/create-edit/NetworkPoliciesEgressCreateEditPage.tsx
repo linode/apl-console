@@ -38,13 +38,22 @@ export default function NetworkPoliciesEgressCreateEditPage({
   const { classes } = useStyles()
   const { t } = useTranslation()
 
+  const { data, isLoading: isFetching } = useGetNetpolQuery(
+    { teamId, netpolName: networkPolicyName },
+    { skip: !networkPolicyName },
+  )
+
   const methods = useForm<CreateNetpolApiResponse>({
     resolver: yupResolver(createEgressSchema) as Resolver<CreateNetpolApiResponse>,
-    defaultValues: {
-      name: '',
-      ruleType: { type: 'egress', egress: { domain: '', ports: [] } },
-    },
+    defaultValues:
+      data && networkPolicyName
+        ? createEgressSchema.cast(data)
+        : {
+            name: '',
+            ruleType: { type: 'egress', egress: { domain: '', ports: [] } },
+          },
   })
+
   const {
     control,
     watch,
@@ -53,10 +62,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
     formState: { errors },
   } = methods
 
-  const { data, isLoading: isFetching } = useGetNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
-  )
   useEffect(() => {
     if (data) reset(createEgressSchema.cast(data))
   }, [data, reset])
