@@ -111,7 +111,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={isLoadingFetch} title={t('TITLE_CODE_NETWORK_POLICY')}>
+      <PaperLayout loading={isLoadingFetch} title={t('TITLE_NETWORK_POLICY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'
