@@ -122,5 +122,5 @@ export default function NetworkPoliciesOverviewPage({
       />
     </Box>
   )
-  return <PaperLayout loading={loading} comp={comp} title={t('Network Policies', { role: getRole(teamId) })} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_NETWORK_POLICIES', { role: getRole(teamId) })} />
 }
