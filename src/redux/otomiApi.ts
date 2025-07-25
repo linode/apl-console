@@ -7330,6 +7330,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sContext?: string
     owner?: string
     provider: 'linode' | 'custom'
+    defaultStorageClass?: string
   }
   platformBackups?: {
     gitea?: {
@@ -7380,7 +7381,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               tempo?: string
               gitea?: string
               thanos?: string
-              kfp?: string
+              'kubeflow-pipelines'?: string
             }
           }
           type: 'linode'
@@ -7594,6 +7595,7 @@ export type EditSettingsApiArg = {
       k8sContext?: string
       owner?: string
       provider: 'linode' | 'custom'
+      defaultStorageClass?: string
     }
     platformBackups?: {
       gitea?: {
@@ -7644,7 +7646,7 @@ export type EditSettingsApiArg = {
                 tempo?: string
                 gitea?: string
                 thanos?: string
-                kfp?: string
+                'kubeflow-pipelines'?: string
               }
             }
             type: 'linode'
