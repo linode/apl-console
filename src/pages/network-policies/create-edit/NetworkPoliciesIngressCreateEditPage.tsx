@@ -72,11 +72,10 @@ export default function NetworkPoliciesIngressCreateEditPage({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
-  const {
-    data,
-    isLoading: isLoadingFetch,
-    refetch,
-  } = useGetNetpolQuery({ teamId, netpolName: networkPolicyName }, { skip: !networkPolicyName })
+  const { data, isLoading: isLoadingFetch } = useGetNetpolQuery(
+    { teamId, netpolName: networkPolicyName },
+    { skip: !networkPolicyName },
+  )
   const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
 
   const [sourcesByNs, setSourcesByNs] = useState<Record<string, string[]>>({})
@@ -141,7 +140,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
                     rowType='source'
-                    onPodNamesChange={(ns, podNames, role) => {
+                    onPodNamesChange={(ns, podNames) => {
                       setSourcesByNs((prev) => ({ ...prev, [ns]: podNames }))
                     }}
                   />

@@ -90,7 +90,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   }, [activeWorkload, podLabels])
 
   // once the user has picked or defaulted a toName/toValue, fetch matching pod names
-  const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
+  const rawSelector = toName && toValue ? `${toName}:${toValue}` : ''
   const { data: podNames } = useListUniquePodNamesByLabelQuery(
     {
       teamId,

@@ -10,8 +10,6 @@ export interface PodLabelMatch {
  * @returns A PodLabelMatch with the selected label name and value, or null if none matched.
  */
 export function getDefaultPodLabel(workloadName: string, podLabels: Record<string, string>): PodLabelMatch | null {
-  console.log('what is going on here', workloadName, 'podLabels', podLabels)
-
   // 1. Exact match on app.kubernetes.io/instance
   const instanceKey = 'app.kubernetes.io/instance'
   const instanceValue = podLabels[instanceKey]

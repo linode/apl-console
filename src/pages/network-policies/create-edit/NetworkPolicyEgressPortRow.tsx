@@ -1,5 +1,4 @@
-// NetworkPolicyPortRow.tsx
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
@@ -25,22 +24,25 @@ interface Props {
 export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props) {
   const { control } = useFormContext<FormValues>()
 
-  // protocol stays uppercase
   const { field: protocolField } = useController({
     control,
     name: `${fieldArrayName}.protocol`,
     defaultValue: 'TCP' as Protocol,
   })
 
-  // number starts undefined
   const { field: numberField } = useController({
     control,
     name: `${fieldArrayName}.number`,
     defaultValue: undefined as unknown as number,
   })
 
-  // show the raw number (or empty) in the input
-  const displayValue = numberField.value != null ? numberField.value.toString() : ''
+  // track raw text input for freeSolo
+  const [portInput, setPortInput] = useState<string>('')
+
+  // sync external field changes back into input
+  useEffect(() => {
+    setPortInput(numberField.value != null ? String(numberField.value) : '')
+  }, [numberField.value])
 
   return (
     <FormRow spacing={10}>
@@ -52,24 +54,24 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         width='large'
       />
 
-      <Autocomplete<string, false, true, true>
+      <Autocomplete<string, false, false, true>
         freeSolo
         options={COMMON_PORT_OPTIONS}
-        value={displayValue}
-        onChange={(_e, v) => {
-          if (!v) {
+        inputValue={portInput}
+        onInputChange={(_e, newInput) => setPortInput(newInput)}
+        onChange={(_e, selected) => {
+          if (selected == null) {
             numberField.onChange(undefined)
+            setPortInput('')
             return
           }
-          // if they picked "HTTPS (443)", grab the digits; else use raw
-          const m = v.match(/\((\d+)\)$/)
-          const str = m ? m[1] : v
+          const m = selected.match(/\((\d+)\)$/)
+          const str = m ? m[1] : selected
           const parsed = parseInt(str, 10)
-          if (!Number.isNaN(parsed)) numberField.onChange(parsed)
-          else {
-            // best‐effort: if they typed garbage, clear and let validation catch it
-            numberField.onChange(undefined)
-          }
+          if (!Number.isNaN(parsed)) {
+            numberField.onChange(parsed)
+            setPortInput(String(parsed))
+          } else numberField.onChange(undefined)
         }}
         label={rowIndex === 0 ? 'Port' : ''}
         width='large'
