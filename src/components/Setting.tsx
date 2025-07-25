@@ -60,6 +60,7 @@ export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, setting
   const uiSchema: any = {
     cluster: {
       k8sContext: { 'ui:widget': 'hidden' },
+      defaultStorageClass: { 'ui:widget': 'hidden' },
     },
     otomi: {
       isMultitenant: { 'ui:widget': 'hidden' },
