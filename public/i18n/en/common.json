@@ -45,6 +45,8 @@
   "SealedSecret_plural": "Sealed Secrets",
   "Netpol": "Network Policy",
   "Netpol_plural": "Network Policies",
+  "Inbound Rule_plural": "Inbound Rules",
+  "Outbound Rule_plural": "Outbound Rules",
   "Secrets": "Secrets",
   "Service": "Service",
   "Service_plural": "Services",
@@ -104,5 +106,7 @@
   "Code-repository": "Code Repository",
   "Code-repository_plural": "Code Repositories",
   "TITLE_CODE_REPOSITORY": "Code repository details",
-  "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}"
+  "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}",
+  "TITLE_NETWORK_POLICY": "Network policy details",
+  "TITLE_NETWORK_POLICIES": "Network policies - {{scope}}"
 }
