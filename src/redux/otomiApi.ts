@@ -53,6 +53,18 @@ const injectedRtkApi = api.injectEndpoints({
     getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
+    getK8SWorkloadPodLabels: build.query<GetK8SWorkloadPodLabelsApiResponse, GetK8SWorkloadPodLabelsApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/teams/${queryArg.teamId}/kubernetes/networkpolicies`,
+        params: { workloadName: queryArg.workloadName, namespace: queryArg['namespace'] },
+      }),
+    }),
+    listUniquePodNamesByLabel: build.query<ListUniquePodNamesByLabelApiResponse, ListUniquePodNamesByLabelApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/teams/${queryArg.teamId}/kubernetes/fetchPodsFromLabel`,
+        params: { labelSelector: queryArg.labelSelector, namespace: queryArg['namespace'] },
+      }),
+    }),
     getService: build.query<GetServiceApiResponse, GetServiceApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services/${queryArg.serviceName}` }),
     }),
@@ -1416,7 +1428,7 @@ export type CreateServiceApiArg = {
         )
   }
 }
-export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kuberntes services */ {
+export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kubernetes services */ {
   name: string
   ports?: number[]
   managedByKnative?: boolean
@@ -1424,6 +1436,27 @@ export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained
 export type GetTeamK8SServicesApiArg = {
   /** ID of team */
   teamId: string
+}
+export type GetK8SWorkloadPodLabelsApiResponse = /** status 200 Successfully obtained Podlabels from given workload */ {
+  [key: string]: string
+}
+export type GetK8SWorkloadPodLabelsApiArg = {
+  /** ID of team */
+  teamId: string
+  /** name of the workload to get Podlabels from */
+  workloadName?: string
+  /** namespace of the workload to get Podlabels from */
+  namespace?: string
+}
+export type ListUniquePodNamesByLabelApiResponse =
+  /** status 200 Successfully obtained pods from given label */ string[]
+export type ListUniquePodNamesByLabelApiArg = {
+  /** ID of team */
+  teamId: string
+  /** name of the label to get pods name from */
+  labelSelector?: string
+  /** namespace of the workload to get Podlabels from */
+  namespace?: string
 }
 export type GetServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
   id?: string
@@ -7852,6 +7885,8 @@ export const {
   useGetTeamServicesQuery,
   useCreateServiceMutation,
   useGetTeamK8SServicesQuery,
+  useGetK8SWorkloadPodLabelsQuery,
+  useListUniquePodNamesByLabelQuery,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
