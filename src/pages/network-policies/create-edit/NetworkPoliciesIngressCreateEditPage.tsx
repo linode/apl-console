@@ -20,13 +20,12 @@ import { TextField } from 'components/forms/TextField'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
 import NetworkPolicyTargetLabelRow from './NetworkPolicyTargetPodLabelRow'
-import NetworkPoliciesFlowRenderer from './NetworkPoliciesFlowRenderer'
 
 interface Params {
   teamId?: string
@@ -77,9 +76,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
     { skip: !networkPolicyName },
   )
   const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
-
-  const [sourcesByNs, setSourcesByNs] = useState<Record<string, string[]>>({})
-  const [targetsByNs, setTargetsByNs] = useState<Record<string, string[]>>({})
 
   // When editing, reset form with fetched data
   useEffect(() => {
@@ -144,10 +140,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     teamId={teamId}
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
-                    rowType='source'
-                    onPodNamesChange={(ns, podNames) => {
-                      setSourcesByNs((prev) => ({ ...prev, [ns]: podNames }))
-                    }}
                   />
                   {index !== 0 && (
                     <IconButton
@@ -175,14 +167,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
 
               {/* Target row needs seperate component becuase of data shape */}
-              <NetworkPolicyTargetLabelRow
-                aplWorkloads={aplWorkloads}
-                teamId={teamId}
-                prefixName='ruleType.ingress'
-                onPodNamesChange={(ns, podNames) => {
-                  setTargetsByNs((prev) => ({ ...prev, [ns]: podNames }))
-                }}
-              />
+              <NetworkPolicyTargetLabelRow aplWorkloads={aplWorkloads} teamId={teamId} prefixName='ruleType.ingress' />
             </Section>
 
             {networkPolicyName && (
@@ -209,7 +194,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
             </LoadingButton>
           </form>
         </FormProvider>
-        <NetworkPoliciesFlowRenderer sourcesByNamespace={sourcesByNs} targetsByNamespace={targetsByNs} />
       </PaperLayout>
     </Grid>
   )

@@ -2,14 +2,13 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
+import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
   aplWorkloads: any[]
   teamId: string
   prefixName: string
-  onPodNamesChange: (namespace: string, podNames: string[], role: 'target') => void
 }
 
 interface WorkloadOption {
@@ -27,7 +26,7 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, onPodNamesChange }: Props) {
+export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName }: Props) {
   const {
     watch,
     setValue,
@@ -40,13 +39,6 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   const toValue = watch(`${prefixName}.toLabelValue`) || ''
 
   const targetValueError = errors.ruleType?.ingress?.toLabelName?.message
-
-  // derive namespace from selected workload
-  const namespace = useMemo(() => {
-    const w = aplWorkloads.find((w) => w.metadata.name === activeWorkload)
-    const teamLabel = w?.metadata.labels?.['apl.io/teamId'] || ''
-    return `team-${teamLabel}`
-  }, [activeWorkload, aplWorkloads])
 
   // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
@@ -91,19 +83,6 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
 
   // once the user has picked or defaulted a toName/toValue, fetch matching pod names
   const rawSelector = toName && toValue ? `${toName}:${toValue}` : ''
-  const { data: podNames } = useListUniquePodNamesByLabelQuery(
-    {
-      teamId,
-      labelSelector: rawSelector,
-      namespace,
-    },
-    { skip: !rawSelector },
-  )
-
-  // notify parent of podNames
-  useEffect(() => {
-    if (podNames && podNames.length > 0) onPodNamesChange(namespace, podNames, 'target')
-  }, [podNames])
 
   return (
     <FormRow spacing={10}>

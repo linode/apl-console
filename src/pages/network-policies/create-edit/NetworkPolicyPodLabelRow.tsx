@@ -2,7 +2,7 @@ import { FieldPath, useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
-import { useGetK8SWorkloadPodLabelsQuery, useListUniquePodNamesByLabelQuery } from 'redux/otomiApi'
+import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
@@ -10,8 +10,6 @@ interface Props {
   teamId: string
   fieldArrayName: FieldPath<FormValues>
   rowIndex?: number
-  rowType: 'source' | 'target'
-  onPodNamesChange: (namespace: string, podNames: string[], role: 'source' | 'target') => void
 }
 
 interface PodLabelMatch {
@@ -39,14 +37,7 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyPodLabelRow({
-  aplWorkloads,
-  teamId,
-  fieldArrayName,
-  rowIndex,
-  rowType,
-  onPodNamesChange,
-}: Props) {
+export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName, rowIndex }: Props) {
   const {
     control,
     formState: { errors },
@@ -54,7 +45,6 @@ export default function NetworkPolicyPodLabelRow({
   const { field } = useController<FormValues>({ control, name: fieldArrayName })
 
   const [activeWorkload, setActiveWorkload] = useState<string>('')
-  const [activeLabel, setActiveLabel] = useState<ActiveLabel>({ label: '', namespace: '' })
   const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
 
   const arrayError = (errors.ruleType?.ingress.allow?.root as any)?.message as string | undefined
@@ -84,10 +74,6 @@ export default function NetworkPolicyPodLabelRow({
     { teamId, workloadName: activeWorkload },
     { skip: !activeWorkload },
   )
-  const { data: podNames } = useListUniquePodNamesByLabelQuery(
-    { teamId, labelSelector: activeLabel.label, namespace: activeLabel.namespace },
-    { skip: !activeLabel.label },
-  )
 
   // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
@@ -98,16 +84,10 @@ export default function NetworkPolicyPodLabelRow({
     } else setCircuitBreaker(false)
   }, [])
 
-  // notify parent of podNames
-  useEffect(() => {
-    if (podNames && podNames.length) onPodNamesChange(activeLabel.namespace, podNames, rowType)
-  }, [podNames])
-
   // clear label when workload manually selected
   useEffect(() => {
     if (circuitBreaker || !activeWorkload) return
     field.onChange({ fromNamespace: '', fromLabelName: '', fromLabelValue: undefined })
-    setActiveLabel({ label: '', namespace: '' })
   }, [activeWorkload])
 
   // default match on create
@@ -115,10 +95,7 @@ export default function NetworkPolicyPodLabelRow({
     if (podLabels && circuitBreaker) setCircuitBreaker(false)
     if (!activeWorkload || !podLabels) return
     const match = getDefaultPodLabel(activeWorkload, podLabels)
-    if (match) {
-      field.onChange({ fromNamespace: namespace, fromLabelName: match.name, fromLabelValue: match.value })
-      setActiveLabel({ label: `${match.name}=${match.value}`, namespace })
-    }
+    if (match) field.onChange({ fromNamespace: namespace, fromLabelName: match.name, fromLabelValue: match.value })
   }, [activeWorkload, podLabels])
 
   return (
@@ -147,7 +124,6 @@ export default function NetworkPolicyPodLabelRow({
         onChange={(_e, raw: string | null) => {
           const [name, value] = raw?.split(':', 2) ?? []
           field.onChange({ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value })
-          setActiveLabel({ label: `${name}=${value}`, namespace })
         }}
       />
     </FormRow>
