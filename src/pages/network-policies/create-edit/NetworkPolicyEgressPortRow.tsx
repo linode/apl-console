@@ -7,8 +7,6 @@ import { TextField } from 'components/forms/TextField'
 type Protocol = 'HTTP' | 'HTTPS' | 'TCP'
 const PROTOCOL_OPTIONS: Protocol[] = ['HTTP', 'HTTPS', 'TCP']
 
-const COMMON_PORT_OPTIONS = ['HTTPS (443)', 'HTTP (80)', 'SMTP (25)', 'MySQL (3306)', 'PostgreSQL (5432)']
-
 interface FormValues {
   ruleType: {
     egress: {

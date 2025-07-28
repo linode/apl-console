@@ -105,6 +105,7 @@ export const createEgressSchema = yup.object({
               yup.object({
                 number: yup
                   .number()
+                  .typeError('Port must be a number')
                   .required('Port number is required')
                   .min(1, 'Port number must be larger than 1')
                   .max(65535, 'Port numer must be lower than 65535'),

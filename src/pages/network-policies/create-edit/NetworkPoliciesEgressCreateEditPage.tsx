@@ -124,16 +124,23 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
               <Divider />
 
-              {portFields.map((field, idx) => (
-                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+              {portFields.map((field, index) => (
+                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                   <NetworkPolicyEgressPortRow
                     key={field.id}
-                    fieldArrayName={`ruleType.egress.ports.${idx}`}
-                    rowIndex={idx}
+                    fieldArrayName={`ruleType.egress.ports.${index}`}
+                    rowIndex={index}
                   />
-                  <IconButton aria-label='remove source' onClick={() => removePort(idx)} size='small' sx={{ mt: 1 }}>
-                    <DeleteIcon />
-                  </IconButton>
+                  {index !== 0 && (
+                    <IconButton
+                      aria-label='remove source'
+                      onClick={() => removePort(index)}
+                      size='small'
+                      sx={{ mt: 4 }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
                 </div>
               ))}
 
