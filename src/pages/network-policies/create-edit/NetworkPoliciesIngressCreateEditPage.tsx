@@ -96,7 +96,12 @@ export default function NetworkPoliciesIngressCreateEditPage({
   const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
     const rawAllow = body.ruleType.ingress.allow as any[]
     const merged = rawAllow.flat ? rawAllow.flat() : rawAllow
-    body.ruleType.ingress.allow = merged
+
+    const filtered = merged.filter((entry) => {
+      return entry.fromLabelName !== '' || entry.fromLabelValue !== '' || entry.fromNamespace !== ''
+    })
+
+    body.ruleType.ingress.allow = filtered
 
     if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
     else create({ teamId, body })

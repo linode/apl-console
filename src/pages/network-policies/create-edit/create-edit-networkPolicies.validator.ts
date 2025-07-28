@@ -63,9 +63,9 @@ export const createIngressSchema = yup.object({
             .array()
             .of(
               yup.object({
-                fromNamespace: yup.string().required('Source namespace is required'),
-                fromLabelName: yup.string().required('Source label name is required'),
-                fromLabelValue: yup.string().required('Source label value is required'),
+                fromNamespace: yup.string(),
+                fromLabelName: yup.string(),
+                fromLabelValue: yup.string(),
               }),
             )
             .when('mode', {
