@@ -106,8 +106,8 @@ export const createEgressSchema = yup.object({
                 number: yup
                   .number()
                   .required('Port number is required')
-                  .min(1, 'Port must be ≥1')
-                  .max(65535, 'Port must be ≤65535'),
+                  .min(1, 'Port number must be larger than 1')
+                  .max(65535, 'Port numer must be lower than 65535'),
                 protocol: yup
                   .mixed<EgressRuleType['egress']['ports'][0]['protocol']>()
                   .oneOf(['HTTPS', 'HTTP', 'TCP'])

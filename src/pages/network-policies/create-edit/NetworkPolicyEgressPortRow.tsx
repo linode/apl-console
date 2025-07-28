@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
+import { TextField } from 'components/forms/TextField'
 
 type Protocol = 'HTTP' | 'HTTPS' | 'TCP'
 const PROTOCOL_OPTIONS: Protocol[] = ['HTTP', 'HTTPS', 'TCP']
@@ -22,7 +23,12 @@ interface Props {
 }
 
 export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props) {
-  const { control } = useFormContext<FormValues>()
+  const {
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<FormValues>()
 
   const { field: protocolField } = useController({
     control,
@@ -30,19 +36,9 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
     defaultValue: 'TCP' as Protocol,
   })
 
-  const { field: numberField } = useController({
-    control,
-    name: `${fieldArrayName}.number`,
-    defaultValue: undefined as unknown as number,
-  })
+  const portValue = watch(`${fieldArrayName}.number`)
 
-  // track raw text input for freeSolo
-  const [portInput, setPortInput] = useState<string>('')
-
-  // sync external field changes back into input
-  useEffect(() => {
-    setPortInput(numberField.value != null ? String(numberField.value) : '')
-  }, [numberField.value])
+  const portError = errors.ruleType?.egress?.ports?.[rowIndex]?.number
 
   return (
     <FormRow spacing={10}>
@@ -54,27 +50,15 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         width='large'
       />
 
-      <Autocomplete<string, false, false, true>
-        freeSolo
-        options={COMMON_PORT_OPTIONS}
-        inputValue={portInput}
-        onInputChange={(_e, newInput) => setPortInput(newInput)}
-        onChange={(_e, selected) => {
-          if (selected == null) {
-            numberField.onChange(undefined)
-            setPortInput('')
-            return
-          }
-          const m = selected.match(/\((\d+)\)$/)
-          const str = m ? m[1] : selected
-          const parsed = parseInt(str, 10)
-          if (!Number.isNaN(parsed)) {
-            numberField.onChange(parsed)
-            setPortInput(String(parsed))
-          } else numberField.onChange(undefined)
-        }}
+      <TextField
+        name={`${fieldArrayName}.number`}
         label={rowIndex === 0 ? 'Port' : ''}
         width='large'
+        value={portValue ?? ''}
+        onChange={(e) => setValue(`${fieldArrayName}.number`, e.target.value as any)} // casting this results in all kinds of weird behaviour
+        error={!!portError}
+        helperText={portError?.message}
+        placeholder='e.g. 443'
       />
     </FormRow>
   )
