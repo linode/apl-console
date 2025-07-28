@@ -47,7 +47,7 @@ export interface CreateEgressNetpolApiResponse {
 export const createIngressSchema = yup.object({
   id: yup.string().optional(),
   teamId: yup.string().optional(),
-  name: yup.string().required('Inbound rule name is required'),
+  name: yup.string().required('Inbound rule name is required').max(24, 'Name must not exceed 24 characters'),
   ruleType: yup
     .object({
       type: yup.mixed<IngressRuleType['type']>().oneOf(['ingress']).required(),
@@ -89,7 +89,7 @@ export const createIngressSchema = yup.object({
 export const createEgressSchema = yup.object({
   id: yup.string().optional(),
   teamId: yup.string().optional(),
-  name: yup.string().required('Name is required'),
+  name: yup.string().required('Name is required').max(24, 'Name must not exceed 24 characters'),
   ruleType: yup
     .object({
       type: yup.mixed<EgressRuleType['type']>().oneOf(['egress']).required(),
