@@ -13,6 +13,9 @@ const useStyles = makeStyles()((theme) => ({
       padding: '16px !important',
     },
   },
+  headTitle: {
+    fontSize: '1.5rem',
+  },
   headBackground: {
     backgroundColor: theme.palette.background.default,
   },
@@ -46,7 +49,7 @@ export default function HeaderTitle({
   return (
     <>
       <div className={cx(classes.head, altColor ? classes.headBackgroundAlt : classes.headBackground)}>
-        <Typography variant='h4' data-cy={`heading-${resourceTypeLow}`}>
+        <Typography variant='h4' className={classes.headTitle} data-cy={`heading-${resourceTypeLow}`}>
           {title}
         </Typography>
         {docUrl && <HelpButton id='form' size='small' href={`${docUrl}`} />}

@@ -39,10 +39,7 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const resourceTypePlural = `${resourceType}_plural`
-  let title
-  if ((adminOnly || !teamId) && !hasTeamScope) title = t('LIST_TITLE_NOSCOPE', { model: t(resourceTypePlural) })
-  if ((adminOnly || !teamId) && hasTeamScope) title = t('LIST_TITLE', { model: t(resourceTypePlural) })
-  if (!adminOnly && teamId) title = t('LIST_TITLE_TEAM', { model: t(resourceTypePlural), teamId })
+  const title = t('LIST_TITLE_NOSCOPE', { model: t(resourceTypePlural) })
   const resourceTypeLow = t(resourceTypePlural).replaceAll(' ', '-').toLowerCase()
   const redirect = to || (adminOnly ? `/${resourceTypeLow}/create` : `/teams/${oboTeamId}/${resourceTypeLow}/create`)
   return (
