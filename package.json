@@ -33,7 +33,7 @@
     "dotenv-cli": "4.1.1",
     "framer-motion": "^6.2.9",
     "generate-download-link": "1.0.1",
-    "http-proxy-middleware": "0.21.0",
+    "http-proxy-middleware": "3.0.5",
     "i18next": "19.9.2",
     "i18next-browser-languagedetector": "6.1.4",
     "i18next-http-backend": "3.0.2",
