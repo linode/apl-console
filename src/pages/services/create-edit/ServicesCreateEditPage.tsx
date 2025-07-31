@@ -33,8 +33,8 @@ import AdvancedSettings from 'components/AdvancedSettings'
 import font from 'theme/font'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { LoadingButton } from '@mui/lab'
-import { useStyles } from './create-edit.styles'
-import { serviceApiResponseSchema } from './create-edit.validator'
+import { useStyles } from './create-edit-services.styles'
+import { serviceApiResponseSchema } from './create-edit-services.validator'
 
 interface Params {
   teamId: string
@@ -47,7 +47,7 @@ interface K8Service {
   managedByKnative?: boolean
 }
 
-export default function ({
+export default function ServicesCreateEditPage({
   match: {
     params: { teamId, serviceName },
   },

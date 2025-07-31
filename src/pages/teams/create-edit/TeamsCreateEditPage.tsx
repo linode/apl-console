@@ -27,7 +27,7 @@ import DeleteButton from 'components/DeleteButton'
 import useSettings from 'hooks/useSettings'
 import { useStyles } from './create-edit-teams.styles'
 import { createTeamApiResponseSchema } from './create-edit-teams.validator'
-import ResourceQuotaKeyValue from './ResourceQuotaKeyValue'
+import ResourceQuotaKeyValue from './TeamsResourceQuotaKeyValue'
 
 type NotificationReceiver = 'slack' | 'teams' | 'opsgenie' | 'email'
 
@@ -35,7 +35,7 @@ interface Params {
   teamId?: string
 }
 
-export default function CreateEditTeams({
+export default function TeamsCreateEditPage({
   match: {
     params: { teamId },
   },
