@@ -1,28 +1,19 @@
-const { createProxyMiddleware } = require('http-proxy-middleware')
+const proxy = require('http-proxy-middleware')
 
 module.exports = function (app) {
   app.use(
-    '/api/ws',
-    createProxyMiddleware({
+    proxy('/api/ws', {
       target: 'ws://localhost:8080',
       ws: true,
       changeOrigin: true,
       logLevel: 'debug',
       pathRewrite: { '^/api/ws': '/ws' },
     }),
-  )
-
-  app.use(
-    '/api',
-    createProxyMiddleware({
+    proxy('/api', {
       target: 'http://localhost:8080',
       pathRewrite: { '^/api/': '/' },
     }),
-  )
-
-  app.use(
-    '/trans',
-    createProxyMiddleware({
+    proxy('/trans', {
       target: 'http://localhost:3333',
     }),
   )
