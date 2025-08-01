@@ -6,8 +6,6 @@ import { CssBaseline } from '@mui/material'
 import cookie from 'cookie'
 import Backups from 'pages/Backups'
 import Workloads from 'pages/Workloads'
-import Build from 'pages/builds/create-edit'
-import Builds from 'pages/builds/overview'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Cluster from 'pages/Cluster'
@@ -17,13 +15,11 @@ import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
-import Team from 'pages/teams/create-edit'
-import Teams from 'pages/teams/overview'
 import Policies from 'pages/Policies'
 import SessionProvider from 'providers/Session'
 import SocketProvider from 'providers/Socket'
 import ThemeProvider from 'theme'
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { Provider } from 'react-redux'
@@ -45,15 +41,19 @@ import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
-import Service from 'pages/services/create-edit'
-import Services from 'pages/services/overview'
-import CodeRepository from 'pages/code-repositories/create-edit'
-import CodeRepositories from 'pages/code-repositories/overview'
-import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
-import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
+import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
+import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
+import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
+import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
+import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
+import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
+import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEditPage'
+import ServicesOverviewPage from 'pages/services/overview/ServicesOverviewPage'
+import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
+import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -90,23 +90,23 @@ function App() {
                                 <Route path='/' component={Dashboard} exact />
                                 <PrivateRoute
                                   path='/code-repositories'
-                                  component={CodeRepositories}
+                                  component={CodeRepositoriesOverviewPage}
                                   platformAdminRoute
                                   exact
                                 />
                                 <PrivateRoute
                                   path='/teams/:teamId/code-repositories'
-                                  component={CodeRepositories}
+                                  component={CodeRepositoriesOverviewPage}
                                   exact
                                 />
                                 <PrivateRoute
                                   path='/teams/:teamId/code-repositories/create'
-                                  component={CodeRepository}
+                                  component={CodeRepositoriesCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
                                   path='/teams/:teamId/code-repositories/:codeRepositoryName'
-                                  component={CodeRepository}
+                                  component={CodeRepositoriesCreateEditPage}
                                   exact
                                 />
 
@@ -120,7 +120,12 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
-                                <PrivateRoute path='/teams/create' component={Team} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/teams/create'
+                                  component={TeamsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/network-policies'
                                   component={NetworkPoliciesOverviewPage}
@@ -141,7 +146,12 @@ function App() {
                                   component={Catalog}
                                   exact
                                 />
-                                <PrivateRoute path='/services' component={Services} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/services'
+                                  component={ServicesOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/secrets' component={SecretOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/workloads' component={Workloads} platformAdminRoute exact />
                                 <PrivateRoute path='/settings' component={SettingsOverview} platformAdminRoute exact />
@@ -154,10 +164,15 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/container-images' component={Builds} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/container-images'
+                                  component={BuildsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
-                                <PrivateRoute path='/teams' component={Teams} platformAdminRoute exact />
-                                <PrivateRoute path='/teams/:teamId' component={Team} exact />
+                                <PrivateRoute path='/teams' component={TeamsOverviewPage} platformAdminRoute exact />
+                                <PrivateRoute path='/teams/:teamId' component={TeamsCreateEditPage} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/network-policies/inbound-rules/create'
@@ -174,10 +189,18 @@ function App() {
                                   component={SecretCreateEditPage}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/services/create' component={Service} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/services/create'
+                                  component={ServicesCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
                                 <PrivateRoute path='/teams/:teamId/projects/create' component={Project} exact />
-                                <PrivateRoute path='/teams/:teamId/container-images/create' component={Build} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/container-images/create'
+                                  component={BuildsCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/secrets' component={SecretOverviewPage} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/secrets/:sealedSecretName'
@@ -203,17 +226,25 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
                                 <PrivateRoute path='/teams/:teamId/projects/:projectName' component={Project} exact />
-                                <PrivateRoute exact path='/teams/:teamId/container-images' component={Builds} />
+                                <PrivateRoute
+                                  exact
+                                  path='/teams/:teamId/container-images'
+                                  component={BuildsOverviewPage}
+                                />
                                 <PrivateRoute
                                   path='/teams/:teamId/container-images/:buildName'
-                                  component={Build}
+                                  component={BuildsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
                                 <PrivateRoute path='/teams/:teamId/policies/:policyName' component={Policy} exact />
                                 <PrivateRoute path='/teams/:teamId/workloads' component={Workloads} exact />
-                                <PrivateRoute path='/teams/:teamId/services' component={Services} exact />
-                                <PrivateRoute path='/teams/:teamId/services/:serviceName' component={Service} exact />
+                                <PrivateRoute path='/teams/:teamId/services' component={ServicesOverviewPage} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/services/:serviceName'
+                                  component={ServicesCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute path='/maintenance' component={Maintenance} platformAdminRoute exact />
                                 <Route path='/logout' component={Logout} />
                                 <Route path='*'>

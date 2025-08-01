@@ -30,8 +30,8 @@ import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
 import { isEmpty } from 'lodash'
 import { LoadingButton } from '@mui/lab'
-import { coderepoApiResponseSchema } from './create-edit.validator'
-import { useStyles } from './create-edit.styles'
+import { coderepoApiResponseSchema } from './create-edit-codeRepositories.validator'
+import { useStyles } from './create-edit-codeRepositories.styles'
 
 const extractRepoName = (url: string): string => {
   const match = url.match(/\/([^/]+)\.git$/)
@@ -43,7 +43,7 @@ interface Params {
   codeRepositoryName?: string
 }
 
-export default function CreateEditCodeRepositories({
+export default function CodeRepositoriesCreateEditPage({
   match: {
     params: { teamId, codeRepositoryName },
   },

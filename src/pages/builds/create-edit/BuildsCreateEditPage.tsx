@@ -30,7 +30,7 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useSession } from 'providers/Session'
 import { LoadingButton } from '@mui/lab'
-import { buildApiResponseSchema } from './create-edit.validator'
+import { buildApiResponseSchema } from './create-edit-builds.validator'
 
 const getBuildName = (name: string, tag: string): string => {
   return `${name}-${tag}`
@@ -45,7 +45,7 @@ interface Params {
   buildName?: string
 }
 
-export default function CreateEditBuilds({
+export default function BuildsCreateEditPage({
   match: {
     params: { teamId, buildName },
   },

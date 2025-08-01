@@ -8,7 +8,7 @@ import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
 
-export default function TeamOverview(): React.ReactElement {
+export default function TeamsOverviewPage(): React.ReactElement {
   const { data, isLoading: isLoadingTeams, isFetching, refetch } = useGetTeamsQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   const {
