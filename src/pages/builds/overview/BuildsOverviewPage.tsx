@@ -91,7 +91,7 @@ interface Params {
   teamId?: string
 }
 
-export default function BuildsOverview({
+export default function BuildsOverviewPage({
   match: {
     params: { teamId },
   },
