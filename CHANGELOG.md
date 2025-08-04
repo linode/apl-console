@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.8.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.8.0) (2025-08-04)
+
+
+### Features
+
+* Network Policies Page ([#609](https://github.com/linode/apl-console/issues/609)) ([159e317](https://github.com/linode/apl-console/commit/159e3176319b36e079596624f37225fc70fe8367))
+* add Kubeflow Pipelines ([#579](https://github.com/linode/apl-console/issues/579)) ([3f012cf](https://github.com/linode/apl-console/commit/3f012cfd8a7ff0ae3ecbfe90da09a305a8484948))
+
+
+### Bug Fixes
+
+* http proxy middleware ([#615](https://github.com/linode/apl-console/issues/615)) ([f1540c0](https://github.com/linode/apl-console/commit/f1540c07cc6f9098bf3e267a68821c1ea1eb17ee))
+* rerouted index ts to named files for readability ([#617](https://github.com/linode/apl-console/issues/617)) ([7cf5bc9](https://github.com/linode/apl-console/commit/7cf5bc9ca17b069f7eebbf2f19e055843df1946b))
+
+
+### Reverts
+
+* http-proxy-middleware changes ([#619](https://github.com/linode/apl-console/issues/619)) ([bda41ce](https://github.com/linode/apl-console/commit/bda41ced2122215a8a4fc13819a88d6b379c59a0)), closes [#615](https://github.com/linode/apl-console/issues/615) [#616](https://github.com/linode/apl-console/issues/616)
+
+
+### Others
+
+* **deps:** bump @mui/styles from 5.16.14 to 6.4.12 ([#590](https://github.com/linode/apl-console/issues/590)) ([593f0c9](https://github.com/linode/apl-console/commit/593f0c98d19217267ea6bc2e9250245c8d985a00))
+* **deps:** bump @types/lodash from 4.17.15 to 4.17.17 ([#588](https://github.com/linode/apl-console/issues/588)) ([5d11100](https://github.com/linode/apl-console/commit/5d11100ba9da78b167652e52bbe3e4bcd54daa02))
+* **deps:** bump axios from 1.7.9 to 1.10.0 ([#592](https://github.com/linode/apl-console/issues/592)) ([2fed476](https://github.com/linode/apl-console/commit/2fed4769eb0c4872fddc67ef57d6ed022e987947))
+* **deps:** bump http-proxy-middleware from 0.21.0 to 3.0.5 ([#591](https://github.com/linode/apl-console/issues/591)) ([bdfe7ab](https://github.com/linode/apl-console/commit/bdfe7aba117ba25e79d1fd614b92bae94f85a0ed))
+* **deps:** bump ncipollo/release-action ([#603](https://github.com/linode/apl-console/issues/603)) ([89b4301](https://github.com/linode/apl-console/commit/89b4301ab50367575e387508767658118a59fc8b))
+* **deps:** bump node from 20.19.2-alpine to 20.19.3-alpine ([#600](https://github.com/linode/apl-console/issues/600)) ([73551b4](https://github.com/linode/apl-console/commit/73551b49575b94bd1fb9439e1e0643799284c9e9))
+* **deps:** bump the docker-dependencies group with 2 updates ([#604](https://github.com/linode/apl-console/issues/604)) ([0163a8d](https://github.com/linode/apl-console/commit/0163a8d4fd4b9f6a901ee2de419047f18412d5a2))
+* upgrade http-proxy-middleware ([#616](https://github.com/linode/apl-console/issues/616)) ([cffe915](https://github.com/linode/apl-console/commit/cffe9151ee0731dc85c9d36e4ce2ee0e096eceb5))
+
 ## [4.7.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.7.0) (2025-07-31)
 
 
