@@ -7,8 +7,8 @@
 PM        ?= npm
 RUN       = $(PM) run
 
-# —–– Phony targets —–––––––––––––––––––––––––––––––––––––––––––––––––––––––
-.PHONY: help install dev docker start start:chrome test lint lint-fix \
+# —–– Phony targets —––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+.PHONY: help install dev docker start start\:chrome test lint lint-fix \
         format format-fix build eject prepare commit commit-retry \
         lint-staged gen-store spellcheck release release-minor \
         typecheck watch-ts run-if-changed lang-server lang-export \
@@ -24,7 +24,7 @@ help: ## Show this help message
 install: ## npm ci (clean install)
 	$(PM) ci
 
-# —–– Development ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+# —–– Development —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 dev: ## npm run dev (parallel start/watch)
 	$(RUN) dev
 
@@ -34,7 +34,7 @@ docker: ## npm run dev:docker (dockerized dev)
 start: ## npm start (CRA dev server)
 	$(RUN) start
 
-start:chrome: ## npm run start:chrome (open Chrome remote-debug)
+start\:chrome: ## npm run start:chrome (open Chrome remote-debug)
 	$(RUN) start:chrome
 
 # —–– Testing & linting –––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -66,7 +66,7 @@ eject: ## npm run eject (CRA)
 
 # —–– Codegen & utils ––––––––––––––––––––––––––––––––––––––––––––––––––––––
 gen-store: ## npm run gen:store (RTK Query codegen)
-	$(RUN) gen:store
+	$(RUN) gen-store
 
 spellcheck: ## npm run spellcheck (cspell)
 	$(RUN) spellcheck
@@ -90,7 +90,7 @@ release: ## npm run release (standard-version)
 release-minor: ## npm run release:bump:minor
 	$(RUN) release:bump:minor
 
-# —–– TypeScript ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+# —–– TypeScript —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 typecheck: ## npm run types (tsc --noEmit)
 	$(RUN) types
 
@@ -107,6 +107,6 @@ lang-export: ## npm run lang:export
 lang-import: ## IMPORT=1 npm run lang:export
 	$(RUN) lang:import
 
-# —–– Clean up ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+# —–– Clean up —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 clean: ## remove node_modules & build artifacts
 	rm -rf node_modules build
