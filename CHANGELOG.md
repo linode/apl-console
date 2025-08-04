@@ -7,19 +7,13 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* [APL-898] - Network Policies Page ([#609](https://github.com/linode/apl-console/issues/609)) ([159e317](https://github.com/linode/apl-console/commit/159e3176319b36e079596624f37225fc70fe8367))
+* Network Policies Page ([#609](https://github.com/linode/apl-console/issues/609)) ([159e317](https://github.com/linode/apl-console/commit/159e3176319b36e079596624f37225fc70fe8367))
 * add Kubeflow Pipelines ([#579](https://github.com/linode/apl-console/issues/579)) ([3f012cf](https://github.com/linode/apl-console/commit/3f012cfd8a7ff0ae3ecbfe90da09a305a8484948))
-* allow users to define empty env values in builds ([#606](https://github.com/linode/apl-console/issues/606)) ([ebb7c52](https://github.com/linode/apl-console/commit/ebb7c52d0bdff4c43d3491e72ffd8ea0a38888a6))
-* enhance dependabot configuration for auto-approval and grouping of dependencies ([#601](https://github.com/linode/apl-console/issues/601)) ([6896aed](https://github.com/linode/apl-console/commit/6896aed2276abe9ac9544117b2ec390d7ca1de37))
-* hide default platform storage class in cluster settings page ([#614](https://github.com/linode/apl-console/issues/614)) ([506ff79](https://github.com/linode/apl-console/commit/506ff79d89b0ed7ae135f924319ea5ebf6fb39ea))
 
 
 ### Bug Fixes
 
-* add optional value label for environment variables in build creation ([#611](https://github.com/linode/apl-console/issues/611)) ([8966ed5](https://github.com/linode/apl-console/commit/8966ed55472723b0b789cafa09751aad85175071))
 * http proxy middleware ([#615](https://github.com/linode/apl-console/issues/615)) ([f1540c0](https://github.com/linode/apl-console/commit/f1540c07cc6f9098bf3e267a68821c1ea1eb17ee))
-* improve error handling and re-routing ([#607](https://github.com/linode/apl-console/issues/607)) ([43617e7](https://github.com/linode/apl-console/commit/43617e76ba05b44a77c5730d93e313cbb22d0f52))
-* limit team name length to a maximum of 9 characters ([#612](https://github.com/linode/apl-console/issues/612)) ([56be57d](https://github.com/linode/apl-console/commit/56be57d6b4f694c56098187d8794f41c2648c1d1))
 * rerouted index ts to named files for readability ([#617](https://github.com/linode/apl-console/issues/617)) ([7cf5bc9](https://github.com/linode/apl-console/commit/7cf5bc9ca17b069f7eebbf2f19e055843df1946b))
 
 
@@ -37,7 +31,6 @@ All notable changes to this project will be documented in this file. See [standa
 * **deps:** bump ncipollo/release-action ([#603](https://github.com/linode/apl-console/issues/603)) ([89b4301](https://github.com/linode/apl-console/commit/89b4301ab50367575e387508767658118a59fc8b))
 * **deps:** bump node from 20.19.2-alpine to 20.19.3-alpine ([#600](https://github.com/linode/apl-console/issues/600)) ([73551b4](https://github.com/linode/apl-console/commit/73551b49575b94bd1fb9439e1e0643799284c9e9))
 * **deps:** bump the docker-dependencies group with 2 updates ([#604](https://github.com/linode/apl-console/issues/604)) ([0163a8d](https://github.com/linode/apl-console/commit/0163a8d4fd4b9f6a901ee2de419047f18412d5a2))
-* update release files for v4.7.0 ([#621](https://github.com/linode/apl-console/issues/621)) ([98a30d6](https://github.com/linode/apl-console/commit/98a30d6a1af785dab9c532366f480b3dfe223651))
 * upgrade http-proxy-middleware ([#616](https://github.com/linode/apl-console/issues/616)) ([cffe915](https://github.com/linode/apl-console/commit/cffe9151ee0731dc85c9d36e4ce2ee0e096eceb5))
 
 ## [4.7.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.7.0) (2025-07-31)
