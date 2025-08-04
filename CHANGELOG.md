@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.7.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.7.0) (2025-07-31)
+
+
+### Features
+
+* allow users to define empty env values in builds ([#606](https://github.com/linode/apl-console/issues/606)) ([ebb7c52](https://github.com/linode/apl-console/commit/ebb7c52d0bdff4c43d3491e72ffd8ea0a38888a6))
+* enhance dependabot configuration for auto-approval and grouping of dependencies ([#601](https://github.com/linode/apl-console/issues/601)) ([6896aed](https://github.com/linode/apl-console/commit/6896aed2276abe9ac9544117b2ec390d7ca1de37))
+* hide default platform storage class in cluster settings page ([#614](https://github.com/linode/apl-console/issues/614)) ([764c196](https://github.com/linode/apl-console/commit/764c1965ece618711af6d12c7cbe139bef3c97fa))
+
+
+### Bug Fixes
+
+* add optional value label for environment variables in build creation ([#611](https://github.com/linode/apl-console/issues/611)) ([435daa8](https://github.com/linode/apl-console/commit/435daa8445ac8e3e6fdf4e197dbb630bace1ffc5))
+* improve error handling and re-routing ([#607](https://github.com/linode/apl-console/issues/607)) ([43617e7](https://github.com/linode/apl-console/commit/43617e76ba05b44a77c5730d93e313cbb22d0f52))
+* limit team name length to a maximum of 9 characters ([#612](https://github.com/linode/apl-console/issues/612)) ([59a2979](https://github.com/linode/apl-console/commit/59a29799a9c22e093412f3833f515a7c477d9715))
+
 ## [4.6.0](https://github.com/linode/apl-console/compare/v4.5.0...v4.6.0) (2025-06-24)
 
 
