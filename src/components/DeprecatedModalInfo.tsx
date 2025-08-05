@@ -59,28 +59,34 @@ export default function ({ deprecatedApp }: Props): React.ReactElement {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>{image(id, `/logos/${id}_logo.svg`)}</Box>
-        <ForwardIcon className={classes.arrow} />
-        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
-          {image(replacement, `/logos/${replacement}_logo.svg`)}
-        </Box>
+        {replacement && <ForwardIcon className={classes.arrow} />}
+        {replacement && (
+          <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
+            {image(replacement, `/logos/${replacement}_logo.svg`)}
+          </Box>
+        )}
       </Box>
       <Box sx={{ mt: '2rem', mb: '1rem' }}>{message}</Box>
-      <Box>
-        <Box sx={{ fontWeight: 'bold' }}>Reasons:</Box>
+      {reasons && (
         <Box>
-          {reasons.map((reason) => (
-            <Box sx={{ ml: '1rem' }}>{reason}</Box>
-          ))}
+          <Box sx={{ fontWeight: 'bold' }}>Reasons:</Box>
+          <Box>
+            {reasons.map((reason) => (
+              <Box sx={{ ml: '1rem' }}>{reason}</Box>
+            ))}
+          </Box>
         </Box>
-      </Box>
-      <Box sx={{ mt: '1rem' }}>
-        <Box sx={{ fontWeight: 'bold' }}>Advantages of replacement:</Box>
-        <Box>
-          {replacementAdvantages.map((advantage) => (
-            <Box sx={{ ml: '1rem' }}>{advantage}</Box>
-          ))}
+      )}
+      {replacement && replacementAdvantages && (
+        <Box sx={{ mt: '1rem' }}>
+          <Box sx={{ fontWeight: 'bold' }}>Advantages of replacement:</Box>
+          <Box>
+            {replacementAdvantages.map((advantage) => (
+              <Box sx={{ ml: '1rem' }}>{advantage}</Box>
+            ))}
+          </Box>
         </Box>
-      </Box>
+      )}
       <Box sx={{ mt: '1rem' }}>
         <Box sx={{ fontWeight: 'bold' }}>Options:</Box>
         <Box>

@@ -201,13 +201,14 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
 
   const deprecatedAppModals = () => {
     return deprecatedApps?.map((app) => {
+      const replacement = app?.deprecationInfo?.replacement
       const handleCancel = () => {
         setOpenModal('')
-        window.open(app.externalUrl, '_blank')
+        window.open(app?.externalUrl, '_blank')
       }
       const handleAction = () => {
         setOpenModal('')
-        window.open(app.replacementUrl, '_blank')
+        window.open(app?.replacementUrl, '_blank')
       }
       return (
         <div key={`deprecated-${app.id}-modal`}>
@@ -218,8 +219,9 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
             handleClose={() => setOpenModal('')}
             handleCancel={handleCancel}
             cancelButtonText='I understand!'
-            handleAction={handleAction}
-            actionButtonText={`Go to ${app.deprecationInfo.replacement}`}
+            handleAction={replacement ? handleAction : () => setOpenModal('')}
+            actionButtonText={replacement ? `Go to ${replacement}` : 'Cancel'}
+            actionButtonColor='primary'
           />
         </div>
       )
