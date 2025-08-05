@@ -135,13 +135,22 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
           {themeView === 'team' && (
             <>
-              <Typography variant='body1'>team:</Typography>
+              <Typography variant='body1'>Team:</Typography>
               <Select
                 size='small'
                 color='secondary'
                 value={(teams?.length && oboTeamId) || ''}
                 onChange={handleChangeTeam}
                 data-cy='select-oboteam'
+                sx={{
+                  width: 120,
+                  minWidth: 120,
+                  '& .MuiSelect-select': {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  },
+                }}
               >
                 {teams?.map((teamName) => (
                   <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
@@ -153,13 +162,22 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           )}
           {isPlatformAdmin && (
             <>
-              <Typography>view:</Typography>
+              <Typography>View:</Typography>
               <Select
                 size='small'
                 color='secondary'
                 value={themeView}
                 onChange={handleChangeView}
                 data-cy='select-view'
+                sx={{
+                  width: 120,
+                  minWidth: 120,
+                  '& .MuiSelect-select': {
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  },
+                }}
               >
                 <MenuItem value='platform'>platform</MenuItem>
                 <MenuItem value='team'>team</MenuItem>
