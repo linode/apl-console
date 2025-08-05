@@ -133,21 +133,6 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         )}
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
-          {isPlatformAdmin && (
-            <>
-              <Typography>view:</Typography>
-              <Select
-                size='small'
-                color='secondary'
-                value={themeView}
-                onChange={handleChangeView}
-                data-cy='select-view'
-              >
-                <MenuItem value='platform'>platform</MenuItem>
-                <MenuItem value='team'>team</MenuItem>
-              </Select>
-            </>
-          )}
           {themeView === 'team' && (
             <>
               <Typography variant='body1'>team:</Typography>
@@ -163,6 +148,21 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
                     {teamName}
                   </MenuItem>
                 ))}
+              </Select>
+            </>
+          )}
+          {isPlatformAdmin && (
+            <>
+              <Typography>view:</Typography>
+              <Select
+                size='small'
+                color='secondary'
+                value={themeView}
+                onChange={handleChangeView}
+                data-cy='select-view'
+              >
+                <MenuItem value='platform'>platform</MenuItem>
+                <MenuItem value='team'>team</MenuItem>
               </Select>
             </>
           )}
