@@ -53,6 +53,16 @@ const RootStyle = styled(AppBar, {
   },
 }))
 
+const StyledSelect = styled(Select)(() => ({
+  width: 120,
+  minWidth: 120,
+  '& .MuiSelect-select': {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+}))
+
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenSidebar, isCollapse = false, verticalLayout = false }: Props) {
@@ -136,52 +146,34 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
           {themeView === 'team' && (
             <>
               <Typography variant='body1'>Team:</Typography>
-              <Select
+              <StyledSelect
                 size='small'
                 color='secondary'
                 value={(teams?.length && oboTeamId) || ''}
                 onChange={handleChangeTeam}
                 data-cy='select-oboteam'
-                sx={{
-                  width: 120,
-                  minWidth: 120,
-                  '& .MuiSelect-select': {
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  },
-                }}
               >
                 {teams?.map((teamName) => (
                   <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
                     {teamName}
                   </MenuItem>
                 ))}
-              </Select>
+              </StyledSelect>
             </>
           )}
           {isPlatformAdmin && (
             <>
               <Typography>View:</Typography>
-              <Select
+              <StyledSelect
                 size='small'
                 color='secondary'
                 value={themeView}
                 onChange={handleChangeView}
                 data-cy='select-view'
-                sx={{
-                  width: 120,
-                  minWidth: 120,
-                  '& .MuiSelect-select': {
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  },
-                }}
               >
                 <MenuItem value='platform'>platform</MenuItem>
                 <MenuItem value='team'>team</MenuItem>
-              </Select>
+              </StyledSelect>
             </>
           )}
           <AccountPopover email={email} />
