@@ -41,16 +41,13 @@ test: ## npm run test (once)
 lint: ## npm run lint (includes typecheck)
 	$(RUN) lint
 
-# —–– Build & eject –––––––––––––––––––––––––––––––––––––––––––––––––––––––––
+# —–– Build –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 build: ## npm run build (production bundle)
 	$(RUN) build
 
-# —–– Codegen & utils ––––––––––––––––––––––––––––––––––––––––––––––––––––––
+# —–– Codegen & utils –––––––––––––––––––––––––––––––––––––––––––––––––––––––
 gen-store: ## npm run gen:store (RTK Query codegen)
 	$(RUN) gen-store
-
-spellcheck: ## npm run spellcheck (cspell)
-	$(RUN) spellcheck
 
 # —–– Clean up —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 clean: ## remove node_modules & build artifacts
