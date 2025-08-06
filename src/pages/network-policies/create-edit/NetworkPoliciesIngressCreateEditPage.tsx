@@ -20,8 +20,10 @@ import { TextField } from 'components/forms/TextField'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Description } from 'components/Description'
+import InformationBanner from 'components/InformationBanner'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -68,6 +70,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
     remove: removeSource,
   } = useFieldArray({ control, name: 'ruleType.ingress.allow' })
 
+  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState<boolean>(false)
+
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
@@ -87,6 +91,10 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
   useEffect(() => {
     if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
+  }, [])
+
+  const toggleShowMultiPodInformationBanner = useCallback(() => {
+    setShowMultiPodInformationBanner(true)
   }, [])
 
   const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
@@ -120,8 +128,12 @@ export default function NetworkPoliciesIngressCreateEditPage({
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section title='Add inbound rule'>
+            <Section
+              title='Inbound rule'
+              description='An ingress rule in a NetworkPolicy defines which incoming connections are permitted to reach your pods.'
+            >
               <TextField
+                sx={{ mt: 4 }}
                 label='Inbound rule name'
                 width='large'
                 value={watch('name')}
@@ -132,6 +144,14 @@ export default function NetworkPoliciesIngressCreateEditPage({
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
+              <Description>The source in a NetworkPolicy defines where traffic is coming from.</Description>
+              {showMultiPodInformationBanner && (
+                <InformationBanner
+                  sx={{ mt: 2 }}
+                  small
+                  message='Some labels match with multiple pods and therefore cannot be pinpointed to one specific workload, this does not affect functionality'
+                />
+              )}
 
               {sourceFields.map((field, index) => (
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
@@ -140,13 +160,14 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     teamId={teamId}
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
+                    showBanner={toggleShowMultiPodInformationBanner}
                   />
-                  {index !== 0 && (
+                  {sourceFields.length > 1 && (
                     <IconButton
                       aria-label='remove source'
                       onClick={() => removeSource(index)}
                       size='small'
-                      sx={{ mt: 1 }}
+                      sx={{ mt: index === 0 ? '43px' : 4, alignSelf: 'center' }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -165,9 +186,17 @@ export default function NetworkPoliciesIngressCreateEditPage({
               <Divider sx={{ marginY: 4 }} />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
+              <Description>
+                The target (often called the pod selector) specifies which pods the policy applies to.
+              </Description>
 
               {/* Target row needs seperate component becuase of data shape */}
-              <NetworkPolicyTargetLabelRow aplWorkloads={aplWorkloads} teamId={teamId} prefixName='ruleType.ingress' />
+              <NetworkPolicyTargetLabelRow
+                aplWorkloads={aplWorkloads}
+                teamId={teamId}
+                prefixName='ruleType.ingress'
+                showBanner={toggleShowMultiPodInformationBanner}
+              />
             </Section>
 
             {networkPolicyName && (

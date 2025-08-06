@@ -131,7 +131,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                     fieldArrayName={`ruleType.egress.ports.${index}`}
                     rowIndex={index}
                   />
-                  {index !== 0 && (
+                  {portFields.length > 1 && (
                     <IconButton
                       aria-label='remove source'
                       onClick={() => removePort(index)}
