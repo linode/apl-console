@@ -34,9 +34,6 @@ docker: ## npm run dev:docker (dockerized dev)
 start: ## npm start (CRA dev server)
 	$(RUN) start
 
-start\:chrome: ## npm run start:chrome (open Chrome remote-debug)
-	$(RUN) start:chrome
-
 # —–– Testing & linting –––––––––––––––––––––––––––––––––––––––––––––––––––––
 test: ## npm run test (once)
 	$(RUN) test
@@ -44,25 +41,9 @@ test: ## npm run test (once)
 lint: ## npm run lint (includes typecheck)
 	$(RUN) lint
 
-lint-fix: ## npm run lint:fix
-	$(RUN) lint:fix
-
-lint-staged: ## npm run lint-staged
-	$(RUN) lint-staged
-
-# —–– Formatting ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-format: ## npm run format (check)
-	$(RUN) format
-
-format-fix: ## npm run format:fix
-	$(RUN) format:fix
-
 # —–– Build & eject –––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 build: ## npm run build (production bundle)
 	$(RUN) build
-
-eject: ## npm run eject (CRA)
-	$(RUN) eject
 
 # —–– Codegen & utils ––––––––––––––––––––––––––––––––––––––––––––––––––––––
 gen-store: ## npm run gen:store (RTK Query codegen)
@@ -70,42 +51,6 @@ gen-store: ## npm run gen:store (RTK Query codegen)
 
 spellcheck: ## npm run spellcheck (cspell)
 	$(RUN) spellcheck
-
-run-if-changed: ## npm run run-if-changed (watch package-lock.json)
-	$(RUN) run-if-changed
-
-# —–– Releases & commits ––––––––––––––––––––––––––––––––––––––––––––––––––––
-prepare: ## npm run prepare (husky install)
-	$(RUN) prepare
-
-commit: ## npm run cz (commitizen)
-	$(RUN) cz
-
-commit-retry: ## npm run cz:retry
-	$(RUN) cz:retry
-
-release: ## npm run release (standard-version)
-	$(RUN) release
-
-release-minor: ## npm run release:bump:minor
-	$(RUN) release:bump:minor
-
-# —–– TypeScript —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
-typecheck: ## npm run types (tsc --noEmit)
-	$(RUN) types
-
-watch-ts: ## npm run watch:ts (tsc -w)
-	$(RUN) watch:ts
-
-# —–– Language server & exports –––––––––––––––––––––––––––––––––––––––––––––
-lang-server: ## npm run lang:server
-	$(RUN) lang:server
-
-lang-export: ## npm run lang:export
-	$(RUN) lang:export
-
-lang-import: ## IMPORT=1 npm run lang:export
-	$(RUN) lang:import
 
 # —–– Clean up —–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
 clean: ## remove node_modules & build artifacts
