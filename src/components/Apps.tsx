@@ -94,8 +94,8 @@ function sortArray(a, b) {
 function getDeprecatedApps(apps, session, teamId) {
   return apps
     ?.map((app) => {
-      const { id, isDeprecated, deprecationInfo, externalUrl, replacementUrl } = getAppData(session, teamId, app)
-      if (isDeprecated) return { id, deprecationInfo, externalUrl, replacementUrl }
+      const { id, isDeprecated, deprecationInfo, externalUrl } = getAppData(session, teamId, app)
+      if (isDeprecated) return { id, deprecationInfo, externalUrl }
       return null
     })
     ?.filter((app) => app !== null)
@@ -201,14 +201,12 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
 
   const deprecatedAppModals = () => {
     return deprecatedApps?.map((app) => {
-      const replacement = app?.deprecationInfo?.replacement
       const handleCancel = () => {
         setOpenModal('')
         window.open(app?.externalUrl, '_blank')
       }
       const handleAction = () => {
         setOpenModal('')
-        window.open(app?.replacementUrl, '_blank')
       }
       return (
         <div key={`deprecated-${app.id}-modal`}>
@@ -219,8 +217,8 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
             handleClose={() => setOpenModal('')}
             handleCancel={handleCancel}
             cancelButtonText='I understand!'
-            handleAction={replacement ? handleAction : () => setOpenModal('')}
-            actionButtonText={replacement ? `Go to ${replacement}` : 'Cancel'}
+            handleAction={handleAction}
+            actionButtonText='Cancel'
             actionButtonColor='primary'
           />
         </div>

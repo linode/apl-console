@@ -50,12 +50,14 @@ const useStyles = makeStyles()((theme) => {
       borderRadius: '5px',
     },
     chipDark: {
-      color: 'rgb(174, 192, 245)',
-      backgroundColor: 'lch(77.7 28.7 275 / 0.12)',
+      fontWeight: 'normal',
+      color: p.grey[0],
+      backgroundColor: p.grey[500_24],
     },
     chipLight: {
-      color: '#696970',
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
+      fontWeight: 'normal',
+      color: p.grey[1000],
+      backgroundColor: p.grey[300],
     },
     contrast: {
       filter: 'drop-shadow(0 0 2px white)',
