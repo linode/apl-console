@@ -53,6 +53,16 @@ const RootStyle = styled(AppBar, {
   },
 }))
 
+const StyledSelect = styled(Select)(() => ({
+  width: 120,
+  minWidth: 120,
+  '& .MuiSelect-select': {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+}))
+
 // ----------------------------------------------------------------------
 
 export default function Header({ onOpenSidebar, isCollapse = false, verticalLayout = false }: Props) {
@@ -133,25 +143,10 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         )}
         <Box sx={{ flexGrow: 1 }} />
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
-          {isPlatformAdmin && (
-            <>
-              <Typography>view:</Typography>
-              <Select
-                size='small'
-                color='secondary'
-                value={themeView}
-                onChange={handleChangeView}
-                data-cy='select-view'
-              >
-                <MenuItem value='platform'>platform</MenuItem>
-                <MenuItem value='team'>team</MenuItem>
-              </Select>
-            </>
-          )}
           {themeView === 'team' && (
             <>
-              <Typography variant='body1'>team:</Typography>
-              <Select
+              <Typography variant='body1'>Team:</Typography>
+              <StyledSelect
                 size='small'
                 color='secondary'
                 value={(teams?.length && oboTeamId) || ''}
@@ -163,7 +158,22 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
                     {teamName}
                   </MenuItem>
                 ))}
-              </Select>
+              </StyledSelect>
+            </>
+          )}
+          {isPlatformAdmin && (
+            <>
+              <Typography>View:</Typography>
+              <StyledSelect
+                size='small'
+                color='secondary'
+                value={themeView}
+                onChange={handleChangeView}
+                data-cy='select-view'
+              >
+                <MenuItem value='platform'>platform</MenuItem>
+                <MenuItem value='team'>team</MenuItem>
+              </StyledSelect>
             </>
           )}
           <AccountPopover email={email} />
