@@ -179,7 +179,6 @@ export const getAppData = (
   const isBeta = getBetaApp(session, appId)
   const isAlpha = getAlphaApp(session, appId)
   const deprecationInfo = getDeprecationInfo(session, appId)
-  const replacementUrl = `https://${deprecationInfo?.replacement}.${cluster.domainSuffix}${deprecationInfo?.path ?? ''}`
   return {
     ...coreApp,
     ...app,
@@ -197,7 +196,6 @@ export const getAppData = (
     isBeta,
     isAlpha,
     deprecationInfo,
-    replacementUrl,
   }
 }
 
