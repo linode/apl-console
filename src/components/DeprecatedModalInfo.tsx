@@ -1,7 +1,6 @@
 import { Box, Checkbox, FormControlLabel } from '@mui/material'
 import React from 'react'
 import { makeStyles } from 'tss-react/mui'
-import ForwardIcon from '@mui/icons-material/Forward'
 
 const useStyles = makeStyles()((theme) => {
   return {
@@ -27,10 +26,10 @@ interface Props {
 }
 
 export default function ({ deprecatedApp }: Props): React.ReactElement {
-  const { classes, cx } = useStyles()
+  const { classes } = useStyles()
   const {
     id,
-    deprecationInfo: { replacement, message, reasons, replacementAdvantages, options },
+    deprecationInfo: { message, reasons, options },
   } = deprecatedApp
   const image = (id, img) => {
     return (
@@ -59,36 +58,32 @@ export default function ({ deprecatedApp }: Props): React.ReactElement {
     <Box>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>{image(id, `/logos/${id}_logo.svg`)}</Box>
-        <ForwardIcon className={classes.arrow} />
-        <Box sx={{ width: '200px', position: 'relative', margin: 'auto' }}>
-          {image(replacement, `/logos/${replacement}_logo.svg`)}
-        </Box>
       </Box>
       <Box sx={{ mt: '2rem', mb: '1rem' }}>{message}</Box>
-      <Box>
-        <Box sx={{ fontWeight: 'bold' }}>Reasons:</Box>
+      {reasons && (
         <Box>
-          {reasons.map((reason) => (
-            <Box sx={{ ml: '1rem' }}>{reason}</Box>
-          ))}
+          <Box sx={{ fontWeight: 'bold' }}>Reasons:</Box>
+          <Box component='ul' sx={{ pl: 2, mt: 1 }}>
+            {reasons.map((reason) => (
+              <Box component='li' sx={{ ml: '1rem' }} key={reason}>
+                {reason}
+              </Box>
+            ))}
+          </Box>
         </Box>
-      </Box>
-      <Box sx={{ mt: '1rem' }}>
-        <Box sx={{ fontWeight: 'bold' }}>Advantages of replacement:</Box>
-        <Box>
-          {replacementAdvantages.map((advantage) => (
-            <Box sx={{ ml: '1rem' }}>{advantage}</Box>
-          ))}
+      )}
+      {options && (
+        <Box sx={{ mt: '1rem' }}>
+          <Box sx={{ fontWeight: 'bold' }}>Options:</Box>
+          <Box component='ul' sx={{ pl: 2, mt: 1 }}>
+            {options.map((option) => (
+              <Box component='li' sx={{ ml: '1rem' }} key={option}>
+                {option}
+              </Box>
+            ))}
+          </Box>
         </Box>
-      </Box>
-      <Box sx={{ mt: '1rem' }}>
-        <Box sx={{ fontWeight: 'bold' }}>Options:</Box>
-        <Box>
-          {options.map((option) => (
-            <Box sx={{ ml: '1rem' }}>{option}</Box>
-          ))}
-        </Box>
-      </Box>
+      )}
       <Box sx={{ mt: '1rem' }}>
         <FormControlLabel control={<Checkbox onChange={toggleDontShowAgain} />} label="Don't show me again" />
       </Box>
