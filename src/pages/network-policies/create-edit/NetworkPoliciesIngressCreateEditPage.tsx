@@ -7,7 +7,7 @@ import {
   useCreateNetpolMutation,
   useDeleteNetpolMutation,
   useEditNetpolMutation,
-  useGetAllAplWorkloadsQuery,
+  useGetAllAplWorkloadNamesQuery,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
@@ -79,7 +79,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
   )
-  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
+  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadNamesQuery()
 
   // When editing, reset form with fetched data
   useEffect(() => {
