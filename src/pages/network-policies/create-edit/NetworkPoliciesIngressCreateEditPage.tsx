@@ -167,7 +167,13 @@ export default function NetworkPoliciesIngressCreateEditPage({
                       aria-label='remove source'
                       onClick={() => removeSource(index)}
                       size='small'
-                      sx={{ mt: index === 0 ? '43px' : 4, alignSelf: 'center' }}
+                      sx={{
+                        // this is not a good solution and needs a proper fix with flexbox
+                        //
+                        // eslint-disable-next-line no-nested-ternary
+                        mt: index === 0 ? (errors?.ruleType?.ingress?.allow?.root ? '24px' : '44px') : 4,
+                        alignSelf: 'center',
+                      }}
                     >
                       <DeleteIcon />
                     </IconButton>
