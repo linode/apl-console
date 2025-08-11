@@ -29,14 +29,12 @@ import Backup from 'pages/Backup'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
 import Users from 'pages/Users'
-import Projects from 'pages/Projects'
 import { CollapseDrawerProvider } from 'contexts/CollapseDrawerContext'
 import { ShellDrawerProvider } from 'contexts/ShellDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import User from 'pages/User'
-import Project from 'pages/Project'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
@@ -159,12 +157,6 @@ function App() {
                                 <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/projects'
-                                  component={Projects}
-                                  platformAdminRoute
-                                  exact
-                                />
-                                <PrivateRoute
                                   path='/container-images'
                                   component={BuildsOverviewPage}
                                   platformAdminRoute
@@ -195,7 +187,6 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
-                                <PrivateRoute path='/teams/:teamId/projects/create' component={Project} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/container-images/create'
                                   component={BuildsCreateEditPage}
@@ -224,8 +215,6 @@ function App() {
                                   component={NetworkPoliciesEgressCreateEditPage}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
-                                <PrivateRoute path='/teams/:teamId/projects/:projectName' component={Project} exact />
                                 <PrivateRoute
                                   exact
                                   path='/teams/:teamId/container-images'
