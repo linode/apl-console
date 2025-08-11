@@ -130,7 +130,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section
               title='Inbound rule'
-              description='An ingress rule in a NetworkPolicy defines which incoming connections are permitted to reach your pods.'
             >
               <TextField
                 sx={{ mt: 4 }}
@@ -144,7 +143,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
-              <Description>The source in a NetworkPolicy defines where traffic is coming from.</Description>
               {showMultiPodInformationBanner && (
                 <InformationBanner
                   sx={{ mt: 2 }}
@@ -192,9 +190,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
               <Divider sx={{ marginY: 4 }} />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
-              <Description>
-                The target (often called the pod selector) specifies which pods the policy applies to.
-              </Description>
 
               {/* Target row needs seperate component becuase of data shape */}
               <NetworkPolicyTargetLabelRow
