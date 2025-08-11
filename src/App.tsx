@@ -8,8 +8,6 @@ import Backups from 'pages/Backups'
 import Workloads from 'pages/Workloads'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
-import Cluster from 'pages/Cluster'
-import Clusters from 'pages/Clusters'
 import Catalogs from 'pages/Catalogs'
 import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
@@ -111,13 +109,6 @@ function App() {
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
                                 <PrivateRoute path='/backups' component={Backups} platformAdminRoute exact />
-                                <PrivateRoute
-                                  path='/clusters/:clusterId'
-                                  component={Cluster}
-                                  platformAdminRoute
-                                  exact
-                                />
-                                <PrivateRoute path='/clusters' component={Clusters} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/teams/create'
                                   component={TeamsCreateEditPage}
