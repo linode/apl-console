@@ -216,7 +216,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
             open={openModal === app.id}
             handleClose={() => setOpenModal('')}
             handleCancel={handleCancel}
-            cancelButtonText='I understand!'
+            cancelButtonText='I understand'
             handleAction={handleAction}
             actionButtonText='Cancel'
             actionButtonColor='primary'
