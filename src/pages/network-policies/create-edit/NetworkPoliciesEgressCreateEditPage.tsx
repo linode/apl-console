@@ -105,7 +105,6 @@ export default function NetworkPoliciesEgressCreateEditPage({
           <form onSubmit={methods.handleSubmit(onSubmit)}>
             <Section
               title='Add outbound rule'
-              description='An outbound rule (egress) in a Kubernetes NetworkPolicy specifies which destinations a pod is allowed to send traffic to'
             >
               <TextField
                 label='Outbound rule name'
