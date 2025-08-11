@@ -22,7 +22,6 @@ import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Description } from 'components/Description'
 import InformationBanner from 'components/InformationBanner'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
@@ -128,9 +127,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section
-              title='Inbound rule'
-            >
+            <Section title='Inbound rule'>
               <TextField
                 sx={{ mt: 4 }}
                 label='Inbound rule name'

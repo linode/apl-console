@@ -103,9 +103,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <Section
-              title='Add outbound rule'
-            >
+            <Section title='Add outbound rule'>
               <TextField
                 label='Outbound rule name'
                 width='large'
