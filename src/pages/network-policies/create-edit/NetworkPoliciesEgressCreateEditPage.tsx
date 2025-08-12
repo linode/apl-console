@@ -111,6 +111,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 onChange={(e) => setValue('name', e.target.value)}
                 error={!!errors.name}
                 helperText={errors.name?.message}
+                placeholder='e.g. allow-example-443'
               />
 
               <TextField
@@ -120,9 +121,10 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 onChange={(e) => setValue('ruleType.egress.domain', e.target.value)}
                 error={!!errors.ruleType?.egress?.domain}
                 helperText={errors.ruleType?.egress?.domain?.message}
+                placeholder='e.g. example.com'
               />
 
-              <Divider />
+              <Divider spacingBottom={15} />
 
               {portFields.map((field, index) => (
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
@@ -131,12 +133,17 @@ export default function NetworkPoliciesEgressCreateEditPage({
                     fieldArrayName={`ruleType.egress.ports.${index}`}
                     rowIndex={index}
                   />
-                  {index !== 0 && (
+                  {portFields.length > 1 && (
                     <IconButton
                       aria-label='remove source'
                       onClick={() => removePort(index)}
                       size='small'
-                      sx={{ mt: 4 }}
+                      sx={{
+                        // this is not a good solution and needs a proper fix with flexbox
+                        //
+                        // eslint-disable-next-line no-nested-ternary
+                        mt: index === 0 ? (errors?.ruleType?.egress?.ports?.root ? '28px' : '51px') : 4,
+                      }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -144,7 +151,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 </div>
               ))}
 
-              <Button variant='outlined' sx={{ mt: 2 }} onClick={() => appendPort({ protocol: 'TCP', number: 0 })}>
+              <Button variant='outlined' sx={{ mt: 3 }} onClick={() => appendPort({ protocol: 'TCP', number: 0 })}>
                 Add Port
               </Button>
 
