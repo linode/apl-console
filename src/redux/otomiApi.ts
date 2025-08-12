@@ -453,6 +453,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAllAplWorkloads: build.query<GetAllAplWorkloadsApiResponse, GetAllAplWorkloadsApiArg>({
       query: () => ({ url: `/v2/workloads` }),
     }),
+    getAllAplWorkloadNames: build.query<GetAllAplWorkloadNamesApiResponse, GetAllAplWorkloadNamesApiArg>({
+      query: () => ({ url: `/v2/workloadNames` }),
+    }),
     getTeamAplWorkloads: build.query<GetTeamAplWorkloadsApiResponse, GetTeamAplWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/workloads` }),
     }),
@@ -5187,6 +5190,15 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
   }
 })[]
 export type GetAllAplWorkloadsApiArg = void
+export type GetAllAplWorkloadNamesApiResponse = /** status 200 Successfully obtained all workload names */ {
+  metadata?: {
+    labels?: {
+      [key: string]: string
+    }
+    name?: string
+  }
+}[]
+export type GetAllAplWorkloadNamesApiArg = void
 export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ ({
   kind: 'AplTeamWorkload'
   spec: {
@@ -6337,6 +6349,7 @@ export const {
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
   useGetAllAplWorkloadsQuery,
+  useGetAllAplWorkloadNamesQuery,
   useGetTeamAplWorkloadsQuery,
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
