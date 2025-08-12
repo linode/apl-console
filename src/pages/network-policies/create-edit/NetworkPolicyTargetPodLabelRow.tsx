@@ -9,6 +9,7 @@ interface Props {
   aplWorkloads: any[]
   teamId: string
   prefixName: string
+  showBanner?: () => void
 }
 
 interface WorkloadOption {
@@ -26,7 +27,7 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName }: Props) {
+export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, showBanner }: Props) {
   const {
     watch,
     setValue,
@@ -66,6 +67,8 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
       const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
+      if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
+
       setActiveWorkload(initialActiveWorkload)
     }
   }, [toValue])
@@ -100,7 +103,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
       />
 
       <Autocomplete
-        label='Label'
+        label='Pod Label'
         multiple={false}
         options={labelOptions}
         value={rawSelector || null}

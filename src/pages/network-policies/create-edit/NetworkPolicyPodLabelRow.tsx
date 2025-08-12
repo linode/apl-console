@@ -10,6 +10,7 @@ interface Props {
   teamId: string
   fieldArrayName: FieldPath<FormValues>
   rowIndex?: number
+  showBanner?: () => void
 }
 
 interface PodLabelMatch {
@@ -37,7 +38,13 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldArrayName, rowIndex }: Props) {
+export default function NetworkPolicyPodLabelRow({
+  aplWorkloads,
+  teamId,
+  fieldArrayName,
+  rowIndex,
+  showBanner,
+}: Props) {
   const {
     control,
     formState: { errors },
@@ -80,6 +87,8 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
     const { fromLabelValue } = field.value as PodLabelMatch
     if (fromLabelValue) {
       const initialActiveWorkload = getInitialActiveWorkload(fromLabelValue, aplWorkloads)
+      if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
+
       setActiveWorkload(initialActiveWorkload)
     } else setCircuitBreaker(false)
   }, [])
@@ -114,7 +123,7 @@ export default function NetworkPolicyPodLabelRow({ aplWorkloads, teamId, fieldAr
 
       <Autocomplete
         hideLabel={rowIndex !== 0}
-        label='Label(s)'
+        label='Pod Label(s)'
         width='large'
         multiple={false}
         errorText={arrayError && rowIndex === 0 ? arrayError : ''}
