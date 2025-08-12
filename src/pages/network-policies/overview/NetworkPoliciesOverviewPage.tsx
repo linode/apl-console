@@ -87,11 +87,6 @@ export default function NetworkPoliciesOverviewPage({
     {
       id: 'source',
       label: t('Source'),
-      renderer: (row) => truncate(row.ruleType?.ingress?.toLabelValue),
-    },
-    {
-      id: 'target',
-      label: t('Target'),
       renderer: (row) => {
         const names = row.ruleType?.ingress?.allow
           ?.map((a) => a.fromLabelValue)
@@ -99,6 +94,11 @@ export default function NetworkPoliciesOverviewPage({
           .join(', ')
         return truncate(names)
       },
+    },
+    {
+      id: 'target',
+      label: t('Target'),
+      renderer: (row) => truncate(row.ruleType?.ingress?.toLabelValue),
     },
   ]
 
