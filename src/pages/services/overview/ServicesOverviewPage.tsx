@@ -1,12 +1,43 @@
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import Services from 'components/Services'
+import { HeadCell } from 'components/EnhancedTable'
+import ListTable from 'components/ListTable'
+import MuiLink from 'components/MuiLink'
+import { getStatus } from 'components/Workloads'
 import PaperLayout from 'layouts/Paper'
+import { useSession } from 'providers/Session'
+import { useSocket } from 'providers/Socket'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
+import RLink from 'components/Link'
+
+const getServiceLink = (isAdmin, ownerId): CallableFunction =>
+  function (row): string | React.ReactElement {
+    const { teamId, name }: { teamId: string; name: string } = row
+    if (!(isAdmin || teamId === ownerId)) return name
+    const path = `/teams/${teamId}/services/${encodeURIComponent(name)}`
+    return (
+      <RLink to={path} label={name}>
+        {name}
+      </RLink>
+    )
+  }
+
+const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
+  if (!ingress) return ''
+  if (ingress.type === 'cluster') return `${name}.team-${teamId}`
+  const { subdomain, domain, paths } = ingress
+  // TODO: Replace functionality in apl-core so that / is not needed on path or domain
+  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0] || ''}`
+  return (
+    <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
+      {url}
+    </MuiLink>
+  )
+}
 
 interface Params {
   teamId?: string
@@ -17,6 +48,11 @@ export default function ServicesOverviewPage({
     params: { teamId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
+  const {
+    user: { isPlatformAdmin },
+    oboTeamId,
+  } = useSession()
+  const { statuses } = useSocket()
   const {
     data: allServices,
     isLoading: isLoadingAllServices,
@@ -37,9 +73,38 @@ export default function ServicesOverviewPage({
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
+  const headCells: HeadCell[] = [
+    {
+      id: 'name',
+      label: t('Name'),
+      renderer: getServiceLink(isPlatformAdmin, oboTeamId),
+    },
+    {
+      id: 'ingressClass',
+      label: t('Ingress class'),
+      renderer: (row) => (row.ingress?.type === 'cluster' ? '-' : row.ingress?.ingressClassName ?? 'platform'),
+    },
+    {
+      id: 'url',
+      label: t('URL'),
+      renderer: renderHost,
+      component: MuiLink,
+    },
+    {
+      id: 'Status',
+      label: 'Status',
+      renderer: (row) => getStatus(statuses?.services?.[row.name]),
+    },
+  ]
+  if (!teamId) {
+    headCells.push({
+      id: 'teamId',
+      label: t('Team'),
+    })
+  }
 
   const loading = isLoadingAllServices || isLoadingTeamServices
   const services = teamId ? teamServices : allServices
-  const comp = services && <Services services={services} teamId={teamId} />
+  const comp = services && <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICES', { scope: getRole(teamId) })} />
 }

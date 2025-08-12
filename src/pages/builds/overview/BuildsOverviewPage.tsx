@@ -5,17 +5,16 @@ import ListTable from 'components/ListTable'
 import { getStatus } from 'components/Workloads'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllBuildsQuery, useGetTeamBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
-import { Box, Tooltip } from '@mui/material'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import DoneIcon from '@mui/icons-material/Done'
+import { Box } from '@mui/material'
 import { useSocket } from 'providers/Socket'
 import RLink from '../../../components/Link'
+import CopyToClipboard from '../../../components/CopyToClipboard'
 
 interface Row {
   teamId: string
@@ -59,30 +58,11 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
 }
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
-  const [copied, setCopied] = useState(false)
   const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.imageName}`
-
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(repository)
-    setCopied(true)
-    setTimeout(() => {
-      setCopied(false)
-    }, 3000)
-  }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Link to={{ pathname: repository }} target='_blank' />
-      <Box sx={{ width: '30px' }}>
-        {!copied ? (
-          <Tooltip title='Copy to clipboard'>
-            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
-          </Tooltip>
-        ) : (
-          <Tooltip title='Copied!'>
-            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
-          </Tooltip>
-        )}
-      </Box>
+      <CopyToClipboard text={repository} />
     </Box>
   )
 }
