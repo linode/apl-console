@@ -7,7 +7,7 @@ import {
   useCreateNetpolMutation,
   useDeleteNetpolMutation,
   useEditNetpolMutation,
-  useGetAllAplWorkloadsQuery,
+  useGetAllAplWorkloadNamesQuery,
   useGetNetpolQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
@@ -20,8 +20,9 @@ import { TextField } from 'components/forms/TextField'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import InformationBanner from 'components/InformationBanner'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -68,6 +69,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
     remove: removeSource,
   } = useFieldArray({ control, name: 'ruleType.ingress.allow' })
 
+  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState<boolean>(false)
+
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
@@ -75,7 +78,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
   )
-  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadsQuery()
+  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllAplWorkloadNamesQuery()
 
   // When editing, reset form with fetched data
   useEffect(() => {
@@ -87,6 +90,10 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
   useEffect(() => {
     if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
+  }, [])
+
+  const toggleShowMultiPodInformationBanner = useCallback(() => {
+    setShowMultiPodInformationBanner(true)
   }, [])
 
   const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
@@ -120,8 +127,9 @@ export default function NetworkPoliciesIngressCreateEditPage({
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section title='Add inbound rule'>
+            <Section title='Inbound rule'>
               <TextField
+                sx={{ mt: 4 }}
                 label='Inbound rule name'
                 width='large'
                 value={watch('name')}
@@ -132,6 +140,13 @@ export default function NetworkPoliciesIngressCreateEditPage({
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
+              {showMultiPodInformationBanner && (
+                <InformationBanner
+                  sx={{ mt: 2 }}
+                  small
+                  message='Some labels match with multiple pods and therefore cannot be pinpointed to one specific workload, this does not affect functionality'
+                />
+              )}
 
               {sourceFields.map((field, index) => (
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
@@ -140,13 +155,20 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     teamId={teamId}
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
+                    showBanner={toggleShowMultiPodInformationBanner}
                   />
-                  {index !== 0 && (
+                  {sourceFields.length > 1 && (
                     <IconButton
                       aria-label='remove source'
                       onClick={() => removeSource(index)}
                       size='small'
-                      sx={{ mt: 1 }}
+                      sx={{
+                        // this is not a good solution and needs a proper fix with flexbox
+                        //
+                        // eslint-disable-next-line no-nested-ternary
+                        mt: index === 0 ? (errors?.ruleType?.ingress?.allow?.root ? '24px' : '44px') : 4,
+                        alignSelf: 'center',
+                      }}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -167,7 +189,12 @@ export default function NetworkPoliciesIngressCreateEditPage({
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
 
               {/* Target row needs seperate component becuase of data shape */}
-              <NetworkPolicyTargetLabelRow aplWorkloads={aplWorkloads} teamId={teamId} prefixName='ruleType.ingress' />
+              <NetworkPolicyTargetLabelRow
+                aplWorkloads={aplWorkloads}
+                teamId={teamId}
+                prefixName='ruleType.ingress'
+                showBanner={toggleShowMultiPodInformationBanner}
+              />
             </Section>
 
             {networkPolicyName && (
