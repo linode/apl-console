@@ -3,14 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { GetAllUsersApiResponse, GetSessionApiResponse, useEditTeamUsersMutation } from 'redux/otomiApi'
 import { Box, Button, Checkbox, Tooltip } from '@mui/material'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import DoneIcon from '@mui/icons-material/Done'
 import useSettings from 'hooks/useSettings'
 import { isEqual } from 'lodash'
 import ListTable from './ListTable'
 import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
 import InformationBanner from './InformationBanner'
+import CopyToClipboard from './CopyToClipboard'
 
 interface Row {
   id: string
@@ -30,30 +29,7 @@ const getUserLink = (row: Row) => {
 }
 
 function CredentialsRenderer({ row }: { row: Row }) {
-  const [copied, setCopied] = useState(false)
-  const message = row.initialPassword
-  const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(message)
-    setCopied(true)
-    setTimeout(() => {
-      setCopied(false)
-    }, 3000)
-  }
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: '30px' }}>
-        {!copied ? (
-          <Tooltip title='Copy initial password to clipboard'>
-            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
-          </Tooltip>
-        ) : (
-          <Tooltip title='Copied!'>
-            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
-          </Tooltip>
-        )}
-      </Box>
-    </Box>
-  )
+  return <CopyToClipboard text={row.initialPassword} tooltipTitle='Copy initial password to clipboard' />
 }
 
 function UserTeamSelector({

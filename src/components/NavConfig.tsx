@@ -52,12 +52,6 @@ export default function NavConfig() {
           icon: getIcon('developer_guide_icon.svg'),
         },
         {
-          title: 'Projects',
-          path: `/teams/${oboTeamId}/projects`,
-          icon: getIcon('projects_icon.svg'),
-          hidden: true,
-        },
-        {
           title: 'Code Repositories',
           path: `/teams/${oboTeamId}/code-repositories`,
           icon: getIcon('coderepositories_icon.svg'),
