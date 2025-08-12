@@ -4,15 +4,17 @@ import { Link } from 'react-router-dom'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import DoneIcon from '@mui/icons-material/Done'
 
-interface Target {
-  webhookUrl: string
+interface CopyToClipboardProps {
+  text: string
+  tooltipTitle?: string
+  showLink?: boolean
 }
 
-function CopyToClipboard({ target }: { target: Target }) {
+function CopyToClipboard({ text, tooltipTitle = 'Copy to clipboard', showLink = false }: CopyToClipboardProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(target.webhookUrl)
+    navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => {
       setCopied(false)
@@ -20,10 +22,10 @@ function CopyToClipboard({ target }: { target: Target }) {
   }
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: target.webhookUrl }} target='_blank' />
+      {showLink && <Link to={{ pathname: text }} target='_blank' />}
       <Box sx={{ width: '30px' }}>
         {!copied ? (
-          <Tooltip title='Copy to clipboard'>
+          <Tooltip title={tooltipTitle}>
             <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
           </Tooltip>
         ) : (
@@ -35,3 +37,5 @@ function CopyToClipboard({ target }: { target: Target }) {
     </Box>
   )
 }
+
+export default CopyToClipboard
