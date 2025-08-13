@@ -1,63 +1,133 @@
-# Otomi Console
+# Akamai App Platform Console
 
-The frontend of the Otomi Container Platform that communicates with [otomi-api](https://github.com/redkubes/otomi-api).
+A React-based frontend for the Akamai App Platform that provides a web interface for managing containerized applications, teams, services, and platform resources. Built with TypeScript and Material-UI.
 
-[Otomi Core](https://github.com/redkubes/otomi-core) is the platform that houses the console, and feeds it all the data it needs to start using it.
+## Key Features
 
-## Development
+- **Team Management**: Create and manage development teams with resource quotas
+- **Application Deployment**: Deploy and manage containerized applications
+- **Service Configuration**: Configure services, load balancers, and ingress
+- **Container Image Builds**: Build and manage container images
+- **Code Repository Integration**: Git repository management and CI/CD
+- **Network Policies**: Configure ingress/egress network security policies
+- **Secret Management**: Create and manage Kubernetes secrets
+- **User Management**: Role-based access control (RBAC)
+- **Policy Management**: Security and compliance policies
+- **Backup Management**: Application backup configuration
+- **Workload Management**: Kubernetes workload oversight
 
-### Setting up environment
+### Prerequisites
 
-Copy `.env.sample` to `.env` and edit accordingly.
+- Node.js ≥20 <21
+- npm
+- Docker (optional, for containerized development)
+- Running instance of [Akamai App Platform API](https://github.com/linode/apl-api) (see #Development Setup)
+- Running instance of [Akamai App Platform Core](https://github.com/linode/apl-core) (see #Development Setup)
 
-### Start the dependencies
+### 🛠️ Development Setup
 
-It is expected to have `$ENV_DIR` pointing to a valid values repo. Please follow the instructions in [otomi-core's readme]() if you need to create one.
+1. **Install dependencies**
 
-#### Locally
+   ```bash
+   npm install
+   # or use the Makefile
+   make install
 
-Just clone `otomi-core` somewhere, run `npm install` and start the tools server with `npm run server`.
+   ```
 
-#### In docker-compose
+2. **Run Akamai App Platform Core**
+
+   - Follow instructions to set up Core at [Akamai App Platform Core](https://github.com/linode/apl-core)
+   - cd to the Core folder
+   - run `npm run server`
+
+3. **Run Akamai App Platform Api**
+
+   - Follow instructions to set up API at [Akamai App Platform API](https://github.com/linode/apl-api)
+   - cd to the API folder
+   - run `npm run dev`
+
+4. **Start Akamai App Platform Console**
+   ```bash
+   npm run dev
+   # or
+   make dev
+   ```
+   This starts the React app with TypeScript watching and opens Chrome with debugging enabled.
+5. **Access the application**
+   - http://localhost:3000
+
+## 🏗️ Project Structure
 
 ```
-bin/dc.sh up-deps
+src/
+├── components/        # Reusable UI components
+├── pages/             # Route-specific page components
+│   ├── builds/        # Container image build management
+│   ├── code-repositories/  # Git repository management
+│   ├── network-policies/   # Network security policies
+│   ├── secrets/       # Secret management
+│   ├── services/      # Service configuration
+│   └── teams/         # Team management
+├── redux/             # State management (RTK Query)
+├── hooks/             # Custom React hooks
+├── contexts/          # React contexts
+├── theme/             # Material-UI theme configuration
+├── utils/             # Utility functions
+└── i18n/              # Internationalization
 ```
 
-### Run the api server
+## 📋 Available Scripts
 
+### Development
+
+- `npm run dev` / `make dev` - Start development server with debugging
+- `npm start` / `make start` - Start React development server only
+- `npm run dev:docker` / `make docker` - Run development in Docker
+
+### Testing & Quality
+
+- `npm test` / `make test` - Run tests once
+- `npm run lint` / `make lint` - Run ESLint with TypeScript checking
+- `npm run format` - Check code formatting with Prettier
+- `npm run format:fix` - Fix code formatting automatically
+
+### Build & Production
+
+- `npm run build` / `make build` - Build for production
+- `npm run types` - TypeScript type checking only
+- `npm run watch:ts` - TypeScript watching mode
+
+### API & Codegen
+
+- `npm run gen:store` / `make gen-store` - Generate RTK Query API clients from OpenAPI
+
+## Technology Stack
+
+- **Frontend**: React 18, TypeScript, Material-UI v5
+- **State Management**: Redux Toolkit with RTK Query
+- **Routing**: React Router v5
+- **Styling**: Emotion, Material-UI theming
+- **Testing**: Jest, React Testing Library
+- **Code Quality**: ESLint, Prettier, Husky
+- **Forms**: React Hook Form with Yup validation
+
+## API Integration
+
+The console communicates with the APL API using auto-generated clients via RTK Query. To regenerate API clients when the API schema changes:
+
+```bash
+npm run gen:store
 ```
-npm run dev
-```
 
-### Debugging
+## Browser Support
 
-Run chrome with remote debugger plugin enabled, e.g.:
+Supports modern browsers (>0.2% usage, not IE11 or Opera Mini).
 
-```
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
-```
+## Contributing
 
-Run react app in development mode
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-```
-npm run dev
-```
+## License
 
-In vscode: open `Run and Debug` window, select `Attach to Chrome and run debugging`
-
-### Api client
-
-The console uses a client generated with `@reduxjs/toolkit` which needs to be updated whenever OpenApi schema is changed. Just run `npm run gen:store` when the api is running on `http://localhost:8080` (the default options for `npm run dev`).
-
-## Custom schema extensions
-
-**x-nullMe** - use this property extension to prevent from rendering and enforce its value to be set to `null` on form submit. Only applicable to trivial types like: sting, integer or boolean which are defined as `nullable` in OpenApi schema at the otomi-api project.
-
-**x-formtype** - use this property extension to set ui:widget that overloads default one. E.g.: `x-formtype: textarea`
-
-**x-hideTitle** - use this property extension to instruct to not render title and description
-
-**x-secret** - use this property extension to display value as password
-
-**x-default** - use this property to prevent property default value to be sent to otomi-api
+Licensed under Apache License, Version 2.0. See [LICENSE.md](LICENSE.md).
