@@ -19,11 +19,6 @@ interface PodLabelMatch {
   fromLabelValue?: string
 }
 
-interface ActiveLabel {
-  label: string
-  namespace: string
-}
-
 interface WorkloadOption {
   name: string
   namespace: string
@@ -78,7 +73,7 @@ export default function NetworkPolicyPodLabelRow({
 
   // fetch pod‐labels & pod-names
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
-    { teamId, workloadName: activeWorkload },
+    { teamId, workloadName: activeWorkload, namespace },
     { skip: !activeWorkload },
   )
 

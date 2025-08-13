@@ -194,6 +194,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 teamId={teamId}
                 prefixName='ruleType.ingress'
                 showBanner={toggleShowMultiPodInformationBanner}
+                isEditMode={!!networkPolicyName}
               />
             </Section>
 

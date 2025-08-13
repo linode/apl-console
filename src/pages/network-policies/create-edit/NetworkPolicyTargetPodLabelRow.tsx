@@ -10,6 +10,7 @@ interface Props {
   teamId: string
   prefixName: string
   showBanner?: () => void
+  isEditMode?: boolean
 }
 
 interface WorkloadOption {
@@ -27,7 +28,13 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, showBanner }: Props) {
+export default function NetworkPolicyTargetLabelRow({
+  aplWorkloads,
+  teamId,
+  prefixName,
+  showBanner,
+  isEditMode,
+}: Props) {
   const {
     watch,
     setValue,
@@ -57,7 +64,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
 
   // fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
-    { teamId, workloadName: activeWorkload },
+    { teamId, workloadName: activeWorkload, namespace: `team-${teamId}` },
     { skip: !activeWorkload },
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
@@ -66,10 +73,11 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   useEffect(() => {
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
-      const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
-      if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
-
-      setActiveWorkload(initialActiveWorkload)
+      if (isEditMode) {
+        const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
+        if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
+        else setActiveWorkload(initialActiveWorkload)
+      }
     }
   }, [toValue])
 
