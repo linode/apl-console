@@ -5,8 +5,10 @@ A React-based frontend for the Akamai App Platform that provides a web interface
 ## Key Features
 
 - **Team Management**: Create and manage development teams with resource quotas
+- **Platform App Management**: One click deployment of popular platform apps
+- **Catalog Quickstarts**: Quickly deploy applications with preconfigured templates
 - **Application Deployment**: Deploy and manage containerized applications
-- **Service Configuration**: Configure services, load balancers, and ingress
+- **Service Configuration**: Configure services, load balancers and ingress
 - **Container Image Builds**: Build and manage container images
 - **Code Repository Integration**: Git repository management and CI/CD
 - **Network Policies**: Configure ingress/egress network security policies
@@ -20,11 +22,11 @@ A React-based frontend for the Akamai App Platform that provides a web interface
 
 - Node.js ≥20 <21
 - npm
-- Docker (optional, for containerized development)
+- nvm (highly recommended for `nvm use`)
 - Running instance of [Akamai App Platform API](https://github.com/linode/apl-api) (see #Development Setup)
 - Running instance of [Akamai App Platform Core](https://github.com/linode/apl-core) (see #Development Setup)
 
-### 🛠️ Development Setup
+### Development Setup
 
 1. **Install dependencies**
 
@@ -57,7 +59,7 @@ A React-based frontend for the Akamai App Platform that provides a web interface
 5. **Access the application**
    - http://localhost:3000
 
-## 🏗️ Project Structure
+## Project Structure
 
 ```
 src/
@@ -77,7 +79,7 @@ src/
 └── i18n/              # Internationalization
 ```
 
-## 📋 Available Scripts
+## Available Scripts
 
 ### Development
 
