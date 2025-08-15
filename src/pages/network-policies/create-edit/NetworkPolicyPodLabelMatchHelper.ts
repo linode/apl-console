@@ -3,6 +3,11 @@ export interface PodLabelMatch {
   value: string
 }
 
+interface WorkloadOption {
+  name: string
+  namespace: string
+}
+
 /**
  * Attempts to find a default pod label for the given workload.
  * @param workloadName The name of the workload (e.g. 'blue' or 'ksvc-hello-world')
@@ -39,7 +44,31 @@ export function getDefaultPodLabel(workloadName: string, podLabels: Record<strin
   return null
 }
 
-export function getInitialActiveWorkload(labelValue: string, workloads: Array<{ metadata: { name: string } }>): string {
+export function getInitialActiveWorkloadRow(
+  labelValue: string,
+  namespaceValue: string,
+  workloads: Array<{ metadata: { name: string; labels: string } }>,
+): WorkloadOption {
+  if (!labelValue) return { name: 'unknown', namespace: '' }
+
+  const suffix = 'rabbitMQ'
+  if (labelValue.endsWith(suffix)) labelValue = labelValue.slice(0, -suffix.length)
+
+  const matches = workloads.filter(
+    (w) => w.metadata.name === labelValue && `team-${w.metadata.labels?.['apl.io/teamId'] || ''}` === namespaceValue,
+  )
+
+  if (matches.length > 1) return { name: 'multiple', namespace: '' }
+
+  if (matches.length === 0) return { name: 'unknown', namespace: '' }
+
+  return { name: matches[0].metadata.name, namespace: matches[0].metadata.labels?.['apl.io/teamId'] }
+}
+
+export function getInitialActiveWorkloadTarget(
+  labelValue: string,
+  workloads: Array<{ metadata: { name: string } }>,
+): string {
   if (!labelValue) return 'unknown'
 
   const suffix = 'rabbitMQ'

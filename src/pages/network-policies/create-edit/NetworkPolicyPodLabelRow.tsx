@@ -3,7 +3,7 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
-import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
+import { getDefaultPodLabel, getInitialActiveWorkloadRow } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
   aplWorkloads: any[]
@@ -46,17 +46,10 @@ export default function NetworkPolicyPodLabelRow({
   } = useFormContext<FormValues>()
   const { field } = useController<FormValues>({ control, name: fieldArrayName })
 
-  const [activeWorkload, setActiveWorkload] = useState<string>('')
+  const [activeWorkload, setActiveWorkload] = useState<WorkloadOption | null>(null)
   const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
 
   const arrayError = (errors.ruleType?.ingress.allow?.root as any)?.message as string | undefined
-
-  // derive namespace from the selected workload
-  const namespace = useMemo(() => {
-    const w = aplWorkloads.find((w) => w.metadata.name === activeWorkload)
-    const teamLabel = w?.metadata.labels?.['apl.io/teamId'] || ''
-    return `team-${teamLabel}`
-  }, [activeWorkload, aplWorkloads])
 
   // build and sort workload options
   const workloadOptions = useMemo(
@@ -69,21 +62,23 @@ export default function NetworkPolicyPodLabelRow({
         .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
     [aplWorkloads],
   )
-  const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
 
   // fetch pod‐labels & pod-names
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
-    { teamId, workloadName: activeWorkload, namespace },
+    {
+      teamId,
+      workloadName: activeWorkload?.name ?? '',
+      namespace: activeWorkload?.namespace ?? '',
+    },
     { skip: !activeWorkload },
   )
 
   // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
-    const { fromLabelValue } = field.value as PodLabelMatch
+    const { fromLabelValue, fromNamespace } = field.value as PodLabelMatch
     if (fromLabelValue) {
-      const initialActiveWorkload = getInitialActiveWorkload(fromLabelValue, aplWorkloads)
-      if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
-
+      const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
+      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner()
       setActiveWorkload(initialActiveWorkload)
     } else setCircuitBreaker(false)
   }, [])
@@ -98,8 +93,14 @@ export default function NetworkPolicyPodLabelRow({
   useEffect(() => {
     if (podLabels && circuitBreaker) setCircuitBreaker(false)
     if (!activeWorkload || !podLabels) return
-    const match = getDefaultPodLabel(activeWorkload, podLabels)
-    if (match) field.onChange({ fromNamespace: namespace, fromLabelName: match.name, fromLabelValue: match.value })
+    const match = getDefaultPodLabel(activeWorkload.name, podLabels)
+    if (match) {
+      field.onChange({
+        fromNamespace: activeWorkload.namespace,
+        fromLabelName: match.name,
+        fromLabelValue: match.value,
+      })
+    }
   }, [activeWorkload, podLabels])
 
   return (
@@ -112,8 +113,8 @@ export default function NetworkPolicyPodLabelRow({
         options={workloadOptions}
         groupBy={(opt) => opt.namespace}
         getOptionLabel={(opt) => opt.name}
-        value={selectedWorkloadOption}
-        onChange={(_e, opt) => setActiveWorkload(opt?.name ?? '')}
+        value={activeWorkload}
+        onChange={(_e, opt) => setActiveWorkload({ name: opt?.name, namespace: opt?.namespace })}
       />
 
       <Autocomplete
@@ -127,7 +128,7 @@ export default function NetworkPolicyPodLabelRow({
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
           const [name, value] = raw?.split(':', 2) ?? []
-          field.onChange({ fromNamespace: namespace, fromLabelName: name, fromLabelValue: value })
+          field.onChange({ fromNamespace: activeWorkload.namespace, fromLabelName: name, fromLabelValue: value })
         }}
       />
     </FormRow>

@@ -3,7 +3,7 @@ import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
-import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
+import { getDefaultPodLabel, getInitialActiveWorkloadTarget } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
   aplWorkloads: any[]
@@ -74,7 +74,7 @@ export default function NetworkPolicyTargetLabelRow({
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
       if (isEditMode) {
-        const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
+        const initialActiveWorkload = getInitialActiveWorkloadTarget(toValue, aplWorkloads)
         if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
         else setActiveWorkload(initialActiveWorkload)
       }
