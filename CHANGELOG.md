@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.8.1](https://github.com/linode/apl-console/compare/v4.6.0...v4.8.1) (2025-08-18)
+
+
+### Reverts
+
+* http-proxy-middleware changes ([#619](https://github.com/linode/apl-console/issues/619)) ([bda41ce](https://github.com/linode/apl-console/commit/bda41ced2122215a8a4fc13819a88d6b379c59a0)), closes [#615](https://github.com/linode/apl-console/issues/615) [#616](https://github.com/linode/apl-console/issues/616)
+
+
 ## [4.8.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.8.0) (2025-08-04)
 
 
