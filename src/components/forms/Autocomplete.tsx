@@ -1,18 +1,14 @@
 import MuiAutocomplete from '@mui/material/Autocomplete'
 import React, { JSX, useState } from 'react'
-import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
 
-import type {
-  AutocompleteChangeDetails,
-  AutocompleteChangeReason,
-  AutocompleteProps,
-  AutocompleteRenderInputParams,
-} from '@mui/material/Autocomplete'
+import type { AutocompleteProps, AutocompleteRenderInputParams } from '@mui/material/Autocomplete'
+import ArrowDropDownIcon from '@mui/icons-material/ExpandMore'
 import { TextField } from './TextField'
+
 import type { TextFieldProps } from './TextField'
 
 export interface EnhancedAutocompleteProps<
-  T,
+  T extends { label: string },
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
@@ -23,8 +19,6 @@ export interface EnhancedAutocompleteProps<
   helperText?: TextFieldProps['helperText']
   /** A required label for the Autocomplete to ensure accessibility. */
   label: string
-  /** Optional field to hide label, mostly used in Key value components */
-  hideLabel?: boolean
   /** Removes the top margin from the input label, if desired. */
   noMarginTop?: boolean
   /** Element to show when the Autocomplete search yields no results. */
@@ -33,14 +27,28 @@ export interface EnhancedAutocompleteProps<
   renderInput?: (_params: AutocompleteRenderInputParams) => React.ReactNode
   /** Label for the "select all" option. */
   selectAllLabel?: string
-  /** Removes the "select all" option for multiselect */
-  disableSelectAll?: boolean
   textFieldProps?: Partial<TextFieldProps>
   width?: 'small' | 'medium' | 'large'
 }
 
+/**
+ * An Autocomplete component that provides a user-friendly select input
+ * allowing selection between options.
+ *
+ * @example
+ * <Autocomplete
+ *  label="Select a Fruit"
+ *  onSelectionChange={(selected) => console.log(selected)}
+ *  options={[
+ *    {
+ *      label: 'Apple',
+ *      value: 'apple',
+ *    }
+ *  ]}
+ * />
+ */
 export function Autocomplete<
-  T,
+  T extends { label: string },
   Multiple extends boolean | undefined = undefined,
   DisableClearable extends boolean | undefined = undefined,
   FreeSolo extends boolean | undefined = undefined,
@@ -48,59 +56,56 @@ export function Autocomplete<
   const {
     clearOnBlur,
     defaultValue,
-    disablePortal = false,
+    disablePortal = true,
     errorText = '',
     helperText,
-    hideLabel = false,
     label,
     limitTags = 2,
     loading = false,
     loadingText,
-    multiple,
-    disableSelectAll = false,
     noOptionsText,
     onBlur,
     options,
     placeholder,
     renderInput,
-    selectAllLabel = '',
     textFieldProps,
     value,
     onChange,
     width = 'medium',
     ...rest
   } = props
-
   const [inPlaceholder, setInPlaceholder] = useState('')
-
-  // --- select-all logic ---
-  const isSelectAllActive = multiple && Array.isArray(value) && value.length === options.length
-
-  const selectAllText = isSelectAllActive ? 'Deselect All' : 'Select All'
-  const selectAllOption = { label: `${selectAllText} ${selectAllLabel}` } as unknown as T
-  const optionsWithSelectAll = [selectAllOption, ...options]
-
-  const handleChange: AutocompleteProps<T, Multiple, DisableClearable, FreeSolo>['onChange'] = (
-    e,
-    newValue,
-    reason: AutocompleteChangeReason,
-    details?: AutocompleteChangeDetails<T>,
-  ) => {
-    if (!onChange) return
-
-    // if they clicked the "Select All" option
-    if (details?.option === selectAllOption) {
-      const next = isSelectAllActive ? ([] as unknown as typeof newValue) : (options as unknown as typeof newValue)
-      onChange(e, next, reason, details)
-    } else onChange(e, newValue, reason, details)
-  }
-  // --------------------------
 
   return (
     <MuiAutocomplete
-      options={multiple && !disableSelectAll && options.length > 0 ? optionsWithSelectAll : options}
-      multiple={multiple}
-      disableCloseOnSelect={multiple}
+      options={options}
+      renderInput={
+        renderInput ||
+        ((params) => (
+          <TextField
+            label={label}
+            width={width}
+            loading={loading}
+            placeholder={inPlaceholder || (placeholder ?? 'Select an option')}
+            {...params}
+            error={!!errorText}
+            helperText={helperText}
+            InputProps={{
+              ...params.InputProps,
+              ...textFieldProps?.InputProps,
+              sx: {
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                paddingRight: '44px',
+              },
+            }}
+            InputLabelProps={{
+              ...textFieldProps?.InputLabelProps,
+            }}
+          />
+        ))
+      }
       clearOnBlur={clearOnBlur}
       data-qa-autocomplete={label}
       defaultValue={defaultValue}
@@ -113,37 +118,9 @@ export function Autocomplete<
       onOpen={() => setInPlaceholder('Search')}
       onClose={() => setInPlaceholder(placeholder || '')}
       popupIcon={<ArrowDropDownIcon />}
-      renderInput={
-        renderInput ||
-        ((params) => (
-          <TextField
-            hideLabel={hideLabel}
-            label={label}
-            width={width}
-            loading={loading}
-            placeholder={inPlaceholder || placeholder || 'Select an option'}
-            {...params}
-            error={!!errorText}
-            helperText={helperText}
-            InputProps={{
-              ...params.InputProps,
-              ...textFieldProps?.InputProps,
-              sx: {
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 1,
-                paddingRight: '44px',
-              },
-            }}
-            InputLabelProps={{
-              ...textFieldProps?.InputLabelProps,
-            }}
-          />
-        ))
-      }
       value={value}
-      onChange={handleChange}
       {...rest}
+      onChange={onChange}
     />
   )
 }

@@ -3,7 +3,7 @@ import { Box, Divider, Grid } from '@mui/material'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useMemo, useState } from 'react'
-import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
+import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -136,19 +136,6 @@ export default function ServicesCreateEditPage({
     setValue,
   } = methods
 
-  const { field: ingressClassField } = useController<CreateAplServiceApiResponse>({
-    control,
-    name: 'spec.ingressClassName' as FieldPath<CreateAplServiceApiResponse>,
-  })
-  const { field: tlsSecretField } = useController<CreateAplServiceApiResponse>({
-    control,
-    name: 'spec.cname.tlsSecretName' as FieldPath<CreateAplServiceApiResponse>,
-  })
-  const { field: nameField } = useController<CreateAplServiceApiResponse>({
-    control,
-    name: 'metadata.name' as FieldPath<CreateAplServiceApiResponse>,
-  })
-
   useEffect(() => {
     if (data) reset(data)
 
@@ -262,21 +249,29 @@ export default function ServicesCreateEditPage({
                     value={watch('metadata.name', data?.metadata.name)}
                   />
                 ) : (
-                  <Autocomplete<string, false, false, false>
+                  <TextField
                     label='Service Name'
                     width='large'
-                    options={filteredK8Services.map((service) => service.name)}
-                    getOptionLabel={(service) => service}
-                    placeholder='Select a service'
-                    value={typeof nameField.value === 'string' ? nameField.value : ''}
-                    onChange={(_e, value) => {
-                      nameField.onChange(value ?? '')
+                    {...register('metadata.name')}
+                    select
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('metadata.name', value)
                       setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                      setValue('spec.domain', value ?? '')
-                      setActiveService(value ?? '')
+                      setValue('spec.domain', value)
+                      setActiveService(value)
                     }}
-                    errorText={errors.metadata?.name?.message?.toString()}
-                  />
+                    value={watch('metadata.name', data?.metadata.name)}
+                  >
+                    <MenuItem key='select-a-service' value='' disabled classes={undefined}>
+                      Select a service
+                    </MenuItem>
+                    {filteredK8Services?.map((service) => (
+                      <MenuItem key={service.name} value={service.name} classes={undefined}>
+                        {service.name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 )}
 
                 {service?.ports.length === 1 || teamId === 'admin' ? (
@@ -317,14 +312,23 @@ export default function ServicesCreateEditPage({
               </FormRow>
               {!isPreInstalled && (
                 <FormRow spacing={10}>
-                  <Autocomplete<string, false, false, false>
+                  <Autocomplete
                     label='Ingress Class Name'
-                    width='large'
                     loading={isLoadingSettingsInfo}
-                    options={updatedIngressClassNames}
-                    placeholder='Select an Ingress Class Name'
-                    value={typeof ingressClassField.value === 'string' ? ingressClassField.value : ''}
-                    onChange={(_e, value) => ingressClassField.onChange(value ?? '')}
+                    options={(updatedIngressClassNames || []).map((ingressClassName) => {
+                      return {
+                        label: ingressClassName,
+                        value: ingressClassName,
+                      }
+                    })}
+                    width='large'
+                    placeholder='Select a Ingress Class Name'
+                    {...register('spec.ingressClassName')}
+                    value={watch('spec.ingressClassName') || 'platform'}
+                    onChange={(e, value: { label: string }) => {
+                      const label: string = value?.label || ''
+                      setValue('spec.ingressClassName', label)
+                    }}
                   />
                 </FormRow>
               )}
@@ -374,14 +378,22 @@ export default function ServicesCreateEditPage({
                     type='text'
                     {...register('spec.cname.domain')}
                   />
-                  <Autocomplete<string, false, false, false>
+                  <Autocomplete
                     label='TLS Secret'
                     loading={isLoadingTeamSecrets}
-                    width='large'
-                    options={teamSecrets.map((secret) => secret.name)}
+                    options={(teamSecrets || []).map((secret) => {
+                      return {
+                        label: secret.name,
+                        value: secret.name,
+                      }
+                    })}
                     placeholder='Select a TLS Secret'
-                    value={typeof tlsSecretField.value === 'string' ? tlsSecretField.value : ''}
-                    onChange={(_e, value) => tlsSecretField.onChange(value ?? '')}
+                    {...register('spec.cname.tlsSecretName')}
+                    value={watch('spec.cname.tlsSecretName') || ''}
+                    onChange={(e, value: { label: string }) => {
+                      const label: string = value?.label || ''
+                      setValue('spec.cname.tlsSecretName', label)
+                    }}
                   />
                 </FormRow>
 

@@ -5,6 +5,7 @@ import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import cookie from 'cookie'
 import Backups from 'pages/Backups'
+import Netpols from 'pages/Netpols'
 import Workloads from 'pages/Workloads'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
@@ -26,6 +27,7 @@ import { Provider } from 'react-redux'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { store } from 'redux/store'
 import Backup from 'pages/Backup'
+import Netpol from 'pages/Netpol'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
 import Users from 'pages/Users'
@@ -45,9 +47,6 @@ import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
 import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
 import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
-import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
-import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
-import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
 import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
 import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
 import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEditPage'
@@ -126,12 +125,6 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute
-                                  path='/network-policies'
-                                  component={NetworkPoliciesOverviewPage}
-                                  platformAdminRoute
-                                  exact
-                                />
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/policies/:policyName'
@@ -174,16 +167,7 @@ function App() {
                                 <PrivateRoute path='/teams' component={TeamsOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId' component={TeamsCreateEditPage} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
-                                <PrivateRoute
-                                  path='/teams/:teamId/network-policies/inbound-rules/create'
-                                  component={NetworkPoliciesIngressCreateEditPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/network-policies/outbound-rules/create'
-                                  component={NetworkPoliciesEgressCreateEditPage}
-                                  exact
-                                />
+                                <PrivateRoute path='/teams/:teamId/network-policies/create' component={Netpol} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/secrets/create'
                                   component={SecretCreateEditPage}
@@ -209,19 +193,10 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
                                 <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
+                                <PrivateRoute path='/teams/:teamId/network-policies' component={Netpols} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/network-policies'
-                                  component={NetworkPoliciesOverviewPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/network-policies/inbound-rules/:networkPolicyName'
-                                  component={NetworkPoliciesIngressCreateEditPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/network-policies/outbound-rules/:networkPolicyName'
-                                  component={NetworkPoliciesEgressCreateEditPage}
+                                  path='/teams/:teamId/network-policies/:netpolName'
+                                  component={Netpol}
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/projects' component={Projects} exact />
