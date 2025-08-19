@@ -1,3 +1,5 @@
+import { GetAllAplWorkloadNamesApiResponse } from 'redux/otomiApi'
+
 export interface PodLabelMatch {
   name: string
   value: string
@@ -44,37 +46,37 @@ export function getDefaultPodLabel(workloadName: string, podLabels: Record<strin
   return null
 }
 
+function normalizeRabbitMQLabel(labelValue: string): string {
+  return labelValue.replace(/-rabbitmq$/, '')
+}
+
 export function getInitialActiveWorkloadRow(
   labelValue: string,
   namespaceValue: string,
-  workloads: Array<{ metadata: { name: string; labels: string } }>,
+  workloads: GetAllAplWorkloadNamesApiResponse,
 ): WorkloadOption {
   if (!labelValue) return { name: 'unknown', namespace: '' }
 
-  const suffix = 'rabbitMQ'
-  if (labelValue.endsWith(suffix)) labelValue = labelValue.slice(0, -suffix.length)
-
+  const normalizedLabel = normalizeRabbitMQLabel(labelValue)
   const matches = workloads.filter(
-    (w) => w.metadata.name === labelValue && `team-${w.metadata.labels?.['apl.io/teamId'] || ''}` === namespaceValue,
+    (w) => w.metadata.name === normalizedLabel && w.metadata.namespace === namespaceValue,
   )
 
   if (matches.length > 1) return { name: 'multiple', namespace: '' }
 
   if (matches.length === 0) return { name: 'unknown', namespace: '' }
 
-  return { name: matches[0].metadata.name, namespace: matches[0].metadata.labels?.['apl.io/teamId'] }
+  return { name: matches[0].metadata.name, namespace: matches[0].metadata.namespace }
 }
 
 export function getInitialActiveWorkloadTarget(
   labelValue: string,
-  workloads: Array<{ metadata: { name: string } }>,
+  workloads: GetAllAplWorkloadNamesApiResponse,
 ): string {
   if (!labelValue) return 'unknown'
 
-  const suffix = 'rabbitMQ'
-  if (labelValue.endsWith(suffix)) labelValue = labelValue.slice(0, -suffix.length)
-
-  const matches = workloads.filter((w) => w.metadata.name === labelValue)
+  const normalizedLabel = normalizeRabbitMQLabel(labelValue)
+  const matches = workloads.filter((w) => w.metadata.name === normalizedLabel)
 
   if (matches.length > 1) return 'multiple'
 

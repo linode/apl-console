@@ -96,7 +96,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
     setShowMultiPodInformationBanner(true)
   }, [])
 
-  const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
+  const onSubmit = (formData: CreateNetpolApiResponse | EditNetpolApiResponse) => {
+    const body = { ...formData }
     const rawAllow = body.ruleType.ingress.allow as any[]
     const merged = rawAllow.flat ? rawAllow.flat() : rawAllow
 

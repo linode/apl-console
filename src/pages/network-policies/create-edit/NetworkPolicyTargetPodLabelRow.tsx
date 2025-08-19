@@ -2,11 +2,11 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { GetAllAplWorkloadNamesApiResponse, useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkloadTarget } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
-  aplWorkloads: any[]
+  aplWorkloads: GetAllAplWorkloadNamesApiResponse
   teamId: string
   prefixName: string
   showBanner?: () => void
@@ -43,18 +43,15 @@ export default function NetworkPolicyTargetLabelRow({
   const [circuitBreaker, setCircuitBreaker] = useState(true)
   const [activeWorkload, setActiveWorkload] = useState<string>('')
 
-  const toName = watch(`${prefixName}.toLabelName`) || ''
-  const toValue = watch(`${prefixName}.toLabelValue`) || ''
+  const toName = (watch(`${prefixName}.toLabelName`) as string) || ''
+  const toValue = (watch(`${prefixName}.toLabelValue`) as string) || ''
 
   const targetValueError = errors.ruleType?.ingress?.toLabelName?.message
 
   // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
     return aplWorkloads
-      .map((w) => ({
-        name: w.metadata.name,
-        namespace: `team-${w.metadata.labels?.['apl.io/teamId'] || ''}`,
-      }))
+      .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
       .filter((o) => o.namespace === `team-${teamId}`)
       .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
   }, [aplWorkloads, teamId])

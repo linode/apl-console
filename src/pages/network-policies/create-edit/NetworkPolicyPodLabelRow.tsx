@@ -2,11 +2,11 @@ import { FieldPath, useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
-import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { GetAllAplWorkloadNamesApiResponse, useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkloadRow } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
-  aplWorkloads: any[]
+  aplWorkloads: GetAllAplWorkloadNamesApiResponse
   teamId: string
   fieldArrayName: FieldPath<FormValues>
   rowIndex?: number
@@ -55,10 +55,7 @@ export default function NetworkPolicyPodLabelRow({
   const workloadOptions = useMemo(
     () =>
       aplWorkloads
-        .map((w) => {
-          const ns = `team-${w.metadata.labels?.['apl.io/teamId'] || ''}`
-          return { name: w.metadata.name, namespace: ns }
-        })
+        .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
         .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
     [aplWorkloads],
   )
