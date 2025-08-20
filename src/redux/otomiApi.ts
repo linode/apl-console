@@ -6845,10 +6845,8 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
 export type GetAllAplWorkloadsApiArg = void
 export type GetAllAplWorkloadNamesApiResponse = /** status 200 Successfully obtained all workload names */ {
   metadata?: {
-    labels?: {
-      [key: string]: string
-    }
     name?: string
+    namespace?: string
   }
 }[]
 export type GetAllAplWorkloadNamesApiArg = void
