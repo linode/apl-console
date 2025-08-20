@@ -2,7 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [4.8.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.8.0) (2025-08-04)
+
+## [4.8.2](https://github.com/linode/apl-console/compare/v4.8.1...v4.8.2) (2025-08-20)
+
+### Features
+
+* APL-1042 - Network Policies rework ([#632](https://github.com/linode/apl-console/issues/632)) 
+
+### Bug Fixes
+
+* Unknown and wrong pod label ([#637](https://github.com/linode/apl-console/issues/637))
+
+## [4.8.1](https://github.com/linode/apl-console/compare/v4.8.0...v4.8.1) (2025-08-13)
+
+### Reverts
+
+* APL-1042 - Network Policies rework ([#632](https://github.com/linode/apl-console/issues/632)) 
+
+## [4.8.0](https://github.com/linode/apl-console/compare/v4.7.0...v4.8.0) (2025-08-04)
 
 
 ### Features
