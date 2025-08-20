@@ -2,14 +2,15 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
-import { getDefaultPodLabel, getInitialActiveWorkload } from './NetworkPolicyPodLabelMatchHelper'
+import { GetAllAplWorkloadNamesApiResponse, useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { getDefaultPodLabel, getInitialActiveWorkloadTarget } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
-  aplWorkloads: any[]
+  aplWorkloads: GetAllAplWorkloadNamesApiResponse
   teamId: string
   prefixName: string
   showBanner?: () => void
+  isEditMode?: boolean
 }
 
 interface WorkloadOption {
@@ -27,7 +28,13 @@ interface FormValues {
   [key: string]: any
 }
 
-export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, prefixName, showBanner }: Props) {
+export default function NetworkPolicyTargetLabelRow({
+  aplWorkloads,
+  teamId,
+  prefixName,
+  showBanner,
+  isEditMode,
+}: Props) {
   const {
     watch,
     setValue,
@@ -36,18 +43,15 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   const [circuitBreaker, setCircuitBreaker] = useState(true)
   const [activeWorkload, setActiveWorkload] = useState<string>('')
 
-  const toName = watch(`${prefixName}.toLabelName`) || ''
-  const toValue = watch(`${prefixName}.toLabelValue`) || ''
+  const toName = (watch(`${prefixName}.toLabelName`) as string) || ''
+  const toValue = (watch(`${prefixName}.toLabelValue`) as string) || ''
 
   const targetValueError = errors.ruleType?.ingress?.toLabelName?.message
 
   // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
     return aplWorkloads
-      .map((w) => ({
-        name: w.metadata.name,
-        namespace: `team-${w.metadata.labels?.['apl.io/teamId'] || ''}`,
-      }))
+      .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
       .filter((o) => o.namespace === `team-${teamId}`)
       .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
   }, [aplWorkloads, teamId])
@@ -57,7 +61,7 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
 
   // fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
-    { teamId, workloadName: activeWorkload },
+    { teamId, workloadName: activeWorkload, namespace: `team-${teamId}` },
     { skip: !activeWorkload },
   )
   const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
@@ -66,10 +70,11 @@ export default function NetworkPolicyTargetLabelRow({ aplWorkloads, teamId, pref
   useEffect(() => {
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
-      const initialActiveWorkload = getInitialActiveWorkload(toValue, aplWorkloads)
-      if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
-
-      setActiveWorkload(initialActiveWorkload)
+      if (isEditMode) {
+        const initialActiveWorkload = getInitialActiveWorkloadTarget(toValue, aplWorkloads)
+        if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
+        else setActiveWorkload(initialActiveWorkload)
+      }
     }
   }, [toValue])
 
