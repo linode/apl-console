@@ -28,16 +28,16 @@ export function getDefaultPodLabel(workloadName: string, podLabels: Record<strin
   if (componentValue === 'rabbitmq') return { name: instanceKey, value: `${workloadName}-${componentValue}` }
 
   // 3. Knative serving label
-  const knativeKey = Object.keys(podLabels).find((key) => key.startsWith('serving.knative.dev/service'))
+  const knativeKey = Object.keys(podLabels).find((key) => key?.startsWith('serving.knative.dev/service'))
   if (knativeKey) return { name: knativeKey, value: podLabels[knativeKey] }
 
   // 4. cnpg cluster label
-  const cnpgKey = Object.keys(podLabels).find((key) => key.startsWith('cnpg.io/cluster'))
+  const cnpgKey = Object.keys(podLabels).find((key) => key?.startsWith('cnpg.io/cluster'))
   if (cnpgKey) return { name: cnpgKey, value: podLabels[cnpgKey] }
 
   // 5. Istio canonical name for ksvc workloads
   const istioKey = 'service.istio.io/canonical-name'
-  if (workloadName.startsWith('ksvc-')) {
+  if (workloadName?.startsWith('ksvc-')) {
     const istioValue = podLabels[istioKey]
     if (istioValue === workloadName) return { name: istioKey, value: istioValue }
   }
