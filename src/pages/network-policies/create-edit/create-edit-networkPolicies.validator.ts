@@ -129,6 +129,36 @@ export const createEgressSchema = yup.object({
                   .required('Protocol is required'),
               }),
             )
+            .test('unique-ports', function (ports) {
+              if (!ports || ports.length <= 1) return true
+
+              const portNumbers: number[] = []
+              const duplicateIndexes: number[] = []
+
+              // Find all duplicate port numbers and their indexes
+              ports.forEach((port: any, index: number) => {
+                if (port?.number) {
+                  const existingIndex = portNumbers.indexOf(port.number as number)
+                  if (existingIndex !== -1) {
+                    // Mark both the original and current as duplicates
+                    if (!duplicateIndexes.includes(existingIndex)) duplicateIndexes.push(existingIndex)
+                    duplicateIndexes.push(index)
+                  } else portNumbers.push(port.number as number)
+                }
+              })
+
+              if (duplicateIndexes.length === 0) return true
+
+              // Create errors for each duplicate port
+              const errors = duplicateIndexes.map((index) =>
+                this.createError({
+                  path: `${this.path}[${index}].number`,
+                  message: 'Port number is already used',
+                }),
+              )
+
+              return new yup.ValidationError(errors)
+            })
             .optional(),
         })
         .required(),
