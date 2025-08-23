@@ -78,16 +78,16 @@ export default function NetworkPolicyTargetLabelRow({
     }
   }, [toValue])
 
-  // once podLabels arrive, and no explicit toName, apply default
+  // once podLabels arrive, and no explicit toName, apply default (only on initial load, not after user clears)
   useEffect(() => {
-    if (activeWorkload && podLabels && !toName && !toValue) {
+    if (activeWorkload && podLabels && !toName && !toValue && circuitBreaker) {
       const match = getDefaultPodLabel(activeWorkload, podLabels)
       if (match) {
         setValue(`${prefixName}.toLabelName`, match.name)
         setValue(`${prefixName}.toLabelValue`, match.value)
       }
     }
-  }, [activeWorkload, podLabels, toName, toValue])
+  }, [activeWorkload, podLabels, toName, toValue, circuitBreaker])
 
   // once the user has picked or defaulted a toName/toValue, fetch matching pod names
   const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
@@ -104,6 +104,7 @@ export default function NetworkPolicyTargetLabelRow({
         value={selectedWorkloadOption}
         onChange={(_e, opt) => {
           setActiveWorkload(opt?.name ?? '')
+          if (!opt) setCircuitBreaker(false)
         }}
       />
 
@@ -117,9 +118,10 @@ export default function NetworkPolicyTargetLabelRow({
           if (!newVal) {
             setValue(`${prefixName}.toLabelName`, '')
             setValue(`${prefixName}.toLabelValue`, '')
+            setCircuitBreaker(false)
             return
           }
-          const [name, value] = newVal.split('=', 2)
+          const [name, value] = newVal.split('=', 2) ?? []
           setValue(`${prefixName}.toLabelName`, name)
           setValue(`${prefixName}.toLabelValue`, value)
         }}
