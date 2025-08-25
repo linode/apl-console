@@ -105,6 +105,8 @@ export default function NetworkPolicyTargetLabelRow({
         onChange={(_e, opt) => {
           setActiveWorkload(opt?.name ?? '')
           if (!opt) setCircuitBreaker(false)
+          setValue(`${prefixName}.toLabelName`, '')
+          setValue(`${prefixName}.toLabelValue`, '')
         }}
       />
 
