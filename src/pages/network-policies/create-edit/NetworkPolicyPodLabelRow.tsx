@@ -52,13 +52,13 @@ export default function NetworkPolicyPodLabelRow({
   const arrayError = (errors.ruleType?.ingress?.allow?.root as any)?.message as string | undefined
 
   // build and sort workload options
-  const workloadOptions = useMemo(
-    () =>
-      aplWorkloads
-        .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
-        .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
-    [aplWorkloads],
-  )
+  const workloadOptions = useMemo(() => {
+    if (!aplWorkloads || !Array.isArray(aplWorkloads)) return []
+    return aplWorkloads
+      .map((w) => ({ name: w?.metadata?.name || '', namespace: w?.metadata?.namespace || '' }))
+      .filter((o) => o.name && o.namespace)
+      .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
+  }, [aplWorkloads])
 
   // fetch pod‐labels & pod-names
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
@@ -73,7 +73,7 @@ export default function NetworkPolicyPodLabelRow({
   // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
     const { fromLabelValue, fromNamespace } = field.value as PodLabelMatch
-    if (fromLabelValue) {
+    if (fromLabelValue && aplWorkloads) {
       const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
       if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner?.()
       setActiveWorkload(initialActiveWorkload)
