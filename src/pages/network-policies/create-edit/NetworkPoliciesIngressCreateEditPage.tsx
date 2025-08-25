@@ -23,6 +23,7 @@ import { Delete as DeleteIcon } from '@mui/icons-material'
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InformationBanner from 'components/InformationBanner'
+import { isEqual } from 'lodash'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -152,7 +153,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
               {sourceFields.map((field, index) => (
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
                   <NetworkPolicyPodLabelRow
-                    aplWorkloads={aplWorkloads}
+                    aplWorkloads={aplWorkloads || []}
                     teamId={teamId}
                     rowIndex={index}
                     fieldArrayName={`ruleType.ingress.allow.${index}`}
@@ -191,7 +192,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
               {/* Target row needs seperate component becuase of data shape */}
               <NetworkPolicyTargetLabelRow
-                aplWorkloads={aplWorkloads}
+                aplWorkloads={aplWorkloads || []}
                 teamId={teamId}
                 prefixName='ruleType.ingress'
                 showBanner={toggleShowMultiPodInformationBanner}
@@ -216,7 +217,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
               variant='contained'
               color='primary'
               loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(data, watch())}
               sx={{ float: 'right', textTransform: 'none' }}
             >
               {networkPolicyName ? 'Save Changes' : 'Create Inbound Rule'}
