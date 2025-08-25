@@ -21,6 +21,7 @@ import {
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'components/Divider'
+import { isEqual } from 'lodash'
 import { createEgressSchema } from './create-edit-networkPolicies.validator'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import NetworkPolicyEgressPortRow from './NetworkPolicyEgressPortRow'
@@ -178,8 +179,8 @@ export default function NetworkPoliciesEgressCreateEditPage({
               variant='contained'
               color='primary'
               loading={isCreating || isUpdating}
-              disabled={busy}
-              sx={{ float: 'right' }}
+              disabled={busy || isEqual(data, watch())}
+              sx={{ float: 'right', textTransform: 'none' }}
             >
               {networkPolicyName ? 'Save Changes' : 'Create Outbound Rule'}
             </LoadingButton>
