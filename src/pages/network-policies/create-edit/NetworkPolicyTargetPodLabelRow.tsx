@@ -51,20 +51,20 @@ export default function NetworkPolicyTargetLabelRow({
   // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
     return aplWorkloads
-      .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
-      .filter((o) => o.namespace === `team-${teamId}`)
-      .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
+      ?.map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
+      ?.filter((o) => o.namespace === `team-${teamId}`)
+      ?.sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
   }, [aplWorkloads, teamId])
 
   // find the currently selected option object
-  const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
+  const selectedWorkloadOption = workloadOptions?.find((o) => o.name === activeWorkload) || null
 
   // fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
     { teamId, workloadName: activeWorkload, namespace: `team-${teamId}` },
     { skip: !activeWorkload },
   )
-  const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}:${v}`), [podLabels])
+  const labelOptions = useMemo(() => Object.entries(podLabels ?? {}).map(([k, v]) => `${k}=${v}`), [podLabels])
 
   // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
@@ -72,25 +72,25 @@ export default function NetworkPolicyTargetLabelRow({
       setCircuitBreaker(false)
       if (isEditMode) {
         const initialActiveWorkload = getInitialActiveWorkloadTarget(toValue, aplWorkloads)
-        if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner()
+        if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner?.()
         else setActiveWorkload(initialActiveWorkload)
       }
     }
   }, [toValue])
 
-  // once podLabels arrive, and no explicit toName, apply default
+  // once podLabels arrive, and no explicit toName, apply default (only on initial load, not after user clears)
   useEffect(() => {
-    if (activeWorkload && podLabels) {
+    if (activeWorkload && podLabels && !toName && !toValue && circuitBreaker) {
       const match = getDefaultPodLabel(activeWorkload, podLabels)
       if (match) {
         setValue(`${prefixName}.toLabelName`, match.name)
         setValue(`${prefixName}.toLabelValue`, match.value)
       }
     }
-  }, [activeWorkload, podLabels])
+  }, [activeWorkload, podLabels, toName, toValue, circuitBreaker])
 
   // once the user has picked or defaulted a toName/toValue, fetch matching pod names
-  const rawSelector = toName && toValue ? `${toName}:${toValue}` : ''
+  const rawSelector = toName && toValue ? `${toName}=${toValue}` : ''
 
   return (
     <FormRow spacing={10}>
@@ -104,6 +104,9 @@ export default function NetworkPolicyTargetLabelRow({
         value={selectedWorkloadOption}
         onChange={(_e, opt) => {
           setActiveWorkload(opt?.name ?? '')
+          if (!opt) setCircuitBreaker(false)
+          setValue(`${prefixName}.toLabelName`, '')
+          setValue(`${prefixName}.toLabelValue`, '')
         }}
       />
 
@@ -117,9 +120,10 @@ export default function NetworkPolicyTargetLabelRow({
           if (!newVal) {
             setValue(`${prefixName}.toLabelName`, '')
             setValue(`${prefixName}.toLabelValue`, '')
+            setCircuitBreaker(false)
             return
           }
-          const [name, value] = newVal.split(':', 2)
+          const [name, value] = newVal.split('=', 2) ?? []
           setValue(`${prefixName}.toLabelName`, name)
           setValue(`${prefixName}.toLabelValue`, value)
         }}
