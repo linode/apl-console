@@ -48,13 +48,12 @@ export default function NetworkPolicyTargetLabelRow({
 
   const targetValueError = errors.ruleType?.ingress?.toLabelName?.message
 
-  // build workload options, but only those in this team's namespace
+  // build workload options, but only those in this team’s namespace
   const workloadOptions = useMemo<WorkloadOption[]>(() => {
-    if (!aplWorkloads || !Array.isArray(aplWorkloads)) return []
     return aplWorkloads
-      .map((w) => ({ name: w?.metadata?.name || '', namespace: w?.metadata?.namespace || '' }))
-      .filter((o) => o.namespace === `team-${teamId}` && o.name)
-      .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
+      ?.map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
+      ?.filter((o) => o.namespace === `team-${teamId}`)
+      ?.sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name))
   }, [aplWorkloads, teamId])
 
   // find the currently selected option object
@@ -71,7 +70,7 @@ export default function NetworkPolicyTargetLabelRow({
   useEffect(() => {
     if (toValue && circuitBreaker) {
       setCircuitBreaker(false)
-      if (isEditMode && aplWorkloads) {
+      if (isEditMode) {
         const initialActiveWorkload = getInitialActiveWorkloadTarget(toValue, aplWorkloads)
         if (initialActiveWorkload === 'unknown' || initialActiveWorkload === 'multiple') showBanner?.()
         else setActiveWorkload(initialActiveWorkload)
