@@ -49,7 +49,7 @@ export default function NetworkPolicyPodLabelRow({
   const [activeWorkload, setActiveWorkload] = useState<WorkloadOption | null>(null)
   const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
 
-  const arrayError = (errors.ruleType?.ingress.allow?.root as any)?.message as string | undefined
+  const arrayError = (errors.ruleType?.ingress?.allow?.root as any)?.message as string | undefined
 
   // build and sort workload options
   const workloadOptions = useMemo(
@@ -75,7 +75,7 @@ export default function NetworkPolicyPodLabelRow({
     const { fromLabelValue, fromNamespace } = field.value as PodLabelMatch
     if (fromLabelValue) {
       const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
-      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner()
+      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner?.()
       setActiveWorkload(initialActiveWorkload)
     } else setCircuitBreaker(false)
   }, [])
@@ -92,7 +92,7 @@ export default function NetworkPolicyPodLabelRow({
     if (!activeWorkload || !podLabels) return
     const currentValue = field.value as PodLabelMatch
     if (currentValue?.fromLabelName && currentValue?.fromLabelValue) return
-    const match = getDefaultPodLabel(activeWorkload.name, podLabels)
+    const match = getDefaultPodLabel(activeWorkload.name, podLabels as Record<string, string>)
     if (match) {
       field.onChange({
         fromNamespace: activeWorkload.namespace,
@@ -123,7 +123,11 @@ export default function NetworkPolicyPodLabelRow({
         multiple={false}
         errorText={arrayError && rowIndex === 0 ? arrayError : ''}
         helperText={arrayError && rowIndex === 0 ? arrayError : ''}
-        options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([k, v]) => `${k}=${v}`)}
+        options={
+          podLabels && typeof podLabels === 'object'
+            ? Object.entries(podLabels as Record<string, string>).map(([k, v]) => `${k}=${v}`)
+            : []
+        }
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}=${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
           const [name, value] = raw?.split('=', 2) ?? []
