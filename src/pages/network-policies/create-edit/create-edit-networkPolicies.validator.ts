@@ -52,7 +52,7 @@ export const createIngressSchema = yup.object({
     .required('Inbound rule name is required')
     .max(24, 'Name must not exceed 24 characters')
     .matches(
-      /^[a-z]([-a-z0-9]*[a-z0-9])+$/,
+      /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
       'Name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
     ),
   ruleType: yup
@@ -101,7 +101,7 @@ export const createEgressSchema = yup.object({
     .required('Name is required')
     .max(24, 'Name must not exceed 24 characters')
     .matches(
-      /^[a-z]([-a-z0-9]*[a-z0-9])+$/,
+      /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
       'Name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
     ),
   ruleType: yup
