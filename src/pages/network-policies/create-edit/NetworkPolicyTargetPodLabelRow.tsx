@@ -57,7 +57,7 @@ export default function NetworkPolicyTargetLabelRow({
   }, [aplWorkloads, teamId])
 
   // find the currently selected option object
-  const selectedWorkloadOption = workloadOptions.find((o) => o.name === activeWorkload) || null
+  const selectedWorkloadOption = workloadOptions?.find((o) => o.name === activeWorkload) || null
 
   // fetch the label→value map for that pod spec
   const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
