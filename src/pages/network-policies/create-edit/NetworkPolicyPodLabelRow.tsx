@@ -49,14 +49,14 @@ export default function NetworkPolicyPodLabelRow({
   const [activeWorkload, setActiveWorkload] = useState<WorkloadOption | null>(null)
   const [circuitBreaker, setCircuitBreaker] = useState<boolean>(true)
 
-  const arrayError = (errors.ruleType?.ingress.allow?.root as any)?.message as string | undefined
+  const arrayError = (errors.ruleType?.ingress?.allow?.root as any)?.message as string | undefined
 
   // build and sort workload options
   const workloadOptions = useMemo(
     () =>
       aplWorkloads
-        .map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
-        .sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
+        ?.map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
+        ?.sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
     [aplWorkloads],
   )
 
@@ -75,7 +75,7 @@ export default function NetworkPolicyPodLabelRow({
     const { fromLabelValue, fromNamespace } = field.value as PodLabelMatch
     if (fromLabelValue) {
       const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
-      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner()
+      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner?.()
       setActiveWorkload(initialActiveWorkload)
     } else setCircuitBreaker(false)
   }, [])
@@ -90,7 +90,9 @@ export default function NetworkPolicyPodLabelRow({
   useEffect(() => {
     if (podLabels && circuitBreaker) setCircuitBreaker(false)
     if (!activeWorkload || !podLabels) return
-    const match = getDefaultPodLabel(activeWorkload.name, podLabels)
+    const currentValue = field.value as PodLabelMatch
+    if (currentValue?.fromLabelName && currentValue?.fromLabelValue) return
+    const match = getDefaultPodLabel(activeWorkload.name, podLabels as Record<string, string>)
     if (match) {
       field.onChange({
         fromNamespace: activeWorkload.namespace,
@@ -111,7 +113,7 @@ export default function NetworkPolicyPodLabelRow({
         groupBy={(opt) => opt.namespace}
         getOptionLabel={(opt) => opt.name}
         value={activeWorkload}
-        onChange={(_e, opt) => setActiveWorkload({ name: opt?.name, namespace: opt?.namespace })}
+        onChange={(_e, opt) => setActiveWorkload(opt ? { name: opt?.name, namespace: opt?.namespace } : null)}
       />
 
       <Autocomplete
@@ -121,11 +123,15 @@ export default function NetworkPolicyPodLabelRow({
         multiple={false}
         errorText={arrayError && rowIndex === 0 ? arrayError : ''}
         helperText={arrayError && rowIndex === 0 ? arrayError : ''}
-        options={Object.entries((podLabels as Record<string, string>) ?? {}).map(([k, v]) => `${k}:${v}`)}
-        value={field.value?.fromLabelName ? `${field.value.fromLabelName}:${field.value.fromLabelValue ?? ''}` : null}
+        options={
+          podLabels && typeof podLabels === 'object'
+            ? Object.entries(podLabels as Record<string, string>).map(([k, v]) => `${k}=${v}`)
+            : []
+        }
+        value={field.value?.fromLabelName ? `${field.value.fromLabelName}=${field.value.fromLabelValue ?? ''}` : null}
         onChange={(_e, raw: string | null) => {
-          const [name, value] = raw?.split(':', 2) ?? []
-          field.onChange({ fromNamespace: activeWorkload.namespace, fromLabelName: name, fromLabelValue: value })
+          const [name, value] = raw?.split('=', 2) ?? []
+          field.onChange({ fromNamespace: activeWorkload?.namespace, fromLabelName: name, fromLabelValue: value })
         }}
       />
     </FormRow>

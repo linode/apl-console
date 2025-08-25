@@ -17,6 +17,8 @@ interface WorkloadOption {
  * @returns A PodLabelMatch with the selected label name and value, or null if none matched.
  */
 export function getDefaultPodLabel(workloadName: string, podLabels: Record<string, string>): PodLabelMatch | null {
+  if (!workloadName || !podLabels || typeof podLabels !== 'object') return null
+
   // 1. Exact match on app.kubernetes.io/instance
   const instanceKey = 'app.kubernetes.io/instance'
   const instanceValue = podLabels[instanceKey]
@@ -28,16 +30,16 @@ export function getDefaultPodLabel(workloadName: string, podLabels: Record<strin
   if (componentValue === 'rabbitmq') return { name: instanceKey, value: `${workloadName}-${componentValue}` }
 
   // 3. Knative serving label
-  const knativeKey = Object.keys(podLabels).find((key) => key.startsWith('serving.knative.dev/service'))
+  const knativeKey = Object.keys(podLabels).find((key) => key?.startsWith('serving.knative.dev/service'))
   if (knativeKey) return { name: knativeKey, value: podLabels[knativeKey] }
 
   // 4. cnpg cluster label
-  const cnpgKey = Object.keys(podLabels).find((key) => key.startsWith('cnpg.io/cluster'))
+  const cnpgKey = Object.keys(podLabels).find((key) => key?.startsWith('cnpg.io/cluster'))
   if (cnpgKey) return { name: cnpgKey, value: podLabels[cnpgKey] }
 
   // 5. Istio canonical name for ksvc workloads
   const istioKey = 'service.istio.io/canonical-name'
-  if (workloadName.startsWith('ksvc-')) {
+  if (workloadName?.startsWith('ksvc-')) {
     const istioValue = podLabels[istioKey]
     if (istioValue === workloadName) return { name: istioKey, value: istioValue }
   }
@@ -55,7 +57,7 @@ export function getInitialActiveWorkloadRow(
   namespaceValue: string,
   workloads: GetAllAplWorkloadNamesApiResponse,
 ): WorkloadOption {
-  if (!labelValue) return { name: 'unknown', namespace: '' }
+  if (!labelValue || !workloads || !Array.isArray(workloads)) return { name: 'unknown', namespace: '' }
 
   const normalizedLabel = normalizeRabbitMQLabel(labelValue)
   const matches = workloads.filter(
@@ -73,7 +75,7 @@ export function getInitialActiveWorkloadTarget(
   labelValue: string,
   workloads: GetAllAplWorkloadNamesApiResponse,
 ): string {
-  if (!labelValue) return 'unknown'
+  if (!labelValue || !workloads || !Array.isArray(workloads)) return 'unknown'
 
   const normalizedLabel = normalizeRabbitMQLabel(labelValue)
   const matches = workloads.filter((w) => w.metadata.name === normalizedLabel)
