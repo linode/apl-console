@@ -47,7 +47,14 @@ export interface CreateEgressNetpolApiResponse {
 export const createIngressSchema = yup.object({
   id: yup.string().optional(),
   teamId: yup.string().optional(),
-  name: yup.string().required('Inbound rule name is required').max(24, 'Name must not exceed 24 characters'),
+  name: yup
+    .string()
+    .required('Inbound rule name is required')
+    .max(24, 'Name must not exceed 24 characters')
+    .matches(
+      /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
+      'Name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
+    ),
   ruleType: yup
     .object({
       type: yup.mixed<IngressRuleType['type']>().oneOf(['ingress']).required(),
@@ -89,7 +96,14 @@ export const createIngressSchema = yup.object({
 export const createEgressSchema = yup.object({
   id: yup.string().optional(),
   teamId: yup.string().optional(),
-  name: yup.string().required('Name is required').max(24, 'Name must not exceed 24 characters'),
+  name: yup
+    .string()
+    .required('Name is required')
+    .max(24, 'Name must not exceed 24 characters')
+    .matches(
+      /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
+      'Name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
+    ),
   ruleType: yup
     .object({
       type: yup.mixed<EgressRuleType['type']>().oneOf(['egress']).required(),
@@ -115,6 +129,36 @@ export const createEgressSchema = yup.object({
                   .required('Protocol is required'),
               }),
             )
+            .test('unique-ports', function (ports) {
+              if (!ports || ports.length <= 1) return true
+
+              const portNumbers: number[] = []
+              const duplicateIndexes: number[] = []
+
+              // Find all duplicate port numbers and their indexes
+              ports.forEach((port: any, index: number) => {
+                if (port?.number) {
+                  const existingIndex = portNumbers.indexOf(port.number as number)
+                  if (existingIndex !== -1) {
+                    // Mark both the original and current as duplicates
+                    if (!duplicateIndexes.includes(existingIndex)) duplicateIndexes.push(existingIndex)
+                    duplicateIndexes.push(index)
+                  } else portNumbers.push(port.number as number)
+                }
+              })
+
+              if (duplicateIndexes.length === 0) return true
+
+              // Create errors for each duplicate port
+              const errors = duplicateIndexes.map((index) =>
+                this.createError({
+                  path: `${this.path}[${index}].number`,
+                  message: 'Port number is already used',
+                }),
+              )
+
+              return new yup.ValidationError(errors)
+            })
             .optional(),
         })
         .required(),
