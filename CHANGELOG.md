@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.8.3](https://github.com/linode/apl-console/compare/v4.8.2...v4.8.3) (2025-08-25)
+
+
+### Bug Fixes
+
+* network policies pod labels ([#641](https://github.com/linode/apl-console/issues/641)) ([be97ef8](https://github.com/linode/apl-console/commit/be97ef89d9ae3a519acced0f9bf56c789cb196b4))
 
 ## [4.8.2](https://github.com/linode/apl-console/compare/v4.8.1...v4.8.2) (2025-08-20)
 
