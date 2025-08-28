@@ -94,7 +94,7 @@ export const buildApiResponseSchema = object({
   }).required('Mode configuration is required'),
   codeRepoName: string().optional(),
   externalRepo: boolean().optional(),
-  secretName: string().optional(),
+  secretName: string().min(2, 'Secret name must be at least 2 characters long.').optional(),
   trigger: boolean().optional(),
   scanSource: boolean().optional(),
 })
