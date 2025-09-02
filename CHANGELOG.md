@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.9.0](https://github.com/linode/apl-console/compare/v4.8.0...v4.9.0) (2025-09-01)
+
+
+### Features
+
+* add deprecated labels for Jaeger, Falco, Httpbin and Kiali apps ([#630](https://github.com/linode/apl-console/issues/630)) ([f19bb9b](https://github.com/linode/apl-console/commit/f19bb9bd7a352a8b1422e792680af60127ed7c22))
+* APL-1042 - Network Policies rework ([#632](https://github.com/linode/apl-console/issues/632)) ([383863c](https://github.com/linode/apl-console/commit/383863c59917bc3a0d2f5bba0030aa5780f84b49))
+* oss files ([#620](https://github.com/linode/apl-console/issues/620)) ([17a7352](https://github.com/linode/apl-console/commit/17a7352fc13e2333c2f8ce3699010e00df7e469f))
+* switch view and team dropdowns in header ([#631](https://github.com/linode/apl-console/issues/631)) ([02cba86](https://github.com/linode/apl-console/commit/02cba86dd3c0791e4c8ace519064d8489d8f6952))
+
+
+### Bug Fixes
+
+* deprecated modal button name ([#634](https://github.com/linode/apl-console/issues/634)) ([3b61107](https://github.com/linode/apl-console/commit/3b6110735d9fd92b368a04b7e8f979e2c7b0599e))
+* network policies pod labels ([#641](https://github.com/linode/apl-console/issues/641)) ([5e9f92b](https://github.com/linode/apl-console/commit/5e9f92b6ecdfc0235e438785ca50fe89ede8ba66))
+* unknown and wrong pod label ([#637](https://github.com/linode/apl-console/issues/637)) ([5a9a792](https://github.com/linode/apl-console/commit/5a9a792df67fa5673f2bf9498ae7d8f6fd44c4ba))
+
+
+### Others
+
+* **deps:** bump @iconify/react from 3.2.2 to 6.0.0 ([#626](https://github.com/linode/apl-console/issues/626)) ([3f2ff90](https://github.com/linode/apl-console/commit/3f2ff902c4f1f0c95b482fe65398562cffd3c3b5))
+* **deps:** bump actions/checkout from 4 to 5 ([#636](https://github.com/linode/apl-console/issues/636)) ([d030ffa](https://github.com/linode/apl-console/commit/d030ffa4342061f3a07b615021674b6dfb7356c9))
+* **deps:** bump amannn/action-semantic-pull-request from 5 to 6 ([#639](https://github.com/linode/apl-console/issues/639)) ([12845c7](https://github.com/linode/apl-console/commit/12845c745ec3e96e041164aa75ffc1aa64de703d))
+* **deps:** bump ncipollo/release-action ([#628](https://github.com/linode/apl-console/issues/628)) ([03a127d](https://github.com/linode/apl-console/commit/03a127d3ca3cafae9a4fd940f0934263b553e73e))
+* **deps:** bump nginx in the docker-dependencies group ([#640](https://github.com/linode/apl-console/issues/640)) ([c59837a](https://github.com/linode/apl-console/commit/c59837a9ff57a29365ea9216b6d7698e4527c1f6))
+* **deps:** bump node in the docker-dependencies group ([#629](https://github.com/linode/apl-console/issues/629)) ([5cf7b7f](https://github.com/linode/apl-console/commit/5cf7b7f914bf7bf10827ae986f799f84503041b7))
+* readme ([#638](https://github.com/linode/apl-console/issues/638)) ([5219e75](https://github.com/linode/apl-console/commit/5219e75aab196aab089f36aff050cb67c17ae6df))
+* remove old pages ([#633](https://github.com/linode/apl-console/issues/633)) ([4112c6f](https://github.com/linode/apl-console/commit/4112c6fb5d42b3e8074fbe62cb1331295f9acf6d))
+
 ## [4.8.0](https://github.com/linode/apl-console/compare/v4.6.0...v4.8.0) (2025-08-04)
 
 
