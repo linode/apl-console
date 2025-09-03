@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled, useTheme } from '@mui/material'
 import { LocalOffer } from '@mui/icons-material'
 import axios from 'axios'
-import { findLast, isEmpty } from 'lodash'
+import { isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
-import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { useEditSettingsMutation, useGetK8SVersionQuery, useGetSettingsQuery } from 'redux/otomiApi'
 import YAML from 'yaml'
+import { WarningIconRounded } from 'theme/overrides/CustomIcons'
+import DashboardPopover from './DashboardPopover'
 import Modal from './Modal'
-import { VersionInfo, parseUpdates } from '../utils/helpers'
+import { VersionInfo, checkAgainstK8sVersion, latestApplicableUpdateVersion, parseUpdates } from '../utils/helpers'
 
 const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
@@ -34,15 +36,18 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+  const [warningAnchorEl, setWarningAnchorEl] = useState<null | HTMLElement>(null)
+  const [hoveredUpdate, setHoveredUpdate] = useState<VersionInfo | null>(null)
   const { data: otomiSettings } = useGetSettingsQuery({ ids: ['otomi'] })
   const [edit] = useEditSettingsMutation()
   const baseUrl = 'https://github.com/linode/apl-core/releases/tag/'
+  const { data: k8sVersion } = useGetK8SVersionQuery()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/main/updates.yaml',
+          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/APL-1072/updates.yaml',
         )
         const parsedData = YAML.parse(response.data)
         setData(parsedData.updates)
@@ -76,11 +81,15 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
       setShowConfirmationModal(false)
     })
   }
-
-  const versionUpgrades = parseUpdates(data, version)
+  // const kubernetesVersion = k8sVersion || ''
+  const kubernetesVersion = '1.30'
+  const versionUpgrades = parseUpdates(data, 'v4.4.3', kubernetesVersion)
   const currentMajorVersion = version.split('.')[0]
 
-  const latestCurrentUpdate = findLast(versionUpgrades?.currentVersionUpdates)?.version
+  const latestCurrentUpdate = latestApplicableUpdateVersion(
+    versionUpgrades.currentVersionUpdates,
+    kubernetesVersion,
+  )?.version
 
   return (
     <Card sx={{ p: 3, mb: 1 }}>
@@ -113,22 +122,88 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
               <Box
                 key={update.version}
                 sx={{
-                  backgroundColor: theme.palette.background.default,
+                  backgroundColor: !checkAgainstK8sVersion(update, kubernetesVersion)
+                    ? 'dashboard.rowDisabled'
+                    : theme.palette.background.default,
                   display: 'flex',
-                  justifyContent: 'flex-start',
-                  marginBottom: '0.5rem',
                   alignItems: 'center',
+                  marginBottom: '0.5rem',
                 }}
               >
                 <IconButton
-                  sx={{ paddingLeft: '0.5rem', borderRadius: 0, color: theme.palette.text.primary }}
+                  sx={{
+                    paddingLeft: '0.5rem',
+                    borderRadius: 0,
+                    color: !checkAgainstK8sVersion(update, kubernetesVersion)
+                      ? 'dashboard.textDisabled'
+                      : theme.palette.text.primary,
+                  }}
                   onClick={() => window.open(`${baseUrl}${update.version}`)}
                 >
                   <LocalOffer />
-                  <Typography sx={{ marginLeft: '0.5rem' }}>{update.version}</Typography>
+                  <Typography
+                    sx={{
+                      marginLeft: '0.5rem',
+                      color: !checkAgainstK8sVersion(update, kubernetesVersion)
+                        ? 'dashboard.textDisabled'
+                        : theme.palette.text.primary,
+                    }}
+                  >
+                    {update.version}
+                  </Typography>
                 </IconButton>
-
-                <Typography sx={{ marginLeft: '2rem', textAlign: 'left' }}>{update.message}</Typography>
+                <Typography
+                  sx={{
+                    marginLeft: '2rem',
+                    textAlign: 'left',
+                    color: !checkAgainstK8sVersion(update, kubernetesVersion)
+                      ? 'dashboard.textDisabled'
+                      : theme.palette.text.primary,
+                    maxWidth: '80%',
+                    maxHeight: '2.2rem',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {update.message}
+                </Typography>
+                {!checkAgainstK8sVersion(update, kubernetesVersion) && (
+                  <>
+                    <Box
+                      sx={{
+                        height: '17px',
+                        width: '17px',
+                        borderRadius: 0,
+                        color: theme.palette.text.primary,
+                        ml: 'auto',
+                        display: 'flex',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        paddingRight: '1.6rem',
+                      }}
+                      onMouseEnter={(e) => {
+                        setWarningAnchorEl(e.currentTarget)
+                        setHoveredUpdate(update)
+                      }}
+                      onMouseLeave={() => {
+                        setWarningAnchorEl(null)
+                      }}
+                    >
+                      <WarningIconRounded sx={{ width: '17px', height: '17px', color: '#FECB34' }} />
+                    </Box>
+                    <DashboardPopover
+                      open={Boolean(warningAnchorEl)}
+                      anchorEl={warningAnchorEl}
+                      onClose={() => {
+                        setWarningAnchorEl(null)
+                        setHoveredUpdate(null)
+                      }}
+                      title='Incompatible k8s version'
+                      description={`Your version of k8s is not supported with this version of Application Platform. Please upgrade your cluster k8s version to ${hoveredUpdate?.supported_k8s_versions?.join(
+                        ', ',
+                      )}`}
+                    />
+                  </>
+                )}
               </Box>
             ))}
           </StyledUpdateSection>

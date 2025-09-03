@@ -1,4 +1,4 @@
-import { isEmpty, takeRight } from 'lodash'
+import { isEmpty } from 'lodash'
 
 export interface VersionUpdates {
   currentVersionUpdates?: VersionInfo[]
@@ -7,9 +7,14 @@ export interface VersionUpdates {
 export interface VersionInfo {
   version: string
   message: string
+  supported_k8s_versions: string[]
 }
 
-export function parseUpdates(updates: VersionInfo[], currentVersion: string): VersionUpdates {
+export function parseUpdates(
+  updates: VersionInfo[],
+  currentVersion: string,
+  clusterK8sVersion: string,
+): VersionUpdates {
   const parseVersion = (version: string) => version.replace('v', '').split('.').map(Number)
 
   const compareVersions = (v1: string, v2: string) => {
@@ -20,18 +25,44 @@ export function parseUpdates(updates: VersionInfo[], currentVersion: string): Ve
     return patch1 - patch2
   }
 
-  const [currentMajor] = parseVersion(currentVersion)
-
-  const currentVersionUpdates = updates
-    .filter(({ version }) => {
-      const [major] = parseVersion(version)
-      return major === currentMajor && compareVersions(version, currentVersion) > 0
-    })
+  // Get all updates higher than currentVersion, sorted
+  const higherUpdates = updates
+    .filter(({ version }) => compareVersions(version, currentVersion) > 0)
     .sort((a, b) => compareVersions(a.version, b.version))
 
-  return {
-    currentVersionUpdates: takeRight(currentVersionUpdates, 5),
+  // Get all updates compatible with the clusterK8sVersion
+  const compatible = higherUpdates.filter((u) => u.supported_k8s_versions.includes(clusterK8sVersion))
+
+  // Take the latest 4 compatible updates
+  let filteredUpdates = compatible.slice(0, 4)
+
+  // If fewer than 4, fill with more higher updates (not already included)
+  if (filteredUpdates.length < 4) {
+    const extra = higherUpdates
+      .filter((u) => !filteredUpdates.some((fu) => fu.version === u.version))
+      .slice(0, 4 - filteredUpdates.length)
+    filteredUpdates = [...filteredUpdates, ...extra]
   }
+
+  // Add the next update after those 4 (if any)
+  let nextUpdate: VersionInfo | undefined
+  if (higherUpdates.length > filteredUpdates.length) {
+    nextUpdate = higherUpdates[filteredUpdates.length]
+    if (nextUpdate && !filteredUpdates.some((u) => u.version === nextUpdate.version))
+      filteredUpdates = [...filteredUpdates, { ...nextUpdate }]
+  } else if (filteredUpdates.length > 0) {
+    // If there are no more, mark the last as isLatest
+    filteredUpdates = filteredUpdates.map((u, i) => (i === filteredUpdates.length - 1 ? { ...u, isLatest: true } : u))
+  }
+
+  return {
+    currentVersionUpdates: filteredUpdates,
+  }
+}
+
+export function latestApplicableUpdateVersion(versions: VersionInfo[], clusterK8sVersion: string) {
+  const applicableUpdates = versions.filter((update) => update.supported_k8s_versions.includes(clusterK8sVersion))
+  return applicableUpdates.length > 0 ? applicableUpdates[applicableUpdates.length - 1] : undefined
 }
 
 export function valueArrayToObject(
@@ -56,4 +87,12 @@ export function mapObjectToKeyValueArray(obj?: Record<string, string>): { key: s
   if (!obj || isEmpty(obj)) return undefined
 
   return Object.entries(obj).map(([key, value]) => ({ key, value }))
+}
+
+export function checkAgainstK8sVersion(update: VersionInfo, currentVersion: string) {
+  const supportedVersions = update.supported_k8s_versions
+
+  if (!supportedVersions || supportedVersions.length === 0) return false
+
+  return supportedVersions.includes(currentVersion)
 }
