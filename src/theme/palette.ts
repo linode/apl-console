@@ -225,7 +225,7 @@ const palette = {
       white: '#343438',
     },
     dashboard: {
-      rowDisabled: '#CACACA',
+      rowDisabled: '#A7A7A7',
       textDisabled: '#48474E',
     },
     background: {
