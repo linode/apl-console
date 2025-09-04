@@ -35,6 +35,8 @@ export const buildApiResponseSchema = object({
         return expectedBuildName.length <= 128
       },
     )
+    .min(2, 'Image name must be at least 2 characters')
+    .max(128, 'Image name must not exceed 128 characters')
     .test(
       'is-unique',
       'Container image name already exists, the combined image name and tag must be unique.',
@@ -92,7 +94,7 @@ export const buildApiResponseSchema = object({
   }).required('Mode configuration is required'),
   codeRepoName: string().optional(),
   externalRepo: boolean().optional(),
-  secretName: string().optional(),
+  secretName: string().min(2, 'Secret name must be at least 2 characters long.').optional(),
   trigger: boolean().optional(),
   scanSource: boolean().optional(),
 })
