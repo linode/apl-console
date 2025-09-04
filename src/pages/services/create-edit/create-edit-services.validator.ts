@@ -22,7 +22,7 @@ const pathsValidation = array()
 
 const cnameValidation = object({
   domain: string().optional(),
-  tlsSecretName: string().optional(),
+  tlsSecretName: string().min(2, 'TLS secret name must be at least 2 characters long.').optional(),
 })
   .test('both-or-none', 'Both domain and tlsSecretName must be filled or empty', function (value) {
     if (!value) return true
@@ -45,7 +45,7 @@ const cnameValidation = object({
 export const serviceApiResponseSchema = object({
   kind: string().required().default('AplTeamService'),
   metadata: object({
-    name: string().required('Name is required'),
+    name: string().required('Name is required').min(2, 'Name must be at least 2 characters long.'),
     labels: object({
       'apl.io/teamId': string().required('Team ID is required'),
     }).required(),
@@ -75,7 +75,7 @@ export const serviceApiResponseSchema = object({
         otherwise: number().optional(),
       }),
     }).optional(),
-    ingressClassName: string().optional(),
+    ingressClassName: string().min(2, 'Ingress class name must be at least 2 characters long.').optional(),
     tlsPass: boolean().optional(),
     domain: string().required(),
     useCname: boolean().optional(),
