@@ -9,7 +9,13 @@ import YAML from 'yaml'
 import { WarningIconRounded } from 'theme/overrides/CustomIcons'
 import DashboardPopover from './DashboardPopover'
 import Modal from './Modal'
-import { VersionInfo, checkAgainstK8sVersion, latestApplicableUpdateVersion, parseUpdates } from '../utils/helpers'
+import {
+  VersionInfo,
+  checkAgainstK8sVersion,
+  latestApplicableUpdateVersion,
+  parseAllUpdates,
+  selectDisplayUpdates,
+} from '../utils/helpers'
 
 const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
@@ -83,28 +89,34 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   }
 
   const kubernetesVersion = k8sVersion || ''
-  const versionUpgrades = parseUpdates(data, version, kubernetesVersion)
+  const versionUpgrades = parseAllUpdates(data, kubernetesVersion)
+  const displayUpdates = selectDisplayUpdates(versionUpgrades, version)
   const currentMajorVersion = version.split('.')[0]
+  const currentSupportedK8sVersions = versionUpgrades?.find(
+    (update) => update.version === version,
+  )?.supported_k8s_versions
 
-  const latestCurrentUpdate = latestApplicableUpdateVersion(
-    versionUpgrades.currentVersionUpdates,
-    kubernetesVersion,
-  )?.version
+  const latestCurrentUpdate = latestApplicableUpdateVersion(displayUpdates, kubernetesVersion)?.version
 
   return (
     <Card sx={{ p: 3, mb: 1 }}>
       <Box>
-        <Stack direction='row' justifyContent='space-between' alignItems='center'>
-          <Typography variant='h5'>Available versions</Typography>
-
-          <Typography variant='body1' sx={{ fontSize: '14px', fontWeight: 'bold' }}>
-            Current version: {version}
+        <Stack direction='row' alignItems='center' justifyContent='space-between'>
+          <Box display='flex' alignItems='center'>
+            <Typography variant='h5'>Available versions</Typography>
+            <Box sx={{ width: 24 }} />
+            <Typography variant='body1' sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+              Current version: {version}
+            </Typography>
+          </Box>
+          <Typography variant='body1' sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+            Supported kubernetes versions: {currentSupportedK8sVersions?.join(', ') || 'None'}
           </Typography>
         </Stack>
 
         <StyledAccordionDetails>
           <StyledUpdateSection>
-            {isEmpty(versionUpgrades.currentVersionUpdates) && (
+            {isEmpty(displayUpdates) && (
               <Box
                 sx={{
                   backgroundColor: theme.palette.background.default,
@@ -118,7 +130,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
               </Box>
             )}
 
-            {versionUpgrades.currentVersionUpdates?.map((update) => (
+            {displayUpdates?.map((update) => (
               <Box
                 key={update.version}
                 sx={{
@@ -213,7 +225,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             <Button
               variant='contained'
               color='primary'
-              disabled={isEmpty(versionUpgrades.currentVersionUpdates)}
+              disabled={isEmpty(displayUpdates)}
               onClick={() => handleUpgradeButton(latestCurrentUpdate)}
               sx={{ ml: 3, textTransform: 'none' }}
             >

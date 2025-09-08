@@ -3,7 +3,8 @@ import {
   checkAgainstK8sVersion,
   latestApplicableUpdateVersion,
   mapObjectToKeyValueArray,
-  parseUpdates,
+  parseAllUpdates,
+  selectDisplayUpdates,
   valueArrayToObject,
 } from './helpers'
 
@@ -41,24 +42,47 @@ describe('parseUpdates', () => {
     },
   ]
 
-  it('returns updates matching supported_k8s_versions', () => {
-    const result = parseUpdates(updates, 'v1.20.0', '1.21')
-    expect(result.currentVersionUpdates?.[0].version).toBe('v1.22.0')
-  })
-
-  it('returns sorted updates for current major version', () => {
-    const result = parseUpdates(updates, 'v1.21.0', '1.18')
-    expect(result.currentVersionUpdates?.map((u) => u.version)).toEqual(['v1.22.0', 'v1.23.0', 'v1.24.0', 'v1.25.0'])
-  })
-
-  it('returns at most 5 updates', () => {
-    const result = parseUpdates(updates, 'v1.19.0', '1.18')
-    expect(result.currentVersionUpdates?.length).toBeLessThanOrEqual(5)
+  it('returns all updates with isCompatible set', () => {
+    const result = parseAllUpdates(updates, '1.21')
+    expect(result.length).toBe(updates.length)
+    expect(result[2].isCompatible).toBe(true) // v1.22.0 supports 1.21
+    expect(result[0].isCompatible).toBe(false) // v1.20.0 does not support 1.21
   })
 
   it('returns empty if no updates available', () => {
-    const result = parseUpdates([], 'v1.20.0', '1.18')
-    expect(result.currentVersionUpdates).toEqual([])
+    const result = parseAllUpdates([], '1.18')
+    expect(result).toEqual([])
+  })
+})
+
+describe('selectDisplayUpdates', () => {
+  const updates: VersionInfo[] = [
+    { version: 'v1.20.0', message: 'Update 1', supported_k8s_versions: ['1.18', '1.19'] },
+    { version: 'v1.21.0', message: 'Update 2', supported_k8s_versions: ['1.19', '1.20'] },
+    { version: 'v1.22.0', message: 'Update 3', supported_k8s_versions: ['1.20', '1.21'] },
+    { version: 'v1.23.0', message: 'Update 4', supported_k8s_versions: ['1.21', '1.22'] },
+    { version: 'v1.24.0', message: 'Update 5', supported_k8s_versions: ['1.22', '1.23'] },
+    { version: 'v1.25.0', message: 'Update 6', supported_k8s_versions: ['1.23', '1.24'] },
+  ]
+  const all = parseAllUpdates(updates, '1.21')
+
+  it('returns up to 4 compatible updates higher than current version, plus next', () => {
+    const result = selectDisplayUpdates(all, 'v1.20.0')
+    expect(result.length).toBeGreaterThan(0)
+    expect(result.every((u) => u.version > 'v1.20.0')).toBe(true)
+    expect(result.filter((u) => u.isCompatible).length).toBeLessThanOrEqual(4)
+    // The last one should have isLatest true
+    expect(result[result.length - 1].isLatest).toBe(true)
+  })
+
+  it('returns only updates higher than current version', () => {
+    const result = selectDisplayUpdates(all, 'v1.23.0')
+    expect(result.every((u) => u.version > 'v1.23.0')).toBe(true)
+  })
+
+  it('returns empty if no higher updates', () => {
+    const result = selectDisplayUpdates(all, 'v1.25.0')
+    expect(result).toEqual([])
   })
 })
 
