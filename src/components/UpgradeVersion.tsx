@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled, useTheme } from '@mui/material'
-import { LocalOffer } from '@mui/icons-material'
 import axios from 'axios'
 import { isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
@@ -148,17 +147,24 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                     borderRadius: 0,
                     color: !checkAgainstK8sVersion(update, kubernetesVersion)
                       ? 'dashboard.textDisabled'
-                      : theme.palette.text.primary,
+                      : theme.palette.primary.main,
+                    cursor: 'pointer',
+                    '&:hover .version-link': {
+                      textDecoration: 'underline',
+                      color: theme.palette.primary.dark,
+                    },
                   }}
                   onClick={() => window.open(`${baseUrl}${update.version}`)}
                 >
-                  <LocalOffer />
                   <Typography
+                    className='version-link'
                     sx={{
                       marginLeft: '0.5rem',
                       color: !checkAgainstK8sVersion(update, kubernetesVersion)
                         ? 'dashboard.textDisabled'
-                        : theme.palette.text.primary,
+                        : theme.palette.primary.main,
+                      textDecoration: 'underline',
+                      fontWeight: 500,
                     }}
                   >
                     {update.version}
