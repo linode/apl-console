@@ -179,6 +179,8 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                       : theme.palette.text.primary,
                     maxWidth: '80%',
                     maxHeight: '2.2rem',
+                    textOverflow: 'ellipsis',
+                    textWrapMode: 'nowrap',
                     overflow: 'hidden',
                   }}
                 >
