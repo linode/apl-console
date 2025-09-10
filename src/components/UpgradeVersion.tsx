@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AccordionDetails, Box, Button, Card, IconButton, Stack, Typography, styled, useTheme } from '@mui/material'
+import { AccordionDetails, Box, Button, Card, Link, Stack, Typography, styled, useTheme } from '@mui/material'
 import axios from 'axios'
 import { isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
@@ -44,6 +44,7 @@ const StyledUpdateRow = styled(Box, {
     ? theme.palette.dashboard?.rowDisabled || theme.palette.action.disabledBackground
     : theme.palette.background.default,
   display: 'flex',
+  height: '2.1rem',
   alignItems: 'center',
   marginBottom: '0.5rem',
 }))
@@ -67,7 +68,7 @@ const StyledEmptyUpdateRow = styled(Box)(({ theme }) => ({
   marginBottom: '0.5rem',
 }))
 
-const StyledVersionButton = styled(IconButton, {
+const StyledVersionButton = styled(Link, {
   shouldForwardProp: (prop) => prop !== 'disabled',
 })<{ disabled?: boolean }>(({ theme, disabled }) => ({
   paddingLeft: '0.5rem',
@@ -149,7 +150,9 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     })
   }
 
-  const kubernetesVersion = k8sVersion || ''
+  // const kubernetesVersion = k8sVersion || ''
+  const kubernetesVersion = '1.30'
+  version = 'v4.4.3'
   const versionUpgrades = parseAllUpdates(data, kubernetesVersion)
   const displayUpdates = selectDisplayUpdates(versionUpgrades, version)
   const currentMajorVersion = version.split('.')[0]
