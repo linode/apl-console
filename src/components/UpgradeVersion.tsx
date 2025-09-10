@@ -16,6 +16,13 @@ import {
   selectDisplayUpdates,
 } from '../utils/helpers'
 
+const StyledVersionText = styled(Typography)<{ disabled?: boolean }>(({ theme, disabled }) => ({
+  marginLeft: '0.5rem',
+  color: disabled ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled : theme.palette.primary.main,
+  textDecoration: 'underline',
+  fontWeight: 500,
+}))
+
 const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
   boxShadow: 'none',
@@ -28,6 +35,61 @@ const StyledAccordionDetails = styled(AccordionDetails)(() => ({
 
 const StyledUpdateSection = styled(Box)(() => ({
   marginTop: '20px',
+}))
+
+const StyledUpdateRow = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'disabled',
+})<{ disabled?: boolean }>(({ theme, disabled }) => ({
+  backgroundColor: disabled
+    ? theme.palette.dashboard?.rowDisabled || theme.palette.action.disabledBackground
+    : theme.palette.background.default,
+  display: 'flex',
+  alignItems: 'center',
+  marginBottom: '0.5rem',
+}))
+
+const StyledUpdateMessage = styled(Typography)<{ disabled?: boolean }>(({ theme, disabled }) => ({
+  marginLeft: '2rem',
+  textAlign: 'left',
+  color: disabled ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled : theme.palette.text.primary,
+  maxWidth: '80%',
+  maxHeight: '2.2rem',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+}))
+
+const StyledEmptyUpdateRow = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.default,
+  display: 'flex',
+  justifyContent: 'flex-start',
+  padding: '0.5rem',
+  marginBottom: '0.5rem',
+}))
+
+const StyledVersionButton = styled(IconButton, {
+  shouldForwardProp: (prop) => prop !== 'disabled',
+})<{ disabled?: boolean }>(({ theme, disabled }) => ({
+  paddingLeft: '0.5rem',
+  borderRadius: 0,
+  color: disabled ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled : theme.palette.primary.main,
+  cursor: 'pointer',
+  '&:hover .version-link': {
+    textDecoration: 'underline',
+    color: theme.palette.primary.dark,
+  },
+}))
+
+const StyledWarningIconBox = styled(Box)(({ theme }) => ({
+  height: '17px',
+  width: '17px',
+  borderRadius: 0,
+  color: theme.palette.text.primary,
+  marginLeft: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  cursor: 'pointer',
+  paddingRight: '1.6rem',
 }))
 
 interface Props {
@@ -116,90 +178,30 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
         <StyledAccordionDetails>
           <StyledUpdateSection>
             {isEmpty(displayUpdates) && (
-              <Box
-                sx={{
-                  backgroundColor: theme.palette.background.default,
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  padding: '0.5rem',
-                  marginBottom: '0.5rem',
-                }}
-              >
+              <StyledEmptyUpdateRow>
                 <Typography sx={{ marginRight: '2rem' }}>There are no new updates for {currentMajorVersion}</Typography>
-              </Box>
+              </StyledEmptyUpdateRow>
             )}
 
             {displayUpdates?.map((update) => (
-              <Box
-                key={update.version}
-                sx={{
-                  backgroundColor: !checkAgainstK8sVersion(update, kubernetesVersion)
-                    ? 'dashboard.rowDisabled'
-                    : theme.palette.background.default,
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginBottom: '0.5rem',
-                }}
-              >
-                <IconButton
-                  sx={{
-                    paddingLeft: '0.5rem',
-                    borderRadius: 0,
-                    color: !checkAgainstK8sVersion(update, kubernetesVersion)
-                      ? 'dashboard.textDisabled'
-                      : theme.palette.primary.main,
-                    cursor: 'pointer',
-                    '&:hover .version-link': {
-                      textDecoration: 'underline',
-                      color: theme.palette.primary.dark,
-                    },
-                  }}
+              <StyledUpdateRow key={update.version} disabled={!checkAgainstK8sVersion(update, kubernetesVersion)}>
+                <StyledVersionButton
+                  disabled={!checkAgainstK8sVersion(update, kubernetesVersion)}
                   onClick={() => window.open(`${baseUrl}${update.version}`)}
                 >
-                  <Typography
+                  <StyledVersionText
                     className='version-link'
-                    sx={{
-                      marginLeft: '0.5rem',
-                      color: !checkAgainstK8sVersion(update, kubernetesVersion)
-                        ? 'dashboard.textDisabled'
-                        : theme.palette.primary.main,
-                      textDecoration: 'underline',
-                      fontWeight: 500,
-                    }}
+                    disabled={!checkAgainstK8sVersion(update, kubernetesVersion)}
                   >
                     {update.version}
-                  </Typography>
-                </IconButton>
-                <Typography
-                  sx={{
-                    marginLeft: '2rem',
-                    textAlign: 'left',
-                    color: !checkAgainstK8sVersion(update, kubernetesVersion)
-                      ? 'dashboard.textDisabled'
-                      : theme.palette.text.primary,
-                    maxWidth: '80%',
-                    maxHeight: '2.2rem',
-                    textOverflow: 'ellipsis',
-                    textWrapMode: 'nowrap',
-                    overflow: 'hidden',
-                  }}
-                >
+                  </StyledVersionText>
+                </StyledVersionButton>
+                <StyledUpdateMessage disabled={!checkAgainstK8sVersion(update, kubernetesVersion)}>
                   {update.message}
-                </Typography>
+                </StyledUpdateMessage>
                 {!checkAgainstK8sVersion(update, kubernetesVersion) && (
                   <>
-                    <Box
-                      sx={{
-                        height: '17px',
-                        width: '17px',
-                        borderRadius: 0,
-                        color: theme.palette.text.primary,
-                        ml: 'auto',
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        paddingRight: '1.6rem',
-                      }}
+                    <StyledWarningIconBox
                       onMouseEnter={(e) => {
                         setWarningAnchorEl(e.currentTarget)
                         setHoveredUpdate(update)
@@ -209,7 +211,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                       }}
                     >
                       <WarningIconRounded sx={{ width: '17px', height: '17px', color: '#FECB34' }} />
-                    </Box>
+                    </StyledWarningIconBox>
                     <DashboardPopover
                       open={Boolean(warningAnchorEl)}
                       anchorEl={warningAnchorEl}
@@ -224,7 +226,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                     />
                   </>
                 )}
-              </Box>
+              </StyledUpdateRow>
             ))}
           </StyledUpdateSection>
         </StyledAccordionDetails>

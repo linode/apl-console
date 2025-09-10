@@ -25,7 +25,7 @@ export default function DashboardPopover({
       open={open}
       anchorEl={anchorEl}
       onClose={onClose}
-      anchorOrigin={{ vertical: -130, horizontal: 'center' }}
+      anchorOrigin={{ vertical: -145, horizontal: 'center' }}
       transformOrigin={{ vertical: 'top', horizontal: 'center' }}
       PaperProps={{ sx: { zIndex: 1500 }, ...PaperProps }}
       hideBackdrop
