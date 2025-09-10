@@ -171,7 +171,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
             </Typography>
           </Box>
           <Typography variant='body1' sx={{ fontSize: '13px', fontWeight: 'bold' }}>
-            Supported kubernetes versions: {currentSupportedK8sVersions?.join(', ') || 'None'}
+            Supported kubernetes versions: {currentSupportedK8sVersions?.join(', ') || 'Unknown'}
           </Typography>
         </Stack>
 
