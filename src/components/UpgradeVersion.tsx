@@ -150,9 +150,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     })
   }
 
-  // const kubernetesVersion = k8sVersion || ''
-  const kubernetesVersion = '1.30'
-  version = 'v4.4.3'
+  const kubernetesVersion = k8sVersion || ''
   const versionUpgrades = parseAllUpdates(data, kubernetesVersion)
   const displayUpdates = selectDisplayUpdates(versionUpgrades, version)
   const currentMajorVersion = version.split('.')[0]
