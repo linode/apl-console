@@ -115,7 +115,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/APL-1072/updates.yaml',
+          'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/main/updates.yaml',
         )
         const parsedData = YAML.parse(response.data)
         setData(parsedData.updates)
