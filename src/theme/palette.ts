@@ -224,6 +224,10 @@ const palette = {
       yellow: '#f5f531',
       white: '#343438',
     },
+    dashboard: {
+      rowDisabled: '#A7A7A7',
+      textDisabled: '#48474E',
+    },
     background: {
       paper: GREY[0],
       default: GREY[100],
@@ -274,6 +278,10 @@ const palette = {
       tagIcon: '#5bb3ea',
       yellow: '#f5f531',
       white: '#ffffff',
+    },
+    dashboard: {
+      rowDisabled: '#525157',
+      textDisabled: '#A1A0A6',
     },
     background: {
       paper: GREY[550],
