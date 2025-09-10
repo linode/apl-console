@@ -10,8 +10,6 @@ interface DashboardPopoverProps {
   PaperProps?: object
 }
 
-// Removed StyledPopoverPaper to use Box directly for styling
-
 export default function DashboardPopover({
   open,
   anchorEl,
