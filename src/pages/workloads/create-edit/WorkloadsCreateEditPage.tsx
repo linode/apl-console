@@ -21,7 +21,7 @@ interface Params {
   catalogName?: string
 }
 
-export default function ({
+export default function WorkloadsCreateEditPage({
   match: {
     params: { teamId, workloadName, catalogName },
   },

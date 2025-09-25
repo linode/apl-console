@@ -31,11 +31,11 @@ import { makeStyles } from 'tss-react/mui'
 import { cleanLink } from 'utils/data'
 import Markdown from './Markdown'
 import Form from './rjsf/Form'
-import WorkloadValues from './WorkloadValues'
 import DeleteButton from './DeleteButton'
 import TabPanel from './TabPanel'
 import InformationBanner from './InformationBanner'
 import Iconify from './Iconify'
+import CodeEditor from './CodeEditor'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -341,10 +341,18 @@ export default function ({
             </Box>
           </Tooltip>
         )}
-        <WorkloadValues
+        {/* <WorkloadValues
           workloadValues={workloadValues}
           setWorkloadValues={setWorkloadValues}
           showComments={!workload?.id}
+        /> */}
+
+        <CodeEditor
+          code={workloadValues}
+          onChange={(data) => {
+            setWorkloadValues(data)
+          }}
+          setWorkloadValues={setWorkloadValues}
         />
         <Box
           sx={{

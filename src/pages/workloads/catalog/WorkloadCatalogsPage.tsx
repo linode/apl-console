@@ -9,7 +9,7 @@ interface Params {
   teamId?: string
 }
 
-export default function ({
+export default function WorkloadCatalogsPage({
   match: {
     params: { teamId },
   },
