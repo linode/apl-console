@@ -17,6 +17,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import YAML from 'yaml'
 import { cloneDeep, omit } from 'lodash'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useState } from 'react'
@@ -113,7 +114,6 @@ interface Props extends CrudProps {
   values?: any
   createWorkload: any
   updateWorkload: any
-  updateWorkloadValues: any
   deleteWorkload: any
   readme: string
 }
@@ -125,7 +125,6 @@ export default function ({
   values,
   createWorkload,
   updateWorkload,
-  updateWorkloadValues,
   deleteWorkload,
   readme,
   ...other
@@ -184,19 +183,31 @@ export default function ({
       return
     }
 
-    const workloadBody = omit(data, ['chartProvider', 'chart', 'revision', 'values'])
+    const workloadBody = omit(data, ['chartProvider', 'chart', 'revision'])
     const chartMetadata = omit(data?.chartMetadata, ['helmChartCatalog', 'helmChart'])
     const path = workload?.path
-    const body = { ...workloadBody, chartMetadata, url: workload?.url, path }
+
+    const body = {
+      kind: 'AplTeamWorkload',
+      metadata: {
+        name: workloadName ?? data?.name,
+        labels: {
+          'apl.io/teamId': teamId,
+        },
+      },
+      spec: {
+        ...workloadBody,
+        chartMetadata,
+        url: workload?.url,
+        path,
+        values: YAML.stringify(workloadValues),
+      },
+    }
     let res
     if (workloadName) {
       dispatch(setError(undefined))
       res = await updateWorkload({ teamId, workloadName, body })
-      res = await updateWorkloadValues({ teamId, workloadName, body: { values: workloadValues } })
-    } else {
-      res = await createWorkload({ teamId, body })
-      res = await updateWorkloadValues({ teamId, workloadName: res.data.name, body: { values: workloadValues } })
-    }
+    } else res = await createWorkload({ teamId, body })
     if (res.error) return
     history.push(`/teams/${teamId}/workloads`)
   }
@@ -341,11 +352,6 @@ export default function ({
             </Box>
           </Tooltip>
         )}
-        {/* <WorkloadValues
-          workloadValues={workloadValues}
-          setWorkloadValues={setWorkloadValues}
-          showComments={!workload?.id}
-        /> */}
 
         <CodeEditor
           code={workloadValues}

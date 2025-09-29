@@ -6,10 +6,9 @@ import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import {
-  useCreateWorkloadMutation,
-  useDeleteWorkloadMutation,
-  useEditWorkloadMutation,
-  useEditWorkloadValuesMutation,
+  useCreateAplWorkloadMutation,
+  useDeleteAplWorkloadMutation,
+  useEditAplWorkloadMutation,
   useGetWorkloadQuery,
   useGetWorkloadValuesQuery,
   useWorkloadCatalogMutation,
@@ -28,6 +27,7 @@ export default function WorkloadsCreateEditPage({
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
   const { user } = useSession()
+  // Get Queries should be migrated to v2 in workload phase 4
   const {
     data: workload,
     isLoading: isLoadingWorkload,
@@ -35,10 +35,11 @@ export default function WorkloadsCreateEditPage({
     isError: isErrorWorkload,
     refetch: refetchWorkload,
   } = useGetWorkloadQuery({ teamId, workloadName }, { skip: !workloadName })
-  const [createWorkload] = useCreateWorkloadMutation()
-  const [updateWorkload] = useEditWorkloadMutation()
-  const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteWorkloadMutation()
+  const [createWorkload] = useCreateAplWorkloadMutation()
+  const [updateWorkload] = useEditAplWorkloadMutation()
+  const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteAplWorkloadMutation()
 
+  // Get Queries should be migrated to v2 in workload phase 4
   const {
     data: values,
     isLoading: isLoadingValues,
@@ -46,7 +47,6 @@ export default function WorkloadsCreateEditPage({
     isError: isErrorValues,
     refetch: refetchValues,
   } = useGetWorkloadValuesQuery({ teamId, workloadName }, { skip: !workloadName })
-  const [updateWorkloadValues] = useEditWorkloadValuesMutation()
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
@@ -104,7 +104,6 @@ export default function WorkloadsCreateEditPage({
       createWorkload={createWorkload}
       updateWorkload={updateWorkload}
       deleteWorkload={deleteWorkload}
-      updateWorkloadValues={updateWorkloadValues}
       mutating={mutating}
       readme={readme}
     />
