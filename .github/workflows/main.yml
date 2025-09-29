@@ -70,7 +70,7 @@ jobs:
           sed -n '/### \[[0-9]*/q;p' CHANGELOG.md > NEW_CHANGELOG.md
       - if: (startsWith(github.ref, 'refs/heads/releases/') || startsWith(github.ref, 'refs/heads/main'))&& startsWith(github.event.head_commit.message, 'chore(release)')
         name: Create GitHub release
-        uses: ncipollo/release-action@v1.19.1
+        uses: ncipollo/release-action@v1.20.0
         env:
           token: ${{ secrets.GITHUB_TOKEN }}
         with:
