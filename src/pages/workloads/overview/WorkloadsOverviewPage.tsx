@@ -12,7 +12,7 @@ interface Params {
   teamId?: string
 }
 
-export default function ({
+export default function WorkloadsOverviewPage({
   match: {
     params: { teamId },
   },
