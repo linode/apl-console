@@ -5,11 +5,8 @@ import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import cookie from 'cookie'
 import Backups from 'pages/Backups'
-import Workloads from 'pages/Workloads'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
-import Catalogs from 'pages/Catalogs'
-import Catalog from 'pages/Catalog'
 import Error from 'pages/Error'
 import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
@@ -50,6 +47,9 @@ import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEdi
 import ServicesOverviewPage from 'pages/services/overview/ServicesOverviewPage'
 import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
 import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
+import WorkloadsCreateEditPage from 'pages/workloads/create-edit/WorkloadsCreateEditPage'
+import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPage'
+import WorkloadCatalogsPage from 'pages/workloads/catalog/WorkloadCatalogsPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -128,11 +128,15 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/catalogs/:teamId' component={Catalogs} exact />
-                                <PrivateRoute path='/catalogs/:teamId/:catalogName' component={Catalog} exact />
+                                <PrivateRoute path='/catalogs/:teamId' component={WorkloadCatalogsPage} exact />
+                                <PrivateRoute
+                                  path='/catalogs/:teamId/:catalogName'
+                                  component={WorkloadsCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/catalogs/:teamId/:catalogName/:workloadName'
-                                  component={Catalog}
+                                  component={WorkloadsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
@@ -142,7 +146,12 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/secrets' component={SecretOverviewPage} platformAdminRoute exact />
-                                <PrivateRoute path='/workloads' component={Workloads} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/workloads'
+                                  component={WorkloadsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/settings' component={SettingsOverview} platformAdminRoute exact />
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
                                 <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
@@ -218,7 +227,7 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
                                 <PrivateRoute path='/teams/:teamId/policies/:policyName' component={Policy} exact />
-                                <PrivateRoute path='/teams/:teamId/workloads' component={Workloads} exact />
+                                <PrivateRoute path='/teams/:teamId/workloads' component={WorkloadsOverviewPage} exact />
                                 <PrivateRoute path='/teams/:teamId/services' component={ServicesOverviewPage} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/services/:serviceName'
