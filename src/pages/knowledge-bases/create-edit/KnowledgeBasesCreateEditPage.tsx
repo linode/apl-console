@@ -122,6 +122,7 @@ export default function KnowledgeBasesCreateEditPage({
                   }}
                   error={!!errors.metadata?.name}
                   helperText={errors.metadata?.name?.message?.toString()}
+                  disabled={!!knowledgeBaseName}
                 />
               </FormRow>
 
