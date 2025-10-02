@@ -1,42 +1,21 @@
 /* eslint-disable react/button-has-type */
-import {
-  AppBar,
-  Box,
-  Button,
-  ButtonGroup,
-  Chip,
-  Grid,
-  Link,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Tabs,
-  Tooltip,
-  Typography,
-} from '@mui/material'
+import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
 import { cloneDeep, omit } from 'lodash'
 import { CrudProps } from 'pages/types'
 import React, { useEffect, useMemo, useState } from 'react'
 import { GetSessionApiResponse } from 'redux/otomiApi'
-import { useTranslation } from 'react-i18next'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useSession } from 'providers/Session'
 import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
-import { cleanLink } from 'utils/data'
-import Markdown from './Markdown'
+import InformationBanner from './InformationBanner'
+import CodeEditor from '../pages/workloads/create-edit/WorkloadsCodeEditor'
 import Form from './rjsf/Form'
 import DeleteButton from './DeleteButton'
-import TabPanel from './TabPanel'
-import InformationBanner from './InformationBanner'
-import Iconify from './Iconify'
-import CodeEditor from '../pages/workloads/create-edit/WorkloadsCodeEditor'
+import { DocsLink } from './DocsLink'
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -48,9 +27,6 @@ const useStyles = makeStyles()((theme) => ({
     left: 0,
     backgroundColor: theme.palette.background.default,
   },
-  legend: {
-    paddingTop: theme.spacing(3),
-  },
   imgHolder: {
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -59,13 +35,6 @@ const useStyles = makeStyles()((theme) => ({
   },
   img: {
     height: theme.spacing(6),
-  },
-  content: {
-    paddingRight: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-  },
-  tableRow: {
-    '&:last-child td, &:last-child th': { border: 0 },
   },
 }))
 
@@ -76,9 +45,9 @@ const checkImageFields = (data: any) => {
   return "The 'repository' and 'tag' fields for the image should be filled in!"
 }
 
-export const getValuesDocLink = (url: string, path: string): string => {
-  if (process.env.NODE_ENV === 'development') return `${url.replace('.git', '')}/blob/main/${path}/values.yaml`
-  return `${url.replace('.git', '')}/src/branch/main/${path}/values.yaml`
+export const getDocsLink = (url: string, path: string): string => {
+  if (process.env.NODE_ENV === 'development') return `${url.replace('.git', '')}/blob/main/${path}/README.md`
+  return `${url.replace('.git', '')}/src/branch/main/${path}/README.md`
 }
 
 export const getWorkloadSchema = (): any => {
@@ -114,7 +83,6 @@ interface Props extends CrudProps {
   createWorkload: any
   updateWorkload: any
   deleteWorkload: any
-  readme: string
 }
 
 export default function ({
@@ -125,23 +93,14 @@ export default function ({
   createWorkload,
   updateWorkload,
   deleteWorkload,
-  readme,
   ...other
 }: Props): React.ReactElement {
   const history = useHistory()
-  const location = useLocation()
-  const { t } = useTranslation()
   const { classes } = useStyles()
   const dispatch = useAppDispatch()
   const { user } = useSession()
-  const hash = location.hash.substring(1)
-  const hashMap = { info: 0, values: 1 }
-  const defTab = hashMap[hash] ?? hashMap.info
-  const [tab, setTab] = useState(defTab)
-  const handleTabChange = (event, tab) => setTab(tab)
 
   const [data, setData] = useState<any>(workload)
-
   const [workloadValuesYaml, setWorkloadValuesYaml] = useState(
     typeof values === 'string' ? values : YAML.stringify(values ?? {}),
   )
@@ -167,7 +126,7 @@ export default function ({
      *
      *  REMOVE THIS WHEN MIGRATING TO THE NEW UI
      */
-    const input = document.getElementById('root_name').parentElement as HTMLInputElement | null
+    const input = document.getElementById('root_name')?.parentElement as HTMLInputElement | null
     if (input) {
       input.style.border = ''
       const oldErr = document.getElementById('root-name-error')
@@ -240,127 +199,46 @@ export default function ({
             {workload?.name ? `${workload.name} (${workload.path})` : workload?.path}
           </Typography>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
-          <ButtonGroup>
-            {tab === 1 && (
-              <Button variant='contained' onClick={handleCreateUpdateWorkload}>
-                Submit
-              </Button>
-            )}
-            {workloadName && (
-              <DeleteButton
-                onDelete={() => deleteWorkload({ teamId, workloadName })}
-                resourceName={workload?.name}
-                resourceType='workload'
-                data-cy='button-delete-workload'
-              />
-            )}
-          </ButtonGroup>
-        </Box>
+        {workload.url && workload.path && (
+          <Box sx={{ ml: 'auto' }}>
+            <DocsLink href={getDocsLink(workload.url as string, workload.path as string)} />
+          </Box>
+        )}
       </Box>
 
-      <AppBar position='relative' color='default'>
-        <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
-          <Tab href='#info' label='Info' value={hashMap.info} />
-          <Tab href='#values' label={t('Values')} value={hashMap.values} />
-        </Tabs>
-      </AppBar>
+      {workloadValuesJson?.image && checkImageFields(workloadValuesJson?.image) && (
+        <InformationBanner sx={{ mt: 1 }} message={checkImageFields(workloadValuesJson?.image)} />
+      )}
 
-      <TabPanel value={tab} index={hashMap.info}>
-        <Grid container direction='row'>
-          <Grid item xs={12} md={6}>
-            <Box className={classes.content}>
-              <TableContainer className={classes.legend}>
-                <Table size='small'>
-                  <TableBody>
-                    <TableRow key='version' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Version:')} />
-                      </TableCell>
-                      <TableCell align='left'>{workload?.chartMetadata?.helmChartVersion}</TableCell>
-                    </TableRow>
-                    <TableRow key='description' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Description:')} />
-                      </TableCell>
-                      <TableCell align='left'>{workload?.chartMetadata?.helmChartDescription}</TableCell>
-                    </TableRow>
-                    <TableRow key='repo' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Repo:')} />
-                      </TableCell>
-                      <TableCell align='left'>
-                        <Link href={workload?.url} target='_blank' rel='noopener'>
-                          {workload?.url && cleanLink(workload.url as string)}
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Box>
-          </Grid>
-          {readme && (
-            <Grid item xs={12} md={12}>
-              <Markdown readme={readme} />
-            </Grid>
+      <Form
+        schema={schema}
+        uiSchema={uiSchema}
+        data={data}
+        onChange={setData}
+        resourceType='Workload'
+        children
+        hideHelp
+        liveValidate={data?.name || data?.namespace}
+        {...other}
+      />
+
+      <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} />
+
+      <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
+        <ButtonGroup sx={{ gap: '10px' }}>
+          <Button variant='contained' onClick={handleCreateUpdateWorkload}>
+            Submit
+          </Button>
+          {workloadName && (
+            <DeleteButton
+              onDelete={() => deleteWorkload({ teamId, workloadName })}
+              resourceName={workload?.name}
+              resourceType='workload'
+              data-cy='button-delete-workload'
+            />
           )}
-        </Grid>
-      </TabPanel>
-
-      <TabPanel value={tab} index={hashMap.values}>
-        {workloadValuesJson?.image && checkImageFields(workloadValuesJson?.image) && (
-          <InformationBanner message={checkImageFields(workloadValuesJson?.image)} />
-        )}
-
-        <Form
-          schema={schema}
-          uiSchema={uiSchema}
-          data={data}
-          onChange={setData}
-          resourceType='Workload'
-          children
-          hideHelp
-          liveValidate={data?.name || data?.namespace}
-          {...other}
-        />
-
-        {workload?.url && (
-          <Tooltip title={`Chart values file for ${workload.path}`}>
-            <Box sx={{ display: 'inline-flex', alignItems: 'center' }}>
-              <Iconify icon='majesticons:open' />
-              <Link
-                sx={{ ml: '8px', fontSize: '14px' }}
-                href={getValuesDocLink(workload.url as string, workload.path as string)}
-                target='_blank'
-                rel='noopener'
-              >
-                Chart values file
-              </Link>
-            </Box>
-          </Tooltip>
-        )}
-
-        <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} />
-
-        <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right' }}>
-          <ButtonGroup>
-            {tab === 1 && (
-              <Button variant='contained' onClick={handleCreateUpdateWorkload}>
-                Submit
-              </Button>
-            )}
-            {workloadName && (
-              <DeleteButton
-                onDelete={() => deleteWorkload({ teamId, workloadName })}
-                resourceName={workload?.name}
-                resourceType='workload'
-                data-cy='button-delete-workload'
-              />
-            )}
-          </ButtonGroup>
-        </Box>
-      </TabPanel>
+        </ButtonGroup>
+      </Box>
     </Box>
   )
 }
