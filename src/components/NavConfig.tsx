@@ -52,6 +52,11 @@ export default function NavConfig() {
           icon: getIcon('developer_guide_icon.svg'),
         },
         {
+          title: 'Agents',
+          path: `/teams/${oboTeamId}/agents`,
+          icon: getIcon('agents_icon.svg'),
+        },
+        {
           title: 'Knowledge Bases',
           path: `/teams/${oboTeamId}/knowledge-bases`,
           icon: getIcon('knowledgebases_icon.svg'),
