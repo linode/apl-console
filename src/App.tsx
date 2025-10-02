@@ -38,6 +38,8 @@ import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
 import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
 import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
+import KnowledgeBasesCreateEditPage from 'pages/knowledge-bases/create-edit/KnowledgeBasesCreateEditPage'
+import KnowledgeBasesOverviewPage from 'pages/knowledge-bases/overview/KnowledgeBasesOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
@@ -103,6 +105,22 @@ function App() {
                                 <PrivateRoute
                                   path='/teams/:teamId/code-repositories/:codeRepositoryName'
                                   component={CodeRepositoriesCreateEditPage}
+                                  exact
+                                />
+
+                                <PrivateRoute
+                                  path='/teams/:teamId/knowledge-bases'
+                                  component={KnowledgeBasesOverviewPage}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/knowledge-bases/create'
+                                  component={KnowledgeBasesCreateEditPage}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/knowledge-bases/:knowledgeBaseName'
+                                  component={KnowledgeBasesCreateEditPage}
                                   exact
                                 />
 
