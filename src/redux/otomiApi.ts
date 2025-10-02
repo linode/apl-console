@@ -5665,6 +5665,7 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
   otomi?: {
     hasExternalDNS?: boolean
     isPreInstalled?: boolean
+    aiEnabled?: boolean
     hasExternalIDP?: boolean
   }
   smtp?: {
@@ -5936,6 +5937,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   otomi?: {
     adminPassword?: string
     isPreInstalled?: boolean
+    aiEnabled?: boolean
     globalPullSecret?: {
       username?: string
       password?: string
@@ -6201,6 +6203,7 @@ export type EditSettingsApiArg = {
     otomi?: {
       adminPassword?: string
       isPreInstalled?: boolean
+      aiEnabled?: boolean
       globalPullSecret?: {
         username?: string
         password?: string
