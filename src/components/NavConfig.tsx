@@ -16,6 +16,7 @@ export default function NavConfig() {
   const oboTeamId = sessionOboTeamId || localOboTeamId || undefined
   const hasExternalIDP = settings?.otomi?.hasExternalIDP ?? false
   const isManaged = settings?.otomi?.isPreInstalled ?? false
+  const aiEnabled = settings?.otomi?.aiEnabled ?? false
   const hasApiServerConfigured = settings?.cluster?.apiServer ?? false
 
   const downloadOpts = {
@@ -55,11 +56,13 @@ export default function NavConfig() {
           title: 'Agents',
           path: `/teams/${oboTeamId}/agents`,
           icon: getIcon('agents_icon.svg'),
+          hidden: !aiEnabled,
         },
         {
           title: 'Knowledge Bases',
           path: `/teams/${oboTeamId}/knowledge-bases`,
           icon: getIcon('knowledgebases_icon.svg'),
+          hidden: !aiEnabled,
         },
         {
           title: 'Code Repositories',
