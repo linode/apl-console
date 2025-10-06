@@ -26,16 +26,10 @@ const getStatus = (): CallableFunction =>
     return status?.phase || 'Unknown'
   }
 
-const getRegion = (): CallableFunction =>
+const getFoundationModel = (): CallableFunction =>
   function (row: any): string {
-    const { region } = row
-    return region || 'N/A'
-  }
-
-const getExposure = (): CallableFunction =>
-  function (row: any): string {
-    const { exposure } = row
-    return exposure || 'N/A'
+    const { foundationModel } = row
+    return foundationModel || 'N/A'
   }
 
 interface Params {
@@ -63,8 +57,7 @@ export default function AgentsOverviewPage({
       name: agent.metadata.name,
       teamId,
       status: agent.status,
-      region: 'dummy region', // Replace with actual region if available in the API response
-      exposure: 'dummy exposure', // Replace with actual exposure if available in the API response
+      foundationModel: agent.spec.foundationModel,
     })) || []
 
   const headCells: HeadCell[] = [
@@ -79,14 +72,9 @@ export default function AgentsOverviewPage({
       renderer: getStatus(),
     },
     {
-      id: 'region',
-      label: t('Region'),
-      renderer: getRegion(),
-    },
-    {
-      id: 'exposure',
-      label: t('Exposure'),
-      renderer: getExposure(),
+      id: 'foundationModel',
+      label: t('Foundation Model'),
+      renderer: getFoundationModel(),
     },
   ]
 

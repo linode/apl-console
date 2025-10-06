@@ -26,12 +26,6 @@ const getStatus = (): CallableFunction =>
     return status?.phase || 'Unknown'
   }
 
-const getDataSource = (): CallableFunction =>
-  function (row: any): string | React.ReactElement {
-    const { sourceUrl }: { sourceUrl: string } = row
-    return sourceUrl || 'N/A'
-  }
-
 const getEmbeddingModel = (): CallableFunction =>
   function (row: any): string {
     const { modelName } = row
@@ -63,7 +57,6 @@ export default function KnowledgeBasesOverviewPage({
       name: kb.metadata.name,
       teamId,
       status: kb.status,
-      sourceUrl: kb.spec.sourceUrl,
       modelName: kb.spec.modelName,
     })) || []
 
@@ -77,11 +70,6 @@ export default function KnowledgeBasesOverviewPage({
       id: 'status',
       label: t('Status'),
       renderer: getStatus(),
-    },
-    {
-      id: 'datasource',
-      label: t('Data Source'),
-      renderer: getDataSource(),
     },
     {
       id: 'embeddingModel',

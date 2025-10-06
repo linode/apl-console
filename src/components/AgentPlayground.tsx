@@ -1,9 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Box, CircularProgress, IconButton, TextField, Typography } from '@mui/material'
+import { Alert, Box, IconButton, TextField, Typography, keyframes } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import DeleteIcon from '@mui/icons-material/Delete'
+import StopIcon from '@mui/icons-material/StopCircle'
 import { Paper } from './Paper'
 import Iconify from './Iconify'
+
+const thinkingAnimation = keyframes`
+  0%, 60%, 100% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 1;
+  }
+`
 
 interface Message {
   role: 'user' | 'assistant'
@@ -22,38 +32,61 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messagesContainerRef.current) messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight
   }
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
 
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+      setLoading(false)
+      // Remove the empty assistant message if it exists
+      setMessages((prev) => {
+        const lastMessage = prev[prev.length - 1]
+        if (lastMessage?.role === 'assistant' && !lastMessage.content) return prev.slice(0, -1)
+
+        return prev
+      })
+    }
+  }
+
   const handleSend = async () => {
     if (!input.trim() || loading) return
 
     const userMessage: Message = { role: 'user', content: input.trim(), id: `user-${Date.now()}` }
+    const assistantId = `assistant-${Date.now()}`
     const newMessages = [...messages, userMessage]
-    setMessages(newMessages)
+
+    // Immediately add user message and empty assistant message for thinking animation
+    setMessages([...newMessages, { role: 'assistant', content: '', id: assistantId }])
     setInput('')
     setLoading(true)
     setError(null)
 
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController()
+
     try {
-      // Call agent service through nginx proxy
-      // In development: use /agent-direct proxy (port-forward to localhost:9100)
+      // Call agent service through nginx proxy to handle http and mixed-content issues
+      // In development: use /agent proxy (port-forward to localhost:9100)
       // In cluster: use /agent/{name}/team-{id} proxy (nginx routes to internal service)
       const isDev = process.env.NODE_ENV === 'development'
       const agentServiceUrl = isDev
-        ? `/agent-direct/v1/chat/completions`
+        ? `/agent/v1/chat/completions`
         : `/agent/${agentName}/team-${teamId}/v1/chat/completions`
 
       const requestBody = {
         messages: newMessages.map((msg) => ({ role: msg.role, content: msg.content })),
         stream: true,
-        model: 'rag-pipeline', // Required by the agent
+        model: 'rag-pipeline',
       }
 
       const response = await fetch(agentServiceUrl, {
@@ -62,6 +95,7 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
+        signal: abortControllerRef.current.signal,
       })
 
       if (!response.ok) {
@@ -73,12 +107,8 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
       // Handle streaming response
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
-      const assistantId = `assistant-${Date.now()}`
 
       if (reader) {
-        // Add empty assistant message that we'll update
-        setMessages([...newMessages, { role: 'assistant', content: '', id: assistantId }])
-
         // Process streaming response
         const processStream = async () => {
           let accumulatedContent = ''
@@ -127,12 +157,18 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
         setMessages([...newMessages, { role: 'assistant', content: assistantContent, id: assistantId }])
       }
     } catch (err) {
+      // Don't show error if request was aborted by user
+      if (err instanceof Error && err.name === 'AbortError') {
+        // Request was cancelled, don't show error
+        return
+      }
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message'
       setError(errorMessage)
       // eslint-disable-next-line no-console
       console.error('Chat error:', err)
     } finally {
       setLoading(false)
+      abortControllerRef.current = null
     }
   }
 
@@ -161,6 +197,7 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
 
         {/* Messages Area */}
         <Box
+          ref={messagesContainerRef}
           sx={{
             flex: 1,
             overflowY: 'auto',
@@ -201,9 +238,41 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
                   <Typography variant='caption' sx={{ fontWeight: 'bold', display: 'block', mb: 0.5 }}>
                     {message.role === 'user' ? 'You' : 'Agent'}
                   </Typography>
-                  <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                    {message.content}
-                  </Typography>
+                  {message.role === 'assistant' && !message.content && loading ? (
+                    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: 'text.secondary',
+                          animation: `${thinkingAnimation} 1.4s ease-in-out infinite`,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: 'text.secondary',
+                          animation: `${thinkingAnimation} 1.4s ease-in-out 0.2s infinite`,
+                        }}
+                      />
+                      <Box
+                        sx={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: '50%',
+                          backgroundColor: 'text.secondary',
+                          animation: `${thinkingAnimation} 1.4s ease-in-out 0.4s infinite`,
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                      {message.content}
+                    </Typography>
+                  )}
                 </Box>
               </Box>
             ))
@@ -219,7 +288,7 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
         )}
 
         {/* Input Area */}
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-end' }}>
           <TextField
             fullWidth
             multiline
@@ -232,9 +301,15 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
             variant='outlined'
             size='small'
           />
-          <IconButton onClick={handleSend} disabled={!input.trim() || loading} color='primary'>
-            {loading ? <CircularProgress size={24} /> : <SendIcon />}
-          </IconButton>
+          {loading ? (
+            <IconButton onClick={handleStop} color='primary' sx={{ width: 44, height: 44 }}>
+              <StopIcon />
+            </IconButton>
+          ) : (
+            <IconButton onClick={handleSend} disabled={!input.trim()} color='primary' sx={{ width: 44, height: 44 }}>
+              <SendIcon />
+            </IconButton>
+          )}
         </Box>
       </Box>
     </Paper>
