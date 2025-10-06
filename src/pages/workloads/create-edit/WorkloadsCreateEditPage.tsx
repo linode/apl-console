@@ -50,37 +50,25 @@ export default function WorkloadsCreateEditPage({
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
-  const [readme, setReadme] = useState<string>('')
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
   useEffect(() => {
-    if (workloadName) {
-      if (workload?.name) {
-        getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-          const { catalog }: { catalog: any[] } = res.data
-          const item = catalog.find((item) => item.name === workload.path)
-          const { readme } = item
-          setReadme(readme)
-        })
-      }
-      return
+    if (!workloadName) {
+      getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
+        const { url, catalog }: { url: string; catalog: any[] } = res.data
+        const item = catalog.find((item) => item.name === catalogName)
+        const {
+          chartVersion: helmChartVersion,
+          chartDescription: helmChartDescription,
+          name: path,
+          values,
+          icon,
+        } = item
+        const chartMetadata = { helmChartVersion, helmChartDescription }
+        setCatalogItem({ chartMetadata, path, values, url, icon })
+      })
     }
-    getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-      const { url, catalog }: { url: string; catalog: any[] } = res.data
-      const item = catalog.find((item) => item.name === catalogName)
-      const {
-        chartVersion: helmChartVersion,
-        chartDescription: helmChartDescription,
-        name: path,
-        values,
-        icon,
-        readme,
-      } = item
-      const chartMetadata = { helmChartVersion, helmChartDescription }
-      setCatalogItem({ chartMetadata, path, values, url, icon })
-      setReadme(readme)
-    })
   }, [workload])
 
   const workloadData = workloadName ? workload : catalogItem
@@ -105,7 +93,6 @@ export default function WorkloadsCreateEditPage({
       updateWorkload={updateWorkload}
       deleteWorkload={deleteWorkload}
       mutating={mutating}
-      readme={readme}
     />
   )
   return (
