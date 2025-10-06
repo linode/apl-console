@@ -42,15 +42,21 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
     setError(null)
 
     try {
-      const response = await fetch(`/api/alpha/teams/${teamId}/agents/${agentName}/chat`, {
+      // Call agent service directly using internal Kubernetes service
+      const agentServiceUrl = `http://${agentName}.team-${teamId}.svc.cluster.local:9099/v1/chat/completions`
+
+      const requestBody = {
+        messages: newMessages.map((msg) => ({ role: msg.role, content: msg.content })),
+        stream: true,
+        model: 'rag-pipeline', // Required by the agent
+      }
+
+      const response = await fetch(agentServiceUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          messages: newMessages.map((msg) => ({ role: msg.role, content: msg.content })),
-          stream: true,
-        }),
+        body: JSON.stringify(requestBody),
       })
 
       if (!response.ok) {
