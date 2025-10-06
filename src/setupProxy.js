@@ -9,6 +9,12 @@ module.exports = function (app) {
       logLevel: 'debug',
       pathRewrite: { '^/api/ws': '/ws' },
     }),
+    // Direct proxy to agent services in Kubernetes
+    proxy('/agent-direct', {
+      target: 'http://localhost:9100', // Port-forward fc-agent service to this port
+      pathRewrite: { '^/agent-direct': '' },
+      changeOrigin: true,
+    }),
     proxy('/api', {
       target: 'http://localhost:8080',
       pathRewrite: { '^/api/': '/' },

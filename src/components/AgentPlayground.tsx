@@ -42,8 +42,13 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
     setError(null)
 
     try {
-      // Call agent service directly using internal Kubernetes service
-      const agentServiceUrl = `http://${agentName}.team-${teamId}.svc.cluster.local:9099/v1/chat/completions`
+      // Call agent service through nginx proxy
+      // In development: use /agent-direct proxy (port-forward to localhost:9100)
+      // In cluster: use /agent/{name}/team-{id} proxy (nginx routes to internal service)
+      const isDev = process.env.NODE_ENV === 'development'
+      const agentServiceUrl = isDev
+        ? `/agent-direct/v1/chat/completions`
+        : `/agent/${agentName}/team-${teamId}/v1/chat/completions`
 
       const requestBody = {
         messages: newMessages.map((msg) => ({ role: msg.role, content: msg.content })),
