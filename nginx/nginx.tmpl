@@ -39,7 +39,7 @@ http {
       set $agent_name $1;
       set $team_id $2;
       set $agent_path $3;
-      resolver ${KUBE_DNS_SERVICE_HOST} valid=10s;
+      resolver local=on valid=10s;
       proxy_pass http://$agent_name.team-$team_id.svc.cluster.local:9099/$agent_path$is_args$args;
       proxy_http_version 1.1;
       proxy_set_header Host $host;
