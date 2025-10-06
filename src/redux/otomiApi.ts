@@ -577,6 +577,13 @@ const injectedRtkApi = api.injectEndpoints({
     deleteAplAgent: build.mutation<DeleteAplAgentApiResponse, DeleteAplAgentApiArg>({
       query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/agents/${queryArg.agentName}`, method: 'DELETE' }),
     }),
+    sendAgentChat: build.mutation<SendAgentChatApiResponse, SendAgentChatApiArg>({
+      query: (queryArg) => ({
+        url: `/alpha/teams/${queryArg.teamId}/agents/${queryArg.agentName}/chat`,
+        method: 'POST',
+        body: queryArg.body,
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -6592,6 +6599,31 @@ export type DeleteAplAgentApiArg = {
   /** Name of the agent */
   agentName: string
 }
+export type SendAgentChatApiResponse = /** status 200 Successfully received chat response */ {
+  choices?: {
+    message?: {
+      role: 'assistant'
+      content: string
+    }
+    delta?: {
+      content?: string
+    }
+  }[]
+}
+export type SendAgentChatApiArg = {
+  /** ID of team */
+  teamId: string
+  /** Name of the agent */
+  agentName: string
+  /** Chat request with messages array */
+  body: {
+    messages: {
+      role: 'system' | 'user' | 'assistant'
+      content: string
+    }[]
+    stream?: boolean
+  }
+}
 export const {
   useGetValuesQuery,
   useGetTeamsQuery,
@@ -6745,4 +6777,5 @@ export const {
   useGetAplAgentQuery,
   useEditAplAgentMutation,
   useDeleteAplAgentMutation,
+  useSendAgentChatMutation,
 } = injectedRtkApi

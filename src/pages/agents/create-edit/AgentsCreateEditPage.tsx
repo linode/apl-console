@@ -25,6 +25,7 @@ import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
 import { LoadingButton } from '@mui/lab'
 import { Divider } from 'components/Divider'
+import { AgentPlayground } from 'components/AgentPlayground'
 import { agentSchema } from './create-edit-agents.validator'
 
 interface Params {
@@ -217,6 +218,7 @@ export default function AgentsCreateEditPage({
             </LoadingButton>
           </form>
         </FormProvider>
+        {agentName && <AgentPlayground teamId={teamId} agentName={agentName} />}
       </PaperLayout>
     </Grid>
   )
