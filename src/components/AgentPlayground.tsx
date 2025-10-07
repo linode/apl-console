@@ -3,6 +3,7 @@ import { Alert, Box, IconButton, TextField, Typography, keyframes } from '@mui/m
 import SendIcon from '@mui/icons-material/Send'
 import DeleteIcon from '@mui/icons-material/Delete'
 import StopIcon from '@mui/icons-material/StopCircle'
+import Markdown from './Markdown'
 import { Paper } from './Paper'
 import Iconify from './Iconify'
 
@@ -238,41 +239,58 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
                   <Typography variant='caption' sx={{ fontWeight: 'bold', display: 'block', mb: 0.5 }}>
                     {message.role === 'user' ? 'You' : 'Agent'}
                   </Typography>
-                  {message.role === 'assistant' && !message.content && loading ? (
-                    <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          backgroundColor: 'text.secondary',
-                          animation: `${thinkingAnimation} 1.4s ease-in-out infinite`,
-                        }}
-                      />
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          backgroundColor: 'text.secondary',
-                          animation: `${thinkingAnimation} 1.4s ease-in-out 0.2s infinite`,
-                        }}
-                      />
-                      <Box
-                        sx={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: '50%',
-                          backgroundColor: 'text.secondary',
-                          animation: `${thinkingAnimation} 1.4s ease-in-out 0.4s infinite`,
-                        }}
-                      />
-                    </Box>
-                  ) : (
-                    <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                      {message.content}
-                    </Typography>
-                  )}
+                  {(() => {
+                    // Show thinking animation for empty assistant message while loading
+                    if (message.role === 'assistant' && !message.content && loading) {
+                      return (
+                        <Box sx={{ display: 'flex', gap: 0.5, alignItems: 'center' }}>
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: 'text.secondary',
+                              animation: `${thinkingAnimation} 1.4s ease-in-out infinite`,
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: 'text.secondary',
+                              animation: `${thinkingAnimation} 1.4s ease-in-out 0.2s infinite`,
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              width: 8,
+                              height: 8,
+                              borderRadius: '50%',
+                              backgroundColor: 'text.secondary',
+                              animation: `${thinkingAnimation} 1.4s ease-in-out 0.4s infinite`,
+                            }}
+                          />
+                        </Box>
+                      )
+                    }
+
+                    // Render assistant message with markdown
+                    if (message.role === 'assistant') {
+                      return (
+                        <Markdown
+                          readme={message.content}
+                          sx={{ p: 0, boxShadow: 'none', backgroundColor: 'transparent', fontSize: '14px' }}
+                        />
+                      )
+                    }
+
+                    return (
+                      <Typography variant='body2' sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                        {message.content}
+                      </Typography>
+                    )
+                  })()}
                 </Box>
               </Box>
             ))
