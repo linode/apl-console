@@ -4,7 +4,7 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import { AutoResizableTextarea } from 'components/forms/TextArea'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -39,6 +39,7 @@ export default function AgentsCreateEditPage({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
+  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState<string>('')
 
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplAgentMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplAgentMutation()
@@ -65,8 +66,8 @@ export default function AgentsCreateEditPage({
     },
     spec: {
       foundationModel: '',
-      knowledgeBase: '',
       agentInstructions: '',
+      tools: [],
     },
   }
 
@@ -85,11 +86,28 @@ export default function AgentsCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) reset(data)
+    if (data) {
+      reset(data)
+      const kbTool = data.spec.tools?.find((tool) => tool.type === 'knowledgeBase')
+      setSelectedKnowledgeBase((kbTool?.name as string) || '')
+    }
   }, [data, reset])
 
   const onSubmit = (formData: FormType) => {
     const body = { ...formData }
+
+    // Transform knowledge base selection into tools array
+    const tools = body.spec.tools || []
+    const nonKbTools = tools.filter((tool) => tool.type !== 'knowledgeBase')
+
+    if (selectedKnowledgeBase) {
+      nonKbTools.push({
+        type: 'knowledgeBase',
+        name: selectedKnowledgeBase,
+      })
+    }
+
+    body.spec.tools = nonKbTools
 
     if (agentName) update({ teamId, agentName, body })
     else create({ teamId, body })
@@ -160,16 +178,14 @@ export default function AgentsCreateEditPage({
 
               <FormRow spacing={10}>
                 <Autocomplete
-                  label='Knowledge bases'
+                  label='Knowledge base'
                   width='large'
                   placeholder='Select a knowledge base'
                   options={knowledgeBases?.map((kb) => kb.metadata.name) || []}
-                  value={watch('spec.knowledgeBase') || null}
+                  value={selectedKnowledgeBase}
                   onChange={(_, value) => {
-                    setValue('spec.knowledgeBase', value || '')
+                    setSelectedKnowledgeBase(value)
                   }}
-                  errorText={errors.spec?.knowledgeBase?.message?.toString()}
-                  helperText={errors.spec?.knowledgeBase?.message?.toString()}
                 />
               </FormRow>
 
