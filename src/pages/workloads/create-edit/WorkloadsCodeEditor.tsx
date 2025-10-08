@@ -74,7 +74,7 @@ export default function CodeEditor({
     } catch {
       return
     }
-    const validate = ajv.compile(validationSchema || {})
+    const validate = ajv.compile(JSON.parse(validationSchema) || {})
     const isValid = validate(parsedYaml)
     setValidationErrors(!isValid ? validate.errors ?? [] : [])
     setValid?.(isValid)

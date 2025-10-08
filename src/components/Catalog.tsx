@@ -80,6 +80,7 @@ interface Props extends CrudProps {
   workload?: any
   workloadName?: string
   values?: any
+  valuesSchema?: any
   createWorkload: any
   updateWorkload: any
   deleteWorkload: any
@@ -90,6 +91,7 @@ export default function ({
   workload,
   workloadName,
   values,
+  valuesSchema,
   createWorkload,
   updateWorkload,
   deleteWorkload,
@@ -222,7 +224,7 @@ export default function ({
         {...other}
       />
 
-      <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} />
+      <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} validationSchema={valuesSchema} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
         <ButtonGroup sx={{ gap: '10px' }}>
