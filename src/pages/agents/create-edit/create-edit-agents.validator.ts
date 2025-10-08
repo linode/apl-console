@@ -16,6 +16,6 @@ export const agentSchema = yup.object({
   spec: yup.object({
     foundationModel: yup.string().required('Please select a foundation model'),
     knowledgeBase: yup.string().optional(),
-    agentInstructions: yup.string().optional(),
+    agentInstructions: yup.string().required('Please enter agent instructions'),
   }),
 })

@@ -77,7 +77,7 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
 
     try {
       // Call agent service through nginx proxy to handle http and mixed-content issues
-      // In development: use /agent proxy (port-forward to localhost:9100)
+      // In development: use /agent proxy (port-forward to localhost:9099)
       // In cluster: use /agent/{name}/team-{id} proxy (nginx routes to internal service)
       const isDev = process.env.NODE_ENV === 'development'
       const agentServiceUrl = isDev
@@ -143,7 +143,7 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
                     })
                   }
                 } catch {
-                  // Skip invalid JSON
+                  // Ignore JSON parse errors for malformed chunks
                 }
               }
             })
@@ -159,14 +159,10 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
       }
     } catch (err) {
       // Don't show error if request was aborted by user
-      if (err instanceof Error && err.name === 'AbortError') {
-        // Request was cancelled, don't show error
-        return
-      }
+      if (err instanceof Error && err.name === 'AbortError') return
+
       const errorMessage = err instanceof Error ? err.message : 'Failed to send message'
       setError(errorMessage)
-      // eslint-disable-next-line no-console
-      console.error('Chat error:', err)
     } finally {
       setLoading(false)
       abortControllerRef.current = null
