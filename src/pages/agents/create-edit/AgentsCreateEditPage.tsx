@@ -4,7 +4,7 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import { AutoResizableTextarea } from 'components/forms/TextArea'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -39,7 +39,6 @@ export default function AgentsCreateEditPage({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
-  const [selectedKnowledgeBase, setSelectedKnowledgeBase] = useState<string>('')
 
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplAgentMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplAgentMutation()
@@ -86,28 +85,11 @@ export default function AgentsCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) {
-      reset(data)
-      const kbTool = data.spec.tools?.find((tool) => tool.type === 'knowledgeBase')
-      setSelectedKnowledgeBase(kbTool?.name || '')
-    }
+    if (data) reset(data)
   }, [data, reset])
 
   const onSubmit = (formData: FormType) => {
     const body = { ...formData }
-
-    // Transform knowledge base selection into tools array
-    const tools = body.spec.tools || []
-    const nonKbTools = tools.filter((tool) => tool.type !== 'knowledgeBase')
-
-    if (selectedKnowledgeBase) {
-      nonKbTools.push({
-        type: 'knowledgeBase',
-        name: selectedKnowledgeBase,
-      })
-    }
-
-    body.spec.tools = nonKbTools
 
     if (agentName) update({ teamId, agentName, body })
     else create({ teamId, body })
@@ -182,9 +164,12 @@ export default function AgentsCreateEditPage({
                   width='large'
                   placeholder='Select a knowledge base'
                   options={knowledgeBases?.map((kb) => kb.metadata.name) || []}
-                  value={selectedKnowledgeBase}
+                  value={watch('spec.tools')?.find((tool) => tool.type === 'knowledgeBase')?.name || ''}
                   onChange={(_, value) => {
-                    setSelectedKnowledgeBase(value)
+                    const currentTools = watch('spec.tools') || []
+                    const nonKbTools = currentTools.filter((tool) => tool.type !== 'knowledgeBase')
+                    const updatedTools = value ? [...nonKbTools, { type: 'knowledgeBase', name: value }] : nonKbTools
+                    setValue('spec.tools', updatedTools)
                   }}
                 />
               </FormRow>
