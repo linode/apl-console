@@ -89,7 +89,7 @@ export default function AgentsCreateEditPage({
     if (data) {
       reset(data)
       const kbTool = data.spec.tools?.find((tool) => tool.type === 'knowledgeBase')
-      setSelectedKnowledgeBase((kbTool?.name as string) || '')
+      setSelectedKnowledgeBase(kbTool?.name || '')
     }
   }, [data, reset])
 
