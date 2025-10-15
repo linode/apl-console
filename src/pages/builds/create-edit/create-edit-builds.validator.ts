@@ -8,7 +8,16 @@ const envVarSchema = object({
 })
 
 const commonModeSchema = object({
-  repoUrl: string().required('Repository URL is required').url('Invalid repository URL'),
+  repoUrl: string()
+    .required('Repository URL is required')
+    .test('is-valid-git-url', 'Invalid repository URL', (value) => {
+      if (!value) return false
+      // Check for SSH format: git@host:path or user@host:path
+      const sshPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+:[a-zA-Z0-9/._-]+$/
+      // Check for HTTP(S) URL format
+      const httpPattern = /^https?:\/\/.+/
+      return sshPattern.test(value) || httpPattern.test(value)
+    }),
   path: string().optional(),
   revision: string().optional(),
   envVars: array().of(envVarSchema).optional(),
