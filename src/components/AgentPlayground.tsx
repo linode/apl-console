@@ -78,11 +78,11 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
     try {
       // Call agent service through nginx proxy to handle http and mixed-content issues
       // In development: use /agent proxy (port-forward to localhost:9099)
-      // In cluster: use /agent/{name}/team-{id} proxy (nginx routes to internal service)
+      // In cluster: use /teams/{teamId}/agents/{agentName} proxy (nginx routes to internal service)
       const isDev = process.env.NODE_ENV === 'development'
       const agentServiceUrl = isDev
         ? `/agent/v1/chat/completions`
-        : `/agent/${agentName}/team-${teamId}/v1/chat/completions`
+        : `/teams/${teamId}/agents/${agentName}/v1/chat/completions`
 
       const requestBody = {
         messages: newMessages.map((msg) => ({ role: msg.role, content: msg.content })),
