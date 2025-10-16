@@ -168,6 +168,11 @@ export function AutoResizableTextarea({
     adjustSize()
   }, [rest.value])
 
+  // Sync internal value state with external value prop
+  useEffect(() => {
+    if (!showLock && rest.value !== value) setValue(rest.value)
+  }, [rest.value, showLock])
+
   return (
     <Box>
       <InputLabel
