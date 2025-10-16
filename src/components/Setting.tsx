@@ -67,6 +67,7 @@ export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, setting
       isPreInstalled: { 'ui:widget': 'hidden' },
       adminPassword: { 'ui:widget': 'hidden' },
       useORCS: { 'ui:widget': 'hidden' },
+      aiEnabled: { 'ui:widget': 'hidden' },
     },
     kms: {
       sops: {
