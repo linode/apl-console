@@ -1,4 +1,7 @@
-import { Card, styled } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Card, IconButton, Tooltip, styled } from '@mui/material'
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
+import CheckIcon from '@mui/icons-material/Check'
 import MarkdownJSX from 'markdown-to-jsx'
 
 // Higher-order component to generate markdown components
@@ -30,15 +33,57 @@ const Code = createMDComp('code', {
   backgroundColor: '#6e768164',
   textWrap: 'pretty',
 })
-const Pre = createMDComp('pre', {
-  ...mb,
-  backgroundColor: '#6e768164',
-  padding: '12px',
-  borderRadius: '6px',
-  '& > code': {
-    backgroundColor: 'transparent',
-  },
-})
+
+// Code block with copy button
+function CodeBlock({ children }: any) {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    const codeText = children?.props?.children || children
+    const textToCopy = typeof codeText === 'string' ? codeText : String(codeText)
+    navigator.clipboard.writeText(textToCopy.trim())
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <Box sx={{ position: 'relative', ...mb }}>
+      <Box
+        component='pre'
+        sx={{
+          backgroundColor: '#6e768164',
+          padding: '12px',
+          paddingRight: '48px',
+          borderRadius: '6px',
+          overflow: 'auto',
+          margin: 0,
+          '& > code': {
+            backgroundColor: 'transparent',
+          },
+        }}
+      >
+        {children}
+      </Box>
+      <Tooltip title={copied ? 'Copied!' : 'Copy code'}>
+        <IconButton
+          onClick={handleCopy}
+          size='small'
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+            },
+          }}
+        >
+          {copied ? <CheckIcon fontSize='small' /> : <ContentCopyIcon fontSize='small' />}
+        </IconButton>
+      </Tooltip>
+    </Box>
+  )
+}
 const Ol = createMDComp('ol', { ...mb, paddingLeft: '32px' })
 const Li = createMDComp('li', { ...lh })
 const Table = createMDComp('table', { ...mb, borderCollapse: 'collapse' })
@@ -77,7 +122,7 @@ export default function Markdown({ readme, sx }: Props) {
               component: Code,
             },
             pre: {
-              component: Pre,
+              component: CodeBlock,
             },
             li: {
               component: Li,

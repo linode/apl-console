@@ -40,6 +40,8 @@ import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
 import KnowledgeBasesCreateEditPage from 'pages/knowledge-bases/create-edit/KnowledgeBasesCreateEditPage'
 import KnowledgeBasesOverviewPage from 'pages/knowledge-bases/overview/KnowledgeBasesOverviewPage'
+import AgentsCreateEditPage from 'pages/agents/create-edit/AgentsCreateEditPage'
+import AgentsOverviewPage from 'pages/agents/overview/AgentsOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
@@ -121,6 +123,18 @@ function App() {
                                 <PrivateRoute
                                   path='/teams/:teamId/knowledge-bases/:knowledgeBaseName'
                                   component={KnowledgeBasesCreateEditPage}
+                                  exact
+                                />
+
+                                <PrivateRoute path='/teams/:teamId/agents' component={AgentsOverviewPage} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/agents/create'
+                                  component={AgentsCreateEditPage}
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/teams/:teamId/agents/:agentName'
+                                  component={AgentsCreateEditPage}
                                   exact
                                 />
 
