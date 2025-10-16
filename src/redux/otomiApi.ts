@@ -6438,9 +6438,14 @@ export type DeleteAplKnowledgeBaseApiArg = {
 export type GetAplAgentsApiResponse = /** status 200 Successfully obtained agents */ ({
   kind: 'AkamaiAgent'
   spec: {
-    knowledgeBase?: string
     foundationModel: string
     agentInstructions: string
+    tools?: {
+      type: string
+      name: string
+      description?: string
+      endpoint?: string
+    }[]
   }
 } & {
   metadata: {
@@ -6468,9 +6473,14 @@ export type GetAplAgentsApiArg = {
 export type CreateAplAgentApiResponse = /** status 200 Successfully stored agent configuration */ {
   kind: 'AkamaiAgent'
   spec: {
-    knowledgeBase?: string
     foundationModel: string
     agentInstructions: string
+    tools?: {
+      type: string
+      name: string
+      description?: string
+      endpoint?: string
+    }[]
   }
 } & {
   metadata: {
@@ -6498,9 +6508,14 @@ export type CreateAplAgentApiArg = {
   body: {
     kind: 'AkamaiAgent'
     spec: {
-      knowledgeBase?: string
       foundationModel: string
       agentInstructions: string
+      tools?: {
+        type: string
+        name: string
+        description?: string
+        endpoint?: string
+      }[]
     }
   } & {
     metadata: {
@@ -6511,9 +6526,14 @@ export type CreateAplAgentApiArg = {
 export type GetAplAgentApiResponse = /** status 200 Successfully obtained agent configuration */ {
   kind: 'AkamaiAgent'
   spec: {
-    knowledgeBase?: string
     foundationModel: string
     agentInstructions: string
+    tools?: {
+      type: string
+      name: string
+      description?: string
+      endpoint?: string
+    }[]
   }
 } & {
   metadata: {
@@ -6543,9 +6563,14 @@ export type GetAplAgentApiArg = {
 export type EditAplAgentApiResponse = /** status 200 Successfully edited a team agent */ {
   kind: 'AkamaiAgent'
   spec: {
-    knowledgeBase?: string
     foundationModel: string
     agentInstructions: string
+    tools?: {
+      type: string
+      name: string
+      description?: string
+      endpoint?: string
+    }[]
   }
 } & {
   metadata: {
@@ -6575,9 +6600,14 @@ export type EditAplAgentApiArg = {
   body: {
     kind: 'AkamaiAgent'
     spec: {
-      knowledgeBase?: string
       foundationModel: string
       agentInstructions: string
+      tools?: {
+        type: string
+        name: string
+        description?: string
+        endpoint?: string
+      }[]
     }
   } & {
     metadata: {
