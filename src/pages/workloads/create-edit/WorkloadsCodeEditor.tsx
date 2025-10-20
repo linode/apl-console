@@ -66,20 +66,14 @@ export default function CodeEditor({
     }
   }, [ajv, validationSchema])
 
-  // Keep Monaco refs
+  // Set Monaco refs
   const handleEditorDidMount = (editor, monaco) => {
     setEditorInstance(editor)
     setMonacoInstance(monaco)
   }
 
-  // Utility: clear all our markers
-  const clearMarkers = () => {
-    if (!monacoInstance || !editorInstance) return
-    const model = editorInstance.getModel()
-    if (model) monacoInstance.editor.setModelMarkers(model, OWNER, [])
-  }
-
   // JSON Pointer unescape for AJV instancePath segments
+  // e.g. '/foo~1bar' → '/foo/bar'
   const unescapeJsonPtr = (s: string) => s.replace(/~1/g, '/').replace(/~0/g, '~')
 
   // Convert AJV instancePath to YAML path segments (numbers for arrays)
@@ -197,6 +191,14 @@ export default function CodeEditor({
       .map((err) => {
         const segs = pathFromInstancePath(err.instancePath)
 
+        if (err.keyword === 'enum' && Array.isArray((err.params as any)?.allowedValues)) {
+          const allowed = (err.params as any).allowedValues.join(', ')
+          const node = getNodeAtPath(doc, segs)
+          const r = nodeRange(node, 'node')
+          const msg = `${segs.join('.') || '(root)'} must be one of: ${allowed}`
+          if (r) return buildMarker(model, msg, r[0], r[1])
+        }
+
         // Special handling by keyword
         if (err.keyword === 'additionalProperties') {
           const parentNode = getNodeAtPath(doc, segs)
@@ -251,23 +253,16 @@ export default function CodeEditor({
   }, [editorInstance, validator])
 
   return (
-    <>
-      <Editor
-        className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
-        height='600px'
-        theme={isLight ? 'light' : 'vs-dark'}
-        defaultValue={code}
-        language='yaml'
-        onMount={handleEditorDidMount}
-        onChange={onChangeHandler}
-        options={{ readOnly: disabled, automaticLayout: true }}
-        {...props}
-      />
-      {/* {yamlErrorMsg && (
-        <Box className={classes.errorMessageWrapper} display='flex'>
-          <p className={classes.errorMessage}>{yamlErrorMsg}</p>
-        </Box>
-      )} */}
-    </>
+    <Editor
+      className={`${classes.root}${!valid ? ` ${classes.invalid}` : ''}`}
+      height='600px'
+      theme={isLight ? 'light' : 'vs-dark'}
+      defaultValue={code}
+      language='yaml'
+      onMount={handleEditorDidMount}
+      onChange={onChangeHandler}
+      options={{ readOnly: disabled, automaticLayout: true }}
+      {...props}
+    />
   )
 }

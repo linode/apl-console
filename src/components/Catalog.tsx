@@ -11,7 +11,6 @@ import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
-import InformationBanner from './InformationBanner'
 import CodeEditor from '../pages/workloads/create-edit/WorkloadsCodeEditor'
 import Form from './rjsf/Form'
 import DeleteButton from './DeleteButton'
@@ -207,10 +206,6 @@ export default function ({
           </Box>
         )}
       </Box>
-
-      {workloadValuesJson?.image && checkImageFields(workloadValuesJson?.image) && (
-        <InformationBanner sx={{ mt: 1 }} message={checkImageFields(workloadValuesJson?.image)} />
-      )}
 
       <Form
         schema={schema}
