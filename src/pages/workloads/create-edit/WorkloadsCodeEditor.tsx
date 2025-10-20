@@ -4,7 +4,7 @@ import { Editor } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import Ajv, { ErrorObject } from 'ajv'
 import { makeStyles } from 'tss-react/mui'
-import YAML, { Document, Pair, Scalar, Node as YamlNode, isMap } from 'yaml'
+import YAML, { Document, Pair, Node as YamlNode, isMap } from 'yaml'
 import useSettings from 'hooks/useSettings'
 
 const useStyles = makeStyles()((theme) => ({
@@ -43,7 +43,6 @@ export default function CodeEditor({
   ...props
 }: Props): React.ReactElement {
   const [valid, setLocalValid] = useState(true)
-  const [yamlErrorMsg, setYamlErrorMsg] = useState<string>('')
   const [editorInstance, setEditorInstance] = useState<any>(null)
   const [monacoInstance, setMonacoInstance] = useState<any>(null)
   const { themeMode } = useSettings()
@@ -98,28 +97,49 @@ export default function CodeEditor({
   // For additionalProperties, we want the Pair.key node of the extra prop
   const getAdditionalPropertyKeyNode = (parentNode: YamlNode | null, propName: string): YamlNode | null => {
     if (!parentNode || !isMap(parentNode)) return null
-    const map = parentNode
-    const pair = map.items.find(
-      (p: Pair) => String((p.key as Scalar | YamlNode)?.toJSON?.() ?? (p.key as any)?.value ?? '') === propName,
-    )
+    const map = parentNode as unknown as { items: Pair<YamlNode, YamlNode>[] }
+    const pair = map.items.find((p) => {
+      const key = p.key
+      const keyValue = String((key as any)?.toJSON?.() ?? (key as any)?.value ?? '')
+      return keyValue === propName
+    })
     return pair?.key ?? null
   }
 
   // Prefer key/value node ranges if available; otherwise fallback to node.range
+  // 'node' = 'node' is not a mistake, it's setting the default for 'prefer' parameter
   const nodeRange = (node: YamlNode | null, prefer: 'key' | 'value' | 'node' = 'node'): [number, number] | null => {
     if (!node) return null
-    // For Pair we can choose key or value
-    if ((node as any).key || (node as any).value) {
+
+    // Handle YAML key-value pair nodes
+    const isPair = (node as any).key || (node as any).value
+    if (isPair) {
       const pair = node as unknown as Pair
-      const target = prefer === 'key' ? pair.key : prefer === 'value' ? pair.value : pair.value ?? pair.key
-      if (target && target.range) return [target.range[0], target.range[2]]
-      if (pair.key?.range) return [pair.key.range[0], pair.key.range[2]]
-      if (pair.value?.range) return [pair.value.range[0], pair.value.range[2]]
+      let target: YamlNode | undefined
+
+      // Choose which part of the Pair to highlight
+      switch (prefer) {
+        case 'key':
+          target = pair.key as YamlNode
+          break
+        case 'value':
+          target = pair.value as YamlNode
+          break
+        default: // 'node' (prefer value, fallback to key)
+          target = (pair.value as YamlNode) ?? (pair.key as YamlNode)
+          break
+      }
+
+      // Try the chosen node first, then fallback to key/value if needed
+      if (target?.range) return [target.range[0], target.range[2]]
+      if ((pair.key as YamlNode)?.range) return [(pair.key as YamlNode).range[0], (pair.key as YamlNode).range[2]]
+      if ((pair.value as YamlNode)?.range) return [(pair.value as YamlNode).range[0], (pair.value as YamlNode).range[2]]
     }
-    if ((node as any).range) {
-      const r = (node as any).range as [number, number, number]
-      return [r[0], r[2]]
-    }
+
+    // Handle plain YAML nodes (Scalar, Sequence, etc.)
+    const range = (node as any).range as [number, number, number] | undefined
+    if (range) return [range[0], range[2]]
+
     return null
   }
 
@@ -143,10 +163,9 @@ export default function CodeEditor({
 
     // Always start clean
     monacoInstance.editor.setModelMarkers(model, OWNER, [])
-    setYamlErrorMsg('')
 
     // 1) Parse YAML into Document AST
-    const doc = YAML.parseDocument(text, { keepCstNodes: true, keepNodeTypes: true })
+    const doc = YAML.parseDocument(text)
     if (doc.errors.length > 0) {
       // Mark syntax errors precisely
       const markers = doc.errors.map((err) => {
@@ -159,7 +178,6 @@ export default function CodeEditor({
       monacoInstance.editor.setModelMarkers(model, OWNER, markers)
       setLocalValid(false)
       setValid?.(false)
-      setYamlErrorMsg(doc.errors.map((e) => e.message).join('\n'))
       return
     }
 
@@ -191,6 +209,7 @@ export default function CodeEditor({
       .map((err) => {
         const segs = pathFromInstancePath(err.instancePath)
 
+        // handle Enum keywords, add allowed enum types to error
         if (err.keyword === 'enum' && Array.isArray((err.params as any)?.allowedValues)) {
           const allowed = (err.params as any).allowedValues.join(', ')
           const node = getNodeAtPath(doc, segs)
@@ -199,7 +218,7 @@ export default function CodeEditor({
           if (r) return buildMarker(model, msg, r[0], r[1])
         }
 
-        // Special handling by keyword
+        // handle additional Properties keywords, prevent non existing properties from being added
         if (err.keyword === 'additionalProperties') {
           const parentNode = getNodeAtPath(doc, segs)
           const ap = (err.params as any)?.additionalProperty
@@ -209,8 +228,8 @@ export default function CodeEditor({
           if (r) return buildMarker(model, msg, r[0], r[1])
         }
 
+        // handle required keywords, highlight parent object with missing property
         if (err.keyword === 'required') {
-          // Missing property: highlight the parent object
           const parentNode = getNodeAtPath(doc, segs)
           const missing = (err.params as any)?.missingProperty
           const r = nodeRange(parentNode, 'node')
