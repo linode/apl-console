@@ -9,6 +9,11 @@ module.exports = function (app) {
       logLevel: 'debug',
       pathRewrite: { '^/api/ws': '/ws' },
     }),
+    proxy('/agent', {
+      target: 'http://localhost:9099',
+      pathRewrite: { '^/agent': '' },
+      changeOrigin: true,
+    }),
     proxy('/api', {
       target: 'http://localhost:8080',
       pathRewrite: { '^/api/': '/' },
