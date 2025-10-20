@@ -34,6 +34,79 @@ interface Props {
 // constant required for Monaco editor to group errors
 const OWNER = 'yaml-ajv-validation'
 
+/**
+ * CodeEditor – YAML-aware validation editor with AJV-based schema enforcement and Monaco integration.
+ *
+ * ### Overview
+ * This editor provides live YAML validation with inline error markers using Monaco Editor.
+ * It combines three systems:
+ *  - **YAML parser (`yaml`)** → Parses and produces a concrete syntax tree (CST) with node ranges.
+ *  - **AJV (`ajv`)** → Validates the parsed YAML against a JSON Schema.
+ *  - **Monaco (`@monaco-editor/react`)** → Displays code, errors, and highlights inline.
+ *
+ * The validation pipeline works in four phases:
+ *
+ * ---
+ * ### 1. YAML Parsing
+ * The editor uses `YAML.parseDocument(text)` to produce a `Document` object.
+ * This keeps positional metadata for every node (`range: [start, middle, end]`),
+ * which we later use to map AJV errors to character offsets.
+ *
+ * - If `doc.errors` is non-empty, the YAML itself is invalid (e.g., bad indentation, unclosed quote).
+ *   These are marked immediately as syntax errors by converting `error.pos` values into
+ *   Monaco markers (`setModelMarkers`).
+ *
+ * ---
+ * ### 2. JSON Schema Validation (AJV)
+ * If YAML syntax is valid, the editor converts the document to plain JS (`doc.toJS()`)
+ * and runs it through an AJV validator compiled from `validationSchema`.
+ * AJV emits a list of `ErrorObject`s, each describing a schema rule violation:
+ *   - `instancePath`: JSON Pointer path to the failing value
+ *   - `keyword`: the failing rule ("required", "type", "enum", etc.)
+ *   - `params`: rule-specific details (e.g., `missingProperty`)
+ *
+ * ---
+ * ### 3. Error-to-YAML Mapping
+ * AJV reports errors as JSON paths (like `/image/repository`), which must be mapped back
+ * to YAML syntax nodes. The editor reconstructs this path and locates the corresponding
+ * YAML AST node via:
+ *
+ *    getNodeAtPath(doc, pathSegments)
+ *
+ * Once the relevant node is found, its `range` is extracted via:
+ *
+ *    nodeRange(node, prefer)
+ *
+ * The `prefer` argument controls whether the marker highlights the key, value, or both.
+ * For example:
+ *   - `"required"` → highlight the parent object
+ *   - `"enum"` → highlight the exact scalar value
+ *   - `"additionalProperties"` → highlight the extra property key
+ *
+ * Each rule type (AJV keyword) has a custom handler that determines
+ * which YAML node to highlight and what message to show.
+ *
+ * ---
+ * ### 4. Marker Creation (Monaco)
+ * Once a range `[start, end]` in the YAML source is identified, the function `buildMarker`
+ * converts those offsets into Monaco’s coordinate system:
+ *
+ *    const start = model.getPositionAt(startOffset)
+ *    const end = model.getPositionAt(endOffset)
+ *
+ * Then it builds a `monaco.editor.IMarkerData` object with:
+ *   - `severity: monaco.MarkerSeverity.Error`
+ *   - `message: string` (from AJV error)
+ *   - `startLineNumber`, `startColumn`, `endLineNumber`, `endColumn`
+ *
+ * All markers are then grouped and applied via:
+ *
+ *    monacoInstance.editor.setModelMarkers(model, OWNER, markers)
+ *
+ * The `OWNER` constant (`'yaml-ajv-validation'`) scopes markers for this validator
+ * so they can be cleared or replaced easily between validation runs.
+ */
+
 export default function CodeEditor({
   code = '',
   onChange,
