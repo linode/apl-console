@@ -282,7 +282,11 @@ export default function CodeEditor({
       .map((err) => {
         const segs = pathFromInstancePath(err.instancePath)
 
-        // handle Enum keywords, add allowed enum types to error
+        /*
+         *You can add custom logic here for each keyword if desired
+         */
+
+        // Handle Enum keywords, add allowed enum types to error
         if (err.keyword === 'enum' && Array.isArray((err.params as any)?.allowedValues)) {
           const allowed = (err.params as any).allowedValues.join(', ')
           const node = getNodeAtPath(doc, segs)
@@ -291,7 +295,7 @@ export default function CodeEditor({
           if (r) return buildMarker(model, msg, r[0], r[1])
         }
 
-        // handle additional Properties keywords, prevent non existing properties from being added
+        // Handle additional Properties keywords, prevent non existing properties from being added
         if (err.keyword === 'additionalProperties') {
           const parentNode = getNodeAtPath(doc, segs)
           const ap = (err.params as any)?.additionalProperty
@@ -301,7 +305,7 @@ export default function CodeEditor({
           if (r) return buildMarker(model, msg, r[0], r[1])
         }
 
-        // handle required keywords, highlight parent object with missing property
+        // Handle required keywords, highlight parent object with missing property
         if (err.keyword === 'required') {
           const parentNode = getNodeAtPath(doc, segs)
           const missing = (err.params as any)?.missingProperty
