@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.10.0](https://github.com/linode/apl-console/compare/v4.9.0...v4.10.0) (2025-10-21)
+
+
+### Features
+
+* add agent pages and agent playground ([#659](https://github.com/linode/apl-console/issues/659)) ([4abf139](https://github.com/linode/apl-console/commit/4abf139c8dbe097355ba79e87e576f61f081bfba))
+* add knowledge base pages ([#657](https://github.com/linode/apl-console/issues/657)) ([e475ef9](https://github.com/linode/apl-console/commit/e475ef94e6045073725f843754fac981a6230db3))
+* add kserve ([#656](https://github.com/linode/apl-console/issues/656)) ([bdb6666](https://github.com/linode/apl-console/commit/bdb6666ae9e3488114a46e9b5ccdef002adb1fcd))
+* added upgrade check for updating to a newer version ([#647](https://github.com/linode/apl-console/issues/647)) ([df4976f](https://github.com/linode/apl-console/commit/df4976f7803eda44808d549e870d3a0babfb4d21))
+* workloads pt. 1 ([#650](https://github.com/linode/apl-console/issues/650)) ([2a05759](https://github.com/linode/apl-console/commit/2a05759a3a22d192b8b3a9c56024c15072fbe8d9))
+* workloads pt.2  ([#658](https://github.com/linode/apl-console/issues/658)) ([27de898](https://github.com/linode/apl-console/commit/27de89896090d6f5135b43f2a0214b8ddf2ae093))
+
+
+### Bug Fixes
+
+* team name minimum added ([#642](https://github.com/linode/apl-console/issues/642)) ([e502ed3](https://github.com/linode/apl-console/commit/e502ed39e7ef507f873bcb6ea4b1d1816c24dc9b))
+
+
+### Others
+
+* **deps:** bump ncipollo/release-action ([#646](https://github.com/linode/apl-console/issues/646)) ([66d6860](https://github.com/linode/apl-console/commit/66d686025507a6b54fe14c04c1649ae396c0c1e6))
+* **deps:** bump ncipollo/release-action ([#649](https://github.com/linode/apl-console/issues/649)) ([e45fb4e](https://github.com/linode/apl-console/commit/e45fb4e0273301ca92a56b9bd7c54a8a5f360118))
+* **deps:** bump node in the docker-dependencies group ([#648](https://github.com/linode/apl-console/issues/648)) ([0c43619](https://github.com/linode/apl-console/commit/0c436198f665fc83ca526d9094bf5ced3f1be615))
+* **deps:** bump ts-jest from 26.5.6 to 29.4.1 ([#624](https://github.com/linode/apl-console/issues/624)) ([eb4e12b](https://github.com/linode/apl-console/commit/eb4e12b5a0d9136a394dd916a8d65b835a60a152))
+
 ## [4.9.0](https://github.com/linode/apl-console/compare/v4.8.0...v4.9.0) (2025-09-01)
 
 
