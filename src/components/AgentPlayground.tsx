@@ -201,7 +201,6 @@ export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): Re
             mb: 2,
             border: '1px solid',
             borderColor: 'divider',
-            borderRadius: 1,
             p: 2,
             backgroundColor: 'background.default',
           }}
