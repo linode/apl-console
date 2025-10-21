@@ -1,3 +1,4 @@
+import React from 'react'
 import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
@@ -89,6 +90,7 @@ interface AgentResourcesProps {
 export default function AgentResources(props: AgentResourcesProps) {
   const { classes, cx } = useStyles()
   const { control, register } = useFormContext()
+  const [focusedApiKeyIndex, setFocusedApiKeyIndex] = React.useState<number | null>(null)
 
   const {
     title,
@@ -233,6 +235,9 @@ export default function AgentResources(props: AgentResourcesProps) {
                 noMarginTop={compressed}
                 label={showLabel && localIndex === 0 ? labels.field4 : ''}
                 error={error}
+                type={focusedApiKeyIndex === index ? 'text' : 'password'}
+                onFocus={() => setFocusedApiKeyIndex(index)}
+                onBlur={() => setFocusedApiKeyIndex(null)}
                 InputProps={{
                   readOnly: frozen,
                 }}
