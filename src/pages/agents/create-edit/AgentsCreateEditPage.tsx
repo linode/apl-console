@@ -2,7 +2,6 @@ import { AppBar, Box, Grid, Tab, Tabs, Typography } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { AutoResizableTextarea } from 'components/forms/TextArea'
-import AgentResources from 'components/forms/AgentResources'
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
@@ -26,8 +25,9 @@ import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
 import { LoadingButton } from '@mui/lab'
 import { Divider } from 'components/Divider'
-import { AgentPlayground } from 'components/AgentPlayground'
 import TabPanel from 'components/TabPanel'
+import AgentPlayground from './AgentPlayground'
+import AgentResources from './AgentResources'
 import { agentSchema } from './create-edit-agents.validator'
 
 interface Params {
@@ -315,7 +315,7 @@ export default function AgentsCreateEditPage({
                 />
                 <Divider spacingBottom={10} />
                 <AgentResources
-                  title='MCP Server(s)'
+                  title='MCP server(s)'
                   name='spec.tools'
                   mode='tool'
                   toolType='mcpServer'

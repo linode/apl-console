@@ -3,9 +3,9 @@ import { Alert, Box, IconButton, TextField, Typography, keyframes } from '@mui/m
 import SendIcon from '@mui/icons-material/Send'
 import DeleteIcon from '@mui/icons-material/Delete'
 import StopIcon from '@mui/icons-material/StopCircle'
-import Markdown from './Markdown'
-import { Paper } from './Paper'
-import Iconify from './Iconify'
+import Markdown from 'components/Markdown'
+import { Paper } from 'components/Paper'
+import Iconify from 'components/Iconify'
 
 const thinkingAnimation = keyframes`
   0%, 60%, 100% {
@@ -27,7 +27,7 @@ interface AgentPlaygroundProps {
   agentName: string
 }
 
-export function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): React.ReactElement {
+export default function AgentPlayground({ teamId, agentName }: AgentPlaygroundProps): React.ReactElement {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
