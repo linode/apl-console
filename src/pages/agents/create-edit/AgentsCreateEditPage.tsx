@@ -16,6 +16,7 @@ import {
   useEditAplAgentMutation,
   useGetAiModelsQuery,
   useGetAplAgentQuery,
+  useGetAplAgentsQuery,
   useGetAplKnowledgeBasesQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
@@ -51,6 +52,7 @@ export default function AgentsCreateEditPage({
   )
   const { data: aiModels } = useGetAiModelsQuery()
   const { data: knowledgeBases } = useGetAplKnowledgeBasesQuery({ teamId })
+  const { data: agents } = useGetAplAgentsQuery({ teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -357,6 +359,8 @@ export default function AgentsCreateEditPage({
                   showLabel
                   compressed
                   addLabel='add agent route'
+                  useDropdownForFirstField
+                  dropdownOptions={agents?.map((agent) => agent.metadata.name) || []}
                 />
                 <Divider spacingBottom={10} />
                 <AgentResources
