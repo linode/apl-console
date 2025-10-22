@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-plus-operands */
 import React, { useEffect, useMemo, useState } from 'react'
 import { Editor } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
@@ -320,10 +319,7 @@ export default function CodeEditor({
         // If nothing found (e.g., patternProperties), fall back to parent
         if (!node && segs.length > 0) node = getNodeAtPath(doc, segs.slice(0, -1))
 
-        const msg =
-          err.keyword === 'type'
-            ? `${segs.join('.') || '(root)'} ${err.message}`
-            : `${segs.join('.') || '(root)'} ${err.message}`
+        const msg = `${segs.join('.') || '(root)'} ${err.message}`
 
         const r = nodeRange(node, 'node')
         if (r) return buildMarker(model, msg, r[0], r[1])
@@ -344,8 +340,6 @@ export default function CodeEditor({
   // Validate once on mount with initial code
   useEffect(() => {
     if (editorInstance && typeof code === 'string') validateAndMark(code)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editorInstance, validator])
 
   return (
