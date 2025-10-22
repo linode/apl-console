@@ -89,7 +89,11 @@ interface AgentResourcesProps {
 
 export default function AgentResources(props: AgentResourcesProps) {
   const { classes, cx } = useStyles()
-  const { control, register } = useFormContext()
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext()
   const [focusedApiKeyIndex, setFocusedApiKeyIndex] = React.useState<number | null>(null)
 
   const {
@@ -181,6 +185,18 @@ export default function AgentResources(props: AgentResourcesProps) {
           return localIndex === 0 ? '48px' : '28px'
         }
 
+        // Get errors for this specific index
+        const getFieldError = (fieldName: string) => {
+          const fieldPath = name.split('.')
+          const errorObj = fieldPath.reduce((acc: any, path: string) => acc?.[path], errors)
+          return errorObj?.[index]?.[fieldName]
+        }
+
+        const field1Error = getFieldError(fieldNames.field1)
+        const field2Error = getFieldError(fieldNames.field2)
+        const field3Error = getFieldError(fieldNames.field3)
+        const field4Error = getFieldError(fieldNames.field4)
+
         return (
           <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
             <FormRow
@@ -198,7 +214,8 @@ export default function AgentResources(props: AgentResourcesProps) {
                 disabled={disabled}
                 noMarginTop={compressed}
                 label={showLabel && localIndex === 0 ? labels.field1 : ''}
-                error={error}
+                error={!!field1Error}
+                helperText={field1Error?.message?.toString()}
                 InputProps={{
                   readOnly: frozen,
                 }}
@@ -210,7 +227,8 @@ export default function AgentResources(props: AgentResourcesProps) {
                 disabled={disabled}
                 noMarginTop={compressed}
                 label={showLabel && localIndex === 0 ? labels.field2 : ''}
-                error={error}
+                error={!!field2Error}
+                helperText={field2Error?.message?.toString()}
                 InputProps={{
                   readOnly: frozen,
                 }}
@@ -222,7 +240,8 @@ export default function AgentResources(props: AgentResourcesProps) {
                 disabled={disabled}
                 noMarginTop={compressed}
                 label={showLabel && localIndex === 0 ? labels.field3 : ''}
-                error={error}
+                error={!!field3Error}
+                helperText={field3Error?.message?.toString()}
                 InputProps={{
                   readOnly: frozen,
                 }}
@@ -234,7 +253,8 @@ export default function AgentResources(props: AgentResourcesProps) {
                 disabled={disabled}
                 noMarginTop={compressed}
                 label={showLabel && localIndex === 0 ? labels.field4 : ''}
-                error={error}
+                error={!!field4Error}
+                helperText={field4Error?.message?.toString()}
                 type={focusedApiKeyIndex === index ? 'text' : 'password'}
                 onFocus={() => setFocusedApiKeyIndex(index)}
                 onBlur={() => setFocusedApiKeyIndex(null)}

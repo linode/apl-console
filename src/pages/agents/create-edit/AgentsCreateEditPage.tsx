@@ -1,4 +1,4 @@
-import { AppBar, Box, Grid, Tab, Tabs, Typography } from '@mui/material'
+import { AppBar, Box, Grid, Tab, Tabs, Tooltip, Typography } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { AutoResizableTextarea } from 'components/forms/TextArea'
@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { isEqual } from 'lodash'
+import { isEmpty, isEqual } from 'lodash'
 import {
   CreateAplAgentApiArg,
   useCreateAplAgentMutation,
@@ -60,8 +60,23 @@ export default function AgentsCreateEditPage({
 
   const [tab, setTab] = useState(0)
   const handleTabChange = (event, newTab) => {
-    setTab(newTab)
+    setTab(newTab as number)
   }
+
+  const tabHasErrors = (tabIndex: number): boolean => {
+    switch (tabIndex) {
+      case 0: // Settings tab
+        return !!(errors.metadata?.name || errors.spec?.foundationModel)
+      case 1: // Playground tab
+        return !!errors.spec?.agentInstructions
+      case 2: // Workflow resources tab
+        return !!(errors.spec?.tools || errors.spec?.routes)
+      default:
+        return false
+    }
+  }
+
+  const DEFAULT_AGENT_INSTRUCTIONS = 'You are a helpful assistant. Give clear answers to the users.'
 
   type FormType = CreateAplAgentApiArg['body']
 
@@ -90,6 +105,7 @@ export default function AgentsCreateEditPage({
     watch,
     formState: { errors },
     setValue,
+    trigger,
   } = methods
 
   useEffect(() => {
@@ -103,6 +119,17 @@ export default function AgentsCreateEditPage({
     else create({ teamId, body })
   }
 
+  const handleFormSubmit = async () => {
+    const formData = watch()
+    if (isEmpty(formData.spec.agentInstructions)) {
+      setValue('spec.agentInstructions', DEFAULT_AGENT_INSTRUCTIONS)
+      await trigger('spec.agentInstructions')
+    }
+    handleSubmit(onSubmit)()
+  }
+
+  const requiredFieldsFilled = !!watch('metadata.name') && !!watch('spec.foundationModel')
+
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/agents`} />
@@ -110,6 +137,48 @@ export default function AgentsCreateEditPage({
   const loading = isLoading
 
   if (loading) return <PaperLayout loading title={t('TITLE_AGENT')} />
+
+  const formButtons = (
+    <Box>
+      {agentName && (
+        <DeleteButton
+          onDelete={() => del({ teamId, agentName })}
+          resourceName={watch('metadata.name')}
+          resourceType='agent'
+          data-cy='button-delete-agent'
+          sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+          loading={isLoadingDelete}
+          disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+        />
+      )}
+      <Tooltip
+        title={
+          !agentName && !requiredFieldsFilled
+            ? 'Please fill in required fields: Agent name, Foundation model, and Instructions'
+            : ''
+        }
+      >
+        <Box sx={{ float: 'right' }}>
+          <LoadingButton
+            onClick={handleFormSubmit}
+            variant='contained'
+            color='primary'
+            sx={{ textTransform: 'none' }}
+            loading={isLoadingCreate || isLoadingUpdate}
+            disabled={
+              isLoadingCreate ||
+              isLoadingUpdate ||
+              isLoadingDelete ||
+              (!agentName && !requiredFieldsFilled) ||
+              (agentName && data && isEqual(data, watch()))
+            }
+          >
+            {agentName ? 'Save Changes' : 'Create Agent'}
+          </LoadingButton>
+        </Box>
+      </Tooltip>
+    </Box>
+  )
 
   return (
     <Grid>
@@ -130,18 +199,54 @@ export default function AgentsCreateEditPage({
               },
             }}
           >
-            <Tab label='Settings' value={0} sx={{ textTransform: 'capitalize', padding: '12px 16px' }} />
-            <Tab label='Playground' value={1} sx={{ textTransform: 'capitalize', padding: '12px 16px' }} />
-            <Tab label='Workflow resources' value={2} sx={{ textTransform: 'capitalize', padding: '12px 16px' }} />
+            <Tab
+              label='Settings'
+              value={0}
+              sx={{
+                textTransform: 'capitalize',
+                padding: '12px 16px',
+                ...(tab !== 0 &&
+                  tabHasErrors(0) && {
+                    borderBottom: '2px solid',
+                    borderBottomColor: 'error.main',
+                  }),
+              }}
+            />
+            <Tab
+              label='Playground'
+              value={1}
+              sx={{
+                textTransform: 'capitalize',
+                padding: '12px 16px',
+                ...(tab !== 1 &&
+                  tabHasErrors(1) && {
+                    borderBottom: '2px solid',
+                    borderBottomColor: 'error.main',
+                  }),
+              }}
+            />
+            <Tab
+              label='Workflow resources'
+              value={2}
+              sx={{
+                textTransform: 'capitalize',
+                padding: '12px 16px',
+                ...(tab !== 2 &&
+                  tabHasErrors(2) && {
+                    borderBottom: '2px solid',
+                    borderBottomColor: 'error.main',
+                  }),
+              }}
+            />
           </Tabs>
         </AppBar>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form>
             <TabPanel value={tab} index={0}>
               <Section noPaddingTop>
                 <FormRow spacing={10}>
                   <TextField
-                    label='Agent name'
+                    label='Agent name *'
                     width='large'
                     placeholder='my-agent'
                     {...register('metadata.name')}
@@ -159,7 +264,7 @@ export default function AgentsCreateEditPage({
 
                 <FormRow spacing={10}>
                   <Autocomplete
-                    label='Foundation model'
+                    label='Foundation model *'
                     width='large'
                     placeholder='Select a foundation model'
                     options={
@@ -181,37 +286,15 @@ export default function AgentsCreateEditPage({
                 </FormRow>
               </Section>
 
-              {agentName && (
-                <DeleteButton
-                  onDelete={() => del({ teamId, agentName })}
-                  resourceName={watch('metadata.name')}
-                  resourceType='agent'
-                  data-cy='button-delete-agent'
-                  sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                  loading={isLoadingDelete}
-                  disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
-                />
-              )}
-              <LoadingButton
-                type='submit'
-                variant='contained'
-                color='primary'
-                sx={{ float: 'right', textTransform: 'none' }}
-                loading={isLoadingCreate || isLoadingUpdate}
-                disabled={
-                  isLoadingCreate || isLoadingUpdate || isLoadingDelete || (agentName && data && isEqual(data, watch()))
-                }
-              >
-                {agentName ? 'Save Changes' : 'Create Agent'}
-              </LoadingButton>
+              {formButtons}
             </TabPanel>
 
             <TabPanel value={tab} index={1}>
               <Section noPaddingTop>
                 <FormRow spacing={10}>
                   <AutoResizableTextarea
-                    label='Instructions'
-                    placeholder='Enter agent instructions...'
+                    label='Instructions *'
+                    placeholder={`Enter agent instructions... (Leave empty to use the default: '${DEFAULT_AGENT_INSTRUCTIONS}')`}
                     minRows={12}
                     maxRows={40}
                     minWidth={400}
@@ -226,34 +309,7 @@ export default function AgentsCreateEditPage({
                 </FormRow>
               </Section>
 
-              <Box sx={{ my: 2 }}>
-                {agentName && (
-                  <DeleteButton
-                    onDelete={() => del({ teamId, agentName })}
-                    resourceName={watch('metadata.name')}
-                    resourceType='agent'
-                    data-cy='button-delete-agent'
-                    sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                    loading={isLoadingDelete}
-                    disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
-                  />
-                )}
-                <LoadingButton
-                  type='submit'
-                  variant='contained'
-                  color='primary'
-                  sx={{ float: 'right', textTransform: 'none' }}
-                  loading={isLoadingCreate || isLoadingUpdate}
-                  disabled={
-                    isLoadingCreate ||
-                    isLoadingUpdate ||
-                    isLoadingDelete ||
-                    (agentName && data && isEqual(data, watch()))
-                  }
-                >
-                  {agentName ? 'Save Changes' : 'Create Agent'}
-                </LoadingButton>
-              </Box>
+              <Box sx={{ my: 2 }}>{formButtons}</Box>
 
               {agentName ? (
                 <Box sx={{ clear: 'both' }}>
@@ -303,7 +359,6 @@ export default function AgentsCreateEditPage({
                     }}
                   />
                 </FormRow>
-
                 <Divider spacingBottom={10} />
                 <AgentResources
                   title='Agent route(s)'
@@ -348,29 +403,7 @@ export default function AgentsCreateEditPage({
                 />
               </Section>
 
-              {agentName && (
-                <DeleteButton
-                  onDelete={() => del({ teamId, agentName })}
-                  resourceName={watch('metadata.name')}
-                  resourceType='agent'
-                  data-cy='button-delete-agent'
-                  sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                  loading={isLoadingDelete}
-                  disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
-                />
-              )}
-              <LoadingButton
-                type='submit'
-                variant='contained'
-                color='primary'
-                sx={{ float: 'right', textTransform: 'none' }}
-                loading={isLoadingCreate || isLoadingUpdate}
-                disabled={
-                  isLoadingCreate || isLoadingUpdate || isLoadingDelete || (agentName && data && isEqual(data, watch()))
-                }
-              >
-                {agentName ? 'Save Changes' : 'Create Agent'}
-              </LoadingButton>
+              {formButtons}
             </TabPanel>
           </form>
         </FormProvider>
