@@ -60,6 +60,7 @@ export function Autocomplete<
     loadingText,
     multiple,
     disableSelectAll = false,
+    noMarginTop = false,
     noOptionsText,
     onBlur,
     options,
@@ -127,8 +128,10 @@ export function Autocomplete<
             label={label}
             width={width}
             loading={loading}
+            noMarginTop={noMarginTop}
             placeholder={compactMultiSelect && hasValues ? '' : inPlaceholder || placeholder || 'Select an option'}
             {...params}
+            {...textFieldProps}
             error={!!errorText}
             helperText={helperText}
             InputProps={{

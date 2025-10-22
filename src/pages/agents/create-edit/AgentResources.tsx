@@ -1,13 +1,13 @@
 import React from 'react'
 import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
+import { Autocomplete } from 'components/forms/Autocomplete'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
 import font from 'theme/font'
 import { Add, Clear } from '@mui/icons-material'
 import { InputLabel } from 'components/InputLabel'
 import { useFieldArray, useFormContext } from 'react-hook-form'
-import FormRow from 'components/forms/FormRow'
 import { FormHelperText } from 'components/FormHelperText'
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -70,6 +70,7 @@ type AgentResourceItem = AgentRouteItem | AgentToolItem
 
 interface AgentResourcesProps {
   title: string
+  noMarginTop?: boolean
   helperText?: string
   helperTextPosition?: 'bottom' | 'top'
   showLabel?: boolean
@@ -83,8 +84,10 @@ interface AgentResourcesProps {
   errorText?: string
   hideWhenEmpty?: boolean
   filterFn?: (item: any, index: number) => boolean
-  mode: 'route' | 'tool'
-  toolType?: 'mcpServer' | 'subWorkflow' | 'function'
+  mode: 'route' | 'tool' | 'knowledgeBase'
+  toolType?: 'mcpServer' | 'subWorkflow' | 'function' | 'knowledgeBase'
+  dropdownOptions?: string[]
+  useDropdownForFirstField?: boolean
 }
 
 export default function AgentResources(props: AgentResourcesProps) {
@@ -93,13 +96,15 @@ export default function AgentResources(props: AgentResourcesProps) {
     control,
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext()
   const [focusedApiKeyIndex, setFocusedApiKeyIndex] = React.useState<number | null>(null)
 
   const {
     title,
+    noMarginTop = false,
     addLabel,
-    compressed = false,
     disabled = false,
     frozen = false,
     name,
@@ -113,6 +118,8 @@ export default function AgentResources(props: AgentResourcesProps) {
     filterFn,
     mode,
     toolType,
+    dropdownOptions = [],
+    useDropdownForFirstField = false,
   } = props
 
   const { fields, append, remove } = useFieldArray({ control, name })
@@ -125,6 +132,7 @@ export default function AgentResources(props: AgentResourcesProps) {
 
   const handleAddItem = () => {
     if (mode === 'route') append({ agent: '', condition: '', apiUrl: '', apiKey: '' })
+    else if (mode === 'knowledgeBase') append({ type: 'knowledgeBase', name: '', description: '' })
     else append({ type: toolType, name: '', description: '', apiUrl: '', apiKey: '' })
   }
 
@@ -135,6 +143,12 @@ export default function AgentResources(props: AgentResourcesProps) {
         field2: 'Condition',
         field3: 'API URL',
         field4: 'API Key (optional)',
+      }
+    }
+    if (mode === 'knowledgeBase') {
+      return {
+        field1: 'Knowledge base',
+        field2: 'Description',
       }
     }
     return {
@@ -154,6 +168,14 @@ export default function AgentResources(props: AgentResourcesProps) {
         field4: 'apiKey',
       }
     }
+    if (mode === 'knowledgeBase') {
+      return {
+        field1: 'name',
+        field2: 'description',
+        field3: '',
+        field4: '',
+      }
+    }
     return {
       field1: 'name',
       field2: 'description',
@@ -162,13 +184,19 @@ export default function AgentResources(props: AgentResourcesProps) {
     }
   }
 
+  const getFieldCount = () => {
+    if (mode === 'knowledgeBase') return 2
+    return 4
+  }
+
   const labels = getFieldLabels()
   const fieldNames = getFieldNames()
+  const fieldCount = getFieldCount()
 
   const errorScrollClassName = 'error-for-scroll'
   return (
     <Box
-      sx={{ mt: 3 }}
+      sx={{ mt: noMarginTop ? 0 : 3 }}
       className={cx({
         [errorScrollClassName]: !!errorText,
       })}
@@ -177,15 +205,39 @@ export default function AgentResources(props: AgentResourcesProps) {
         {title}
       </InputLabel>
 
-      {filteredFields.map(({ field, index }, localIndex) => {
-        const clearButtonMarginTop = () => {
-          // eslint-disable-next-line no-nested-ternary
-          if (compressed) return localIndex === 0 ? (showLabel ? '32px' : '12px') : showLabel ? '12px' : '14px'
+      {/* Render label row for first item */}
+      {showLabel && filteredFields.length > 0 && (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              maxWidth: 'calc(100% - 40px)',
+              gap: '10px',
+            }}
+          >
+            <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+              {labels.field1}
+            </InputLabel>
+            <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+              {labels.field2}
+            </InputLabel>
+            {fieldCount >= 3 && (
+              <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+                {labels.field3}
+              </InputLabel>
+            )}
+            {fieldCount >= 4 && (
+              <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+                {labels.field4}
+              </InputLabel>
+            )}
+          </Box>
+          <Box sx={{ width: '40px' }} /> {/* Spacer for delete button */}
+        </Box>
+      )}
 
-          return localIndex === 0 ? '48px' : '28px'
-        }
-
-        // Get errors for this specific index
+      {filteredFields.map(({ field, index }) => {
         const getFieldError = (fieldName: string) => {
           const fieldPath = name.split('.')
           const errorObj = fieldPath.reduce((acc: any, path: string) => acc?.[path], errors)
@@ -194,77 +246,106 @@ export default function AgentResources(props: AgentResourcesProps) {
 
         const field1Error = getFieldError(fieldNames.field1)
         const field2Error = getFieldError(fieldNames.field2)
-        const field3Error = getFieldError(fieldNames.field3)
-        const field4Error = getFieldError(fieldNames.field4)
+        const field3Error = fieldCount >= 3 ? getFieldError(fieldNames.field3) : null
+        const field4Error = fieldCount >= 4 ? getFieldError(fieldNames.field4) : null
+
+        const renderFirstField = () => {
+          if (useDropdownForFirstField && dropdownOptions.length > 0) {
+            return (
+              <Autocomplete
+                width='medium'
+                placeholder=' '
+                options={dropdownOptions}
+                value={watch(`${name}.${index}.${fieldNames.field1}`) || null}
+                onChange={(_, value) => {
+                  setValue(`${name}.${index}.${fieldNames.field1}`, value || '')
+                }}
+                disabled={disabled || frozen}
+                label=''
+                hideLabel
+                noMarginTop
+                errorText={field1Error?.message?.toString()}
+                helperText={field1Error?.message?.toString()}
+              />
+            )
+          }
+          return (
+            <TextField
+              {...register(`${name}.${index}.${fieldNames.field1}`)}
+              width='medium'
+              sx={{ color: '#B5B5BC' }}
+              disabled={disabled}
+              noMarginTop
+              label=''
+              error={!!field1Error}
+              helperText={field1Error?.message?.toString()}
+              InputProps={{
+                readOnly: frozen,
+              }}
+            />
+          )
+        }
 
         return (
-          <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormRow
-              spacing={10}
+          <Box key={field.id} sx={{ display: 'flex', alignItems: 'flex-start' }}>
+            <Box
               sx={{
                 display: 'flex',
-                alignItems: 'flex-start',
+                alignItems: 'flex-end',
                 maxWidth: 'calc(100% - 40px)',
+                gap: '10px',
               }}
             >
-              <TextField
-                {...register(`${name}.${index}.${fieldNames.field1}`)}
-                width='medium'
-                sx={{ color: '#B5B5BC' }}
-                disabled={disabled}
-                noMarginTop={compressed}
-                label={showLabel && localIndex === 0 ? labels.field1 : ''}
-                error={!!field1Error}
-                helperText={field1Error?.message?.toString()}
-                InputProps={{
-                  readOnly: frozen,
-                }}
-              />
+              {renderFirstField()}
               <TextField
                 {...register(`${name}.${index}.${fieldNames.field2}`)}
                 width='medium'
                 sx={{ color: '#B5B5BC' }}
                 disabled={disabled}
-                noMarginTop={compressed}
-                label={showLabel && localIndex === 0 ? labels.field2 : ''}
+                noMarginTop
+                label=''
                 error={!!field2Error}
                 helperText={field2Error?.message?.toString()}
                 InputProps={{
                   readOnly: frozen,
                 }}
               />
-              <TextField
-                {...register(`${name}.${index}.${fieldNames.field3}`)}
-                width='medium'
-                sx={{ color: '#B5B5BC' }}
-                disabled={disabled}
-                noMarginTop={compressed}
-                label={showLabel && localIndex === 0 ? labels.field3 : ''}
-                error={!!field3Error}
-                helperText={field3Error?.message?.toString()}
-                InputProps={{
-                  readOnly: frozen,
-                }}
-              />
-              <TextField
-                {...register(`${name}.${index}.${fieldNames.field4}`)}
-                width='medium'
-                sx={{ color: '#B5B5BC' }}
-                disabled={disabled}
-                noMarginTop={compressed}
-                label={showLabel && localIndex === 0 ? labels.field4 : ''}
-                error={!!field4Error}
-                helperText={field4Error?.message?.toString()}
-                type={focusedApiKeyIndex === index ? 'text' : 'password'}
-                onFocus={() => setFocusedApiKeyIndex(index)}
-                onBlur={() => setFocusedApiKeyIndex(null)}
-                InputProps={{
-                  readOnly: frozen,
-                }}
-              />
-            </FormRow>
+              {fieldCount >= 3 && (
+                <TextField
+                  {...register(`${name}.${index}.${fieldNames.field3}`)}
+                  width='medium'
+                  sx={{ color: '#B5B5BC' }}
+                  disabled={disabled}
+                  noMarginTop
+                  label=''
+                  error={!!field3Error}
+                  helperText={field3Error?.message?.toString()}
+                  InputProps={{
+                    readOnly: frozen,
+                  }}
+                />
+              )}
+              {fieldCount >= 4 && (
+                <TextField
+                  {...register(`${name}.${index}.${fieldNames.field4}`)}
+                  width='medium'
+                  sx={{ color: '#B5B5BC' }}
+                  disabled={disabled}
+                  noMarginTop
+                  label=''
+                  error={!!field4Error}
+                  helperText={field4Error?.message?.toString()}
+                  type={focusedApiKeyIndex === index ? 'text' : 'password'}
+                  onFocus={() => setFocusedApiKeyIndex(index)}
+                  onBlur={() => setFocusedApiKeyIndex(null)}
+                  InputProps={{
+                    readOnly: frozen,
+                  }}
+                />
+              )}
+            </Box>
             {addLabel && !disabled && (
-              <IconButton sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop() }} onClick={() => remove(index)}>
+              <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
                 <Clear />
               </IconButton>
             )}

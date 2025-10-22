@@ -38,8 +38,8 @@ export const agentSchema = yup.object({
             .required('Tool type is required'),
           name: yup.string().required('Tool name is required'),
           description: yup.string().when('type', {
-            is: (val: string) => ['mcpServer', 'subWorkflow', 'function'].includes(val),
-            then: (schema) => schema.required('Description is required for this tool type'),
+            is: (val: string) => ['knowledgeBase', 'mcpServer', 'subWorkflow', 'function'].includes(val),
+            then: (schema) => schema.required('Description is required'),
             otherwise: (schema) => schema.optional(),
           }),
           apiUrl: yup.string().when('type', {

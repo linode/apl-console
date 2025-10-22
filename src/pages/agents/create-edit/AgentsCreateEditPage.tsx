@@ -335,30 +335,20 @@ export default function AgentsCreateEditPage({
             </TabPanel>
 
             <TabPanel value={tab} index={2}>
-              <Section noPaddingTop>
-                <FormRow spacing={10}>
-                  <Autocomplete<string, true>
-                    label='Knowledge base(s)'
-                    width='large'
-                    placeholder='Select knowledge base(s)'
-                    options={knowledgeBases?.map((kb) => kb.metadata.name) || []}
-                    multiple
-                    limitTags={-1}
-                    compactMultiSelect
-                    value={
-                      watch('spec.tools')
-                        ?.filter((tool) => tool.type === 'knowledgeBase')
-                        .map((tool) => tool.name) || []
-                    }
-                    onChange={(_, value) => {
-                      const currentTools = watch('spec.tools') || []
-                      const nonKbTools = currentTools.filter((tool) => tool.type !== 'knowledgeBase')
-                      const kbTools = (value as string[]).map((name) => ({ type: 'knowledgeBase' as const, name }))
-                      const updatedTools = [...nonKbTools, ...kbTools]
-                      setValue('spec.tools', updatedTools)
-                    }}
-                  />
-                </FormRow>
+              <Section sx={{ pt: 2 }}>
+                <AgentResources
+                  title='Knowledge base(s)'
+                  noMarginTop
+                  name='spec.tools'
+                  mode='knowledgeBase'
+                  toolType='knowledgeBase'
+                  showLabel
+                  compressed
+                  addLabel='add knowledge base'
+                  filterFn={(tool) => tool.type === 'knowledgeBase'}
+                  useDropdownForFirstField
+                  dropdownOptions={knowledgeBases?.map((kb) => kb.metadata.name) || []}
+                />
                 <Divider spacingBottom={10} />
                 <AgentResources
                   title='Agent route(s)'
