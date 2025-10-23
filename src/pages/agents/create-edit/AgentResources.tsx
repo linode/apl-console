@@ -252,21 +252,23 @@ export default function AgentResources(props: AgentResourcesProps) {
         const renderFirstField = () => {
           if (useDropdownForFirstField && dropdownOptions.length > 0) {
             return (
-              <Autocomplete
-                width='medium'
-                placeholder=' '
-                options={dropdownOptions}
-                value={watch(`${name}.${index}.${fieldNames.field1}`) || null}
-                onChange={(_, value) => {
-                  setValue(`${name}.${index}.${fieldNames.field1}`, value || '')
-                }}
-                disabled={disabled || frozen}
-                label=''
-                hideLabel
-                noMarginTop
-                errorText={field1Error?.message?.toString()}
-                helperText={field1Error?.message?.toString()}
-              />
+              <Box sx={{ mt: 1 }}>
+                <Autocomplete
+                  width='medium'
+                  placeholder=' '
+                  options={dropdownOptions}
+                  value={watch(`${name}.${index}.${fieldNames.field1}`) || null}
+                  onChange={(_, value) => {
+                    setValue(`${name}.${index}.${fieldNames.field1}`, value || '')
+                  }}
+                  disabled={disabled || frozen}
+                  label=''
+                  hideLabel
+                  noMarginTop
+                  errorText={field1Error?.message?.toString()}
+                  helperText={field1Error?.message?.toString()}
+                />
+              </Box>
             )
           }
           return (
@@ -291,7 +293,7 @@ export default function AgentResources(props: AgentResourcesProps) {
             <Box
               sx={{
                 display: 'flex',
-                alignItems: 'flex-end',
+                alignItems: 'flex-start',
                 maxWidth: 'calc(100% - 40px)',
                 gap: '10px',
               }}
@@ -345,7 +347,7 @@ export default function AgentResources(props: AgentResourcesProps) {
               )}
             </Box>
             {addLabel && !disabled && (
-              <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
+              <IconButton sx={{ alignSelf: 'flex-start', mt: '12px' }} onClick={() => remove(index)}>
                 <Clear />
               </IconButton>
             )}
