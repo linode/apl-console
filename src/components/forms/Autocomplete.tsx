@@ -36,7 +36,7 @@ export interface EnhancedAutocompleteProps<
   /** Removes the "select all" option for multiselect */
   disableSelectAll?: boolean
   textFieldProps?: Partial<TextFieldProps>
-  width?: 'small' | 'medium' | 'large'
+  width?: 'small' | 'medium' | 'large' | 'fullwidth'
   /** Hide placeholder and minimize input width when values are selected (for cleaner multi-select UX) */
   compactMultiSelect?: boolean
 }

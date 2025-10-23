@@ -21,7 +21,7 @@ export const agentSchema = yup.object({
       .array()
       .of(
         yup.object({
-          agent: yup.string().required('Agent name is required'),
+          agent: yup.string().required('Name is required'),
           condition: yup.string().required('Condition is required'),
           apiUrl: yup.string().required('API URL is required').url('Must be a valid URL'),
           apiKey: yup.string().optional(),
@@ -36,7 +36,7 @@ export const agentSchema = yup.object({
             .string()
             .oneOf(['knowledgeBase', 'mcpServer', 'subWorkflow', 'function'], 'Invalid tool type')
             .required('Tool type is required'),
-          name: yup.string().required('Tool name is required'),
+          name: yup.string().required('Name is required'),
           description: yup.string().when('type', {
             is: (val: string) => ['knowledgeBase', 'mcpServer', 'subWorkflow', 'function'].includes(val),
             then: (schema) => schema.required('Description is required'),

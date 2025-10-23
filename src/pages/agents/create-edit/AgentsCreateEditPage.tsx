@@ -294,20 +294,22 @@ export default function AgentsCreateEditPage({
             <TabPanel value={tab} index={1}>
               <Section noPaddingTop>
                 <FormRow spacing={10}>
-                  <AutoResizableTextarea
-                    label='Instructions *'
-                    placeholder={`Enter agent instructions... (Leave empty to use the default: '${DEFAULT_AGENT_INSTRUCTIONS}')`}
-                    minRows={12}
-                    maxRows={40}
-                    minWidth={400}
-                    {...register('spec.agentInstructions')}
-                    onChange={(e) => {
-                      const value = e.target.value
-                      setValue('spec.agentInstructions', value)
-                    }}
-                    error={!!errors.spec?.agentInstructions}
-                    value={watch('spec.agentInstructions') || ''}
-                  />
+                  <Box sx={{ width: '100%' }}>
+                    <AutoResizableTextarea
+                      label='Instructions *'
+                      placeholder={`Enter agent instructions... (Leave empty to use the default: '${DEFAULT_AGENT_INSTRUCTIONS}')`}
+                      minRows={12}
+                      maxRows={40}
+                      minWidth='100%'
+                      {...register('spec.agentInstructions')}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        setValue('spec.agentInstructions', value)
+                      }}
+                      error={!!errors.spec?.agentInstructions}
+                      value={watch('spec.agentInstructions') || ''}
+                    />
+                  </Box>
                 </FormRow>
               </Section>
 

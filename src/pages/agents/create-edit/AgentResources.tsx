@@ -7,8 +7,9 @@ import { Theme } from '@mui/material/styles'
 import font from 'theme/font'
 import { Add, Clear } from '@mui/icons-material'
 import { InputLabel } from 'components/InputLabel'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form'
 import { FormHelperText } from 'components/FormHelperText'
+import { AutoResizableTextarea } from 'components/forms/TextArea'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
@@ -214,21 +215,25 @@ export default function AgentResources(props: AgentResourcesProps) {
               alignItems: 'flex-start',
               maxWidth: 'calc(100% - 40px)',
               gap: '10px',
+              width: '100%',
             }}
           >
-            <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+            <InputLabel className={classes.inputLabel} sx={{ flex: 1, fontSize: '14px' }}>
               {labels.field1}
             </InputLabel>
-            <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
-              {labels.field2}
-            </InputLabel>
+            {/* For knowledge base, show description label. For 4-field modes, skip it */}
+            {mode === 'knowledgeBase' && (
+              <InputLabel className={classes.inputLabel} sx={{ flex: 2, fontSize: '14px' }}>
+                {labels.field2}
+              </InputLabel>
+            )}
             {fieldCount >= 3 && (
-              <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+              <InputLabel className={classes.inputLabel} sx={{ flex: 1, fontSize: '14px' }}>
                 {labels.field3}
               </InputLabel>
             )}
             {fieldCount >= 4 && (
-              <InputLabel className={classes.inputLabel} sx={{ width: '200px', fontSize: '14px' }}>
+              <InputLabel className={classes.inputLabel} sx={{ flex: 1, fontSize: '14px' }}>
                 {labels.field4}
               </InputLabel>
             )}
@@ -237,7 +242,7 @@ export default function AgentResources(props: AgentResourcesProps) {
         </Box>
       )}
 
-      {filteredFields.map(({ field, index }) => {
+      {filteredFields.map(({ field, index }, subIndex) => {
         const getFieldError = (fieldName: string) => {
           const fieldPath = name.split('.')
           const errorObj = fieldPath.reduce((acc: any, path: string) => acc?.[path], errors)
@@ -254,7 +259,7 @@ export default function AgentResources(props: AgentResourcesProps) {
             return (
               <Box sx={{ mt: 1 }}>
                 <Autocomplete
-                  width='medium'
+                  width='fullwidth'
                   placeholder=' '
                   options={dropdownOptions}
                   value={watch(`${name}.${index}.${fieldNames.field1}`) || null}
@@ -274,7 +279,7 @@ export default function AgentResources(props: AgentResourcesProps) {
           return (
             <TextField
               {...register(`${name}.${index}.${fieldNames.field1}`)}
-              width='medium'
+              width='fullwidth'
               sx={{ color: '#B5B5BC' }}
               disabled={disabled}
               noMarginTop
@@ -288,68 +293,103 @@ export default function AgentResources(props: AgentResourcesProps) {
           )
         }
 
-        return (
-          <Box key={field.id} sx={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                maxWidth: 'calc(100% - 40px)',
-                gap: '10px',
-              }}
-            >
-              {renderFirstField()}
-              <TextField
-                {...register(`${name}.${index}.${fieldNames.field2}`)}
-                width='medium'
-                sx={{ color: '#B5B5BC' }}
-                disabled={disabled}
-                noMarginTop
-                label=''
+        // Render description textarea component
+        const renderDescriptionField = () => (
+          <Controller
+            name={`${name}.${index}.${fieldNames.field2}`}
+            control={control}
+            render={({ field }) => (
+              <AutoResizableTextarea
+                {...field}
+                disabled={disabled || frozen}
                 error={!!field2Error}
-                helperText={field2Error?.message?.toString()}
-                InputProps={{
-                  readOnly: frozen,
-                }}
+                minWidth='100%'
+                maxWidth='100%'
+                minRows={1}
               />
-              {fieldCount >= 3 && (
-                <TextField
-                  {...register(`${name}.${index}.${fieldNames.field3}`)}
-                  width='medium'
-                  sx={{ color: '#B5B5BC' }}
-                  disabled={disabled}
-                  noMarginTop
-                  label=''
-                  error={!!field3Error}
-                  helperText={field3Error?.message?.toString()}
-                  InputProps={{
-                    readOnly: frozen,
-                  }}
-                />
-              )}
-              {fieldCount >= 4 && (
-                <TextField
-                  {...register(`${name}.${index}.${fieldNames.field4}`)}
-                  width='medium'
-                  sx={{ color: '#B5B5BC' }}
-                  disabled={disabled}
-                  noMarginTop
-                  label=''
-                  error={!!field4Error}
-                  helperText={field4Error?.message?.toString()}
-                  type={focusedApiKeyIndex === index ? 'text' : 'password'}
-                  onFocus={() => setFocusedApiKeyIndex(index)}
-                  onBlur={() => setFocusedApiKeyIndex(null)}
-                  InputProps={{
-                    readOnly: frozen,
-                  }}
-                />
+            )}
+          />
+        )
+
+        return (
+          <Box key={field.id} sx={{ mb: 2 }}>
+            {/* First row: field1 and field3/field4 for 4-field modes, or field1 and description for knowledge base */}
+            <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  maxWidth: 'calc(100% - 40px)',
+                  gap: '10px',
+                  width: '100%',
+                }}
+              >
+                <Box sx={{ flex: 1 }}>{renderFirstField()}</Box>
+                {/* For knowledge base, show description in the same row */}
+                {mode === 'knowledgeBase' && (
+                  <Box sx={{ flex: 2, width: '100%', maxWidth: '66%' }}>
+                    {renderDescriptionField()}
+                    {field2Error && (
+                      <FormHelperText sx={{ mt: '4px' }}>{field2Error?.message?.toString()}</FormHelperText>
+                    )}
+                  </Box>
+                )}
+                {/* For 4-field modes, show field3 and field4 */}
+                {fieldCount >= 3 && (
+                  <Box sx={{ flex: 1 }}>
+                    <TextField
+                      {...register(`${name}.${index}.${fieldNames.field3}`)}
+                      width='fullwidth'
+                      sx={{ color: '#B5B5BC' }}
+                      disabled={disabled}
+                      noMarginTop
+                      label=''
+                      error={!!field3Error}
+                      helperText={field3Error?.message?.toString()}
+                      InputProps={{
+                        readOnly: frozen,
+                      }}
+                    />
+                  </Box>
+                )}
+                {fieldCount >= 4 && (
+                  <Box sx={{ flex: 1 }}>
+                    <TextField
+                      {...register(`${name}.${index}.${fieldNames.field4}`)}
+                      width='fullwidth'
+                      sx={{ color: '#B5B5BC' }}
+                      disabled={disabled}
+                      noMarginTop
+                      label=''
+                      error={!!field4Error}
+                      helperText={field4Error?.message?.toString()}
+                      type={focusedApiKeyIndex === index ? 'text' : 'password'}
+                      onFocus={() => setFocusedApiKeyIndex(index)}
+                      onBlur={() => setFocusedApiKeyIndex(null)}
+                      InputProps={{
+                        readOnly: frozen,
+                      }}
+                    />
+                  </Box>
+                )}
+              </Box>
+              {addLabel && !disabled && (
+                <IconButton sx={{ alignSelf: 'flex-start', mt: '12px' }} onClick={() => remove(index)}>
+                  <Clear />
+                </IconButton>
               )}
             </Box>
-            {addLabel && !disabled && (
-              <IconButton sx={{ alignSelf: 'flex-start', mt: '12px' }} onClick={() => remove(index)}>
-                <Clear />
-              </IconButton>
+            {/* Second row: description field for 4-field modes (tool/route) */}
+            {fieldCount >= 3 && mode !== 'knowledgeBase' && (
+              <Box sx={{ mt: subIndex === 0 ? 1 : 0, maxWidth: 'calc(100% - 40px)' }}>
+                {subIndex === 0 && (
+                  <InputLabel className={classes.inputLabel} sx={{ fontSize: '12px', mb: '4px' }}>
+                    {labels.field2}
+                  </InputLabel>
+                )}
+                {renderDescriptionField()}
+                {field2Error && <FormHelperText sx={{ mt: '4px' }}>{field2Error?.message?.toString()}</FormHelperText>}
+              </Box>
             )}
           </Box>
         )
