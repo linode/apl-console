@@ -62,7 +62,7 @@ export interface AgentRouteItem {
 export interface AgentToolItem {
   type: string
   name: string
-  description: string
+  description?: string
   apiUrl: string
   apiKey?: string
 }
@@ -134,6 +134,7 @@ export default function AgentResources(props: AgentResourcesProps) {
   const handleAddItem = () => {
     if (mode === 'route') append({ agent: '', condition: '', apiUrl: '', apiKey: '' })
     else if (mode === 'knowledgeBase') append({ type: 'knowledgeBase', name: '', description: '' })
+    else if (toolType === 'mcpServer') append({ type: toolType, name: '', apiUrl: '', apiKey: '' })
     else append({ type: toolType, name: '', description: '', apiUrl: '', apiKey: '' })
   }
 
@@ -150,6 +151,13 @@ export default function AgentResources(props: AgentResourcesProps) {
       return {
         field1: 'Knowledge base',
         field2: 'Description',
+      }
+    }
+    if (toolType === 'mcpServer') {
+      return {
+        field1: 'Name',
+        field2: 'API URL',
+        field3: 'API Key (optional)',
       }
     }
     return {
@@ -177,6 +185,14 @@ export default function AgentResources(props: AgentResourcesProps) {
         field4: '',
       }
     }
+    if (toolType === 'mcpServer') {
+      return {
+        field1: 'name',
+        field2: 'apiUrl',
+        field3: 'apiKey',
+        field4: '',
+      }
+    }
     return {
       field1: 'name',
       field2: 'description',
@@ -187,7 +203,15 @@ export default function AgentResources(props: AgentResourcesProps) {
 
   const getFieldCount = () => {
     if (mode === 'knowledgeBase') return 2
+    // MCP servers don't have description field, so only 3 fields
+    if (toolType === 'mcpServer') return 3
     return 4
+  }
+
+  const shouldShowDescriptionField = () => {
+    // Don't show description for MCP servers
+    if (toolType === 'mcpServer') return false
+    return true
   }
 
   const labels = getFieldLabels()
@@ -229,12 +253,12 @@ export default function AgentResources(props: AgentResourcesProps) {
             )}
             {fieldCount >= 3 && (
               <InputLabel className={classes.inputLabel} sx={{ flex: 1, fontSize: '14px' }}>
-                {labels.field3}
+                {toolType === 'mcpServer' ? labels.field2 : labels.field3}
               </InputLabel>
             )}
-            {fieldCount >= 4 && (
+            {((toolType === 'mcpServer' && fieldCount >= 3) || fieldCount >= 4) && (
               <InputLabel className={classes.inputLabel} sx={{ flex: 1, fontSize: '14px' }}>
-                {labels.field4}
+                {toolType === 'mcpServer' ? labels.field3 : labels.field4}
               </InputLabel>
             )}
           </Box>
@@ -251,8 +275,8 @@ export default function AgentResources(props: AgentResourcesProps) {
 
         const field1Error = getFieldError(fieldNames.field1)
         const field2Error = getFieldError(fieldNames.field2)
-        const field3Error = fieldCount >= 3 ? getFieldError(fieldNames.field3) : null
-        const field4Error = fieldCount >= 4 ? getFieldError(fieldNames.field4) : null
+        const field3Error = getFieldError(fieldNames.field3)
+        const field4Error = getFieldError(fieldNames.field4)
 
         const renderFirstField = () => {
           if (useDropdownForFirstField && dropdownOptions.length > 0) {
@@ -334,35 +358,43 @@ export default function AgentResources(props: AgentResourcesProps) {
                     )}
                   </Box>
                 )}
-                {/* For 4-field modes, show field3 and field4 */}
+                {/* For MCP servers: show apiUrl and apiKey. For 4-field modes: show field3 and field4 */}
                 {fieldCount >= 3 && (
                   <Box sx={{ flex: 1 }}>
                     <TextField
-                      {...register(`${name}.${index}.${fieldNames.field3}`)}
+                      {...register(
+                        `${name}.${index}.${toolType === 'mcpServer' ? fieldNames.field2 : fieldNames.field3}`,
+                      )}
                       width='fullwidth'
                       sx={{ color: '#B5B5BC' }}
                       disabled={disabled}
                       noMarginTop
                       label=''
-                      error={!!field3Error}
-                      helperText={field3Error?.message?.toString()}
+                      error={toolType === 'mcpServer' ? !!field2Error : !!field3Error}
+                      helperText={
+                        toolType === 'mcpServer' ? field2Error?.message?.toString() : field3Error?.message?.toString()
+                      }
                       InputProps={{
                         readOnly: frozen,
                       }}
                     />
                   </Box>
                 )}
-                {fieldCount >= 4 && (
+                {((toolType === 'mcpServer' && fieldCount >= 3) || fieldCount >= 4) && (
                   <Box sx={{ flex: 1 }}>
                     <TextField
-                      {...register(`${name}.${index}.${fieldNames.field4}`)}
+                      {...register(
+                        `${name}.${index}.${toolType === 'mcpServer' ? fieldNames.field3 : fieldNames.field4}`,
+                      )}
                       width='fullwidth'
                       sx={{ color: '#B5B5BC' }}
                       disabled={disabled}
                       noMarginTop
                       label=''
-                      error={!!field4Error}
-                      helperText={field4Error?.message?.toString()}
+                      error={toolType === 'mcpServer' ? !!field3Error : !!field4Error}
+                      helperText={
+                        toolType === 'mcpServer' ? field3Error?.message?.toString() : field4Error?.message?.toString()
+                      }
                       type={focusedApiKeyIndex === index ? 'text' : 'password'}
                       onFocus={() => setFocusedApiKeyIndex(index)}
                       onBlur={() => setFocusedApiKeyIndex(null)}
@@ -379,8 +411,8 @@ export default function AgentResources(props: AgentResourcesProps) {
                 </IconButton>
               )}
             </Box>
-            {/* Second row: description field for 4-field modes (tool/route) */}
-            {fieldCount >= 3 && mode !== 'knowledgeBase' && (
+            {/* Second row: description field for 4-field modes (tool/route) - skip for MCP servers */}
+            {fieldCount >= 3 && mode !== 'knowledgeBase' && shouldShowDescriptionField() && (
               <Box sx={{ mt: subIndex === 0 ? 1 : 0, maxWidth: 'calc(100% - 40px)' }}>
                 {subIndex === 0 && (
                   <InputLabel className={classes.inputLabel} sx={{ fontSize: '12px', mb: '4px' }}>
