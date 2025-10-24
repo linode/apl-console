@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 import { HeadCell } from 'components/EnhancedTable'
 import ListTable from 'components/ListTable'
 import MuiLink from 'components/MuiLink'
-import { getStatus } from 'components/Workloads'
+import { Status, getStatus } from 'utils/status'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import { useSocket } from 'providers/Socket'
@@ -93,7 +93,7 @@ export default function ServicesOverviewPage({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(statuses?.services?.[row.name]),
+      renderer: (row) => getStatus((statuses?.services?.[row.name] as Status) || 'NotFound'),
     },
   ]
   if (!teamId) {

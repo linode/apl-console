@@ -5,7 +5,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAplKnowledgeBasesQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
-import { Box, Tooltip } from '@mui/material'
+import { Status, getStatus } from 'utils/status'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
@@ -18,33 +18,6 @@ const getKnowledgeBaseName = (): CallableFunction =>
       <RLink to={path} label={name}>
         {name}
       </RLink>
-    )
-  }
-
-const STATUS_COLORS: Record<string, string> = {
-  Failed: '#FF4842',
-  Unknown: '#FFC107',
-  Indexed: '#54D62C',
-}
-
-const getStatus = (): CallableFunction =>
-  function (row: any): React.ReactElement {
-    const { status } = row
-    const statusText = status?.phase || 'Unknown'
-    const color = STATUS_COLORS[statusText] || STATUS_COLORS.Unknown
-
-    return (
-      <Tooltip title={statusText} arrow>
-        <Box
-          sx={{
-            width: 10,
-            height: 10,
-            borderRadius: '50%',
-            backgroundColor: color,
-            cursor: 'pointer',
-          }}
-        />
-      </Tooltip>
     )
   }
 
@@ -89,14 +62,14 @@ export default function KnowledgeBasesOverviewPage({
       renderer: getKnowledgeBaseName(),
     },
     {
-      id: 'status',
-      label: t('Status'),
-      renderer: getStatus(),
-    },
-    {
       id: 'embeddingModel',
       label: t('Embedding Model'),
       renderer: getEmbeddingModel(),
+    },
+    {
+      id: 'status',
+      label: t('Status'),
+      renderer: (row: any) => getStatus((row.status?.phase as Status) || 'Unknown'),
     },
   ]
 

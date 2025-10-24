@@ -7,7 +7,7 @@ import MuiLink from 'components/MuiLink'
 import { HeadCell } from 'components/EnhancedTable'
 import RLink from 'components/Link'
 import ListTable from 'components/ListTable'
-import { getStatus } from 'components/Workloads'
+import { Status, getStatus } from 'utils/status'
 import InformationBanner from 'components/InformationBanner'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { RouteComponentProps } from 'react-router-dom'
@@ -81,7 +81,7 @@ export default function SecretOverviewPage({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(statuses?.secrets?.[row.name]),
+      renderer: (row) => getStatus((statuses?.secrets?.[row.name] as Status) || 'NotFound'),
     },
   ]
   if (!teamId) {
