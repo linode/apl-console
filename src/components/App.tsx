@@ -278,7 +278,7 @@ export default function App({
       </AppBar>
       <TabPanel value={tab} index={hashMap.info}>
         <Grid container direction='row' className={classes.tableBackground}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs='auto' md='auto'>
             <Box className={classes.content}>
               <TableContainer className={classes.legend}>
                 <Table size='small' aria-label='simple table'>
