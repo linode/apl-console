@@ -311,7 +311,11 @@ export default function AgentsCreateEditPage({
                       setValue('spec.temperature', toNumber(value) ?? undefined)
                     }}
                     error={!!errors.spec?.temperature}
-                    helperText={errors.spec?.temperature?.message?.toString()}
+                    helperText={
+                      errors.spec?.temperature?.message?.toString() ||
+                      'Temperature parameter for model inference (controls randomness)'
+                    }
+                    helperTextPosition='top'
                   />
                 </FormRow>
 
@@ -328,7 +332,10 @@ export default function AgentsCreateEditPage({
                       setValue('spec.topP', toNumber(value) ?? undefined)
                     }}
                     error={!!errors.spec?.topP}
-                    helperText={errors.spec?.topP?.message?.toString()}
+                    helperText={
+                      errors.spec?.topP?.message?.toString() || 'Top-p parameter for model inference (nucleus sampling)'
+                    }
+                    helperTextPosition='top'
                   />
                 </FormRow>
 
@@ -345,7 +352,8 @@ export default function AgentsCreateEditPage({
                       setValue('spec.maxTokens', toNumber(value) ?? undefined)
                     }}
                     error={!!errors.spec?.maxTokens}
-                    helperText={errors.spec?.maxTokens?.message?.toString()}
+                    helperText={errors.spec?.maxTokens?.message?.toString() || 'Maximum number of tokens to generate'}
+                    helperTextPosition='top'
                   />
                 </FormRow>
               </Section>
