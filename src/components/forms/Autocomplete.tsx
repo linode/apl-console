@@ -36,7 +36,9 @@ export interface EnhancedAutocompleteProps<
   /** Removes the "select all" option for multiselect */
   disableSelectAll?: boolean
   textFieldProps?: Partial<TextFieldProps>
-  width?: 'small' | 'medium' | 'large'
+  width?: 'small' | 'medium' | 'large' | 'fullwidth'
+  /** Hide placeholder and minimize input width when values are selected (for cleaner multi-select UX) */
+  compactMultiSelect?: boolean
 }
 
 export function Autocomplete<
@@ -58,6 +60,7 @@ export function Autocomplete<
     loadingText,
     multiple,
     disableSelectAll = false,
+    noMarginTop = false,
     noOptionsText,
     onBlur,
     options,
@@ -68,10 +71,14 @@ export function Autocomplete<
     value,
     onChange,
     width = 'medium',
+    compactMultiSelect = false,
     ...rest
   } = props
 
   const [inPlaceholder, setInPlaceholder] = useState('')
+
+  // Check if there are selected values (for hiding placeholder when values exist)
+  const hasValues = multiple ? Array.isArray(value) && value.length > 0 : !!value
 
   // --- select-all logic ---
   const isSelectAllActive = multiple && Array.isArray(value) && value.length === options.length
@@ -121,8 +128,10 @@ export function Autocomplete<
             label={label}
             width={width}
             loading={loading}
-            placeholder={inPlaceholder || placeholder || 'Select an option'}
+            noMarginTop={noMarginTop}
+            placeholder={compactMultiSelect && hasValues ? '' : inPlaceholder || placeholder || 'Select an option'}
             {...params}
+            {...textFieldProps}
             error={!!errorText}
             helperText={helperText}
             InputProps={{
@@ -133,6 +142,10 @@ export function Autocomplete<
                 flexWrap: 'wrap',
                 gap: 1,
                 paddingRight: '44px',
+                '& input': {
+                  minWidth: compactMultiSelect && hasValues && multiple ? '30px !important' : undefined,
+                  width: compactMultiSelect && hasValues && multiple ? '30px !important' : undefined,
+                },
               },
             }}
             InputLabelProps={{
