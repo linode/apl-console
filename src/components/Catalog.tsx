@@ -11,7 +11,6 @@ import { applyAclToUiSchema, getSpec } from 'common/api-spec'
 import { useAppDispatch } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import { makeStyles } from 'tss-react/mui'
-import InformationBanner from './InformationBanner'
 import CodeEditor from '../pages/workloads/create-edit/WorkloadsCodeEditor'
 import Form from './rjsf/Form'
 import DeleteButton from './DeleteButton'
@@ -80,6 +79,7 @@ interface Props extends CrudProps {
   workload?: any
   workloadName?: string
   values?: any
+  valuesSchema?: any
   createWorkload: any
   updateWorkload: any
   deleteWorkload: any
@@ -90,6 +90,7 @@ export default function ({
   workload,
   workloadName,
   values,
+  valuesSchema,
   createWorkload,
   updateWorkload,
   deleteWorkload,
@@ -206,10 +207,6 @@ export default function ({
         )}
       </Box>
 
-      {workloadValuesJson?.image && checkImageFields(workloadValuesJson?.image) && (
-        <InformationBanner sx={{ mt: 1 }} message={checkImageFields(workloadValuesJson?.image)} />
-      )}
-
       <Form
         schema={schema}
         uiSchema={uiSchema}
@@ -222,7 +219,7 @@ export default function ({
         {...other}
       />
 
-      <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} />
+      <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} validationSchema={valuesSchema} />
 
       <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
         <ButtonGroup sx={{ gap: '10px' }}>
