@@ -63,16 +63,18 @@ export default function WorkloadsCreateEditPage({
           chartDescription: helmChartDescription,
           name: path,
           values,
+          valuesSchema,
           icon,
         } = item
         const chartMetadata = { helmChartVersion, helmChartDescription }
-        setCatalogItem({ chartMetadata, path, values, url, icon })
+        setCatalogItem({ chartMetadata, path, values, valuesSchema, url, icon })
       })
     }
   }, [workload])
 
   const workloadData = workloadName ? workload : catalogItem
   const valuesData = workloadName ? values?.values : catalogItem?.values
+  const valuesSchema = catalogItem?.valuesSchema
 
   useEffect(() => {
     if (isDirty !== false) return
@@ -89,6 +91,7 @@ export default function WorkloadsCreateEditPage({
       workload={workloadData}
       workloadName={workloadName}
       values={valuesData}
+      valuesSchema={valuesSchema}
       createWorkload={createWorkload}
       updateWorkload={updateWorkload}
       deleteWorkload={deleteWorkload}
