@@ -6440,6 +6440,9 @@ export type GetAplAgentsApiResponse = /** status 200 Successfully obtained agent
   spec: {
     foundationModel: string
     foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
     routes?: {
       agent: string
@@ -6483,6 +6486,9 @@ export type CreateAplAgentApiResponse = /** status 200 Successfully stored agent
   spec: {
     foundationModel: string
     foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
     routes?: {
       agent: string
@@ -6526,6 +6532,9 @@ export type CreateAplAgentApiArg = {
     spec: {
       foundationModel: string
       foundationModelEndpoint?: string
+      temperature?: number
+      topP?: number
+      maxTokens?: number
       agentInstructions: string
       routes?: {
         agent: string
@@ -6552,6 +6561,9 @@ export type GetAplAgentApiResponse = /** status 200 Successfully obtained agent 
   spec: {
     foundationModel: string
     foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
     routes?: {
       agent: string
@@ -6597,6 +6609,9 @@ export type EditAplAgentApiResponse = /** status 200 Successfully edited a team 
   spec: {
     foundationModel: string
     foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
     routes?: {
       agent: string
@@ -6642,6 +6657,9 @@ export type EditAplAgentApiArg = {
     spec: {
       foundationModel: string
       foundationModelEndpoint?: string
+      temperature?: number
+      topP?: number
+      maxTokens?: number
       agentInstructions: string
       routes?: {
         agent: string

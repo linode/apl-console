@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { isEmpty, isEqual } from 'lodash'
+import { isEmpty, isEqual, toNumber } from 'lodash'
 import {
   CreateAplAgentApiArg,
   useCreateAplAgentMutation,
@@ -89,6 +89,9 @@ export default function AgentsCreateEditPage({
     },
     spec: {
       foundationModel: '',
+      temperature: 0.3,
+      topP: 0.9,
+      maxTokens: 512,
       agentInstructions: '',
       tools: [],
       routes: [],
@@ -115,7 +118,15 @@ export default function AgentsCreateEditPage({
   }, [data, reset])
 
   const onSubmit = (formData: FormType) => {
-    const body = { ...formData }
+    const body = {
+      ...formData,
+      spec: {
+        ...formData.spec,
+        temperature: formData.spec.temperature ?? 0.3,
+        topP: formData.spec.topP ?? 0.9,
+        maxTokens: formData.spec.maxTokens ?? 512,
+      },
+    }
 
     if (agentName) update({ teamId, agentName, body })
     else create({ teamId, body })
@@ -284,6 +295,57 @@ export default function AgentsCreateEditPage({
                     }}
                     errorText={errors.spec?.foundationModel?.message?.toString()}
                     helperText={errors.spec?.foundationModel?.message?.toString()}
+                  />
+                </FormRow>
+
+                <Divider spacingBottom={10} />
+
+                <FormRow spacing={10}>
+                  <TextField
+                    label='Temperature'
+                    width='large'
+                    placeholder='0.3'
+                    value={watch('spec.temperature') ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('spec.temperature', toNumber(value) ?? undefined)
+                    }}
+                    error={!!errors.spec?.temperature}
+                    helperText={errors.spec?.temperature?.message?.toString()}
+                  />
+                </FormRow>
+
+                <Divider spacingBottom={10} />
+
+                <FormRow spacing={10}>
+                  <TextField
+                    label='Top-p'
+                    width='large'
+                    placeholder='0.9'
+                    value={watch('spec.topP') ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('spec.topP', toNumber(value) ?? undefined)
+                    }}
+                    error={!!errors.spec?.topP}
+                    helperText={errors.spec?.topP?.message?.toString()}
+                  />
+                </FormRow>
+
+                <Divider spacingBottom={10} />
+
+                <FormRow spacing={10}>
+                  <TextField
+                    label='Max Tokens'
+                    width='large'
+                    placeholder='512'
+                    value={watch('spec.maxTokens') ?? ''}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      setValue('spec.maxTokens', toNumber(value) ?? undefined)
+                    }}
+                    error={!!errors.spec?.maxTokens}
+                    helperText={errors.spec?.maxTokens?.message?.toString()}
                   />
                 </FormRow>
               </Section>
