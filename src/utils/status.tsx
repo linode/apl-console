@@ -1,7 +1,7 @@
 import { CircularProgress, Tooltip } from '@mui/material'
 import Iconify from '../components/Iconify'
 
-export type Status = 'NotFound' | 'Failed' | 'Unknown' | 'Pending' | 'Succeeded' | 'Running'
+export type Status = 'NotFound' | 'Failed' | 'Unknown' | 'Pending' | 'Succeeded' | 'Running' | 'Indexed'
 
 export const getStatus = (status: Status) => {
   if (!status || status === 'NotFound') return <CircularProgress size='22px' />
@@ -14,7 +14,6 @@ export const getStatus = (status: Status) => {
           </span>
         </Tooltip>
       )
-    case 'Unknown':
     case 'Pending':
       return (
         <Tooltip title={status} arrow>
@@ -25,6 +24,7 @@ export const getStatus = (status: Status) => {
       )
     case 'Succeeded':
     case 'Running':
+    case 'Indexed':
       return (
         <Tooltip title={status} arrow>
           <span>
