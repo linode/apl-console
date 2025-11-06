@@ -83,8 +83,8 @@ export const createTeamApiResponseSchema = yup.object({
     ]),
   networkPolicy: yup
     .object({
-      ingressPrivate: yup.boolean().optional(),
-      egressPublic: yup.boolean().optional(),
+      ingressPrivate: yup.boolean().optional().default(true),
+      egressPublic: yup.boolean().optional().default(true),
     })
     .optional(),
   selfService: selfServiceSchema.optional(),
