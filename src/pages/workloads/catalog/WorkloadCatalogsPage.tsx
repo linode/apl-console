@@ -3,7 +3,7 @@ import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { useWorkloadCatalogMutation } from 'redux/otomiApi'
+import { useGetWorkloadCatalogMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -15,7 +15,7 @@ export default function WorkloadCatalogsPage({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { user } = useSession()
-  const [getWorkloadCatalog, { isLoading }] = useWorkloadCatalogMutation()
+  const [getWorkloadCatalog, { isLoading }] = useGetWorkloadCatalogMutation()
   const [catalogs, setCatalogs] = useState<any[]>([])
 
   const fetchCatalog = () => {

@@ -9,9 +9,9 @@ import {
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
   useEditAplWorkloadMutation,
+  useGetWorkloadCatalogMutation,
   useGetWorkloadQuery,
   useGetWorkloadValuesQuery,
-  useWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 
 interface Params {
@@ -48,7 +48,7 @@ export default function WorkloadsCreateEditPage({
     refetch: refetchValues,
   } = useGetWorkloadValuesQuery({ teamId, workloadName }, { skip: !workloadName })
 
-  const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useWorkloadCatalogMutation()
+  const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useGetWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
