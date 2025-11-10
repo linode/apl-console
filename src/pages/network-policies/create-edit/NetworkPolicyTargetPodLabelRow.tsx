@@ -2,11 +2,11 @@ import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { GetAllAplWorkloadNamesApiResponse, useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { GetAllWorkloadNamesApiResponse, useGetK8SPodLabelsForWorkloadQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkloadTarget } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
-  aplWorkloads: GetAllAplWorkloadNamesApiResponse
+  aplWorkloads: GetAllWorkloadNamesApiResponse
   teamId: string
   prefixName: string
   showBanner?: () => void
@@ -60,7 +60,7 @@ export default function NetworkPolicyTargetLabelRow({
   const selectedWorkloadOption = workloadOptions?.find((o) => o.name === activeWorkload) || null
 
   // fetch the label→value map for that pod spec
-  const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
+  const { data: podLabels } = useGetK8SPodLabelsForWorkloadQuery(
     { teamId, workloadName: activeWorkload, namespace: `team-${teamId}` },
     { skip: !activeWorkload },
   )

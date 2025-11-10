@@ -2,10 +2,10 @@ import { ButtonGroup, IconButton } from '@mui/material'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link as RLink } from 'react-router-dom'
-import { GetAppApiResponse } from 'redux/otomiApi'
+import { GetTeamAppApiResponse } from 'redux/otomiApi'
 import Iconify from './Iconify'
 
-interface Props extends GetAppApiResponse {
+interface Props extends GetTeamAppApiResponse {
   teamId: string
   toggleApp?: any
   externalUrl?: string
