@@ -41,7 +41,7 @@ export default function TeamsCreateEditPage({
   },
 }: RouteComponentProps<Params>) {
   const { classes } = useStyles()
-  const { appsEnabled, user } = useSession()
+  const { appsEnabled, user, settings } = useSession()
   const { themeView } = useSettings()
   const { isPlatformAdmin } = user
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
@@ -66,8 +66,18 @@ export default function TeamsCreateEditPage({
     //   imgSrc: '/logos/email_logo.svg',
     // },
   ]
+  const tier = settings?.cluster?.linode?.tier || 'standard'
 
-  const mergedDefaultValues = createTeamApiResponseSchema.cast(data)
+  const mergedDefaultValues = createTeamApiResponseSchema.cast({
+    ...data,
+    ...(!teamId && {
+      networkPolicy: {
+        ...data?.networkPolicy,
+        ingressPrivate: true,
+        egressPublic: tier !== 'enterprise',
+      },
+    }),
+  })
 
   const methods = useForm<CreateTeamApiResponse>({
     disabled: !isPlatformAdmin,
@@ -133,6 +143,7 @@ export default function TeamsCreateEditPage({
     const rawReceivers = submitData.alerts?.receivers ?? []
     let receivers = rawReceivers.filter((r) => r !== 'none')
 
+    // @ts-ignore: no receivers requires 'none' string
     if (submitData.managedMonitoring?.alertmanager && receivers.length === 0) receivers = ['none']
 
     // 3) Combine edge cases with submittedData for final payload
