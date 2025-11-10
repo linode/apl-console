@@ -97,7 +97,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
       <PaperLayout loading={isFetching} title={t('TITLE_NETWORK_POLICY')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies#outbound-rules'
           title={networkPolicyName ? data.name : 'Create'}
           hideCrumbX={[0, 1, 3]}
         />
