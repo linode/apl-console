@@ -157,7 +157,8 @@ export default function TeamsCreateEditPage({
     <Grid className={classes.root}>
       <PaperLayout>
         <LandingHeader
-          docsLabel='https://techdocs.akamai.com/app-platform/docs/platform-teams'
+          docsLabel='Docs'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/platform-teams'
           title={themeView === 'team' ? `${teamId} Settings` : teamId || 'Create'}
           // hides the first crumb for the teamSettings page (e.g. /teams)
           hideCrumbX={themeView === 'team' ? [0] : []}
