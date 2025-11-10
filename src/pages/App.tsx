@@ -5,7 +5,7 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditAppMutation, useGetAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useEditAppMutation, useGetTeamAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -20,7 +20,7 @@ export default function ({
   const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
   const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
-  const { data, isLoading, isFetching, isError, refetch } = useGetAppQuery(
+  const { data, isLoading, isFetching, isError, refetch } = useGetTeamAppQuery(
     { teamId, appId },
     { skip: teamId !== 'admin' },
   )

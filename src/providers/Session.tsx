@@ -11,10 +11,10 @@ import { useAppSelector } from 'redux/hooks'
 import {
   GetSessionApiResponse,
   GetSettingsInfoApiResponse,
+  useGetApiDocQuery,
   useGetAppsQuery,
   useGetSessionQuery,
   useGetSettingsInfoQuery,
-  useV1ApiDocsQuery,
 } from 'redux/otomiApi'
 import {
   ApiErrorGatewayTimeout,
@@ -86,7 +86,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
   } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
-  const { data: apiDocs, isLoading: isLoadingApiDocs } = useV1ApiDocsQuery(skipFetch && skipToken)
+  const { data: apiDocs, isLoading: isLoadingApiDocs } = useGetApiDocQuery(skipFetch && skipToken)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
     return memo

@@ -15,9 +15,9 @@ import {
   useEditCodeRepoMutation,
   useGetCodeRepoQuery,
   useGetInternalRepoUrlsQuery,
-  useGetSealedSecretsQuery,
   useGetTeamCodeReposQuery,
-  useGetTestRepoConnectQuery,
+  useGetTeamSealedSecretsQuery,
+  useTestRepoConnectQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import FormRow from 'components/forms/FormRow'
@@ -96,7 +96,7 @@ export default function CodeRepositoriesCreateEditPage({
     isFetching: isFetchingTeamSecrets,
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
-  } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
   const teamSecrets =
     teamSealedSecrets?.filter(
       (secret) => secret?.type === 'kubernetes.io/basic-auth' || secret?.type === 'kubernetes.io/ssh-auth',
@@ -108,7 +108,7 @@ export default function CodeRepositoriesCreateEditPage({
     isError: isErrorRepoUrls,
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
-  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useGetTestRepoConnectQuery(
+  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useTestRepoConnectQuery(
     { url: testConnectUrl, teamId, secret: secretName },
     { skip: !testConnectUrl },
   )
