@@ -12,9 +12,9 @@ import {
   useDeleteAplServiceMutation,
   useEditAplServiceMutation,
   useGetAplServiceQuery,
-  useGetSealedSecretsQuery,
+  useGetK8SServicesQuery,
   useGetSettingsInfoQuery,
-  useGetTeamK8SServicesQuery,
+  useGetTeamSealedSecretsQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
@@ -92,7 +92,7 @@ export default function ServicesCreateEditPage({
     isFetching: isFetchingK8sServices,
     isError: isErrorK8sServices,
     refetch: refetchK8sServices,
-  } = useGetTeamK8SServicesQuery({ teamId })
+  } = useGetK8SServicesQuery({ teamId })
 
   const {
     data: teamSealedSecrets,
@@ -100,7 +100,7 @@ export default function ServicesCreateEditPage({
     isFetching: isFetchingTeamSecrets,
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
-  } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
   const {
     data: settingsInfo,
     isLoading: isLoadingSettingsInfo,

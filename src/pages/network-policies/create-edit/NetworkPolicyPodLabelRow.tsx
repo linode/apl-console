@@ -2,11 +2,11 @@ import { FieldPath, useController, useFormContext } from 'react-hook-form'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import FormRow from 'components/forms/FormRow'
 import { useEffect, useMemo, useState } from 'react'
-import { GetAllAplWorkloadNamesApiResponse, useGetK8SWorkloadPodLabelsQuery } from 'redux/otomiApi'
+import { GetAllWorkloadNamesApiResponse, useGetK8SPodLabelsForWorkloadQuery } from 'redux/otomiApi'
 import { getDefaultPodLabel, getInitialActiveWorkloadRow } from './NetworkPolicyPodLabelMatchHelper'
 
 interface Props {
-  aplWorkloads: GetAllAplWorkloadNamesApiResponse
+  aplWorkloads: GetAllWorkloadNamesApiResponse
   teamId: string
   fieldArrayName: FieldPath<FormValues>
   rowIndex?: number
@@ -61,7 +61,7 @@ export default function NetworkPolicyPodLabelRow({
   )
 
   // fetch pod‐labels & pod-names
-  const { data: podLabels } = useGetK8SWorkloadPodLabelsQuery(
+  const { data: podLabels } = useGetK8SPodLabelsForWorkloadQuery(
     {
       teamId,
       workloadName: activeWorkload?.name ?? '',

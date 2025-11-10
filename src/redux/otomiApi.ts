@@ -50,16 +50,16 @@ const injectedRtkApi = api.injectEndpoints({
     createService: build.mutation<CreateServiceApiResponse, CreateServiceApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
     }),
-    getTeamK8SServices: build.query<GetTeamK8SServicesApiResponse, GetTeamK8SServicesApiArg>({
+    getK8SServices: build.query<GetK8SServicesApiResponse, GetK8SServicesApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
-    getK8SWorkloadPodLabels: build.query<GetK8SWorkloadPodLabelsApiResponse, GetK8SWorkloadPodLabelsApiArg>({
+    getK8SPodLabelsForWorkload: build.query<GetK8SPodLabelsForWorkloadApiResponse, GetK8SPodLabelsForWorkloadApiArg>({
       query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/kubernetes/networkpolicies`,
+        url: `/v1/teams/${queryArg.teamId}/kubernetes/networkPolicies`,
         params: { workloadName: queryArg.workloadName, namespace: queryArg['namespace'] },
       }),
     }),
-    listUniquePodNamesByLabel: build.query<ListUniquePodNamesByLabelApiResponse, ListUniquePodNamesByLabelApiArg>({
+    fetchPodsFromLabel: build.query<FetchPodsFromLabelApiResponse, FetchPodsFromLabelApiArg>({
       query: (queryArg) => ({
         url: `/v1/teams/${queryArg.teamId}/kubernetes/fetchPodsFromLabel`,
         params: { labelSelector: queryArg.labelSelector, namespace: queryArg['namespace'] },
@@ -103,13 +103,13 @@ const injectedRtkApi = api.injectEndpoints({
     getAllSealedSecrets: build.query<GetAllSealedSecretsApiResponse, GetAllSealedSecretsApiArg>({
       query: () => ({ url: `/v1/sealedsecrets` }),
     }),
-    downloadSealedSecretKeys: build.query<DownloadSealedSecretKeysApiResponse, DownloadSealedSecretKeysApiArg>({
+    getSealedSecretKeys: build.query<GetSealedSecretKeysApiResponse, GetSealedSecretKeysApiArg>({
       query: () => ({ url: `/v1/sealedsecretskeys` }),
     }),
     getSecretsFromK8S: build.query<GetSecretsFromK8SApiResponse, GetSecretsFromK8SApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/k8sSecrets` }),
     }),
-    getSealedSecrets: build.query<GetSealedSecretsApiResponse, GetSealedSecretsApiArg>({
+    getTeamSealedSecrets: build.query<GetTeamSealedSecretsApiResponse, GetTeamSealedSecretsApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/sealedsecrets` }),
     }),
     createSealedSecret: build.mutation<CreateSealedSecretApiResponse, CreateSealedSecretApiArg>({
@@ -131,7 +131,7 @@ const injectedRtkApi = api.injectEndpoints({
         method: 'DELETE',
       }),
     }),
-    getAllAplSecrets: build.query<GetAllAplSecretsApiResponse, GetAllAplSecretsApiArg>({
+    getAllAplSealedSecrets: build.query<GetAllAplSealedSecretsApiResponse, GetAllAplSealedSecretsApiArg>({
       query: () => ({ url: `/v2/sealedsecrets` }),
     }),
     getAplSealedSecrets: build.query<GetAplSealedSecretsApiResponse, GetAplSealedSecretsApiArg>({
@@ -409,7 +409,7 @@ const injectedRtkApi = api.injectEndpoints({
     getAllWorkloads: build.query<GetAllWorkloadsApiResponse, GetAllWorkloadsApiArg>({
       query: () => ({ url: `/v1/workloads` }),
     }),
-    workloadCatalog: build.mutation<WorkloadCatalogApiResponse, WorkloadCatalogApiArg>({
+    getWorkloadCatalog: build.mutation<GetWorkloadCatalogApiResponse, GetWorkloadCatalogApiArg>({
       query: (queryArg) => ({ url: `/v1/workloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
     getHelmChartContent: build.query<GetHelmChartContentApiResponse, GetHelmChartContentApiArg>({
@@ -453,7 +453,7 @@ const injectedRtkApi = api.injectEndpoints({
     getAllAplWorkloads: build.query<GetAllAplWorkloadsApiResponse, GetAllAplWorkloadsApiArg>({
       query: () => ({ url: `/v2/workloads` }),
     }),
-    getAllAplWorkloadNames: build.query<GetAllAplWorkloadNamesApiResponse, GetAllAplWorkloadNamesApiArg>({
+    getAllWorkloadNames: build.query<GetAllWorkloadNamesApiResponse, GetAllWorkloadNamesApiArg>({
       query: () => ({ url: `/v2/workloadNames` }),
     }),
     getTeamAplWorkloads: build.query<GetTeamAplWorkloadsApiResponse, GetTeamAplWorkloadsApiArg>({
@@ -478,16 +478,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
-    downloadKubecfg: build.query<DownloadKubecfgApiResponse, DownloadKubecfgApiArg>({
+    getKubecfg: build.query<GetKubecfgApiResponse, GetKubecfgApiArg>({
       query: (queryArg) => ({ url: `/v1/kubecfg/${queryArg.teamId}` }),
     }),
-    downloadDockerConfig: build.query<DownloadDockerConfigApiResponse, DownloadDockerConfigApiArg>({
+    getDockerConfig: build.query<GetDockerConfigApiResponse, GetDockerConfigApiArg>({
       query: (queryArg) => ({ url: `/v1/dockerconfig/${queryArg.teamId}` }),
     }),
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/v1/session` }),
     }),
-    v1ApiDocs: build.query<V1ApiDocsApiResponse, V1ApiDocsApiArg>({
+    getApiDoc: build.query<GetApiDocApiResponse, GetApiDocApiArg>({
       query: () => ({ url: `/v1/apiDocs` }),
     }),
     getSettingsInfo: build.query<GetSettingsInfoApiResponse, GetSettingsInfoApiArg>({
@@ -499,7 +499,7 @@ const injectedRtkApi = api.injectEndpoints({
         params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
       }),
     }),
-    getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
+    testRepoConnect: build.query<TestRepoConnectApiResponse, TestRepoConnectApiArg>({
       query: (queryArg) => ({
         url: `/v1/testRepoConnect`,
         params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
@@ -523,7 +523,7 @@ const injectedRtkApi = api.injectEndpoints({
     toggleApps: build.mutation<ToggleAppsApiResponse, ToggleAppsApiArg>({
       query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
     }),
-    getApp: build.query<GetAppApiResponse, GetAppApiArg>({
+    getTeamApp: build.query<GetTeamAppApiResponse, GetTeamAppApiArg>({
       query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}/${queryArg.appId}` }),
     }),
     editApp: build.mutation<EditAppApiResponse, EditAppApiArg>({
@@ -1438,19 +1438,20 @@ export type CreateServiceApiArg = {
         )
   }
 }
-export type GetTeamK8SServicesApiResponse = /** status 200 Successfully obtained kubernetes services */ {
+export type GetK8SServicesApiResponse = /** status 200 Successfully obtained kubernetes services */ {
   name: string
   ports?: number[]
   managedByKnative?: boolean
 }[]
-export type GetTeamK8SServicesApiArg = {
+export type GetK8SServicesApiArg = {
   /** ID of team */
   teamId: string
 }
-export type GetK8SWorkloadPodLabelsApiResponse = /** status 200 Successfully obtained Podlabels from given workload */ {
-  [key: string]: string
-}
-export type GetK8SWorkloadPodLabelsApiArg = {
+export type GetK8SPodLabelsForWorkloadApiResponse =
+  /** status 200 Successfully obtained Podlabels from given workload */ {
+    [key: string]: string
+  }
+export type GetK8SPodLabelsForWorkloadApiArg = {
   /** ID of team */
   teamId: string
   /** name of the workload to get Podlabels from */
@@ -1458,9 +1459,8 @@ export type GetK8SWorkloadPodLabelsApiArg = {
   /** namespace of the workload to get Podlabels from */
   namespace?: string
 }
-export type ListUniquePodNamesByLabelApiResponse =
-  /** status 200 Successfully obtained pods from given label */ string[]
-export type ListUniquePodNamesByLabelApiArg = {
+export type FetchPodsFromLabelApiResponse = /** status 200 Successfully obtained pods from given label */ string[]
+export type FetchPodsFromLabelApiArg = {
   /** ID of team */
   teamId: string
   /** name of the label to get pods name from */
@@ -2040,8 +2040,8 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
   }
 }[]
 export type GetAllSealedSecretsApiArg = void
-export type DownloadSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
-export type DownloadSealedSecretKeysApiArg = void
+export type GetSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
+export type GetSealedSecretKeysApiArg = void
 export type GetSecretsFromK8SApiResponse = /** status 200 Successfully obtained secrets from k8s */ {
   name?: string
 }[]
@@ -2049,7 +2049,7 @@ export type GetSecretsFromK8SApiArg = {
   /** ID of team */
   teamId: string
 }
-export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
+export type GetTeamSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   name: string
   namespace?: string
   immutable?: boolean
@@ -2073,7 +2073,7 @@ export type GetSealedSecretsApiResponse = /** status 200 Successfully obtained s
     }
   }
 }[]
-export type GetSealedSecretsApiArg = {
+export type GetTeamSealedSecretsApiArg = {
   /** ID of team */
   teamId: string
 }
@@ -2222,7 +2222,7 @@ export type DeleteSealedSecretApiArg = {
   /** Name of the sealed secret */
   sealedSecretName: string
 }
-export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained all secrets */ ({
+export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obtained all secrets */ ({
   kind: 'AplTeamSecret'
   spec: {
     namespace?: string
@@ -2266,7 +2266,7 @@ export type GetAllAplSecretsApiResponse = /** status 200 Successfully obtained a
     phase?: string
   }
 })[]
-export type GetAllAplSecretsApiArg = void
+export type GetAllAplSealedSecretsApiArg = void
 export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
   kind: 'AplTeamSecret'
   spec: {
@@ -4856,8 +4856,8 @@ export type GetAllWorkloadsApiResponse = /** status 200 Successfully obtained al
       }
 }[]
 export type GetAllWorkloadsApiArg = void
-export type WorkloadCatalogApiResponse = /** status 200 Successfully updated a team workload catalog */ object
-export type WorkloadCatalogApiArg = {
+export type GetWorkloadCatalogApiResponse = /** status 200 Successfully updated a team workload catalog */ object
+export type GetWorkloadCatalogApiArg = {
   /** Workload catalog object that contains updated values */
   body: object
 }
@@ -5234,13 +5234,13 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
   }
 })[]
 export type GetAllAplWorkloadsApiArg = void
-export type GetAllAplWorkloadNamesApiResponse = /** status 200 Successfully obtained all workload names */ {
+export type GetAllWorkloadNamesApiResponse = /** status 200 Successfully obtained all workload names */ {
   metadata?: {
     name?: string
     namespace?: string
   }
 }[]
-export type GetAllAplWorkloadNamesApiArg = void
+export type GetAllWorkloadNamesApiArg = void
 export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ ({
   kind: 'AplTeamWorkload'
   spec: {
@@ -5596,13 +5596,13 @@ export type EditAplWorkloadApiArg = {
     }
   }
 }
-export type DownloadKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
-export type DownloadKubecfgApiArg = {
+export type GetKubecfgApiResponse = /** status 200 Succesfully finished the download */ Blob
+export type GetKubecfgApiArg = {
   /** ID of team */
   teamId: string
 }
-export type DownloadDockerConfigApiResponse = /** status 200 Succesfully finished the download */ Blob
-export type DownloadDockerConfigApiArg = {
+export type GetDockerConfigApiResponse = /** status 200 Succesfully finished the download */ Blob
+export type GetDockerConfigApiArg = {
   /** ID of team */
   teamId: string
 }
@@ -5650,8 +5650,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   valuesSchema?: object
 }
 export type GetSessionApiArg = void
-export type V1ApiDocsApiResponse = /** status 200 The requested apiDoc. */ object
-export type V1ApiDocsApiArg = void
+export type GetApiDocApiResponse = /** status 200 The requested apiDoc. */ object
+export type GetApiDocApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
   cluster?: {
     name?: string
@@ -5681,11 +5681,11 @@ export type GetRepoBranchesApiArg = {
   /** Id of the team */
   teamId?: string
 }
-export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+export type TestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
 }
-export type GetTestRepoConnectApiArg = {
+export type TestRepoConnectApiArg = {
   /** URL of the repository */
   url?: string
   /** Id of the team */
@@ -6251,13 +6251,13 @@ export type ToggleAppsApiArg = {
   /** App toggles */
   body: object
 }
-export type GetAppApiResponse = /** status 200 The request is successful. */ {
+export type GetTeamAppApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
   rawValues?: object
   values?: object
 }
-export type GetAppApiArg = {
+export type GetTeamAppApiArg = {
   teamId: string
   appId: string
 }
@@ -6703,9 +6703,9 @@ export const {
   useGetAllServicesQuery,
   useGetTeamServicesQuery,
   useCreateServiceMutation,
-  useGetTeamK8SServicesQuery,
-  useGetK8SWorkloadPodLabelsQuery,
-  useListUniquePodNamesByLabelQuery,
+  useGetK8SServicesQuery,
+  useGetK8SPodLabelsForWorkloadQuery,
+  useFetchPodsFromLabelQuery,
   useGetServiceQuery,
   useEditServiceMutation,
   useDeleteServiceMutation,
@@ -6716,14 +6716,14 @@ export const {
   useEditAplServiceMutation,
   useDeleteAplServiceMutation,
   useGetAllSealedSecretsQuery,
-  useDownloadSealedSecretKeysQuery,
+  useGetSealedSecretKeysQuery,
   useGetSecretsFromK8SQuery,
-  useGetSealedSecretsQuery,
+  useGetTeamSealedSecretsQuery,
   useCreateSealedSecretMutation,
   useGetSealedSecretQuery,
   useEditSealedSecretMutation,
   useDeleteSealedSecretMutation,
-  useGetAllAplSecretsQuery,
+  useGetAllAplSealedSecretsQuery,
   useGetAplSealedSecretsQuery,
   useCreateAplSealedSecretMutation,
   useGetAplSealedSecretQuery,
@@ -6798,7 +6798,7 @@ export const {
   useEditAplCodeRepoMutation,
   useDeleteAplCodeRepoMutation,
   useGetAllWorkloadsQuery,
-  useWorkloadCatalogMutation,
+  useGetWorkloadCatalogMutation,
   useGetHelmChartContentQuery,
   useCreateWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
@@ -6809,26 +6809,26 @@ export const {
   useGetWorkloadValuesQuery,
   useEditWorkloadValuesMutation,
   useGetAllAplWorkloadsQuery,
-  useGetAllAplWorkloadNamesQuery,
+  useGetAllWorkloadNamesQuery,
   useGetTeamAplWorkloadsQuery,
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
   useGetAplWorkloadQuery,
   useEditAplWorkloadMutation,
-  useDownloadKubecfgQuery,
-  useDownloadDockerConfigQuery,
+  useGetKubecfgQuery,
+  useGetDockerConfigQuery,
   useGetSessionQuery,
-  useV1ApiDocsQuery,
+  useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
-  useGetTestRepoConnectQuery,
+  useTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
   useEditSettingsMutation,
   useGetAppsQuery,
   useToggleAppsMutation,
-  useGetAppQuery,
+  useGetTeamAppQuery,
   useEditAppMutation,
   useGetAiModelsQuery,
   useGetAplKnowledgeBasesQuery,
