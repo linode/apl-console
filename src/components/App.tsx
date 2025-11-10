@@ -12,7 +12,7 @@ import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import { GetAppApiResponse } from 'redux/otomiApi'
+import { GetTeamAppApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
 import { extract, getAppSchemaName, isOf } from 'utils/schema'
@@ -167,7 +167,7 @@ export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, 
   return uiSchema
 }
 
-interface Props extends CrudProps, GetAppApiResponse {
+interface Props extends CrudProps, GetTeamAppApiResponse {
   teamId: string
   setAppState: CallableFunction
   managed?: boolean

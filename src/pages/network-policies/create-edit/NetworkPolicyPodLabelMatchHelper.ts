@@ -1,4 +1,4 @@
-import { GetAllAplWorkloadNamesApiResponse } from 'redux/otomiApi'
+import { GetAllWorkloadNamesApiResponse } from 'redux/otomiApi'
 
 export interface PodLabelMatch {
   name: string
@@ -55,7 +55,7 @@ function normalizeRabbitMQLabel(labelValue: string): string {
 export function getInitialActiveWorkloadRow(
   labelValue: string,
   namespaceValue: string,
-  workloads: GetAllAplWorkloadNamesApiResponse,
+  workloads: GetAllWorkloadNamesApiResponse,
 ): WorkloadOption {
   if (!labelValue || !workloads || !Array.isArray(workloads)) return { name: 'unknown', namespace: '' }
 
@@ -71,10 +71,7 @@ export function getInitialActiveWorkloadRow(
   return { name: matches[0].metadata.name, namespace: matches[0].metadata.namespace }
 }
 
-export function getInitialActiveWorkloadTarget(
-  labelValue: string,
-  workloads: GetAllAplWorkloadNamesApiResponse,
-): string {
+export function getInitialActiveWorkloadTarget(labelValue: string, workloads: GetAllWorkloadNamesApiResponse): string {
   if (!labelValue || !workloads || !Array.isArray(workloads)) return 'unknown'
 
   const normalizedLabel = normalizeRabbitMQLabel(labelValue)
