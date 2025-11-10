@@ -11,7 +11,7 @@ import { getStatus } from 'components/Workloads'
 import InformationBanner from 'components/InformationBanner'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAllSealedSecretsQuery, useGetSealedSecretsQuery } from 'redux/otomiApi'
+import { useGetAllSealedSecretsQuery, useGetTeamSealedSecretsQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
 import { useSocket } from 'providers/Socket'
 
@@ -51,7 +51,7 @@ export default function SecretOverviewPage({
     isLoading: isLoadingTeamSealedSecrets,
     isFetching: isFetchingTeamSealedSecrets,
     refetch: refetchTeamSealedSecrets,
-  } = useGetSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
