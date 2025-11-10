@@ -35,7 +35,7 @@ export default function ({ icon, id, href, size: inSize }: HelpProps): React.Rea
   const { t } = useTranslation()
   // END HOOKS
   return (
-    <Tooltip title='Click to visit docs on otomi.io!' enterDelay={1000} enterNextDelay={1000}>
+    <Tooltip title='Click to visit docs on techdocs.akamai.com!' enterDelay={1000} enterNextDelay={1000}>
       <Button
         size={size}
         className={icon ? classes.icon : classes[size]}
