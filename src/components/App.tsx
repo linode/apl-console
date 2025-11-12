@@ -120,20 +120,6 @@ export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, 
         set(uiSchema, 'customRootCA.ui:widget', 'TextareaWidget')
       }
       break
-    case 'drone':
-      const provider = get(formData, 'sourceControl.provider')
-      if (!provider) {
-        set(uiSchema, 'adminUser.ui:widget', 'hidden')
-        set(uiSchema, 'adminToken.ui:widget', 'hidden')
-        set(uiSchema, 'orgsFilter.ui:widget', 'hidden')
-        set(uiSchema, 'repo.ui:widget', 'hidden')
-        set(uiSchema, 'repoFilter.ui:widget', 'hidden')
-      }
-      if (provider !== 'github') {
-        set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
-        set(uiSchema, 'sharedSecret.ui:widget', 'hidden')
-      }
-      break
     case 'gitea':
       set(uiSchema, 'adminPassword.ui:widget', 'hidden')
       set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
