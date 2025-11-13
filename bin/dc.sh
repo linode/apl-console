@@ -12,8 +12,6 @@ sub_help() {
     echo "   up                 Start standalone docker-compose version of web without dependent services $info"
     echo "   up-deps            Start docker-compose version of only dependent services $info"
     echo "   down               Stop and clean docker-compose containers"
-    echo "   e2e                Run e2e tests in docker-compose against running dev server"
-    echo "   e2e-ci             Run e2e tests in docker-compose in CI"
 }
 
 sub_up() {

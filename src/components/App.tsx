@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { getSpec } from 'common/api-spec'
 import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, get, isEqual, set, unset } from 'lodash'
+import { cloneDeep, isEqual, set, unset } from 'lodash'
 import { CrudProps, ValuesSchema } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
@@ -118,20 +118,6 @@ export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, 
         unset(uiSchema, 'customRootCA.ui:widget')
         unset(uiSchema, 'customRootCAKey.ui:widget')
         set(uiSchema, 'customRootCA.ui:widget', 'TextareaWidget')
-      }
-      break
-    case 'drone':
-      const provider = get(formData, 'sourceControl.provider')
-      if (!provider) {
-        set(uiSchema, 'adminUser.ui:widget', 'hidden')
-        set(uiSchema, 'adminToken.ui:widget', 'hidden')
-        set(uiSchema, 'orgsFilter.ui:widget', 'hidden')
-        set(uiSchema, 'repo.ui:widget', 'hidden')
-        set(uiSchema, 'repoFilter.ui:widget', 'hidden')
-      }
-      if (provider !== 'github') {
-        set(uiSchema, 'githubAdmins.ui:widget', 'hidden')
-        set(uiSchema, 'sharedSecret.ui:widget', 'hidden')
       }
       break
     case 'gitea':
