@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAplKnowledgeBasesQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
+import { Status, getStatus } from 'utils/status'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
@@ -18,12 +19,6 @@ const getKnowledgeBaseName = (): CallableFunction =>
         {name}
       </RLink>
     )
-  }
-
-const getStatus = (): CallableFunction =>
-  function (row: any): string {
-    const { status } = row
-    return status?.phase || 'Unknown'
   }
 
 const getEmbeddingModel = (): CallableFunction =>
@@ -67,14 +62,14 @@ export default function KnowledgeBasesOverviewPage({
       renderer: getKnowledgeBaseName(),
     },
     {
-      id: 'status',
-      label: t('Status'),
-      renderer: getStatus(),
-    },
-    {
       id: 'embeddingModel',
       label: t('Embedding Model'),
       renderer: getEmbeddingModel(),
+    },
+    {
+      id: 'status',
+      label: t('Status'),
+      renderer: (row: any) => getStatus((row.status?.phase as Status) || 'Unknown'),
     },
   ]
 
