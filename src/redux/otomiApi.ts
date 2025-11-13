@@ -5658,6 +5658,9 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     domainSuffix?: string
     apiServer?: string
     provider?: 'linode' | 'custom'
+    linode?: {
+      tier?: 'standard' | 'enterprise'
+    }
   }
   dns?: {
     zones?: string[]
@@ -5732,6 +5735,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     k8sContext?: string
     owner?: string
     provider: 'linode' | 'custom'
+    linode?: {
+      tier?: 'standard' | 'enterprise'
+    }
     defaultStorageClass?: string
   }
   platformBackups?: {
@@ -5998,6 +6004,9 @@ export type EditSettingsApiArg = {
       k8sContext?: string
       owner?: string
       provider: 'linode' | 'custom'
+      linode?: {
+        tier?: 'standard' | 'enterprise'
+      }
       defaultStorageClass?: string
     }
     platformBackups?: {
