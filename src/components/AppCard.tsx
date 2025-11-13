@@ -71,7 +71,7 @@ const useStyles = makeStyles()((theme) => {
       alignItems: 'center',
     },
     title: {
-      textAlign: 'center',
+      textAlign: 'left',
       verticalAlign: 'middle',
       color: theme.palette.text.primary,
       fontWeight: 'bold',
