@@ -118,9 +118,7 @@ export default function StyledModal() {
               {!isEmpty(wizardError) && (
                 <InformationBanner message={`The Wizard encountered a problem: ${wizardError} Please retry!`} />
               )}
-              <Typography variant='body1'>
-                The Application Platform needs an API Token to create the Object Storage.
-              </Typography>
+              <Typography variant='body1'>The App Platform needs an API Token to create the Object Storage.</Typography>
               <TextField
                 label='API Token'
                 fullWidth

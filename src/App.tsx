@@ -85,7 +85,7 @@ function App() {
                             <NotistackProvider>
                               <SnackbarUtilsConfigurator />
                               <CssBaseline />
-                              <Helmet titleTemplate='%s | APL' defaultTitle='Akamai APL Platform' />
+                              <Helmet titleTemplate='%s | App Platform' defaultTitle='Akamai App Platform' />
                               <Switch>
                                 <Route path='/' component={Dashboard} exact />
                                 <PrivateRoute

@@ -221,7 +221,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                         setHoveredUpdate(null)
                       }}
                       title='Incompatible kubernetes version'
-                      description={`The kubernetes version of your cluster is not supported with this version of Application Platform. Please upgrade your cluster kubernetes version to ${hoveredUpdate?.supported_k8s_versions?.join(
+                      description={`The kubernetes version of your cluster is not supported with this version of App Platform. Please upgrade your cluster kubernetes version to ${hoveredUpdate?.supported_k8s_versions?.join(
                         ', ',
                       )}`}
                     />
@@ -262,7 +262,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
           children={
             <>
               <Typography sx={{ marginRight: '2rem' }}>
-                You are about to upgrade Application Platform from {version} to {upgradeVersion}.
+                You are about to upgrade App Platform from {version} to {upgradeVersion}.
               </Typography>
               <Typography sx={{ marginRight: '2rem' }}>This action cannot be undone.</Typography>
               <Typography sx={{ mt: '1rem', mr: '2rem' }}>Please confirm to proceed or cancel to go back.</Typography>
