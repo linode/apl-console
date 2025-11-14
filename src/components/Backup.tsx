@@ -55,7 +55,7 @@ export default function ({ backup, teamId, ...other }: Props): React.ReactElemen
       uiSchema={uiSchema}
       data={formData}
       onChange={setData}
-      disabled={!appsEnabled.velero || isPreInstalled}
+      disabled={isPreInstalled}
       resourceType='Backup'
       {...other}
     />

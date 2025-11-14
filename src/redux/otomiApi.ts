@@ -5784,7 +5784,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             buckets?: {
               loki?: string
               cnpg?: string
-              velero?: string
               harbor?: string
               tempo?: string
               gitea?: string
@@ -6053,7 +6052,6 @@ export type EditSettingsApiArg = {
               buckets?: {
                 loki?: string
                 cnpg?: string
-                velero?: string
                 harbor?: string
                 tempo?: string
                 gitea?: string
