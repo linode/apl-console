@@ -83,7 +83,6 @@ export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, setting
       },
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
-    platformBackups: { persistentVolumes: { 'ui:widget': settings?.otomi?.isPreInstalled ? 'hidden' : '' } },
     obj: { showWizard: { 'ui:widget': 'hidden' } },
   }
 
