@@ -12,6 +12,16 @@ const baseQuery = fetchBaseQuery({
     headers.map(([idx, val]: [string, string]) => h.set(idx, val))
     return h
   },
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams()
+    Object.entries(params).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        // Serialize arrays with explode: true format (repeated keys)
+        value.forEach((item) => searchParams.append(key, item))
+      } else if (value !== undefined && value !== null) searchParams.append(key, String(value))
+    })
+    return searchParams.toString()
+  },
 })
 
 // initialize an empty api service that we'll inject endpoints into later as needed
