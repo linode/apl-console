@@ -26,7 +26,7 @@ type Props = {
   loadingText?: string
 }
 
-export default function LoadingScreen({ loadingText = 'Loading APL console' }: Props) {
+export default function LoadingScreen({ loadingText = 'Loading console' }: Props) {
   return (
     <RootStyle>
       <motion.div
