@@ -15,7 +15,6 @@ A React-based frontend for the Akamai App Platform that provides a web interface
 - **Secret Management**: Create and manage Kubernetes secrets
 - **User Management**: Role-based access control (RBAC)
 - **Policy Management**: Security and compliance policies
-- **Backup Management**: Application backup configuration
 - **Workload Management**: Kubernetes workload oversight
 
 ### Prerequisites
