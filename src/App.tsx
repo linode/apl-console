@@ -4,7 +4,6 @@ import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
 import cookie from 'cookie'
-import Backups from 'pages/Backups'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Error from 'pages/Error'
@@ -20,7 +19,6 @@ import Helmet from 'react-helmet'
 import { Provider } from 'react-redux'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { store } from 'redux/store'
-import Backup from 'pages/Backup'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
 import Users from 'pages/Users'
@@ -140,7 +138,6 @@ function App() {
 
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
-                                <PrivateRoute path='/backups' component={Backups} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/teams/create'
                                   component={TeamsCreateEditPage}
@@ -197,7 +194,6 @@ function App() {
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                 <PrivateRoute path='/teams' component={TeamsOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId' component={TeamsCreateEditPage} exact />
-                                <PrivateRoute path='/teams/:teamId/backups/create' component={Backup} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/network-policies/inbound-rules/create'
                                   component={NetworkPoliciesIngressCreateEditPage}
@@ -230,8 +226,6 @@ function App() {
                                   component={SecretCreateEditPage}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/backups' component={Backups} exact />
-                                <PrivateRoute path='/teams/:teamId/backups/:backupName' component={Backup} exact />
                                 <PrivateRoute
                                   path='/teams/:teamId/network-policies'
                                   component={NetworkPoliciesOverviewPage}
