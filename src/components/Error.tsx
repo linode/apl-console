@@ -96,7 +96,7 @@ export default function ({ error }: Props): React.ReactElement {
       <Button
         variant='contained'
         color='primary'
-        onClick={() => (globalError.status === 409 ? clearError() : window.history.back())}
+        onClick={() => (globalError?.status === 409 ? clearError() : window.history.back())}
       >
         {t('Back', { ns: 'error' })}
       </Button>
