@@ -200,50 +200,6 @@ const injectedRtkApi = api.injectEndpoints({
     deleteAplNetpol: build.mutation<DeleteAplNetpolApiResponse, DeleteAplNetpolApiArg>({
       query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
     }),
-    getAllBackups: build.query<GetAllBackupsApiResponse, GetAllBackupsApiArg>({
-      query: () => ({ url: `/v1/backups` }),
-    }),
-    getTeamBackups: build.query<GetTeamBackupsApiResponse, GetTeamBackupsApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups` }),
-    }),
-    createBackup: build.mutation<CreateBackupApiResponse, CreateBackupApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
-    }),
-    deleteBackup: build.mutation<DeleteBackupApiResponse, DeleteBackupApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
-    }),
-    getBackup: build.query<GetBackupApiResponse, GetBackupApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
-    }),
-    editBackup: build.mutation<EditBackupApiResponse, EditBackupApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
-    getAllAplBackups: build.query<GetAllAplBackupsApiResponse, GetAllAplBackupsApiArg>({
-      query: () => ({ url: `/v2/backups` }),
-    }),
-    getTeamAplBackups: build.query<GetTeamAplBackupsApiResponse, GetTeamAplBackupsApiArg>({
-      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups` }),
-    }),
-    createAplBackup: build.mutation<CreateAplBackupApiResponse, CreateAplBackupApiArg>({
-      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups`, method: 'POST', body: queryArg.body }),
-    }),
-    deleteAplBackup: build.mutation<DeleteAplBackupApiResponse, DeleteAplBackupApiArg>({
-      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}`, method: 'DELETE' }),
-    }),
-    getAplBackup: build.query<GetAplBackupApiResponse, GetAplBackupApiArg>({
-      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}` }),
-    }),
-    editAplBackup: build.mutation<EditAplBackupApiResponse, EditAplBackupApiArg>({
-      query: (queryArg) => ({
-        url: `/v2/teams/${queryArg.teamId}/backups/${queryArg.backupName}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
     getDashboard: build.query<GetDashboardApiResponse, GetDashboardApiArg>({
       query: (queryArg) => ({ url: `/v1/dashboard`, params: { teamName: queryArg.teamName } }),
     }),
@@ -3040,332 +2996,6 @@ export type DeleteAplNetpolApiArg = {
   /** Name of the network policy */
   netpolName: string
 }
-export type GetAllBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  schedule: string
-  snapshotVolumes?: boolean
-  labelSelector?: {
-    name?: string
-    value?: string
-  }[]
-  ttl: string
-}[]
-export type GetAllBackupsApiArg = void
-export type GetTeamBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  schedule: string
-  snapshotVolumes?: boolean
-  labelSelector?: {
-    name?: string
-    value?: string
-  }[]
-  ttl: string
-}[]
-export type GetTeamBackupsApiArg = {
-  /** ID of team */
-  teamId: string
-}
-export type CreateBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  schedule: string
-  snapshotVolumes?: boolean
-  labelSelector?: {
-    name?: string
-    value?: string
-  }[]
-  ttl: string
-}
-export type CreateBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Backup object */
-  body: {
-    id?: string
-    teamId?: string
-    name: string
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-}
-export type DeleteBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
-export type DeleteBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-}
-export type GetBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  schedule: string
-  snapshotVolumes?: boolean
-  labelSelector?: {
-    name?: string
-    value?: string
-  }[]
-  ttl: string
-}
-export type GetBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-}
-export type EditBackupApiResponse = /** status 200 Successfully edited a team backup */ {
-  id?: string
-  teamId?: string
-  name: string
-  schedule: string
-  snapshotVolumes?: boolean
-  labelSelector?: {
-    name?: string
-    value?: string
-  }[]
-  ttl: string
-}
-export type EditBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-  /** Backup object that contains updated values */
-  body: {
-    id?: string
-    teamId?: string
-    name: string
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-}
-export type GetAllAplBackupsApiResponse = /** status 200 Successfully obtained all backups configuration */ ({
-  kind: 'AplTeamBackup'
-  spec: {
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-})[]
-export type GetAllAplBackupsApiArg = void
-export type GetTeamAplBackupsApiResponse = /** status 200 Successfully obtained team backups configuration */ ({
-  kind: 'AplTeamBackup'
-  spec: {
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-})[]
-export type GetTeamAplBackupsApiArg = {
-  /** ID of team */
-  teamId: string
-}
-export type CreateAplBackupApiResponse = /** status 200 Successfully stored backup configuration */ {
-  kind: 'AplTeamBackup'
-  spec: {
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type CreateAplBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Backup object */
-  body: {
-    kind: 'AplTeamBackup'
-    spec: {
-      schedule: string
-      snapshotVolumes?: boolean
-      labelSelector?: {
-        name?: string
-        value?: string
-      }[]
-      ttl: string
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type DeleteAplBackupApiResponse = /** status 200 Successfully deleted a backup */ undefined
-export type DeleteAplBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-}
-export type GetAplBackupApiResponse = /** status 200 Successfully obtained backup configuration */ {
-  kind: 'AplTeamBackup'
-  spec: {
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type GetAplBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-}
-export type EditAplBackupApiResponse = /** status 200 Successfully edited a team backup */ {
-  kind: 'AplTeamBackup'
-  spec: {
-    schedule: string
-    snapshotVolumes?: boolean
-    labelSelector?: {
-      name?: string
-      value?: string
-    }[]
-    ttl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type EditAplBackupApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the backup */
-  backupName: string
-  /** Backup object that contains updated values */
-  body: {
-    kind: 'AplTeamBackup'
-    spec: {
-      schedule: string
-      snapshotVolumes?: boolean
-      labelSelector?: {
-        name?: string
-        value?: string
-      }[]
-      ttl: string
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
 export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ object
 export type GetDashboardApiArg = {
   /** Name of the team */
@@ -5763,9 +5393,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
         schedule?: string
       }
     }
-    persistentVolumes?: {
-      linodeApiToken?: string
-    }
   }
   obj?: {
     showWizard?: boolean
@@ -5784,7 +5411,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
             buckets?: {
               loki?: string
               cnpg?: string
-              velero?: string
               harbor?: string
               tempo?: string
               gitea?: string
@@ -6032,9 +5658,6 @@ export type EditSettingsApiArg = {
           schedule?: string
         }
       }
-      persistentVolumes?: {
-        linodeApiToken?: string
-      }
     }
     obj?: {
       showWizard?: boolean
@@ -6053,7 +5676,6 @@ export type EditSettingsApiArg = {
               buckets?: {
                 loki?: string
                 cnpg?: string
-                velero?: string
                 harbor?: string
                 tempo?: string
                 gitea?: string
@@ -6750,18 +6372,6 @@ export const {
   useGetAplNetpolQuery,
   useEditAplNetpolMutation,
   useDeleteAplNetpolMutation,
-  useGetAllBackupsQuery,
-  useGetTeamBackupsQuery,
-  useCreateBackupMutation,
-  useDeleteBackupMutation,
-  useGetBackupQuery,
-  useEditBackupMutation,
-  useGetAllAplBackupsQuery,
-  useGetTeamAplBackupsQuery,
-  useCreateAplBackupMutation,
-  useDeleteAplBackupMutation,
-  useGetAplBackupQuery,
-  useEditAplBackupMutation,
   useGetDashboardQuery,
   useGetAllBuildsQuery,
   useGetTeamBuildsQuery,
