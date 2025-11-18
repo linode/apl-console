@@ -83,7 +83,6 @@ export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, setting
       },
     },
     ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
-    platformBackups: { persistentVolumes: { 'ui:widget': settings?.otomi?.isPreInstalled ? 'hidden' : '' } },
     obj: { showWizard: { 'ui:widget': 'hidden' } },
   }
 
@@ -137,9 +136,6 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
     if (settingId) {
       if (!appsEnabled.alertmanager && settingId === 'alerts')
         setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
-
-      if (!appsEnabled.velero && settingId === 'platformBackups')
-        if (!isPreInstalled) setDisabledMessage('Please enable Velero to activate Persistent volumes backups')
 
       if (isPreInstalledSetting)
         setDisabledMessage('These settings can not be changed when installed by Akamai Connected Cloud.')
