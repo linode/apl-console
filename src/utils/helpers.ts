@@ -97,8 +97,11 @@ export function checkAgainstK8sVersion(update: VersionInfo, currentVersion: stri
 
   if (!supportedVersions || supportedVersions.length === 0) return false
 
+  // Remove 'v' prefix if present and extract major.minor version
+  const normalizedVersion = currentVersion.replace(/^v/, '')
+
   // Check for exact match or match ignoring patch version
-  const currentVersionMajorMinor = currentVersion.split('.').slice(0, 2).join('.')
+  const currentVersionMajorMinor = normalizedVersion.split('.').slice(0, 2).join('.')
 
   return supportedVersions.includes(currentVersionMajorMinor)
 }
