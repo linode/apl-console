@@ -3,12 +3,11 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
-import { CircularProgress } from '@mui/material'
+import { Status, getStatus } from 'utils/status'
 import { useSocket } from 'providers/Socket'
 import { HeadCell } from './EnhancedTable'
 import RLink from './Link'
 import ListTable from './ListTable'
-import Iconify from './Iconify'
 
 interface Row {
   teamId: string
@@ -36,22 +35,6 @@ const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
       Application
     </Link>
   )
-}
-
-type Status = 'Unknown' | 'Pending' | 'Succeeded' | 'NotFound'
-
-export const getStatus = (status: Status) => {
-  if (!status || status === 'NotFound') return <CircularProgress size='22px' />
-  switch (status) {
-    case 'Unknown':
-      return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
-    case 'Pending':
-      return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
-    case 'Succeeded':
-      return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
-    default:
-      return <CircularProgress size='22px' />
-  }
 }
 
 interface Props {
@@ -89,7 +72,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(statuses?.workloads?.[row.name]),
+      renderer: (row: Row) => getStatus((statuses?.workloads?.[row.name] as Status) || 'NotFound'),
     },
   ]
 
