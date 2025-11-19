@@ -163,6 +163,10 @@ describe('checkAgainstK8sVersion', () => {
     expect(checkAgainstK8sVersion(update, '1.26.1')).toBe(true)
   })
 
+  it('returns true if currentVersion is in supported_k8s_versions with patch version and has prefix', () => {
+    expect(checkAgainstK8sVersion(update, 'v1.26.1')).toBe(true)
+  })
+
   it('returns false if currentVersion is not in supported_k8s_versions', () => {
     expect(checkAgainstK8sVersion(update, '1.28')).toBe(false)
   })
