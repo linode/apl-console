@@ -63,11 +63,6 @@ export function selectDisplayUpdates(allUpdates: DisplayUpdate[], currentVersion
   return filteredUpdates
 }
 
-export function latestApplicableUpdateVersion(versions: VersionInfo[], clusterK8sVersion: string) {
-  const applicableUpdates = versions.filter((update) => update.supported_k8s_versions.includes(clusterK8sVersion))
-  return applicableUpdates.length > 0 ? applicableUpdates[applicableUpdates.length - 1] : undefined
-}
-
 export function valueArrayToObject(
   array?:
     | {
@@ -92,13 +87,28 @@ export function mapObjectToKeyValueArray(obj?: Record<string, string>): { key: s
   return Object.entries(obj).map(([key, value]) => ({ key, value }))
 }
 
+function normalizeVersion(version: string): string {
+  return version.replace(/^v/, '')
+}
+
+function stripPatchVersion(version: string): string {
+  const parts = normalizeVersion(version).split('.')
+  return parts.slice(0, 2).join('.')
+}
+
+export function latestApplicableUpdateVersion(versions: VersionInfo[], clusterK8sVersion: string) {
+  const applicableUpdates = versions.filter((update) =>
+    update.supported_k8s_versions.includes(stripPatchVersion(clusterK8sVersion)),
+  )
+  return applicableUpdates.length > 0 ? applicableUpdates[applicableUpdates.length - 1] : undefined
+}
+
 export function checkAgainstK8sVersion(update: VersionInfo, currentVersion: string) {
   const supportedVersions = update.supported_k8s_versions
 
   if (!supportedVersions || supportedVersions.length === 0) return false
-
-  // Check for exact match or match ignoring patch version
-  const currentVersionMajorMinor = currentVersion.split('.').slice(0, 2).join('.')
+  // Remove 'v' prefix if present and extract major.minor version
+  const currentVersionMajorMinor = stripPatchVersion(currentVersion)
 
   return supportedVersions.includes(currentVersionMajorMinor)
 }
