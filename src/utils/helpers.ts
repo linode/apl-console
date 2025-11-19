@@ -100,6 +100,5 @@ export function checkAgainstK8sVersion(update: VersionInfo, currentVersion: stri
   // Check for exact match or match ignoring patch version
   const currentVersionMajorMinor = currentVersion.split('.').slice(0, 2).join('.')
 
-  if (supportedVersions.includes(currentVersionMajorMinor)) return true
-  return false
+  return supportedVersions.includes(currentVersionMajorMinor)
 }
