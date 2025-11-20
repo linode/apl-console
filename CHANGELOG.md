@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.10.1](https://github.com/linode/apl-console/compare/v4.9.0...v4.10.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* ignore kubernetes patch versions in check ([#685](https://github.com/linode/apl-console/issues/685)) ([d55e2a3](https://github.com/linode/apl-console/commit/d55e2a330c27d37b281297590ccff9032a46aabe))
+* ignore v prefix in kubernetes version ([#686](https://github.com/linode/apl-console/issues/686)) ([cccf60d](https://github.com/linode/apl-console/commit/cccf60da5f2fe5718a741d587cb65914dbb3ee8a))
+
+
 ## [4.10.0](https://github.com/linode/apl-console/compare/v4.9.0...v4.10.0) (2025-10-21)
 
 
