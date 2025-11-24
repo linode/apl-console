@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Resolver, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -13,6 +13,7 @@ import { useSession } from 'providers/Session'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import {
+  CreateAplWorkloadApiArg,
   CreateAplWorkloadApiResponse,
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
@@ -115,7 +116,7 @@ export default function WorkloadsCreateEditPage({
   }) as CreateAplWorkloadApiResponse
 
   const methods = useForm<CreateAplWorkloadApiResponse>({
-    resolver: yupResolver(createAplWorkloadApiResponseSchema),
+    resolver: yupResolver(createAplWorkloadApiResponseSchema) as Resolver<CreateAplWorkloadApiResponse>,
     defaultValues: mergedDefaultValues,
   })
 
@@ -176,11 +177,10 @@ export default function WorkloadsCreateEditPage({
     const chartMetadata = omit(data?.chartMetadata, ['helmChartCatalog', 'helmChart'])
     const path = workloadData?.path
 
-    const body = {
+    const body: CreateAplWorkloadApiArg['body'] = {
       kind: 'AplTeamWorkload',
       metadata: {
         name: workloadName ?? data?.name,
-        labels: { 'apl.io/teamId': teamId },
       },
       spec: {
         ...workloadBody,
