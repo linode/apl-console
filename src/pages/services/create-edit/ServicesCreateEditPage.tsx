@@ -162,9 +162,11 @@ export default function ServicesCreateEditPage({
   }, [data, setValue])
 
   useEffect(() => {
-    const serviceDomain = getKeyValue(service)
-    setUrl(serviceDomain)
-    setValue('spec.domain', serviceDomain)
+    if (service?.name || (!serviceName && service !== undefined)) {
+      const serviceDomain = getKeyValue(service)
+      setUrl(serviceDomain)
+      setValue('spec.domain', serviceDomain)
+    }
   }, [service])
   const filteredK8Services = useMemo(() => {
     return (
@@ -284,7 +286,7 @@ export default function ServicesCreateEditPage({
                     label='Port'
                     width='small'
                     {...register('spec.port')}
-                    disabled={teamId !== 'admin' && service?.ports?.length === 1}
+                    disabled={teamId !== 'admin' && (!!serviceName || service?.ports?.length === 1)}
                     value={watch('spec.port') ?? data?.spec?.port?.[0] ?? ''}
                     error={!!errors.spec?.port}
                     helperText={errors.spec?.port?.message?.toString()}
@@ -295,6 +297,7 @@ export default function ServicesCreateEditPage({
                     width='small'
                     {...register('spec.port')}
                     select
+                    disabled={teamId !== 'admin' && !!serviceName}
                     onChange={(e) => {
                       const value = Number(e.target.value)
                       setValue('spec.port', value)
@@ -313,7 +316,12 @@ export default function ServicesCreateEditPage({
                 )}
               </FormRow>
               <FormRow spacing={10}>
-                <TextField label='URL' width='large' disabled value={url} />
+                <TextField
+                  label='URL'
+                  width='large'
+                  disabled
+                  value={watch('spec.domain') ?? data?.spec?.domain ?? url}
+                />
               </FormRow>
               {!isPreInstalled && (
                 <FormRow spacing={10}>
