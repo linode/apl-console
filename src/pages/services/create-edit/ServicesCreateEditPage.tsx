@@ -150,7 +150,10 @@ export default function ServicesCreateEditPage({
   })
 
   useEffect(() => {
-    if (data) reset(data)
+    if (data) {
+      reset(data)
+      if (serviceName && data.spec?.domain) setUrl(data.spec.domain)
+    }
 
     if (!isEmpty(data?.spec?.paths)) {
       data.spec?.paths.forEach((path, index) => {
@@ -159,15 +162,17 @@ export default function ServicesCreateEditPage({
     }
 
     if (teamId !== 'admin' && !serviceName) setValue('spec.namespace', `team-${teamId}`)
-  }, [data, setValue])
+  }, [data, setValue, serviceName])
 
   useEffect(() => {
-    if (service?.name || (!serviceName && service !== undefined)) {
-      const serviceDomain = getKeyValue(service)
-      setUrl(serviceDomain)
-      setValue('spec.domain', serviceDomain)
+    if (!serviceName || service?.name) {
+      if (service?.name || (!serviceName && service !== undefined)) {
+        const serviceDomain = getKeyValue(service)
+        setUrl(serviceDomain)
+        setValue('spec.domain', serviceDomain)
+      }
     }
-  }, [service])
+  }, [service, serviceName])
   const filteredK8Services = useMemo(() => {
     return (
       k8sServices?.filter(
