@@ -232,10 +232,51 @@ export default function WorkloadsCreateEditPage({
     const path = workloadData?.path ?? (formData as any).path
     const url = workloadData?.url ?? (formData as any).url ?? ''
 
+    // ---- derive imageUpdateStrategy from values.yaml if needed ----
+    let imageUpdateStrategy = formData.spec.imageUpdateStrategy
+
+    try {
+      const parsedValues = YAML.parse(workloadValuesYaml || '')
+      const imageRepository: string | undefined = parsedValues?.image?.repository
+      const tag: string | undefined = parsedValues?.image?.tag
+
+      const selectedType = (imageUpdateStrategy as any)?.type as 'disabled' | 'digest' | 'semver' | undefined
+
+      if (imageRepository && selectedType === 'digest') {
+        const currentDigest = (imageUpdateStrategy as any)?.digest ?? {}
+        imageUpdateStrategy = {
+          type: 'digest',
+          digest: {
+            imageRepository,
+            tag: tag ?? currentDigest.tag ?? '',
+            imageParameter: currentDigest.imageParameter,
+            tagParameter: currentDigest.tagParameter,
+          },
+        }
+      }
+
+      if (imageRepository && selectedType === 'semver') {
+        const currentSemver = (imageUpdateStrategy as any)?.semver ?? {}
+        imageUpdateStrategy = {
+          type: 'semver',
+          semver: {
+            imageRepository,
+            versionConstraint: currentSemver.versionConstraint ?? '',
+            imageParameter: currentSemver.imageParameter,
+            tagParameter: currentSemver.tagParameter,
+          },
+        }
+      }
+    } catch {
+      // if YAML is invalid we just don't override imageUpdateStrategy
+    }
+
     const body: CreateAplWorkloadApiArg['body'] = {
       kind: 'AplTeamWorkload',
       metadata: {
         name: workloadName ?? formData.metadata?.name ?? '',
+        // add labels here if the backend expects them on create/update
+        // labels: { 'apl.io/teamId': teamId },
       },
       spec: {
         ...workloadBody,
@@ -243,6 +284,7 @@ export default function WorkloadsCreateEditPage({
         url,
         path,
         values: workloadValuesYaml,
+        imageUpdateStrategy,
       },
     }
 
