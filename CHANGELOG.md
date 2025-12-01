@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.11.0](https://github.com/linode/apl-console/compare/v4.10.0...v4.11.0) (2025-12-01)
+
+
+### Features
+
+* generate redux store for express-openapi-validator changes ([#676](https://github.com/linode/apl-console/issues/676)) ([5dbddd4](https://github.com/linode/apl-console/commit/5dbddd466f21a105adf4e9effdb6a4cc12560830))
+* remove httpbin ([#669](https://github.com/linode/apl-console/issues/669)) ([3be0346](https://github.com/linode/apl-console/commit/3be03468ba432774f79f2ef913b8bcd6eb4c1755))
+* remove jaeger ([#687](https://github.com/linode/apl-console/issues/687)) ([2e6fe73](https://github.com/linode/apl-console/commit/2e6fe73cff7e1dd85bce7b5b6df5b86a74263d90))
+* remove velero ([#681](https://github.com/linode/apl-console/issues/681)) ([b5679fc](https://github.com/linode/apl-console/commit/b5679fcd260af020877eed1e5ae463e7de0a939e))
+* removing falco ([#677](https://github.com/linode/apl-console/issues/677)) ([980c5dc](https://github.com/linode/apl-console/commit/980c5dc5e494fca820cfe96f34723c0608af969a))
+* removing kiali ([#673](https://github.com/linode/apl-console/issues/673)) ([7a318f8](https://github.com/linode/apl-console/commit/7a318f8bd597abf2fffffe1cdddd1b60d644bac8))
+* removing kured ([#675](https://github.com/linode/apl-console/issues/675)) ([8c14d9e](https://github.com/linode/apl-console/commit/8c14d9e2b1f967c2cacc8195de5b6ac7168505a0))
+* updated nginx to 1.29.3-alpine ([#670](https://github.com/linode/apl-console/issues/670)) ([1b5f699](https://github.com/linode/apl-console/commit/1b5f699fbac3ac82a5f620faac1c5d74b843d8c2))
+* values schema json support and enhanced code editor ([#662](https://github.com/linode/apl-console/issues/662)) ([9e3f44c](https://github.com/linode/apl-console/commit/9e3f44c91b12c04ff9906f7f31f4ee61b9ad6b53))
+
+
+### Bug Fixes
+
+* add paramsSerializer for openapi query ([#682](https://github.com/linode/apl-console/issues/682)) ([3fc43eb](https://github.com/linode/apl-console/commit/3fc43ebaf89e28dd3fd1e24f1c0e7ccc9f219a2e))
+* back button error when coming from non existing page ([#683](https://github.com/linode/apl-console/issues/683)) ([0763974](https://github.com/linode/apl-console/commit/0763974a8183ec6823e6c69799ebab80b68efe4a))
+* broken links to techdocs ([#674](https://github.com/linode/apl-console/issues/674)) ([cd11258](https://github.com/linode/apl-console/commit/cd11258efc4ec2f011987736d890680d65a11cf2))
+* critical cve minor bump ([#666](https://github.com/linode/apl-console/issues/666)) ([11e4e09](https://github.com/linode/apl-console/commit/11e4e09d031f1e265fd80d239906cccb6acd7b1c))
+* default cluster tier settings & default team networkPolicy egress setting ([#678](https://github.com/linode/apl-console/issues/678)) ([cc8560a](https://github.com/linode/apl-console/commit/cc8560a45fbf63fa1170115f1da4b1e54725fe77))
+* ignore kubernetes patch versions in check ([#685](https://github.com/linode/apl-console/issues/685)) ([9a23a77](https://github.com/linode/apl-console/commit/9a23a77b57c7a832dea1b83f750b0244e017193f))
+* ignore v prefix in kubernetes version ([#686](https://github.com/linode/apl-console/issues/686)) ([435629f](https://github.com/linode/apl-console/commit/435629fbf363f7716e07063211777fb92a91e49f))
+* remove mentions of apl ([#680](https://github.com/linode/apl-console/issues/680)) ([c26ec78](https://github.com/linode/apl-console/commit/c26ec78f3df82d10fca41bee9821edf9b026cb69))
+
+
+### Others
+
+* **deps:** bump nginx in the docker-dependencies group ([#660](https://github.com/linode/apl-console/issues/660)) ([4de5ba9](https://github.com/linode/apl-console/commit/4de5ba95e868169df3f2fb7322828d29787eb2b3))
+* remove drone ([#679](https://github.com/linode/apl-console/issues/679)) ([4c0bfda](https://github.com/linode/apl-console/commit/4c0bfda468c7edd15ef5a296dc0139b6786e3652))
+
 ## [4.10.0](https://github.com/linode/apl-console/compare/v4.9.0...v4.10.0) (2025-10-21)
 
 
