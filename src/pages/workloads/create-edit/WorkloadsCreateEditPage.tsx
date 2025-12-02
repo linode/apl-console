@@ -127,12 +127,13 @@ export default function WorkloadsCreateEditPage({
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = methods
 
   // Fetch catalog info only when creating (no workloadName)
   useEffect(() => {
-    if (workloadName) return
+    if (workloadName) reset(mergedDefaultValues)
 
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
       const { url, catalog }: { url: string; catalog: any[] } = res.data
@@ -162,6 +163,10 @@ export default function WorkloadsCreateEditPage({
   )
 
   useEffect(() => {
+    if (workload) console.log('halo raw values', workload)
+  }, [workload])
+
+  useEffect(() => {
     setWorkloadValuesYaml(typeof valuesData === 'string' ? valuesData : YAML.stringify(valuesData ?? {}))
   }, [workloadData, valuesData])
 
@@ -175,14 +180,18 @@ export default function WorkloadsCreateEditPage({
   const mutating = isLoadingDWL || isCreating || isUpdating
   if (!mutating && isSuccessDWL) return <Redirect to={`/teams/${teamId}/workloads`} />
 
-  const icon = workloadData?.icon || '/logos/akamai_logo.svg'
+  const icon = workloadData?.spec?.icon || catalogItem.icon
+  const headerName = workloadData?.metadata?.name || catalogItem.name
+  const headerPath = workloadData?.spec?.path || catalogItem.path
 
   // ---- Auto image updater state ----
   type AutoUpdaterType = 'disabled' | 'digest' | 'semver'
   const watchedStrategyType = watch('spec.imageUpdateStrategy.type') as AutoUpdaterType | undefined
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [autoUpdaterType, setAutoUpdaterType] = useState<AutoUpdaterType>('disabled')
 
   // initialise local state from form values
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (watchedStrategyType) setAutoUpdaterType(watchedStrategyType)
   }, [watchedStrategyType])
@@ -321,12 +330,12 @@ export default function WorkloadsCreateEditPage({
                 </Box>
                 <Box>
                   <Typography variant='h6'>
-                    {workloadData?.name ? `${workloadData.name} (${workloadData.path})` : workloadData?.path}
+                    {headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
                   </Typography>
                 </Box>
-                {workloadData?.url && workloadData?.path && (
+                {workloadData?.spec?.url && workloadData?.spec?.path && (
                   <Box sx={{ ml: 'auto' }}>
-                    <DocsLink href={getDocsLink(workloadData.url as string, workloadData.path as string)} />
+                    <DocsLink href={getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)} />
                   </Box>
                 )}
               </Box>
@@ -356,7 +365,7 @@ export default function WorkloadsCreateEditPage({
                   value={autoUpdaterType}
                   onChange={handleAutoUpdaterChange}
                 />
-                {autoUpdaterType === 'digest' && (
+                {/* {autoUpdaterType === 'digest' && (
                   <Box sx={{ mt: 3, maxWidth: 480 }}>
                     <TextField
                       label='Version'
@@ -377,7 +386,7 @@ export default function WorkloadsCreateEditPage({
                       {...methods.register('spec.imageUpdateStrategy.semver.versionConstraint' as const)}
                     />
                   </Box>
-                )}
+                )} */}
                 {/* {autoUpdaterType === 'disabled' && (
                   <Box sx={{ mt: 3, maxWidth: 480 }}>
                     <TextField label='Version' width='large' noMarginTop placeholder='latest, feat, dev' disabled />

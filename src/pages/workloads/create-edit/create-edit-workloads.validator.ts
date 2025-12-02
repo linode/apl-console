@@ -5,7 +5,7 @@ export const createAplWorkloadApiResponseSchema = yup.object({
 
   spec: yup.object({
     icon: yup.string().optional(),
-    url: yup.string().required(),
+    url: yup.string().optional(),
     chartProvider: yup.string().oneOf(['helm', 'git']).optional(),
     path: yup.string().optional(),
     chart: yup.string().optional(),
@@ -36,8 +36,8 @@ export const createAplWorkloadApiResponseSchema = yup.object({
             type: yup.string().oneOf(['digest']).required(),
             digest: yup
               .object({
-                imageRepository: yup.string().required(),
-                tag: yup.string().required(),
+                imageRepository: yup.string().optional(),
+                tag: yup.string().optional(),
                 imageParameter: yup.string().optional(),
                 tagParameter: yup.string().optional(),
               })
