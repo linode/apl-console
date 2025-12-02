@@ -150,10 +150,7 @@ export default function ServicesCreateEditPage({
   })
 
   useEffect(() => {
-    if (data) {
-      reset(data)
-      if (serviceName && data.spec?.domain) setUrl(data.spec.domain)
-    }
+    if (data) reset(data)
 
     if (!isEmpty(data?.spec?.paths)) {
       data.spec?.paths.forEach((path, index) => {
@@ -162,17 +159,13 @@ export default function ServicesCreateEditPage({
     }
 
     if (teamId !== 'admin' && !serviceName) setValue('spec.namespace', `team-${teamId}`)
-  }, [data, setValue, serviceName])
+  }, [data, setValue])
 
   useEffect(() => {
-    if (!serviceName || service?.name) {
-      if (service?.name || (!serviceName && service !== undefined)) {
-        const serviceDomain = getKeyValue(service)
-        setUrl(serviceDomain)
-        setValue('spec.domain', serviceDomain)
-      }
-    }
-  }, [service, serviceName])
+    const serviceDomain = getKeyValue(service)
+    setUrl(serviceDomain)
+    setValue('spec.domain', serviceDomain)
+  }, [service])
   const filteredK8Services = useMemo(() => {
     return (
       k8sServices?.filter(
@@ -186,11 +179,11 @@ export default function ServicesCreateEditPage({
   }, [k8sServices])
 
   useEffect(() => {
-    if (!hasSetActiveService && data?.metadata.name) {
+    if (data?.metadata.name) {
       setActiveService(data?.metadata.name)
       setHasSetActiveService(true)
     }
-  }, [hasSetActiveService, data?.metadata.name])
+  }, [hasSetActiveService, data?.metadata.name, filteredK8Services])
 
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
@@ -321,12 +314,7 @@ export default function ServicesCreateEditPage({
                 )}
               </FormRow>
               <FormRow spacing={10}>
-                <TextField
-                  label='URL'
-                  width='large'
-                  disabled
-                  value={watch('spec.domain') ?? data?.spec?.domain ?? url}
-                />
+                <TextField label='URL' width='large' disabled value={url} />
               </FormRow>
               {!isPreInstalled && (
                 <FormRow spacing={10}>
