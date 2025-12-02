@@ -63,7 +63,6 @@ export default function ServicesCreateEditPage({
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
-  const [hasSetActiveService, setHasSetActiveService] = useState(false)
 
   const getKeyValue = (activeService: K8Service) => {
     let compositeUrl = ''
@@ -179,11 +178,8 @@ export default function ServicesCreateEditPage({
   }, [k8sServices])
 
   useEffect(() => {
-    if (data?.metadata.name) {
-      setActiveService(data?.metadata.name)
-      setHasSetActiveService(true)
-    }
-  }, [hasSetActiveService, data?.metadata.name, filteredK8Services])
+    if (data?.metadata.name) setActiveService(data?.metadata.name)
+  }, [data?.metadata.name, filteredK8Services])
 
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
