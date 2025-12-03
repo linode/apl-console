@@ -1,6 +1,6 @@
 // @mui
 import { styled } from '@mui/material/styles'
-import { CardActionArea, Grid, RadioGroup } from '@mui/material'
+import { CardActionArea, Grid, RadioGroup, Tooltip } from '@mui/material'
 import useSettings from 'hooks/useSettings'
 //
 import Iconify from './Iconify'
@@ -9,7 +9,7 @@ import BoxMask from './BoxMask'
 // ----------------------------------------------------------------------
 
 const BoxStyle = styled(CardActionArea)(({ theme }) => ({
-  height: 72,
+  aspectRatio: '1',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -23,26 +23,43 @@ const BoxStyle = styled(CardActionArea)(({ theme }) => ({
 export default function SettingMode() {
   const { themeMode, onChangeMode } = useSettings()
 
+  const modes = ['light', 'dark', 'system']
+  const icons = ['ph:sun-duotone', 'ph:moon-duotone', 'ph:monitor-duotone']
+
+  const getBackgroundColor = (mode: string) => {
+    if (mode === 'light') return 'common.white'
+    if (mode === 'dark') return 'grey.800'
+    return 'grey.600'
+  }
+
+  const getModeLabel = (mode: string) => {
+    return mode.charAt(0).toUpperCase() + mode.slice(1)
+  }
+
   return (
     <RadioGroup name='themeMode' value={themeMode} onChange={onChangeMode}>
       <Grid dir='ltr' container spacing={2.5}>
-        {['light', 'dark'].map((mode, index) => {
+        {modes.map((mode, index) => {
           const isSelected = themeMode === mode
 
           return (
-            <Grid key={mode} item xs={6}>
-              <BoxStyle
-                sx={{
-                  bgcolor: mode === 'light' ? 'common.white' : 'grey.800',
-                  ...(isSelected && {
-                    color: 'primary.main',
-                    boxShadow: (theme) => theme.customShadows.z20,
-                  }),
-                }}
-              >
-                <Iconify icon={index === 0 ? 'ph:sun-duotone' : 'ph:moon-duotone'} width={28} height={28} />
-                <BoxMask value={mode} />
-              </BoxStyle>
+            <Grid key={mode} item xs={4}>
+              <Tooltip title={getModeLabel(mode)} arrow placement='bottom'>
+                <span>
+                  <BoxStyle
+                    sx={{
+                      bgcolor: getBackgroundColor(mode),
+                      ...(isSelected && {
+                        color: 'primary.main',
+                        boxShadow: (theme) => theme.customShadows.z20,
+                      }),
+                    }}
+                  >
+                    <Iconify icon={icons[index]} width={28} height={28} />
+                    <BoxMask value={mode} />
+                  </BoxStyle>
+                </span>
+              </Tooltip>
             </Grid>
           )
         })}
