@@ -63,7 +63,6 @@ export default function ServicesCreateEditPage({
   } = useSession()
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
-  const [hasSetActiveService, setHasSetActiveService] = useState(false)
 
   const getKeyValue = (activeService: K8Service) => {
     let compositeUrl = ''
@@ -179,11 +178,8 @@ export default function ServicesCreateEditPage({
   }, [k8sServices])
 
   useEffect(() => {
-    if (!hasSetActiveService && data?.metadata.name) {
-      setActiveService(data?.metadata.name)
-      setHasSetActiveService(true)
-    }
-  }, [hasSetActiveService, data?.metadata.name])
+    if (data?.metadata.name) setActiveService(data?.metadata.name)
+  }, [data?.metadata.name, filteredK8Services])
 
   const TrafficControlEnabled = watch('spec.trafficControl.enabled')
   function setActiveService(name: string) {
@@ -279,13 +275,13 @@ export default function ServicesCreateEditPage({
                   />
                 )}
 
-                {service?.ports.length === 1 || teamId === 'admin' ? (
+                {teamId === 'admin' || !service?.ports?.length || service.ports.length === 1 ? (
                   <TextField
                     label='Port'
                     width='small'
                     {...register('spec.port')}
-                    disabled={service?.ports.length > 1}
-                    value={watch('spec.port') || data?.spec?.port[0]}
+                    disabled={teamId !== 'admin' && (!!serviceName || service?.ports?.length === 1)}
+                    value={watch('spec.port') ?? data?.spec?.port?.[0] ?? ''}
                     error={!!errors.spec?.port}
                     helperText={errors.spec?.port?.message?.toString()}
                   />
@@ -295,16 +291,17 @@ export default function ServicesCreateEditPage({
                     width='small'
                     {...register('spec.port')}
                     select
+                    disabled={teamId !== 'admin' && !!serviceName}
                     onChange={(e) => {
                       const value = Number(e.target.value)
                       setValue('spec.port', value)
                     }}
                     placeholder='Select a port'
-                    value={watch('spec.port') || data?.spec?.port}
+                    value={watch('spec.port') ?? data?.spec?.port ?? ''}
                     error={!!errors.spec?.port}
                     helperText={errors.spec?.port?.message?.toString()}
                   >
-                    {service?.ports.map((port) => (
+                    {service.ports.map((port) => (
                       <MenuItem key={`service-${port}`} value={port} classes={undefined}>
                         {port}
                       </MenuItem>
