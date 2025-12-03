@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 // @mui
 import { CssBaseline } from '@mui/material'
 import { ThemeProvider as MUIThemeProvider, ThemeOptions, createTheme } from '@mui/material/styles'
@@ -19,7 +19,24 @@ type Props = {
 export default function AppThemeProvider({ children }: Props) {
   const { themeMode } = useSettings()
 
-  const isLight = themeMode === 'light'
+  const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(() => {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+
+  useEffect(() => {
+    if (themeMode !== 'system') return undefined
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = (e: MediaQueryListEvent) => {
+      setSystemPreference(e.matches ? 'dark' : 'light')
+    }
+
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [themeMode])
+
+  const actualMode = themeMode === 'system' ? systemPreference : themeMode
+  const isLight = actualMode === 'light'
 
   const themeOptions: ThemeOptions = useMemo(
     () => ({

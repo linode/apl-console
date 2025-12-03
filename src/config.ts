@@ -40,7 +40,7 @@ export const cookiesKey = {
 
 export const defaultSettings: SettingsValueProps = {
   themeView: 'platform',
-  themeMode: 'dark',
+  themeMode: 'system',
   themeContrast: 'default',
   themeLayout: 'horizontal',
   themeColorPresets: 'cyan',
