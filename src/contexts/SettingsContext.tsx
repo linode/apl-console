@@ -76,9 +76,12 @@ function SettingsProvider({ children, defaultSettings }: SettingsProviderProps) 
   // Mode
 
   const onToggleMode = () => {
+    const modes: ThemeMode[] = ['light', 'dark', 'system']
+    const currentIndex = modes.indexOf(settings.themeMode)
+    const nextIndex = (currentIndex + 1) % modes.length
     setSettings({
       ...settings,
-      themeMode: settings.themeMode === 'light' ? 'dark' : 'light',
+      themeMode: modes[nextIndex],
     })
   }
 
