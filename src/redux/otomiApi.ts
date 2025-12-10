@@ -201,7 +201,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/netpols/${queryArg.netpolName}`, method: 'DELETE' }),
     }),
     getDashboard: build.query<GetDashboardApiResponse, GetDashboardApiArg>({
-      query: (queryArg) => ({ url: `/v1/dashboard`, params: { teamName: queryArg.teamName } }),
+      query: (queryArg) => ({ url: `/v1/dashboard`, params: { teamId: queryArg.teamId } }),
     }),
     getAllBuilds: build.query<GetAllBuildsApiResponse, GetAllBuildsApiArg>({
       query: () => ({ url: `/v1/builds` }),
@@ -2999,7 +2999,7 @@ export type DeleteAplNetpolApiArg = {
 export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ object
 export type GetDashboardApiArg = {
   /** Name of the team */
-  teamName?: string
+  teamId?: string
 }
 export type GetAllBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   id?: string
