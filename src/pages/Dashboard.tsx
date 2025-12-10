@@ -27,12 +27,12 @@ export default function (): React.ReactElement {
   } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
   const { data: teamData } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
 
-  const teamName = isPlatformView ? undefined : oboTeamId
+  const teamId = isPlatformView ? undefined : oboTeamId
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
     refetch: refetchDashboard,
-  } = useGetDashboardQuery({ teamName })
+  } = useGetDashboardQuery({ teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function (): React.ReactElement {
   }, [isDirty])
   const { t } = useTranslation()
   // END HOOKS
-  const team = !isLoadingTeams && (find(teams, { name: teamName }) || teamData)
+  const team = !isLoadingTeams && (find(teams, { name: teamId }) || teamData)
   const loading = isFetchingDashboard || isLoadingTeams
   const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
