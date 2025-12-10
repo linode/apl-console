@@ -137,7 +137,11 @@ export default function WorkloadsCreateEditPage({
 
     getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
       const { url, catalog }: { url: string; catalog: any[] } = res.data
-      const item = catalog.find((item) => item.name === catalogName)
+      let item = null
+
+      if (workload?.spec?.path) item = catalog.find((c) => c.name === workload.spec.path)
+      else if (catalogName) item = catalog.find((c) => c.name === catalogName)
+
       if (!item) return
 
       const {
@@ -163,10 +167,6 @@ export default function WorkloadsCreateEditPage({
   )
 
   useEffect(() => {
-    if (workload) console.log('halo raw values', workload)
-  }, [workload])
-
-  useEffect(() => {
     setWorkloadValuesYaml(typeof valuesData === 'string' ? valuesData : YAML.stringify(valuesData ?? {}))
   }, [workloadData, valuesData])
 
@@ -180,9 +180,9 @@ export default function WorkloadsCreateEditPage({
   const mutating = isLoadingDWL || isCreating || isUpdating
   if (!mutating && isSuccessDWL) return <Redirect to={`/teams/${teamId}/workloads`} />
 
-  const icon = workloadData?.spec?.icon || catalogItem.icon
+  const icon = workloadData?.spec?.icon || catalogItem.icon || '/logos/akamai_logo.svg'
   const headerName = workloadData?.metadata?.name || catalogItem.name
-  const headerPath = workloadData?.spec?.path || catalogItem.path
+  const headerPath = workloadData?.spec?.path || catalogItem.path || 'custom'
 
   // ---- Auto image updater state ----
   type AutoUpdaterType = 'disabled' | 'digest' | 'semver'
@@ -238,8 +238,8 @@ export default function WorkloadsCreateEditPage({
   const onSubmit = async (formData: CreateAplWorkloadApiResponse) => {
     const workloadBody = omit(formData.spec, ['chartProvider', 'chart', 'revision'])
     const chartMetadata = omit(formData.spec?.chartMetadata, ['helmChartCatalog', 'helmChart'])
-    const path = workloadData?.path ?? (formData as any).path
-    const url = workloadData?.url ?? (formData as any).url ?? ''
+    const path = workloadData?.spec?.path ?? (formData as any).path
+    const url = workloadData?.spec?.url ?? (formData as any).url ?? ''
 
     // ---- derive imageUpdateStrategy from values.yaml if needed ----
     let imageUpdateStrategy = formData.spec.imageUpdateStrategy
@@ -365,33 +365,6 @@ export default function WorkloadsCreateEditPage({
                   value={autoUpdaterType}
                   onChange={handleAutoUpdaterChange}
                 />
-                {/* {autoUpdaterType === 'digest' && (
-                  <Box sx={{ mt: 3, maxWidth: 480 }}>
-                    <TextField
-                      label='Version'
-                      width='large'
-                      noMarginTop
-                      placeholder='latest, feat, dev'
-                      {...methods.register('spec.imageUpdateStrategy.digest.tag' as const)}
-                    />
-                  </Box>
-                )}
-                {autoUpdaterType === 'semver' && (
-                  <Box sx={{ mt: 3, maxWidth: 480 }}>
-                    <TextField
-                      label='Version'
-                      width='large'
-                      noMarginTop
-                      placeholder='1.x.x'
-                      {...methods.register('spec.imageUpdateStrategy.semver.versionConstraint' as const)}
-                    />
-                  </Box>
-                )} */}
-                {/* {autoUpdaterType === 'disabled' && (
-                  <Box sx={{ mt: 3, maxWidth: 480 }}>
-                    <TextField label='Version' width='large' noMarginTop placeholder='latest, feat, dev' disabled />
-                  </Box>
-                )} */}
               </Section>
 
               {/* Values editor */}
