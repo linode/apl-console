@@ -5,6 +5,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAplAgentsQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
+import { Status, getStatus } from 'utils/status'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
@@ -18,12 +19,6 @@ const getAgentName = (): CallableFunction =>
         {name}
       </RLink>
     )
-  }
-
-const getStatus = (): CallableFunction =>
-  function (row: any): string {
-    const { status } = row
-    return status?.phase || 'Unknown'
   }
 
 const getFoundationModel = (): CallableFunction =>
@@ -67,14 +62,14 @@ export default function AgentsOverviewPage({
       renderer: getAgentName(),
     },
     {
-      id: 'status',
-      label: t('Status'),
-      renderer: getStatus(),
-    },
-    {
       id: 'foundationModel',
       label: t('Foundation Model'),
       renderer: getFoundationModel(),
+    },
+    {
+      id: 'status',
+      label: t('Status'),
+      renderer: (row: any) => getStatus((row.status?.phase as Status) || 'Unknown'),
     },
   ]
 

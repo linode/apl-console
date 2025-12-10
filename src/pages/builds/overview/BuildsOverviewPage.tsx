@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 import { HeadCell } from 'components/EnhancedTable'
 import InformationBanner from 'components/InformationBanner'
 import ListTable from 'components/ListTable'
-import { getStatus } from 'components/Workloads'
+import { Status, getStatus } from 'utils/status'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
@@ -132,7 +132,7 @@ export default function BuildsOverviewPage({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(statuses?.builds?.[row.name]),
+      renderer: (row: Row) => getStatus((statuses?.builds?.[row.name] as Status) || 'NotFound'),
     },
   ]
 
