@@ -66,7 +66,7 @@ export const createAplWorkloadApiResponseSchema = yup.object({
   }),
 
   metadata: yup.object({
-    name: yup.string().required(),
+    name: yup.string().required('Workload name is required'),
     labels: yup.object({
       'apl.io/teamId': yup.string().required(),
     }),

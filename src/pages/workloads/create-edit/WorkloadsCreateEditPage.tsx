@@ -238,8 +238,8 @@ export default function WorkloadsCreateEditPage({
   const onSubmit = async (formData: CreateAplWorkloadApiResponse) => {
     const workloadBody = omit(formData.spec, ['chartProvider', 'chart', 'revision'])
     const chartMetadata = omit(formData.spec?.chartMetadata, ['helmChartCatalog', 'helmChart'])
-    const path = workloadData?.spec?.path ?? (formData as any).path
-    const url = workloadData?.spec?.url ?? (formData as any).url ?? ''
+    const path = workloadData?.spec?.path ?? workloadData.path ?? (formData as any).path
+    const url = workloadData?.spec?.url ?? workloadData.url ?? (formData as any).url ?? ''
 
     // ---- derive imageUpdateStrategy from values.yaml if needed ----
     let imageUpdateStrategy = formData.spec.imageUpdateStrategy
