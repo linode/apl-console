@@ -28,13 +28,20 @@ const StyledTypography = styled(Typography)<{ selected: boolean }>(({ theme, sel
   color: selected ? theme.palette.primary.main : theme.palette.grey[500],
 }))
 
+const StyledCaption = styled(Typography)<{ selected: boolean }>(({ theme, selected }) => ({
+  fontSize: 10,
+  textTransform: 'none',
+  color: selected ? theme.palette.primary.main : theme.palette.grey[500],
+  marginLeft: '1px',
+}))
+
 interface ImgButtonGroupProps {
   title?: string
   description?: string
   name: string
   control: any
   value: string
-  options: { value: string; label: string; imgSrc: string }[]
+  options: { value: string; label: string; imgSrc?: string; caption?: string }[]
   onChange?: (value: string) => void
   disabled?: boolean
 }
@@ -75,18 +82,29 @@ function ImgButtonGroup({
                 }}
                 selected={field.value === option.value}
               >
-                <img
-                  style={{ width: 20, height: 20 }}
-                  src={option.imgSrc}
-                  onError={({ currentTarget }) => {
-                    // eslint-disable-next-line no-param-reassign
-                    currentTarget.onerror = null // prevents looping
-                    // eslint-disable-next-line no-param-reassign
-                    currentTarget.src = `${option.imgSrc}`
+                {option.imgSrc && (
+                  <img
+                    style={{ width: 20, height: 20 }}
+                    src={option.imgSrc}
+                    onError={({ currentTarget }) => {
+                      // eslint-disable-next-line no-param-reassign
+                      currentTarget.onerror = null // prevents looping
+                      // eslint-disable-next-line no-param-reassign
+                      currentTarget.src = `${option.imgSrc}`
+                    }}
+                    alt={`Logo for ${option.imgSrc}`}
+                  />
+                )}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
                   }}
-                  alt={`Logo for ${option.imgSrc}`}
-                />
-                <StyledTypography selected={field.value === option.value}>{option.label}</StyledTypography>
+                >
+                  <StyledTypography selected={field.value === option.value}>{option.label}</StyledTypography>
+                  <StyledCaption selected={field.value === option.value}>{option.caption}</StyledCaption>
+                </Box>
               </StyledButton>
             ))}
           </Box>
