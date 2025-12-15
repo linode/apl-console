@@ -81,9 +81,9 @@ export default function WorkloadsCreateEditPage({
     refetch: refetchWorkload,
   } = useGetAplWorkloadQuery({ teamId, workloadName }, { skip: !workloadName })
 
-  const [createWorkload, { isLoading: isCreating }] = useCreateAplWorkloadMutation()
-  const [updateWorkload, { isLoading: isUpdating }] = useEditAplWorkloadMutation()
-  const [deleteWorkload, { isLoading: isLoadingDWL, isSuccess: isSuccessDWL }] = useDeleteAplWorkloadMutation()
+  const [createWorkload, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplWorkloadMutation()
+  const [updateWorkload, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplWorkloadMutation()
+  const [deleteWorkload, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplWorkloadMutation()
 
   const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useGetWorkloadCatalogMutation()
   const [catalogItem, setCatalogItem] = useState<any>({})
@@ -176,9 +176,6 @@ export default function WorkloadsCreateEditPage({
     if (!workloadName) return
     if (!isFetchingWorkload) refetchWorkload()
   }, [isDirty, workloadName, isFetchingWorkload, refetchWorkload])
-
-  const mutating = isLoadingDWL || isCreating || isUpdating
-  if (!mutating && isSuccessDWL) return <Redirect to={`/teams/${teamId}/workloads`} />
 
   const icon = workloadData?.spec?.icon || catalogItem.icon || '/logos/akamai_logo.svg'
   const headerName = workloadData?.metadata?.name || catalogItem.name
@@ -306,6 +303,10 @@ export default function WorkloadsCreateEditPage({
     if (!('error' in res && res.error)) history.push(`/teams/${teamId}/workloads`)
   }
 
+  const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
+    return <Redirect to={`/teams/${teamId}/workloads`} />
+
   if (isLoadingWorkload || isLoadingCatalog) return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
 
   return (
@@ -393,9 +394,10 @@ export default function WorkloadsCreateEditPage({
                   {workloadName && (
                     <DeleteButton
                       onDelete={() => deleteWorkload({ teamId, workloadName })}
-                      resourceName={workloadData?.name}
+                      resourceName={workloadData?.metadata?.name}
                       resourceType='workload'
                       data-cy='button-delete-workload'
+                      loading={isLoadingDelete}
                       disabled={mutating || !isPlatformAdmin}
                     />
                   )}
