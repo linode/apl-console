@@ -306,7 +306,7 @@ export default function WorkloadsCreateEditPage({
     if (!('error' in res && res.error)) history.push(`/teams/${teamId}/workloads`)
   }
 
-  if (isLoadingWorkload || isLoadingCatalog) return <PaperLayout loading title={t('TITLE_SERVICE')} />
+  if (isLoadingWorkload || isLoadingCatalog) return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
 
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>
