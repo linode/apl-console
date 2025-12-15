@@ -66,7 +66,12 @@ export const createAplWorkloadApiResponseSchema = yup.object({
   }),
 
   metadata: yup.object({
-    name: yup.string().required('Workload name is required'),
+    name: yup
+      .string()
+      .required('Workload name is required')
+      .min(4, 'Workload name must be at least 4 characters')
+      .max(16, 'Workload name must not exceed 16 characters')
+      .matches(/^[a-z]([-a-z0-9]*[a-z0-9])+$/, 'Workload name cannot contain capital letters or underscores'),
     labels: yup.object({
       'apl.io/teamId': yup.string().required(),
     }),
