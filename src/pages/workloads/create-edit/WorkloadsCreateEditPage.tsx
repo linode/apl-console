@@ -210,7 +210,7 @@ export default function WorkloadsCreateEditPage({
     {
       value: 'semver',
       label: 'Semver',
-      caption: '1.x.x',
+      caption: '1.x.x, ^1.0.2, ~1.0.2',
     },
   ]
 
@@ -356,7 +356,7 @@ export default function WorkloadsCreateEditPage({
               {/* Auto image updater */}
               <Section
                 title='Auto Image Updater'
-                description='Automatically update the image. Only supported when the image is stored in Harbor.'
+                description='Automatically update the image. Only supported when the image is stored in Harbor. Image tag and repository can be set in the editor'
               >
                 <ImgButtonGroup
                   name='spec.imageUpdateStrategy.type'
@@ -365,6 +365,21 @@ export default function WorkloadsCreateEditPage({
                   value={autoUpdaterType}
                   onChange={handleAutoUpdaterChange}
                 />
+                {autoUpdaterType === 'semver' && (
+                  <Box sx={{ mt: 3, maxWidth: 480 }}>
+                    <TextField
+                      label='Version constraint'
+                      width='large'
+                      noMarginTop
+                      placeholder='1.x.x'
+                      error={!!(errors.spec?.imageUpdateStrategy as any)?.semver?.versionConstraint}
+                      helperText={(
+                        errors.spec?.imageUpdateStrategy as any
+                      )?.semver?.versionConstraint?.message?.toString()}
+                      {...methods.register('spec.imageUpdateStrategy.semver.versionConstraint' as const)}
+                    />
+                  </Box>
+                )}
               </Section>
 
               {/* Values editor */}

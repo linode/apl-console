@@ -49,8 +49,8 @@ export const createAplWorkloadApiResponseSchema = yup.object({
             type: yup.string().oneOf(['semver']).required(),
             semver: yup
               .object({
-                imageRepository: yup.string().required(),
-                versionConstraint: yup.string().required(),
+                imageRepository: yup.string().optional(),
+                versionConstraint: yup.string().required('A version constraint is required for Semver versioning'),
                 imageParameter: yup.string().optional(),
                 tagParameter: yup.string().optional(),
               })
