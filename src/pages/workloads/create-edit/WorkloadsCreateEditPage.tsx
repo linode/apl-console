@@ -189,7 +189,6 @@ export default function WorkloadsCreateEditPage({
   const [autoUpdaterType, setAutoUpdaterType] = useState<AutoUpdaterType>('disabled')
 
   // initialise local state from form values
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     if (watchedStrategyType) setAutoUpdaterType(watchedStrategyType)
   }, [watchedStrategyType])
