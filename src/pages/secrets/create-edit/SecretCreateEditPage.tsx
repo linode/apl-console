@@ -21,7 +21,7 @@ import { useEffect } from 'react'
 import { cloneDeep, isEmpty, isEqual } from 'lodash'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
-import { encryptSecretItem } from 'utils/sealedSecretsUtils'
+import { encryptSecretItem } from '@linode/kubeseal-encrypt'
 import { useSession } from 'providers/Session'
 import { useTranslation } from 'react-i18next'
 import { mapObjectToKeyValueArray, valueArrayToObject } from 'utils/helpers'
@@ -36,6 +36,7 @@ const isDev = process.env.NODE_ENV === 'development'
 async function encryptValue(sealedSecretsPEM: string, namespace: string, value: string): Promise<string> {
   if (isDev && !sealedSecretsPEM) return value
   const encryptedText = await encryptSecretItem(sealedSecretsPEM, namespace, value)
+  console.log('encryptedText', encryptedText)
   return encryptedText
 }
 

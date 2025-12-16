@@ -8,6 +8,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY package*.json ./
+COPY linode-kubeseal-encrypt-1.0.0.tgz ./
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
