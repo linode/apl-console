@@ -28,6 +28,14 @@ export default function (): React.ReactElement {
   const { data: teamData } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
 
   const teamId = isPlatformView ? undefined : oboTeamId
+
+  console.log('[Dashboard] Debug info:', {
+    oboTeamId,
+    isPlatformView,
+    teamId,
+    skipQuery: !isPlatformView && !teamId,
+  })
+
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
