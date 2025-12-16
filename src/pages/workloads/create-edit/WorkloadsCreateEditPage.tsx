@@ -342,16 +342,29 @@ export default function WorkloadsCreateEditPage({
               </Box>
 
               <Section>
-                <TextField
-                  label='Workload name'
-                  width='large'
-                  noMarginTop
-                  value={watch('metadata.name') || ''}
-                  onChange={(e) => setValue('metadata.name', e.target.value)}
-                  error={!!errors.metadata?.name}
-                  helperText={errors.metadata?.name?.message?.toString()}
-                  disabled={!!workloadName || !isPlatformAdmin}
-                />
+                <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                  <TextField
+                    label='Workload name'
+                    width='large'
+                    noMarginTop
+                    value={watch('metadata.name') || ''}
+                    onChange={(e) => setValue('metadata.name', e.target.value)}
+                    error={!!errors.metadata?.name}
+                    helperText={errors.metadata?.name?.message?.toString()}
+                    disabled={!!workloadName || !isPlatformAdmin}
+                  />
+                  {isPlatformAdmin && teamId === 'admin' && (
+                    <TextField
+                      label='Namespace'
+                      width='large'
+                      noMarginTop
+                      value={watch('spec.namespace') || ''}
+                      onChange={(e) => setValue('spec.namespace', e.target.value)}
+                      error={!!errors.spec?.namespace}
+                      helperText={errors.spec?.message?.toString()}
+                    />
+                  )}
+                </Box>
               </Section>
 
               {/* Auto image updater */}
