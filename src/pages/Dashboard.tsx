@@ -32,7 +32,7 @@ export default function (): React.ReactElement {
     data: dashboard,
     isFetching: isFetchingDashboard,
     refetch: refetchDashboard,
-  } = useGetDashboardQuery({ teamId })
+  } = useGetDashboardQuery({ teamId }, { skip: !isPlatformView && !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
