@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Typography } from '@mui/material'
+import { Box, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -26,6 +26,7 @@ import { DocsLink } from 'components/DocsLink'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import { TextField } from 'components/forms/TextField'
 import Section from 'components/Section'
+import { LoadingButton } from '@mui/lab'
 import CodeEditor from './WorkloadsCodeEditor'
 import { createAplWorkloadApiResponseSchema } from './create-edit-workloads.validator'
 
@@ -401,9 +402,9 @@ export default function WorkloadsCreateEditPage({
 
               <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
                 <ButtonGroup sx={{ gap: '10px' }}>
-                  <Button variant='contained' type='submit' disabled={mutating || !isPlatformAdmin}>
-                    Submit
-                  </Button>
+                  <LoadingButton variant='contained' type='submit' loading={mutating} disabled={mutating}>
+                    {workloadName ? 'Save Changes' : 'Create Workload'}
+                  </LoadingButton>
                   {workloadName && (
                     <DeleteButton
                       onDelete={() => deleteWorkload({ teamId, workloadName })}
