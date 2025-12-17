@@ -29,13 +29,6 @@ export default function (): React.ReactElement {
 
   const teamId = isPlatformView ? undefined : oboTeamId
 
-  console.log('[Dashboard] Debug info:', {
-    oboTeamId,
-    isPlatformView,
-    teamId,
-    skipQuery: !isPlatformView && !teamId,
-  })
-
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
