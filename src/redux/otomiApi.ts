@@ -5238,7 +5238,9 @@ export type GetDockerConfigApiArg = {
 }
 export type GetSessionApiResponse = /** status 200 Get the session for the logged in user */ {
   ca?: string
-  core?: object
+  core?: {
+    [key: string]: any
+  }
   corrupt?: boolean
   editor?: string
   inactivityTimeout?: number
@@ -5277,7 +5279,9 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
     console?: string
     values?: string
   }
-  valuesSchema?: object
+  valuesSchema?: {
+    [key: string]: any
+  }
 }
 export type GetSessionApiArg = void
 export type GetApiDocApiResponse = /** status 200 The requested apiDoc. */ object
@@ -5868,8 +5872,12 @@ export type EditSettingsApiArg = {
 export type GetAppsApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
-  rawValues?: object
-  values?: object
+  rawValues?: {
+    [key: string]: any
+  }
+  values?: {
+    [key: string]: any
+  }
 }[]
 export type GetAppsApiArg = {
   teamId: string
@@ -5885,8 +5893,12 @@ export type ToggleAppsApiArg = {
 export type GetTeamAppApiResponse = /** status 200 The request is successful. */ {
   enabled?: boolean
   id: string
-  rawValues?: object
-  values?: object
+  rawValues?: {
+    [key: string]: any
+  }
+  values?: {
+    [key: string]: any
+  }
 }
 export type GetTeamAppApiArg = {
   teamId: string
@@ -5900,8 +5912,12 @@ export type EditAppApiArg = {
   body: {
     enabled?: boolean
     id: string
-    rawValues?: object
-    values?: object
+    rawValues?: {
+      [key: string]: any
+    }
+    values?: {
+      [key: string]: any
+    }
   }
 }
 export type GetAiModelsApiResponse = /** status 200 Successfully obtained shared AI models */ ({
