@@ -207,7 +207,7 @@ function IFramesCard({ classes, title, iframeSources, iframeClass, themeMode, sh
 export default function Dashboard({ team, inventory }: Props): React.ReactElement {
   const theme = useTheme()
   const { classes } = useStyles()
-  const { themeView, onChangeView } = useSettings()
+  const { themeView } = useSettings()
   const { oboTeamId, appsEnabled, user, versions } = useSession()
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
@@ -220,11 +220,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   React.useEffect(() => {
     setCookiesLoaded(false)
   }, [themeView])
-  // reset themeView to team if user is not admin
-  React.useEffect(() => {
-    const { isPlatformAdmin } = user
-    if (!isPlatformAdmin) onChangeView({ target: { value: 'team' } } as React.ChangeEvent<HTMLInputElement>)
-  }, [])
 
   // platform view base iframe urls
   const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
