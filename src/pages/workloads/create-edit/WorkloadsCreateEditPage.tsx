@@ -1,4 +1,4 @@
-import { Box, ButtonGroup, Typography } from '@mui/material'
+import { Box, ButtonGroup } from '@mui/material'
 import YAML from 'yaml'
 import { omit } from 'lodash'
 import React, { useEffect, useState } from 'react'
@@ -22,11 +22,11 @@ import {
   useGetWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import DeleteButton from 'components/DeleteButton'
-import { DocsLink } from 'components/DocsLink'
 import ImgButtonGroup from 'components/ImgButtonGroup'
 import { TextField } from 'components/forms/TextField'
 import Section from 'components/Section'
 import { LoadingButton } from '@mui/lab'
+import { LandingHeader } from 'components/LandingHeader'
 import CodeEditor from './WorkloadsCodeEditor'
 import { createAplWorkloadApiResponseSchema } from './create-edit-workloads.validator'
 
@@ -311,36 +311,48 @@ export default function WorkloadsCreateEditPage({
 
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>
+      <Box className={classes.header} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
+          <img
+            className={classes.img}
+            src={icon}
+            onError={({ currentTarget }) => {
+              currentTarget.onerror = null
+              currentTarget.src = `${icon}`
+            }}
+            alt={`Logo for ${icon}`}
+          />
+        </Box>
+
+        <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+          <LandingHeader
+            title={headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
+            docsLabel='Docs'
+            docsLink={
+              workloadData?.spec?.url && workloadData?.spec?.path
+                ? getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)
+                : undefined
+            }
+            hideCrumbX={workloadName ? [1, 2] : undefined}
+            breadcrumbOverrides={[
+              {
+                position: 1,
+                label: 'Workloads',
+                linkTo: `/teams/${teamId}/workloads`,
+              },
+              {
+                position: 2,
+                label: 'Catalogs',
+                linkTo: `/catalogs/${teamId}`,
+              },
+            ]}
+          />
+        </Box>
+      </Box>
       {isErrorWorkload ? null : (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ width: '100%' }}>
-              <Box className={classes.header}>
-                <Box className={classes.imgHolder}>
-                  <img
-                    className={classes.img}
-                    src={icon}
-                    onError={({ currentTarget }) => {
-                      // eslint-disable-next-line no-param-reassign
-                      currentTarget.onerror = null
-                      // eslint-disable-next-line no-param-reassign
-                      currentTarget.src = `${icon}`
-                    }}
-                    alt={`Logo for ${icon}`}
-                  />
-                </Box>
-                <Box>
-                  <Typography variant='h6'>
-                    {headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
-                  </Typography>
-                </Box>
-                {workloadData?.spec?.url && workloadData?.spec?.path && (
-                  <Box sx={{ ml: 'auto' }}>
-                    <DocsLink href={getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)} />
-                  </Box>
-                )}
-              </Box>
-
               <Section>
                 <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
                   <TextField
