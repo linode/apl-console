@@ -40,7 +40,7 @@ export default function (): React.ReactElement {
     data: dashboard,
     isFetching: isFetchingDashboard,
     refetch: refetchDashboard,
-  } = useGetDashboardQuery({ teamId }, { skip: !isPlatformView && !teamId })
+  } = useGetDashboardQuery({ teamId }, { skip: !isPlatformAdmin && !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
