@@ -52,6 +52,7 @@ import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
 import WorkloadsCreateEditPage from 'pages/workloads/create-edit/WorkloadsCreateEditPage'
 import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPage'
 import WorkloadCatalogsPage from 'pages/workloads/catalog/WorkloadCatalogsPage'
+import ThemeViewInitializer from 'components/ThemeViewInitializer'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -84,6 +85,7 @@ function App() {
                               <SnackbarUtilsConfigurator />
                               <CssBaseline />
                               <Helmet titleTemplate='%s | App Platform' defaultTitle='Akamai App Platform' />
+                              <ThemeViewInitializer />
                               <Switch>
                                 <Route path='/' component={Dashboard} exact />
                                 <PrivateRoute
