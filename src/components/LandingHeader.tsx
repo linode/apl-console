@@ -6,11 +6,13 @@ import * as React from 'react'
 import { Breadcrumb, BreadcrumbProps } from './Breadcrumb/Breadcrumb'
 import { Button } from './Button/Button'
 import { DocsLink } from './DocsLink'
+import { CrumbOverridesProps } from './Breadcrumb/Crumbs'
 
 export interface LandingHeaderProps {
   analyticsLabel?: string
   betaFeedbackLink?: string
   breadcrumbDataAttrs?: { [key: string]: boolean }
+  breadcrumbOverrides?: CrumbOverridesProps[]
   breadcrumbProps?: BreadcrumbProps
   buttonDataAttrs?: { [key: string]: boolean | string }
   createButtonText?: string
@@ -38,6 +40,7 @@ export function LandingHeader({
   analyticsLabel,
   betaFeedbackLink,
   breadcrumbDataAttrs,
+  breadcrumbOverrides,
   breadcrumbProps,
   buttonDataAttrs,
   createButtonText,
@@ -80,6 +83,7 @@ export function LandingHeader({
           {...breadcrumbDataAttrs}
           {...breadcrumbProps}
           disabledBreadcrumbEditButton={disabledBreadcrumbEditButton}
+          crumbOverrides={breadcrumbOverrides}
         />
       </Grid>
       {!shouldHideDocsAndCreateButtons && (
