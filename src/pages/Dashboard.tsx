@@ -28,11 +28,12 @@ export default function (): React.ReactElement {
   const { data: teamData } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
 
   const teamId = isPlatformView ? undefined : oboTeamId
+
   const {
     data: dashboard,
     isFetching: isFetchingDashboard,
     refetch: refetchDashboard,
-  } = useGetDashboardQuery({ teamId })
+  } = useGetDashboardQuery({ teamId }, { skip: !isPlatformAdmin && !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
