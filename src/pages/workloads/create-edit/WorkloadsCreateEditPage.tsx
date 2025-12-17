@@ -119,7 +119,6 @@ export default function WorkloadsCreateEditPage({
   }) as CreateAplWorkloadApiResponse
 
   const methods = useForm<CreateAplWorkloadApiResponse>({
-    disabled: !isPlatformAdmin,
     resolver: yupResolver(createAplWorkloadApiResponseSchema) as Resolver<CreateAplWorkloadApiResponse>,
     defaultValues: mergedDefaultValues,
   })
@@ -185,7 +184,7 @@ export default function WorkloadsCreateEditPage({
   // ---- Auto image updater state ----
   type AutoUpdaterType = 'disabled' | 'digest' | 'semver'
   const watchedStrategyType = watch('spec.imageUpdateStrategy.type') as AutoUpdaterType | undefined
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+
   const [autoUpdaterType, setAutoUpdaterType] = useState<AutoUpdaterType>('disabled')
 
   // initialise local state from form values
@@ -413,7 +412,13 @@ export default function WorkloadsCreateEditPage({
 
               <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
                 <ButtonGroup sx={{ gap: '10px' }}>
-                  <LoadingButton variant='contained' type='submit' loading={mutating} disabled={mutating}>
+                  <LoadingButton
+                    variant='contained'
+                    type='submit'
+                    sx={{ textTransform: 'none' }}
+                    loading={mutating}
+                    disabled={mutating}
+                  >
                     {workloadName ? 'Save Changes' : 'Create Workload'}
                   </LoadingButton>
                   {workloadName && (
@@ -423,7 +428,7 @@ export default function WorkloadsCreateEditPage({
                       resourceType='workload'
                       data-cy='button-delete-workload'
                       loading={isLoadingDelete}
-                      disabled={mutating || !isPlatformAdmin}
+                      disabled={mutating}
                     />
                   )}
                 </ButtonGroup>
