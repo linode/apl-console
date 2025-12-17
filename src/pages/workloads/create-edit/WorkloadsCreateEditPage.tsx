@@ -362,7 +362,7 @@ export default function WorkloadsCreateEditPage({
                     onChange={(e) => setValue('metadata.name', e.target.value)}
                     error={!!errors.metadata?.name}
                     helperText={errors.metadata?.name?.message?.toString()}
-                    disabled={!!workloadName || !isPlatformAdmin}
+                    disabled={!!workloadName}
                   />
                   {isPlatformAdmin && teamId === 'admin' && (
                     <TextField
