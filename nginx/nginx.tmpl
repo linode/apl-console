@@ -17,6 +17,10 @@ http {
   server {
     include /etc/nginx/mime.types;
     default_type  application/octet-stream;
+    # ---- Clickjacking protection ----
+    add_header Content-Security-Policy "frame-ancestors 'none'" always;
+    add_header X-Frame-Options "DENY" always;
+    # --------------------------------
     sendfile on;
     keepalive_timeout 65;
     listen 8080;
