@@ -9,9 +9,9 @@ name: Build test push release
 on:
   push:
     branches:
-      - "**"
+      - '**'
     tags-ignore:
-      - "*"
+      - '*'
 env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
   CACHE_REGISTRY: ghcr.io
@@ -21,7 +21,6 @@ env:
   DOCKER_USERNAME: ${{ vars.DOCKERHUB_LINODEBOT_USERNAME }}
   BOT_EMAIL: ${{ vars.BOT_EMAIL }}
   BOT_USERNAME: ${{ vars.BOT_USERNAME }}
-  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
 
 jobs:
   build-test-push-release:
@@ -39,11 +38,11 @@ jobs:
         uses: whoan/docker-build-with-cache-action@v8
         with:
           username: ${{ env.BOT_USERNAME}}
-          password: "${{ env.BOT_TOKEN }}"
+          password: '${{ env.BOT_TOKEN }}'
           registry: ${{ env.CACHE_REGISTRY }}
           image_name: ${{ env.CACHE_REPO }}
           image_tag: ${{ env.TAG }}
-          build_extra_args: "--secret id=NPM_TOKEN,env=BOT_TOKEN"
+          build_extra_args: '--secret id=NPM_TOKEN,env=BOT_TOKEN'
       - name: Retag from cache and push
         if: ${{ github.actor != 'dependabot[bot]' }}
         run: |
@@ -77,4 +76,4 @@ jobs:
         with:
           tag: ${{ steps.git_tag.outputs.tag }}
           name: Release ${{ steps.git_tag.outputs.tag }}
-          bodyFile: "NEW_CHANGELOG.md"
+          bodyFile: 'NEW_CHANGELOG.md'
