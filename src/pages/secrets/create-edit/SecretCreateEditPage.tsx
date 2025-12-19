@@ -115,10 +115,23 @@ export default function SecretCreateEditPage({
   }, [isDirty])
 
   // If we have a sealedSecretName, we are converting the data to the form format
-  const formData = cloneDeep(data) as SealedSecretFormData
+  /**
+   * temporary workaround for wrong data shape send by API
+   * REF: APL-1333
+   */
+  const formData = cloneDeep(data) as any
+
   if (!isEmpty(data)) {
+    // hoist template.metadata -> metadata
+    formData.metadata = {
+      ...(formData.metadata ?? {}),
+      ...(formData.template?.metadata ?? {}),
+    }
+
     formData.encryptedData = mapObjectToKeyValueArray(formData?.encryptedData as Record<string, string>)
+
     formData.metadata.annotations = mapObjectToKeyValueArray(formData?.metadata?.annotations as Record<string, string>)
+
     formData.metadata.labels = mapObjectToKeyValueArray(formData?.metadata?.labels as Record<string, string>)
   }
 
