@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.1](https://github.com/linode/apl-console/compare/v4.10.0...v4.11.1) (2025-12-19)
+
+
+### Bug Fixes
+
+* hoist metadata ([#697](https://github.com/linode/apl-console/issues/697)) ([4e29315](https://github.com/linode/apl-console/commit/4e29315f72a70bd87465e570066aeab4b0692e6e))
+
 ## [4.11.0](https://github.com/linode/apl-console/compare/v4.10.0...v4.11.0) (2025-12-01)
 
 
