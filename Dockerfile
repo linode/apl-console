@@ -1,7 +1,7 @@
 # --------------- dev stage for developers to override sources
 FROM node:20.19.5-alpine as dev
 
-RUN apk --no-cache add make gcc g++ python3
+RUN apk --no-cache add make gcc g++ python3 git jq
 ENV NODE_ENV=development
 
 RUN mkdir /app
@@ -12,9 +12,12 @@ COPY package*.json ./
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
 
-RUN echo "@linode:registry=https://npm.pkg.github.com/linode" > .npmrc
 RUN --mount=type=secret,id=NPM_TOKEN \
-  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/NPM_TOKEN)" >> .npmrc
+  echo "@linode:registry=https://npm.pkg.github.com/" > .npmrc && \
+  echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/NPM_TOKEN)" >> .npmrc && \
+  echo "DEBUG: .npmrc created with token" && \
+  cat .npmrc | sed 's/ghp_[a-zA-Z0-9]*/ghp_REDACTED/' && \
+  test -s /run/secrets/NPM_TOKEN && echo "DEBUG: Secret file exists and is not empty" || echo "DEBUG: Secret file is empty or missing"
 
 RUN npm ci
 
