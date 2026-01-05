@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.2](https://github.com/linode/apl-console/compare/v4.11.1...v4.11.2) (2026-01-05)
+
+
+### Bug Fixes
+
+* dashboard endpoint teamId ([#693](https://github.com/linode/apl-console/issues/693)) ([93e8c74](https://github.com/linode/apl-console/commit/93e8c7440c894fa8d0099736b3001f1077a3d649))
+
 ### [4.11.1](https://github.com/linode/apl-console/compare/v4.10.0...v4.11.1) (2025-12-19)
 
 
