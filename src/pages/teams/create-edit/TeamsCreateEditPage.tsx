@@ -43,7 +43,7 @@ export default function TeamsCreateEditPage({
   const { classes } = useStyles()
   const { appsEnabled, user, settings } = useSession()
   const { themeView } = useSettings()
-  const { isPlatformAdmin } = user
+  const { isPlatformAdmin, isTeamAdmin } = user
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateTeamMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditTeamMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteTeamMutation()
@@ -80,7 +80,7 @@ export default function TeamsCreateEditPage({
   })
 
   const methods = useForm<CreateTeamApiResponse>({
-    disabled: !isPlatformAdmin,
+    disabled: !isPlatformAdmin || !isTeamAdmin,
     resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
     defaultValues: mergedDefaultValues,
   })
@@ -160,7 +160,7 @@ export default function TeamsCreateEditPage({
     if (teamId) update({ teamId, body: payload })
     else create({ body: payload })
   }
-
+  const isAdmin = isPlatformAdmin || isTeamAdmin
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
 
@@ -174,7 +174,7 @@ export default function TeamsCreateEditPage({
           // hides the first crumb for the teamSettings page (e.g. /teams)
           hideCrumbX={themeView === 'team' ? [0] : []}
         />
-        {!isPlatformAdmin && <InformationBanner message='This page is readonly' sx={{ mb: 3 }} />}
+        {!isAdmin && <InformationBanner message='This page is readonly' sx={{ mb: 3 }} />}
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -194,8 +194,8 @@ export default function TeamsCreateEditPage({
               />
             </Section>
             <AdvancedSettings>
-              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana || !isPlatformAdmin}>
-                {!appsEnabled.grafana && isPlatformAdmin && (
+              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana || !isAdmin}>
+                {!appsEnabled.grafana && isAdmin && (
                   <InformationBanner
                     small
                     message={
@@ -209,13 +209,13 @@ export default function TeamsCreateEditPage({
                   sx={{ my: 2 }}
                   name='managedMonitoring.grafana'
                   control={control}
-                  disabled={!appsEnabled.grafana || !isPlatformAdmin}
+                  disabled={!appsEnabled.grafana || !isAdmin}
                   label='Enable dashboards'
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />
               </Section>
-              <Section title='Alerts' collapsable noMarginTop={appsEnabled.prometheus || !isPlatformAdmin}>
-                {!appsEnabled.prometheus && isPlatformAdmin && (
+              <Section title='Alerts' collapsable noMarginTop={appsEnabled.prometheus || !isAdmin}>
+                {!appsEnabled.prometheus && isAdmin && (
                   <InformationBanner
                     small
                     message={
@@ -230,7 +230,7 @@ export default function TeamsCreateEditPage({
                   sx={{ my: 2 }}
                   name='managedMonitoring.alertmanager'
                   control={control}
-                  disabled={!appsEnabled.prometheus || !isPlatformAdmin}
+                  disabled={!appsEnabled.prometheus || !isAdmin}
                   label='Enable alerts'
                   explainertext='Installs Alertmanager to receive alerts and optionally route them to a notification receiver.'
                 />
@@ -323,7 +323,7 @@ export default function TeamsCreateEditPage({
                 collapsable
                 description='A resource quota provides constraints that limit aggregated resource consumption per team. It can limit the quantity of objects that can be created in a team, as well as the total amount of compute resources that may be consumed by resources in that team.'
               >
-                <ResourceQuotaKeyValue name='resourceQuota' disabled={!isPlatformAdmin} />
+                <ResourceQuotaKeyValue name='resourceQuota' disabled={!isAdmin} />
               </Section>
               <Section title='Network Policies' collapsable noMarginTop>
                 <ControlledCheckbox
@@ -342,7 +342,7 @@ export default function TeamsCreateEditPage({
                 />
               </Section>
               <Section title='Permissions' collapsable>
-                <PermissionsTable name='selfService' disabled={!isPlatformAdmin} />
+                <PermissionsTable name='selfService' disabled={!isAdmin} />
               </Section>
             </AdvancedSettings>
             {teamId && (
@@ -351,7 +351,7 @@ export default function TeamsCreateEditPage({
                 resourceName={watch('name')}
                 resourceType='team'
                 data-cy='button-delete-team'
-                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate || !isPlatformAdmin}
+                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate || !isAdmin}
                 loading={isLoadingDelete}
               />
             )}
@@ -360,7 +360,7 @@ export default function TeamsCreateEditPage({
               variant='contained'
               color='primary'
               loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || !isPlatformAdmin}
+              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || !isAdmin}
               sx={{ float: 'right', textTransform: 'none' }}
             >
               {teamId ? 'Save Changes' : 'Create Team'}
