@@ -128,9 +128,7 @@ export default function TeamsCreateEditPage({
 
   const onSubmit = (submitData: CreateTeamApiResponse) => {
     // 1) Re‐attach “Gi” to any memory quotas
-    console.log('submitData', submitData)
     const resourceQuota = submitData.resourceQuota.map(({ name, value }) => {
-      console.log(name, value)
       if (name.endsWith('.memory') && value != null) return { name, value: `${value}Gi` }
 
       return { name, value }
