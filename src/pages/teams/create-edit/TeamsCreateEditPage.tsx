@@ -78,9 +78,9 @@ export default function TeamsCreateEditPage({
       },
     }),
   })
-
+  const isAdmin = isPlatformAdmin || isTeamAdmin
   const methods = useForm<CreateTeamApiResponse>({
-    disabled: !isPlatformAdmin || !isTeamAdmin,
+    disabled: !isAdmin,
     resolver: yupResolver(createTeamApiResponseSchema) as Resolver<CreateTeamApiResponse>,
     defaultValues: mergedDefaultValues,
   })
@@ -162,7 +162,7 @@ export default function TeamsCreateEditPage({
     if (teamId) update({ teamId, body: payload })
     else create({ body: payload })
   }
-  const isAdmin = isPlatformAdmin || isTeamAdmin
+
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
 
