@@ -329,7 +329,6 @@ export default function TeamsCreateEditPage({
               </Section>
               <Section title='Network Policies' collapsable noMarginTop>
                 <ControlledCheckbox
-                  disabled={!isAdmin}
                   sx={{ my: 2 }}
                   name='networkPolicy.ingressPrivate'
                   control={control}
@@ -337,7 +336,6 @@ export default function TeamsCreateEditPage({
                   explainertext='Control Pod network access. Turning this off allows any Pod from any namespace to connect to any Pod from the team. (Recommended to keep this enabled)'
                 />
                 <ControlledCheckbox
-                  disabled={!isAdmin}
                   sx={{ my: 2 }}
                   name='networkPolicy.egressPublic'
                   control={control}
