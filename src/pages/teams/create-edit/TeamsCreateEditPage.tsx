@@ -161,8 +161,10 @@ export default function TeamsCreateEditPage({
     else create({ body: payload })
   }
 
+  const isPlatformView = themeView === 'platform'
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
-  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) return <Redirect to='/teams' />
+  if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete) && isPlatformView)
+    return <Redirect to='/teams' />
 
   return (
     <Grid className={classes.root}>
