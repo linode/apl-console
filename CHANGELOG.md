@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.3](https://github.com/linode/apl-console/compare/v4.11.2...v4.11.3) (2026-01-09)
+
+
+### Bug Fixes
+
+* set themeView correctly ([#694](https://github.com/linode/apl-console/issues/694)) ([0f65071](https://github.com/linode/apl-console/commit/0f65071b93459f97085dc331e19fe88ce2189ee5))
+
 ### [4.11.2](https://github.com/linode/apl-console/compare/v4.11.1...v4.11.2) (2026-01-05)
 
 
