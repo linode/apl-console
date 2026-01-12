@@ -85,7 +85,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     data: apps,
     isLoading: isLoadingApps,
     refetch: refetchAppsEnabled,
-  } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
+  } = useGetAppsQuery({ teamId: oboTeamId }, { skip: !oboTeamId })
   const { data: apiDocs, isLoading: isLoadingApiDocs } = useGetApiDocQuery(skipFetch && skipToken)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
