@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.4](https://github.com/linode/apl-console/compare/v4.11.3...v4.11.4) (2026-01-12)
+
+
+### Bug Fixes
+
+* getApps endpoint and limits data ([#700](https://github.com/linode/apl-console/issues/700)) ([1704fe3](https://github.com/linode/apl-console/commit/1704fe35c2890a4652d0ec501ab7ca92a342a622))
+
 ### [4.11.3](https://github.com/linode/apl-console/compare/v4.11.2...v4.11.3) (2026-01-09)
 
 
