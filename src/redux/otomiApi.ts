@@ -474,7 +474,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v1/settings/${queryArg.settingId}`, method: 'PUT', body: queryArg.body }),
     }),
     getApps: build.query<GetAppsApiResponse, GetAppsApiArg>({
-      query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}`, params: { picks: queryArg.picks } }),
+      query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}` }),
     }),
     toggleApps: build.mutation<ToggleAppsApiResponse, ToggleAppsApiArg>({
       query: (queryArg) => ({ url: `/v1/apps/${queryArg.teamId}`, method: 'PUT', body: queryArg.body }),
@@ -5870,19 +5870,11 @@ export type EditSettingsApiArg = {
   }
 }
 export type GetAppsApiResponse = /** status 200 The request is successful. */ {
+  id?: string
   enabled?: boolean
-  id: string
-  rawValues?: {
-    [key: string]: any
-  }
-  values?: {
-    [key: string]: any
-  }
 }[]
 export type GetAppsApiArg = {
   teamId: string
-  /** Selection of properties to return. */
-  picks?: string[]
 }
 export type ToggleAppsApiResponse = /** status 200 Successfully toggled apps */ undefined
 export type ToggleAppsApiArg = {
