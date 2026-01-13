@@ -55,13 +55,13 @@ export default function NavConfig() {
           title: 'Agents',
           path: `/teams/${oboTeamId}/agents`,
           icon: getIcon('agents_icon.svg'),
-          hidden: !aiEnabled,
+          hidden: true,
         },
         {
           title: 'Knowledge Bases',
           path: `/teams/${oboTeamId}/knowledge-bases`,
           icon: getIcon('knowledgebases_icon.svg'),
-          hidden: !aiEnabled,
+          hidden: true,
         },
         {
           title: 'Code Repositories',
