@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.5](https://github.com/linode/apl-console/compare/v4.11.4...v4.11.5) (2026-01-15)
+
+
+### Bug Fixes
+
+* apps enabled status ([#702](https://github.com/linode/apl-console/issues/702)) ([2fe2cdc](https://github.com/linode/apl-console/commit/2fe2cdc1b546f7654286f650a7b27c8ed99b2400))
+
 ### [4.11.4](https://github.com/linode/apl-console/compare/v4.11.3...v4.11.4) (2026-01-12)
 
 
