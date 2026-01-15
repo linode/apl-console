@@ -6,7 +6,7 @@ import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAppsQuery, useGetSettingsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useGetSettingsQuery, useGetTeamAppsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -22,7 +22,7 @@ export default function ({
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
-  const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
+  const { data: apps, isLoading, isFetching, refetch } = useGetTeamAppsQuery({ teamId })
   const { data: teamSettings } = useGetTeamQuery({ teamId })
   const {
     data: objSettings,
