@@ -81,11 +81,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     isLoading: isLoadingSettings,
     refetch: refetchSettings,
   } = useGetSettingsInfoQuery(skipFetch && skipToken)
-  const {
-    data: apps,
-    isLoading: isLoadingApps,
-    refetch: refetchAppsEnabled,
-  } = useGetAppsQuery({ teamId: oboTeamId }, { skip: !oboTeamId })
+  const { data: apps, isLoading: isLoadingApps, refetch: refetchAppsEnabled } = useGetAppsQuery(skipFetch && skipToken)
   const { data: apiDocs, isLoading: isLoadingApiDocs } = useGetApiDocQuery(skipFetch && skipToken)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
