@@ -175,23 +175,27 @@ export function AutoResizableTextarea({
 
   return (
     <Box>
-      <InputLabel
-        className={classes.inputLabel}
-        sx={{
-          fontWeight: 'bold',
-          fontSize: '14px',
-          visibility: label ? 'visible' : 'hidden',
-          marginTop: label ? '16px' : '0px',
-        }}
-      >
-        {label}
-      </InputLabel>
+      {label && (
+        <InputLabel
+          className={classes.inputLabel}
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '14px',
+            visibility: label ? 'visible' : 'hidden',
+            marginTop: label ? '16px' : '0px',
+            height: label ? 'auto' : '0px',
+          }}
+        >
+          {label}
+        </InputLabel>
+      )}
       <Box
         sx={{
           position: 'relative',
           display: 'flex',
           alignItems: 'flex-start',
           gap: '8px',
+          marginTop: label ? '0px' : '16px',
         }}
       >
         <textarea

@@ -6086,12 +6086,23 @@ export type GetAplAgentsApiResponse = /** status 200 Successfully obtained agent
   kind: 'AkamaiAgent'
   spec: {
     foundationModel: string
+    foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
+    routes?: {
+      agent: string
+      condition: string
+      apiUrl: string
+      apiKey?: string
+    }[]
     tools?: {
       type: string
       name: string
       description?: string
-      endpoint?: string
+      apiUrl?: string
+      apiKey?: string
     }[]
   }
 } & {
@@ -6121,12 +6132,23 @@ export type CreateAplAgentApiResponse = /** status 200 Successfully stored agent
   kind: 'AkamaiAgent'
   spec: {
     foundationModel: string
+    foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
+    routes?: {
+      agent: string
+      condition: string
+      apiUrl: string
+      apiKey?: string
+    }[]
     tools?: {
       type: string
       name: string
       description?: string
-      endpoint?: string
+      apiUrl?: string
+      apiKey?: string
     }[]
   }
 } & {
@@ -6156,12 +6178,23 @@ export type CreateAplAgentApiArg = {
     kind: 'AkamaiAgent'
     spec: {
       foundationModel: string
+      foundationModelEndpoint?: string
+      temperature?: number
+      topP?: number
+      maxTokens?: number
       agentInstructions: string
+      routes?: {
+        agent: string
+        condition: string
+        apiUrl: string
+        apiKey?: string
+      }[]
       tools?: {
         type: string
         name: string
         description?: string
-        endpoint?: string
+        apiUrl?: string
+        apiKey?: string
       }[]
     }
   } & {
@@ -6174,12 +6207,23 @@ export type GetAplAgentApiResponse = /** status 200 Successfully obtained agent 
   kind: 'AkamaiAgent'
   spec: {
     foundationModel: string
+    foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
+    routes?: {
+      agent: string
+      condition: string
+      apiUrl: string
+      apiKey?: string
+    }[]
     tools?: {
       type: string
       name: string
       description?: string
-      endpoint?: string
+      apiUrl?: string
+      apiKey?: string
     }[]
   }
 } & {
@@ -6211,12 +6255,23 @@ export type EditAplAgentApiResponse = /** status 200 Successfully edited a team 
   kind: 'AkamaiAgent'
   spec: {
     foundationModel: string
+    foundationModelEndpoint?: string
+    temperature?: number
+    topP?: number
+    maxTokens?: number
     agentInstructions: string
+    routes?: {
+      agent: string
+      condition: string
+      apiUrl: string
+      apiKey?: string
+    }[]
     tools?: {
       type: string
       name: string
       description?: string
-      endpoint?: string
+      apiUrl?: string
+      apiKey?: string
     }[]
   }
 } & {
@@ -6248,12 +6303,23 @@ export type EditAplAgentApiArg = {
     kind: 'AkamaiAgent'
     spec: {
       foundationModel: string
+      foundationModelEndpoint?: string
+      temperature?: number
+      topP?: number
+      maxTokens?: number
       agentInstructions: string
+      routes?: {
+        agent: string
+        condition: string
+        apiUrl: string
+        apiKey?: string
+      }[]
       tools?: {
         type: string
         name: string
         description?: string
-        endpoint?: string
+        apiUrl?: string
+        apiKey?: string
       }[]
     }
   } & {
