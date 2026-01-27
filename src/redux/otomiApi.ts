@@ -5419,7 +5419,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               loki?: string
               cnpg?: string
               harbor?: string
-              tempo?: string
               gitea?: string
               thanos?: string
               'kubeflow-pipelines'?: string
@@ -5684,7 +5683,6 @@ export type EditSettingsApiArg = {
                 loki?: string
                 cnpg?: string
                 harbor?: string
-                tempo?: string
                 gitea?: string
                 thanos?: string
                 'kubeflow-pipelines'?: string
