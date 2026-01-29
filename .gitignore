@@ -15,5 +15,3 @@ nginx.conf
 .env
 !.env.sample
 /.idea/
-
-.npmrc

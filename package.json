@@ -18,7 +18,7 @@
     "@fortawesome/fontawesome-free": "5.15.4",
     "@hookform/resolvers": "^3.9.0",
     "@iconify/react": "^6.0.0",
-    "@linode/kubeseal-encrypt": "1.0.0",
+    "@linode/kubeseal-encrypt": "^1.0.1",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "5.8.4",
     "@mui/lab": "5.0.0-alpha.86",

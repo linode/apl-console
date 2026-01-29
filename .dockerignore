@@ -2,7 +2,6 @@
 .git
 .history
 .npm
-.npmrc
 .vscode
 build
 node_modules

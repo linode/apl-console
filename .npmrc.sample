@@ -1,5 +1,0 @@
-engine-strict=true
-
-# The linode github packages registry
-@linode:registry=https://npm.pkg.github.com/linode
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN_HERE
