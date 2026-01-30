@@ -869,6 +869,10 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -932,6 +936,10 @@ export type CreateAplTeamApiResponse = /** status 200 Successfully obtained team
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -996,6 +1004,10 @@ export type CreateAplTeamApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
       labels: {
         'apl.io/teamId': string
       }
@@ -1048,6 +1060,10 @@ export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1114,6 +1130,10 @@ export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1180,6 +1200,10 @@ export type EditAplTeamApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
       labels: {
         'apl.io/teamId': string
       }
@@ -1632,6 +1656,10 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1687,6 +1715,10 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1745,6 +1777,10 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1803,6 +1839,13 @@ export type CreateAplServiceApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -1844,6 +1887,10 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1904,6 +1951,10 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -1964,6 +2015,13 @@ export type EditAplServiceApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -2182,33 +2240,41 @@ export type DeleteSealedSecretApiArg = {
   sealedSecretName: string
 }
 export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obtained all secrets */ ({
-  kind: 'AplTeamSecret'
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
   spec: {
-    namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
-    encryptedData?: {
+    encryptedData: {
       [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        [key: string]: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
-      labels?: {
-        [key: string]: string
-      }
-      finalizers?: string[]
     }
   }
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2227,33 +2293,41 @@ export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obta
 })[]
 export type GetAllAplSealedSecretsApiArg = void
 export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
-  kind: 'AplTeamSecret'
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
   spec: {
-    namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
-    encryptedData?: {
+    encryptedData: {
       [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        [key: string]: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
-      labels?: {
-        [key: string]: string
-      }
-      finalizers?: string[]
     }
   }
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2275,33 +2349,41 @@ export type GetAplSealedSecretsApiArg = {
   teamId: string
 }
 export type CreateAplSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
-  kind: 'AplTeamSecret'
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
   spec: {
-    namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
-    encryptedData?: {
+    encryptedData: {
       [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        [key: string]: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
-      labels?: {
-        [key: string]: string
-      }
-      finalizers?: string[]
     }
   }
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2323,21 +2405,66 @@ export type CreateAplSealedSecretApiArg = {
   teamId: string
   /** SealedSecret object */
   body: {
-    kind: 'AplTeamSecret'
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
     spec: {
+      encryptedData: {
+        [key: string]: string
+      }
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
       namespace?: string
-      immutable?: boolean
-      type:
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
+  spec: {
+    encryptedData: {
+      [key: string]: string
+    }
+    template?: {
+      type?:
         | 'kubernetes.io/opaque'
         | 'kubernetes.io/dockercfg'
         | 'kubernetes.io/dockerconfigjson'
         | 'kubernetes.io/basic-auth'
         | 'kubernetes.io/ssh-auth'
         | 'kubernetes.io/tls'
-      encryptedData?: {
-        [key: string]: string
-      }
+      immutable?: boolean
       metadata?: {
+        name?: string
+        namespace?: string
         annotations?: {
           [key: string]: string
         }
@@ -2347,40 +2474,14 @@ export type CreateAplSealedSecretApiArg = {
         finalizers?: string[]
       }
     }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
-  kind: 'AplTeamSecret'
-  spec: {
-    namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
-    encryptedData?: {
-      [key: string]: string
-    }
-    metadata?: {
-      annotations?: {
-        [key: string]: string
-      }
-      labels?: {
-        [key: string]: string
-      }
-      finalizers?: string[]
-    }
   }
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2404,33 +2505,41 @@ export type GetAplSealedSecretApiArg = {
   sealedSecretName: string
 }
 export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
-  kind: 'AplTeamSecret'
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
   spec: {
-    namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
-    encryptedData?: {
+    encryptedData: {
       [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        [key: string]: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
-      labels?: {
-        [key: string]: string
-      }
-      finalizers?: string[]
     }
   }
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2454,33 +2563,44 @@ export type EditAplSealedSecretApiArg = {
   sealedSecretName: string
   /** SealedSecret object that contains updated values */
   body: {
-    kind: 'AplTeamSecret'
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
     spec: {
-      namespace?: string
-      immutable?: boolean
-      type:
-        | 'kubernetes.io/opaque'
-        | 'kubernetes.io/dockercfg'
-        | 'kubernetes.io/dockerconfigjson'
-        | 'kubernetes.io/basic-auth'
-        | 'kubernetes.io/ssh-auth'
-        | 'kubernetes.io/tls'
-      encryptedData?: {
+      encryptedData: {
         [key: string]: string
       }
-      metadata?: {
-        annotations?: {
-          [key: string]: string
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
         }
-        labels?: {
-          [key: string]: string
-        }
-        finalizers?: string[]
       }
     }
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -2723,6 +2843,10 @@ export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained a
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2767,6 +2891,10 @@ export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2814,6 +2942,10 @@ export type CreateAplNetpolApiResponse = /** status 200 Successfully stored netw
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2861,6 +2993,13 @@ export type CreateAplNetpolApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -2891,6 +3030,10 @@ export type GetAplNetpolApiResponse = /** status 200 Successfully obtained netwo
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2940,6 +3083,10 @@ export type EditAplNetpolApiResponse = /** status 200 Successfully edited a team
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -2989,6 +3136,13 @@ export type EditAplNetpolApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -3324,6 +3478,10 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3379,6 +3537,10 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3437,6 +3599,10 @@ export type CreateAplBuildApiResponse = /** status 200 Successfully stored build
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3495,6 +3661,13 @@ export type CreateAplBuildApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -3543,6 +3716,10 @@ export type GetAplBuildApiResponse = /** status 200 Successfully obtained build 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3603,6 +3780,10 @@ export type EditAplBuildApiResponse = /** status 200 Successfully edited a team 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3663,6 +3844,13 @@ export type EditAplBuildApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -3929,6 +4117,10 @@ export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained 
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3956,6 +4148,10 @@ export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -3986,6 +4182,10 @@ export type GetAplPolicyApiResponse = /** status 200 Successfully obtained polic
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4018,6 +4218,10 @@ export type EditAplPolicyApiResponse = /** status 200 Successfully edited a team
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4050,6 +4254,13 @@ export type EditAplPolicyApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -4268,6 +4479,10 @@ export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4296,6 +4511,10 @@ export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtaine
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4327,6 +4546,10 @@ export type CreateAplCodeRepoApiResponse = /** status 200 Successfully stored co
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4358,6 +4581,13 @@ export type CreateAplCodeRepoApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -4372,6 +4602,10 @@ export type GetAplCodeRepoApiResponse = /** status 200 Successfully obtained cod
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4405,6 +4639,10 @@ export type EditAplCodeRepoApiResponse = /** status 200 Successfully edited a te
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4438,6 +4676,13 @@ export type EditAplCodeRepoApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -4850,6 +5095,10 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4917,6 +5166,10 @@ export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtaine
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -4980,6 +5233,10 @@ export type CreateAplWorkloadApiResponse = /** status 200 Successfully stored wo
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -5043,6 +5300,13 @@ export type CreateAplWorkloadApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
@@ -5096,6 +5360,10 @@ export type GetAplWorkloadApiResponse = /** status 200 Successfully obtained wor
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -5161,6 +5429,10 @@ export type EditAplWorkloadApiResponse = /** status 200 Successfully edited a te
 } & {
   metadata: {
     name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
     labels: {
       'apl.io/teamId': string
     }
@@ -5226,6 +5498,13 @@ export type EditAplWorkloadApiArg = {
   } & {
     metadata: {
       name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
     }
   }
 }
