@@ -39,7 +39,7 @@ export const aplCodeRepoApiSchema = yup.object({
       .required('Code repository name is a required field.')
       .min(2, 'Code repository name must be at least 2 characters long.')
       .matches(
-        /^[a-z]([-a-z0-9]*[a-z0-9])+$/,
+        /^[a-z][a-z0-9-]*[a-z0-9]$/,
         'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
       ),
     labels: yup.object({
