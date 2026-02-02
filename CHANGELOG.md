@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.12.0](https://github.com/linode/apl-console/compare/v4.11.0...v4.12.0) (2026-02-02)
+
+
+### Features
+
+* add kubeseal-encrypt npm package ([#695](https://github.com/linode/apl-console/issues/695)) ([6d7fe00](https://github.com/linode/apl-console/commit/6d7fe00d934810af6f3b146f19c54bd993394e3b))
+* remove tempo ([#704](https://github.com/linode/apl-console/issues/704)) ([0d9631f](https://github.com/linode/apl-console/commit/0d9631f7d2c0a12e288ad5cda40b77a0638f8876))
+* support system theme ([#688](https://github.com/linode/apl-console/issues/688)) ([49fd27b](https://github.com/linode/apl-console/commit/49fd27bff2429a060be585fc7a8679e102b76302))
+* team admin is now allowed to change team settings ([#699](https://github.com/linode/apl-console/issues/699)) ([5c52bec](https://github.com/linode/apl-console/commit/5c52bec8c0acb9c30670dfb60db3e41fe9a2d9a7))
+* team v2 endpoint ([#705](https://github.com/linode/apl-console/issues/705)) ([c81843b](https://github.com/linode/apl-console/commit/c81843b39d91837d097145cb13e886d1422ea946))
+* workload static forms ([#692](https://github.com/linode/apl-console/issues/692)) ([41873fe](https://github.com/linode/apl-console/commit/41873fec92aa3367073e251876667ea4c778ae9a))
+
+
+### Bug Fixes
+
+* apps enabled status ([#702](https://github.com/linode/apl-console/issues/702)) ([121e97d](https://github.com/linode/apl-console/commit/121e97d7359e1abd6e56609ca0b10c7b3eae4b38))
+* authors.md ([#703](https://github.com/linode/apl-console/issues/703)) ([06ac47b](https://github.com/linode/apl-console/commit/06ac47bb08f62a484e6f8aa7e01ec0672c4bcd80))
+* clickjacking prevention ([#696](https://github.com/linode/apl-console/issues/696)) ([eee5d40](https://github.com/linode/apl-console/commit/eee5d40f4cfb6fa4b93adbcda4aeb57d9339c4fd))
+* dashboard endpoint teamId ([#693](https://github.com/linode/apl-console/issues/693)) ([df45a47](https://github.com/linode/apl-console/commit/df45a47b9e4140f1da229e9ab9f86e3236e51b56))
+* disable ai pages for now ([#701](https://github.com/linode/apl-console/issues/701)) ([4049746](https://github.com/linode/apl-console/commit/404974689193dca83f4c9869c00010f0b070f8f9))
+* getApps endpoint and limits data ([#700](https://github.com/linode/apl-console/issues/700)) ([7b72b8a](https://github.com/linode/apl-console/commit/7b72b8adeb764c53b98798b70182580c64e9cc1c))
+* hoist metadata ([#697](https://github.com/linode/apl-console/issues/697)) ([0375983](https://github.com/linode/apl-console/commit/0375983073a1f0b4502d6503a4872c5ff8f82d32))
+* service page render port ([#689](https://github.com/linode/apl-console/issues/689)) ([d8e4ed2](https://github.com/linode/apl-console/commit/d8e4ed2ee331b5e334af0a44a11d6f770da98b02))
+* set themeView correctly ([#694](https://github.com/linode/apl-console/issues/694)) ([d1b68d6](https://github.com/linode/apl-console/commit/d1b68d61eb27b39f1d28440f056a71b6809ef784))
+
+
+### CI
+
+* removing unused workflow ([#698](https://github.com/linode/apl-console/issues/698)) ([37e2e5a](https://github.com/linode/apl-console/commit/37e2e5a0acf95e39beb5d3bbdb4d3745320cb5aa))
+
 ## [4.11.0](https://github.com/linode/apl-console/compare/v4.10.0...v4.11.0) (2025-12-01)
 
 
