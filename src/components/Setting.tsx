@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema4 } from 'json-schema'
-import { cloneDeep, filter, set, unset } from 'lodash'
+import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -21,15 +21,6 @@ export const getSettingSchema = (
 ): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   switch (settingId) {
-    case 'obj':
-      if (isPreInstalled) {
-        set(
-          schema,
-          'properties.provider.oneOf',
-          filter((schema as unknown as JSONSchema4).properties.provider.oneOf, (item) => item.title !== 'minioLocal'),
-        )
-      }
-      break
     case 'cluster':
       unset(schema, 'properties.provider.description')
       set(schema, 'properties.provider.readOnly', true)
