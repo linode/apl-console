@@ -19,8 +19,8 @@ export function SecretTypeFields({
   isEncrypted?: boolean
 }) {
   const { control } = useFormContext()
-  const typePath = namePrefix ? `${namePrefix}.type` : 'type'
-  const dataPath = namePrefix ? `${namePrefix}.encryptedData` : 'encryptedData'
+  const typePath = namePrefix ? `${namePrefix}.template.type` : 'spec.template.type'
+  const dataPath = namePrefix ? `${namePrefix}.encryptedData` : 'spec.encryptedData'
   const selectedType = useWatch({ control, name: typePath }) as typeof secretTypes[number]
   const title = 'Secret Data'
   const disabled = immutable && { keyDisabled: true, valueDisabled: true, disabled: true }

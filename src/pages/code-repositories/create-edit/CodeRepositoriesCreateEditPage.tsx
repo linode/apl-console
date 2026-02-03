@@ -15,9 +15,9 @@ import {
   useDeleteAplCodeRepoMutation,
   useEditAplCodeRepoMutation,
   useGetAplCodeRepoQuery,
+  useGetAplSealedSecretsQuery,
   useGetInternalRepoUrlsQuery,
   useGetTeamAplCodeReposQuery,
-  useGetTeamSealedSecretsQuery,
   useTestRepoConnectQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
@@ -91,11 +91,13 @@ export default function CodeRepositoriesCreateEditPage({
     isFetching: isFetchingTeamSecrets,
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
-  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetAplSealedSecretsQuery({ teamId }, { skip: !teamId })
 
   const teamSecrets =
     teamSealedSecrets?.filter(
-      (secret) => secret?.type === 'kubernetes.io/basic-auth' || secret?.type === 'kubernetes.io/ssh-auth',
+      (secret) =>
+        secret?.spec?.template?.type === 'kubernetes.io/basic-auth' ||
+        secret?.spec?.template?.type === 'kubernetes.io/ssh-auth',
     ) || []
 
   const {
@@ -368,8 +370,12 @@ export default function CodeRepositoriesCreateEditPage({
                           Select a secret
                         </MenuItem>
                         {teamSecrets?.map((secret) => (
-                          <MenuItem key={secret?.name} id={secret?.name} value={secret?.name}>
-                            {secret?.name}
+                          <MenuItem
+                            key={secret?.metadata?.name}
+                            id={secret?.metadata?.name}
+                            value={secret?.metadata?.name}
+                          >
+                            {secret?.metadata?.name}
                           </MenuItem>
                         ))}
                       </TextField>
