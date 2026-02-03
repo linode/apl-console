@@ -13,12 +13,7 @@ import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
-export const getSettingSchema = (
-  appsEnabled: Record<string, any>,
-  settingId,
-  formData: any,
-  isPreInstalled: boolean,
-): any => {
+export const getSettingSchema = (appsEnabled: Record<string, any>, settingId, formData: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   switch (settingId) {
     case 'cluster':
@@ -109,7 +104,7 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
   const { appsEnabled, settings } = useSession()
   const isPreInstalled = settings.otomi.isPreInstalled || false
   const [setting, setSetting]: any = useState<GetSettingsInfoApiResponse>(data)
-  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting, isPreInstalled))
+  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(settings, settingId))
   const [disabledMessage, setDisabledMessage] = useState('')
   const [isObjStorageRequired, setIsObjStorageRequired] = useState(false)
@@ -164,7 +159,7 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
       setDisabledMessage('')
       setIsObjStorageRequired(false)
     }
-    const schema = getSettingSchema(appsEnabled, settingId, data, isPreInstalled)
+    const schema = getSettingSchema(appsEnabled, settingId, data)
     setSetting(data)
     setSchema(schema)
     setUiSchema(getDynamicUiSchema(data))
