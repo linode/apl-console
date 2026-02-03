@@ -11,10 +11,10 @@ import {
   useCreateAplServiceMutation,
   useDeleteAplServiceMutation,
   useEditAplServiceMutation,
+  useGetAplSealedSecretsQuery,
   useGetAplServiceQuery,
   useGetK8SServicesQuery,
   useGetSettingsInfoQuery,
-  useGetTeamSealedSecretsQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
@@ -99,7 +99,7 @@ export default function ServicesCreateEditPage({
     isFetching: isFetchingTeamSecrets,
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
-  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetAplSealedSecretsQuery({ teamId }, { skip: !teamId })
   const {
     data: settingsInfo,
     isLoading: isLoadingSettingsInfo,
@@ -108,7 +108,7 @@ export default function ServicesCreateEditPage({
     refetch: refetchSettingsInfo,
   } = useGetSettingsInfoQuery()
 
-  const teamSecrets = teamSealedSecrets?.filter((secret) => secret.type === 'kubernetes.io/tls') || []
+  const teamSecrets = teamSealedSecrets?.filter((secret) => secret?.spec?.template?.type === 'kubernetes.io/tls') || []
   const updatedIngressClassNames = [...(settingsInfo?.ingressClassNames ?? []), 'platform']
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -375,7 +375,7 @@ export default function ServicesCreateEditPage({
                     label='TLS Secret'
                     loading={isLoadingTeamSecrets}
                     width='large'
-                    options={teamSecrets.map((secret) => secret.name)}
+                    options={teamSecrets.map((secret) => secret.metadata.name)}
                     placeholder='Select a TLS Secret'
                     value={typeof tlsSecretField.value === 'string' ? tlsSecretField.value : ''}
                     onChange={(_e, value) => tlsSecretField.onChange(value ?? '')}
