@@ -5699,7 +5699,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
               cnpg?: string
               harbor?: string
               gitea?: string
-              thanos?: string
               'kubeflow-pipelines'?: string
             }
           }
@@ -5963,7 +5962,6 @@ export type EditSettingsApiArg = {
                 cnpg?: string
                 harbor?: string
                 gitea?: string
-                thanos?: string
                 'kubeflow-pipelines'?: string
               }
             }
