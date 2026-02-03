@@ -55,10 +55,11 @@ interface Props {
   children?: React.ReactNode
   noPaddingTop?: boolean
   noMarginTop?: boolean
+  sx?: object
 }
 
 export default function Section(props: Props) {
-  const { title, description, collapsable, children, noPaddingTop, noMarginTop } = props
+  const { title, description, collapsable, children, noPaddingTop, noMarginTop, sx } = props
   const [expanded, setExpanded] = useState(true)
 
   const handleAccordionChange = () => {
@@ -67,7 +68,7 @@ export default function Section(props: Props) {
 
   if (collapsable) {
     return (
-      <Paper noPaddingTop={noPaddingTop} sx={{ p: '20px' }}>
+      <Paper noPaddingTop={noPaddingTop} sx={{ p: '20px', ...sx }}>
         <StyledAccordion disableGutters expanded={expanded} onChange={handleAccordionChange}>
           <StyledAccordionSummary>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -89,7 +90,7 @@ export default function Section(props: Props) {
   }
 
   return (
-    <Paper noPaddingTop={noPaddingTop}>
+    <Paper noPaddingTop={noPaddingTop} sx={{ ...sx }}>
       {title && <StyledTitle variant='h6'>{title}</StyledTitle>}
       {description && <StyledDescription>{description}</StyledDescription>}
       {children}
