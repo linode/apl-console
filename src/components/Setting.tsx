@@ -1,6 +1,6 @@
 import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
 import { JSONSchema4 } from 'json-schema'
-import { cloneDeep, filter, set, unset } from 'lodash'
+import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -13,23 +13,9 @@ import InformationBanner from './InformationBanner'
 import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
 import Form from './rjsf/Form'
 
-export const getSettingSchema = (
-  appsEnabled: Record<string, any>,
-  settingId,
-  formData: any,
-  isPreInstalled: boolean,
-): any => {
+export const getSettingSchema = (appsEnabled: Record<string, any>, settingId, formData: any): any => {
   const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
   switch (settingId) {
-    case 'obj':
-      if (isPreInstalled) {
-        set(
-          schema,
-          'properties.provider.oneOf',
-          filter((schema as unknown as JSONSchema4).properties.provider.oneOf, (item) => item.title !== 'minioLocal'),
-        )
-      }
-      break
     case 'cluster':
       unset(schema, 'properties.provider.description')
       set(schema, 'properties.provider.readOnly', true)
@@ -118,7 +104,7 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
   const { appsEnabled, settings } = useSession()
   const isPreInstalled = settings.otomi.isPreInstalled || false
   const [setting, setSetting]: any = useState<GetSettingsInfoApiResponse>(data)
-  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting, isPreInstalled))
+  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting))
   const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(settings, settingId))
   const [disabledMessage, setDisabledMessage] = useState('')
   const [isObjStorageRequired, setIsObjStorageRequired] = useState(false)
@@ -173,7 +159,7 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
       setDisabledMessage('')
       setIsObjStorageRequired(false)
     }
-    const schema = getSettingSchema(appsEnabled, settingId, data, isPreInstalled)
+    const schema = getSettingSchema(appsEnabled, settingId, data)
     setSetting(data)
     setSchema(schema)
     setUiSchema(getDynamicUiSchema(data))
