@@ -286,13 +286,13 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v2/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteAplCloudtty: build.mutation<DeleteAplCloudttyApiResponse, DeleteAplCloudttyApiArg>({
-      query: () => ({ url: `/v2/cloudtty`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v2/cloudtty`, method: 'DELETE', params: { teamId: queryArg.teamId } }),
     }),
     connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
       query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: () => ({ url: `/v1/cloudtty`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', params: { teamId: queryArg.teamId } }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
@@ -2037,21 +2037,21 @@ export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtaine
   namespace?: string
   immutable?: boolean
   type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
   encryptedData: {
     additionalProperties?: string
   }
-  metadata?: {
-    annotations?: {
+    metadata?: {
+      annotations?: {
       additionalProperties?: string
-    }
+      }
     finalizers?: string[]
-    labels?: {
+      labels?: {
       additionalProperties?: string
     }
   }
@@ -2071,21 +2071,21 @@ export type GetTeamSealedSecretsApiResponse = /** status 200 Successfully obtain
   namespace?: string
   immutable?: boolean
   type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
   encryptedData: {
     additionalProperties?: string
   }
-  metadata?: {
-    annotations?: {
+    metadata?: {
+      annotations?: {
       additionalProperties?: string
-    }
+      }
     finalizers?: string[]
-    labels?: {
+      labels?: {
       additionalProperties?: string
     }
   }
@@ -2099,21 +2099,21 @@ export type CreateSealedSecretApiResponse = /** status 200 Successfully stored s
   namespace?: string
   immutable?: boolean
   type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
   encryptedData: {
     additionalProperties?: string
   }
-  metadata?: {
-    annotations?: {
+    metadata?: {
+      annotations?: {
       additionalProperties?: string
-    }
+      }
     finalizers?: string[]
-    labels?: {
+      labels?: {
       additionalProperties?: string
     }
   }
@@ -2127,21 +2127,21 @@ export type CreateSealedSecretApiArg = {
     namespace?: string
     immutable?: boolean
     type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
     encryptedData: {
       additionalProperties?: string
     }
-    metadata?: {
-      annotations?: {
+      metadata?: {
+        annotations?: {
         additionalProperties?: string
-      }
+        }
       finalizers?: string[]
-      labels?: {
+        labels?: {
         additionalProperties?: string
       }
     }
@@ -2152,21 +2152,21 @@ export type GetSealedSecretApiResponse = /** status 200 Successfully obtained se
   namespace?: string
   immutable?: boolean
   type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
   encryptedData: {
     additionalProperties?: string
   }
-  metadata?: {
-    annotations?: {
+    metadata?: {
+      annotations?: {
       additionalProperties?: string
-    }
+      }
     finalizers?: string[]
-    labels?: {
+      labels?: {
       additionalProperties?: string
     }
   }
@@ -2182,21 +2182,21 @@ export type EditSealedSecretApiResponse = /** status 200 Successfully edited a t
   namespace?: string
   immutable?: boolean
   type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
   encryptedData: {
     additionalProperties?: string
   }
-  metadata?: {
-    annotations?: {
+    metadata?: {
+      annotations?: {
       additionalProperties?: string
-    }
+      }
     finalizers?: string[]
-    labels?: {
+      labels?: {
       additionalProperties?: string
     }
   }
@@ -2212,21 +2212,21 @@ export type EditSealedSecretApiArg = {
     namespace?: string
     immutable?: boolean
     type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
     encryptedData: {
       additionalProperties?: string
     }
-    metadata?: {
-      annotations?: {
+      metadata?: {
+        annotations?: {
         additionalProperties?: string
-      }
+        }
       finalizers?: string[]
-      labels?: {
+        labels?: {
         additionalProperties?: string
       }
     }
@@ -4274,7 +4274,10 @@ export type ConnectAplCloudttyApiArg = {
   teamId?: string
 }
 export type DeleteAplCloudttyApiResponse = unknown
-export type DeleteAplCloudttyApiArg = void
+export type DeleteAplCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   iFrameUrl?: string
 }
@@ -4283,7 +4286,10 @@ export type ConnectCloudttyApiArg = {
   teamId?: string
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = void
+export type DeleteCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
