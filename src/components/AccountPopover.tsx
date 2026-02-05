@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useDeleteCloudttyMutation } from 'redux/otomiApi'
 import { clearLocalStorage } from 'hooks/useLocalStorage'
 import { useHistory } from 'react-router-dom'
+import { useSession } from 'providers/Session'
 import MenuPopover from './MenuPopover'
 import { IconButtonAnimate } from './animate'
 import SettingMode from './SettingMode'
@@ -14,6 +15,7 @@ type Props = {
 
 export default function AccountPopover({ email }: Props) {
   const history = useHistory()
+  const { oboTeamId } = useSession()
   const [open, setOpen] = useState<HTMLElement | null>(null)
   const [deleteCloudtty] = useDeleteCloudttyMutation()
 
@@ -26,7 +28,7 @@ export default function AccountPopover({ email }: Props) {
   }
 
   const handleLogout = () => {
-    deleteCloudtty().finally(() => {
+    deleteCloudtty({ teamId: oboTeamId }).finally(() => {
       clearLocalStorage('oboTeamId')
       history.push('/logout')
     })

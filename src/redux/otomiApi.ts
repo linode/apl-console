@@ -286,13 +286,13 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v2/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteAplCloudtty: build.mutation<DeleteAplCloudttyApiResponse, DeleteAplCloudttyApiArg>({
-      query: () => ({ url: `/v2/cloudtty`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v2/cloudtty`, method: 'DELETE', params: { teamId: queryArg.teamId } }),
     }),
     connectCloudtty: build.query<ConnectCloudttyApiResponse, ConnectCloudttyApiArg>({
       query: (queryArg) => ({ url: `/v1/cloudtty`, params: { teamId: queryArg.teamId } }),
     }),
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
-      query: () => ({ url: `/v1/cloudtty`, method: 'DELETE' }),
+      query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', params: { teamId: queryArg.teamId } }),
     }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
@@ -4063,7 +4063,10 @@ export type ConnectAplCloudttyApiArg = {
   teamId?: string
 }
 export type DeleteAplCloudttyApiResponse = unknown
-export type DeleteAplCloudttyApiArg = void
+export type DeleteAplCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
 export type ConnectCloudttyApiResponse = /** status 200 Successfully stored cloudtty configuration */ {
   iFrameUrl?: string
 }
@@ -4072,7 +4075,10 @@ export type ConnectCloudttyApiArg = {
   teamId?: string
 }
 export type DeleteCloudttyApiResponse = unknown
-export type DeleteCloudttyApiArg = void
+export type DeleteCloudttyApiArg = {
+  /** Id of the team */
+  teamId?: string
+}
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
