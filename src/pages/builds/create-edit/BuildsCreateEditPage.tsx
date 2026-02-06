@@ -1,22 +1,22 @@
 import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
-  CreateBuildApiResponse,
-  GetCodeRepoApiResponse,
-  useCreateBuildMutation,
-  useDeleteBuildMutation,
-  useEditBuildMutation,
-  useGetBuildQuery,
+  CreateAplBuildApiArg,
+  CreateAplBuildApiResponse,
+  CreateAplCodeRepoApiResponse,
+  useCreateAplBuildMutation,
+  useDeleteAplBuildMutation,
+  useEditAplBuildMutation,
+  useGetAplBuildQuery,
   useGetRepoBranchesQuery,
-  useGetTeamBuildsQuery,
-  useGetTeamCodeReposQuery,
+  useGetTeamAplBuildsQuery,
+  useGetTeamAplCodeReposQuery,
 } from 'redux/otomiApi'
-import { cloneDeep } from 'lodash'
 import { LandingHeader } from 'components/LandingHeader'
 import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
 import FormRow from 'components/forms/FormRow'
@@ -30,7 +30,7 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useSession } from 'providers/Session'
 import { LoadingButton } from '@mui/lab'
-import { buildApiResponseSchema } from './create-edit-builds.validator'
+import { aplBuildApiSchema } from './create-edit-builds.validator'
 
 const getBuildName = (name: string, tag: string): string => {
   return `${name}-${tag}`
@@ -50,10 +50,9 @@ export default function BuildsCreateEditPage({
     params: { teamId, buildName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  // state
   const { t } = useTranslation()
   const theme = useTheme()
-  const [data, setData]: any = useState()
+
   const [repoName, setRepoName] = useState('')
   const [gitService, setGitService] = useState('')
 
@@ -64,30 +63,24 @@ export default function BuildsCreateEditPage({
   } = useSession()
 
   const options = [
-    {
-      value: 'docker',
-      label: 'Docker',
-      imgSrc: '/logos/docker_logo.svg',
-    },
-    {
-      value: 'buildpacks',
-      label: 'BuildPacks',
-      imgSrc: '/logos/buildpacks_logo.svg',
-    },
+    { value: 'docker', label: 'Docker', imgSrc: '/logos/docker_logo.svg' },
+    { value: 'buildpacks', label: 'BuildPacks', imgSrc: '/logos/buildpacks_logo.svg' },
   ]
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateBuildMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditBuildMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteBuildMutation()
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplBuildMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplBuildMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplBuildMutation()
+
   const {
     data: buildData,
     isLoading,
     isFetching,
     isError,
     refetch,
-  } = useGetBuildQuery({ teamId, buildName }, { skip: !buildName })
-  const { data: teamBuilds } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
-  const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamCodeReposQuery({ teamId })
+  } = useGetAplBuildQuery({ teamId, buildName }, { skip: !buildName })
+  const { data: teamBuilds } = useGetTeamAplBuildsQuery({ teamId }, { skip: !teamId })
+  const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamAplCodeReposQuery({ teamId })
+
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
     { codeRepoName: repoName, teamId },
     { skip: !repoName },
@@ -99,21 +92,33 @@ export default function BuildsCreateEditPage({
     if (!isFetching) refetch()
   }, [isDirty])
 
-  useEffect(() => {
-    if (buildName) setData(buildData)
-  }, [buildData, buildName])
-  // END HOOKS
+  const defaultValues = useMemo(() => {
+    return aplBuildApiSchema.cast({
+      kind: 'AplTeamBuild',
+      metadata: {
+        name: '',
+        labels: { 'apl.io/teamId': teamId },
+      },
+      spec: {
+        imageName: '',
+        tag: '',
+        mode: { type: 'docker', docker: { repoUrl: '', path: './Dockerfile', envVars: [] } },
+        externalRepo: false,
+        trigger: false,
+        scanSource: false,
+      },
+      status: { conditions: [], phase: undefined },
+    }) as CreateAplBuildApiResponse
+  }, [teamId])
 
-  // form state
-  const defaultValues = {
-    mode: { type: 'docker', docker: { path: './Dockerfile', envVars: [] } },
-    externalRepo: false,
-  }
-  const methods = useForm<CreateBuildApiResponse>({
-    resolver: yupResolver(buildApiResponseSchema) as Resolver<any>,
-    defaultValues: data || defaultValues,
-    context: { buildNames: teamBuilds?.map((build) => build.name), validateOnSubmit: !buildName },
+  const buildNames = (teamBuilds ?? []).map((b) => b?.metadata?.name).filter(Boolean)
+
+  const methods = useForm<CreateAplBuildApiResponse>({
+    resolver: yupResolver(aplBuildApiSchema) as unknown as Resolver<CreateAplBuildApiResponse>,
+    defaultValues: buildData ? (aplBuildApiSchema.cast(buildData) as CreateAplBuildApiResponse) : defaultValues,
+    context: { buildNames, validateOnSubmit: !buildName },
   })
+
   const {
     control,
     register,
@@ -125,55 +130,72 @@ export default function BuildsCreateEditPage({
     unregister,
   } = methods
 
-  const modeType = watch('mode.type')
-  const { field: repoField } = useController<CreateBuildApiResponse>({
+  const modeType = watch('spec.mode.type')
+  const { field: repoField } = useController<CreateAplBuildApiResponse>({
     control,
-    name: `mode.${modeType}.repoUrl` as FieldPath<CreateBuildApiResponse>,
+    name: `spec.mode.${modeType}.repoUrl` as FieldPath<CreateAplBuildApiResponse>,
   })
-  const { field: revField } = useController<CreateBuildApiResponse>({
+  const { field: revField } = useController<CreateAplBuildApiResponse>({
     control,
-    name: `mode.${modeType}.revision` as FieldPath<CreateBuildApiResponse>,
+    name: `spec.mode.${modeType}.revision` as FieldPath<CreateAplBuildApiResponse>,
   })
 
   useEffect(() => {
     if (!buildData || isLoadingCodeRepos) return
     reset(buildData)
-    const modeType = watch('mode.type')
-    const repoUrl = watch(`mode.${modeType}.repoUrl`)
-    const codeRepo = codeRepos?.find((codeRepo) => codeRepo.repositoryUrl === repoUrl)
-    setRepoName(codeRepo?.name || '')
-    setGitService(codeRepo?.gitService || '')
-  }, [buildData, isLoadingCodeRepos, setValue])
+
+    const currentMode = watch('spec.mode.type')
+    const repoUrl = watch(`spec.mode.${currentMode}.repoUrl`)
+    const codeRepo = (codeRepos ?? []).find((cr) => cr?.spec?.repositoryUrl === repoUrl)
+
+    setRepoName(codeRepo?.metadata?.name ?? '')
+    setGitService(codeRepo?.spec?.gitService ?? '')
+  }, [buildData, isLoadingCodeRepos, reset])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete || isLoadingCodeRepos
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/container-images`} />
   if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/container-images/`} />
 
-  const onSubmit = () => {
-    const body = cloneDeep(watch())
-    if (buildName) {
-      body.name = buildData.name
-      update({ teamId, buildName, body })
-    } else {
-      body.name = getBuildName(body.imageName, body.tag)
-      create({ teamId, body })
+  const onSubmit = (formData: CreateAplBuildApiResponse) => {
+    const imageName = formData.spec?.imageName ?? ''
+    const tag = formData.spec?.tag ?? ''
+
+    const body: CreateAplBuildApiArg['body'] = {
+      kind: 'AplTeamBuild',
+      metadata: {
+        name: buildName ? buildData?.metadata?.name ?? '' : getBuildName(imageName, tag),
+      },
+      spec: {
+        imageName,
+        tag,
+        mode: formData.spec?.mode,
+        externalRepo: formData.spec?.externalRepo,
+        secretName: formData.spec?.secretName,
+        trigger: formData.spec?.trigger,
+        scanSource: formData.spec?.scanSource,
+      },
     }
+
+    if (buildName) update({ teamId, buildName, body })
+    else create({ teamId, body })
   }
 
   const extraArgumentsError = () => {
-    const envVarErrors = errors?.mode?.[`${watch('mode.type')}`]?.envVars
+    const envVarErrors = (errors as any)?.spec?.mode?.[`${watch('spec.mode.type')}`]?.envVars
     if (!envVarErrors) return undefined
-    const idx = envVarErrors.findIndex((envVar) => envVar?.name?.message)
+    const idx = envVarErrors.findIndex((envVar: any) => envVar?.name?.message)
     if (idx === -1) return undefined
     const message = envVarErrors[idx]?.name?.message?.toString()
     return `Error in argument ${Number(idx) + 1}: ${message}`
   }
 
-  if (isLoading || isError || (buildName && !watch('name')))
+  if (isLoading || isError || (buildName && !watch('metadata.name')))
     return <PaperLayout loading title={t('TITLE_CONTAINER_IMAGE')} />
 
   const pathHelperText =
-    watch('mode.type') === 'docker' ? 'Relative path to the Dockerfile' : 'Relative path to the buildpacks directory'
+    watch('spec.mode.type') === 'docker'
+      ? 'Relative path to the Dockerfile'
+      : 'Relative path to the buildpacks directory'
 
   return (
     <Grid>
@@ -181,56 +203,65 @@ export default function BuildsCreateEditPage({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-container-images'
-          title={buildName ? buildData.name : 'Create'}
-          // hides the first two crumbs (e.g. /teams/teamName)
+          title={buildName ? buildData?.metadata?.name ?? '' : 'Create'}
           hideCrumbX={[0, 1]}
         />
+
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
               <Typography variant='h6'>Select build task</Typography>
+
               <FormRow spacing={10} sx={{ my: 2 }}>
                 <ImgButtonGroup
-                  name='mode.type'
+                  name='spec.mode.type'
                   control={control}
                   options={options}
-                  value={watch('mode.type')}
+                  value={watch('spec.mode.type')}
                   onChange={(selectedType) => {
                     const isDocker = selectedType === 'docker'
                     const previousType = isDocker ? 'buildpacks' : 'docker'
                     const nextMode = {
-                      ...watch(`mode.${previousType}`),
+                      ...(watch(`spec.mode.${previousType}`) as any),
                       path: isDocker ? './Dockerfile' : '',
                     }
 
-                    setValue(`mode.${selectedType as 'docker' | 'buildpacks'}`, nextMode)
-                    unregister(`mode.${previousType}`)
+                    setValue(`spec.mode.${selectedType as 'docker' | 'buildpacks'}` as any, nextMode)
+                    unregister(`spec.mode.${previousType}` as any)
                   }}
                 />
               </FormRow>
 
               <Typography variant='h6'>Select code repository</Typography>
+
               <FormRow spacing={10} sx={{ alignItems: 'flex-start' }}>
-                <Autocomplete<GetCodeRepoApiResponse, false, false, false>
+                <Autocomplete<CreateAplCodeRepoApiResponse, false, false, false>
                   label='Repository'
                   loading={isLoadingCodeRepos}
                   options={codeRepos || []}
-                  getOptionLabel={(codeRepo) => codeRepo.name}
+                  getOptionLabel={(codeRepo) => codeRepo.metadata.name}
                   placeholder='Select a repository'
-                  value={codeRepos?.find((codeRepo) => codeRepo.repositoryUrl === repoField.value) || null}
+                  value={(codeRepos || []).find((cr) => cr?.spec?.repositoryUrl === repoField.value) || null}
                   onChange={(_e, repo) => {
-                    repoField.onChange(repo?.repositoryUrl ?? '')
+                    repoField.onChange(repo?.spec?.repositoryUrl ?? '')
                     if (!repo) return
-                    const { name, gitService, private: isPrivate, secret } = repo
-                    if (!buildName) setValue('imageName', name)
-                    setValue(`mode.${modeType}.revision`, undefined)
-                    setValue('externalRepo', gitService !== 'gitea')
+
+                    const name = repo.metadata.name
+                    const gitService = repo.spec.gitService
+                    const isPrivate = repo.spec.private
+                    const secret = repo.spec.secret
+
+                    if (!buildName) setValue('spec.imageName', name)
+                    setValue(`spec.mode.${modeType}.revision` as any, undefined as any)
+
+                    setValue('spec.externalRepo', gitService !== 'gitea')
                     setRepoName(name)
                     setGitService(gitService)
-                    if (isPrivate) setValue('secretName', secret)
-                    else unregister('secretName')
+
+                    if (isPrivate) setValue('spec.secretName', secret)
+                    else unregister('spec.secretName')
                   }}
-                  errorText={errors?.mode?.[modeType]?.repoUrl?.message?.toString()}
+                  errorText={(errors as any)?.spec?.mode?.[modeType]?.repoUrl?.message?.toString()}
                   disabled={!!buildName}
                 />
 
@@ -243,67 +274,59 @@ export default function BuildsCreateEditPage({
                   value={(revField.value as string) ?? ''}
                   onChange={(_e, branch) => {
                     revField.onChange(branch ?? '')
-                    if (!buildName) setValue('tag', branch ?? '')
+                    if (!buildName) setValue('spec.tag', branch ?? '')
                   }}
-                  errorText={errors?.mode?.[modeType]?.revision?.message?.toString()}
+                  errorText={(errors as any)?.spec?.mode?.[modeType]?.revision?.message?.toString()}
                 />
 
                 <TextField
                   label='Path'
                   width='large'
-                  {...register(`mode.${watch('mode.type')}.path`)}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setValue(`mode.${watch('mode.type')}.path`, value)
-                  }}
-                  error={!!errors?.mode?.[`${watch('mode.type')}`]?.path}
-                  helperText={errors?.mode?.[`${watch('mode.type')}`]?.path?.message?.toString() || pathHelperText}
+                  {...register(`spec.mode.${watch('spec.mode.type')}.path` as any)}
+                  onChange={(e) => setValue(`spec.mode.${watch('spec.mode.type')}.path` as any, e.target.value)}
+                  error={!!(errors as any)?.spec?.mode?.[`${watch('spec.mode.type')}`]?.path}
+                  helperText={
+                    (errors as any)?.spec?.mode?.[`${watch('spec.mode.type')}`]?.path?.message?.toString() ||
+                    pathHelperText
+                  }
                 />
               </FormRow>
 
               <Divider sx={{ mt: 2, mb: 2 }} />
 
               <Typography variant='h6'>Image name and tag</Typography>
+
               <FormRow spacing={10} sx={{ mb: 2, alignItems: 'flex-start' }}>
                 <TextField
                   label='Image name'
                   width='medium'
-                  {...register('imageName')}
-                  value={watch('imageName')}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setValue('imageName', value)
-                  }}
-                  error={!!errors.imageName}
-                  helperText={errors?.imageName?.message?.toString()}
+                  {...register('spec.imageName')}
+                  value={watch('spec.imageName')}
+                  onChange={(e) => setValue('spec.imageName', e.target.value)}
+                  error={!!(errors as any)?.spec?.imageName}
+                  helperText={(errors as any)?.spec?.imageName?.message?.toString()}
                   disabled={!!buildName}
                 />
+
                 <TextField
                   label='Tag'
                   width='medium'
-                  {...register('tag')}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    setValue('tag', value)
-                  }}
-                  error={!!errors.tag}
-                  helperText={errors?.tag?.message?.toString()}
+                  {...register('spec.tag')}
+                  onChange={(e) => setValue('spec.tag', e.target.value)}
+                  error={!!(errors as any)?.spec?.tag}
+                  helperText={(errors as any)?.spec?.tag?.message?.toString()}
                   disabled={!!buildName}
                 />
               </FormRow>
+
               <Typography
                 variant='body1'
-                sx={{
-                  display: 'inline-block',
-                  fontSize: 16,
-                  fontWeight: 400,
-                  color: theme.palette.cl.text.subTitle,
-                }}
+                sx={{ display: 'inline-block', fontSize: 16, fontWeight: 400, color: theme.palette.cl.text.subTitle }}
               >
                 {buildName
-                  ? `Full repository name: harbor.${domainSuffix}/team-${teamId}/${buildData.imageName}:${buildData.tag}`
-                  : `Full repository name: harbor.${domainSuffix}/team-${teamId}/${watch('imageName') || '___'}:${
-                      watch('tag') || '___'
+                  ? `Full repository name: harbor.${domainSuffix}/team-${teamId}/${buildData?.spec?.imageName}:${buildData?.spec?.tag}`
+                  : `Full repository name: harbor.${domainSuffix}/team-${teamId}/${watch('spec.imageName') || '___'}:${
+                      watch('spec.tag') || '___'
                     }`}
               </Typography>
 
@@ -316,8 +339,8 @@ export default function BuildsCreateEditPage({
                 valueLabel='Value'
                 addLabel='Add argument'
                 compressed
-                name={`mode.${watch('mode.type')}.envVars`}
-                {...register(`mode.${watch('mode.type')}.envVars`)}
+                name={`spec.mode.${watch('spec.mode.type')}.envVars`}
+                {...register(`spec.mode.${watch('spec.mode.type')}.envVars` as any)}
                 errorText={extraArgumentsError()}
                 isValueOptional
               />
@@ -325,29 +348,32 @@ export default function BuildsCreateEditPage({
               <Divider sx={{ mt: 2, mb: 2 }} />
 
               <Typography variant='h6'>Extra options</Typography>
+
               <Box>
                 {gitService === 'gitea' && (
                   <ControlledCheckbox
                     sx={{ my: 2 }}
-                    name='trigger'
+                    name='spec.trigger'
                     control={control}
                     label='Create webhook listener'
                     explainertext='Select to trigger the build based on a repository webhook event'
                   />
                 )}
+
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='scanSource'
+                  name='spec.scanSource'
                   control={control}
                   label='Scan source code'
                   explainertext='Select to scan source code for vulnerabilities'
                 />
               </Box>
             </Section>
+
             {buildName && (
               <DeleteButton
                 onDelete={() => del({ teamId, buildName })}
-                resourceName={watch('name')}
+                resourceName={watch('metadata.name')}
                 resourceType='build'
                 data-cy='button-delete-build'
                 sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
@@ -355,6 +381,7 @@ export default function BuildsCreateEditPage({
                 disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
             )}
+
             <LoadingButton
               type='submit'
               variant='contained'
