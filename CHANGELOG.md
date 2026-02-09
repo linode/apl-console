@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.11.6](https://github.com/linode/apl-console/compare/v4.11.5...v4.11.6) (2026-02-09)
+
+
+### Bug Fixes
+
+* delete cloudtty 403 error ([#712](https://github.com/linode/apl-console/issues/712)) ([645629f](https://github.com/linode/apl-console/commit/645629fb4e89e2b381e1b017c191559833493223))
+
 ### [4.11.5](https://github.com/linode/apl-console/compare/v4.11.4...v4.11.5) (2026-01-15)
 
 
