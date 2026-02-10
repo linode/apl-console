@@ -253,8 +253,8 @@ export default function CodeRepositoriesCreateEditPage({
     isLoading ||
     isLoadingTeamSecrets ||
     isLoadingRepoUrls ||
-    (appsEnabled?.gitea && codeRepositoryName && !internalRepoUrls)
-  const error = isError || isErrorTeamSecrets || isErrorRepoUrls
+    (appsEnabled?.gitea && codeRepositoryName && !internalRepoUrls && !isErrorRepoUrls)
+  const error = isError || isErrorTeamSecrets
 
   if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
 
