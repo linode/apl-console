@@ -101,10 +101,9 @@ export default function CodeRepositoriesCreateEditPage({
     ) || []
 
   const {
-    data: internalRepoUrls,
+    data: internalRepoUrls = [],
     isLoading: isLoadingRepoUrls,
     isFetching: isFetchingRepoUrls,
-    isError: isErrorRepoUrls,
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
 
@@ -249,7 +248,7 @@ export default function CodeRepositoriesCreateEditPage({
     return <Redirect to={`/teams/${teamId}/code-repositories`} />
 
   const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (codeRepositoryName && !internalRepoUrls)
-  const error = isError || isErrorTeamSecrets || isErrorRepoUrls
+  const error = isError || isErrorTeamSecrets
 
   if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
 
