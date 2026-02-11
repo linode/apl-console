@@ -91,14 +91,6 @@
   "Code-repository_plural": "Code Repositories",
   "TITLE_CODE_REPOSITORY": "Code repository details",
   "TITLE_CODE_REPOSITORIES": "Code repositories - {{scope}}",
-  "Knowledge-base": "Knowledge Base",
-  "Knowledge-base_plural": "Knowledge Bases",
-  "TITLE_KNOWLEDGE_BASE": "Knowledge base details",
-  "TITLE_KNOWLEDGE_BASES": "Knowledge bases - {{scope}}",
-  "Agent": "Agent",
-  "Agent_plural": "Agents",
-  "TITLE_AGENT": "Agent details",
-  "TITLE_AGENTS": "Agents - {{scope}}",
   "TITLE_NETWORK_POLICY": "Network policy details",
   "TITLE_NETWORK_POLICIES": "Network policies - {{scope}}"
 }
