@@ -102,10 +102,9 @@ export default function CodeRepositoriesCreateEditPage({
     ) || []
 
   const {
-    data: internalRepoUrls,
+    data: internalRepoUrls = [],
     isLoading: isLoadingRepoUrls,
     isFetching: isFetchingRepoUrls,
-    isError: isErrorRepoUrls,
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider || !appsEnabled?.gitea })
 
@@ -253,7 +252,7 @@ export default function CodeRepositoriesCreateEditPage({
     isLoading ||
     isLoadingTeamSecrets ||
     isLoadingRepoUrls ||
-    (appsEnabled?.gitea && codeRepositoryName && !internalRepoUrls && !isErrorRepoUrls)
+    (appsEnabled?.gitea && codeRepositoryName && !internalRepoUrls)
   const error = isError || isErrorTeamSecrets
 
   if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
