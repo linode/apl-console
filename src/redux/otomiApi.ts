@@ -492,50 +492,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
-    getAiModels: build.query<GetAiModelsApiResponse, GetAiModelsApiArg>({
-      query: () => ({ url: `/alpha/ai/models` }),
-    }),
-    getAplKnowledgeBases: build.query<GetAplKnowledgeBasesApiResponse, GetAplKnowledgeBasesApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/kb` }),
-    }),
-    createAplKnowledgeBase: build.mutation<CreateAplKnowledgeBaseApiResponse, CreateAplKnowledgeBaseApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/kb`, method: 'POST', body: queryArg.body }),
-    }),
-    getAplKnowledgeBase: build.query<GetAplKnowledgeBaseApiResponse, GetAplKnowledgeBaseApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/kb/${queryArg.knowledgeBaseName}` }),
-    }),
-    editAplKnowledgeBase: build.mutation<EditAplKnowledgeBaseApiResponse, EditAplKnowledgeBaseApiArg>({
-      query: (queryArg) => ({
-        url: `/alpha/teams/${queryArg.teamId}/kb/${queryArg.knowledgeBaseName}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
-    deleteAplKnowledgeBase: build.mutation<DeleteAplKnowledgeBaseApiResponse, DeleteAplKnowledgeBaseApiArg>({
-      query: (queryArg) => ({
-        url: `/alpha/teams/${queryArg.teamId}/kb/${queryArg.knowledgeBaseName}`,
-        method: 'DELETE',
-      }),
-    }),
-    getAplAgents: build.query<GetAplAgentsApiResponse, GetAplAgentsApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/agents` }),
-    }),
-    createAplAgent: build.mutation<CreateAplAgentApiResponse, CreateAplAgentApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/agents`, method: 'POST', body: queryArg.body }),
-    }),
-    getAplAgent: build.query<GetAplAgentApiResponse, GetAplAgentApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/agents/${queryArg.agentName}` }),
-    }),
-    editAplAgent: build.mutation<EditAplAgentApiResponse, EditAplAgentApiArg>({
-      query: (queryArg) => ({
-        url: `/alpha/teams/${queryArg.teamId}/agents/${queryArg.agentName}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
-    deleteAplAgent: build.mutation<DeleteAplAgentApiResponse, DeleteAplAgentApiArg>({
-      query: (queryArg) => ({ url: `/alpha/teams/${queryArg.teamId}/agents/${queryArg.agentName}`, method: 'DELETE' }),
-    }),
   }),
   overrideExisting: false,
 })
@@ -2035,24 +1991,28 @@ export type DeleteAplServiceApiArg = {
 export type GetAllSealedSecretsApiResponse = /** status 200 Successfully obtained all sealed secrets */ {
   name: string
   namespace?: string
-  immutable?: boolean
-  type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
   encryptedData: {
-    additionalProperties?: string
+    [key: string]: string
   }
-  metadata?: {
-    annotations?: {
-      additionalProperties?: string
-    }
-    finalizers?: string[]
-    labels?: {
-      additionalProperties?: string
+  template?: {
+    type?:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    immutable?: boolean
+    metadata?: {
+      name?: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
     }
   }
 }[]
@@ -2069,24 +2029,28 @@ export type GetSecretsFromK8SApiArg = {
 export type GetTeamSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   name: string
   namespace?: string
-  immutable?: boolean
-  type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
   encryptedData: {
-    additionalProperties?: string
+    [key: string]: string
   }
-  metadata?: {
-    annotations?: {
-      additionalProperties?: string
-    }
-    finalizers?: string[]
-    labels?: {
-      additionalProperties?: string
+  template?: {
+    type?:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    immutable?: boolean
+    metadata?: {
+      name?: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
     }
   }
 }[]
@@ -2097,24 +2061,28 @@ export type GetTeamSealedSecretsApiArg = {
 export type CreateSealedSecretApiResponse = /** status 200 Successfully stored sealed secret configuration */ {
   name: string
   namespace?: string
-  immutable?: boolean
-  type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
   encryptedData: {
-    additionalProperties?: string
+    [key: string]: string
   }
-  metadata?: {
-    annotations?: {
-      additionalProperties?: string
-    }
-    finalizers?: string[]
-    labels?: {
-      additionalProperties?: string
+  template?: {
+    type?:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    immutable?: boolean
+    metadata?: {
+      name?: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
     }
   }
 }
@@ -2125,24 +2093,28 @@ export type CreateSealedSecretApiArg = {
   body: {
     name: string
     namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
     encryptedData: {
-      additionalProperties?: string
+      [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        additionalProperties?: string
-      }
-      finalizers?: string[]
-      labels?: {
-        additionalProperties?: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
     }
   }
@@ -2150,24 +2122,28 @@ export type CreateSealedSecretApiArg = {
 export type GetSealedSecretApiResponse = /** status 200 Successfully obtained sealed secret configuration */ {
   name: string
   namespace?: string
-  immutable?: boolean
-  type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
   encryptedData: {
-    additionalProperties?: string
+    [key: string]: string
   }
-  metadata?: {
-    annotations?: {
-      additionalProperties?: string
-    }
-    finalizers?: string[]
-    labels?: {
-      additionalProperties?: string
+  template?: {
+    type?:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    immutable?: boolean
+    metadata?: {
+      name?: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
     }
   }
 }
@@ -2180,24 +2156,28 @@ export type GetSealedSecretApiArg = {
 export type EditSealedSecretApiResponse = /** status 200 Successfully edited a team sealed secret */ {
   name: string
   namespace?: string
-  immutable?: boolean
-  type:
-    | 'kubernetes.io/opaque'
-    | 'kubernetes.io/dockercfg'
-    | 'kubernetes.io/dockerconfigjson'
-    | 'kubernetes.io/basic-auth'
-    | 'kubernetes.io/ssh-auth'
-    | 'kubernetes.io/tls'
   encryptedData: {
-    additionalProperties?: string
+    [key: string]: string
   }
-  metadata?: {
-    annotations?: {
-      additionalProperties?: string
-    }
-    finalizers?: string[]
-    labels?: {
-      additionalProperties?: string
+  template?: {
+    type?:
+      | 'kubernetes.io/opaque'
+      | 'kubernetes.io/dockercfg'
+      | 'kubernetes.io/dockerconfigjson'
+      | 'kubernetes.io/basic-auth'
+      | 'kubernetes.io/ssh-auth'
+      | 'kubernetes.io/tls'
+    immutable?: boolean
+    metadata?: {
+      name?: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+      finalizers?: string[]
     }
   }
 }
@@ -2210,24 +2190,28 @@ export type EditSealedSecretApiArg = {
   body: {
     name: string
     namespace?: string
-    immutable?: boolean
-    type:
-      | 'kubernetes.io/opaque'
-      | 'kubernetes.io/dockercfg'
-      | 'kubernetes.io/dockerconfigjson'
-      | 'kubernetes.io/basic-auth'
-      | 'kubernetes.io/ssh-auth'
-      | 'kubernetes.io/tls'
     encryptedData: {
-      additionalProperties?: string
+      [key: string]: string
     }
-    metadata?: {
-      annotations?: {
-        additionalProperties?: string
-      }
-      finalizers?: string[]
-      labels?: {
-        additionalProperties?: string
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
       }
     }
   }
@@ -5693,9 +5677,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
           type?: 'disabled'
         }
       | {
-          type?: 'minioLocal'
-        }
-      | {
           linode: {
             region: string
             accessKeyId: string
@@ -5956,9 +5937,6 @@ export type EditSettingsApiArg = {
             type?: 'disabled'
           }
         | {
-            type?: 'minioLocal'
-          }
-        | {
             linode: {
               region: string
               accessKeyId: string
@@ -6201,355 +6179,6 @@ export type EditAppApiArg = {
     }
   }
 }
-export type GetAiModelsApiResponse = /** status 200 Successfully obtained shared AI models */ ({
-  kind: 'AplAIModel'
-  spec: {
-    displayName?: string
-    modelEndpoint: string
-    modelType: 'foundation' | 'embedding'
-    modelDimension?: number
-  }
-} & {
-  metadata: {
-    name: string
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-})[]
-export type GetAiModelsApiArg = void
-export type GetAplKnowledgeBasesApiResponse = /** status 200 Successfully obtained knowledge bases */ ({
-  kind: 'AkamaiKnowledgeBase'
-  spec: {
-    modelName: string
-    sourceUrl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-})[]
-export type GetAplKnowledgeBasesApiArg = {
-  /** ID of team */
-  teamId: string
-}
-export type CreateAplKnowledgeBaseApiResponse = /** status 200 Successfully stored knowledge base configuration */ {
-  kind: 'AkamaiKnowledgeBase'
-  spec: {
-    modelName: string
-    sourceUrl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type CreateAplKnowledgeBaseApiArg = {
-  /** ID of team */
-  teamId: string
-  /** KnowledgeBase object */
-  body: {
-    kind: 'AkamaiKnowledgeBase'
-    spec: {
-      modelName: string
-      sourceUrl: string
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type GetAplKnowledgeBaseApiResponse = /** status 200 Successfully obtained knowledge base configuration */ {
-  kind: 'AkamaiKnowledgeBase'
-  spec: {
-    modelName: string
-    sourceUrl: string
-  }
-} & {
-  metadata: {
-    name: string
-  }
-}
-export type GetAplKnowledgeBaseApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the knowledge base */
-  knowledgeBaseName: string
-}
-export type EditAplKnowledgeBaseApiResponse = /** status 200 Successfully edited a team knowledge base */ {
-  kind: 'AkamaiKnowledgeBase'
-  spec: {
-    modelName: string
-    sourceUrl: string
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type EditAplKnowledgeBaseApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the knowledge base */
-  knowledgeBaseName: string
-  /** KnowledgeBase object that contains updated values */
-  body: {
-    kind: 'AkamaiKnowledgeBase'
-    spec: {
-      modelName: string
-      sourceUrl: string
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type DeleteAplKnowledgeBaseApiResponse = /** status 200 Successfully deleted a team knowledge base */ undefined
-export type DeleteAplKnowledgeBaseApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the knowledge base */
-  knowledgeBaseName: string
-}
-export type GetAplAgentsApiResponse = /** status 200 Successfully obtained agents */ ({
-  kind: 'AkamaiAgent'
-  spec: {
-    foundationModel: string
-    agentInstructions: string
-    tools?: {
-      type: string
-      name: string
-      description?: string
-      endpoint?: string
-    }[]
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-})[]
-export type GetAplAgentsApiArg = {
-  /** ID of team */
-  teamId: string
-}
-export type CreateAplAgentApiResponse = /** status 200 Successfully stored agent configuration */ {
-  kind: 'AkamaiAgent'
-  spec: {
-    foundationModel: string
-    agentInstructions: string
-    tools?: {
-      type: string
-      name: string
-      description?: string
-      endpoint?: string
-    }[]
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type CreateAplAgentApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Agent object */
-  body: {
-    kind: 'AkamaiAgent'
-    spec: {
-      foundationModel: string
-      agentInstructions: string
-      tools?: {
-        type: string
-        name: string
-        description?: string
-        endpoint?: string
-      }[]
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type GetAplAgentApiResponse = /** status 200 Successfully obtained agent configuration */ {
-  kind: 'AkamaiAgent'
-  spec: {
-    foundationModel: string
-    agentInstructions: string
-    tools?: {
-      type: string
-      name: string
-      description?: string
-      endpoint?: string
-    }[]
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type GetAplAgentApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the agent */
-  agentName: string
-}
-export type EditAplAgentApiResponse = /** status 200 Successfully edited a team agent */ {
-  kind: 'AkamaiAgent'
-  spec: {
-    foundationModel: string
-    agentInstructions: string
-    tools?: {
-      type: string
-      name: string
-      description?: string
-      endpoint?: string
-    }[]
-  }
-} & {
-  metadata: {
-    name: string
-    labels: {
-      'apl.io/teamId': string
-    }
-  }
-} & {
-  status: {
-    conditions?: {
-      lastTransitionTime?: string
-      message?: string
-      reason?: string
-      status?: boolean
-      type?: string
-    }[]
-    phase?: string
-  }
-}
-export type EditAplAgentApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the agent */
-  agentName: string
-  /** Agent object that contains updated values */
-  body: {
-    kind: 'AkamaiAgent'
-    spec: {
-      foundationModel: string
-      agentInstructions: string
-      tools?: {
-        type: string
-        name: string
-        description?: string
-        endpoint?: string
-      }[]
-    }
-  } & {
-    metadata: {
-      name: string
-    }
-  }
-}
-export type DeleteAplAgentApiResponse = /** status 200 Successfully deleted a team agent */ undefined
-export type DeleteAplAgentApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the agent */
-  agentName: string
-}
 export const {
   useGetValuesQuery,
   useGetTeamsQuery,
@@ -6681,15 +6310,4 @@ export const {
   useToggleAppsMutation,
   useGetTeamAppQuery,
   useEditAppMutation,
-  useGetAiModelsQuery,
-  useGetAplKnowledgeBasesQuery,
-  useCreateAplKnowledgeBaseMutation,
-  useGetAplKnowledgeBaseQuery,
-  useEditAplKnowledgeBaseMutation,
-  useDeleteAplKnowledgeBaseMutation,
-  useGetAplAgentsQuery,
-  useCreateAplAgentMutation,
-  useGetAplAgentQuery,
-  useEditAplAgentMutation,
-  useDeleteAplAgentMutation,
 } = injectedRtkApi
