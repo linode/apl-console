@@ -157,13 +157,8 @@ export default function (Props): React.ReactElement {
             })}
           </AccordionDetails>
         </Accordion>
-        <Grid
-          container
-          spacing={3}
-          alignItems='center'
-          sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}
-        >
-          <Grid>
+        <Grid container spacing={3} alignItems='stretch' sx={{ my: 2 }}>
+          <Grid item xs={12} sm={6}>
             <Autocomplete<string, false, false, false>
               label='Choose Catalog'
               width='large'
@@ -174,19 +169,28 @@ export default function (Props): React.ReactElement {
               onChange={(_, newValue) => handleCatalogChange(newValue || '')}
             />
           </Grid>
-          <Grid>
-            <Typography variant='body2' sx={{ color: 'text.secondary', mb: 1 }}>
-              Repository
-            </Typography>
-            <Box>
-              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                <strong>URL:</strong> {(chartCatalogData as any)?.url || ''}
+
+          <Grid item xs={12} sm={6}>
+            <Box
+              sx={{
+                textAlign: 'left',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 1 }}>
+                Repository
               </Typography>
-            </Box>
-            <Box>
-              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                <strong>Branch:</strong> {(chartCatalogData as any)?.branch || ''}
-              </Typography>
+              <Box sx={{ display: 'flex', gap: 3 }}>
+                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                  <strong>URL:</strong> {(chartCatalogData as any)?.url || ''}
+                </Typography>
+                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                  <strong>Branch:</strong> {(chartCatalogData as any)?.branch || ''}
+                </Typography>
+              </Box>
             </Box>
           </Grid>
         </Grid>
