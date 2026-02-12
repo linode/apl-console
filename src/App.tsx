@@ -127,14 +127,14 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/catalogs/:teamId' component={WorkloadCatalogsPage} exact />
+                                <PrivateRoute path='/teams/:teamId/catalogs/' component={WorkloadCatalogsPage} exact />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName'
+                                  path='/teams/:teamId/catalogs/:catalogName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName/:workloadName'
+                                  path='/teams/:teamId/catalogs/:catalogName/:workloadName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />

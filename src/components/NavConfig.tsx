@@ -47,7 +47,7 @@ export default function NavConfig() {
         { title: 'Apps', path: `/apps/${oboTeamId}`, icon: getIcon('apps_icon.svg'), hidden: oboTeamId === 'admin' },
         {
           title: 'Catalog',
-          path: `/catalogs/${oboTeamId}`,
+          path: `/teams/${oboTeamId}/catalogs`,
           icon: getIcon('developer_guide_icon.svg'),
         },
         {
