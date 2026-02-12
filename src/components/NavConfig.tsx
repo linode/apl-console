@@ -30,6 +30,7 @@ export default function NavConfig() {
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
+        { title: 'Catalogs', path: '/catalogs', icon: getIcon('developer_guide_icon.svg') },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
         { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg

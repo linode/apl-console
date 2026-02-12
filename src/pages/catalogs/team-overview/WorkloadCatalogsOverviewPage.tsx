@@ -137,9 +137,9 @@ export default function (Props): React.ReactElement {
     }
   }
 
-  if (isCatalogsLoading || isFetchingCatalogs) return <PaperLayout loading title={t('TITLE_SERVICE')} />
+  if (isCatalogsLoading || isFetchingCatalogs) return <PaperLayout loading title={t('TITLE_CATALOGS')} />
   return (
-    <PaperLayout loading={isCatalogsLoading || isCatalogsError} title={t('TITLE_SERVICE')}>
+    <PaperLayout loading={isCatalogsLoading || isCatalogsError} title={t('TITLE_CATALOGS')}>
       <Box p={5} className={cx(classes.root)}>
         <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
           <AccordionSummary>

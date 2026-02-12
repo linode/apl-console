@@ -34,6 +34,7 @@ import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
 import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
 import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
+
 import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
@@ -47,8 +48,9 @@ import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
 import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
 import WorkloadsCreateEditPage from 'pages/workloads/create-edit/WorkloadsCreateEditPage'
 import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPage'
-import WorkloadCatalogsPage from 'pages/catalogs/overview/WorkloadCatalogsOverviewPage'
+import WorkloadCatalogsPage from 'pages/catalogs/team-overview/WorkloadCatalogsOverviewPage'
 import ThemeViewInitializer from 'components/ThemeViewInitializer'
+import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -111,6 +113,12 @@ function App() {
                                 <PrivateRoute
                                   path='/teams/create'
                                   component={TeamsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs'
+                                  component={PlatformCatalogsOverviewPage}
                                   platformAdminRoute
                                   exact
                                 />
