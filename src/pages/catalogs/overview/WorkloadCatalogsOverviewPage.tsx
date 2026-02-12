@@ -183,7 +183,7 @@ export default function (Props): React.ReactElement {
               <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 1 }}>
                 Repository
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3 }}>
+              <Box sx={{ display: 'flex', gap: 3, paddingTop: '1em' }}>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                   <strong>URL:</strong> {(chartCatalogData as any)?.url || ''}
                 </Typography>
