@@ -1,14 +1,23 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography } from '@mui/material'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
+import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
-import { useCreateWorkloadCatalogMutation } from 'redux/otomiApi'
+import {
+  useCreateWorkloadCatalogMutation,
+  useGetAllAplCatalogsQuery,
+  useGetAplCatalogsChartsQuery,
+  useGetWorkloadCatalogMutation,
+} from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { useSnackbar } from 'notistack'
-import CatalogCard from './CatalogCard'
-import TableToolbar from './TableToolbar'
-import CatalogAddChartCard from './CatalogAddChartCard'
-import NewChartModal from './NewChartModal'
+import { Autocomplete } from 'components/forms/Autocomplete'
+import { useAppSelector } from 'redux/hooks'
+import { useTranslation } from 'react-i18next'
+import CatalogCard from '../../../components/CatalogCard'
+import TableToolbar from '../../../components/TableToolbar'
+import CatalogAddChartCard from '../../../components/CatalogAddChartCard'
+import NewChartModal from '../../../components/NewChartModal'
 
 // -- Styles -------------------------------------------------------------
 
@@ -47,8 +56,6 @@ const developerCatalogInfo = [
 
 interface Props {
   teamId: string
-  catalogs: any[]
-  fetchCatalog: () => void
 }
 
 // TODO: this needs to be fetched from APL Api
@@ -59,27 +66,87 @@ interface NewChartValues {
   allowTeams: boolean
 }
 
-export default function ({ teamId, catalogs, fetchCatalog }: Props): React.ReactElement {
+export default function ({ teamId }: Props): React.ReactElement {
+  const { t } = useTranslation()
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
   const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
+  const [catalogs, setCatalogs] = useState<any[]>([])
+  const [catalogFilterName, setCatalogFilterName] = useState('')
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
+  const [chartCatalog, setChartCatalog] = useState<any[]>([])
+  const [getWorkloadCatalog, { isLoading }] = useGetWorkloadCatalogMutation()
+
   const [expanded, setExpanded] = useState(false)
   const { user } = useSession()
   const { isPlatformAdmin } = user
 
   const { enqueueSnackbar } = useSnackbar()
   const [createWorkloadCatalog] = useCreateWorkloadCatalogMutation()
+  const {
+    data: allCatalogs,
+    isLoading: isCatalogsLoading,
+    isFetching: isFetchingCatalogs,
+    isError: isCatalogsError,
+    refetch: refetchCatalogs,
+  } = useGetAllAplCatalogsQuery()
+
+  const { data: chartCatalogData } = useGetAplCatalogsChartsQuery(
+    { catalogId: catalogFilterName },
+    { skip: !catalogFilterName || catalogFilterName === 'default' },
+  )
 
   useEffect(() => {
-    setFilteredCatalog(catalogs)
-  }, [catalogs])
+    setCatalogFilterName('default')
+  }, [])
+
+  useEffect(() => {
+    fetchCatalog()
+  }, [catalogFilterName])
+
+  useEffect(() => {
+    if (allCatalogs) fetchCatalogs()
+  }, [allCatalogs])
+
+  useEffect(() => {
+    setFilteredCatalog(chartCatalog)
+  }, [chartCatalog])
 
   const handleFilterName = (name: string) => {
     setFilterName(name)
-    const filtered = catalogs.filter((item) => item.name.includes(name))
+    const filtered = chartCatalog.filter((item) => item.name.includes(name))
     setFilteredCatalog(filtered)
   }
+
+  const fetchCatalogs = () => {
+    const catalogs = allCatalogs
+    console.log('all catalogs', catalogs)
+    setCatalogs(catalogs)
+  }
+
+  const fetchCatalog = () => {
+    if (catalogFilterName === 'default') {
+      getWorkloadCatalog({ body: { sub: user.sub, teamId } }).then((res: any) => {
+        const { catalog }: { catalog: any[] } = res.data
+        setChartCatalog(catalog)
+      })
+    }
+  }
+
+  useEffect(() => {
+    if (chartCatalogData) setChartCatalog((chartCatalogData as any)?.catalog)
+  }, [chartCatalogData])
+
+  console.log('catalogs', catalogs)
+  console.log('catalogFilterName', catalogFilterName)
+  console.log('chartcatalogData', chartCatalogData)
+  console.log('chartCatalog', chartCatalog)
+  const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
+  useEffect(() => {
+    if (isDirty !== false) return
+    if (!isFetchingCatalogs) refetchCatalogs()
+  }, [isDirty])
 
   const addChart = async (data: NewChartValues) => {
     try {
@@ -93,7 +160,7 @@ export default function ({ teamId, catalogs, fetchCatalog }: Props): React.React
       enqueueSnackbar('Error adding chart', { variant: 'error' })
     }
   }
-
+  if (isCatalogsLoading || isFetchingCatalogs) return <PaperLayout loading title={t('TITLE_SERVICE')} />
   return (
     <>
       <Box p={5} className={cx(classes.root)}>
@@ -113,6 +180,34 @@ export default function ({ teamId, catalogs, fetchCatalog }: Props): React.React
             })}
           </AccordionDetails>
         </Accordion>
+        <Grid container spacing={2} alignItems='center'>
+          <Grid item xs={12} sm={4}>
+            <Autocomplete<string, false, false, false>
+              label='Choose Catalog'
+              width='large'
+              options={allCatalogs?.map((catalogOption) => catalogOption.spec.name) || []}
+              getOptionLabel={(catalogOption) => catalogOption}
+              placeholder='default'
+              value={catalogFilterName}
+              onChange={(_, newValue) => setCatalogFilterName(newValue || '')}
+            />
+          </Grid>
+          <Grid item xs={12} sm={8}>
+            <Typography variant='body2' sx={{ color: 'text.secondary', mb: 1 }}>
+              Repository
+            </Typography>
+            <Box>
+              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                <strong>URL:</strong> {(chartCatalog as any)?.url || ''}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                <strong>Branch:</strong> {(chartCatalog as any)?.branch || ''}
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
         <TableToolbar
           filterName={filterName}
           onFilterName={handleFilterName}
@@ -125,7 +220,7 @@ export default function ({ teamId, catalogs, fetchCatalog }: Props): React.React
               <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
             </Grid>
           )}
-          {filteredCatalog.map((item) => {
+          {filteredCatalog?.map((item) => {
             const img = item?.icon || '/logos/akamai_logo.svg'
             return (
               <Grid item xs={12} sm={6} md={4} lg={4} key={item.name}>
@@ -142,7 +237,7 @@ export default function ({ teamId, catalogs, fetchCatalog }: Props): React.React
         open={openNewChartModal}
         handleAction={(handleActionValues) => addChart(handleActionValues)}
         handleClose={() => setOpenNewChartModal(false)}
-        chartDirectories={filteredCatalog.map((item) => item.name) || []}
+        chartDirectories={filteredCatalog?.map((item) => item.name) || []}
       />
     </>
   )
