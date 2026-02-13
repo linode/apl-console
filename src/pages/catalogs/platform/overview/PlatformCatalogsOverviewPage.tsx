@@ -8,6 +8,16 @@ import { HeadCell } from '../../../../components/EnhancedTable'
 import RLink from '../../../../components/Link'
 import ListTable from '../../../../components/ListTable'
 
+const getCatalogName = (): CallableFunction =>
+  function (row): string | React.ReactElement {
+    const { name }: { name: string } = row.metadata
+    return (
+      <RLink to={`/catalogs/${name}`} label={name}>
+        {name}
+      </RLink>
+    )
+  }
+
 export default function PlatformCatalogsOverviewPage(): React.ReactElement {
   const {
     data: allCatalogs,
@@ -29,16 +39,9 @@ export default function PlatformCatalogsOverviewPage(): React.ReactElement {
   console.log('allCatalogs', allCatalogs)
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
-      renderer: ({ name }: any) =>
-        isPlatformAdmin ? (
-          <RLink to={`/catalogs/${name}`} label={name}>
-            {name}
-          </RLink>
-        ) : (
-          name
-        ),
+      renderer: getCatalogName(),
     },
   ]
   // END HOOKS
