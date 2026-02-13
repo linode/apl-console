@@ -32,12 +32,7 @@ function isRelease(version: any): boolean {
 }
 
 export default function (): React.ReactElement {
-  const {
-    settings: {
-      cluster: { domainSuffix },
-    },
-    versions,
-  } = useSession()
+  const { settings, versions } = useSession()
   const { classes } = useStyles()
   const { t } = useTranslation()
   const { data: k8sVersion } = useGetK8SVersionQuery()
@@ -48,7 +43,7 @@ export default function (): React.ReactElement {
     [t('Otomi Core')]: versions.core,
     [t('Otomi API')]: versions.api,
     [t('Otomi Console')]: versions.console,
-    [t('Otomi Values')]: <LinkCommit domainSuffix={domainSuffix} sha={versions.values} color='primary' short />,
+    [t('Otomi Values')]: <LinkCommit repo={settings.otomi.git.repoUrl} sha={versions.values} color='primary' short />,
   }
   const version = /^\d/.test(clusterLegend['Otomi Core'])
     ? `v${clusterLegend['Otomi Core']}`
