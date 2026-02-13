@@ -220,6 +220,16 @@ export default function (Props): React.ReactElement {
               <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
             </Grid>
           )}
+          {oboTeamId !== 'admin' && filteredCatalog.length === 0 && (
+            <Box sx={{ width: '100%' }}>
+              <Typography
+                variant='body2'
+                sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 'bold', mb: 1 }}
+              >
+                No charts found.
+              </Typography>
+            </Box>
+          )}
           {filteredCatalog?.map((item) => {
             const img = item?.icon || '/logos/akamai_logo.svg'
             return (
