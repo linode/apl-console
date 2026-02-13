@@ -332,7 +332,7 @@ export default function WorkloadsCreateEditPage({
                 ? getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)
                 : undefined
             }
-            hideCrumbX={workloadName ? [1, 2] : undefined}
+            hideCrumbX={workloadName ? [1, 2] : [2]}
             breadcrumbOverrides={[
               {
                 position: 1,
@@ -342,7 +342,7 @@ export default function WorkloadsCreateEditPage({
               {
                 position: 2,
                 label: 'Catalogs',
-                linkTo: `/catalogs/${teamId}`,
+                linkTo: `/teams/${teamId}/catalogs/`,
               },
             ]}
           />

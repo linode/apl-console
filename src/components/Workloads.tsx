@@ -18,7 +18,7 @@ interface Row {
 }
 
 const getWorkloadLink = (row: Row) => {
-  const path = `/catalogs/${row.teamId}/${row.name}/${encodeURIComponent(row.name)}`
+  const path = `/teams/${row.teamId}/catalogs/${row.name}/${encodeURIComponent(row.name)}`
   return (
     <RLink to={path} label={row.name}>
       {row.name}
@@ -106,7 +106,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
       headCells={headCells}
       rows={workloads}
       resourceType='Workload'
-      to={`/catalogs/${teamId || oboTeamId}`}
+      to={`/teams/${teamId || oboTeamId}/catalogs/`}
     />
   )
 }
