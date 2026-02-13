@@ -60,6 +60,7 @@ export default function CodeRepositoriesCreateEditPage({
   const { classes } = useStyles()
   const {
     settings: { cluster },
+    appsEnabled,
   } = useSession()
 
   const [testConnectUrl, setTestConnectUrl] = useState<string | null>(null)
@@ -68,7 +69,7 @@ export default function CodeRepositoriesCreateEditPage({
   const [gitProvider, setGitProvider] = useState<'gitea' | 'github' | 'gitlab' | null>(null)
 
   const options = [
-    { value: 'gitea', label: 'Gitea', imgSrc: '/logos/gitea_logo.svg' },
+    ...(appsEnabled?.gitea ? [{ value: 'gitea', label: 'Gitea', imgSrc: '/logos/gitea_logo.svg' }] : []),
     { value: 'github', label: 'GitHub', imgSrc: '/logos/github_logo.svg' },
     { value: 'gitlab', label: 'GitLab', imgSrc: '/logos/gitlab_logo.svg' },
   ]
@@ -105,7 +106,7 @@ export default function CodeRepositoriesCreateEditPage({
     isLoading: isLoadingRepoUrls,
     isFetching: isFetchingRepoUrls,
     refetch: refetchRepoUrls,
-  } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider })
+  } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider || !appsEnabled?.gitea })
 
   const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useTestRepoConnectQuery(
     { url: testConnectUrl, teamId, secret: secretName },
@@ -131,7 +132,7 @@ export default function CodeRepositoriesCreateEditPage({
         labels: { 'apl.io/teamId': teamId },
       },
       spec: {
-        gitService: 'gitea',
+        gitService: appsEnabled?.gitea ? 'gitea' : 'github',
         repositoryUrl: '',
         private: false,
         secret: undefined,
@@ -178,11 +179,11 @@ export default function CodeRepositoriesCreateEditPage({
     if (data) {
       reset(data)
       setGitProvider(watch('spec.gitService'))
-    } else setGitProvider('gitea')
+    } else setGitProvider(appsEnabled?.gitea ? 'gitea' : 'github')
 
     if (!isEmpty(prefilledData)) {
       reset(defaultValues)
-      setGitProvider(defaultValues.spec?.gitService ?? 'gitea')
+      setGitProvider(defaultValues.spec?.gitService ?? (appsEnabled?.gitea ? 'gitea' : 'github'))
     }
   }, [data, prefilledData, defaultValues, reset])
 
@@ -247,7 +248,11 @@ export default function CodeRepositoriesCreateEditPage({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/code-repositories`} />
 
-  const loading = isLoading || isLoadingTeamSecrets || isLoadingRepoUrls || (codeRepositoryName && !internalRepoUrls)
+  const loading =
+    isLoading ||
+    isLoadingTeamSecrets ||
+    isLoadingRepoUrls ||
+    (appsEnabled?.gitea && codeRepositoryName && !internalRepoUrls)
   const error = isError || isErrorTeamSecrets
 
   if (loading) return <PaperLayout loading title={t('TITLE_CODE_REPOSITORY')} />
