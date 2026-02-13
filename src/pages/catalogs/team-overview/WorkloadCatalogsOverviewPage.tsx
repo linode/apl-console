@@ -33,6 +33,16 @@ const useStyles = makeStyles()((theme) => {
       borderRadius: '8px',
       background: 'transparent',
     },
+    repositoryText: {
+      fontWeight: 500,
+      fontSize: '0.875rem',
+      color: '#FFFFFF',
+    },
+    strongText: {
+      fontWeight: 500,
+      fontSize: '0.875rem',
+      color: '#FFFFFF',
+    },
   }
 })
 
@@ -157,10 +167,10 @@ export default function (Props): React.ReactElement {
             })}
           </AccordionDetails>
         </Accordion>
-        <Grid container spacing={3} alignItems='stretch' sx={{ my: 2 }}>
-          <Grid item xs={12} sm={6}>
+        <Box sx={{ display: 'flex', gap: 3, my: 2 }}>
+          <Box sx={{ flex: 1 }}>
             <Autocomplete<string, false, false, false>
-              label='Choose Catalog'
+              label='Select Catalog'
               width='large'
               options={allCatalogs?.map((catalogOption) => catalogOption.spec.name) || []}
               getOptionLabel={(catalogOption) => catalogOption}
@@ -168,32 +178,33 @@ export default function (Props): React.ReactElement {
               value={catalogFilterName}
               onChange={(_, newValue) => handleCatalogChange(newValue || '')}
             />
-          </Grid>
+          </Box>
 
-          <Grid item xs={12} sm={6}>
+          <Box sx={{ flex: 2 }}>
             <Box
               sx={{
                 textAlign: 'left',
                 height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'space-around',
+                mt: '5px',
               }}
             >
-              <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 'bold', mb: 1 }}>
+              <Typography variant='body2' className={classes.repositoryText}>
                 Repository
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3, paddingTop: '1em' }}>
+              <Box sx={{ display: 'flex', gap: 3 }}>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  <strong>URL:</strong> {(chartCatalogData as any)?.url || ''}
+                  <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
                 </Typography>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  <strong>Branch:</strong> {(chartCatalogData as any)?.branch || ''}
+                  <strong className={classes.strongText}>Branch:</strong> {(chartCatalogData as any)?.branch || ''}
                 </Typography>
               </Box>
             </Box>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
         <TableToolbar
           filterName={filterName}
           onFilterName={handleFilterName}
