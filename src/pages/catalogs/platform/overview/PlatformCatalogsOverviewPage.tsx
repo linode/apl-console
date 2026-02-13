@@ -3,7 +3,6 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplCatalogsQuery } from 'redux/otomiApi'
-import { makeStyles } from 'tss-react/mui'
 import { HeadCell } from '../../../../components/EnhancedTable'
 import RLink from '../../../../components/Link'
 import ListTable from '../../../../components/ListTable'
@@ -17,17 +16,6 @@ interface Row {
   }
 }
 // -- Styles -------------------------------------------------------------
-
-const useStyles = makeStyles()((theme) => {
-  const p = theme.palette
-  return {
-    tableText: {
-      fontWeight: 500,
-      fontSize: '0.875rem',
-      color: '#FFFFFF',
-    },
-  }
-})
 
 const getCatalogName = (row: Row) => {
   const { name }: { name: string } = row.metadata
