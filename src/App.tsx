@@ -51,6 +51,7 @@ import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPag
 import WorkloadCatalogsPage from 'pages/catalogs/team-overview/WorkloadCatalogsOverviewPage'
 import ThemeViewInitializer from 'components/ThemeViewInitializer'
 import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
+import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -119,6 +120,18 @@ function App() {
                                 <PrivateRoute
                                   path='/catalogs'
                                   component={PlatformCatalogsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/create'
+                                  component={CatalogsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/:catalogId'
+                                  component={CatalogsCreateEditPage}
                                   platformAdminRoute
                                   exact
                                 />

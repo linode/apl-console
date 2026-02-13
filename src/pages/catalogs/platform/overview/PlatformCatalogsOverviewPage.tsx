@@ -46,7 +46,7 @@ export default function PlatformCatalogsOverviewPage(): React.ReactElement {
   ]
   // END HOOKS
   const comp = (
-    <ListTable headCells={headCells} rows={allCatalogs} resourceType='Catalogs' adminOnly hasTeamScope={false} />
+    <ListTable headCells={headCells} rows={allCatalogs} resourceType='Catalog' adminOnly hasTeamScope={false} />
   )
   return <PaperLayout loading={isCatalogsLoading} comp={comp} title={t('TITLE_CATALOGS')} />
 }
