@@ -1,10 +1,10 @@
 import * as yup from 'yup'
 
 export const aplCatalogApiSchema = yup.object({
-  kind: yup.string().oneOf(['AplCatalog']).required(),
+  kind: yup.string().oneOf(['AplCatalog']).required().default('AplCatalog'),
 
   spec: yup.object({
-    name: yup.string().required('Display name is a required field.'),
+    name: yup.string().required('Catalog name is a required field.'),
     branch: yup.string().required('Branch is a required field.'),
     repositoryUrl: yup.string().required('Repository URL is a required field.'),
     enabled: yup.boolean().required('Enabled is a required field.'),

@@ -1,22 +1,42 @@
 import PaperLayout from 'layouts/Paper'
-import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplCatalogsQuery } from 'redux/otomiApi'
+import { makeStyles } from 'tss-react/mui'
 import { HeadCell } from '../../../../components/EnhancedTable'
 import RLink from '../../../../components/Link'
 import ListTable from '../../../../components/ListTable'
 
-const getCatalogName = (): CallableFunction =>
-  function (row): string | React.ReactElement {
-    const { name }: { name: string } = row.metadata
-    return (
-      <RLink to={`/catalogs/${name}`} label={name}>
-        {name}
-      </RLink>
-    )
+interface Row {
+  metadata: {
+    name: string
   }
+  spec: {
+    enabled: boolean
+  }
+}
+// -- Styles -------------------------------------------------------------
+
+const useStyles = makeStyles()((theme) => {
+  const p = theme.palette
+  return {
+    tableText: {
+      fontWeight: 500,
+      fontSize: '0.875rem',
+      color: '#FFFFFF',
+    },
+  }
+})
+
+const getCatalogName = (row: Row) => {
+  const { name }: { name: string } = row.metadata
+  return (
+    <RLink to={`/catalogs/${name}`} label={name}>
+      {name}
+    </RLink>
+  )
+}
 
 export default function PlatformCatalogsOverviewPage(): React.ReactElement {
   const {
@@ -27,21 +47,22 @@ export default function PlatformCatalogsOverviewPage(): React.ReactElement {
     refetch: refetchCatalogs,
   } = useGetAllAplCatalogsQuery()
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
-  const {
-    user: { isPlatformAdmin },
-  } = useSession()
 
   useEffect(() => {
     if (isDirty !== false && !isFetchingCatalogs) refetchCatalogs()
   }, [isDirty])
 
   const { t } = useTranslation()
-  console.log('allCatalogs', allCatalogs)
   const headCells: HeadCell[] = [
     {
       id: 'metadata.name',
       label: t('Name'),
-      renderer: getCatalogName(),
+      renderer: (row: Row) => getCatalogName(row),
+    },
+    {
+      id: 'spec.enabled',
+      label: t('Enabled'),
+      renderer: (row: Row) => row.spec.enabled.toString(),
     },
   ]
   // END HOOKS
