@@ -26,7 +26,6 @@ import { LoadingButton } from '@mui/lab'
 import Iconify from 'components/Iconify'
 import DeleteButton from 'components/DeleteButton'
 import { isEqual } from 'lodash'
-import { useStyles } from './create-edit-catalog.styles'
 import { aplCatalogApiSchema } from './create-edit-catalog.validator'
 
 interface Params {
@@ -41,7 +40,6 @@ export default function CatalogsCreateEditPage({
   // state
   const { t } = useTranslation()
   const theme = useTheme()
-  const { classes } = useStyles()
 
   const [testConnectUrl, setTestConnectUrl] = useState<string | null>(null)
   const [showConnectResult, setShowConnectResult] = useState<boolean>(false)
@@ -97,7 +95,6 @@ export default function CatalogsCreateEditPage({
     control,
     register,
     reset,
-    resetField,
     handleSubmit,
     watch,
     formState: { errors },
@@ -217,7 +214,7 @@ export default function CatalogsCreateEditPage({
                   name='spec.enabled'
                   control={control}
                   label='Enabled'
-                  explainertext='Enables or disables visibility of this catalog on the catalog page. Existing workloads using charts from this catalog are not effected.'
+                  explainertext='Enables or disables visibility of this catalog on the catalog page. Existing workloads using charts from this catalog are not affected.'
                   onChange={(e) => setValue('spec.enabled', e.target.checked)}
                 />
               </FormRow>
