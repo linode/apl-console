@@ -332,7 +332,7 @@ export default function WorkloadsCreateEditPage({
                 ? getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)
                 : undefined
             }
-            hideCrumbX={workloadName ? [1, 2] : [2]}
+            hideCrumbX={workloadName ? [1, 2, 3] : [2]}
             breadcrumbOverrides={[
               {
                 position: 1,
