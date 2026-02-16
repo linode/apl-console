@@ -6,6 +6,7 @@ import { Redirect, RouteComponentProps } from 'react-router-dom'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
+  CreateAplCatalogApiArg,
   CreateAplCatalogApiResponse,
   useCreateAplCatalogMutation,
   useDeleteAplCatalogMutation,
@@ -71,8 +72,20 @@ export default function CatalogsCreateEditPage({
   }
 
   const onSubmit = (submitData: CreateAplCatalogApiResponse) => {
-    if (catalogId) update({ catalogId, body: submitData })
-    else create({ body: submitData })
+    const body: CreateAplCatalogApiArg['body'] = {
+      kind: 'AplCatalog',
+      metadata: {
+        name: submitData.metadata.name,
+      },
+      spec: {
+        name: submitData.spec.name,
+        repositoryUrl: submitData.spec.repositoryUrl,
+        branch: submitData.spec.branch,
+        enabled: submitData.spec.enabled,
+      },
+    }
+    if (catalogId) update({ catalogId, body })
+    else create({ body })
   }
 
   const methods = useForm<CreateAplCatalogApiResponse>({

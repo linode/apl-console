@@ -113,10 +113,10 @@ export default function (Props): React.ReactElement {
     setFilteredCatalog(chartCatalog)
   }, [chartCatalog])
 
-  const handleCatalogChange = useCallback((catalogName: string) => {
+  const handleCatalogChange = (catalogName: string) => {
     setCatalogFilterName(catalogName)
     handleFilterName('')
-  }, [])
+  }
 
   const handleFilterName = useCallback(
     (name: string) => {
