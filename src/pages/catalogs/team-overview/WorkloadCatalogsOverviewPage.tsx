@@ -36,12 +36,12 @@ const useStyles = makeStyles()((theme) => {
     repositoryText: {
       fontWeight: 500,
       fontSize: '0.875rem',
-      color: '#FFFFFF',
+      color: p.text.primary,
     },
     strongText: {
       fontWeight: 500,
       fontSize: '0.875rem',
-      color: '#FFFFFF',
+      color: p.text.primary,
     },
   }
 })
