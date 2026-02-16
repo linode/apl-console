@@ -60,6 +60,7 @@ export default function BuildsCreateEditPage({
     settings: {
       cluster: { domainSuffix },
     },
+    appsEnabled,
   } = useSession()
 
   const options = [
@@ -84,6 +85,11 @@ export default function BuildsCreateEditPage({
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
     { codeRepoName: repoName, teamId },
     { skip: !repoName },
+  )
+
+  const filteredCodeRepos = useMemo(
+    () => (codeRepos || []).filter((cr) => appsEnabled?.gitea || cr?.spec?.gitService !== 'gitea'),
+    [codeRepos, appsEnabled?.gitea],
   )
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -238,10 +244,10 @@ export default function BuildsCreateEditPage({
                 <Autocomplete<CreateAplCodeRepoApiResponse, false, false, false>
                   label='Repository'
                   loading={isLoadingCodeRepos}
-                  options={codeRepos || []}
+                  options={filteredCodeRepos}
                   getOptionLabel={(codeRepo) => codeRepo.metadata.name}
                   placeholder='Select a repository'
-                  value={(codeRepos || []).find((cr) => cr?.spec?.repositoryUrl === repoField.value) || null}
+                  value={filteredCodeRepos.find((cr) => cr?.spec?.repositoryUrl === repoField.value) || null}
                   onChange={(_e, repo) => {
                     repoField.onChange(repo?.spec?.repositoryUrl ?? '')
                     if (!repo) return
@@ -350,7 +356,7 @@ export default function BuildsCreateEditPage({
               <Typography variant='h6'>Extra options</Typography>
 
               <Box>
-                {gitService === 'gitea' && (
+                {appsEnabled?.gitea && gitService === 'gitea' && (
                   <ControlledCheckbox
                     sx={{ my: 2 }}
                     name='spec.trigger'
