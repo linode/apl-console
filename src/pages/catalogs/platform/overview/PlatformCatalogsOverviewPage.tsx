@@ -33,7 +33,7 @@ export default function PlatformCatalogsOverviewPage(): React.ReactElement {
     isFetching: isFetchingCatalogs,
     isError: isCatalogsError,
     refetch: refetchCatalogs,
-  } = useGetAllAplCatalogsQuery()
+  } = useGetAllAplCatalogsQuery({})
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
   useEffect(() => {

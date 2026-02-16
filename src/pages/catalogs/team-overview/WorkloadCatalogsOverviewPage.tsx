@@ -77,7 +77,6 @@ export default function (Props): React.ReactElement {
   const [catalogFilterName, setCatalogFilterName] = useState('')
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
   const [chartCatalog, setChartCatalog] = useState<any[]>([])
-  const [enabledCatalogs, setEnabledCatalogs] = useState<any[]>([])
 
   const [expanded, setExpanded] = useState(false)
   const { user, oboTeamId } = useSession()
@@ -91,7 +90,7 @@ export default function (Props): React.ReactElement {
     isFetching: isFetchingCatalogs,
     isError: isCatalogsError,
     refetch: refetchCatalogs,
-  } = useGetAllAplCatalogsQuery()
+  } = useGetAllAplCatalogsQuery({ enabled: true })
 
   const { data: chartCatalogData } = useGetAplCatalogsChartsQuery(
     { catalogId: catalogFilterName },
@@ -104,10 +103,8 @@ export default function (Props): React.ReactElement {
 
   useEffect(() => {
     if (allCatalogs) {
-      const enabledCatalogs = allCatalogs.filter((catalog) => catalog.spec.enabled)
-      setEnabledCatalogs(enabledCatalogs)
-      const defaultCatalog = enabledCatalogs.find((catalog) => catalog.metadata?.name === 'default')
-      const selectedCatalog = defaultCatalog || enabledCatalogs[0]
+      const defaultCatalog = allCatalogs.find((catalog) => catalog.metadata?.name === 'default')
+      const selectedCatalog = defaultCatalog || allCatalogs[0]
       setCatalogFilterName(selectedCatalog?.metadata?.name || '')
     }
   }, [allCatalogs])
@@ -175,7 +172,7 @@ export default function (Props): React.ReactElement {
             <Autocomplete<string, false, false, false>
               label='Select Catalog'
               width='large'
-              options={enabledCatalogs?.map((catalogOption) => catalogOption.spec.name) || []}
+              options={allCatalogs?.map((catalogOption) => catalogOption.spec.name) || []}
               getOptionLabel={(catalogOption) => catalogOption}
               placeholder={catalogFilterName || 'Select a catalog to view its charts'}
               value={catalogFilterName}

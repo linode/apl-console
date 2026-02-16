@@ -313,7 +313,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
     getAllAplCatalogs: build.query<GetAllAplCatalogsApiResponse, GetAllAplCatalogsApiArg>({
-      query: () => ({ url: `/v2/catalogs` }),
+      query: (queryArg) => ({ url: `/v2/catalogs`, params: { enabled: queryArg.enabled } }),
     }),
     createAplCatalog: build.mutation<CreateAplCatalogApiResponse, CreateAplCatalogApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs`, method: 'POST', body: queryArg.body }),
@@ -4417,7 +4417,10 @@ export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained 
     phase?: string
   }
 })[]
-export type GetAllAplCatalogsApiArg = void
+export type GetAllAplCatalogsApiArg = {
+  /** Filter catalogs by enabled status */
+  enabled?: boolean
+}
 export type CreateAplCatalogApiResponse = /** status 200 Successfully stored app catalog configuration */ {
   kind: 'AplCatalog'
   spec: {
