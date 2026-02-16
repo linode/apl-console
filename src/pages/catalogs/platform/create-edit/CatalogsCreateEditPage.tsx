@@ -110,8 +110,6 @@ export default function CatalogsCreateEditPage({
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/catalogs'
           title={catalogId ? catalogData?.metadata?.name ?? '' : 'Create Catalog'}
-          // hides the first two crumbs (e.g. /teams/teamName)
-          hideCrumbX={[0, 1]}
         />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -132,47 +130,26 @@ export default function CatalogsCreateEditPage({
               </FormRow>
 
               <Divider sx={{ mt: 4, mb: 2 }} />
-              <Typography variant='body2' className={classes.repositoryText}>
-                Repository
-              </Typography>
               <FormRow spacing={10}>
-                <TextField
-                  label='Repository URL'
-                  width='large'
-                  {...register('spec.repositoryUrl')}
-                  onChange={(e) => setValue('spec.repositoryUrl', e.target.value)}
-                  error={!!errors.spec?.repositoryUrl}
-                  helperText={errors.spec?.repositoryUrl?.message?.toString()}
-                />
+                <Box sx={{ display: 'flex', gap: 3 }}>
+                  <TextField
+                    label='Repository URL'
+                    width='large'
+                    {...register('spec.repositoryUrl')}
+                    onChange={(e) => setValue('spec.repositoryUrl', e.target.value)}
+                    error={!!errors.spec?.repositoryUrl}
+                    helperText={errors.spec?.repositoryUrl?.message?.toString()}
+                  />
+                  <TextField
+                    label='Branch'
+                    width='large'
+                    {...register('spec.branch')}
+                    onChange={(e) => setValue('spec.branch', e.target.value)}
+                    error={!!errors.spec?.branch}
+                    helperText={errors.spec?.branch?.message?.toString()}
+                  />
+                </Box>
               </FormRow>
-
-              <Divider sx={{ mt: 4, mb: 2 }} />
-
-              <FormRow spacing={10}>
-                <TextField
-                  label='Branch'
-                  width='large'
-                  {...register('spec.branch')}
-                  onChange={(e) => setValue('spec.branch', e.target.value)}
-                  error={!!errors.spec?.branch}
-                  helperText={errors.spec?.branch?.message?.toString()}
-                />
-              </FormRow>
-
-              <Divider sx={{ mt: 4, mb: 2 }} />
-
-              <FormRow spacing={10}>
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
-                  name='spec.enabled'
-                  control={control}
-                  label='Enabled'
-                  explainertext='Enables or disables visibility of this catalog on the catalog page. Existing workloads using charts from this catalog are not effected.'
-                  onChange={(e) => setValue('spec.enabled', e.target.checked)}
-                />
-              </FormRow>
-
-              <Divider sx={{ mt: 4, mb: 2 }} />
 
               <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 2 }}>
                 <Box>
@@ -218,6 +195,19 @@ export default function CatalogsCreateEditPage({
                     </Box>
                   )}
               </Box>
+
+              <Divider sx={{ mt: 4, mb: 0 }} />
+
+              <FormRow spacing={10}>
+                <ControlledCheckbox
+                  sx={{ my: 2 }}
+                  name='spec.enabled'
+                  control={control}
+                  label='Enabled'
+                  explainertext='Enables or disables visibility of this catalog on the catalog page. Existing workloads using charts from this catalog are not effected.'
+                  onChange={(e) => setValue('spec.enabled', e.target.checked)}
+                />
+              </FormRow>
             </Section>
             <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
               {catalogId && (
