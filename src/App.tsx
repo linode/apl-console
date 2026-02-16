@@ -34,6 +34,7 @@ import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
 import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
 import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
+
 import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
@@ -47,8 +48,10 @@ import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
 import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
 import WorkloadsCreateEditPage from 'pages/workloads/create-edit/WorkloadsCreateEditPage'
 import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPage'
-import WorkloadCatalogsPage from 'pages/workloads/catalog/WorkloadCatalogsPage'
+import WorkloadCatalogsPage from 'pages/catalogs/team-overview/WorkloadCatalogsOverviewPage'
 import ThemeViewInitializer from 'components/ThemeViewInitializer'
+import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
+import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -115,6 +118,24 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
+                                  path='/catalogs'
+                                  component={PlatformCatalogsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/create'
+                                  component={CatalogsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/:catalogId'
+                                  component={CatalogsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
                                   path='/network-policies'
                                   component={NetworkPoliciesOverviewPage}
                                   platformAdminRoute
@@ -127,14 +148,14 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/catalogs/:teamId' component={WorkloadCatalogsPage} exact />
+                                <PrivateRoute path='/teams/:teamId/catalogs/' component={WorkloadCatalogsPage} exact />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName'
+                                  path='/teams/:teamId/catalogs/:catalogName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName/:workloadName'
+                                  path='/teams/:teamId/catalogs/:catalogName/:workloadName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />

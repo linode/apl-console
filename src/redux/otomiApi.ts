@@ -312,6 +312,27 @@ const injectedRtkApi = api.injectEndpoints({
     editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
+    getAllAplCatalogs: build.query<GetAllAplCatalogsApiResponse, GetAllAplCatalogsApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs`, params: { enabled: queryArg.enabled } }),
+    }),
+    createAplCatalog: build.mutation<CreateAplCatalogApiResponse, CreateAplCatalogApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs`, method: 'POST', body: queryArg.body }),
+    }),
+    getAplCatalog: build.query<GetAplCatalogApiResponse, GetAplCatalogApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}` }),
+    }),
+    editAplCatalog: build.mutation<EditAplCatalogApiResponse, EditAplCatalogApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}`, method: 'PUT', body: queryArg.body }),
+    }),
+    patchAplCatalog: build.mutation<PatchAplCatalogApiResponse, PatchAplCatalogApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}`, method: 'PATCH', body: queryArg.body }),
+    }),
+    deleteAplCatalog: build.mutation<DeleteAplCatalogApiResponse, DeleteAplCatalogApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}`, method: 'DELETE' }),
+    }),
+    getAplCatalogsCharts: build.query<GetAplCatalogsChartsApiResponse, GetAplCatalogsChartsApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts` }),
+    }),
     getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
       query: () => ({ url: `/v1/coderepos` }),
     }),
@@ -4365,6 +4386,279 @@ export type EditTeamUsersApiArg = {
     teams?: string[]
   }[]
 }
+export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained app catalogs */ ({
+  kind: 'AplCatalog'
+  spec: {
+    name: string
+    repositoryUrl: string
+    branch: string
+    enabled?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAllAplCatalogsApiArg = {
+  /** Filter catalogs by enabled status */
+  enabled?: boolean
+}
+export type CreateAplCatalogApiResponse = /** status 200 Successfully stored app catalog configuration */ {
+  kind: 'AplCatalog'
+  spec: {
+    name: string
+    repositoryUrl: string
+    branch: string
+    enabled?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type CreateAplCatalogApiArg = {
+  /** catalog object */
+  body: {
+    kind: 'AplCatalog'
+    spec: {
+      name: string
+      repositoryUrl: string
+      branch: string
+      enabled?: boolean
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type GetAplCatalogApiResponse = /** status 200 Successfully obtained app catalog */ {
+  kind: 'AplCatalog'
+  spec: {
+    name: string
+    repositoryUrl: string
+    branch: string
+    enabled?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplCatalogApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+}
+export type EditAplCatalogApiResponse = /** status 200 Successfully updated app catalog */ {
+  kind: 'AplCatalog'
+  spec: {
+    name: string
+    repositoryUrl: string
+    branch: string
+    enabled?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplCatalogApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+  body: {
+    kind: 'AplCatalog'
+    spec: {
+      name: string
+      repositoryUrl: string
+      branch: string
+      enabled?: boolean
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type PatchAplCatalogApiResponse = /** status 200 Successfully patched app catalog */ {
+  kind: 'AplCatalog'
+  spec: {
+    name: string
+    repositoryUrl: string
+    branch: string
+    enabled?: boolean
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type PatchAplCatalogApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+  body: {
+    kind: 'AplCatalog'
+    spec: {
+      name: string
+      repositoryUrl: string
+      branch: string
+      enabled?: boolean
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type DeleteAplCatalogApiResponse = /** status 200 Successfully deleted app catalog */ undefined
+export type DeleteAplCatalogApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+}
+export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtained app catalog charts */ ({
+  kind: 'AplCatalogChart'
+  spec: {
+    name?: string
+    version?: string
+    chart?: object
+  }[]
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAplCatalogsChartsApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+}
 export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
   teamId?: string
@@ -6268,6 +6562,13 @@ export const {
   useEditUserMutation,
   useDeleteUserMutation,
   useEditTeamUsersMutation,
+  useGetAllAplCatalogsQuery,
+  useCreateAplCatalogMutation,
+  useGetAplCatalogQuery,
+  useEditAplCatalogMutation,
+  usePatchAplCatalogMutation,
+  useDeleteAplCatalogMutation,
+  useGetAplCatalogsChartsQuery,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
   useCreateCodeRepoMutation,

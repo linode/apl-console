@@ -87,7 +87,7 @@ export default function ({ img, teamId, name, isBeta }: Props): React.ReactEleme
   return (
     <Box className={classes.root}>
       <Tooltip title='Click to create a workload'>
-        <Link className={classes.link} to={`/catalogs/${teamId}/${name}`} style={{ textDecoration: 'none' }}>
+        <Link className={classes.link} to={`/teams/${teamId}/catalogs/${name}`} style={{ textDecoration: 'none' }}>
           {image}
           <Typography className={classes.title} variant='h6'>
             {name}
