@@ -5870,6 +5870,10 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     isPreInstalled?: boolean
     aiEnabled?: boolean
     hasExternalIDP?: boolean
+    git?: {
+      repoUrl?: string
+      branch?: string
+    }
   }
   smtp?: {
     smarthost?: string
