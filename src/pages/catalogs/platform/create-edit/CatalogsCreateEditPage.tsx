@@ -143,7 +143,7 @@ export default function CatalogsCreateEditPage({
 
               <Divider sx={{ mt: 4, mb: 2 }} />
               <FormRow spacing={10}>
-                <Box sx={{ display: 'flex', gap: 3 }}>
+                <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap' }}>
                   <TextField
                     label='Git repository URL'
                     width='large'

@@ -167,7 +167,7 @@ export default function (Props): React.ReactElement {
             })}
           </AccordionDetails>
         </Accordion>
-        <Box sx={{ display: 'flex', gap: 3, my: 2 }}>
+        <Box sx={{ display: 'flex', gap: 3, my: 2, flexDirection: { xs: 'column', md: 'row' } }}>
           <Box sx={{ flex: 1 }}>
             <Autocomplete<string, false, false, false>
               label='Select Catalog'
@@ -194,7 +194,7 @@ export default function (Props): React.ReactElement {
               <Typography variant='body2' className={classes.repositoryText}>
                 Repository
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3 }}>
+              <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', sm: 'row' }, flexWrap: 'wrap' }}>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                   <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
                 </Typography>
