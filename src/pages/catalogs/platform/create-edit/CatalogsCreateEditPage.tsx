@@ -80,6 +80,7 @@ export default function CatalogsCreateEditPage({
         repositoryUrl: submitData.spec.repositoryUrl,
         branch: submitData.spec.branch,
         enabled: submitData.spec.enabled,
+        ...(submitData.spec.chartsPath && { chartsPath: submitData.spec.chartsPath }),
       },
     }
     if (catalogId) update({ catalogId, body })
@@ -118,7 +119,7 @@ export default function CatalogsCreateEditPage({
       <PaperLayout loading={loading || error} title={t('TITLE_CATALOG')}>
         <LandingHeader
           docsLabel='Docs'
-          docsLink='https://techdocs.akamai.com/app-platform/docs/catalogs'
+          docsLink='https://techdocs.akamai.com/app-platform/docs/manage-catalog'
           title={catalogId ? catalogData?.metadata?.name ?? '' : 'Create Catalog'}
         />
         <FormProvider {...methods}>
@@ -136,6 +137,7 @@ export default function CatalogsCreateEditPage({
                   error={!!errors.metadata?.name}
                   helperText={errors.metadata?.name?.message?.toString()}
                   disabled={!!catalogId}
+                  placeholder='Catalog name'
                 />
               </FormRow>
 
@@ -143,20 +145,31 @@ export default function CatalogsCreateEditPage({
               <FormRow spacing={10}>
                 <Box sx={{ display: 'flex', gap: 3 }}>
                   <TextField
-                    label='Repository URL'
+                    label='Git repository URL'
                     width='large'
                     {...register('spec.repositoryUrl')}
                     onChange={(e) => setValue('spec.repositoryUrl', e.target.value)}
                     error={!!errors.spec?.repositoryUrl}
                     helperText={errors.spec?.repositoryUrl?.message?.toString()}
+                    placeholder='https://github.com/linode/apl-charts.git'
                   />
                   <TextField
-                    label='Branch'
-                    width='large'
+                    label='Tag / Branch'
+                    width='medium'
                     {...register('spec.branch')}
                     onChange={(e) => setValue('spec.branch', e.target.value)}
                     error={!!errors.spec?.branch}
                     helperText={errors.spec?.branch?.message?.toString()}
+                    placeholder='main'
+                  />
+                  <TextField
+                    label='Charts Path'
+                    width='medium'
+                    {...register('spec.chartsPath')}
+                    onChange={(e) => setValue('spec.chartsPath', e.target.value)}
+                    error={!!errors.spec?.chartsPath}
+                    helperText={errors.spec?.chartsPath?.message?.toString()}
+                    placeholder='subdirectory/to/charts'
                   />
                 </Box>
               </FormRow>

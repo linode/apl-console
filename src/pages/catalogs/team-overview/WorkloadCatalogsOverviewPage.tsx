@@ -199,7 +199,8 @@ export default function (Props): React.ReactElement {
                   <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
                 </Typography>
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  <strong className={classes.strongText}>Branch:</strong> {(chartCatalogData as any)?.branch || ''}
+                  <strong className={classes.strongText}>Tag / Branch:</strong>{' '}
+                  {(chartCatalogData as any)?.branch || ''}
                 </Typography>
               </Box>
             </Box>
