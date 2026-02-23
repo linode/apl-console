@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Box, Button, MenuItem } from '@mui/material'
 import { useSession } from 'providers/Session'
 import { useTranslation } from 'react-i18next'
@@ -24,7 +24,10 @@ interface ListTableProps extends EnhancedTableProps {
   dropdownFilterLabel?: string
   dropdownFilterItems?: string[]
   dropdownFilterAccessor?: (row: any) => string | undefined | null
-  dropdownFilterAllLabel?: string
+
+  // NEW: allow parent to control selection (optional)
+  dropdownFilterValue?: string
+  onDropdownFilterChange?: (value: string) => void
 }
 
 export default function ({
@@ -43,7 +46,9 @@ export default function ({
   dropdownFilterLabel = 'Filter',
   dropdownFilterItems = [],
   dropdownFilterAccessor = (row) => row?.metadata?.namespace,
-  dropdownFilterAllLabel = 'All',
+
+  dropdownFilterValue,
+  onDropdownFilterChange,
 
   ...other
 }: ListTableProps): React.ReactElement {
@@ -58,17 +63,34 @@ export default function ({
   const resourceTypeLow = t(resourceTypePlural).replaceAll(' ', '-').toLowerCase()
   const redirect = to || (adminOnly ? `/${resourceTypeLow}/create` : `/teams/${oboTeamId}/${resourceTypeLow}/create`)
 
-  // Pull rows out so we can filter before passing into EnhancedTable
   const { rows = [], ...enhancedTableProps } = other as any
 
-  const [selectedFilter, setSelectedFilter] = useState<string>(dropdownFilterAllLabel)
+  const [internalSelected, setInternalSelected] = useState<string>('')
+  const selectedFilter = dropdownFilterValue ?? internalSelected
+
+  // When items load/change, select first item if nothing selected
+  useEffect(() => {
+    if (!hasDropdownFilter) return
+    if (selectedFilter) return
+    if (dropdownFilterItems.length > 0) {
+      const first = dropdownFilterItems[0]
+      if (onDropdownFilterChange) onDropdownFilterChange(first)
+      else setInternalSelected(first)
+    }
+  }, [hasDropdownFilter, dropdownFilterItems, selectedFilter, onDropdownFilterChange])
+
+  const setSelected = (value: string) => {
+    if (onDropdownFilterChange) onDropdownFilterChange(value)
+    else setInternalSelected(value)
+  }
 
   const filteredRows = useMemo(() => {
     if (!hasDropdownFilter) return rows
-    if (!selectedFilter || selectedFilter === dropdownFilterAllLabel) return rows
+
+    if (!selectedFilter) return []
 
     return (rows || []).filter((row: any) => dropdownFilterAccessor(row) === selectedFilter)
-  }, [hasDropdownFilter, rows, selectedFilter, dropdownFilterAccessor, dropdownFilterAllLabel])
+  }, [hasDropdownFilter, rows, selectedFilter, dropdownFilterAccessor])
 
   return (
     <>
@@ -90,7 +112,7 @@ export default function ({
         </Box>
       </Box>
 
-      {hasDropdownFilter && dropdownFilterItems.length > 0 && (
+      {hasDropdownFilter && (
         <Box mb={2} mr={2} sx={{ minWidth: 260 }}>
           <TextField
             label={dropdownFilterLabel}
@@ -98,12 +120,10 @@ export default function ({
             select
             width='large'
             value={selectedFilter}
-            onChange={(e: any) => setSelectedFilter(e.target.value)}
+            onChange={(e: any) => setSelected(e.target.value)}
+            disabled={dropdownFilterItems.length === 0}
+            helperText={dropdownFilterItems.length === 0 ? 'No namespaces available.' : undefined}
           >
-            <MenuItem key={dropdownFilterAllLabel} value={dropdownFilterAllLabel}>
-              {dropdownFilterAllLabel}
-            </MenuItem>
-
             {dropdownFilterItems.map((item) => (
               <MenuItem key={item} value={item}>
                 {item}
