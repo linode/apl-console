@@ -31,12 +31,8 @@ const getSecretLink = (isAdmin, ownerId) =>
   }
 
 export default function SecretOverviewPage(): React.ReactElement {
-  const {
-    data: namespacesWithSecrets,
-    isLoading: isLoadingNamespaces,
-    isFetching: isFetchingNamespaces,
-    refetch: refetchNamespaces,
-  } = useGetNamespacesWithSealedSecretsQuery(undefined)
+  const { data: namespacesWithSecrets, isLoading: isLoadingNamespaces } =
+    useGetNamespacesWithSealedSecretsQuery(undefined)
 
   const [namespace, setNamespace] = useState<string>('')
 
@@ -45,32 +41,28 @@ export default function SecretOverviewPage(): React.ReactElement {
   }, [namespacesWithSecrets, namespace])
 
   const {
-    data: allSealedSecretsByNamespace,
-    isLoading: isLoadingAllSealedSecretsByNamespace,
-    isFetching: isFetchingAllSealedSecretsByNamespace,
-    refetch: refetchAllSealedSecretsByNamespace,
+    data: sealedSecretsByNamespace,
+    isLoading: isLoadingSealedSecretsByNamespace,
+    isFetching: isFetchingSealedSecretsByNamespace,
+    refetch: refetchSealedSecretsByNamespace,
   } = useGetAplNamespaceSealedSecretsQuery({ namespace }, { skip: !namespace })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
-    if (!namespace && !isFetchingAllSealedSecretsByNamespace) refetchAllSealedSecretsByNamespace()
-  }, [isDirty])
-
-  useEffect(() => {
-    console.log('halo reachs')
-    if (allSealedSecretsByNamespace) console.log('allSealedSecretsByNamespace', allSealedSecretsByNamespace)
-  }, [allSealedSecretsByNamespace])
+    if (namespace && !isFetchingSealedSecretsByNamespace) refetchSealedSecretsByNamespace()
+  }, [isDirty, namespace, isFetchingSealedSecretsByNamespace, refetchSealedSecretsByNamespace])
 
   const {
     oboTeamId,
     user: { isPlatformAdmin },
   } = useSession()
+
   const { t } = useTranslation()
   const { statuses } = useSocket()
 
   const dropdownItems = useMemo(() => namespacesWithSecrets ?? [], [namespacesWithSecrets])
-  // END HOOKS
+
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -85,7 +77,7 @@ export default function SecretOverviewPage(): React.ReactElement {
     {
       id: 'namespace',
       label: t('Namespace'),
-      renderer: (row) => row.metadata?.namespace,
+      renderer: (row) => row?.spec?.template?.metadata?.namespace || row?.metadata?.namespace,
     },
     {
       id: 'Status',
@@ -93,9 +85,10 @@ export default function SecretOverviewPage(): React.ReactElement {
       renderer: (row) => getStatus(statuses?.secrets?.[row.metadata?.name]),
     },
   ]
-  const loading = isLoadingAllSealedSecretsByNamespace
-  const sealedSecrets = allSealedSecretsByNamespace
-  console.log('sealedsecrets', sealedSecrets)
+
+  const loading = isLoadingNamespaces || isLoadingSealedSecretsByNamespace
+  const rows = namespace ? sealedSecretsByNamespace || [] : []
+
   const comp = (
     <Box>
       {isPlatformAdmin && (
@@ -105,17 +98,21 @@ export default function SecretOverviewPage(): React.ReactElement {
           </MuiLink>
         </InformationBanner>
       )}
+
       <ListTable
         headCells={headCells}
-        rows={sealedSecrets || []}
+        rows={rows}
         resourceType='Secret'
         adminOnly
         hasDropdownFilter
         dropdownFilterLabel='Namespace'
-        dropdownFilterItems={dropdownItems} // or build dynamically
-        dropdownFilterAccessor={(row) => row?.metadata?.namespace}
+        dropdownFilterItems={dropdownItems}
+        dropdownFilterValue={namespace}
+        onDropdownFilterChange={(ns) => setNamespace(ns)}
+        dropdownFilterAccessor={(row) => row?.spec?.template?.metadata?.namespace || row?.metadata?.namespace}
       />
     </Box>
   )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_TEAMS')} />
 }
