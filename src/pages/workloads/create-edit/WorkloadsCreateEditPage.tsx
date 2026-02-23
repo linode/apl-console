@@ -18,8 +18,8 @@ import {
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
   useEditAplWorkloadMutation,
+  useGetAplCatalogsChartsQuery,
   useGetAplWorkloadQuery,
-  useGetWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import DeleteButton from 'components/DeleteButton'
 import ImgButtonGroup from 'components/ImgButtonGroup'
@@ -66,7 +66,10 @@ export default function WorkloadsCreateEditPage({
   match: {
     params: { teamId, workloadName, catalogName },
   },
+  location,
 }: RouteComponentProps<Params>): React.ReactElement {
+  const catalogDataFromState = (location.state as any) || {}
+  const { catalogName: stateCatalogName } = catalogDataFromState
   const { t } = useTranslation()
   const { user } = useSession()
   const { isPlatformAdmin } = user
@@ -86,7 +89,12 @@ export default function WorkloadsCreateEditPage({
   const [updateWorkload, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplWorkloadMutation()
 
-  const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useGetWorkloadCatalogMutation()
+  const selectedCatalogId = stateCatalogName || ''
+  const {
+    data: chartCatalogData,
+    isLoading: isLoadingCatalog,
+    isFetching: isFetchingCatalog,
+  } = useGetAplCatalogsChartsQuery({ catalogId: selectedCatalogId }, { skip: !selectedCatalogId })
   const [catalogItem, setCatalogItem] = useState<any>({})
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
@@ -131,32 +139,35 @@ export default function WorkloadsCreateEditPage({
     formState: { errors },
   } = methods
 
-  // Fetch catalog info only when creating (no workloadName)
+  // Reset form values when editing workload data arrives
   useEffect(() => {
     if (workloadName) reset(mergedDefaultValues)
+  }, [workload, workloadName, reset])
 
-    getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-      const { url, catalog }: { url: string; catalog: any[] } = res.data
-      let item = null
+  // Resolve selected chart from v2 catalog query
+  useEffect(() => {
+    const catalog = (chartCatalogData as any)?.catalog as any[] | undefined
+    const url = (chartCatalogData as any)?.url as string | undefined
 
-      if (workload?.spec?.path) item = catalog.find((c) => c.name === workload.spec.path)
-      else if (catalogName) item = catalog.find((c) => c.name === catalogName)
+    if (!catalog?.length) return
 
-      if (!item) return
+    let item = null
+    if (workload?.spec?.path) item = catalog.find((c) => c.name === workload.spec.path)
+    else if (catalogName) item = catalog.find((c) => c.name === catalogName)
 
-      const {
-        chartVersion: helmChartVersion,
-        chartDescription: helmChartDescription,
-        name: path,
-        values,
-        valuesSchema,
-        icon,
-      } = item
-      const chartMetadata = { helmChartVersion, helmChartDescription }
-      setCatalogItem({ chartMetadata, path, values, valuesSchema, url, icon })
-    })
-  }, [workload])
+    if (!item) return
 
+    const {
+      chartVersion: helmChartVersion,
+      chartDescription: helmChartDescription,
+      name: path,
+      values,
+      valuesSchema,
+      icon,
+    } = item
+    const chartMetadata = { helmChartVersion, helmChartDescription }
+    setCatalogItem({ chartMetadata, name: path, path, values, valuesSchema, url, icon })
+  }, [chartCatalogData, workload?.spec?.path, catalogName])
   // When editing, use workload from API; when creating, use catalog item
   const workloadData = workloadName ? workload : catalogItem
   const valuesData = workloadName ? workload?.spec?.values : catalogItem?.values
@@ -306,7 +317,8 @@ export default function WorkloadsCreateEditPage({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/workloads`} />
 
-  if (isLoadingWorkload || isLoadingCatalog) return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
+  if (isLoadingWorkload || isLoadingCatalog || isFetchingCatalog)
+    return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
 
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>

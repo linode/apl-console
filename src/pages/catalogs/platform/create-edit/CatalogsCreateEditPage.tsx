@@ -163,7 +163,7 @@ export default function CatalogsCreateEditPage({
                     placeholder='main'
                   />
                   <TextField
-                    label='Charts Path'
+                    label='Charts Directory Path'
                     width='medium'
                     {...register('spec.chartsPath')}
                     onChange={(e) => setValue('spec.chartsPath', e.target.value)}

@@ -232,7 +232,15 @@ export default function (Props): React.ReactElement {
             const img = item?.icon || '/logos/akamai_logo.svg'
             return (
               <Grid item xs={12} sm={6} md={4} lg={4} key={item.name}>
-                <CatalogCard img={img} teamId={oboTeamId} name={item.name} isBeta={item.isBeta} />
+                <CatalogCard
+                  img={img}
+                  teamId={oboTeamId}
+                  name={item.name}
+                  isBeta={item.isBeta}
+                  catalogData={{
+                    catalogName: catalogFilterName,
+                  }}
+                />
               </Grid>
             )
           })}

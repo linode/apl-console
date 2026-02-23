@@ -4639,6 +4639,7 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
     name?: string
     version?: string
     chart?: object
+    chartsPath?: string
   }[]
 } & {
   metadata: {
