@@ -1,8 +1,9 @@
-import { Box, Button } from '@mui/material'
+import React, { useMemo, useState } from 'react'
+import { Box, Button, MenuItem } from '@mui/material'
 import { useSession } from 'providers/Session'
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
+import { TextField } from 'components/forms/TextField'
 import EnhancedTable, { EnhancedTableProps } from './EnhancedTable'
 import HeaderTitle from './HeaderTitle'
 
@@ -18,7 +19,14 @@ interface ListTableProps extends EnhancedTableProps {
   to?: string
   customButton?: React.ReactElement
   customButtonText?: React.ReactElement
+
+  hasDropdownFilter?: boolean
+  dropdownFilterLabel?: string
+  dropdownFilterItems?: string[]
+  dropdownFilterAccessor?: (row: any) => string | undefined | null
+  dropdownFilterAllLabel?: string
 }
+
 export default function ({
   teamId,
   hasTeamScope = true,
@@ -30,6 +38,13 @@ export default function ({
   to,
   customButton = null,
   customButtonText = null,
+
+  hasDropdownFilter = false,
+  dropdownFilterLabel = 'Filter',
+  dropdownFilterItems = [],
+  dropdownFilterAccessor = (row) => row?.metadata?.namespace,
+  dropdownFilterAllLabel = 'All',
+
   ...other
 }: ListTableProps): React.ReactElement {
   const {
@@ -37,11 +52,24 @@ export default function ({
     oboTeamId,
   } = useSession()
   const { t } = useTranslation()
-  // END HOOKS
+
   const resourceTypePlural = `${resourceType}_plural`
   const title = t('LIST_TITLE_NOSCOPE', { model: t(resourceTypePlural) })
   const resourceTypeLow = t(resourceTypePlural).replaceAll(' ', '-').toLowerCase()
   const redirect = to || (adminOnly ? `/${resourceTypeLow}/create` : `/teams/${oboTeamId}/${resourceTypeLow}/create`)
+
+  // Pull rows out so we can filter before passing into EnhancedTable
+  const { rows = [], ...enhancedTableProps } = other as any
+
+  const [selectedFilter, setSelectedFilter] = useState<string>(dropdownFilterAllLabel)
+
+  const filteredRows = useMemo(() => {
+    if (!hasDropdownFilter) return rows
+    if (!selectedFilter || selectedFilter === dropdownFilterAllLabel) return rows
+
+    return (rows || []).filter((row: any) => dropdownFilterAccessor(row) === selectedFilter)
+  }, [hasDropdownFilter, rows, selectedFilter, dropdownFilterAccessor, dropdownFilterAllLabel])
+
   return (
     <>
       <Box sx={{ backgroundColor: 'background.default' }}>
@@ -49,24 +77,48 @@ export default function ({
           <Box sx={{ flexGrow: 1 }}>
             <HeaderTitle title={inTitle || title} resourceType={resourceType} />
           </Box>
+
           {(isPlatformAdmin || oboTeamId) && !noCrud && (
             <Box mb={1}>
-              <Button
-                variant='contained'
-                component={Link}
-                to={redirect}
-                // disabled={!adminOnly && isAdmin && !oboTeamId}
-                data-cy={`button-create-${resourceType}`}
-              >
+              <Button variant='contained' component={Link} to={redirect} data-cy={`button-create-${resourceType}`}>
                 {customButtonText || t('BUTTON_NEW_RESOURCE', { model: resourceType })}
               </Button>
             </Box>
           )}
+
           {customButton && <Box mb={1}>{customButton}</Box>}
         </Box>
       </Box>
 
-      <EnhancedTable disableSelect {...other} idKey={(o) => `${o[idKey]}-${o.teamId}-${o.title}`} />
+      {hasDropdownFilter && dropdownFilterItems.length > 0 && (
+        <Box mb={2} mr={2} sx={{ minWidth: 260 }}>
+          <TextField
+            label={dropdownFilterLabel}
+            sx={{ mt: 2 }}
+            select
+            width='large'
+            value={selectedFilter}
+            onChange={(e: any) => setSelectedFilter(e.target.value)}
+          >
+            <MenuItem key={dropdownFilterAllLabel} value={dropdownFilterAllLabel}>
+              {dropdownFilterAllLabel}
+            </MenuItem>
+
+            {dropdownFilterItems.map((item) => (
+              <MenuItem key={item} value={item}>
+                {item}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+      )}
+
+      <EnhancedTable
+        disableSelect
+        {...enhancedTableProps}
+        rows={filteredRows}
+        idKey={(o) => `${o[idKey]}-${o.teamId}-${o.title}`}
+      />
     </>
   )
 }

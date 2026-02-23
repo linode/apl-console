@@ -40,8 +40,10 @@ import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeR
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
-import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
-import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
+import PlatformsSecretOverviewPage from 'pages/secrets/platform/overview/PlatformSecretOverviewPage'
+import PlatformSecretCreateEditPage from 'pages/secrets/platform/create-edit/PlatformSecretCreateEditPage'
+import SecretOverviewPage from 'pages/secrets/team/overview/SecretOverviewPage'
+import SecretCreateEditPage from 'pages/secrets/team/create-edit/SecretCreateEditPage'
 import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEditPage'
 import ServicesOverviewPage from 'pages/services/overview/ServicesOverviewPage'
 import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
@@ -165,7 +167,18 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/secrets' component={SecretOverviewPage} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/secrets'
+                                  component={PlatformsSecretOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/secrets/create'
+                                  component={PlatformSecretCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/workloads'
                                   component={WorkloadsOverviewPage}
