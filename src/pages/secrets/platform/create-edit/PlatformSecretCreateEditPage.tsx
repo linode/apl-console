@@ -233,7 +233,7 @@ export default function SecretCreateEditPage({
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-secrets'
           title={sealedSecretName ? data.metadata.name : 'Create'}
           // hides the first two crumbs (e.g. /teams/teamName)
-          hideCrumbX={[0, 1]}
+          hideCrumbX={[1]}
         />
         {sealedSecretName && isImmutable && (
           <InformationBanner

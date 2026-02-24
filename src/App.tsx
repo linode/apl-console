@@ -180,6 +180,12 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
+                                  path='/secrets/:namespace/:sealedSecretName'
+                                  component={PlatformSecretCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
                                   path='/workloads'
                                   component={WorkloadsOverviewPage}
                                   platformAdminRoute

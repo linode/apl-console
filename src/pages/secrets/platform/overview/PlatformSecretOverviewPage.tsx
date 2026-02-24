@@ -17,12 +17,10 @@ const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
     const teamId = row.metadata?.labels?.['apl.io/teamId']
     const name = row.metadata?.name
+    const namespace = row.metadata?.namespace
     if (!(isAdmin || teamId === ownerId)) return name
 
-    const path =
-      isAdmin && !ownerId
-        ? `/secrets/${encodeURIComponent(name)}`
-        : `/teams/${teamId}/secrets/${encodeURIComponent(name)}`
+    const path = `/secrets/${encodeURIComponent(namespace)}/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
         {name}
