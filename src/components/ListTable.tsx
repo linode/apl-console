@@ -24,8 +24,6 @@ interface ListTableProps extends EnhancedTableProps {
   dropdownFilterLabel?: string
   dropdownFilterItems?: string[]
   dropdownFilterAccessor?: (row: any) => string | undefined | null
-
-  // NEW: allow parent to control selection (optional)
   dropdownFilterValue?: string
   onDropdownFilterChange?: (value: string) => void
 }
