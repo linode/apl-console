@@ -13,6 +13,7 @@ interface Row {
   }
   spec: {
     enabled: boolean
+    branch: string
   }
 }
 // -- Styles -------------------------------------------------------------
@@ -46,6 +47,11 @@ export default function PlatformCatalogsOverviewPage(): React.ReactElement {
       id: 'metadata.name',
       label: t('Name'),
       renderer: (row: Row) => getCatalogName(row),
+    },
+    {
+      id: 'spec.branch',
+      label: t('Tag/Branch'),
+      renderer: (row: Row) => row.spec.branch,
     },
     {
       id: 'spec.enabled',
