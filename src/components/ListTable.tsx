@@ -75,7 +75,7 @@ export default function ({
       if (onDropdownFilterChange) onDropdownFilterChange(first)
       else setInternalSelected(first)
     }
-  }, [hasDropdownFilter, dropdownFilterItems, selectedFilter, onDropdownFilterChange])
+  }, [hasDropdownFilter, dropdownFilterItems, selectedFilter])
 
   const setSelected = (value: string) => {
     if (onDropdownFilterChange) onDropdownFilterChange(value)
@@ -88,7 +88,7 @@ export default function ({
     if (!selectedFilter) return []
 
     return (rows || []).filter((row: any) => dropdownFilterAccessor(row) === selectedFilter)
-  }, [hasDropdownFilter, rows, selectedFilter, dropdownFilterAccessor])
+  }, [hasDropdownFilter, rows, selectedFilter])
 
   return (
     <>

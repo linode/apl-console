@@ -1,7 +1,7 @@
 import { Grid, MenuItem } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
-import { Redirect, RouteComponentProps, useHistory, useLocation } from 'react-router-dom'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
   CreateAplSealedSecretApiArg,
   useCreateAplNamespaceSealedSecretMutation,
@@ -29,7 +29,7 @@ import { useAppSelector } from 'redux/hooks'
 import InformationBanner from 'components/InformationBanner'
 import * as yup from 'yup'
 import FormRow from 'components/forms/FormRow'
-import { useStyles } from './create-edit-plaform-secrets.styles'
+import { useStyles } from './create-edit-platform-secrets.styles'
 import { createSealedSecretApiResponseSchema, secretTypes } from './create-edit-platform-secrets.validator'
 import { SecretTypeFields } from './PlatformSecretTypeFields'
 
@@ -81,13 +81,8 @@ export default function SecretCreateEditPage({
   const { t } = useTranslation()
   const { classes } = useStyles()
   const { sealedSecretsPEM } = useSession()
-  const history = useHistory()
-  const location = useLocation()
-  const locationState = location?.state as any
-  const isCoderepository = locationState?.coderepository
-  const prefilled = locationState?.prefilled || {}
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] =
     useCreateAplNamespaceSealedSecretMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplNamespaceSealedSecretMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplNamespaceSealedSecretMutation()
@@ -220,12 +215,11 @@ export default function SecretCreateEditPage({
 
   const loading = isLoading || isFetching
   const error = isError
-  if (loading || (sealedSecretName && !data?.metadata?.name))
-    return <PaperLayout loading title={t('TITLE_SEALEDSECRET')} />
+  if (loading || (sealedSecretName && !data?.metadata?.name)) return <PaperLayout loading title={t('TITLE_SECRETS')} />
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={loading || error} title={t('TITLE_SEALEDSECRET', { sealedSecretName, role: 'team' })}>
+      <PaperLayout loading={loading || error} title={t('TITLE_SECRETS', { sealedSecretName, role: 'team' })}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-secrets'

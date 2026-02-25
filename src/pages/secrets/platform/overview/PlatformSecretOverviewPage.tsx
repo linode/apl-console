@@ -112,5 +112,5 @@ export default function SecretOverviewPage(): React.ReactElement {
     </Box>
   )
 
-  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_TEAMS')} />
+  return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SECRETS')} />
 }
