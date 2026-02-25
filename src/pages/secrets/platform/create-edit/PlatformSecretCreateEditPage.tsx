@@ -136,8 +136,6 @@ export default function SecretCreateEditPage({
     setValue,
   } = methods
 
-  console.log('watch', watch())
-
   useEffect(() => {
     // If we have data, we reset the form with the converted data
     if (data) reset(formData as SealedSecretFormData)
