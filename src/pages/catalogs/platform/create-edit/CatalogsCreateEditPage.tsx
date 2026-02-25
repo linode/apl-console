@@ -80,7 +80,7 @@ export default function CatalogsCreateEditPage({
         repositoryUrl: submitData.spec.repositoryUrl,
         branch: submitData.spec.branch,
         enabled: submitData.spec.enabled,
-        ...(submitData.spec.chartsPath && { chartsPath: submitData.spec.chartsPath }),
+        chartsPath: submitData.spec.chartsPath ?? '',
       },
     }
     if (catalogId) update({ catalogId, body })
