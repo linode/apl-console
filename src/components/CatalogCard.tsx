@@ -63,9 +63,12 @@ interface Props {
   teamId: string
   name: string
   isBeta: boolean
+  catalogData?: {
+    catalogName?: string
+  }
 }
 
-export default function ({ img, teamId, name, isBeta }: Props): React.ReactElement {
+export default function ({ img, teamId, name, isBeta, catalogData }: Props): React.ReactElement {
   const { classes, cx } = useStyles()
   const theme = useTheme()
   const isLight = theme.palette.mode === 'light'
@@ -87,7 +90,14 @@ export default function ({ img, teamId, name, isBeta }: Props): React.ReactEleme
   return (
     <Box className={classes.root}>
       <Tooltip title='Click to create a workload'>
-        <Link className={classes.link} to={`/teams/${teamId}/catalogs/${name}`} style={{ textDecoration: 'none' }}>
+        <Link
+          className={classes.link}
+          to={{
+            pathname: `/teams/${teamId}/catalogs/${name}`,
+            state: catalogData,
+          }}
+          style={{ textDecoration: 'none' }}
+        >
           {image}
           <Typography className={classes.title} variant='h6'>
             {name}
