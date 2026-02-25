@@ -156,6 +156,54 @@ const injectedRtkApi = api.injectEndpoints({
         method: 'DELETE',
       }),
     }),
+    getNamespacesWithSealedSecrets: build.query<
+      GetNamespacesWithSealedSecretsApiResponse,
+      GetNamespacesWithSealedSecretsApiArg
+    >({
+      query: () => ({ url: `/v2/namespaces` }),
+    }),
+    getAplNamespaceSealedSecrets: build.query<
+      GetAplNamespaceSealedSecretsApiResponse,
+      GetAplNamespaceSealedSecretsApiArg
+    >({
+      query: (queryArg) => ({ url: `/v2/namespaces/${queryArg['namespace']}/sealedsecrets` }),
+    }),
+    createAplNamespaceSealedSecret: build.mutation<
+      CreateAplNamespaceSealedSecretApiResponse,
+      CreateAplNamespaceSealedSecretApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/v2/namespaces/${queryArg['namespace']}/sealedsecrets`,
+        method: 'POST',
+        body: queryArg.body,
+      }),
+    }),
+    getAplNamespaceSealedSecret: build.query<GetAplNamespaceSealedSecretApiResponse, GetAplNamespaceSealedSecretApiArg>(
+      {
+        query: (queryArg) => ({
+          url: `/v2/namespaces/${queryArg['namespace']}/sealedsecrets/${queryArg.sealedSecretName}`,
+        }),
+      },
+    ),
+    editAplNamespaceSealedSecret: build.mutation<
+      EditAplNamespaceSealedSecretApiResponse,
+      EditAplNamespaceSealedSecretApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/v2/namespaces/${queryArg['namespace']}/sealedsecrets/${queryArg.sealedSecretName}`,
+        method: 'PUT',
+        body: queryArg.body,
+      }),
+    }),
+    deleteAplNamespaceSealedSecret: build.mutation<
+      DeleteAplNamespaceSealedSecretApiResponse,
+      DeleteAplNamespaceSealedSecretApiArg
+    >({
+      query: (queryArg) => ({
+        url: `/v2/namespaces/${queryArg['namespace']}/sealedsecrets/${queryArg.sealedSecretName}`,
+        method: 'DELETE',
+      }),
+    }),
     getAllNetpols: build.query<GetAllNetpolsApiResponse, GetAllNetpolsApiArg>({
       query: () => ({ url: `/v1/netpols` }),
     }),
@@ -2613,6 +2661,330 @@ export type DeleteAplSealedSecretApiResponse = /** status 200 Successfully delet
 export type DeleteAplSealedSecretApiArg = {
   /** ID of team */
   teamId: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+}
+export type GetNamespacesWithSealedSecretsApiResponse = /** status 200 List of namespaces */ string[]
+export type GetNamespacesWithSealedSecretsApiArg = void
+export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
+  spec: {
+    encryptedData: {
+      [key: string]: string
+    }
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+})[]
+export type GetAplNamespaceSealedSecretsApiArg = {
+  /** Namspace to write file under in manifest */
+  namespace: string
+}
+export type CreateAplNamespaceSealedSecretApiResponse =
+  /** status 200 Successfully stored sealed secret configuration */ {
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
+    spec: {
+      encryptedData: {
+        [key: string]: string
+      }
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels: {
+        'apl.io/teamId': string
+      }
+    }
+  } & {
+    status: {
+      conditions?: {
+        lastTransitionTime?: string
+        message?: string
+        reason?: string
+        status?: boolean
+        type?: string
+      }[]
+      phase?: string
+    }
+  }
+export type CreateAplNamespaceSealedSecretApiArg = {
+  /** Namspace to write file under in manifest */
+  namespace: string
+  /** SealedSecret object */
+  body: {
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
+    spec: {
+      encryptedData: {
+        [key: string]: string
+      }
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type GetAplNamespaceSealedSecretApiResponse =
+  /** status 200 Successfully obtained sealed secret configuration */ {
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
+    spec: {
+      encryptedData: {
+        [key: string]: string
+      }
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels: {
+        'apl.io/teamId': string
+      }
+    }
+  } & {
+    status: {
+      conditions?: {
+        lastTransitionTime?: string
+        message?: string
+        reason?: string
+        status?: boolean
+        type?: string
+      }[]
+      phase?: string
+    }
+  }
+export type GetAplNamespaceSealedSecretApiArg = {
+  /** Namspace to write file under in manifest */
+  namespace: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+}
+export type EditAplNamespaceSealedSecretApiResponse = /** status 200 Successfully edited a namespace sealed secret */ {
+  apiVersion?: 'bitnami.com/v1alpha1'
+  kind: 'SealedSecret'
+  spec: {
+    encryptedData: {
+      [key: string]: string
+    }
+    template?: {
+      type?:
+        | 'kubernetes.io/opaque'
+        | 'kubernetes.io/dockercfg'
+        | 'kubernetes.io/dockerconfigjson'
+        | 'kubernetes.io/basic-auth'
+        | 'kubernetes.io/ssh-auth'
+        | 'kubernetes.io/tls'
+      immutable?: boolean
+      metadata?: {
+        name?: string
+        namespace?: string
+        annotations?: {
+          [key: string]: string
+        }
+        labels?: {
+          [key: string]: string
+        }
+        finalizers?: string[]
+      }
+    }
+  }
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type EditAplNamespaceSealedSecretApiArg = {
+  /** Namspace to write file under in manifest */
+  namespace: string
+  /** Name of the sealed secret */
+  sealedSecretName: string
+  /** SealedSecret object that contains updated values */
+  body: {
+    apiVersion?: 'bitnami.com/v1alpha1'
+    kind: 'SealedSecret'
+    spec: {
+      encryptedData: {
+        [key: string]: string
+      }
+      template?: {
+        type?:
+          | 'kubernetes.io/opaque'
+          | 'kubernetes.io/dockercfg'
+          | 'kubernetes.io/dockerconfigjson'
+          | 'kubernetes.io/basic-auth'
+          | 'kubernetes.io/ssh-auth'
+          | 'kubernetes.io/tls'
+        immutable?: boolean
+        metadata?: {
+          name?: string
+          namespace?: string
+          annotations?: {
+            [key: string]: string
+          }
+          labels?: {
+            [key: string]: string
+          }
+          finalizers?: string[]
+        }
+      }
+    }
+  } & {
+    metadata: {
+      name: string
+      namespace?: string
+      annotations?: {
+        [key: string]: string
+      }
+      labels?: {
+        [key: string]: string
+      }
+    }
+  }
+}
+export type DeleteAplNamespaceSealedSecretApiResponse =
+  /** status 200 Successfully deleted a namespace sealed secret */ undefined
+export type DeleteAplNamespaceSealedSecretApiArg = {
+  /** Namspace to write file under in manifest */
+  namespace: string
   /** Name of the sealed secret */
   sealedSecretName: string
 }
@@ -6541,6 +6913,12 @@ export const {
   useGetAplSealedSecretQuery,
   useEditAplSealedSecretMutation,
   useDeleteAplSealedSecretMutation,
+  useGetNamespacesWithSealedSecretsQuery,
+  useGetAplNamespaceSealedSecretsQuery,
+  useCreateAplNamespaceSealedSecretMutation,
+  useGetAplNamespaceSealedSecretQuery,
+  useEditAplNamespaceSealedSecretMutation,
+  useDeleteAplNamespaceSealedSecretMutation,
   useGetAllNetpolsQuery,
   useGetTeamNetpolsQuery,
   useCreateNetpolMutation,
