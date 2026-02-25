@@ -120,7 +120,11 @@ export default function ({
             value={selectedFilter}
             onChange={(e: any) => setSelected(e.target.value)}
             disabled={dropdownFilterItems.length === 0}
-            helperText={dropdownFilterItems.length === 0 ? 'No namespaces available.' : undefined}
+            helperText={
+              dropdownFilterItems.length === 0
+                ? `No ${resourceType}s available in namespace ${dropdownFilterAccessor}`
+                : undefined
+            }
           >
             {dropdownFilterItems.map((item) => (
               <MenuItem key={item} value={item}>
