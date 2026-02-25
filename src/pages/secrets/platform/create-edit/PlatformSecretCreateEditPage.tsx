@@ -236,7 +236,7 @@ export default function SecretCreateEditPage({
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section>
-              <FormRow spacing={10}>
+              <FormRow spacing={10} sx={{ flexDirection: { xs: 'column', md: 'row' }, flexWrap: 'wrap' }}>
                 <TextField
                   label='Secret name'
                   width='large'
@@ -245,6 +245,7 @@ export default function SecretCreateEditPage({
                   error={!!errors.metadata?.name}
                   helperText={errors.metadata?.name?.message?.toString()}
                   disabled={!!sealedSecretName}
+                  sx={{ mb: 1 }}
                 />
                 <TextField
                   label='Namespace'
@@ -254,10 +255,11 @@ export default function SecretCreateEditPage({
                   error={!!errors.metadata?.namespace}
                   helperText={errors.metadata?.namespace?.message?.toString()}
                   disabled={!!sealedSecretName}
+                  sx={{ mb: 1 }}
                 />
               </FormRow>
 
-              <Divider />
+              <Divider spacingTop={25} />
               <TextField
                 label='Secret type'
                 select
