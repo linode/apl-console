@@ -122,7 +122,7 @@ export default function ({
             disabled={dropdownFilterItems.length === 0}
             helperText={
               dropdownFilterItems.length === 0
-                ? `No ${resourceType}s available in namespace ${dropdownFilterAccessor}`
+                ? `No ${resourceType}s available in namespace ${dropdownFilterValue || internalSelected}`
                 : undefined
             }
           >
