@@ -4764,6 +4764,7 @@ export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained 
     name: string
     repositoryUrl: string
     branch: string
+    chartsPath?: string
     enabled?: boolean
   }
 } & {
@@ -4799,6 +4800,7 @@ export type CreateAplCatalogApiResponse = /** status 200 Successfully stored app
     name: string
     repositoryUrl: string
     branch: string
+    chartsPath?: string
     enabled?: boolean
   }
 } & {
@@ -4832,6 +4834,7 @@ export type CreateAplCatalogApiArg = {
       name: string
       repositoryUrl: string
       branch: string
+      chartsPath?: string
       enabled?: boolean
     }
   } & {
@@ -4853,6 +4856,7 @@ export type GetAplCatalogApiResponse = /** status 200 Successfully obtained app 
     name: string
     repositoryUrl: string
     branch: string
+    chartsPath?: string
     enabled?: boolean
   }
 } & {
@@ -4888,6 +4892,7 @@ export type EditAplCatalogApiResponse = /** status 200 Successfully updated app 
     name: string
     repositoryUrl: string
     branch: string
+    chartsPath?: string
     enabled?: boolean
   }
 } & {
@@ -4922,6 +4927,7 @@ export type EditAplCatalogApiArg = {
       name: string
       repositoryUrl: string
       branch: string
+      chartsPath?: string
       enabled?: boolean
     }
   } & {
@@ -4943,6 +4949,7 @@ export type PatchAplCatalogApiResponse = /** status 200 Successfully patched app
     name: string
     repositoryUrl: string
     branch: string
+    chartsPath?: string
     enabled?: boolean
   }
 } & {
@@ -4977,6 +4984,7 @@ export type PatchAplCatalogApiArg = {
       name: string
       repositoryUrl: string
       branch: string
+      chartsPath?: string
       enabled?: boolean
     }
   } & {
@@ -5003,6 +5011,7 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
     name?: string
     version?: string
     chart?: object
+    chartsPath?: string
   }[]
 } & {
   metadata: {
