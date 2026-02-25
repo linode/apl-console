@@ -90,6 +90,7 @@ export default function CatalogsCreateEditPage({
   const methods = useForm<CreateAplCatalogApiResponse>({
     resolver: yupResolver(aplCatalogApiSchema) as unknown as Resolver<CreateAplCatalogApiResponse>,
     context: { validateOnSubmit: !catalogId },
+    defaultValues: aplCatalogApiSchema.cast({}) as CreateAplCatalogApiResponse,
   })
 
   const {
@@ -105,7 +106,16 @@ export default function CatalogsCreateEditPage({
 
   // Populate form when catalogData is loaded
   useEffect(() => {
-    if (catalogData) reset(catalogData)
+    if (catalogData) {
+      reset({
+        ...(aplCatalogApiSchema.cast({}) as CreateAplCatalogApiResponse),
+        ...catalogData,
+        spec: {
+          ...(aplCatalogApiSchema.cast({}) as CreateAplCatalogApiResponse).spec,
+          ...catalogData.spec,
+        },
+      })
+    }
   }, [catalogData, reset])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
