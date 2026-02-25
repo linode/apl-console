@@ -152,12 +152,12 @@ function App() {
                                 />
                                 <PrivateRoute path='/teams/:teamId/catalogs/' component={WorkloadCatalogsPage} exact />
                                 <PrivateRoute
-                                  path='/teams/:teamId/catalogs/:catalogName'
+                                  path='/teams/:teamId/catalogs/:chartName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/teams/:teamId/catalogs/:catalogName/:workloadName'
+                                  path='/teams/:teamId/catalogs/:chartName/:workloadName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
