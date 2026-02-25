@@ -59,12 +59,12 @@ export const getDocsLink = (url: string, path: string): string => {
 interface Params {
   teamId: string
   workloadName?: string
-  catalogName?: string
+  chartName?: string
 }
 
 export default function WorkloadsCreateEditPage({
   match: {
-    params: { teamId, workloadName, catalogName },
+    params: { teamId, workloadName, chartName },
   },
   location,
 }: RouteComponentProps<Params>): React.ReactElement {
@@ -89,6 +89,8 @@ export default function WorkloadsCreateEditPage({
   const [updateWorkload, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplWorkloadMutation()
 
+  console.log('stateCatalogName', stateCatalogName)
+  console.log('chartName', chartName)
   const selectedCatalogId = stateCatalogName || ''
   const {
     data: chartCatalogData,
@@ -153,7 +155,7 @@ export default function WorkloadsCreateEditPage({
 
     let item = null
     if (workload?.spec?.path) item = catalog.find((c) => c.name === workload.spec.path)
-    else if (catalogName) item = catalog.find((c) => c.name === catalogName)
+    else if (chartName) item = catalog.find((c) => c.name === chartName)
 
     if (!item) return
 
@@ -167,7 +169,7 @@ export default function WorkloadsCreateEditPage({
     } = item
     const chartMetadata = { helmChartVersion, helmChartDescription }
     setCatalogItem({ chartMetadata, name: path, path, values, valuesSchema, url, icon })
-  }, [chartCatalogData, workload?.spec?.path, catalogName])
+  }, [chartCatalogData, workload?.spec?.path, chartName])
   // When editing, use workload from API; when creating, use catalog item
   const workloadData = workloadName ? workload : catalogItem
   const valuesData = workloadName ? workload?.spec?.values : catalogItem?.values
