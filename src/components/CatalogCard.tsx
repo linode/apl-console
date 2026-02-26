@@ -79,9 +79,7 @@ export default function ({ img, teamId, name, isBeta, catalogData }: Props): Rea
       src={img}
       onError={({ currentTarget }) => {
         // eslint-disable-next-line no-param-reassign
-        currentTarget.onerror = null // prevents looping
-        // eslint-disable-next-line no-param-reassign
-        currentTarget.src = img
+        currentTarget.src = '/logos/akamai_logo.svg'
       }}
       alt={`Logo for ${name}`}
     />
