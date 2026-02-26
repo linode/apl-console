@@ -65,7 +65,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@hkdobrev/run-if-changed": "0.6.3",
     "@mui/types": "^7.2.21",
     "@rtk-query/codegen-openapi": "1.0.0-alpha.1",
