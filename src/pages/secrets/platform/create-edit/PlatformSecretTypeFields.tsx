@@ -27,7 +27,6 @@ export function SecretTypeFields({
 
   switch (selectedType) {
     case 'kubernetes.io/opaque':
-    case 'Opaque':
       return (
         <KeyValue
           title={title}

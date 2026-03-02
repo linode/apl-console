@@ -2,7 +2,6 @@ import * as yup from 'yup'
 
 export const secretTypes = [
   'kubernetes.io/opaque',
-  'Opaque',
   'kubernetes.io/dockercfg',
   'kubernetes.io/dockerconfigjson',
   'kubernetes.io/basic-auth',

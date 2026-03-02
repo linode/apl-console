@@ -46,7 +46,6 @@ async function encryptValue(sealedSecretsPEM: string, namespace: string, value: 
 function getDefaultEncryptedDataForType(type: string) {
   switch (type) {
     case 'kubernetes.io/opaque':
-    case 'Opaque':
       return [{ key: '', value: '' }]
     case 'kubernetes.io/dockercfg':
       return [{ key: '.dockercfg', value: '' }]
