@@ -230,7 +230,7 @@ export default function (Props): React.ReactElement {
                   onClick={handleRefreshCache}
                   loading={isRefreshingAplCatalogCache}
                 >
-                  Refresh Cache
+                  Refresh Charts
                 </LoadingButton>
               </Box>
             </Box>
