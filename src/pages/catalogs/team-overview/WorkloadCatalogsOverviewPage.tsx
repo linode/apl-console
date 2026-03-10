@@ -7,12 +7,14 @@ import {
   useCreateWorkloadCatalogMutation,
   useGetAllAplCatalogsQuery,
   useGetAplCatalogsChartsQuery,
+  useRefreshAplCatalogCacheMutation,
 } from 'redux/otomiApi'
 import { useSession } from 'providers/Session'
 import { useSnackbar } from 'notistack'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useAppSelector } from 'redux/hooks'
 import { useTranslation } from 'react-i18next'
+import { LoadingButton } from '@mui/lab'
 import CatalogCard from '../../../components/CatalogCard'
 import TableToolbar from '../../../components/TableToolbar'
 import CatalogAddChartCard from '../../../components/CatalogAddChartCard'
@@ -92,10 +94,12 @@ export default function (Props): React.ReactElement {
     refetch: refetchCatalogs,
   } = useGetAllAplCatalogsQuery({ enabled: true })
 
-  const { data: chartCatalogData } = useGetAplCatalogsChartsQuery(
+  const { data: chartCatalogData, refetch: refetchCharts } = useGetAplCatalogsChartsQuery(
     { catalogId: catalogFilterName },
     { skip: !catalogFilterName },
   )
+
+  const [refreshAplCatalogCache, { isLoading: isRefreshingAplCatalogCache }] = useRefreshAplCatalogCacheMutation()
 
   useEffect(() => {
     if (chartCatalogData) setChartCatalog((chartCatalogData as any)?.catalog || [])
@@ -116,6 +120,16 @@ export default function (Props): React.ReactElement {
   const handleCatalogChange = (catalogName: string) => {
     setCatalogFilterName(catalogName)
     handleFilterName('')
+  }
+
+  const handleRefreshCache = async () => {
+    await refreshAplCatalogCache({ catalogId: catalogFilterName }).then((res: any) => {
+      if (res?.data?.code === 200) {
+        enqueueSnackbar('Catalog cache refreshed successfully', { variant: 'success' })
+        refetchCatalogs()
+        refetchCharts()
+      } else enqueueSnackbar('Error refreshing catalog cache', { variant: 'error' })
+    })
   }
 
   const handleFilterName = useCallback(
@@ -194,7 +208,15 @@ export default function (Props): React.ReactElement {
               <Typography variant='body2' className={classes.repositoryText}>
                 Repository
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', sm: 'row' }, flexWrap: 'wrap' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 3,
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                }}
+              >
                 <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                   <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
                 </Typography>
@@ -202,6 +224,14 @@ export default function (Props): React.ReactElement {
                   <strong className={classes.strongText}>Tag / Branch:</strong>{' '}
                   {(chartCatalogData as any)?.branch || ''}
                 </Typography>
+                <LoadingButton
+                  variant='outlined'
+                  size='small'
+                  onClick={handleRefreshCache}
+                  loading={isRefreshingAplCatalogCache}
+                >
+                  Refresh Cache
+                </LoadingButton>
               </Box>
             </Box>
           </Box>

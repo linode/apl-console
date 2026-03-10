@@ -381,6 +381,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAplCatalogsCharts: build.query<GetAplCatalogsChartsApiResponse, GetAplCatalogsChartsApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts` }),
     }),
+    refreshAplCatalogCache: build.mutation<RefreshAplCatalogCacheApiResponse, RefreshAplCatalogCacheApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/refresh`, method: 'POST', params: { catalogId: queryArg.catalogId } }),
+    }),
     getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
       query: () => ({ url: `/v1/coderepos` }),
     }),
@@ -5040,6 +5043,11 @@ export type GetAplCatalogsChartsApiArg = {
   /** ID of the catalog */
   catalogId: string
 }
+export type RefreshAplCatalogCacheApiResponse = /** status 200 Successfully refreshed catalog cache(s) */ undefined
+export type RefreshAplCatalogCacheApiArg = {
+  /** Optional catalog name to refresh a single cache; when omitted all enabled catalogs are refreshed */
+  catalogId?: string
+}
 export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
   teamId?: string
@@ -6970,6 +6978,7 @@ export const {
   usePatchAplCatalogMutation,
   useDeleteAplCatalogMutation,
   useGetAplCatalogsChartsQuery,
+  useRefreshAplCatalogCacheMutation,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
   useCreateCodeRepoMutation,
