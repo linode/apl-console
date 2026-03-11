@@ -384,6 +384,9 @@ const injectedRtkApi = api.injectEndpoints({
     refreshAplCatalogCache: build.mutation<RefreshAplCatalogCacheApiResponse, RefreshAplCatalogCacheApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/refresh`, method: 'POST', params: { catalogId: queryArg.catalogId } }),
     }),
+    getAplCatalogsChart: build.query<GetAplCatalogsChartApiResponse, GetAplCatalogsChartApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts/${queryArg.chartName}` }),
+    }),
     getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
       query: () => ({ url: `/v1/coderepos` }),
     }),
@@ -5047,6 +5050,42 @@ export type RefreshAplCatalogCacheApiResponse = /** status 200 Successfully refr
 export type RefreshAplCatalogCacheApiArg = {
   /** Optional catalog name to refresh a single cache; when omitted all enabled catalogs are refreshed */
   catalogId?: string
+export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtained app catalog chart */ {
+  kind: 'AplCatalogChart'
+  spec: {
+    name?: string
+    version?: string
+    chart?: object
+    chartsPath?: string
+  }[]
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplCatalogsChartApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+  /** Name of the chart to fetch */
+  chartName: string
 }
 export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
@@ -6979,6 +7018,7 @@ export const {
   useDeleteAplCatalogMutation,
   useGetAplCatalogsChartsQuery,
   useRefreshAplCatalogCacheMutation,
+  useGetAplCatalogsChartQuery,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
   useCreateCodeRepoMutation,
