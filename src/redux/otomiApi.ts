@@ -381,6 +381,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAplCatalogsCharts: build.query<GetAplCatalogsChartsApiResponse, GetAplCatalogsChartsApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts` }),
     }),
+    getAplCatalogsChart: build.query<GetAplCatalogsChartApiResponse, GetAplCatalogsChartApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts/${queryArg.chartName}` }),
+    }),
     getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
       query: () => ({ url: `/v1/coderepos` }),
     }),
@@ -5040,6 +5043,43 @@ export type GetAplCatalogsChartsApiArg = {
   /** ID of the catalog */
   catalogId: string
 }
+export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtained app catalog chart */ {
+  kind: 'AplCatalogChart'
+  spec: {
+    name?: string
+    version?: string
+    chart?: object
+    chartsPath?: string
+  }[]
+} & {
+  metadata: {
+    name: string
+    namespace?: string
+    annotations?: {
+      [key: string]: string
+    }
+    labels?: {
+      [key: string]: string
+    }
+  }
+} & {
+  status: {
+    conditions?: {
+      lastTransitionTime?: string
+      message?: string
+      reason?: string
+      status?: boolean
+      type?: string
+    }[]
+    phase?: string
+  }
+}
+export type GetAplCatalogsChartApiArg = {
+  /** ID of the catalog */
+  catalogId: string
+  /** Name of the chart to fetch */
+  chartName: string
+}
 export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   id?: string
   teamId?: string
@@ -6970,6 +7010,7 @@ export const {
   usePatchAplCatalogMutation,
   useDeleteAplCatalogMutation,
   useGetAplCatalogsChartsQuery,
+  useGetAplCatalogsChartQuery,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
   useCreateCodeRepoMutation,
