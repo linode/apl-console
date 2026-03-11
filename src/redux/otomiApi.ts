@@ -5050,6 +5050,7 @@ export type RefreshAplCatalogCacheApiResponse = /** status 200 Successfully refr
 export type RefreshAplCatalogCacheApiArg = {
   /** Optional catalog name to refresh a single cache; when omitted all enabled catalogs are refreshed */
   catalogId?: string
+}
 export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtained app catalog chart */ {
   kind: 'AplCatalogChart'
   spec: {
