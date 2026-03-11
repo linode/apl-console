@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, CircularProgress, Grid, Typography } from '@mui/material'
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded'
 import PaperLayout from 'layouts/Paper'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -92,13 +92,15 @@ export default function (Props): React.ReactElement {
     refetch: refetchCatalogs,
   } = useGetAllAplCatalogsQuery({ enabled: true })
 
-  const { data: chartCatalogData } = useGetAplCatalogsChartsQuery(
-    { catalogId: catalogFilterName },
-    { skip: !catalogFilterName },
-  )
+  const {
+    data: chartCatalogData,
+    isLoading: isChartCatalogLoading,
+    isFetching: isChartCatalogFetching,
+  } = useGetAplCatalogsChartsQuery({ catalogId: catalogFilterName }, { skip: !catalogFilterName })
 
   useEffect(() => {
     if (chartCatalogData) setChartCatalog((chartCatalogData as any)?.catalog || [])
+    else setChartCatalog([])
   }, [chartCatalogData])
 
   useEffect(() => {
@@ -114,6 +116,8 @@ export default function (Props): React.ReactElement {
   }, [chartCatalog])
 
   const handleCatalogChange = (catalogName: string) => {
+    setChartCatalog([])
+    setFilteredCatalog([])
     setCatalogFilterName(catalogName)
     handleFilterName('')
   }
@@ -146,6 +150,8 @@ export default function (Props): React.ReactElement {
       enqueueSnackbar('Error adding chart', { variant: 'error' })
     }
   }
+
+  const isCatalogSwitchLoading = !!catalogFilterName && (isChartCatalogLoading || isChartCatalogFetching)
 
   if (isCatalogsLoading || isFetchingCatalogs) return <PaperLayout loading title={t('TITLE_CATALOGS')} />
   return (
@@ -194,14 +200,34 @@ export default function (Props): React.ReactElement {
               <Typography variant='body2' className={classes.repositoryText}>
                 Repository
               </Typography>
-              <Box sx={{ display: 'flex', gap: 3, flexDirection: { xs: 'column', sm: 'row' }, flexWrap: 'wrap' }}>
-                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
-                </Typography>
-                <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                  <strong className={classes.strongText}>Tag / Branch:</strong>{' '}
-                  {(chartCatalogData as any)?.branch || ''}
-                </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 3,
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  flexWrap: 'wrap',
+                  alignItems: { sm: 'center' },
+                  minHeight: 24,
+                }}
+              >
+                {isCatalogSwitchLoading ? (
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CircularProgress size={18} />
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                      Loading catalog charts...
+                    </Typography>
+                  </Box>
+                ) : (
+                  <>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                      <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
+                    </Typography>
+                    <Typography variant='body2' sx={{ color: 'text.secondary' }}>
+                      <strong className={classes.strongText}>Tag / Branch:</strong>{' '}
+                      {(chartCatalogData as any)?.branch || ''}
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
@@ -213,37 +239,59 @@ export default function (Props): React.ReactElement {
           noPadding
         />
         <Grid container direction='row' alignItems='center' spacing={1} data-cy='grid-apps'>
-          {isPlatformAdmin && oboTeamId === 'admin' && (
-            <Grid item xs={12} sm={6} md={4} lg={4} key='name'>
-              <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
-            </Grid>
-          )}
-          {oboTeamId !== 'admin' && filteredCatalog.length === 0 && (
-            <Box sx={{ width: '100%' }}>
-              <Typography
-                variant='body2'
-                sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 'bold', mb: 1 }}
+          {isCatalogSwitchLoading ? (
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  py: 6,
+                  gap: 2,
+                }}
               >
-                No charts found.
-              </Typography>
-            </Box>
+                <CircularProgress />
+                <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 'bold' }}>
+                  Loading charts...
+                </Typography>
+              </Box>
+            </Grid>
+          ) : (
+            <>
+              {isPlatformAdmin && oboTeamId === 'admin' && (
+                <Grid item xs={12} sm={6} md={4} lg={4} key='name'>
+                  <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
+                </Grid>
+              )}
+              {oboTeamId !== 'admin' && filteredCatalog.length === 0 && (
+                <Box sx={{ width: '100%' }}>
+                  <Typography
+                    variant='body2'
+                    sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 'bold', mb: 1 }}
+                  >
+                    No charts found.
+                  </Typography>
+                </Box>
+              )}
+              {filteredCatalog?.map((item) => {
+                const img = item?.icon || '/logos/akamai_logo.svg'
+                return (
+                  <Grid item xs={12} sm={6} md={4} lg={4} key={item.name}>
+                    <CatalogCard
+                      img={img}
+                      teamId={oboTeamId}
+                      name={item.name}
+                      isBeta={item.isBeta}
+                      catalogData={{
+                        catalogName: catalogFilterName,
+                      }}
+                    />
+                  </Grid>
+                )
+              })}
+            </>
           )}
-          {filteredCatalog?.map((item) => {
-            const img = item?.icon || '/logos/akamai_logo.svg'
-            return (
-              <Grid item xs={12} sm={6} md={4} lg={4} key={item.name}>
-                <CatalogCard
-                  img={img}
-                  teamId={oboTeamId}
-                  name={item.name}
-                  isBeta={item.isBeta}
-                  catalogData={{
-                    catalogName: catalogFilterName,
-                  }}
-                />
-              </Grid>
-            )
-          })}
         </Grid>
       </Box>
       <NewChartModal
