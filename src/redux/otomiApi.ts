@@ -381,6 +381,9 @@ const injectedRtkApi = api.injectEndpoints({
     getAplCatalogsCharts: build.query<GetAplCatalogsChartsApiResponse, GetAplCatalogsChartsApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts` }),
     }),
+    refreshAplCatalogCache: build.mutation<RefreshAplCatalogCacheApiResponse, RefreshAplCatalogCacheApiArg>({
+      query: (queryArg) => ({ url: `/v2/catalogs/refresh`, method: 'POST', params: { catalogId: queryArg.catalogId } }),
+    }),
     getAplCatalogsChart: build.query<GetAplCatalogsChartApiResponse, GetAplCatalogsChartApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts/${queryArg.chartName}` }),
     }),
@@ -5043,6 +5046,11 @@ export type GetAplCatalogsChartsApiArg = {
   /** ID of the catalog */
   catalogId: string
 }
+export type RefreshAplCatalogCacheApiResponse = /** status 200 Successfully refreshed catalog cache(s) */ undefined
+export type RefreshAplCatalogCacheApiArg = {
+  /** Optional catalog name to refresh a single cache; when omitted all enabled catalogs are refreshed */
+  catalogId?: string
+}
 export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtained app catalog chart */ {
   kind: 'AplCatalogChart'
   spec: {
@@ -7010,6 +7018,7 @@ export const {
   usePatchAplCatalogMutation,
   useDeleteAplCatalogMutation,
   useGetAplCatalogsChartsQuery,
+  useRefreshAplCatalogCacheMutation,
   useGetAplCatalogsChartQuery,
   useGetAllCodeReposQuery,
   useGetTeamCodeReposQuery,
