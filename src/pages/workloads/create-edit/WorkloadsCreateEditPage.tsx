@@ -353,14 +353,17 @@ export default function WorkloadsCreateEditPage({
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>
       <Box sx={{ mb: 2 }}>
-        <Box className={classes.header} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <Box
+          className={classes.header}
+          sx={{ display: 'flex', alignItems: 'center', width: '100%', flexDirection: { xs: 'column', sm: 'row' } }}
+        >
           <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
             <img
               className={classes.img}
               src={icon}
               onError={({ currentTarget }) => {
                 currentTarget.onerror = null
-                currentTarget.src = `${icon}`
+                currentTarget.src = '/logos/akamai_logo.svg'
               }}
               alt={`Logo for ${icon}`}
             />
@@ -388,7 +391,10 @@ export default function WorkloadsCreateEditPage({
                 },
               ]}
             />
-            <Box className={classes.repoInfo}>
+            <Box
+              className={classes.repoInfo}
+              sx={{ flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'center', sm: 'start' } }}
+            >
               <Typography variant='body2'>
                 <span className={classes.repoLabel}>Repository URL:</span>
                 <span className={classes.repoValue}>{repositoryUrl || '-'}</span>
