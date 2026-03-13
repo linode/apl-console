@@ -46,7 +46,7 @@ const useStyles = makeStyles()((theme) => ({
     display: 'inline-flex',
   },
   img: {
-    height: theme.spacing(9),
+    height: theme.spacing(8),
   },
   repoInfo: {
     marginBottom: theme.spacing(2),
