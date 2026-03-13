@@ -1,4 +1,4 @@
-import { Box, ButtonGroup } from '@mui/material'
+import { Box, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
 import { omit } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -46,7 +46,22 @@ const useStyles = makeStyles()((theme) => ({
     display: 'inline-flex',
   },
   img: {
-    height: theme.spacing(6),
+    height: theme.spacing(9),
+  },
+  repoInfo: {
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(1),
+  },
+  repoLabel: {
+    fontWeight: 600,
+    color: '#c8c8c8',
+    marginRight: theme.spacing(1),
+  },
+  repoValue: {
+    color: '#939393',
+    wordBreak: 'break-all',
   },
 }))
 
@@ -137,7 +152,6 @@ export default function WorkloadsCreateEditPage({
     }
   }, [chartData])
 
-  // Normalise spec.values from the workload GET to always be a string in the form
   let normalisedValues = ''
   const rawValues = workload?.spec?.values
 
@@ -179,17 +193,14 @@ export default function WorkloadsCreateEditPage({
     formState: { errors },
   } = methods
 
-  // Reset form values when editing workload data arrives
   useEffect(() => {
     if (workloadName && workload) reset(mergedDefaultValues)
   }, [workload, workloadName, reset])
 
-  // Reset form values when creating and chart data arrives
   useEffect(() => {
     if (!workloadName && chartData) reset(mergedDefaultValues)
   }, [chartData, workloadName, reset])
 
-  // When editing, use workload from API; when creating, use catalog item
   const workloadData = workloadName ? workload : catalogItem
   const valuesData = workloadName ? workload?.spec?.values : (catalogItem as any)?.values
   const valuesSchema = (catalogItem as any)?.valuesSchema
@@ -202,7 +213,6 @@ export default function WorkloadsCreateEditPage({
     setWorkloadValuesYaml(typeof valuesData === 'string' ? valuesData : YAML.stringify(valuesData ?? {}))
   }, [workloadData, valuesData])
 
-  // Refetch workload when dirty flag resets (edit mode only)
   useEffect(() => {
     if (isDirty !== false) return
     if (!workloadName) return
@@ -212,6 +222,10 @@ export default function WorkloadsCreateEditPage({
   const icon = (workloadData as any)?.spec?.icon || (catalogItem as any)?.icon || '/logos/akamai_logo.svg'
   const headerName = (workloadData as any)?.metadata?.name || (catalogItem as any)?.name
   const headerPath = (workloadData as any)?.spec?.path || (catalogItem as any)?.path || 'custom'
+
+  const repositoryUrl = (workloadData as any)?.spec?.url || (catalogItem as any)?.url || ''
+  const repositoryPath = (workloadData as any)?.spec?.path || (catalogItem as any)?.path || ''
+  const repositoryTag = (workloadData as any)?.spec?.revision || (catalogItem as any)?.revision || ''
 
   type AutoUpdaterType = 'disabled' | 'digest' | 'semver'
   const watchedStrategyType = watch('spec.imageUpdateStrategy.type') as AutoUpdaterType | undefined
@@ -338,45 +352,59 @@ export default function WorkloadsCreateEditPage({
 
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>
-      <Box className={classes.header} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
-          <img
-            className={classes.img}
-            src={icon}
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null
-              currentTarget.src = `${icon}`
-            }}
-            alt={`Logo for ${icon}`}
-          />
-        </Box>
-
-        <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
-          <LandingHeader
-            title={headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
-            docsLabel='Docs'
-            docsLink={
-              (workloadData as any)?.spec?.url && (workloadData as any)?.spec?.path
-                ? getDocsLink((workloadData as any).spec.url as string, (workloadData as any).spec.path as string)
-                : undefined
-            }
-            hideCrumbX={workloadName ? [1, 2, 3] : [2]}
-            breadcrumbOverrides={[
-              {
-                position: 1,
-                label: 'Workloads',
-                linkTo: `/teams/${teamId}/workloads`,
-              },
-              {
-                position: 2,
-                label: 'Catalogs',
-                linkTo: `/teams/${teamId}/catalogs/`,
-              },
-            ]}
-          />
+      <Box sx={{ mb: 2 }}>
+        <Box className={classes.header} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+          <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
+            <img
+              className={classes.img}
+              src={icon}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null
+                currentTarget.src = `${icon}`
+              }}
+              alt={`Logo for ${icon}`}
+            />
+          </Box>
+          <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+            <LandingHeader
+              title={headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
+              docsLabel='Docs'
+              docsLink={
+                (workloadData as any)?.spec?.url && (workloadData as any)?.spec?.path
+                  ? getDocsLink((workloadData as any).spec.url as string, (workloadData as any).spec.path as string)
+                  : undefined
+              }
+              hideCrumbX={workloadName ? [1, 2, 3] : [2]}
+              breadcrumbOverrides={[
+                {
+                  position: 1,
+                  label: 'Workloads',
+                  linkTo: `/teams/${teamId}/workloads`,
+                },
+                {
+                  position: 2,
+                  label: 'Catalogs',
+                  linkTo: `/teams/${teamId}/catalogs/`,
+                },
+              ]}
+            />
+            <Box className={classes.repoInfo}>
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Repository URL:</span>
+                <span className={classes.repoValue}>{repositoryUrl || '-'}</span>
+              </Typography>
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Path:</span>
+                <span className={classes.repoValue}>{repositoryPath || '-'}</span>
+              </Typography>
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Tag / Branch:</span>
+                <span className={classes.repoValue}>{repositoryTag || '-'}</span>
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
-
       {isErrorWorkload ? null : (
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
