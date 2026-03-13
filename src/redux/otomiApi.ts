@@ -6568,7 +6568,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     git?: {
       repoUrl: string
       username: string
-      password: string
+      password?: string
       email: string
       branch: string
     }
@@ -6835,7 +6835,7 @@ export type EditSettingsApiArg = {
       git?: {
         repoUrl: string
         username: string
-        password: string
+        password?: string
         email: string
         branch: string
       }
