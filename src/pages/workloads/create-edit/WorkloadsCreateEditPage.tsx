@@ -221,7 +221,6 @@ export default function WorkloadsCreateEditPage({
 
   const icon = (workloadData as any)?.spec?.icon || (catalogItem as any)?.icon || '/logos/akamai_logo.svg'
   const headerName = (workloadData as any)?.metadata?.name || (catalogItem as any)?.name
-  const headerPath = (workloadData as any)?.spec?.path || (catalogItem as any)?.path || 'custom'
 
   const repositoryUrl = (workloadData as any)?.spec?.url || (catalogItem as any)?.url || ''
   const repositoryPath = (workloadData as any)?.spec?.path || (catalogItem as any)?.path || ''
@@ -370,7 +369,7 @@ export default function WorkloadsCreateEditPage({
           </Box>
           <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
             <LandingHeader
-              title={headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
+              title={headerName}
               docsLabel='Docs'
               docsLink={
                 (workloadData as any)?.spec?.url && (workloadData as any)?.spec?.path
