@@ -48,7 +48,7 @@ export default function AccountPopover({ email }: Props) {
               height: '100%',
               borderRadius: '50%',
               position: 'absolute',
-              bgcolor: (theme) => alpha(theme.palette.grey[900], 0.8),
+              bgcolor: (theme) => alpha(String(theme.palette.grey[900]), 0.8),
             },
           }),
         }}

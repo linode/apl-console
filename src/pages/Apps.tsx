@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
 import useAuthzSession from 'hooks/useAuthzSession'
 import useSettings from 'hooks/useSettings'

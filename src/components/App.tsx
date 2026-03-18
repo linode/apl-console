@@ -5,8 +5,7 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 import { getSpec } from 'common/api-spec'
-import { JSONSchema7 } from 'json-schema'
-import { cloneDeep, isEqual, set, unset } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash'
 import { CrudProps, ValuesSchema } from 'pages/types'
 import React, { useEffect, useState } from 'react'
 import Helmet from 'react-helmet'
@@ -15,7 +14,7 @@ import { useLocation } from 'react-router-dom'
 import { GetTeamAppApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { cleanLink, getAppData } from 'utils/data'
-import { extract, getAppSchemaName, isOf } from 'utils/schema'
+import { getAppSchemaName } from 'utils/schema'
 import YAML from 'yaml'
 import { useSession } from 'providers/Session'
 import CodeEditor from './CodeEditor'
@@ -42,7 +41,6 @@ const useStyles = makeStyles()((theme) => ({
     paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
     display: 'inline-flex',
-    // width: theme.spacing(8),
   },
   img: {
     height: theme.spacing(6),
@@ -67,9 +65,6 @@ const useStyles = makeStyles()((theme) => ({
   tableRow: {
     '&:last-child td, &:last-child th': { border: 0 },
   },
-  tableHead: {
-    // minWidth: theme.spacing(12),
-  },
 }))
 
 export const getAppSchema = (appId: string, formData): any => {
@@ -86,88 +81,11 @@ export const getAppSchema = (appId: string, formData): any => {
   return schema
 }
 
-export const getAppUiSchema = (appsEnabled: Record<string, any>, appId: string, formData): any => {
-  const modelName = getAppSchemaName(appId)
-  const model = getSpec().components.schemas[modelName].properties.values
-  const uiSchema = {}
-  if (model) {
-    const leafs = Object.keys(extract(model, (o: JSONSchema7) => o.type === 'object' && !o.properties && !isOf(o)))
-    leafs.forEach((path) => {
-      set(uiSchema, path, { 'ui:widget': CodeEditor })
-    })
-  }
-  switch (appId) {
-    case 'cert-manager':
-      set(uiSchema, 'customRootCA.ui:widget', 'hidden')
-      set(uiSchema, 'customRootCAKey.ui:widget', 'hidden')
-      set(uiSchema, 'byoWildcardCert.ui:widget', 'hidden')
-      set(uiSchema, 'byoWildcardCertKey.ui:widget', 'hidden')
-      set(uiSchema, 'stage.ui:widget', 'hidden')
-      set(uiSchema, 'email.ui:widget', 'hidden')
-      if (formData.issuer === 'letsencrypt') {
-        unset(uiSchema, 'stage.ui:widget')
-        unset(uiSchema, 'email.ui:widget')
-      }
-
-      if (formData.issuer === 'byo-wildcard-cert') {
-        unset(uiSchema, 'byoWildcardCert.ui:widget')
-        set(uiSchema, 'byoWildcardCert.ui:widget', 'TextareaWidget')
-        unset(uiSchema, 'byoWildcardCertKey.ui:widget')
-      }
-      if (formData.issuer === 'custom-ca') {
-        unset(uiSchema, 'customRootCA.ui:widget')
-        unset(uiSchema, 'customRootCAKey.ui:widget')
-        set(uiSchema, 'customRootCA.ui:widget', 'TextareaWidget')
-      }
-      break
-    case 'gitea':
-      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
-      set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
-      break
-    case 'harbor':
-      set(uiSchema, 'databasePassword.ui:widget', 'hidden')
-      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
-      set(uiSchema, 'core.ui:widget', 'hidden')
-      set(uiSchema, 'registry.ui:widget', 'hidden')
-      set(uiSchema, 'jobservice.ui:widget', 'hidden')
-      set(uiSchema, 'secretKey.ui:widget', 'hidden')
-      set(uiSchema, 'database.ui:widget', 'hidden')
-
-      break
-    case 'grafana':
-      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
-      break
-    case 'keycloak':
-      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
-      set(uiSchema, 'postgresqlPassword.ui:widget', 'hidden')
-      break
-    case 'loki':
-      set(uiSchema, 'adminPassword.ui:widget', 'hidden')
-      break
-    case 'prometheus':
-      set(uiSchema, 'remoteWrite.rwConfig.customConfig.ui:widget', 'textarea')
-      break
-    default:
-      break
-  }
-  return uiSchema
-}
-
 interface Props extends CrudProps, GetTeamAppApiResponse {
   teamId: string
-  setAppState: CallableFunction
   managed?: boolean
 }
-export default function App({
-  id,
-  teamId,
-  enabled,
-  values: inValues,
-  rawValues: inRawValues,
-  mutating,
-  managed,
-  onSubmit,
-}: Props): React.ReactElement {
+export default function App({ id, teamId, enabled, values: inValues, managed, onSubmit }: Props): React.ReactElement {
   const location = useLocation()
   const hash = location.hash.substring(1)
   const hashMap = {
@@ -176,11 +94,10 @@ export default function App({
   }
   const { classes } = useStyles()
   const session = useSession()
-  const { appsEnabled } = session
   const { appInfo, deps, logo, logoAlt } = getAppData(session, teamId, id)
   const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
-  const handleTabChange = (event, tab) => {
+  const handleTabChange = (_, tab) => {
     setTab(tab)
   }
   const [isEdit, setIsEdit] = useState(false)
@@ -206,11 +123,6 @@ export default function App({
   const handleSubmit = () => {
     const data = { id, teamId, values }
     if (validValues) onSubmit(data)
-  }
-
-  const handleValuesChange = (values: Props['values'], errors: any[]) => {
-    setValues(values)
-    setValidValues(errors.length === 0)
   }
 
   const prefixedDeps = () => {
@@ -270,13 +182,13 @@ export default function App({
                 <Table size='small' aria-label='simple table'>
                   <TableBody>
                     <TableRow key='version' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Version:')} />
                       </TableCell>
                       <TableCell align='left'>{appInfo.appVersion}</TableCell>
                     </TableRow>
                     <TableRow key='repo' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Repo:')} />
                       </TableCell>
                       <TableCell align='left'>
@@ -286,13 +198,13 @@ export default function App({
                       </TableCell>
                     </TableRow>
                     <TableRow key='maintainers' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Maintainers:')} />
                       </TableCell>
                       <TableCell align='left'>{appInfo.maintainers}</TableCell>
                     </TableRow>
                     <TableRow key='links' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Related links:')} />
                       </TableCell>
                       <TableCell align='left'>
@@ -307,7 +219,7 @@ export default function App({
                       </TableCell>
                     </TableRow>
                     <TableRow key='dependencies' className={classes.tableRow}>
-                      <TableCell component='th' scope='row' align='right' className={classes.tableHead}>
+                      <TableCell component='th' scope='row' align='right'>
                         <Chip label={t('Dependencies:')} />
                       </TableCell>
                       <TableCell align='left'>{prefixedDeps()}</TableCell>
@@ -335,7 +247,7 @@ export default function App({
             <CodeEditor
               code={valuesYaml}
               onChange={(data) => {
-                setValues(data || {})
+                setValues((data || {}) as { [key: string]: any })
               }}
               disabled={!isEdit}
               setValid={setValidValues}
