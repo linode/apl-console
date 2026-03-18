@@ -64,16 +64,6 @@ export const setSpec = (inSpec): void => {
   spec = inSpec
 }
 
-// TODO: check if needed after form rework
-export const deleteAlertEndpoints = (schema, formData) => {
-  // schema.properties.receivers.items.enum.forEach((receiver) => {
-  //   set(schema, `properties.${receiver}.required`, false)
-  //   // if (!(formData?.receivers || []).includes(receiver) && !(formData?.drone || []).includes(receiver))
-  //   //   // eslint-disable-next-line no-param-reassign
-  //   //   // delete schema.properties[receiver]
-  // })
-}
-
 export const setSecretsEnum = (schema, secrets) => {
   if (secrets.length) {
     const secretNames = secrets.filter((s) => s.secret.type !== 'docker_registry').map((s) => s.name)
