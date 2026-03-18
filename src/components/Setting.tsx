@@ -1,4 +1,4 @@
-import { deleteAlertEndpoints, getSpec } from 'common/api-spec'
+import { getSpec } from 'common/api-spec'
 import { JSONSchema4 } from 'json-schema'
 import { cloneDeep, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
@@ -21,10 +21,8 @@ export const getSettingSchema = (appsEnabled: Record<string, any>, settingId, fo
       set(schema, 'properties.provider.readOnly', true)
       break
     case 'home':
-      deleteAlertEndpoints(schema, formData)
       break
     case 'alerts':
-      deleteAlertEndpoints(schema, formData)
       break
     case 'dns':
       break

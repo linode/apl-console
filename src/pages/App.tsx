@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import App from 'components/App'
-import useAuthzSession from 'hooks/useAuthzSession'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useEditAppMutation, useGetTeamAppQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useEditAppMutation, useGetTeamAppQuery } from 'redux/otomiApi'
 
 interface Params {
   teamId: string
@@ -17,9 +15,7 @@ export default function ({
     params: { teamId, appId },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  const { refetchAppsEnabled } = useAuthzSession(teamId)
   const [edit, { isLoading: isLoadingUpdate }] = useEditAppMutation()
-  const [toggle, { isLoading: isLoadingToggle }] = useToggleAppsMutation()
   const { data, isLoading, isFetching, isError, refetch } = useGetTeamAppQuery(
     { teamId, appId },
     { skip: teamId !== 'admin' },
@@ -29,25 +25,10 @@ export default function ({
     if (isDirty !== false) return
     if (!isFetching) refetch()
   }, [isDirty])
-  // END HOOKS
-  const mutating = isLoadingUpdate || isLoadingToggle
+
+  const mutating = isLoadingUpdate
   const handleSubmit = (formData) => edit({ teamId, appId, body: formData }).then(refetch)
-  const handleAppState = (appState) => {
-    const [appIds, appEnabled] = appState
-    toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
-      .then(refetch)
-      .then(refetchAppsEnabled)
-  }
-  const comp = !isError && (
-    <App
-      onSubmit={handleSubmit}
-      id={appId}
-      {...data}
-      teamId={teamId}
-      setAppState={handleAppState}
-      mutating={mutating}
-    />
-  )
-  // title is set in component as it knows more to put in the url (like tab chosen)
+  const comp = !isError && <App onSubmit={handleSubmit} id={appId} {...data} teamId={teamId} mutating={mutating} />
+
   return <PaperLayout comp={comp} loading={isLoading} />
 }
