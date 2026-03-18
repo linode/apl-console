@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 import { Box, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
@@ -16,12 +15,7 @@ import ObjAppModal from './ObjAppModal'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
-  const m = p.mode
 
-  // Disabled app styling:
-  // filter: grayscale(1);
-  // opacity: 0.5;
-  // background-color: #eeeeee;
   return {
     root: {
       color: theme.palette.text.secondary,
@@ -31,12 +25,6 @@ const useStyles = makeStyles()((theme) => {
     searchbar: {
       backgroundColor: '#444444',
     },
-    // enabled: {
-    //   '& .MuiTypography-root': {
-    //     color: '#585656',
-    //     fontWeight: '200',
-    //   },
-    // },
     out: {
       backgroundColor: p.error.main,
     },
@@ -83,14 +71,6 @@ function sortArray(a, b) {
   return 1
 }
 
-// function sortArray(a, b) {
-//   // Treat undefined as true
-//   if (a.id < b.id) return -1
-//   if (a.id > b.id) return 1
-
-//   return 0
-// }
-
 function getDeprecatedApps(apps, session, teamId) {
   return apps
     ?.map((app) => {
@@ -120,8 +100,8 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   const session = useSession()
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
-  const [orderBy, setOrderBy] = useState('enabled')
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [orderBy] = useState('enabled')
+  const [order] = useState<'asc' | 'desc'>('asc')
   const [openModal, setOpenModal] = useState('')
   const [openObjAppModal, setOpenObjAppModal] = useState('')
   const objStorageApps = (session?.objectStorage?.objStorageApps || []) as ObjStorageApp[]
@@ -150,7 +130,6 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName)
-    // setPage(0)
   }
 
   // END HOOKS
@@ -165,7 +144,6 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   })
 
   const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
-  // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
     items?.map((item) => {
@@ -203,7 +181,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
     return deprecatedApps?.map((app) => {
       const handleCancel = () => {
         setOpenModal('')
-        window.open(app?.externalUrl, '_blank')
+        window.open(String(app?.externalUrl), '_blank')
       }
       const handleAction = () => {
         setOpenModal('')
