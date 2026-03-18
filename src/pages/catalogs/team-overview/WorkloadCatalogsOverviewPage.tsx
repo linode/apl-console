@@ -94,6 +94,8 @@ export default function (Props): React.ReactElement {
     refetch: refetchCatalogs,
   } = useGetAllAplCatalogsQuery({ enabled: true })
 
+  const selectedCatalog = allCatalogs?.find((c) => c.metadata?.name === catalogFilterName)
+
   const {
     data: chartCatalogData,
     isLoading: isChartCatalogLoading,
@@ -104,8 +106,10 @@ export default function (Props): React.ReactElement {
   const [refreshAplCatalogCache, { isLoading: isRefreshingAplCatalogCache }] = useRefreshAplCatalogCacheMutation()
 
   useEffect(() => {
-    if (chartCatalogData) setChartCatalog((chartCatalogData as any)?.catalog || [])
-    else setChartCatalog([])
+    if (chartCatalogData) {
+      const charts = (chartCatalogData as any[]).map((item: any) => item.spec?.[0]).filter(Boolean)
+      setChartCatalog(charts)
+    } else setChartCatalog([])
   }, [chartCatalogData])
 
   useEffect(() => {
@@ -235,11 +239,11 @@ export default function (Props): React.ReactElement {
                 ) : (
                   <>
                     <Typography variant='body2' sx={{ color: 'text.secondary' }}>
-                      <strong className={classes.strongText}>URL:</strong> {(chartCatalogData as any)?.url || ''}
+                      <strong className={classes.strongText}>URL:</strong> {selectedCatalog?.spec?.repositoryUrl || ''}
                     </Typography>
                     <Typography variant='body2' sx={{ color: 'text.secondary' }}>
                       <strong className={classes.strongText}>Tag / Branch:</strong>{' '}
-                      {(chartCatalogData as any)?.branch || ''}
+                      {selectedCatalog?.spec?.branch || ''}
                     </Typography>
                     <LoadingButton
                       variant='outlined'
