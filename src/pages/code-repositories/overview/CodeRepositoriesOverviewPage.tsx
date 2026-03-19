@@ -4,7 +4,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
-import { useGetAllCodeReposQuery, useGetTeamCodeReposQuery } from 'redux/otomiApi'
+import { useGetAllAplCodeReposQuery, useGetTeamAplCodeReposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
@@ -12,8 +12,10 @@ import ListTable from '../../../components/ListTable'
 
 const getCodeRepoName = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, name }: { teamId: string; name: string } = row
+    const teamId = row?.metadata?.labels?.['apl.io/teamId']
+    const name = row?.metadata?.name ?? ''
     const path = `/teams/${teamId}/code-repositories/${encodeURIComponent(name)}`
+
     return (
       <RLink to={path} label={name}>
         {name}
@@ -23,7 +25,8 @@ const getCodeRepoName = (): CallableFunction =>
 
 const getCodeRepoUrl = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { repositoryUrl }: { repositoryUrl: string } = row
+    const repositoryUrl = row?.spec?.repositoryUrl ?? ''
+
     return (
       <a href={repositoryUrl} target='_blank' rel='noopener noreferrer'>
         {repositoryUrl}
@@ -33,16 +36,16 @@ const getCodeRepoUrl = (): CallableFunction =>
 
 const getIcon = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { gitService }: { gitService: string } = row
+    const gitService = row?.spec?.gitService ?? ''
+
     return (
       <img
         style={{ width: 24, height: 24 }}
         src={`/logos/${gitService}_logo.svg`}
-        onError={({ currentTarget }) => {
-          // eslint-disable-next-line no-param-reassign
-          currentTarget.onerror = null // prevents looping
-          // eslint-disable-next-line no-param-reassign
-          currentTarget.src = `${gitService}_logo.svg`
+        onError={(event) => {
+          const target = event.currentTarget as HTMLImageElement
+          target.onerror = null
+          target.src = `${gitService}_logo.svg`
         }}
         alt={`Logo for ${gitService}`}
       />
@@ -65,14 +68,17 @@ export default function CodeRepositoriesOverviewPage({
     isLoading: isLoadingAllCodeRepositories,
     isFetching: isFetchingAllCodeRepositories,
     refetch: refetchAllCodeRepositories,
-  } = useGetAllCodeReposQuery(teamId ? skipToken : undefined)
+  } = useGetAllAplCodeReposQuery(teamId ? skipToken : undefined)
+
   const {
     data: teamCodeRepositories,
     isLoading: isLoadingTeamCodeRepositories,
     isFetching: isFetchingTeamCodeRepositories,
     refetch: refetchTeamCodeRepositories,
-  } = useGetTeamCodeReposQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamAplCodeReposQuery({ teamId }, { skip: !teamId })
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllCodeRepositories) refetchAllCodeRepositories()
@@ -84,25 +90,27 @@ export default function CodeRepositoriesOverviewPage({
 
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getCodeRepoName(),
     },
     {
-      id: 'url',
+      id: 'spec.repositoryUrl',
       label: t('URL'),
       renderer: getCodeRepoUrl(),
     },
     {
-      id: 'gitservice',
+      id: 'spec.gitService',
       label: t('Git Service'),
       renderer: getIcon(),
     },
   ]
+
   if (!teamId) {
     headCells.push({
-      id: 'teamId',
+      id: 'metadata.labels.apl.io/teamId',
       label: t('Team'),
+      renderer: (row) => row?.metadata?.labels?.['apl.io/teamId'] ?? '',
     })
   }
 
@@ -117,5 +125,6 @@ export default function CodeRepositoriesOverviewPage({
       customButtonText={customButtonText()}
     />
   )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CODE_REPOSITORIES', { scope: getRole(teamId) })} />
 }

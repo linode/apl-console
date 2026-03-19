@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllBuildsQuery, useGetTeamBuildsQuery } from 'redux/otomiApi'
+import { useGetAllAplBuildsQuery, useGetTeamAplBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 import { Box } from '@mui/material'
 import { useSocket } from 'providers/Socket'
@@ -17,32 +17,45 @@ import RLink from '../../../components/Link'
 import CopyToClipboard from '../../../components/CopyToClipboard'
 
 interface Row {
-  teamId: string
-  tag: string
-  id: string
-  name: string
-  imageName: string
-  trigger: boolean
-  mode: { type: string }
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+  spec: {
+    tag?: string
+    imageName?: string
+    trigger?: boolean
+    mode?: { type?: string }
+  }
 }
 
 const getBuildLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/container-images/${encodeURIComponent(row.name)}`
+  const teamId = row.metadata?.labels?.['apl.io/teamId']
+  const name = row.metadata?.name ?? ''
+  const path = `/teams/${teamId}/container-images/${encodeURIComponent(name)}`
+
   return (
-    <RLink to={path} label={row.name}>
-      {row.name}
+    <RLink to={path} label={name}>
+      {name}
     </RLink>
   )
 }
 
 const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
-  const path = `/#/namespaces/team-${row.teamId}/pipelineruns/${row.mode.type}-build-${row.name}`
-  const triggerPath = `/#/namespaces/team-${row.teamId}/pipelineruns/`
-  const host = `https://tekton-${row.teamId}.${domainSuffix}`
+  const teamId = row.metadata?.labels?.['apl.io/teamId']
+  const name = row.metadata?.name ?? ''
+  const modeType = row.spec?.mode?.type ?? ''
+  const trigger = row.spec?.trigger
+
+  const path = `/#/namespaces/team-${teamId}/pipelineruns/${modeType}-build-${name}`
+  const triggerPath = `/#/namespaces/team-${teamId}/pipelineruns/`
+  const host = `https://tekton-${teamId}.${domainSuffix}`
   const externalUrl = `${host}/${path}`
   const externalUrlTrigger = `${host}/${triggerPath}`
 
-  if (row.trigger) {
+  if (trigger) {
     return (
       <Link to={{ pathname: externalUrlTrigger }} target='_blank'>
         PipelineRun
@@ -58,10 +71,15 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
 }
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
-  const repository = `harbor.${domainSuffix}/team-${row.teamId}/${row.imageName}`
+  const teamId = row.metadata?.labels?.['apl.io/teamId']
+  const imageName = row.spec?.imageName ?? ''
+  const repository = `harbor.${domainSuffix}/team-${teamId}/${imageName}`
+
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: repository }} target='_blank' />
+      <Link to={{ pathname: repository }} target='_blank'>
+        {repository}
+      </Link>
       <CopyToClipboard text={repository} />
     </Box>
   )
@@ -84,35 +102,39 @@ export default function BuildsOverviewPage({
     },
   } = useSession()
   const { statuses } = useSocket()
+
   const {
     data: allBuilds,
     isLoading: isLoadingAllBuilds,
     isFetching: isFetchingAllBuilds,
     refetch: refetchAllBuilds,
-  } = useGetAllBuildsQuery(teamId ? skipToken : undefined)
+  } = useGetAllAplBuildsQuery(teamId ? skipToken : undefined)
+
   const {
     data: teamBuilds,
     isLoading: isLoadingTeamBuilds,
     isFetching: isFetchingTeamBuilds,
     refetch: refetchTeamBuilds,
-  } = useGetTeamBuildsQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamAplBuildsQuery({ teamId }, { skip: !teamId })
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllBuilds) refetchAllBuilds()
     else if (teamId && !isFetchingTeamBuilds) refetchTeamBuilds()
   }, [isDirty])
-  // END HOOKS
+
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: (row: Row) => getBuildLink(row),
     },
     {
-      id: 'mode',
+      id: 'spec.mode.type',
       label: t('Type'),
-      renderer: (row) => row.mode.type,
+      renderer: (row: Row) => row.spec?.mode?.type ?? '',
     },
     {
       id: 'tekton',
@@ -125,21 +147,22 @@ export default function BuildsOverviewPage({
       renderer: (row: Row) => <RepositoryRenderer row={row} domainSuffix={domainSuffix} />,
     },
     {
-      id: 'tag',
+      id: 'spec.tag',
       label: t('Tag'),
-      renderer: (row) => row.tag,
+      renderer: (row: Row) => row.spec?.tag ?? '',
     },
     {
-      id: 'Status',
+      id: 'status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(statuses?.builds?.[row.name]),
+      renderer: (row: Row) => getStatus(statuses?.builds?.[row.metadata?.name]),
     },
   ]
 
   if (!teamId) {
     headCells.push({
-      id: 'teamId',
+      id: 'metadata.labels.apl.io/teamId',
       label: t('Team'),
+      renderer: (row: Row) => row.metadata?.labels?.['apl.io/teamId'] ?? '',
     })
   }
 
@@ -161,5 +184,6 @@ export default function BuildsOverviewPage({
       />
     )
   )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CONTAINER_IMAGES', { scope: getRole(teamId) })} />
 }
