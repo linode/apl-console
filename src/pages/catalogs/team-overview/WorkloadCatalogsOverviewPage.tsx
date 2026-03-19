@@ -107,7 +107,7 @@ export default function (Props): React.ReactElement {
 
   useEffect(() => {
     if (chartCatalogData) {
-      const charts = (chartCatalogData as any[]).map((item: any) => item.spec?.[0]).filter(Boolean)
+      const charts = chartCatalogData.map((item) => item.spec?.[0]).filter(Boolean)
       setChartCatalog(charts)
     } else setChartCatalog([])
   }, [chartCatalogData])
