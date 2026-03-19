@@ -121,10 +121,10 @@ export default function WorkloadsCreateEditPage({
     if (!chartData) return {}
 
     const response = chartData as any
-    const item = response?.chart ?? response
-    const url = response?.url as string | undefined
-    const chartsPath = response?.chartsPath as string | undefined
-    const revision = response?.branch as string | undefined
+    const item = response?.spec?.[0]
+    const url = item?.repositoryUrl as string | undefined
+    const chartsPath = item?.chartsPath as string | undefined
+    const revision = item?.branch as string | undefined
 
     if (!item) return {}
 
