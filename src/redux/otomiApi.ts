@@ -5018,6 +5018,8 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
     version?: string
     chart?: object
     chartsPath?: string
+    branch?: string
+    repositoryUrl?: string
   }[]
 } & {
   metadata: {
@@ -5058,6 +5060,8 @@ export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtaine
     version?: string
     chart?: object
     chartsPath?: string
+    branch?: string
+    repositoryUrl?: string
   }[]
 } & {
   metadata: {
