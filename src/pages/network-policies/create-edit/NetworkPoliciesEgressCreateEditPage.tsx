@@ -1,5 +1,5 @@
 // NetworkPoliciesEgressCreateEditPage.tsx
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button, FormHelperText, Grid, IconButton } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import PaperLayout from 'layouts/Paper'
@@ -12,17 +12,17 @@ import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { TextField } from 'components/forms/TextField'
 import {
-  CreateNetpolApiResponse,
-  EditNetpolApiResponse,
-  useCreateNetpolMutation,
-  useDeleteNetpolMutation,
-  useEditNetpolMutation,
-  useGetNetpolQuery,
+  CreateAplNetpolApiArg,
+  CreateAplNetpolApiResponse,
+  useCreateAplNetpolMutation,
+  useDeleteAplNetpolMutation,
+  useEditAplNetpolMutation,
+  useGetAplNetpolQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'components/Divider'
 import { isEqual } from 'lodash'
-import { createEgressSchema } from './create-edit-networkPolicies.validator'
+import { createAplIngressSchema } from './create-edit-networkPolicies.validator'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import NetworkPolicyEgressPortRow from './NetworkPolicyEgressPortRow'
 
@@ -39,20 +39,42 @@ export default function NetworkPoliciesEgressCreateEditPage({
   const { classes } = useStyles()
   const { t } = useTranslation()
 
-  const { data, isLoading: isFetching } = useGetNetpolQuery(
+  const { data, isLoading: isFetching } = useGetAplNetpolQuery(
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
   )
 
-  const methods = useForm<CreateNetpolApiResponse>({
-    resolver: yupResolver(createEgressSchema) as Resolver<CreateNetpolApiResponse>,
-    defaultValues:
-      data && networkPolicyName
-        ? createEgressSchema.cast(data)
-        : {
-            name: '',
-            ruleType: { type: 'egress', egress: { domain: '', ports: [] } },
+  const defaultValues = useMemo(
+    () =>
+      createAplIngressSchema.cast({
+        kind: 'AplTeamNetworkControl',
+        metadata: {
+          name: '',
+          labels: {
+            'apl.io/teamId': teamId ?? '',
           },
+        },
+        spec: {
+          ruleType: {
+            type: 'egress',
+            egress: {
+              domain: '',
+              ports: [],
+            },
+          },
+        },
+        status: {
+          conditions: [],
+          phase: undefined,
+        },
+      }) as CreateAplNetpolApiResponse,
+    [teamId],
+  )
+
+  const methods = useForm<CreateAplNetpolApiResponse>({
+    resolver: yupResolver(createAplIngressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
+    defaultValues:
+      data && networkPolicyName ? (createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse) : defaultValues,
   })
 
   const {
@@ -64,25 +86,46 @@ export default function NetworkPoliciesEgressCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) reset(createEgressSchema.cast(data))
+    if (data) reset(createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse)
   }, [data, reset])
 
   const {
     fields: portFields,
     append: appendPort,
     remove: removePort,
-  } = useFieldArray({ control, name: 'ruleType.egress.ports' })
+  } = useFieldArray({
+    control,
+    name: 'spec.ruleType.egress.ports',
+  })
 
-  // on create, give the user one blank row
   useEffect(() => {
     if (!networkPolicyName) appendPort({ protocol: 'TCP', number: 0 })
   }, [networkPolicyName, appendPort])
 
-  const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateNetpolMutation()
-  const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditNetpolMutation()
-  const [del, { isLoading: isDeleting, isSuccess: didDelete }] = useDeleteNetpolMutation()
+  const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateAplNetpolMutation()
+  const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditAplNetpolMutation()
+  const [del, { isLoading: isDeleting, isSuccess: didDelete }] = useDeleteAplNetpolMutation()
 
-  const onSubmit = (body: CreateNetpolApiResponse | EditNetpolApiResponse) => {
+  const onSubmit = (formData: CreateAplNetpolApiResponse) => {
+    const body: CreateAplNetpolApiArg['body'] = {
+      kind: 'AplTeamNetworkControl',
+      metadata: {
+        name: formData.metadata?.name ?? '',
+        labels: {
+          'apl.io/teamId': teamId ?? '',
+        },
+      },
+      spec: {
+        ruleType: {
+          type: 'egress',
+          egress: {
+            domain: formData.spec?.ruleType?.egress?.domain ?? '',
+            ports: formData.spec?.ruleType?.egress?.ports,
+          },
+        },
+      },
+    }
+
     if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
     else create({ teamId, body })
   }
@@ -98,7 +141,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies#outbound-rules'
-          title={networkPolicyName ? data.name : 'Create'}
+          title={networkPolicyName ? data?.metadata?.name : 'Create'}
           hideCrumbX={[0, 1, 3]}
         />
 
@@ -108,20 +151,20 @@ export default function NetworkPoliciesEgressCreateEditPage({
               <TextField
                 label='Outbound rule name'
                 width='large'
-                value={watch('name')}
-                onChange={(e) => setValue('name', e.target.value)}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                value={watch('metadata.name') ?? ''}
+                onChange={(e) => setValue('metadata.name', e.target.value)}
+                error={!!errors.metadata?.name}
+                helperText={errors.metadata?.name?.message}
                 placeholder='e.g. allow-example-443'
               />
 
               <TextField
                 label='Domain name or IP address'
                 width='large'
-                value={watch('ruleType.egress.domain')}
-                onChange={(e) => setValue('ruleType.egress.domain', e.target.value)}
-                error={!!errors.ruleType?.egress?.domain}
-                helperText={errors.ruleType?.egress?.domain?.message}
+                value={watch('spec.ruleType.egress.domain') ?? ''}
+                onChange={(e) => setValue('spec.ruleType.egress.domain', e.target.value)}
+                error={!!errors.spec?.ruleType?.egress?.domain}
+                helperText={errors.spec?.ruleType?.egress?.domain?.message}
                 placeholder='e.g. example.com'
               />
 
@@ -131,7 +174,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                   <NetworkPolicyEgressPortRow
                     key={field.id}
-                    fieldArrayName={`ruleType.egress.ports.${index}`}
+                    fieldArrayName={`spec.ruleType.egress.ports.${index}`}
                     rowIndex={index}
                   />
                   {portFields.length > 1 && (
@@ -140,10 +183,8 @@ export default function NetworkPoliciesEgressCreateEditPage({
                       onClick={() => removePort(index)}
                       size='small'
                       sx={{
-                        // this is not a good solution and needs a proper fix with flexbox
-                        //
                         // eslint-disable-next-line no-nested-ternary
-                        mt: index === 0 ? (errors?.ruleType?.egress?.ports?.root ? '28px' : '51px') : 4,
+                        mt: index === 0 ? (errors?.spec?.ruleType?.egress?.ports?.root ? '28px' : '51px') : 4,
                       }}
                     >
                       <DeleteIcon />
@@ -156,9 +197,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 Add Port
               </Button>
 
-              {errors.ruleType?.egress?.ports && (
+              {errors.spec?.ruleType?.egress?.ports && (
                 <FormHelperText error sx={{ mt: 1 }}>
-                  {(errors.ruleType.egress.ports as any).message}
+                  {(errors.spec.ruleType.egress.ports as any).message}
                 </FormHelperText>
               )}
             </Section>
