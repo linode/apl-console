@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.13.0](https://github.com/linode/apl-console/compare/v4.12.0...v4.13.0) (2026-03-20)
+
+
+### Features
+
+* add keycloak path to core.yaml ([#722](https://github.com/linode/apl-console/issues/722)) ([a26fa5a](https://github.com/linode/apl-console/commit/a26fa5a2c6ae88c8657c3b45d81f779080379e5d))
+* added refresh button for team catalog overview page ([#730](https://github.com/linode/apl-console/issues/730)) ([4686fc0](https://github.com/linode/apl-console/commit/4686fc0b69447c4414452e6e63b4bfde882b3fc1))
+* platform secrets ([#726](https://github.com/linode/apl-console/issues/726)) ([5e62cc7](https://github.com/linode/apl-console/commit/5e62cc7806fef0188a80fa320583cd26191a8fa1))
+* build v2 endpoint ([#711](https://github.com/linode/apl-console/issues/711)) ([eeb1dc5](https://github.com/linode/apl-console/commit/eeb1dc581755b7f5c9bf97b7c22857fd885b41f4))
+* byo catalog ([#723](https://github.com/linode/apl-console/issues/723)) ([18754ed](https://github.com/linode/apl-console/commit/18754edea22e063640ee076a7f4c9a7860c4b64e))
+* catalog info on create edit ([#734](https://github.com/linode/apl-console/issues/734)) ([2d72947](https://github.com/linode/apl-console/commit/2d729474497022470b3c506808b542b93f2978a6))
+* catalogs now support subdirectories ([#725](https://github.com/linode/apl-console/issues/725)) ([b1b0774](https://github.com/linode/apl-console/commit/b1b0774a322ae67f48215c16877d40bcef0df593))
+* coderepo v2 endpoint ([#706](https://github.com/linode/apl-console/issues/706)) ([21e6f6e](https://github.com/linode/apl-console/commit/21e6f6e1dfe6f1535ef4780eacd2f43ed5515f85))
+* make Gitea optional ([#719](https://github.com/linode/apl-console/issues/719)) ([36968a6](https://github.com/linode/apl-console/commit/36968a6b6c9971965a252b03534cbb8b38b7de0a))
+* remove ai related pages and resources ([#721](https://github.com/linode/apl-console/issues/721)) ([a7f3d07](https://github.com/linode/apl-console/commit/a7f3d07ec7fc684276319d6ffbcb41ea56d6857a))
+* remove Minio ([#709](https://github.com/linode/apl-console/issues/709)) ([39d2d96](https://github.com/linode/apl-console/commit/39d2d9632770efb7dc0b2357af1b960a559fa362))
+* remove thanos ([#708](https://github.com/linode/apl-console/issues/708)) ([cd6632e](https://github.com/linode/apl-console/commit/cd6632e4b820dda89acebafb1e7d0d435df5c658))
+* show and hide empty password fields ([#732](https://github.com/linode/apl-console/issues/732)) ([f95eaa3](https://github.com/linode/apl-console/commit/f95eaa3275f770c8aaa3ca33f29f6871213ffba9))
+* sparse checkout for chart ([#728](https://github.com/linode/apl-console/issues/728)) ([f4c3e66](https://github.com/linode/apl-console/commit/f4c3e66de2b9c9f1d0f4ad8c27753bf24f0c4749))
+
+
+### Bug Fixes
+
+* code cleanup ([#739](https://github.com/linode/apl-console/issues/739)) ([724cd1e](https://github.com/linode/apl-console/commit/724cd1e6b490175490ea3eef8b7adb45d96649ae))
+* delete cloudtty 403 error ([#712](https://github.com/linode/apl-console/issues/712)) ([502d98d](https://github.com/linode/apl-console/commit/502d98dff075c14a1d30c83d96304e196c417da5))
+* infinite img fetching ([#727](https://github.com/linode/apl-console/issues/727)) ([ee8eaa3](https://github.com/linode/apl-console/commit/ee8eaa33d5d1efca7584b9ff6e50d3dcabb17abd))
+* initialize internalRepoUrls to an empty array ([#720](https://github.com/linode/apl-console/issues/720)) ([69238cc](https://github.com/linode/apl-console/commit/69238cc83603807abd1ed1506e05f3adfc8273ed))
+* rebuild the redux store ([#733](https://github.com/linode/apl-console/issues/733)) ([5d874ee](https://github.com/linode/apl-console/commit/5d874ee5890fa043fb714bc47ced0cb4fffcd0db))
+* remove duplicate path ([#736](https://github.com/linode/apl-console/issues/736)) ([b61b0e1](https://github.com/linode/apl-console/commit/b61b0e12c73493708814e0331f4d66503823e71e))
+* update catalog data handling in catalog and workload pages ([#740](https://github.com/linode/apl-console/issues/740)) ([b703af6](https://github.com/linode/apl-console/commit/b703af6f18a0227f6e2fd58f93b1184a745b828a))
+
+
+### Code Refactoring
+
+* update sealed secret handling to use new spec structure ([#707](https://github.com/linode/apl-console/issues/707)) ([46bb029](https://github.com/linode/apl-console/commit/46bb0296c82dc83f28e85f45dae2927a34d0a0f8))
+
+
+### Others
+
+* **deps:** bump ncipollo/release-action ([#737](https://github.com/linode/apl-console/issues/737)) ([2d159ea](https://github.com/linode/apl-console/commit/2d159ead800c4f0e849fce8eaf20822842854ac6))
+* **deps:** bump the docker-dependencies group across 1 directory with 2 updates ([#738](https://github.com/linode/apl-console/issues/738)) ([b2dcae2](https://github.com/linode/apl-console/commit/b2dcae228c186332ae5cf27afd50c901168fc799))
+* **deps:** bump the docker-dependencies group with 2 updates ([#713](https://github.com/linode/apl-console/issues/713)) ([39e2975](https://github.com/linode/apl-console/commit/39e2975c93785815bba69f9443d6719ca17359ab))
+
 ## [4.12.0](https://github.com/linode/apl-console/compare/v4.11.0...v4.12.0) (2026-02-02)
 
 
