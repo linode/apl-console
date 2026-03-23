@@ -6308,9 +6308,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
       branch?: string
     }
   }
-  smtp?: {
-    smarthost?: string
-  }
   ingressClassNames?: string[]
 }
 export type GetSettingsInfoApiArg = void
@@ -6598,15 +6595,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   versions?: {
     version: string
   }
-  smtp?: {
-    auth_identity?: string
-    auth_password?: string
-    auth_secret?: string
-    auth_username?: string
-    from?: string
-    hello?: string
-    smarthost: string
-  } | null
 }
 export type GetSettingsApiArg = {
   /** IDs of settings to return */
@@ -6865,15 +6853,6 @@ export type EditSettingsApiArg = {
     versions?: {
       version: string
     }
-    smtp?: {
-      auth_identity?: string
-      auth_password?: string
-      auth_secret?: string
-      auth_username?: string
-      from?: string
-      hello?: string
-      smarthost: string
-    } | null
   }
 }
 export type GetAppsApiResponse = /** status 200 The request is successful. */ {
