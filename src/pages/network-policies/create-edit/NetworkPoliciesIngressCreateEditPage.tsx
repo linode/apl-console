@@ -181,6 +181,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 error={!!errors.metadata?.name}
                 helperText={errors.metadata?.name?.message}
                 placeholder='e.g. backend-to-database'
+                disabled={!!networkPolicyName}
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>

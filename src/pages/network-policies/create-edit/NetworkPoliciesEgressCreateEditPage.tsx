@@ -156,6 +156,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 error={!!errors.metadata?.name}
                 helperText={errors.metadata?.name?.message}
                 placeholder='e.g. allow-example-443'
+                disabled={!!networkPolicyName}
               />
 
               <TextField
