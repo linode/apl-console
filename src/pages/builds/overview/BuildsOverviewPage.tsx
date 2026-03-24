@@ -80,7 +80,9 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
       <Link to={{ pathname: repository }} target='_blank'>
         {repository}
       </Link>
-      <CopyToClipboard text={repository} />
+      <Box sx={{ ml: 'auto', display: 'flex' }}>
+        <CopyToClipboard text={repository} />
+      </Box>
     </Box>
   )
 }
