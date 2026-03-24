@@ -27,6 +27,38 @@ export interface EgressRuleType {
   ingress?: undefined
 }
 
+const metadataSchema = yup.object({
+  name: yup
+    .string()
+    .required('Rule name is required')
+    .min(2, 'Rule name must be at least 2 characters long.')
+    .max(24, 'Rule name must not exceed 24 characters')
+    .matches(
+      /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
+      'Rule name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
+    ),
+  namespace: yup.string().optional(),
+  annotations: yup.object().optional(),
+  labels: yup.object({
+    'apl.io/teamId': yup.string().required(),
+  }),
+})
+
+const statusSchema = yup.object({
+  conditions: yup
+    .array(
+      yup.object({
+        lastTransitionTime: yup.string().optional(),
+        message: yup.string().optional(),
+        reason: yup.string().optional(),
+        status: yup.boolean().optional(),
+        type: yup.string().optional(),
+      }),
+    )
+    .optional(),
+  phase: yup.string().optional(),
+})
+
 export const createAplIngressSchema = yup.object({
   kind: yup.string().oneOf(['AplTeamNetworkControl']).required(),
 
@@ -70,35 +102,47 @@ export const createAplIngressSchema = yup.object({
     })
     .required(),
 
-  metadata: yup.object({
-    name: yup
-      .string()
-      .required('Inbound rule name is required')
-      .min(2, 'Inbound rule name must be at least 2 characters long.')
-      .max(24, 'Inbound rule name must not exceed 24 characters')
-      .matches(
-        /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
-        'Inbound rule name must start with a lowercase letter, contain only lowercase letters, numbers, and hyphens, and end with a letter or number',
-      ),
-    namespace: yup.string().optional(),
-    annotations: yup.object().optional(),
-    labels: yup.object({
-      'apl.io/teamId': yup.string().required(),
-    }),
-  }),
+  metadata: metadataSchema.required(),
+  status: statusSchema.required(),
+})
 
-  status: yup.object({
-    conditions: yup
-      .array(
-        yup.object({
-          lastTransitionTime: yup.string().optional(),
-          message: yup.string().optional(),
-          reason: yup.string().optional(),
-          status: yup.boolean().optional(),
-          type: yup.string().optional(),
-        }),
-      )
-      .optional(),
-    phase: yup.string().optional(),
-  }),
+export const createAplEgressSchema = yup.object({
+  kind: yup.string().oneOf(['AplTeamNetworkControl']).required(),
+
+  spec: yup
+    .object({
+      ruleType: yup
+        .object({
+          type: yup.mixed<EgressRuleType['type']>().oneOf(['egress']).required(),
+          egress: yup
+            .object({
+              domain: yup.string().required('Domain name or IP address is required'),
+              ports: yup
+                .array()
+                .of(
+                  yup.object({
+                    number: yup
+                      .number()
+                      .typeError('Port number must be a number')
+                      .required('Port number is required')
+                      .min(1, 'Port number must be at least 1')
+                      .max(65535, 'Port number must not exceed 65535'),
+                    protocol: yup
+                      .mixed<'HTTPS' | 'HTTP' | 'TCP'>()
+                      .oneOf(['HTTPS', 'HTTP', 'TCP'])
+                      .required('Protocol is required'),
+                  }),
+                )
+                .min(1, 'At least one port is required')
+                .required('At least one port is required'),
+            })
+            .required(),
+          ingress: yup.mixed().notRequired(),
+        })
+        .required(),
+    })
+    .required(),
+
+  metadata: metadataSchema.required(),
+  status: statusSchema.required(),
 })

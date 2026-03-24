@@ -1,4 +1,3 @@
-// NetworkPoliciesEgressCreateEditPage.tsx
 import { useEffect, useMemo } from 'react'
 import { Button, FormHelperText, Grid, IconButton } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
@@ -22,7 +21,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'components/Divider'
 import { isEqual } from 'lodash'
-import { createAplIngressSchema } from './create-edit-networkPolicies.validator'
+import { createAplEgressSchema } from './create-edit-networkPolicies.validator'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import NetworkPolicyEgressPortRow from './NetworkPolicyEgressPortRow'
 
@@ -46,7 +45,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
   const defaultValues = useMemo(
     () =>
-      createAplIngressSchema.cast({
+      createAplEgressSchema.cast({
         kind: 'AplTeamNetworkControl',
         metadata: {
           name: '',
@@ -72,9 +71,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
   )
 
   const methods = useForm<CreateAplNetpolApiResponse>({
-    resolver: yupResolver(createAplIngressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
+    resolver: yupResolver(createAplEgressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
     defaultValues:
-      data && networkPolicyName ? (createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse) : defaultValues,
+      data && networkPolicyName ? (createAplEgressSchema.cast(data) as CreateAplNetpolApiResponse) : defaultValues,
   })
 
   const {
@@ -86,7 +85,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) reset(createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse)
+    if (data) reset(createAplEgressSchema.cast(data) as CreateAplNetpolApiResponse)
   }, [data, reset])
 
   const {
@@ -99,8 +98,8 @@ export default function NetworkPoliciesEgressCreateEditPage({
   })
 
   useEffect(() => {
-    if (!networkPolicyName) appendPort({ protocol: 'TCP', number: 0 })
-  }, [networkPolicyName, appendPort])
+    if (!networkPolicyName && portFields.length === 0) appendPort({ protocol: 'TCP', number: 0 })
+  }, [networkPolicyName, appendPort, portFields.length])
 
   const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateAplNetpolMutation()
   const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditAplNetpolMutation()
@@ -120,7 +119,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
           type: 'egress',
           egress: {
             domain: formData.spec?.ruleType?.egress?.domain ?? '',
-            ports: formData.spec?.ruleType?.egress?.ports,
+            ports: formData.spec?.ruleType?.egress?.ports ?? [],
           },
         },
       },
@@ -133,6 +132,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
   if (isFetching) return <PaperLayout loading />
 
   const busy = isCreating || isUpdating || isDeleting
+
   if (!busy && (didCreate || didUpdate || didDelete)) return <Redirect to={`/teams/${teamId}/network-policies`} />
 
   return (
@@ -152,7 +152,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 label='Outbound rule name'
                 width='large'
                 value={watch('metadata.name') ?? ''}
-                onChange={(e) => setValue('metadata.name', e.target.value)}
+                onChange={(e) => setValue('metadata.name', e.target.value, { shouldValidate: true, shouldDirty: true })}
                 error={!!errors.metadata?.name}
                 helperText={errors.metadata?.name?.message}
                 placeholder='e.g. allow-example-443'
@@ -163,7 +163,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
                 label='Domain name or IP address'
                 width='large'
                 value={watch('spec.ruleType.egress.domain') ?? ''}
-                onChange={(e) => setValue('spec.ruleType.egress.domain', e.target.value)}
+                onChange={(e) =>
+                  setValue('spec.ruleType.egress.domain', e.target.value, { shouldValidate: true, shouldDirty: true })
+                }
                 error={!!errors.spec?.ruleType?.egress?.domain}
                 helperText={errors.spec?.ruleType?.egress?.domain?.message}
                 placeholder='e.g. example.com'
@@ -173,19 +175,16 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
               {portFields.map((field, index) => (
                 <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                  <NetworkPolicyEgressPortRow
-                    key={field.id}
-                    fieldArrayName={`spec.ruleType.egress.ports.${index}`}
-                    rowIndex={index}
-                  />
+                  <NetworkPolicyEgressPortRow fieldArrayName={`spec.ruleType.egress.ports.${index}`} rowIndex={index} />
+
                   {portFields.length > 1 && (
                     <IconButton
-                      aria-label='remove source'
+                      aria-label='remove port'
                       onClick={() => removePort(index)}
                       size='small'
                       sx={{
                         // eslint-disable-next-line no-nested-ternary
-                        mt: index === 0 ? (errors?.spec?.ruleType?.egress?.ports?.root ? '28px' : '51px') : 4,
+                        mt: index === 0 ? ((errors?.spec?.ruleType?.egress?.ports as any)?.root ? '28px' : '51px') : 4,
                       }}
                     >
                       <DeleteIcon />
