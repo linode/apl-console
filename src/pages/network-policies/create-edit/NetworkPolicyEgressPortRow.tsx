@@ -8,19 +8,21 @@ type Protocol = 'HTTP' | 'HTTPS' | 'TCP'
 const PROTOCOL_OPTIONS: Protocol[] = ['HTTP', 'HTTPS', 'TCP']
 
 interface FormValues {
-  ruleType: {
-    egress: {
-      ports: Array<{ protocol: Protocol; number: number }>
+  spec: {
+    ruleType: {
+      egress: {
+        ports: Array<{ protocol: Protocol; number: number }>
+      }
     }
   }
 }
 
 interface Props {
-  fieldArrayName: `ruleType.egress.ports.${number}`
+  fieldArrayName: `spec.ruleType.egress.ports.${number}`
   rowIndex: number
 }
 
-export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props) {
+export default function NetworkPolicyEgressPortRow({ fieldArrayName, rowIndex }: Props) {
   const {
     control,
     watch,
@@ -35,8 +37,7 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
   })
 
   const portValue = watch(`${fieldArrayName}.number`)
-
-  const portError = errors.ruleType?.egress?.ports?.[rowIndex]?.number
+  const portError = errors.spec?.ruleType?.egress?.ports?.[rowIndex]?.number
 
   return (
     <FormRow spacing={10}>
@@ -53,7 +54,7 @@ export default function NetworkPolicyPortRow({ fieldArrayName, rowIndex }: Props
         label={rowIndex === 0 ? 'Port' : ''}
         width='large'
         value={portValue ?? ''}
-        onChange={(e) => setValue(`${fieldArrayName}.number`, e.target.value as any)} // casting this results in all kinds of weird behaviour
+        onChange={(e) => setValue(`${fieldArrayName}.number`, e.target.value as any)}
         error={!!portError}
         helperText={portError?.message}
         placeholder='e.g. 443'
