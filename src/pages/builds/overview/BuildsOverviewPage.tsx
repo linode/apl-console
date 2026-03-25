@@ -5,16 +5,16 @@ import ListTable from 'components/ListTable'
 import { getStatus } from 'components/Workloads'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplBuildsQuery, useGetTeamAplBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useSocket } from 'providers/Socket'
+import CopyToClipboard from 'components/CopyToClipboard'
 import RLink from '../../../components/Link'
-import CopyToClipboard from '../../../components/CopyToClipboard'
 
 interface Row {
   metadata: {
@@ -71,17 +71,36 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
 }
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
+  const [hovered, setHovered] = useState(false)
+
   const teamId = row.metadata?.labels?.['apl.io/teamId']
   const imageName = row.spec?.imageName ?? ''
   const repository = `harbor.${domainSuffix}/team-${teamId}/${imageName}`
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Link to={{ pathname: repository }} target='_blank'>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        minWidth: 0,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <Typography
+        sx={{
+          color: '#fff',
+          minWidth: 0,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}
+      >
         {repository}
-      </Link>
-      <Box sx={{ ml: 'auto', display: 'flex' }}>
-        <CopyToClipboard text={repository} />
+      </Typography>
+
+      <Box sx={{ ml: 1, flexShrink: 0 }}>
+        <CopyToClipboard text={repository} visible={hovered} />
       </Box>
     </Box>
   )
