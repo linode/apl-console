@@ -27,7 +27,6 @@ export default function SettingsOverview() {
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg'), id: 'dns' },
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg'), id: 'ingress' },
     { title: 'OIDC', path: '/settings/oidc', icon: getIcon('oidc_icon.svg'), id: 'oidc' },
-    { title: 'SMTP', path: '/settings/smtp', icon: getIcon('smtp_icon.svg'), id: 'smtp' },
     { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg'), id: 'backup' },
     { title: 'Object Storage', path: '/settings/obj', icon: getIcon('cloud_upload.svg'), id: 'objectStorage' },
   ]
