@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { AccordionDetails, Box, Button, Card, Link, Stack, Typography, styled, useTheme } from '@mui/material'
+import { AccordionDetails, Box, Button, Card, Link, Stack, Typography, styled } from '@mui/material'
 import axios from 'axios'
 import { isEmpty } from 'lodash'
 import { useSession } from 'providers/Session'
@@ -99,9 +99,7 @@ interface Props {
 
 export default function UpgradesCard({ version }: Props): React.ReactElement | null {
   const { refetchSettings } = useSession()
-  const theme = useTheme()
   const [data, setData] = useState<VersionInfo[]>([])
-  const [error, setError] = useState<string | null>(null)
   const [upgradeVersion, setUpgradeVersion] = useState('')
   const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const [warningAnchorEl, setWarningAnchorEl] = useState<null | HTMLElement>(null)
@@ -117,10 +115,10 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
         const response = await axios.get(
           'https://raw.githubusercontent.com/linode/apl-announcements/refs/heads/main/updates.yaml',
         )
-        const parsedData = YAML.parse(response.data)
+        const parsedData: { updates: VersionInfo[] } = YAML.parse(response.data as string)
         setData(parsedData.updates)
       } catch (err) {
-        setError('Failed to fetch data')
+        // eslint-disable-next-line no-console
         console.error(err)
       }
     }

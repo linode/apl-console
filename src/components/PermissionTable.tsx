@@ -1,4 +1,3 @@
-import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
@@ -21,8 +20,6 @@ const permissionDefinitions: PermissionDefinition[] = [
   { id: 'useCloudShell', label: 'Use Cloud Shell' },
   { id: 'downloadKubeconfig', label: 'Download kubeconfig file' },
   { id: 'downloadDockerLogin', label: 'Download docker login credentials' },
-  // { id: 'enableMonitoring', label: 'Enable Monitoring' },
-  // { id: 'configureAlerts', label: 'Configure Alert Engine' },
 ]
 
 const useStyles = makeStyles()((theme: Theme) => ({
@@ -50,7 +47,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
 }))
 
 export function PermissionsTable({ name, disabled }: PermissionsTableProps) {
-  const { register, control } = useFormContext()
+  const { control } = useFormContext()
   const { classes, cx } = useStyles()
 
   return (
@@ -63,9 +60,6 @@ export function PermissionsTable({ name, disabled }: PermissionsTableProps) {
           <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
             <Typography className={classes.tableHeadText}>Team Members</Typography>
           </TableCell>
-          {/* <TableCell className={cx(classes.tableHead, classes.alignCenter)}>
-            <Typography className={classes.tableHeadText}>Team Admins</Typography>
-          </TableCell> */}
         </TableRow>
       </TableHead>
       <TableBody className={classes.tableBody}>
@@ -86,9 +80,6 @@ export function PermissionsTable({ name, disabled }: PermissionsTableProps) {
                 )}
               />
             </TableCell>
-            {/* <TableCell className={cx(classes.tableCell, classes.alignCenter)}>
-              <Checkbox {...register(`${name}.${permission.id}.teamAdmins`)} />
-            </TableCell> */}
           </TableRow>
         ))}
       </TableBody>

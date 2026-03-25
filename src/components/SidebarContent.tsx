@@ -37,7 +37,7 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
 
   const { isPlatformAdmin } = user
 
-  navConfig = navConfig.filter((group) => {
+  const filteredNavConfig = navConfig.filter((group) => {
     const subheader = group.subheader.toLowerCase()
     if (isPlatformAdmin) {
       return (
@@ -49,7 +49,7 @@ export default function SidebarContent({ navConfig, isCollapse = false, ...other
 
   return (
     <Box {...other}>
-      {navConfig.map((group, index) => (
+      {filteredNavConfig.map((group, index) => (
         <List key={group.subheader} disablePadding>
           {index === 0 ? <FirstSidebarDivider /> : <SidebarDivider />}
           {group.items.map((list) => {

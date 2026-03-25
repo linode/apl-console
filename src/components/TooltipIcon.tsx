@@ -5,7 +5,6 @@ import HelpOutline from '@mui/icons-material/HelpOutline'
 import InfoOutline from '@mui/icons-material/InfoOutlined'
 import WarningOutline from '@mui/icons-material/WarningAmberOutlined'
 import { useTheme } from '@mui/material/styles'
-import { SxProps } from '@mui/system'
 import * as React from 'react'
 
 import { IconButton } from './IconButton'
@@ -20,10 +19,6 @@ interface EnhancedTooltipProps extends TooltipProps {
 
 export interface TooltipIconProps
   extends Omit<TooltipProps, 'children' | 'disableInteractive' | 'leaveDelay' | 'title'> {
-  /**
-   * An optional className that does absolutely nothing
-   */
-  className?: string
   /**
    * Use this custom icon when `status` is `other`
    * @todo this seems like a flaw... passing an icon should not require `status` to be `other`
@@ -42,10 +37,6 @@ export interface TooltipIconProps
    * Pass specific styles to the Tooltip
    */
   sx?: any
-  /**
-   * Pass specific CSS styling for the SVG icon.
-   */
-  sxTooltipIcon?: SxProps
   /**
    * The tooltip's contents
    */
@@ -78,8 +69,7 @@ export interface TooltipIconProps
 export function TooltipIcon(props: TooltipIconProps) {
   const theme = useTheme()
 
-  const { classes, icon, leaveDelay, status, sx, sxTooltipIcon, text, tooltipAnalyticsEvent, tooltipPosition, width } =
-    props
+  const { classes, icon, leaveDelay, status, sx, text, tooltipAnalyticsEvent, tooltipPosition, width } = props
 
   const handleOpenTooltip = () => {
     if (tooltipAnalyticsEvent) tooltipAnalyticsEvent()
@@ -148,7 +138,6 @@ export function TooltipIcon(props: TooltipIconProps) {
         }}
         data-qa-help-button
         size='large'
-        // sx={sxTooltipIcon}
       >
         {renderIcon}
       </IconButton>
