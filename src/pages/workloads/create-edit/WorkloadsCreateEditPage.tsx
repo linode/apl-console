@@ -1,6 +1,6 @@
 import { Box, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
-import { omit } from 'lodash'
+import { isEmpty, omit } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -284,12 +284,24 @@ export default function WorkloadsCreateEditPage({
 
     try {
       const parsedValues = YAML.parse(workloadValuesYaml || '')
-      const imageRepository: string | undefined = parsedValues?.image?.repository
-      const tag: string | undefined = parsedValues?.image?.tag
+
+      // Search for image.repository in nested YAML structures (e.g. versionOne.image.repository in canary charts)
+      const findImageConfig = (obj: any, depth = 0): { repository?: string; tag?: string } | undefined => {
+        if (!obj || typeof obj !== 'object' || depth > 5) return undefined
+        if (obj.image?.repository) return { repository: obj.image.repository, tag: obj.image.tag }
+        return Object.keys(obj).reduce<{ repository?: string; tag?: string } | undefined>(
+          (found, key) => found ?? findImageConfig(obj[key], depth + 1),
+          undefined,
+        )
+      }
+
+      const imageConfig = findImageConfig(parsedValues)
+      const imageRepository = imageConfig?.repository
+      const tag = imageConfig?.tag
 
       const selectedType = (imageUpdateStrategy as any)?.type as 'disabled' | 'digest' | 'semver' | undefined
 
-      if (imageRepository && selectedType === 'digest') {
+      if (!isEmpty(imageRepository) && selectedType === 'digest') {
         const currentDigest = (imageUpdateStrategy as any)?.digest ?? {}
         imageUpdateStrategy = {
           type: 'digest',
@@ -302,7 +314,7 @@ export default function WorkloadsCreateEditPage({
         }
       }
 
-      if (imageRepository && selectedType === 'semver') {
+      if (!isEmpty(imageRepository) && selectedType === 'semver') {
         const currentSemver = (imageUpdateStrategy as any)?.semver ?? {}
         imageUpdateStrategy = {
           type: 'semver',
