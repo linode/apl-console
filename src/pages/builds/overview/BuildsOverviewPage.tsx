@@ -11,7 +11,7 @@ import { Link, RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplBuildsQuery, useGetTeamAplBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
-import { Box, Typography } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material'
 import { useSocket } from 'providers/Socket'
 import CopyToClipboard from 'components/CopyToClipboard'
 import RLink from '../../../components/Link'
@@ -72,6 +72,7 @@ const getTektonTaskRunLink = (row: Row, domainSuffix: string) => {
 
 function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: string }) {
   const [hovered, setHovered] = useState(false)
+  const theme = useTheme()
 
   const teamId = row.metadata?.labels?.['apl.io/teamId']
   const imageName = row.spec?.imageName ?? ''
@@ -89,7 +90,7 @@ function RepositoryRenderer({ row, domainSuffix }: { row: Row; domainSuffix: str
     >
       <Typography
         sx={{
-          color: '#fff',
+          color: theme.palette.text.primary,
           minWidth: 0,
           overflow: 'hidden',
           textOverflow: 'ellipsis',
