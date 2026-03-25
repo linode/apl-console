@@ -26,7 +26,7 @@ const useStyles = makeStyles()((theme) => ({
   },
 }))
 
-function isRelease(version: any): boolean {
+function isRelease(version: string): boolean {
   const pattern = /^[0-9]/
   return pattern.test(version)
 }
@@ -45,9 +45,8 @@ export default function (): React.ReactElement {
     [t('Otomi Console')]: versions.console,
     [t('Otomi Values')]: <LinkCommit repo={settings.otomi.git.repoUrl} sha={versions.values} color='primary' short />,
   }
-  const version = /^\d/.test(clusterLegend['Otomi Core'])
-    ? `v${clusterLegend['Otomi Core']}`
-    : clusterLegend['Otomi Core']
+  const coreVersion = String(versions.core ?? '')
+  const version = /^\d/.test(coreVersion) ? `v${coreVersion}` : coreVersion
   return (
     <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
       <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
@@ -58,7 +57,7 @@ export default function (): React.ReactElement {
                 <Chip size='small' label={title} />
               </TableCell>
               <TableCell className={classes.tableCellRight} align='left'>
-                {title === 'Otomi Core' && isRelease(v) ? (
+                {title === 'Otomi Core' && typeof v === 'string' && isRelease(v) ? (
                   <MuiLink
                     href={encodeURI(`https://github.com/redkubes/otomi-core/tree/${version}/CHANGELOG.md`)}
                     target='_blank'
