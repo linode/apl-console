@@ -32,6 +32,7 @@ import { useSession } from 'providers/Session'
 import { LoadingButton } from '@mui/lab'
 import InformationBanner from 'components/InformationBanner'
 import MuiLink from 'components/MuiLink'
+import useSettings from 'hooks/useSettings'
 import { aplBuildApiSchema } from './create-edit-builds.validator'
 
 const getBuildName = (name: string, tag: string): string => {
@@ -66,12 +67,25 @@ export default function BuildsCreateEditPage({
     user: { isPlatformAdmin },
   } = useSession()
 
+  const { onToggleView } = useSettings()
+
   const appsMissing = !appsEnabled.tekton || !appsEnabled.harbor
+
+  const handleAppsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+
+    onToggleView()
+
+    window.location.href = '/apps/admin'
+  }
 
   const bannerMessage = isPlatformAdmin ? (
     <>
-      Container Images requires Tekton and Harbor to be enabled. Click <MuiLink href='/apps'>here</MuiLink> to enable
-      them.
+      Container Images requires Tekton and Harbor to be enabled. Click{' '}
+      <MuiLink href='/apps' onClick={handleAppsClick}>
+        here
+      </MuiLink>{' '}
+      to enable them.
     </>
   ) : (
     'Admin needs to enable the Tekton and Harbor app to activate this feature.'

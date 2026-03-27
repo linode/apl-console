@@ -15,6 +15,7 @@ import { Box, Typography, useTheme } from '@mui/material'
 import { useSocket } from 'providers/Socket'
 import CopyToClipboard from 'components/CopyToClipboard'
 import MuiLink from 'components/MuiLink'
+import useSettings from 'hooks/useSettings'
 import RLink from '../../../components/Link'
 
 interface Row {
@@ -127,6 +128,7 @@ export default function BuildsOverviewPage({
   } = useSession()
   const { isPlatformAdmin } = user
   const { statuses } = useSocket()
+  const { onToggleView } = useSettings()
 
   const {
     data: allBuilds,
@@ -196,10 +198,21 @@ export default function BuildsOverviewPage({
 
   const appsMissing = !appsEnabled.tekton || !appsEnabled.harbor
 
+  const handleAppsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+
+    onToggleView()
+
+    window.location.href = '/apps/admin'
+  }
+
   const bannerMessage = isPlatformAdmin ? (
     <>
-      Container Images requires Tekton and Harbor to be enabled. Click <MuiLink href='/apps/admin'>here</MuiLink> to
-      enable them.
+      Container Images requires Tekton and Harbor to be enabled. Click{' '}
+      <MuiLink href='/apps/admin' onClick={handleAppsClick}>
+        here
+      </MuiLink>{' '}
+      to enable them.
     </>
   ) : (
     'Admin needs to enable the Tekton and Harbor app to activate this feature.'
