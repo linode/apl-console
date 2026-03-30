@@ -32,7 +32,7 @@
     "axios": "^1.10.0",
     "change-case": "4.1.2",
     "dotenv-cli": "4.1.1",
-    "framer-motion": "^6.2.9",
+    "framer-motion": "^12.38.0",
     "generate-download-link": "1.0.1",
     "http-proxy-middleware": "0.21.0",
     "i18next": "19.9.2",
