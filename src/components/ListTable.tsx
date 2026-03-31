@@ -19,6 +19,7 @@ interface ListTableProps extends EnhancedTableProps {
   to?: string
   customButton?: React.ReactElement
   customButtonText?: React.ReactElement
+  createButtonDisabled?: boolean
 
   hasDropdownFilter?: boolean
   dropdownFilterLabel?: string
@@ -39,6 +40,7 @@ export default function ({
   to,
   customButton = null,
   customButtonText = null,
+  createButtonDisabled = false,
 
   hasDropdownFilter = false,
   dropdownFilterLabel = 'Filter',
@@ -66,7 +68,6 @@ export default function ({
   const [internalSelected, setInternalSelected] = useState<string>('')
   const selectedFilter = dropdownFilterValue ?? internalSelected
 
-  // When items load/change, select first item if nothing selected
   useEffect(() => {
     if (!hasDropdownFilter) return
     if (selectedFilter) return
@@ -100,7 +101,13 @@ export default function ({
 
           {(isPlatformAdmin || oboTeamId) && !noCrud && (
             <Box mb={1}>
-              <Button variant='contained' component={Link} to={redirect} data-cy={`button-create-${resourceType}`}>
+              <Button
+                variant='contained'
+                component={Link}
+                to={redirect}
+                disabled={createButtonDisabled}
+                data-cy={`button-create-${resourceType}`}
+              >
                 {customButtonText || t('BUTTON_NEW_RESOURCE', { model: resourceType })}
               </Button>
             </Box>
