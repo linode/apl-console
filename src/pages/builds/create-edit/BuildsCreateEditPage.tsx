@@ -2,7 +2,7 @@ import { Box, Grid, Typography, useTheme } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useMemo, useState } from 'react'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
 import {
@@ -68,6 +68,7 @@ export default function BuildsCreateEditPage({
   } = useSession()
 
   const { onToggleView } = useSettings()
+  const history = useHistory()
 
   const appsMissing = !appsEnabled.tekton || !appsEnabled.harbor
 

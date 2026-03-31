@@ -7,7 +7,7 @@ import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { Link, RouteComponentProps, useHistory } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplBuildsQuery, useGetTeamAplBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
@@ -129,6 +129,7 @@ export default function BuildsOverviewPage({
   const { isPlatformAdmin } = user
   const { statuses } = useSocket()
   const { onToggleView } = useSettings()
+  const history = useHistory()
 
   const {
     data: allBuilds,
