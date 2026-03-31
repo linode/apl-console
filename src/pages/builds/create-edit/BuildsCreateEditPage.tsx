@@ -82,7 +82,7 @@ export default function BuildsCreateEditPage({
   const bannerMessage = isPlatformAdmin ? (
     <>
       Container Images requires Tekton and Harbor to be enabled. Click{' '}
-      <MuiLink href='/apps' onClick={handleAppsClick}>
+      <MuiLink href='/apps/admin' onClick={handleAppsClick}>
         here
       </MuiLink>{' '}
       to enable them.
