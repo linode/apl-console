@@ -1,6 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import { Box } from '@mui/material'
-import { skipToken } from '@reduxjs/toolkit/dist/query'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import Dashboard from 'components/Dashboard'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
@@ -9,7 +9,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
-import { useGetDashboardQuery, useGetTeamQuery, useGetTeamsQuery } from 'redux/otomiApi'
+import { useGetAplTeamQuery, useGetAplTeamsQuery, useGetDashboardQuery } from 'redux/otomiApi'
 
 export default function (): React.ReactElement {
   const { themeView } = useSettings()
@@ -24,8 +24,9 @@ export default function (): React.ReactElement {
     isLoading: isLoadingTeams,
     isFetching: isFetchingTeams,
     refetch: refetchTeams,
-  } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
-  const { data: teamData } = useGetTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
+  } = useGetAplTeamsQuery(isPlatformAdmin ? undefined : skipToken)
+
+  const { data: teamData } = useGetAplTeamQuery({ teamId: oboTeamId }, { skip: !oboTeamId || isPlatformAdmin })
 
   const teamId = isPlatformView ? undefined : oboTeamId
 
@@ -36,19 +37,23 @@ export default function (): React.ReactElement {
   } = useGetDashboardQuery({ teamId }, { skip: !isPlatformAdmin && !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (oboTeamId && !isFetchingDashboard) refetchDashboard()
     if (oboTeamId && !isFetchingTeams) refetchTeams()
   }, [isDirty])
+
   const { t } = useTranslation()
-  // END HOOKS
-  const team = !isLoadingTeams && (find(teams, { name: teamId }) || teamData)
+
+  const team = !isLoadingTeams && (find(teams, (team) => team.metadata.labels['apl.io/teamId'] === teamId) || teamData)
+
   const loading = isFetchingDashboard || isLoadingTeams
   const teamInventory = isPlatformView ? [{ name: 'teams', count: teams?.length }] : []
   const dashboardInventory = dashboard ?? ([] as any)
   const inventory = [...teamInventory, ...dashboardInventory]
   const comp = (teams || team) && dashboard && <Dashboard team={team} inventory={inventory} />
+
   return (
     <Box sx={{ paddingTop: '3rem' }}>
       <PaperLayout
