@@ -7,13 +7,15 @@ import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, RouteComponentProps } from 'react-router-dom'
+import { Link, RouteComponentProps, useHistory } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
 import { useGetAllAplBuildsQuery, useGetTeamAplBuildsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 import { Box, Typography, useTheme } from '@mui/material'
 import { useSocket } from 'providers/Socket'
 import CopyToClipboard from 'components/CopyToClipboard'
+import MuiLink from 'components/MuiLink'
+import useSettings from 'hooks/useSettings'
 import RLink from '../../../components/Link'
 
 interface Row {
@@ -119,11 +121,15 @@ export default function BuildsOverviewPage({
   const { t } = useTranslation()
   const {
     appsEnabled,
+    user,
     settings: {
       cluster: { domainSuffix },
     },
   } = useSession()
+  const { isPlatformAdmin } = user
   const { statuses } = useSocket()
+  const { onToggleView } = useSettings()
+  const history = useHistory()
 
   const {
     data: allBuilds,
@@ -188,23 +194,44 @@ export default function BuildsOverviewPage({
     })
   }
 
-  const customButtonText = () => <span>Create container image</span>
-
   const loading = isLoadingAllBuilds || isLoadingTeamBuilds
   const builds = teamId ? teamBuilds : allBuilds
 
-  const comp = !appsEnabled.harbor ? (
-    <InformationBanner message='Admin needs to enable the Harbor app to activate this feature.' />
+  const appsMissing = !appsEnabled.tekton || !appsEnabled.harbor
+
+  const handleAppsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault()
+
+    onToggleView()
+
+    history.push('/apps/admin')
+  }
+
+  const bannerMessage = isPlatformAdmin ? (
+    <>
+      Container Images requires Tekton and Harbor to be enabled. Click{' '}
+      <MuiLink href='/apps/admin' onClick={handleAppsClick}>
+        here
+      </MuiLink>{' '}
+      to enable them.
+    </>
   ) : (
-    builds && (
+    'Admin needs to enable the Tekton and Harbor app to activate this feature.'
+  )
+
+  const comp = (
+    <>
+      {appsMissing && <InformationBanner message={bannerMessage} />}
+
       <ListTable
         teamId={teamId}
         headCells={headCells}
-        rows={builds}
+        rows={appsMissing ? [] : builds ?? []}
         resourceType='Container-image'
-        customButtonText={customButtonText()}
+        customButtonText={<span>Create container image</span>}
+        createButtonDisabled={appsMissing}
       />
-    )
+    </>
   )
 
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_CONTAINER_IMAGES', { scope: getRole(teamId) })} />
