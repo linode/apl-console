@@ -203,7 +203,7 @@ export default function BuildsOverviewPage({
 
     onToggleView()
 
-    window.location.href = '/apps/admin'
+    history.push('/apps/admin')
   }
 
   const bannerMessage = isPlatformAdmin ? (
