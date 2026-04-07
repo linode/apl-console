@@ -1,5 +1,5 @@
 # --------------- dev stage for developers to override sources
-FROM node:20.20.1-alpine as dev
+FROM node:20.20.2-alpine as dev
 
 RUN apk --no-cache add make gcc g++ python3
 ENV NODE_ENV=development
@@ -33,7 +33,7 @@ RUN npm test -- --watchAll=false
 RUN npm run build
 
 # --------------- production stage
-FROM nginx:1.29.6-alpine as prod
+FROM nginx:1.29.7-alpine as prod
 
 RUN mkdir /app
 RUN addgroup -S app && adduser -S app -G app -h /app -s /sbin/nologin
