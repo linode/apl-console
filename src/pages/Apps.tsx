@@ -44,7 +44,7 @@ export default function ({
       refetch()
       setTimeout(refetchAppsEnabled)
     }
-  }, [appIds, appEnabled, okToggle, refetch, refetchAppsEnabled, teamId, toggle])
+  }, [appIds, okToggle])
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
