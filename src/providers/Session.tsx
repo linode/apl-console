@@ -135,6 +135,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
     // return the logout page if the error is a fetch error (session expired)
     if (status === 'FETCH_ERROR') return <Logout fetchError />
+    // redirect to login on 401/403 (expired session / OAuth2-Proxy rejection)
+    if (originalStatus === 401 || originalStatus === 403) return <Logout fetchError />
     // if we have a session error which not fits the above, we throw a generic error
     const errorMessage: string = data?.error || data || 'Session error'
     const errorCode: number = originalStatus || status || 500

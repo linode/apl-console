@@ -2,11 +2,11 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-globals */
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const headers = []
 
-const baseQuery = fetchBaseQuery({
+const rawBaseQuery = fetchBaseQuery({
   baseUrl: '/api/',
   prepareHeaders: (h) => {
     headers.map(([idx, val]: [string, string]) => h.set(idx, val))
@@ -23,6 +23,24 @@ const baseQuery = fetchBaseQuery({
     return searchParams.toString()
   },
 })
+
+let isRedirecting = false
+
+// Wrap the base query to intercept 401/403 HTML responses from OAuth2-Proxy
+// and redirect to the login page instead of showing raw HTML errors
+const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions)
+  if (result.error && !isRedirecting) {
+    const { status, data } = result.error
+    const isAuthError = status === 401 || status === 403
+    const isHtmlResponse = typeof data === 'string' && data.includes('<!DOCTYPE html')
+    if (isAuthError && isHtmlResponse) {
+      isRedirecting = true
+      window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
+    }
+  }
+  return result
+}
 
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const emptySplitApi = createApi({
