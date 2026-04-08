@@ -32,7 +32,9 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
   const result = await rawBaseQuery(args, api, extraOptions)
   if (result.error && !isRedirecting) {
     const { status, data } = result.error
-    const isAuthError = status === 401 || status === 403
+    // RTK Query wraps HTML responses as PARSING_ERROR with the real HTTP status in originalStatus
+    const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
+    const isAuthError = httpStatus === 401 || httpStatus === 403
     const isHtmlResponse = typeof data === 'string' && data.includes('<!DOCTYPE html')
     if (isAuthError && isHtmlResponse) {
       isRedirecting = true
