@@ -6568,7 +6568,7 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
   otomi?: {
     git?: {
       repoUrl: string
-      username: string
+      username?: string
       password?: string
       email: string
       branch: string
@@ -6826,7 +6826,7 @@ export type EditSettingsApiArg = {
     otomi?: {
       git?: {
         repoUrl: string
-        username: string
+        username?: string
         password?: string
         email: string
         branch: string
