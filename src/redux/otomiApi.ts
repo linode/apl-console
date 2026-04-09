@@ -51,17 +51,17 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/services`, method: 'POST', body: queryArg.body }),
     }),
     getK8SServices: build.query<GetK8SServicesApiResponse, GetK8SServicesApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/kubernetes/services` }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/kubernetes/services` }),
     }),
     getK8SPodLabelsForWorkload: build.query<GetK8SPodLabelsForWorkloadApiResponse, GetK8SPodLabelsForWorkloadApiArg>({
       query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/kubernetes/networkPolicies`,
+        url: `/v2/teams/${queryArg.teamId}/kubernetes/networkPolicies`,
         params: { workloadName: queryArg.workloadName, namespace: queryArg['namespace'] },
       }),
     }),
     fetchPodsFromLabel: build.query<FetchPodsFromLabelApiResponse, FetchPodsFromLabelApiArg>({
       query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/kubernetes/fetchPodsFromLabel`,
+        url: `/v2/teams/${queryArg.teamId}/kubernetes/fetchPodsFromLabel`,
         params: { labelSelector: queryArg.labelSelector, namespace: queryArg['namespace'] },
       }),
     }),
