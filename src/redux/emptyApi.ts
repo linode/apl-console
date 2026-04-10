@@ -10,6 +10,7 @@ const rawBaseQuery = fetchBaseQuery({
   baseUrl: '/api/',
   prepareHeaders: (h) => {
     headers.map(([idx, val]: [string, string]) => h.set(idx, val))
+    h.set('Accept', 'application/json')
     return h
   },
   paramsSerializer: (params) => {
@@ -26,17 +27,14 @@ const rawBaseQuery = fetchBaseQuery({
 
 let isRedirecting = false
 
-// Wrap the base query to intercept 401/403 HTML responses from OAuth2-Proxy
-// and redirect to the login page instead of showing raw HTML errors
+// Wrap the base query to intercept 401 responses from OAuth2-Proxy
+// and redirect to the login page when the session has expired
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   const result = await rawBaseQuery(args, api, extraOptions)
   if (result.error && !isRedirecting) {
-    const { status, data } = result.error
-    // RTK Query wraps HTML responses as PARSING_ERROR with the real HTTP status in originalStatus
+    const { status } = result.error
     const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
-    const isAuthError = httpStatus === 401 || httpStatus === 403
-    const isHtmlResponse = typeof data === 'string' && data.includes('<!DOCTYPE html')
-    if (isAuthError && isHtmlResponse) {
+    if (httpStatus === 401) {
       isRedirecting = true
       window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
     }
