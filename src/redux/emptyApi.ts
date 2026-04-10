@@ -31,12 +31,18 @@ let isRedirecting = false
 // and redirect to the login page when the session has expired
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
   const result = await rawBaseQuery(args, api, extraOptions)
-  if (result.error && !isRedirecting) {
+  if (result.error) {
     const { status } = result.error
     const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
     if (httpStatus === 401) {
-      isRedirecting = true
-      window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
+      if (!isRedirecting) {
+        isRedirecting = true
+        window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
+      }
+      // Suspend the query so components stay in loading state until the redirect completes
+      return new Promise(() => {
+        /* suspend until redirect */
+      })
     }
   }
   return result
