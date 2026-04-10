@@ -24,17 +24,9 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
         dispatch(setDirty(false))
     }
   } else if (payload) {
-    // Don't set global error for auth HTML responses — the baseQuery interceptor
-    // is already redirecting to the login page
-    const isAuthHtmlError =
-      (payload?.originalStatus === 401 || payload?.originalStatus === 403) &&
-      typeof payload?.data === 'string' &&
-      payload.data.includes('<!DOCTYPE html')
-    if (!isAuthHtmlError) {
-      // eslint-disable-next-line no-console
-      console.error('We got a rejected action with payload: ', payload)
-      dispatch(setError(payload))
-    }
+    // eslint-disable-next-line no-console
+    console.error('We got a rejected action with payload: ', payload)
+    dispatch(setError(payload))
     dispatch(setDirty(false))
   }
   return next(action)
