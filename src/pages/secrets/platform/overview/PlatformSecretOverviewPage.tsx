@@ -49,7 +49,7 @@ export default function SecretOverviewPage(): React.ReactElement {
   useEffect(() => {
     if (isDirty !== false) return
     if (namespace && !isFetchingSealedSecretsByNamespace) refetchSealedSecretsByNamespace()
-  }, [isDirty, namespace, isFetchingSealedSecretsByNamespace, refetchSealedSecretsByNamespace])
+  }, [isDirty])
 
   const {
     oboTeamId,
