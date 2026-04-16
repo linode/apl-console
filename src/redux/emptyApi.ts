@@ -18,7 +18,7 @@ const rawBaseQuery = fetchBaseQuery({
     Object.entries(params).forEach(([key, value]) => {
       if (Array.isArray(value)) {
         // Serialize arrays with explode: true format (repeated keys)
-        value.forEach((item) => searchParams.append(key, item))
+        value.forEach((item) => searchParams.append(key, String(item)))
       } else if (value !== undefined && value !== null) searchParams.append(key, String(value))
     })
     return searchParams.toString()
@@ -27,24 +27,35 @@ const rawBaseQuery = fetchBaseQuery({
 
 let isRedirecting = false
 
+const getHttpStatus = (error: FetchBaseQueryError): number | string =>
+  'originalStatus' in error ? error.originalStatus : error.status
+
+const redirectToLogin = () => {
+  if (isRedirecting) return
+  isRedirecting = true
+  // On JWT verification failure, reload the page without clearing browser session.
+  // This gives Envoy time to refresh JWKS and retry the request with fresh keys.
+  // If Keycloak keys have rotated during upgrade, a brief delay allows stabilization.
+  window.location.reload()
+}
+
 // Wrap the base query to intercept 401 responses from OAuth2-Proxy
 // and redirect to the login page when the session has expired
 const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
-  const result = await rawBaseQuery(args, api, extraOptions)
-  if (result.error) {
-    const { status } = result.error
-    const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
-    if (httpStatus === 401) {
-      if (!isRedirecting) {
-        isRedirecting = true
-        window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
-      }
-      // Suspend the query so components stay in loading state until the redirect completes
+  let result = await rawBaseQuery(args, api, extraOptions)
+
+  if (result.error && getHttpStatus(result.error) === 401) {
+    result = await rawBaseQuery(args, api, extraOptions)
+
+    if (result.error && getHttpStatus(result.error) === 401) {
+      redirectToLogin()
+      // Suspend the query so components stay in loading state until redirect completes
       return new Promise(() => {
         /* suspend until redirect */
       })
     }
   }
+
   return result
 }
 
