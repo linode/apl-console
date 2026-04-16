@@ -1,13 +1,10 @@
 import StringField from '@rjsf/core/lib/components/fields/StringField'
 import { set } from 'lodash'
-import React, { useState } from 'react'
+import React from 'react'
 import { isHidden } from './ObjectFieldTemplate'
 import RadioWidget from './RadioWidget'
 
-const MASKED_PASSWORD = '••••••••'
-
 export default function ({ children, schema, uiSchema, formData, placeholder, ...props }: any): React.ReactElement {
-  const [touched, setTouched] = useState(false)
   const newSchema = { ...schema }
   const newUiSchema = { ...uiSchema }
   const renderedPlaceholder = placeholder ?? `${schema['x-default'] || ''}`
@@ -40,10 +37,6 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
       else newSchema.default = schema.enum[0]
     }
   }
-
-  const isPasswordWidget = newUiSchema['ui:widget'] === 'password'
-  const showMask = isPasswordWidget && !formData && !touched
-
   const isPasswordField = (elementId: string) => {
     const regex = /password/i
     return regex.test(elementId)
@@ -51,24 +44,18 @@ export default function ({ children, schema, uiSchema, formData, placeholder, ..
 
   const handleFocus = (elementId: string) => {
     const element = document.getElementById(elementId) as HTMLInputElement
-    if (isPasswordField(elementId)) {
-      element.type = 'text'
-      if (showMask) setTouched(true)
-    }
+    if (isPasswordField(elementId)) element.type = 'text'
   }
 
   const handleBlur = (elementId: string) => {
     const element = document.getElementById(elementId) as HTMLInputElement
-    if (isPasswordField(elementId)) {
-      element.type = 'password'
-      if (!formData) setTouched(false)
-    }
+    if (isPasswordField(elementId)) element.type = 'password'
   }
 
   return (
     <StringField
       {...props}
-      formData={showMask ? MASKED_PASSWORD : formData}
+      formData={formData}
       schema={newSchema}
       uiSchema={newUiSchema}
       onFocus={handleFocus}
