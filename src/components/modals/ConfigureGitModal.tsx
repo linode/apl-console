@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Check } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Modal, Typography, styled } from '@mui/material'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
@@ -48,11 +47,31 @@ const SuccessIconWrapper = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   margin: '24px auto 40px',
+  animation: 'iconPop 280ms ease-out',
 }))
 
 interface ConfigureGitModalProps {
   open: boolean
   onClose: () => void
+}
+
+function AnimatedCheckmark() {
+  return (
+    <svg width='64' height='64' viewBox='0 0 64 64' fill='none'>
+      <path
+        d='M14 34L27 47L50 19'
+        stroke='#2f2f38'
+        strokeWidth='6'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        style={{
+          strokeDasharray: 60,
+          strokeDashoffset: 60,
+          animation: 'drawCheck 700ms ease forwards',
+        }}
+      />
+    </svg>
+  )
 }
 
 function getErrorMessage(error: unknown): string {
@@ -148,6 +167,21 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
             opacity: isTransitioning ? 0 : 1,
             transform: isTransitioning ? 'translateY(8px)' : 'translateY(0)',
             transition: 'opacity 180ms ease, transform 180ms ease',
+            '@keyframes drawCheck': {
+              to: {
+                strokeDashoffset: 0,
+              },
+            },
+            '@keyframes iconPop': {
+              '0%': {
+                transform: 'scale(0.7)',
+                opacity: 0,
+              },
+              '100%': {
+                transform: 'scale(1)',
+                opacity: 1,
+              },
+            },
           }}
         >
           {!showFormStep ? (
@@ -196,7 +230,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
                 <Box sx={{ textAlign: 'center', pt: 2 }}>
                   <SuccessIconWrapper>
-                    <Check sx={{ fontSize: 64, color: '#2f2f38' }} />
+                    <AnimatedCheckmark />
                   </SuccessIconWrapper>
 
                   <Typography variant='h4' sx={{ mb: 2, fontWeight: 600 }}>
