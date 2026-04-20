@@ -14,7 +14,7 @@ export const gitSettingsSchema = yup.object({
     .required('Git repository URL is required')
     .matches(/^(https:\/\/|git@).+/, 'Enter a valid Git repository URL starting with https:// or git@'),
   branch: yup.string().required('Branch is required'),
-  username: yup.string().required('Username is required'),
+  username: yup.string().optional(),
   password: yup.string().required('Password is required'),
   email: yup.string().email('Enter a valid email address').required('Email address is required'),
 })

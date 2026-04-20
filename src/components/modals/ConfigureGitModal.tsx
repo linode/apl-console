@@ -1,9 +1,14 @@
+/* eslint-disable no-nested-ternary */
 import { yupResolver } from '@hookform/resolvers/yup'
+import { Check } from '@mui/icons-material'
 import { LoadingButton } from '@mui/lab'
 import { Box, Button, Modal, Typography, styled } from '@mui/material'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import InformationBanner from 'components/InformationBanner'
 import { TextField } from 'components/forms/TextField'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useMigrateGitMutation } from 'redux/otomiApi'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
 const ModalBox = styled(Box)(({ theme }) => ({
@@ -34,15 +39,15 @@ const ModalFooter = styled('div')({
   gap: '16px',
 })
 
-const SuccessBanner = styled(Box)(({ theme }) => ({
-  border: `1px solid ${theme.palette.success.main}`,
-  color: theme.palette.common.white,
-  borderRadius: 2,
-  minHeight: 50,
+const SuccessIconWrapper = styled(Box)(({ theme }) => ({
+  width: 108,
+  height: 108,
+  borderRadius: '50%',
+  backgroundColor: theme.palette.success.main,
   display: 'flex',
   alignItems: 'center',
-  padding: '0 32px',
-  whiteSpace: 'nowrap',
+  justifyContent: 'center',
+  margin: '24px auto 40px',
 }))
 
 interface ConfigureGitModalProps {
@@ -50,18 +55,34 @@ interface ConfigureGitModalProps {
   onClose: () => void
 }
 
+function getErrorMessage(error: unknown): string {
+  const fetchError = error as FetchBaseQueryError & { data?: { message?: string; error?: string } }
+
+  if ('status' in (fetchError || {})) {
+    if (typeof fetchError.data === 'object' && fetchError.data !== null)
+      return fetchError.data.message || fetchError.data.error || 'Something went wrong while migrating Git settings.'
+
+    if (fetchError.status === 503) return 'The API is currently unavailable.'
+
+    if (fetchError.status === 400)
+      return 'Cannot connect to the provided Git repository. Check the repository URL and credentials.'
+  }
+
+  return 'Something went wrong while migrating Git settings.'
+}
+
 export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalProps) {
-  const [connectionLoading, setConnectionLoading] = useState(false)
-  const [connectionSuccess, setConnectionSuccess] = useState(false)
   const [showFormStep, setShowFormStep] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [migrationSucceeded, setMigrationSucceeded] = useState(false)
+
+  const [migrateGit, { isLoading: isMigrating }] = useMigrateGitMutation()
 
   const {
     control,
     handleSubmit,
-    trigger,
-    getValues,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     reset,
   } = useForm<GitSettingsFormValues>({
     resolver: yupResolver(gitSettingsSchema),
@@ -78,8 +99,8 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   useEffect(() => {
     if (!open) {
       setShowFormStep(false)
-      setConnectionSuccess(false)
-      setConnectionLoading(false)
+      setSubmitError('')
+      setMigrationSucceeded(false)
       setIsTransitioning(false)
       reset()
     }
@@ -94,30 +115,25 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     }, 180)
   }
 
-  const handleTestConnection = async () => {
-    const valid = await trigger()
-    if (!valid) {
-      setConnectionSuccess(false)
-      return
-    }
-
-    setConnectionLoading(true)
-    setConnectionSuccess(false)
+  const onSubmit = async (data: GitSettingsFormValues) => {
+    setSubmitError('')
+    setMigrationSucceeded(false)
 
     try {
-      const values = getValues()
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      await migrateGit({
+        body: {
+          repoUrl: data.repoUrl.trim(),
+          branch: data.branch.trim(),
+          username: data.username?.trim() || undefined,
+          password: data.password,
+          email: data.email.trim(),
+        },
+      }).unwrap()
 
-      if (values.repoUrl && values.branch && values.username && values.password && values.email)
-        setConnectionSuccess(true)
-    } finally {
-      setConnectionLoading(false)
+      setMigrationSucceeded(true)
+    } catch (error) {
+      setSubmitError(getErrorMessage(error))
     }
-  }
-
-  const onSubmit = async (data: GitSettingsFormValues) => {
-    console.log('Git config submit:', data)
-    handleClose()
   }
 
   const handleClose = () => {
@@ -125,7 +141,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={isMigrating ? undefined : handleClose}>
       <ModalBox>
         <Box
           sx={{
@@ -171,6 +187,38 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 </Button>
               </ModalFooter>
             </>
+          ) : migrationSucceeded ? (
+            <>
+              <ModalContent>
+                <Typography variant='h4' sx={{ mb: 3, fontWeight: 600, letterSpacing: 0 }}>
+                  Configure Git - Bring your own Git
+                </Typography>
+
+                <Box sx={{ textAlign: 'center', pt: 2 }}>
+                  <SuccessIconWrapper>
+                    <Check sx={{ fontSize: 64, color: '#2f2f38' }} />
+                  </SuccessIconWrapper>
+
+                  <Typography variant='h4' sx={{ mb: 2, fontWeight: 600 }}>
+                    Successfully connected to external repo
+                  </Typography>
+
+                  <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.4 }}>
+                    App platform will be restarted, and might be unavailable for a few minutes
+                  </Typography>
+
+                  <Typography variant='body2' sx={{ color: 'text.secondary', mt: 2, opacity: 0.8 }}>
+                    (You can now close this window)
+                  </Typography>
+                </Box>
+              </ModalContent>
+
+              <ModalFooter sx={{ justifyContent: 'center' }}>
+                <Button variant='contained' color='primary' onClick={handleClose} sx={{ minWidth: 140 }}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
               <ModalContent>
@@ -178,9 +226,17 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                   Configure Git - Bring your own Git
                 </Typography>
 
+                {!!submitError && <InformationBanner message={submitError} />}
+
                 <Typography
                   variant='h2'
-                  sx={{ mb: 4, fontWeight: 550, letterSpacing: '0.035em', marginBottom: '20px' }}
+                  sx={{
+                    mb: 4,
+                    fontWeight: 550,
+                    letterSpacing: '0.035em',
+                    marginBottom: '20px',
+                    mt: submitError ? 2 : 0,
+                  }}
                 >
                   Repository
                 </Typography>
@@ -277,7 +333,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                     />
                   </Box>
 
-                  <Box sx={{ maxWidth: 840, mb: 4 }}>
+                  <Box sx={{ maxWidth: 840, mb: 2 }}>
                     <Controller
                       name='email'
                       control={control}
@@ -293,28 +349,15 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                       )}
                     />
                   </Box>
-
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mt: 4 }}>
-                    <LoadingButton
-                      variant='contained'
-                      color='primary'
-                      onClick={handleTestConnection}
-                      loading={connectionLoading}
-                    >
-                      Test Connection
-                    </LoadingButton>
-
-                    {connectionSuccess && <SuccessBanner>Successfully connected with Git repository</SuccessBanner>}
-                  </Box>
                 </Box>
               </ModalContent>
 
               <ModalFooter>
-                <Button variant='outlined' color='primary' onClick={handleClose}>
+                <Button variant='outlined' color='primary' onClick={handleClose} disabled={isMigrating}>
                   Configure later
                 </Button>
 
-                <LoadingButton type='submit' variant='contained' color='primary' loading={isSubmitting}>
+                <LoadingButton type='submit' variant='contained' color='primary' loading={isMigrating}>
                   Proceed
                 </LoadingButton>
               </ModalFooter>
