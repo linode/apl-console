@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom'
 import Error from 'components/Error'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
-import ObjWizardModal from 'components/ObjWizardModal'
 import MainLayout from './Base'
 
 interface Props {
@@ -38,7 +37,6 @@ export default function ({ loading, comp, title, children }: Props): React.React
           </Box>
         </Card>
       </Container>
-      <ObjWizardModal />
     </MainLayout>
   )
 }
