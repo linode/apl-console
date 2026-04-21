@@ -85,7 +85,7 @@ const BodyText = styled(Typography)(({ theme }) => ({
 }))
 
 const IntroParagraph = styled(BodyText)({
-  marginBottom: '32px',
+  marginBottom: '24px',
 })
 
 const SectionTitle = styled(Typography)({
