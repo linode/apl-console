@@ -27,7 +27,7 @@ const ModalBox = styled(Box)(({ theme }) => ({
 
 const ModalContent = styled('div')({
   padding: '40px 52px 32px 52px',
-  minHeight: 360,
+  minHeight: 300,
 })
 
 const ModalFooter = styled('div')({
@@ -39,8 +39,8 @@ const ModalFooter = styled('div')({
 })
 
 const SuccessIconWrapper = styled(Box)(({ theme }) => ({
-  width: 108,
-  height: 108,
+  width: 90,
+  height: 90,
   borderRadius: '50%',
   backgroundColor: theme.palette.success.main,
   display: 'flex',
@@ -160,7 +160,14 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }
 
   return (
-    <Modal open={open} onClose={isMigrating ? undefined : handleClose}>
+    <Modal
+      open={open}
+      onClose={(_, reason) => {
+        if (reason === 'backdropClick') return
+        if (isMigrating) return
+        handleClose()
+      }}
+    >
       <ModalBox>
         <Box
           sx={{
@@ -187,8 +194,8 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
           {!showFormStep ? (
             <>
               <ModalContent>
-                <Typography variant='h4' sx={{ mb: 3, fontWeight: 600, letterSpacing: 0 }}>
-                  Configure Git
+                <Typography variant='h4' sx={{ mb: 3, fontWeight: 600, letterSpacing: 0, fontSize: '1.8rem' }}>
+                  Configure Git Repository
                 </Typography>
 
                 <Typography
@@ -206,8 +213,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 </Typography>
 
                 <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.5 }}>
-                  We recommend to configure an external Git Repo to install App Platform on, this step will only take a
-                  few minutes
+                  Configuring an external Git Repo is recommended for installing App Platform.
                 </Typography>
               </ModalContent>
 
@@ -224,21 +230,17 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
           ) : migrationSucceeded ? (
             <>
               <ModalContent>
-                <Typography variant='h4' sx={{ mb: 3, fontWeight: 600, letterSpacing: 0 }}>
-                  Configure Git - Bring your own Git
-                </Typography>
-
                 <Box sx={{ textAlign: 'center', pt: 2 }}>
                   <SuccessIconWrapper>
                     <AnimatedCheckmark />
                   </SuccessIconWrapper>
 
                   <Typography variant='h4' sx={{ mb: 2, fontWeight: 600 }}>
-                    Successfully connected to external repo
+                    Successfully connected to Git repository
                   </Typography>
 
                   <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.4 }}>
-                    App platform will be restarted, and might be unavailable for a few minutes
+                    The App Platform web interface is going to be restarted and will be unavailable for few minutes.
                   </Typography>
 
                   <Typography variant='body2' sx={{ color: 'text.secondary', mt: 2, opacity: 0.8 }}>
@@ -256,24 +258,14 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
               <ModalContent>
-                <Typography variant='h4' sx={{ mb: 5, fontWeight: 500, marginBottom: '25px', letterSpacing: 0 }}>
-                  Configure Git - Bring your own Git
+                <Typography
+                  variant='h4'
+                  sx={{ mb: 5, fontWeight: 500, marginBottom: '25px', letterSpacing: 0, fontSize: '1.8rem' }}
+                >
+                  Configure Git Repository
                 </Typography>
 
                 {!!submitError && <InformationBanner message={submitError} />}
-
-                <Typography
-                  variant='h2'
-                  sx={{
-                    mb: 4,
-                    fontWeight: 550,
-                    letterSpacing: '0.035em',
-                    marginBottom: '20px',
-                    mt: submitError ? 2 : 0,
-                  }}
-                >
-                  Repository
-                </Typography>
 
                 <Box sx={{ mb: 4 }}>
                   <Controller
@@ -305,7 +297,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                         fullWidth
                         helperText={
                           errors.branch?.message ||
-                          'Branch you want App Platform installed on. App Platform will automatically create the branch if it does not exist'
+                          'Branch App Platform will be installed on. App Platform will automatically create the branch if it does not exist.'
                         }
                         error={!!errors.branch}
                       />
@@ -341,7 +333,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          label='Username'
+                          label='Username (Optional)'
                           fullWidth
                           width='fullwidth'
                           error={!!errors.username}
@@ -374,7 +366,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                       render={({ field }) => (
                         <TextField
                           {...field}
-                          label='Email address'
+                          label='Email'
                           fullWidth
                           width='fullwidth'
                           helperText={errors.email?.message || 'Email address to use for Git commits'}
