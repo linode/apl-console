@@ -5,8 +5,10 @@ import { Box, Button, Modal, Typography, styled } from '@mui/material'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import InformationBanner from 'components/InformationBanner'
 import { TextField } from 'components/forms/TextField'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useLocalStorage } from 'react-use'
+import { useSession } from 'providers/Session'
 import { useMigrateGitMutation } from 'redux/otomiApi'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
@@ -51,8 +53,8 @@ const SuccessIconWrapper = styled(Box)(({ theme }) => ({
 }))
 
 interface ConfigureGitModalProps {
-  open: boolean
-  onClose: () => void
+  open?: boolean
+  onClose?: () => void
 }
 
 function AnimatedCheckmark() {
@@ -75,22 +77,39 @@ function AnimatedCheckmark() {
 }
 
 function getErrorMessage(error: unknown): string {
-  const fetchError = error as FetchBaseQueryError & { data?: { message?: string; error?: string } }
+  const fetchError = error as FetchBaseQueryError & {
+    data?: { message?: string; error?: string }
+    error?: string
+    originalStatus?: number
+    status?: number | string
+  }
 
   if ('status' in (fetchError || {})) {
     if (typeof fetchError.data === 'object' && fetchError.data !== null)
       return fetchError.data.message || fetchError.data.error || 'Something went wrong while migrating Git settings.'
 
+    if (fetchError.status === 'PARSING_ERROR' && fetchError.originalStatus === 200) return ''
+
     if (fetchError.status === 503) return 'The API is currently unavailable.'
 
     if (fetchError.status === 400)
       return 'Cannot connect to the provided Git repository. Check the repository URL and credentials.'
+
+    if (typeof fetchError.error === 'string' && fetchError.error.length > 0) return fetchError.error
   }
 
   return 'Something went wrong while migrating Git settings.'
 }
 
 export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalProps) {
+  const {
+    user: { isPlatformAdmin },
+    settings: {
+      otomi: { isPreInstalled },
+    },
+  } = useSession()
+
+  const [showGitWizard, setShowGitWizard] = useLocalStorage<boolean>('showGitConfigureWizard', true)
   const [showFormStep, setShowFormStep] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -115,15 +134,45 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     mode: 'onBlur',
   })
 
+  const isControlled = typeof open === 'boolean'
+
+  const actualOpen = useMemo(() => {
+    if (isControlled) return !!open
+    return !!showGitWizard
+  }, [isControlled, open, showGitWizard])
+
   useEffect(() => {
-    if (!open) {
+    if (showGitWizard === undefined) setShowGitWizard(true)
+  }, [showGitWizard, setShowGitWizard])
+
+  useEffect(() => {
+    if (!isPreInstalled && !isControlled) setShowGitWizard(false)
+  }, [isPreInstalled, isControlled, setShowGitWizard])
+
+  useEffect(() => {
+    if (!actualOpen) {
       setShowFormStep(false)
       setSubmitError('')
       setMigrationSucceeded(false)
       setIsTransitioning(false)
       reset()
     }
-  }, [open, reset])
+  }, [actualOpen, reset])
+
+  const handleClose = () => {
+    setShowFormStep(false)
+    setSubmitError('')
+    setMigrationSucceeded(false)
+    setIsTransitioning(false)
+    reset()
+
+    if (isControlled) {
+      onClose?.()
+      return
+    }
+
+    setShowGitWizard(false)
+  }
 
   const goToFormStep = () => {
     setIsTransitioning(true)
@@ -139,7 +188,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     setMigrationSucceeded(false)
 
     try {
-      await migrateGit({
+      const result = await migrateGit({
         body: {
           repoUrl: data.repoUrl.trim(),
           branch: data.branch.trim(),
@@ -147,21 +196,37 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
           password: data.password,
           email: data.email.trim(),
         },
-      }).unwrap()
+      })
 
-      setMigrationSucceeded(true)
+      if ('data' in result) {
+        setMigrationSucceeded(true)
+        return
+      }
+
+      if ('error' in result) {
+        const message = getErrorMessage(result.error)
+        if (!message) {
+          setMigrationSucceeded(true)
+          return
+        }
+        setSubmitError(message)
+      }
     } catch (error) {
-      setSubmitError(getErrorMessage(error))
+      const message = getErrorMessage(error)
+      if (!message) {
+        setMigrationSucceeded(true)
+        return
+      }
+      setSubmitError(message)
     }
   }
 
-  const handleClose = () => {
-    onClose()
-  }
+  if (!isPlatformAdmin || !isPreInstalled) return null
+  if (!isControlled && !showGitWizard) return null
 
   return (
     <Modal
-      open={open}
+      open={actualOpen}
       onClose={(_, reason) => {
         if (reason === 'backdropClick') return
         if (isMigrating) return
@@ -249,10 +314,12 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 </Box>
               </ModalContent>
 
-              <ModalFooter sx={{ justifyContent: 'center' }}>
-                <Button variant='contained' color='primary' onClick={handleClose} sx={{ minWidth: 140 }}>
-                  Close
-                </Button>
+              <ModalFooter>
+                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <Button variant='contained' color='primary' onClick={handleClose} sx={{ minWidth: 140 }}>
+                    Close
+                  </Button>
+                </Box>
               </ModalFooter>
             </>
           ) : (

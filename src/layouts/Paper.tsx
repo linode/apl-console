@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom'
 import Error from 'components/Error'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
+import ConfigureGitModal from 'components/modals/ConfigureGitModal'
 import MainLayout from './Base'
 
 interface Props {
@@ -37,6 +38,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
           </Box>
         </Card>
       </Container>
+      <ConfigureGitModal />
     </MainLayout>
   )
 }
