@@ -12,6 +12,8 @@ import { useSession } from 'providers/Session'
 import { useMigrateGitMutation } from 'redux/otomiApi'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
+const MODAL_TITLE = 'Configure Git Repository'
+
 const ModalBox = styled(Box)(({ theme }) => ({
   position: 'absolute',
   top: '50%',
@@ -27,6 +29,29 @@ const ModalBox = styled(Box)(({ theme }) => ({
   overflow: 'hidden',
 }))
 
+const AnimatedContainer = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'isTransitioning',
+})<{ isTransitioning: boolean }>(({ isTransitioning }) => ({
+  opacity: isTransitioning ? 0 : 1,
+  transform: isTransitioning ? 'translateY(8px)' : 'translateY(0)',
+  transition: 'opacity 180ms ease, transform 180ms ease',
+  '@keyframes drawCheck': {
+    to: {
+      strokeDashoffset: 0,
+    },
+  },
+  '@keyframes iconPop': {
+    '0%': {
+      transform: 'scale(0.7)',
+      opacity: 0,
+    },
+    '100%': {
+      transform: 'scale(1)',
+      opacity: 1,
+    },
+  },
+}))
+
 const ModalContent = styled('div')({
   padding: '40px 52px 32px 52px',
   minHeight: 300,
@@ -40,6 +65,73 @@ const ModalFooter = styled('div')({
   gap: '16px',
 })
 
+const CenteredFooterActions = styled(Box)({
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+})
+
+const ModalTitle = styled(Typography)({
+  marginBottom: '25px',
+  fontWeight: 600,
+  letterSpacing: 0,
+  fontSize: '1.8rem',
+})
+
+const BodyText = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: '1.05rem',
+  lineHeight: 1.5,
+}))
+
+const IntroParagraph = styled(BodyText)({
+  marginBottom: '32px',
+})
+
+const SectionTitle = styled(Typography)({
+  marginBottom: '4px',
+  fontWeight: 550,
+  letterSpacing: '0.035em',
+})
+
+const SectionDescription = styled(Typography)(({ theme }) => ({
+  marginBottom: '10px',
+  color: theme.palette.text.secondary,
+}))
+
+const DividerSection = styled(Box)({
+  borderTop: '1px solid rgba(145, 158, 171, 0.24)',
+  paddingTop: '16px',
+})
+
+const RepoFieldBlock = styled(Box)({
+  marginBottom: '24px',
+})
+
+const BranchFieldBlock = styled(Box)({
+  marginBottom: '24px',
+})
+
+const FieldsGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gap: '24px',
+  marginBottom: '24px',
+  '@media (min-width: 900px)': {
+    gridTemplateColumns: '1fr 1fr',
+  },
+})
+
+const EmailFieldWrapper = styled(Box)({
+  maxWidth: 840,
+  marginBottom: '16px',
+})
+
+const SuccessContainer = styled(Box)({
+  textAlign: 'center',
+  paddingTop: '16px',
+})
+
 const SuccessIconWrapper = styled(Box)(({ theme }) => ({
   width: 90,
   height: 90,
@@ -50,6 +142,17 @@ const SuccessIconWrapper = styled(Box)(({ theme }) => ({
   justifyContent: 'center',
   margin: '24px auto 40px',
   animation: 'iconPop 280ms ease-out',
+}))
+
+const SuccessHeading = styled(Typography)({
+  marginBottom: '16px',
+  fontWeight: 600,
+})
+
+const SuccessCaption = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  marginTop: '16px',
+  opacity: 0.8,
 }))
 
 interface ConfigureGitModalProps {
@@ -89,9 +192,7 @@ function getErrorMessage(error: unknown): string {
       return fetchError.data.message || fetchError.data.error || 'Something went wrong while migrating Git settings.'
 
     if (fetchError.status === 'PARSING_ERROR' && fetchError.originalStatus === 200) return ''
-
     if (fetchError.status === 503) return 'The API is currently unavailable.'
-
     if (fetchError.status === 400)
       return 'Cannot connect to the provided Git repository. Check the repository URL and credentials.'
 
@@ -135,11 +236,15 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   })
 
   const isControlled = typeof open === 'boolean'
+  const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
 
-  const actualOpen = useMemo(() => {
-    if (isControlled) return !!open
-    return !!showGitWizard
-  }, [isControlled, open, showGitWizard])
+  const resetModalState = () => {
+    setShowFormStep(false)
+    setSubmitError('')
+    setMigrationSucceeded(false)
+    setIsTransitioning(false)
+    reset()
+  }
 
   useEffect(() => {
     if (showGitWizard === undefined) setShowGitWizard(true)
@@ -150,21 +255,11 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }, [isPreInstalled, isControlled, setShowGitWizard])
 
   useEffect(() => {
-    if (!actualOpen) {
-      setShowFormStep(false)
-      setSubmitError('')
-      setMigrationSucceeded(false)
-      setIsTransitioning(false)
-      reset()
-    }
-  }, [actualOpen, reset])
+    if (!actualOpen) resetModalState()
+  }, [actualOpen])
 
   const handleClose = () => {
-    setShowFormStep(false)
-    setSubmitError('')
-    setMigrationSucceeded(false)
-    setIsTransitioning(false)
-    reset()
+    resetModalState()
 
     if (isControlled) {
       onClose?.()
@@ -234,52 +329,21 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
       }}
     >
       <ModalBox>
-        <Box
-          sx={{
-            opacity: isTransitioning ? 0 : 1,
-            transform: isTransitioning ? 'translateY(8px)' : 'translateY(0)',
-            transition: 'opacity 180ms ease, transform 180ms ease',
-            '@keyframes drawCheck': {
-              to: {
-                strokeDashoffset: 0,
-              },
-            },
-            '@keyframes iconPop': {
-              '0%': {
-                transform: 'scale(0.7)',
-                opacity: 0,
-              },
-              '100%': {
-                transform: 'scale(1)',
-                opacity: 1,
-              },
-            },
-          }}
-        >
+        <AnimatedContainer isTransitioning={isTransitioning}>
           {!showFormStep ? (
             <>
               <ModalContent>
-                <Typography variant='h4' sx={{ mb: 3, fontWeight: 600, letterSpacing: 0, fontSize: '1.8rem' }}>
-                  Configure Git Repository
-                </Typography>
+                <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
 
-                <Typography
-                  variant='body1'
-                  sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.5, mb: 4 }}
-                >
-                  App Platform is installed on a light weight Git server.
-                </Typography>
+                <IntroParagraph variant='body1'>App Platform is installed on a light weight Git server.</IntroParagraph>
 
-                <Typography
-                  variant='body1'
-                  sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.5, mb: 4 }}
-                >
+                <IntroParagraph variant='body1'>
                   This Git server is ideal for testing the platform but not recommended for production workloads.
-                </Typography>
+                </IntroParagraph>
 
-                <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.5 }}>
+                <BodyText variant='body1'>
                   Configuring an external Git Repo is recommended for installing App Platform.
-                </Typography>
+                </BodyText>
               </ModalContent>
 
               <ModalFooter>
@@ -295,46 +359,37 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
           ) : migrationSucceeded ? (
             <>
               <ModalContent>
-                <Box sx={{ textAlign: 'center', pt: 2 }}>
+                <SuccessContainer>
                   <SuccessIconWrapper>
                     <AnimatedCheckmark />
                   </SuccessIconWrapper>
 
-                  <Typography variant='h4' sx={{ mb: 2, fontWeight: 600 }}>
-                    Successfully connected to Git repository
-                  </Typography>
+                  <SuccessHeading variant='h4'>Successfully connected to Git repository</SuccessHeading>
 
-                  <Typography variant='body1' sx={{ color: 'text.secondary', fontSize: '1.05rem', lineHeight: 1.4 }}>
+                  <BodyText variant='body1'>
                     The App Platform web interface is going to be restarted and will be unavailable for few minutes.
-                  </Typography>
+                  </BodyText>
 
-                  <Typography variant='body2' sx={{ color: 'text.secondary', mt: 2, opacity: 0.8 }}>
-                    (You can now close this window)
-                  </Typography>
-                </Box>
+                  <SuccessCaption variant='body2'>(You can now close this window)</SuccessCaption>
+                </SuccessContainer>
               </ModalContent>
 
               <ModalFooter>
-                <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <CenteredFooterActions>
                   <Button variant='contained' color='primary' onClick={handleClose} sx={{ minWidth: 140 }}>
                     Close
                   </Button>
-                </Box>
+                </CenteredFooterActions>
               </ModalFooter>
             </>
           ) : (
             <form onSubmit={handleSubmit(onSubmit)}>
               <ModalContent>
-                <Typography
-                  variant='h4'
-                  sx={{ mb: 5, fontWeight: 500, marginBottom: '25px', letterSpacing: 0, fontSize: '1.8rem' }}
-                >
-                  Configure Git Repository
-                </Typography>
+                <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
 
                 {!!submitError && <InformationBanner message={submitError} />}
 
-                <Box sx={{ mb: 4 }}>
+                <RepoFieldBlock>
                   <Controller
                     name='repoUrl'
                     control={control}
@@ -349,9 +404,9 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                       />
                     )}
                   />
-                </Box>
+                </RepoFieldBlock>
 
-                <Box sx={{ mb: 3 }}>
+                <BranchFieldBlock>
                   <Controller
                     name='branch'
                     control={control}
@@ -370,30 +425,15 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                       />
                     )}
                   />
-                </Box>
+                </BranchFieldBlock>
 
-                <Box
-                  sx={{
-                    borderTop: '1px solid rgba(145, 158, 171, 0.24)',
-                    pt: 2,
-                  }}
-                >
-                  <Typography variant='h2' sx={{ mb: 0.5, fontWeight: 550, letterSpacing: '0.035em' }}>
-                    Credentials
-                  </Typography>
-
-                  <Typography variant='body1' sx={{ mb: 4, color: 'text.secondary', marginBottom: '10px' }}>
+                <DividerSection>
+                  <SectionTitle variant='h2'>Credentials</SectionTitle>
+                  <SectionDescription variant='body1'>
                     Username and password will be used to authenticate to Git repository
-                  </Typography>
+                  </SectionDescription>
 
-                  <Box
-                    sx={{
-                      display: 'grid',
-                      gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                      gap: 3,
-                      mb: 4,
-                    }}
-                  >
+                  <FieldsGrid>
                     <Controller
                       name='username'
                       control={control}
@@ -424,9 +464,9 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                         />
                       )}
                     />
-                  </Box>
+                  </FieldsGrid>
 
-                  <Box sx={{ maxWidth: 840, mb: 2 }}>
+                  <EmailFieldWrapper>
                     <Controller
                       name='email'
                       control={control}
@@ -441,8 +481,8 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                         />
                       )}
                     />
-                  </Box>
-                </Box>
+                  </EmailFieldWrapper>
+                </DividerSection>
               </ModalContent>
 
               <ModalFooter>
@@ -456,7 +496,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
               </ModalFooter>
             </form>
           )}
-        </Box>
+        </AnimatedContainer>
       </ModalBox>
     </Modal>
   )
