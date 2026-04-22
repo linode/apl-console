@@ -1273,7 +1273,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
     | (
         | ({
             ingressClassName?: string
-            tlsPass?: boolean
             useDefaultHost?: boolean
             subdomain: string
             domain: string
@@ -1323,7 +1322,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
     | (
         | ({
             ingressClassName?: string
-            tlsPass?: boolean
             useDefaultHost?: boolean
             subdomain: string
             domain: string
@@ -1376,7 +1374,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
     | (
         | ({
             ingressClassName?: string
-            tlsPass?: boolean
             useDefaultHost?: boolean
             subdomain: string
             domain: string
@@ -1429,7 +1426,6 @@ export type CreateServiceApiArg = {
       | (
           | ({
               ingressClassName?: string
-              tlsPass?: boolean
               useDefaultHost?: boolean
               subdomain: string
               domain: string
@@ -1509,7 +1505,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
     | (
         | ({
             ingressClassName?: string
-            tlsPass?: boolean
             useDefaultHost?: boolean
             subdomain: string
             domain: string
@@ -1564,7 +1559,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
     | (
         | ({
             ingressClassName?: string
-            tlsPass?: boolean
             useDefaultHost?: boolean
             subdomain: string
             domain: string
@@ -1619,7 +1613,6 @@ export type EditServiceApiArg = {
       | (
           | ({
               ingressClassName?: string
-              tlsPass?: boolean
               useDefaultHost?: boolean
               subdomain: string
               domain: string
@@ -1669,7 +1662,6 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       weightV2?: number
     }
     ingressClassName?: string
-    tlsPass?: boolean
     ownHost?: boolean
     domain?: string
     useCname?: boolean
@@ -1728,7 +1720,6 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       weightV2?: number
     }
     ingressClassName?: string
-    tlsPass?: boolean
     ownHost?: boolean
     domain?: string
     useCname?: boolean
@@ -1790,7 +1781,6 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       weightV2?: number
     }
     ingressClassName?: string
-    tlsPass?: boolean
     ownHost?: boolean
     domain?: string
     useCname?: boolean
@@ -1852,7 +1842,6 @@ export type CreateAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      tlsPass?: boolean
       ownHost?: boolean
       domain?: string
       useCname?: boolean
@@ -1900,7 +1889,6 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       weightV2?: number
     }
     ingressClassName?: string
-    tlsPass?: boolean
     ownHost?: boolean
     domain?: string
     useCname?: boolean
@@ -1964,7 +1952,6 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       weightV2?: number
     }
     ingressClassName?: string
-    tlsPass?: boolean
     ownHost?: boolean
     domain?: string
     useCname?: boolean
@@ -2028,7 +2015,6 @@ export type EditAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      tlsPass?: boolean
       ownHost?: boolean
       domain?: string
       useCname?: boolean
