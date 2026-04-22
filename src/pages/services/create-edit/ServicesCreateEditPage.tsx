@@ -386,15 +386,6 @@ export default function ServicesCreateEditPage({
 
                 <ControlledCheckbox
                   sx={{ my: 2 }}
-                  name='spec.tlsPass'
-                  control={control}
-                  label='TLS Passthrough'
-                  explainertext='Requests will be forwarded to the backend service without being decrypted'
-                />
-
-                <Divider sx={{ mt: 4, mb: 2 }} />
-                <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.trafficControl.enabled'
                   control={control}
                   label='Enable Traffic Management'
