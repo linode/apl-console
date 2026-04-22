@@ -76,7 +76,6 @@ export const serviceApiResponseSchema = object({
       }),
     }).optional(),
     ingressClassName: string().min(2, 'Ingress class name must be at least 2 characters long.').optional(),
-    tlsPass: boolean().optional(),
     domain: string().required(),
     useCname: boolean().optional(),
     cname: cnameValidation.required(),
