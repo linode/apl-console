@@ -2,7 +2,7 @@ import { useSession } from 'providers/Session'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { GetAllWorkloadsApiResponse } from 'redux/otomiApi'
+import { GetAllAplWorkloadsApiResponse } from 'redux/otomiApi'
 import { CircularProgress } from '@mui/material'
 import { useSocket } from 'providers/Socket'
 import { HeadCell } from './EnhancedTable'
@@ -11,22 +11,32 @@ import ListTable from './ListTable'
 import Iconify from './Iconify'
 
 interface Row {
-  teamId: string
-  id: string
-  name: string
-  imageUpdateStrategy: { type: string }
+  metadata: {
+    name: string
+    labels: {
+      'apl.io/teamId': string
+    }
+  }
+  spec: {
+    imageUpdateStrategy?: { type?: string }
+  }
 }
 
 const getWorkloadLink = (row: Row) => {
-  const path = `/teams/${row.teamId}/catalogs/${row.name}/${encodeURIComponent(row.name)}`
+  const teamId = row.metadata.labels['apl.io/teamId']
+  const name = row.metadata.name
+  const path = `/teams/${teamId}/catalogs/${name}/${encodeURIComponent(name)}`
   return (
-    <RLink to={path} label={row.name}>
-      {row.name}
+    <RLink to={path} label={name}>
+      {name}
     </RLink>
   )
 }
+
 const getArgocdApplicationLink = (row: Row, domainSuffix: string) => {
-  const app = `team-${row.teamId}-${row.name}`
+  const teamId = row.metadata.labels['apl.io/teamId']
+  const name = row.metadata.name
+  const app = `team-${teamId}-${name}`
   const path = `/applications/argocd/${app}`
   const host = `https://argocd.${domainSuffix}`
   const externalUrl = `${host}/${path}`
@@ -55,21 +65,20 @@ export const getStatus = (status: Status) => {
 }
 
 interface Props {
-  workloads: GetAllWorkloadsApiResponse
+  workloads: GetAllAplWorkloadsApiResponse
   teamId?: string
 }
 
 export default function ({ workloads, teamId }: Props): React.ReactElement {
   const {
     oboTeamId,
-    appsEnabled,
     settings: {
       cluster: { domainSuffix },
     },
   } = useSession()
   const { t } = useTranslation()
   const { statuses } = useSocket()
-  // END HOOKS
+
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -84,12 +93,12 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     {
       id: 'type',
       label: t('Image update strategy'),
-      renderer: (row) => row?.imageUpdateStrategy?.type,
+      renderer: (row: Row) => row?.spec?.imageUpdateStrategy?.type,
     },
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row: Row) => getStatus(statuses?.workloads?.[row.name]),
+      renderer: (row: Row) => getStatus(statuses?.workloads?.[row.metadata.name]),
     },
   ]
 
@@ -97,6 +106,7 @@ export default function ({ workloads, teamId }: Props): React.ReactElement {
     headCells.push({
       id: 'teamId',
       label: t('Team'),
+      renderer: (row: Row) => row.metadata.labels['apl.io/teamId'],
     })
   }
 
