@@ -160,6 +160,11 @@ interface ConfigureGitModalProps {
   onClose?: () => void
 }
 
+type GitMigrationResponse = {
+  message?: string
+  statusCode?: number
+}
+
 function AnimatedCheckmark() {
   return (
     <svg width='64' height='64' viewBox='0 0 64 64' fill='none'>
@@ -179,6 +184,15 @@ function AnimatedCheckmark() {
   )
 }
 
+function getGitMigrationDataError(data: unknown): string {
+  const response = data as GitMigrationResponse
+
+  if (response?.statusCode && response.statusCode >= 400)
+    return response.message || 'Something went wrong while migrating Git settings.'
+
+  return ''
+}
+
 function getErrorMessage(error: unknown): string {
   const fetchError = error as FetchBaseQueryError & {
     data?: { message?: string; error?: string }
@@ -193,7 +207,7 @@ function getErrorMessage(error: unknown): string {
 
     if (fetchError.status === 'PARSING_ERROR' && fetchError.originalStatus === 200) return ''
     if (fetchError.status === 503) return 'The API is currently unavailable.'
-    if (fetchError.status === 400)
+    if (fetchError.status === 400 || fetchError.status === 404)
       return 'Cannot connect to the provided Git repository. Check the repository URL and credentials.'
 
     if (typeof fetchError.error === 'string' && fetchError.error.length > 0) return fetchError.error
@@ -256,6 +270,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
   useEffect(() => {
     if (!actualOpen) resetModalState()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actualOpen])
 
   const handleClose = () => {
@@ -294,24 +309,35 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
       })
 
       if ('data' in result) {
+        const dataError = getGitMigrationDataError(result.data)
+
+        if (dataError) {
+          setSubmitError(dataError)
+          return
+        }
+
         setMigrationSucceeded(true)
         return
       }
 
       if ('error' in result) {
         const message = getErrorMessage(result.error)
+
         if (!message) {
           setMigrationSucceeded(true)
           return
         }
+
         setSubmitError(message)
       }
     } catch (error) {
       const message = getErrorMessage(error)
+
       if (!message) {
         setMigrationSucceeded(true)
         return
       }
+
       setSubmitError(message)
     }
   }
