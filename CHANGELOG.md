@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.14.1](https://github.com/linode/apl-console/compare/v4.13.0...v4.14.1) (2026-04-24)
+
+
+### Features
+
+* improve error handling ([#764](https://github.com/linode/apl-console/issues/764)) ([ac7b154](https://github.com/linode/apl-console/commit/ac7b154489f93c6a4d593608dcb0440d546532cb))
+* k8s v2 endpoints ([#762](https://github.com/linode/apl-console/issues/762)) ([e9cf558](https://github.com/linode/apl-console/commit/e9cf558a9f5ef88a92b7da1ffb2f869aac178963))
+* make git username optional ([#763](https://github.com/linode/apl-console/issues/763)) ([8815960](https://github.com/linode/apl-console/commit/8815960bf598759e5d1dc5becfb31fef98577c08))
+* netpols v2 ([#741](https://github.com/linode/apl-console/issues/741)) ([58a52e7](https://github.com/linode/apl-console/commit/58a52e7537fe7cf8a37993c629717296f1443ba8))
+* tekton optional ui ([#753](https://github.com/linode/apl-console/issues/753)) ([fb5d2c5](https://github.com/linode/apl-console/commit/fb5d2c5bbcd101447a0d70b8ab208779e3293fb3))
+
+
+### Bug Fixes
+
+* code cleanup pt2 ([#752](https://github.com/linode/apl-console/issues/752)) ([8d26565](https://github.com/linode/apl-console/commit/8d265657d4be7d1483bf387be6532d5820210451))
+* enhance image repository handling for workloads ([#751](https://github.com/linode/apl-console/issues/751)) ([b8e1119](https://github.com/linode/apl-console/commit/b8e1119d4c12ee2d994d2eda3a99cf953b937c7d))
+* remove smtp from settings ([#745](https://github.com/linode/apl-console/issues/745)) ([cd4ed27](https://github.com/linode/apl-console/commit/cd4ed2755451de6e86db096d8b3418c8fccf2620))
+* remove tls passthrough ([#773](https://github.com/linode/apl-console/issues/773)) ([67c34a0](https://github.com/linode/apl-console/commit/67c34a0bbbed94b7496bb83bdf0bbed12f2ab8d0))
+* v1 overview pages ([#743](https://github.com/linode/apl-console/issues/743)) ([8fd2057](https://github.com/linode/apl-console/commit/8fd2057c3f32e6f0e6a6dd343b2b5fefb68274e3))
+* v1 teams ([#760](https://github.com/linode/apl-console/issues/760)) ([c19bb9c](https://github.com/linode/apl-console/commit/c19bb9c2cdac1dc15002215f83e6a382a02ec55f))
+
+
+### Others
+
+* **deps:** bump the docker-dependencies group with 2 updates ([#754](https://github.com/linode/apl-console/issues/754)) ([d1a7611](https://github.com/linode/apl-console/commit/d1a7611ab1b84efdd8a06b453729ded97d1fd8ce))
+* release branch [ci skip] ([71f078f](https://github.com/linode/apl-console/commit/71f078f022b4e97a921fb2bf4fd4eb74cf074202))
+
 ## [4.14.0](https://github.com/linode/apl-console/compare/v4.13.0...v4.14.0) (2026-04-14)
 
 
