@@ -15,7 +15,7 @@
     "@braintree/sanitize-url": "^6.0.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@fortawesome/fontawesome-free": "5.15.4",
+    "@fortawesome/fontawesome-free": "7.2.0",
     "@hookform/resolvers": "^3.9.0",
     "@iconify/react": "^6.0.0",
     "@linode/kubeseal-encrypt": "^1.0.1",
