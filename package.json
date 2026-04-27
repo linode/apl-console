@@ -16,7 +16,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-free": "5.15.4",
-    "@hookform/resolvers": "^3.9.0",
+    "@hookform/resolvers": "^5.2.2",
     "@iconify/react": "^6.0.0",
     "@linode/kubeseal-encrypt": "^1.0.1",
     "@monaco-editor/react": "^4.7.0",
