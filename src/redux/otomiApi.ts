@@ -567,6 +567,12 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    migrateGit: build.mutation<MigrateGitApiResponse, MigrateGitApiArg>({
+      query: (queryArg) => ({ url: `/v2/git`, method: 'PUT', body: queryArg.body }),
+    }),
+    getApiStatus: build.query<GetApiStatusApiResponse, GetApiStatusApiArg>({
+      query: () => ({ url: `/v2/status` }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -6889,6 +6895,21 @@ export type EditAppApiArg = {
     }
   }
 }
+export type MigrateGitApiResponse = /** status 200 Migration successful. API is now locked. */ undefined
+export type MigrateGitApiArg = {
+  /** New git configuration to migrate to. */
+  body: {
+    repoUrl: string
+    username?: string
+    password: string
+    email: string
+    branch: string
+  }
+}
+export type GetApiStatusApiResponse = /** status 200 Successfully obtained API status. */ {
+  locked: boolean
+}
+export type GetApiStatusApiArg = void
 export const {
   useGetValuesQuery,
   useGetTeamsQuery,
@@ -7035,4 +7056,6 @@ export const {
   useToggleAppsMutation,
   useGetTeamAppQuery,
   useEditAppMutation,
+  useMigrateGitMutation,
+  useGetApiStatusQuery,
 } = injectedRtkApi
