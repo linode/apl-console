@@ -1,4 +1,5 @@
 import Apps from 'components/Apps'
+import ObjWizardModal from 'components/ObjWizardModal'
 import useAuthzSession from 'hooks/useAuthzSession'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
@@ -57,13 +58,16 @@ export default function ({
   const loading = isLoading || isLoadingSettings
 
   const comp = apps && (
-    <Apps
-      teamId={teamId}
-      apps={isFetching ? undefined : apps}
-      teamSettings={teamSettings}
-      setAppState={setAppState}
-      objSettings={objSettings}
-    />
+    <>
+      <Apps
+        teamId={teamId}
+        apps={isFetching ? undefined : apps}
+        teamSettings={teamSettings}
+        setAppState={setAppState}
+        objSettings={objSettings}
+      />
+      <ObjWizardModal />
+    </>
   )
 
   return <PaperLayout loading={loading} comp={comp} title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`} />
