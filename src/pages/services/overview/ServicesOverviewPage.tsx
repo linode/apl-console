@@ -10,14 +10,17 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllServicesQuery, useGetTeamServicesQuery } from 'redux/otomiApi'
+import { useGetAplServiceQuery, useGetTeamAplServicesQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 import RLink from 'components/Link'
 
 const getServiceLink = (isAdmin, ownerId): CallableFunction =>
   function (row): string | React.ReactElement {
-    const { teamId, name }: { teamId: string; name: string } = row
+    const teamId = row.metadata.labels['apl.io/teamId']
+    const name = row.metadata.name
+
     if (!(isAdmin || teamId === ownerId)) return name
+
     const path = `/teams/${teamId}/services/${encodeURIComponent(name)}`
     return (
       <RLink to={path} label={name}>
@@ -26,12 +29,16 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction =>
     )
   }
 
-const renderHost = ({ ingress, teamId, name }): React.ReactElement | string => {
-  if (!ingress) return ''
-  if (ingress.type === 'cluster') return `${name}.team-${teamId}`
-  const { subdomain, domain, paths } = ingress
-  // TODO: Replace functionality in apl-core so that / is not needed on path or domain
-  const url = `${subdomain ? `${subdomain}.` : ''}${domain}${paths?.[0] || ''}`
+const renderHost = (row): React.ReactElement | string => {
+  const name = row.metadata.name
+  const teamId = row.metadata.labels['apl.io/teamId']
+  const { ownHost, domain, paths } = row.spec || {}
+
+  if (!ownHost) return `${name}.team-${teamId}`
+  if (!domain) return ''
+
+  const url = `${domain}${paths?.[0] || ''}`
+
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
       {url}
@@ -53,26 +60,31 @@ export default function ServicesOverviewPage({
     oboTeamId,
   } = useSession()
   const { statuses } = useSocket()
+
   const {
     data: allServices,
     isLoading: isLoadingAllServices,
     isFetching: isFetchingAllServices,
     refetch: refetchAllServices,
-  } = useGetAllServicesQuery(teamId ? skipToken : undefined)
+  } = useGetAplServiceQuery(teamId ? skipToken : undefined)
+
   const {
     data: teamServices,
     isLoading: isLoadingTeamServices,
     isFetching: isFetchingTeamServices,
     refetch: refetchTeamServices,
-  } = useGetTeamServicesQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamAplServicesQuery(teamId ? { teamId } : skipToken)
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllServices) refetchAllServices()
     else if (teamId && !isFetchingTeamServices) refetchTeamServices()
   }, [isDirty])
+
   const { t } = useTranslation()
-  // END HOOKS
+
   const headCells: HeadCell[] = [
     {
       id: 'name',
@@ -82,7 +94,7 @@ export default function ServicesOverviewPage({
     {
       id: 'ingressClass',
       label: t('Ingress class'),
-      renderer: (row) => (row.ingress?.type === 'cluster' ? '-' : row.ingress?.ingressClassName ?? 'platform'),
+      renderer: (row) => (row.spec?.ownHost ? row.spec?.ingressClassName ?? 'platform' : '-'),
     },
     {
       id: 'url',
@@ -93,18 +105,28 @@ export default function ServicesOverviewPage({
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(statuses?.services?.[row.name]),
+      renderer: (row) => getStatus(statuses?.services?.[row.metadata.name]),
     },
   ]
+
   if (!teamId) {
     headCells.push({
       id: 'teamId',
       label: t('Team'),
+      renderer: (row) => row.metadata.labels['apl.io/teamId'],
     })
   }
 
   const loading = isLoadingAllServices || isLoadingTeamServices
   const services = teamId ? teamServices : allServices
-  const comp = services && <ListTable teamId={teamId} headCells={headCells} rows={services} resourceType='Service' />
+  const comp = (
+    <ListTable
+      teamId={teamId}
+      headCells={headCells}
+      rows={Array.isArray(services) ? services : []}
+      resourceType='Service'
+    />
+  )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_SERVICES', { scope: getRole(teamId) })} />
 }
