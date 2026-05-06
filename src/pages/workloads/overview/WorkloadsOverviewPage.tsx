@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAllWorkloadsQuery, useGetTeamWorkloadsQuery } from 'redux/otomiApi'
+import { useGetAllAplWorkloadsQuery, useGetTeamAplWorkloadsQuery } from 'redux/otomiApi'
 import { getRole } from 'utils/data'
 
 interface Params {
@@ -22,14 +22,17 @@ export default function WorkloadsOverviewPage({
     isLoading: isLoadingAllWorkloads,
     isFetching: isFetchingAllWorkloads,
     refetch: refetchAllWorkloads,
-  } = useGetAllWorkloadsQuery(teamId ? skipToken : undefined)
+  } = useGetAllAplWorkloadsQuery(teamId ? skipToken : undefined)
+
   const {
     data: teamWorkloads,
     isLoading: isLoadingTeamWorkloads,
     isFetching: isFetchingTeamWorkloads,
     refetch: refetchTeamWorkloads,
-  } = useGetTeamWorkloadsQuery({ teamId }, { skip: !teamId })
+  } = useGetTeamAplWorkloadsQuery(teamId ? { teamId } : skipToken)
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!teamId && !isFetchingAllWorkloads) refetchAllWorkloads()
@@ -37,9 +40,10 @@ export default function WorkloadsOverviewPage({
   }, [isDirty])
 
   const { t } = useTranslation()
-  // END HOOKS
+
   const loading = isLoadingAllWorkloads || isLoadingTeamWorkloads
   const workloads = teamId ? teamWorkloads : allWorkloads
   const comp = workloads && <Workloads workloads={workloads} teamId={teamId} />
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_WORKLOADS', { scope: getRole(teamId) })} />
 }
