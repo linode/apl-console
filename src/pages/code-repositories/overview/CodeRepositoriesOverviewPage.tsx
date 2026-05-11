@@ -6,6 +6,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { getRole } from 'utils/data'
 import { useGetAllAplCodeReposQuery, useGetTeamAplCodeReposQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
+import { SAFE_REPO_URL } from 'utils/constants'
 import { HeadCell } from '../../../components/EnhancedTable'
 import RLink from '../../../components/Link'
 import ListTable from '../../../components/ListTable'
@@ -23,12 +24,20 @@ const getCodeRepoName = (): CallableFunction =>
     )
   }
 
+const getSafeRepositoryHref = (repositoryUrl: string): string | null => {
+  if (!SAFE_REPO_URL.test(repositoryUrl)) return null
+  return `https://${repositoryUrl}`
+}
+
 const getCodeRepoUrl = (): CallableFunction =>
   function (row): string | React.ReactElement {
-    const repositoryUrl = row?.spec?.repositoryUrl ?? ''
+    const repositoryUrl = String(row?.spec?.repositoryUrl ?? '')
+    const href = getSafeRepositoryHref(repositoryUrl)
+
+    if (!href) return repositoryUrl
 
     return (
-      <a href={repositoryUrl} target='_blank' rel='noopener noreferrer'>
+      <a href={href} target='_blank' rel='noopener noreferrer'>
         {repositoryUrl}
       </a>
     )
