@@ -446,9 +446,6 @@ const injectedRtkApi = api.injectEndpoints({
     getHelmChartContent: build.query<GetHelmChartContentApiResponse, GetHelmChartContentApiArg>({
       query: (queryArg) => ({ url: `/v1/helmChartContent`, params: { url: queryArg.url } }),
     }),
-    createWorkloadCatalog: build.mutation<CreateWorkloadCatalogApiResponse, CreateWorkloadCatalogApiArg>({
-      query: (queryArg) => ({ url: `/v1/createWorkloadCatalog`, method: 'POST', body: queryArg.body }),
-    }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads` }),
     }),
@@ -5456,11 +5453,6 @@ export type GetHelmChartContentApiArg = {
   /** URL of the helm chart */
   url?: string
 }
-export type CreateWorkloadCatalogApiResponse = /** status 200 Successfully updated a team workload catalog */ object
-export type CreateWorkloadCatalogApiArg = {
-  /** Workload catalog object that contains updated values */
-  body: object
-}
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
   id?: string
   teamId?: string
@@ -7025,7 +7017,6 @@ export const {
   useGetAllWorkloadsQuery,
   useGetWorkloadCatalogMutation,
   useGetHelmChartContentQuery,
-  useCreateWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
