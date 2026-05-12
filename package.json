@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@braintree/sanitize-url": "^6.0.4",
+    "@braintree/sanitize-url": "^7.1.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fortawesome/fontawesome-free": "5.15.4",
