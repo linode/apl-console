@@ -151,7 +151,7 @@ export const getAppData = (
   const apps = getApps(session, teamId)
   const coreAppId: string = appId
   const coreApp = find(apps, { name: coreAppId })
-  const { useHost, ingress, isShared, path } = coreApp
+  const { useHost, ownHost, isShared, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
@@ -189,9 +189,9 @@ export const getAppData = (
     logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
     appInfo: appsInfo[coreAppId],
     schema,
-    externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
+    externalUrl: ownHost || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
-    hasShortcuts: !!ingress || useHost,
+    hasShortcuts: ownHost || useHost,
     isDeprecated,
     isBeta,
     isAlpha,
