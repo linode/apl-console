@@ -197,20 +197,13 @@ export default function App({
   }, [inValues])
 
   // END HOOKS
-  const appSchema = id.startsWith('ingress-nginx')
-    ? (session.valuesSchema as ValuesSchema).properties.apps.properties['ingress-nginx-platform']
-    : (session.valuesSchema as ValuesSchema).properties.apps.properties[id]
+  const appSchema = (session.valuesSchema as ValuesSchema).properties.apps.properties[id]
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
 
   const handleSubmit = () => {
     const data = { id, teamId, values }
     if (validValues) onSubmit(data)
-  }
-
-  const handleValuesChange = (values: Props['values'], errors: any[]) => {
-    setValues(values)
-    setValidValues(errors.length === 0)
   }
 
   const prefixedDeps = () => {

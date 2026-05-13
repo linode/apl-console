@@ -149,7 +149,7 @@ export const getAppData = (
 
   // get the core app
   const apps = getApps(session, teamId)
-  const coreAppId = getCoreAppId(appId)
+  const coreAppId: string = appId
   const coreApp = find(apps, { name: coreAppId })
   const { useHost, ingress, isShared, path } = coreApp
   // bundle the shortcuts
