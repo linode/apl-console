@@ -3,7 +3,7 @@ import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 import { sentenceCase as sentenceCaseOrig } from 'change-case'
-import { getAppSchemaName, getCoreAppId } from './schema'
+import { getAppSchemaName } from './schema'
 
 export type CleanOptions = {
   cleanKeys?: any[]
