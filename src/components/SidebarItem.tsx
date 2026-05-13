@@ -1,12 +1,7 @@
 import { forwardRef } from 'react'
-// next
-// @mui
 import { Box, ListItemText, Link as MuiLink, Tooltip, Typography } from '@mui/material'
-// guards
-// type
 import { Link } from 'react-router-dom'
 import { NavItemProps } from './SidebarTypes'
-//
 import Iconify from './Iconify'
 import { ListItemIconStyle, ListItemStyle, ListItemStyleProps, ListItemTextStyle } from './SidebarStyle'
 import SidebarShellButton from './SidebarShellButton'
@@ -90,7 +85,7 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
 type SidebarItemSubProps = Omit<NavItemProps, 'isCollapse'>
 
 export function SidebarItemSub({ item, open = false, active = false, onOpen }: SidebarItemSubProps) {
-  const { title, path, icon, info, children, disabled, caption, roles } = item
+  const { title, path, info, children, disabled, caption, roles } = item
 
   const renderContent = (
     <>

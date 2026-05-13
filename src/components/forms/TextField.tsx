@@ -49,7 +49,6 @@ const useStyles = makeStyles()((theme: Theme) => ({
     width: '415px',
   },
   helperTextTop: {
-    color: theme.palette.cl.text.subTitle,
     marginTop: '-5px',
     fontSize: '13px',
     inlineSize: '70%',

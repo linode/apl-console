@@ -189,7 +189,7 @@ function Shell({ collapseClick }: Props): React.ReactElement {
     onSetIFrameUrl('')
     onToggleShell()
     onCloseShell()
-    deleteCloudtty()
+    deleteCloudtty({ teamId })
   }
 
   return (

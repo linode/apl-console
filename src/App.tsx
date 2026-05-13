@@ -34,25 +34,26 @@ import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
 import BuildsCreateEditPage from 'pages/builds/create-edit/BuildsCreateEditPage'
 import BuildsOverviewPage from 'pages/builds/overview/BuildsOverviewPage'
+
 import CodeRepositoriesCreateEditPage from 'pages/code-repositories/create-edit/CodeRepositoriesCreateEditPage'
 import CodeRepositoriesOverviewPage from 'pages/code-repositories/overview/CodeRepositoriesOverviewPage'
-import KnowledgeBasesCreateEditPage from 'pages/knowledge-bases/create-edit/KnowledgeBasesCreateEditPage'
-import KnowledgeBasesOverviewPage from 'pages/knowledge-bases/overview/KnowledgeBasesOverviewPage'
-import AgentsCreateEditPage from 'pages/agents/create-edit/AgentsCreateEditPage'
-import AgentsOverviewPage from 'pages/agents/overview/AgentsOverviewPage'
 import NetworkPoliciesOverviewPage from 'pages/network-policies/overview/NetworkPoliciesOverviewPage'
 import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesIngressCreateEditPage'
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
-import SecretOverviewPage from 'pages/secrets/overview/SecretOverviewPage'
-import SecretCreateEditPage from 'pages/secrets/create-edit/SecretCreateEditPage'
+import PlatformsSecretOverviewPage from 'pages/secrets/platform/overview/PlatformSecretOverviewPage'
+import PlatformSecretCreateEditPage from 'pages/secrets/platform/create-edit/PlatformSecretCreateEditPage'
+import SecretOverviewPage from 'pages/secrets/team/overview/SecretOverviewPage'
+import SecretCreateEditPage from 'pages/secrets/team/create-edit/SecretCreateEditPage'
 import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEditPage'
 import ServicesOverviewPage from 'pages/services/overview/ServicesOverviewPage'
 import TeamsCreateEditPage from 'pages/teams/create-edit/TeamsCreateEditPage'
 import TeamsOverviewPage from 'pages/teams/overview/TeamsOverviewPage'
 import WorkloadsCreateEditPage from 'pages/workloads/create-edit/WorkloadsCreateEditPage'
 import WorkloadsOverviewPage from 'pages/workloads/overview/WorkloadsOverviewPage'
-import WorkloadCatalogsPage from 'pages/workloads/catalog/WorkloadCatalogsPage'
+import WorkloadCatalogsPage from 'pages/catalogs/team-overview/WorkloadCatalogsOverviewPage'
 import ThemeViewInitializer from 'components/ThemeViewInitializer'
+import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
+import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -110,39 +111,29 @@ function App() {
                                   exact
                                 />
 
-                                <PrivateRoute
-                                  path='/teams/:teamId/knowledge-bases'
-                                  component={KnowledgeBasesOverviewPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/knowledge-bases/create'
-                                  component={KnowledgeBasesCreateEditPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/knowledge-bases/:knowledgeBaseName'
-                                  component={KnowledgeBasesCreateEditPage}
-                                  exact
-                                />
-
-                                <PrivateRoute path='/teams/:teamId/agents' component={AgentsOverviewPage} exact />
-                                <PrivateRoute
-                                  path='/teams/:teamId/agents/create'
-                                  component={AgentsCreateEditPage}
-                                  exact
-                                />
-                                <PrivateRoute
-                                  path='/teams/:teamId/agents/:agentName'
-                                  component={AgentsCreateEditPage}
-                                  exact
-                                />
-
                                 <PrivateRoute path='/apps/:teamId' component={Apps} exact />
                                 <PrivateRoute path='/apps/:teamId/:appId' component={OtomiApp} exact />
                                 <PrivateRoute
                                   path='/teams/create'
                                   component={TeamsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs'
+                                  component={PlatformCatalogsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/create'
+                                  component={CatalogsCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/catalogs/:catalogId'
+                                  component={CatalogsCreateEditPage}
                                   platformAdminRoute
                                   exact
                                 />
@@ -159,14 +150,14 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/catalogs/:teamId' component={WorkloadCatalogsPage} exact />
+                                <PrivateRoute path='/teams/:teamId/catalogs/' component={WorkloadCatalogsPage} exact />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName'
+                                  path='/teams/:teamId/catalogs/:chartName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/catalogs/:teamId/:catalogName/:workloadName'
+                                  path='/teams/:teamId/catalogs/:chartName/:workloadName'
                                   component={WorkloadsCreateEditPage}
                                   exact
                                 />
@@ -176,7 +167,24 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/secrets' component={SecretOverviewPage} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/secrets'
+                                  component={PlatformsSecretOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/secrets/create'
+                                  component={PlatformSecretCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/secrets/:namespace/:sealedSecretName'
+                                  component={PlatformSecretCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/workloads'
                                   component={WorkloadsOverviewPage}

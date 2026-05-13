@@ -109,9 +109,10 @@ export default function ({
       draggable={false}
       className={classes.img}
       src={img}
-      onError={({ currentTarget }) => {
-        currentTarget.onerror = null // prevents looping
-        currentTarget.src = imgAlt
+      onError={(event) => {
+        const target = event.currentTarget
+        target.onerror = null // prevents looping
+        target.src = imgAlt
       }}
       alt={`Logo for ${title} app`}
     />

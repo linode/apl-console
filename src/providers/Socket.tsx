@@ -35,6 +35,12 @@ export default function SocketProvider({ children }: { children: React.ReactNode
       setStatuses((prev) => ({ ...prev, ...data }))
     })
 
+    // Stop reconnecting on auth errors (401 from OAuth2-Proxy)
+    socketInstance.on('connect_error', (err: any) => {
+      const status = err?.context?.status
+      if (status === 401) socketInstance.disconnect()
+    })
+
     return () => {
       socketInstance.disconnect()
     }

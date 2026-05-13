@@ -1,13 +1,12 @@
-import { Box, ButtonGroup } from '@mui/material'
+import { Box, ButtonGroup, Typography } from '@mui/material'
 import YAML from 'yaml'
-import { omit } from 'lodash'
-import React, { useEffect, useState } from 'react'
+import { isEmpty, omit } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { makeStyles } from 'tss-react/mui'
-
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
@@ -18,8 +17,8 @@ import {
   useCreateAplWorkloadMutation,
   useDeleteAplWorkloadMutation,
   useEditAplWorkloadMutation,
+  useGetAplCatalogsChartQuery,
   useGetAplWorkloadQuery,
-  useGetWorkloadCatalogMutation,
 } from 'redux/otomiApi'
 import DeleteButton from 'components/DeleteButton'
 import ImgButtonGroup from 'components/ImgButtonGroup'
@@ -47,7 +46,22 @@ const useStyles = makeStyles()((theme) => ({
     display: 'inline-flex',
   },
   img: {
-    height: theme.spacing(6),
+    height: theme.spacing(8),
+  },
+  repoInfo: {
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(1),
+  },
+  repoLabel: {
+    fontWeight: 600,
+    color: '#c8c8c8',
+    marginRight: theme.spacing(1),
+  },
+  repoValue: {
+    color: '#939393',
+    wordBreak: 'break-all',
   },
 }))
 
@@ -59,14 +73,17 @@ export const getDocsLink = (url: string, path: string): string => {
 interface Params {
   teamId: string
   workloadName?: string
-  catalogName?: string
+  chartName?: string
 }
 
 export default function WorkloadsCreateEditPage({
   match: {
-    params: { teamId, workloadName, catalogName },
+    params: { teamId, workloadName, chartName },
   },
+  location,
 }: RouteComponentProps<Params>): React.ReactElement {
+  const catalogDataFromState = (location.state as any) || {}
+  const { catalogName: stateCatalogName } = catalogDataFromState
   const { t } = useTranslation()
   const { user } = useSession()
   const { isPlatformAdmin } = user
@@ -86,12 +103,55 @@ export default function WorkloadsCreateEditPage({
   const [updateWorkload, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplWorkloadMutation()
 
-  const [getWorkloadCatalog, { isLoading: isLoadingCatalog }] = useGetWorkloadCatalogMutation()
-  const [catalogItem, setCatalogItem] = useState<any>({})
+  const selectedCatalogId = stateCatalogName || ''
+  const selectedChartName = workload?.spec?.path || chartName || ''
+
+  const {
+    data: chartData,
+    isLoading: isLoadingChart,
+    isFetching: isFetchingChart,
+  } = useGetAplCatalogsChartQuery(
+    { catalogId: selectedCatalogId, chartName: selectedChartName },
+    { skip: !selectedCatalogId || !selectedChartName },
+  )
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
-  // Normalise spec.values from the new GET to always be a string in the form
+  const catalogItem = useMemo(() => {
+    if (!chartData) return {}
+
+    const response = chartData as any
+    const item = response?.spec?.[0]
+    const url = item?.repositoryUrl as string | undefined
+    const chartsPath = item?.chartsPath as string | undefined
+    const revision = item?.branch as string | undefined
+
+    if (!item) return {}
+
+    const {
+      chartVersion: helmChartVersion,
+      chartDescription: helmChartDescription,
+      name,
+      values,
+      valuesSchema,
+      icon,
+    } = item
+
+    const path = chartsPath ? `${chartsPath}/${name}` : name
+    const chartMetadata = { helmChartVersion, helmChartDescription }
+
+    return {
+      chartMetadata,
+      name,
+      path,
+      values,
+      valuesSchema,
+      url,
+      icon,
+      revision,
+    }
+  }, [chartData])
+
   let normalisedValues = ''
   const rawValues = workload?.spec?.values
 
@@ -111,8 +171,10 @@ export default function WorkloadsCreateEditPage({
     },
     spec: {
       ...workload?.spec,
-      url: workload?.spec?.url ?? '',
+      url: workload?.spec?.url ?? (catalogItem as any)?.url ?? '',
       chartProvider: workload?.spec?.chartProvider ?? 'helm',
+      revision: workload?.spec?.revision ?? (catalogItem as any)?.revision ?? '',
+      path: workload?.spec?.path ?? (catalogItem as any)?.path ?? '',
       imageUpdateStrategy: workload?.spec?.imageUpdateStrategy ?? { type: 'disabled' },
       values: normalisedValues,
     },
@@ -131,36 +193,17 @@ export default function WorkloadsCreateEditPage({
     formState: { errors },
   } = methods
 
-  // Fetch catalog info only when creating (no workloadName)
   useEffect(() => {
-    if (workloadName) reset(mergedDefaultValues)
+    if (workloadName && workload) reset(mergedDefaultValues)
+  }, [workload, workloadName, reset])
 
-    getWorkloadCatalog({ body: { url: '', sub: user.sub, teamId } }).then((res: any) => {
-      const { url, catalog }: { url: string; catalog: any[] } = res.data
-      let item = null
+  useEffect(() => {
+    if (!workloadName && chartData) reset(mergedDefaultValues)
+  }, [chartData, workloadName, reset])
 
-      if (workload?.spec?.path) item = catalog.find((c) => c.name === workload.spec.path)
-      else if (catalogName) item = catalog.find((c) => c.name === catalogName)
-
-      if (!item) return
-
-      const {
-        chartVersion: helmChartVersion,
-        chartDescription: helmChartDescription,
-        name: path,
-        values,
-        valuesSchema,
-        icon,
-      } = item
-      const chartMetadata = { helmChartVersion, helmChartDescription }
-      setCatalogItem({ chartMetadata, path, values, valuesSchema, url, icon })
-    })
-  }, [workload])
-
-  // When editing, use workload from API; when creating, use catalog item
   const workloadData = workloadName ? workload : catalogItem
-  const valuesData = workloadName ? workload?.spec?.values : catalogItem?.values
-  const valuesSchema = catalogItem?.valuesSchema
+  const valuesData = workloadName ? workload?.spec?.values : (catalogItem as any)?.values
+  const valuesSchema = (catalogItem as any)?.valuesSchema
 
   const [workloadValuesYaml, setWorkloadValuesYaml] = useState(
     typeof valuesData === 'string' ? valuesData : YAML.stringify(valuesData ?? {}),
@@ -170,24 +213,24 @@ export default function WorkloadsCreateEditPage({
     setWorkloadValuesYaml(typeof valuesData === 'string' ? valuesData : YAML.stringify(valuesData ?? {}))
   }, [workloadData, valuesData])
 
-  // Refetch workload when dirty flag resets (edit mode only)
   useEffect(() => {
     if (isDirty !== false) return
     if (!workloadName) return
     if (!isFetchingWorkload) refetchWorkload()
   }, [isDirty, workloadName, isFetchingWorkload, refetchWorkload])
 
-  const icon = workloadData?.spec?.icon || catalogItem.icon || '/logos/akamai_logo.svg'
-  const headerName = workloadData?.metadata?.name || catalogItem.name
-  const headerPath = workloadData?.spec?.path || catalogItem.path || 'custom'
+  const icon = (workloadData as any)?.spec?.icon || (catalogItem as any)?.icon || '/logos/akamai_logo.svg'
+  const headerName = (workloadData as any)?.metadata?.name || (catalogItem as any)?.name
 
-  // ---- Auto image updater state ----
+  const repositoryUrl = (workloadData as any)?.spec?.url || (catalogItem as any)?.url || ''
+  const repositoryPath = (workloadData as any)?.spec?.path || (catalogItem as any)?.path || ''
+  const repositoryTag = (workloadData as any)?.spec?.revision || (catalogItem as any)?.revision || ''
+
   type AutoUpdaterType = 'disabled' | 'digest' | 'semver'
   const watchedStrategyType = watch('spec.imageUpdateStrategy.type') as AutoUpdaterType | undefined
 
   const [autoUpdaterType, setAutoUpdaterType] = useState<AutoUpdaterType>('disabled')
 
-  // initialise local state from form values
   useEffect(() => {
     if (watchedStrategyType) setAutoUpdaterType(watchedStrategyType)
   }, [watchedStrategyType])
@@ -216,7 +259,6 @@ export default function WorkloadsCreateEditPage({
 
     if (selected === 'disabled') setValue('spec.imageUpdateStrategy', { type: 'disabled' } as any)
     else if (selected === 'digest') {
-      // keep existing digest block if present
       const currentDigest = watch('spec.imageUpdateStrategy.digest') ?? {}
       setValue('spec.imageUpdateStrategy', {
         type: 'digest',
@@ -232,22 +274,34 @@ export default function WorkloadsCreateEditPage({
   }
 
   const onSubmit = async (formData: CreateAplWorkloadApiResponse) => {
-    const workloadBody = omit(formData.spec, ['chartProvider', 'chart', 'revision'])
+    const workloadBody = omit(formData.spec, ['chartProvider', 'chart'])
     const chartMetadata = omit(formData.spec?.chartMetadata, ['helmChartCatalog', 'helmChart'])
-    const path = workloadData?.spec?.path ?? workloadData.path ?? (formData as any).path
-    const url = workloadData?.spec?.url ?? workloadData.url ?? (formData as any).url ?? ''
+    const path = (workloadData as any)?.spec?.path ?? (workloadData as any)?.path ?? formData.spec?.path ?? ''
+    const url = (workloadData as any)?.spec?.url ?? (workloadData as any)?.url ?? formData.spec?.url ?? ''
+    const revision = formData.spec?.revision ?? (catalogItem as any)?.revision ?? ''
 
-    // ---- derive imageUpdateStrategy from values.yaml if needed ----
     let imageUpdateStrategy = formData.spec.imageUpdateStrategy
 
     try {
       const parsedValues = YAML.parse(workloadValuesYaml || '')
-      const imageRepository: string | undefined = parsedValues?.image?.repository
-      const tag: string | undefined = parsedValues?.image?.tag
+
+      // Search for image.repository in nested YAML structures (e.g. versionOne.image.repository in canary charts)
+      const findImageConfig = (obj: any, depth = 0): { repository?: string; tag?: string } | undefined => {
+        if (!obj || typeof obj !== 'object' || depth > 5) return undefined
+        if (obj.image?.repository) return { repository: obj.image.repository, tag: obj.image.tag }
+        return Object.keys(obj).reduce<{ repository?: string; tag?: string } | undefined>(
+          (found, key) => found ?? findImageConfig(obj[key], depth + 1),
+          undefined,
+        )
+      }
+
+      const imageConfig = findImageConfig(parsedValues)
+      const imageRepository = imageConfig?.repository
+      const tag = imageConfig?.tag
 
       const selectedType = (imageUpdateStrategy as any)?.type as 'disabled' | 'digest' | 'semver' | undefined
 
-      if (imageRepository && selectedType === 'digest') {
+      if (!isEmpty(imageRepository) && selectedType === 'digest') {
         const currentDigest = (imageUpdateStrategy as any)?.digest ?? {}
         imageUpdateStrategy = {
           type: 'digest',
@@ -260,7 +314,7 @@ export default function WorkloadsCreateEditPage({
         }
       }
 
-      if (imageRepository && selectedType === 'semver') {
+      if (!isEmpty(imageRepository) && selectedType === 'semver') {
         const currentSemver = (imageUpdateStrategy as any)?.semver ?? {}
         imageUpdateStrategy = {
           type: 'semver',
@@ -280,14 +334,13 @@ export default function WorkloadsCreateEditPage({
       kind: 'AplTeamWorkload',
       metadata: {
         name: workloadName ?? formData.metadata?.name ?? '',
-        // add labels here if the backend expects them on create/update
-        // labels: { 'apl.io/teamId': teamId },
       },
       spec: {
         ...workloadBody,
         chartMetadata,
         url,
         path,
+        revision,
         values: workloadValuesYaml,
         imageUpdateStrategy,
       },
@@ -306,46 +359,67 @@ export default function WorkloadsCreateEditPage({
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/workloads`} />
 
-  if (isLoadingWorkload || isLoadingCatalog) return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
+  if (isLoadingWorkload || isLoadingChart || isFetchingChart) return <PaperLayout loading title={t('TITLE_WORKLOAD')} />
 
   return (
     <PaperLayout title={t('TITLE_WORKLOAD', { workloadName, role: 'team' })}>
-      <Box className={classes.header} sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-        <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
-          <img
-            className={classes.img}
-            src={icon}
-            onError={({ currentTarget }) => {
-              currentTarget.onerror = null
-              currentTarget.src = `${icon}`
-            }}
-            alt={`Logo for ${icon}`}
-          />
-        </Box>
-
-        <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
-          <LandingHeader
-            title={headerName && headerPath ? `${headerName} (${headerPath})` : headerName ?? headerPath}
-            docsLabel='Docs'
-            docsLink={
-              workloadData?.spec?.url && workloadData?.spec?.path
-                ? getDocsLink(workloadData.spec.url as string, workloadData.spec.path as string)
-                : undefined
-            }
-            hideCrumbX={workloadName ? [1, 2] : undefined}
-            breadcrumbOverrides={[
-              {
-                position: 1,
-                label: 'Workloads',
-                linkTo: `/teams/${teamId}/workloads`,
-              },
-              {
-                position: 2,
-                label: 'Catalogs',
-                linkTo: `/catalogs/${teamId}`,
-              },
-            ]}
-          />
+      <Box sx={{ mb: 2 }}>
+        <Box
+          className={classes.header}
+          sx={{ display: 'flex', alignItems: 'center', width: '100%', flexDirection: { xs: 'column', sm: 'row' } }}
+        >
+          <Box className={classes.imgHolder} sx={{ flex: '0 0 auto' }}>
+            <img
+              className={classes.img}
+              src={icon}
+              onError={({ currentTarget }) => {
+                currentTarget.onerror = null
+                currentTarget.src = '/logos/akamai_logo.svg'
+              }}
+              alt={`Logo for ${icon}`}
+            />
+          </Box>
+          <Box sx={{ flex: '1 1 auto', minWidth: 0 }}>
+            <LandingHeader
+              title={headerName}
+              docsLabel='Docs'
+              docsLink={
+                (workloadData as any)?.spec?.url && (workloadData as any)?.spec?.path
+                  ? getDocsLink((workloadData as any).spec.url as string, (workloadData as any).spec.path as string)
+                  : undefined
+              }
+              hideCrumbX={workloadName ? [1, 2, 3] : [2]}
+              breadcrumbOverrides={[
+                {
+                  position: 1,
+                  label: 'Workloads',
+                  linkTo: `/teams/${teamId}/workloads`,
+                },
+                {
+                  position: 2,
+                  label: 'Catalogs',
+                  linkTo: `/teams/${teamId}/catalogs/`,
+                },
+              ]}
+            />
+            <Box
+              className={classes.repoInfo}
+              sx={{ flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'center', sm: 'start' } }}
+            >
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Repository URL:</span>
+                <span className={classes.repoValue}>{repositoryUrl || '-'}</span>
+              </Typography>
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Path:</span>
+                <span className={classes.repoValue}>{repositoryPath || '-'}</span>
+              </Typography>
+              <Typography variant='body2'>
+                <span className={classes.repoLabel}>Tag / Branch:</span>
+                <span className={classes.repoValue}>{repositoryTag || '-'}</span>
+              </Typography>
+            </Box>
+          </Box>
         </Box>
       </Box>
       {isErrorWorkload ? null : (
@@ -378,7 +452,6 @@ export default function WorkloadsCreateEditPage({
                 </Box>
               </Section>
 
-              {/* Auto image updater */}
               <Section
                 title='Auto Image Updater'
                 description='Automatically update the image. Only supported when the image is stored in Harbor. Image tag and repository can be set in the editor'
@@ -407,7 +480,6 @@ export default function WorkloadsCreateEditPage({
                 )}
               </Section>
 
-              {/* Values editor */}
               <CodeEditor code={workloadValuesYaml} onChange={setWorkloadValuesYaml} validationSchema={valuesSchema} />
 
               <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto', float: 'right', mt: 2 }}>
@@ -424,7 +496,7 @@ export default function WorkloadsCreateEditPage({
                   {workloadName && (
                     <DeleteButton
                       onDelete={() => deleteWorkload({ teamId, workloadName })}
-                      resourceName={workloadData?.metadata?.name}
+                      resourceName={(workloadData as any)?.metadata?.name}
                       resourceType='workload'
                       data-cy='button-delete-workload'
                       loading={isLoadingDelete}

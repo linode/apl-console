@@ -2,13 +2,13 @@ import { Button, Grid, IconButton } from '@mui/material'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import {
-  CreateNetpolApiResponse,
-  EditNetpolApiResponse,
-  useCreateNetpolMutation,
-  useDeleteNetpolMutation,
-  useEditNetpolMutation,
+  CreateAplNetpolApiArg,
+  CreateAplNetpolApiResponse,
+  useCreateAplNetpolMutation,
+  useDeleteAplNetpolMutation,
+  useEditAplNetpolMutation,
   useGetAllWorkloadNamesQuery,
-  useGetNetpolQuery,
+  useGetAplNetpolQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -20,12 +20,12 @@ import { TextField } from 'components/forms/TextField'
 import { LoadingButton } from '@mui/lab'
 import DeleteButton from 'components/DeleteButton'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InformationBanner from 'components/InformationBanner'
 import { isEqual } from 'lodash'
 import { useStyles } from './create-edit-networkPolicies.styles'
-import { createIngressSchema } from './create-edit-networkPolicies.validator'
+import { createAplIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
 import NetworkPolicyTargetLabelRow from './NetworkPolicyTargetPodLabelRow'
 
@@ -42,71 +42,112 @@ export default function NetworkPoliciesIngressCreateEditPage({
   const { classes } = useStyles()
   const { t } = useTranslation()
 
-  const methods = useForm<CreateNetpolApiResponse>({
-    resolver: yupResolver(createIngressSchema) as Resolver<CreateNetpolApiResponse>,
-    defaultValues: {
-      teamId,
-      ruleType: {
-        type: 'ingress',
-        ingress: {
-          mode: 'AllowOnly',
-          allow: [],
+  const defaultValues = useMemo(
+    () =>
+      createAplIngressSchema.cast({
+        kind: 'AplTeamNetworkControl',
+        metadata: {
+          name: '',
+          labels: {
+            'apl.io/teamId': teamId ?? '',
+          },
         },
-      },
-    },
+        spec: {
+          ruleType: {
+            type: 'ingress',
+            ingress: {
+              mode: 'AllowOnly',
+              allow: [],
+              toLabelName: '',
+              toLabelValue: '',
+            },
+          },
+        },
+        status: {
+          conditions: [],
+          phase: undefined,
+        },
+      }) as CreateAplNetpolApiResponse,
+    [teamId],
+  )
+
+  const methods = useForm<CreateAplNetpolApiResponse>({
+    resolver: yupResolver(createAplIngressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
+    defaultValues,
   })
+
   const {
     control,
     handleSubmit,
     reset,
     watch,
     formState: { errors },
+    setValue,
   } = methods
 
-  // FieldArray for multiple source rows
   const {
     fields: sourceFields,
     append: appendSource,
     remove: removeSource,
-  } = useFieldArray({ control, name: 'ruleType.ingress.allow' })
+  } = useFieldArray({
+    control,
+    name: 'spec.ruleType.ingress.allow',
+  })
 
-  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState<boolean>(false)
+  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState(false)
 
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateNetpolMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditNetpolMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteNetpolMutation()
-  const { data, isLoading: isLoadingFetch } = useGetNetpolQuery(
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplNetpolMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplNetpolMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplNetpolMutation()
+
+  const { data, isLoading: isLoadingFetch } = useGetAplNetpolQuery(
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
   )
+
   const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllWorkloadNamesQuery()
 
-  // When editing, reset form with fetched data
   useEffect(() => {
-    if (data) {
-      const defaultValues = createIngressSchema.cast(data)
-      reset(defaultValues)
-    }
+    if (!data) return
+    reset(createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse)
   }, [data, reset])
 
   useEffect(() => {
     if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
-  }, [])
+  }, [networkPolicyName, appendSource])
 
   const toggleShowMultiPodInformationBanner = useCallback(() => {
     setShowMultiPodInformationBanner(true)
   }, [])
 
-  const onSubmit = (formData: CreateNetpolApiResponse | EditNetpolApiResponse) => {
-    const body = { ...formData }
-    const rawAllow = body.ruleType.ingress.allow as any[]
-    const merged = rawAllow.flat ? rawAllow.flat() : rawAllow
+  const onSubmit = (formData: CreateAplNetpolApiResponse) => {
+    const rawAllow = formData.spec?.ruleType?.ingress?.allow ?? []
+    const merged = (rawAllow as any[]).flat ? (rawAllow as any[]).flat() : rawAllow
 
     const filtered = merged.filter((entry) => {
       return entry.fromLabelName !== '' || entry.fromLabelValue !== '' || entry.fromNamespace !== ''
     })
 
-    body.ruleType.ingress.allow = filtered
+    const body: CreateAplNetpolApiArg['body'] = {
+      kind: 'AplTeamNetworkControl',
+      metadata: {
+        name: formData.metadata?.name ?? '',
+        labels: {
+          'apl.io/teamId': teamId ?? '',
+        },
+      },
+      spec: {
+        ruleType: {
+          type: 'ingress',
+          ingress: {
+            toLabelName: formData.spec?.ruleType?.ingress?.toLabelName,
+            toLabelValue: formData.spec?.ruleType?.ingress?.toLabelValue,
+            mode: formData.spec?.ruleType?.ingress?.mode ?? 'AllowOnly',
+            allow: filtered,
+          },
+        },
+      },
+    }
 
     if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
     else create({ teamId, body })
@@ -124,9 +165,10 @@ export default function NetworkPoliciesIngressCreateEditPage({
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies#inbound-rules'
-          title={networkPolicyName ? data?.name : 'Create'}
+          title={networkPolicyName ? data?.metadata?.name : 'Create'}
           hideCrumbX={[0, 1, 3]}
         />
+
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='Inbound rule'>
@@ -134,14 +176,16 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 sx={{ mt: 4 }}
                 label='Inbound rule name'
                 width='large'
-                value={watch('name')}
-                onChange={(e) => methods.setValue('name', e.target.value)}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+                value={watch('metadata.name') ?? ''}
+                onChange={(e) => setValue('metadata.name', e.target.value)}
+                error={!!errors.metadata?.name}
+                helperText={errors.metadata?.name?.message}
                 placeholder='e.g. backend-to-database'
+                disabled={!!networkPolicyName}
               />
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
+
               {showMultiPodInformationBanner && (
                 <InformationBanner
                   sx={{ mt: 2 }}
@@ -156,7 +200,7 @@ export default function NetworkPoliciesIngressCreateEditPage({
                     aplWorkloads={aplWorkloads || []}
                     teamId={teamId}
                     rowIndex={index}
-                    fieldArrayName={`ruleType.ingress.allow.${index}`}
+                    fieldArrayName={`spec.ruleType.ingress.allow.${index}`}
                     showBanner={toggleShowMultiPodInformationBanner}
                   />
                   {sourceFields.length > 1 && (
@@ -165,10 +209,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
                       onClick={() => removeSource(index)}
                       size='small'
                       sx={{
-                        // this is not a good solution and needs a proper fix with flexbox
-                        //
                         // eslint-disable-next-line no-nested-ternary
-                        mt: index === 0 ? (errors?.ruleType?.ingress?.allow?.root ? '24px' : '44px') : 4,
+                        mt: index === 0 ? (errors?.spec?.ruleType?.ingress?.allow?.root ? '24px' : '44px') : 4,
                         alignSelf: 'center',
                       }}
                     >
@@ -190,11 +232,10 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
               <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
 
-              {/* Target row needs seperate component becuase of data shape */}
               <NetworkPolicyTargetLabelRow
                 aplWorkloads={aplWorkloads || []}
                 teamId={teamId}
-                prefixName='ruleType.ingress'
+                prefixName='spec.ruleType.ingress'
                 showBanner={toggleShowMultiPodInformationBanner}
                 isEditMode={!!networkPolicyName}
               />

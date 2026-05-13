@@ -1,8 +1,7 @@
-/* eslint-disable no-plusplus */
 import { Box, Grid } from '@mui/material'
 import { useSession } from 'providers/Session'
 import React, { useState } from 'react'
-import { GetAppsApiResponse, GetSettingsApiResponse, GetTeamApiResponse } from 'redux/otomiApi'
+import { GetAplTeamApiResponse, GetAppsApiResponse, GetSettingsApiResponse } from 'redux/otomiApi'
 import { makeStyles } from 'tss-react/mui'
 import { get } from 'lodash'
 import { getAppData } from 'utils/data'
@@ -16,12 +15,7 @@ import ObjAppModal from './ObjAppModal'
 
 const useStyles = makeStyles()((theme) => {
   const p = theme.palette
-  const m = p.mode
 
-  // Disabled app styling:
-  // filter: grayscale(1);
-  // opacity: 0.5;
-  // background-color: #eeeeee;
   return {
     root: {
       color: theme.palette.text.secondary,
@@ -31,12 +25,6 @@ const useStyles = makeStyles()((theme) => {
     searchbar: {
       backgroundColor: '#444444',
     },
-    // enabled: {
-    //   '& .MuiTypography-root': {
-    //     color: '#585656',
-    //     fontWeight: '200',
-    //   },
-    // },
     out: {
       backgroundColor: p.error.main,
     },
@@ -66,6 +54,7 @@ function getComparator<Key extends keyof any>(
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
+
 function sortArray(a, b) {
   // Treat undefined as true
   const aEnabled = a.enabled === undefined ? true : a.enabled
@@ -83,14 +72,6 @@ function sortArray(a, b) {
   return 1
 }
 
-// function sortArray(a, b) {
-//   // Treat undefined as true
-//   if (a.id < b.id) return -1
-//   if (a.id > b.id) return 1
-
-//   return 0
-// }
-
 function getDeprecatedApps(apps, session, teamId) {
   return apps
     ?.map((app) => {
@@ -106,7 +87,7 @@ function getDeprecatedApps(apps, session, teamId) {
 interface Props {
   teamId: string
   apps: GetAppsApiResponse
-  teamSettings: GetTeamApiResponse
+  teamSettings: GetAplTeamApiResponse
   setAppState: CallableFunction
   objSettings: GetSettingsApiResponse
 }
@@ -120,8 +101,8 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   const session = useSession()
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
-  const [orderBy, setOrderBy] = useState('enabled')
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc')
+  const [orderBy] = useState('enabled')
+  const [order] = useState<'asc' | 'desc'>('asc')
   const [openModal, setOpenModal] = useState('')
   const [openObjAppModal, setOpenObjAppModal] = useState('')
   const objStorageApps = (session?.objectStorage?.objStorageApps || []) as ObjStorageApp[]
@@ -141,7 +122,6 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
     const isObjStorageRequired = getObjStorageRequired(id)
     if (isObjStorageRequired && !ignoreObjStorage) setOpenObjAppModal(id)
     else {
-      // we only allow turning on
       const { deps } = getAppData(session, teamId, id)
       setAppState([[id], true])
       if (deps) setAppState([(deps || []).concat([id]), true])
@@ -150,22 +130,18 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
 
   const handleFilterName = (filterName: string) => {
     setFilterName(filterName)
-    // setPage(0)
   }
 
-  // END HOOKS
-  // we visualize drag state for all app dependencies
   const isAdmin = teamId === 'admin'
   const dataFiltered = applySortFilter({
     tableData: apps,
     comparator: getComparator(order, orderBy),
     filterName,
-    managedMonitoringApps: teamSettings?.managedMonitoring || undefined,
+    managedMonitoringApps: teamSettings?.spec.managedMonitoring || undefined,
     isAdmin,
   })
 
   const deprecatedApps = getDeprecatedApps(dataFiltered, session, teamId)
-  // const filteredApps = apps.filter((app) => app.id.toLowerCase().includes(searchTerm.toLowerCase()))
 
   const out = (items) =>
     items?.map((item) => {
@@ -180,7 +156,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
             // alertmanager is an exception to the rule as it can be enabled on team level without being enabled on platform level
             enabled={
               enabled !== false ||
-              (teamId !== 'admin' && teamSettings?.managedMonitoring?.alertmanager && id === 'alertmanager')
+              (teamId !== 'admin' && teamSettings?.spec.managedMonitoring?.alertmanager && id === 'alertmanager')
             }
             id={id}
             img={`/logos/${logo}`}
@@ -203,7 +179,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
     return deprecatedApps?.map((app) => {
       const handleCancel = () => {
         setOpenModal('')
-        window.open(app?.externalUrl, '_blank')
+        window.open(String(app?.externalUrl), '_blank')
       }
       const handleAction = () => {
         setOpenModal('')
@@ -310,6 +286,7 @@ function applySortFilter({
       )
     }
   }
+
   if (!isAdmin) {
     tableData = tableData?.filter((item: Record<string, any>) => {
       const key = item.id.toLowerCase()

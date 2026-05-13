@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { styled } from '@mui/material/styles'
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
 import { KeyboardArrowRight } from '@mui/icons-material'
@@ -13,7 +13,7 @@ const StyledDescription = styled(Typography)(({ theme }) => ({
   color: theme.palette.cl.text.subTitle,
 }))
 
-const StyledAccordion = styled(Accordion)(({ theme }) => ({
+const StyledAccordion = styled(Accordion)(() => ({
   backgroundColor: 'transparent',
   boxShadow: 'none !important',
   margin: '0px !important',
@@ -22,7 +22,7 @@ const StyledAccordion = styled(Accordion)(({ theme }) => ({
   },
 }))
 
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+const StyledAccordionDetails = styled(AccordionDetails)(() => ({
   backgroundColor: 'transparent',
   boxShadow: 'none',
   marginTop: '0px',
@@ -32,7 +32,7 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   },
 }))
 
-const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+const StyledAccordionSummary = styled(AccordionSummary)(() => ({
   padding: '0',
   '.MuiAccordionSummary-content': {
     margin: '0', // Remove margin between text and icon
@@ -45,20 +45,14 @@ interface Props {
   description?: string
   title?: string
   children?: React.ReactNode
-  noPaddingTop?: boolean
   closed?: boolean
 }
 
 export default function AdvancedSettings(props: Props) {
-  const { title = 'Advanced Settings', description, children, noPaddingTop, closed = false } = props
-  const [expanded, setExpanded] = useState(true)
-
-  const handleAccordionChange = () => {
-    setExpanded((prev) => !prev)
-  }
+  const { title = 'Advanced Settings', description, children, closed = false } = props
 
   return (
-    <StyledAccordion defaultExpanded={!closed} disableGutters onChange={handleAccordionChange}>
+    <StyledAccordion defaultExpanded={!closed} disableGutters>
       <StyledAccordionSummary
         expandIcon={<KeyboardArrowRight />}
         sx={{

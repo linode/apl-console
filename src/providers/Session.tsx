@@ -81,11 +81,7 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     isLoading: isLoadingSettings,
     refetch: refetchSettings,
   } = useGetSettingsInfoQuery(skipFetch && skipToken)
-  const {
-    data: apps,
-    isLoading: isLoadingApps,
-    refetch: refetchAppsEnabled,
-  } = useGetAppsQuery({ teamId: oboTeamId, picks: ['id', 'enabled'] }, { skip: !oboTeamId })
+  const { data: apps, isLoading: isLoadingApps, refetch: refetchAppsEnabled } = useGetAppsQuery(skipFetch && skipToken)
   const { data: apiDocs, isLoading: isLoadingApiDocs } = useGetApiDocQuery(skipFetch && skipToken)
   const appsEnabled = (apps || []).reduce((memo, a) => {
     memo[a.id] = !!a.enabled
@@ -139,6 +135,8 @@ export default function SessionProvider({ children }: Props): React.ReactElement
     if (originalStatus === 504) throw new ApiErrorGatewayTimeout()
     // return the logout page if the error is a fetch error (session expired)
     if (status === 'FETCH_ERROR') return <Logout fetchError />
+    // redirect to login on 401 (expired session / OAuth2-Proxy rejection)
+    if (originalStatus === 401) return <Logout fetchError />
     // if we have a session error which not fits the above, we throw a generic error
     const errorMessage: string = data?.error || data || 'Session error'
     const errorCode: number = originalStatus || status || 500

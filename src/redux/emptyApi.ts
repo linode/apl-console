@@ -2,14 +2,15 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-restricted-globals */
 // Or from '@reduxjs/toolkit/query' if not using the auto-generated hooks
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BaseQueryFn, FetchArgs, FetchBaseQueryError, createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 const headers = []
 
-const baseQuery = fetchBaseQuery({
+const rawBaseQuery = fetchBaseQuery({
   baseUrl: '/api/',
   prepareHeaders: (h) => {
     headers.map(([idx, val]: [string, string]) => h.set(idx, val))
+    h.set('Accept', 'application/json')
     return h
   },
   paramsSerializer: (params) => {
@@ -23,6 +24,29 @@ const baseQuery = fetchBaseQuery({
     return searchParams.toString()
   },
 })
+
+let isRedirecting = false
+
+// Wrap the base query to intercept 401 responses from OAuth2-Proxy
+// and redirect to the login page when the session has expired
+const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions)
+  if (result.error) {
+    const { status } = result.error
+    const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
+    if (httpStatus === 401) {
+      if (!isRedirecting) {
+        isRedirecting = true
+        window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
+      }
+      // Suspend the query so components stay in loading state until the redirect completes
+      return new Promise(() => {
+        /* suspend until redirect */
+      })
+    }
+  }
+  return result
+}
 
 // initialize an empty api service that we'll inject endpoints into later as needed
 export const emptySplitApi = createApi({

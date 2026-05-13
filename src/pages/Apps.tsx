@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import Apps from 'components/Apps'
+import ObjWizardModal from 'components/ObjWizardModal'
 import useAuthzSession from 'hooks/useAuthzSession'
 import useSettings from 'hooks/useSettings'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { useAppSelector } from 'redux/hooks'
-import { useGetAppsQuery, useGetSettingsQuery, useGetTeamQuery, useToggleAppsMutation } from 'redux/otomiApi'
+import { useGetAplTeamQuery, useGetSettingsQuery, useGetTeamAppsQuery, useToggleAppsMutation } from 'redux/otomiApi'
 
 interface Params {
   teamId?: string
@@ -22,20 +22,23 @@ export default function ({
   const [appState, setAppState] = useState([])
   const [appIds, appEnabled] = appState
   const [toggle, { isSuccess: okToggle }] = useToggleAppsMutation()
-  const { data: apps, isLoading, isFetching, refetch } = useGetAppsQuery({ teamId })
-  const { data: teamSettings } = useGetTeamQuery({ teamId })
+
+  const { data: apps, isLoading, isFetching, refetch } = useGetTeamAppsQuery({ teamId })
+  const { data: teamSettings } = useGetAplTeamQuery({ teamId })
+
   const {
     data: objSettings,
     isLoading: isLoadingSettings,
     isFetching: isFetchingSettings,
     refetch: refetchSettings,
   } = useGetSettingsQuery({ ids: ['obj'] }, { skip: themeView === 'team' })
+
   useEffect(() => {
     if (appIds) {
       setAppState([])
-
       toggle({ teamId, body: { ids: appIds, enabled: appEnabled } })
     }
+
     if (okToggle) {
       // we wish to refetch settings kept in the session for the UI state
       // IMPORTANT: we have to use setTimeout to avoid concurrent state update
@@ -43,22 +46,29 @@ export default function ({
       setTimeout(refetchAppsEnabled)
     }
   }, [appIds, okToggle])
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
     if (!isFetchingSettings) refetchSettings()
   }, [isDirty])
-  // END HOOKS
+
   const loading = isLoading || isLoadingSettings
+
   const comp = apps && (
-    <Apps
-      teamId={teamId}
-      apps={isFetching ? undefined : apps}
-      teamSettings={teamSettings}
-      setAppState={setAppState}
-      objSettings={objSettings}
-    />
+    <>
+      <Apps
+        teamId={teamId}
+        apps={isFetching ? undefined : apps}
+        teamSettings={teamSettings}
+        setAppState={setAppState}
+        objSettings={objSettings}
+      />
+      <ObjWizardModal />
+    </>
   )
+
   return <PaperLayout loading={loading} comp={comp} title={`Apps - ${teamId === 'admin' ? 'admin' : 'team'}`} />
 }

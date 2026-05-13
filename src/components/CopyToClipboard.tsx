@@ -1,16 +1,14 @@
 import { Box, Tooltip } from '@mui/material'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import DoneIcon from '@mui/icons-material/Done'
 
 interface CopyToClipboardProps {
   text: string
   tooltipTitle?: string
-  showLink?: boolean
+  visible?: boolean
 }
 
-function CopyToClipboard({ text, tooltipTitle = 'Copy to clipboard', showLink = false }: CopyToClipboardProps) {
+function CopyToClipboard({ text, tooltipTitle = 'Copy to clipboard', visible = true }: CopyToClipboardProps) {
   const [copied, setCopied] = useState(false)
 
   const handleCopyToClipboard = () => {
@@ -20,20 +18,21 @@ function CopyToClipboard({ text, tooltipTitle = 'Copy to clipboard', showLink = 
       setCopied(false)
     }, 3000)
   }
+
   return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      {showLink && <Link to={{ pathname: text }} target='_blank' />}
-      <Box sx={{ width: '30px' }}>
-        {!copied ? (
-          <Tooltip title={tooltipTitle}>
-            <ContentCopyIcon sx={{ ml: 1, cursor: 'pointer' }} onClick={handleCopyToClipboard} />
-          </Tooltip>
-        ) : (
-          <Tooltip title='Copied!'>
-            <DoneIcon sx={{ ml: 1, cursor: 'pointer' }} />
-          </Tooltip>
-        )}
-      </Box>
+    <Box
+      sx={{
+        width: 30,
+        minWidth: 30,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        visibility: visible ? 'visible' : 'hidden',
+      }}
+    >
+      <Tooltip title={copied ? 'Copied!' : tooltipTitle}>
+        <ContentCopyIcon sx={{ cursor: 'pointer', fontSize: 18 }} onClick={handleCopyToClipboard} />
+      </Tooltip>
     </Box>
   )
 }

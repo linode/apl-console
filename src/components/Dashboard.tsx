@@ -6,7 +6,7 @@ import { getDomain } from 'layouts/Shell'
 import useSettings from 'hooks/useSettings'
 import Link from '@mui/material/Link'
 import { Link as RouterLink } from 'react-router-dom'
-import { GetTeamApiResponse } from 'redux/otomiApi'
+import { GetAplTeamApiResponse } from 'redux/otomiApi'
 import UpgradeVersion from './UpgradeVersion'
 
 // styles -----------------------------------------------------------
@@ -92,7 +92,7 @@ const useStyles = makeStyles()((theme) => ({
 
 // types -----------------------------------------------------------
 interface Props {
-  team?: GetTeamApiResponse
+  team?: GetAplTeamApiResponse
   inventory: any
 }
 
@@ -212,22 +212,22 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
   const hostname = window.location.hostname
   const domain = getDomain(hostname)
   const [isCookiesLoaded, setCookiesLoaded] = React.useState(false)
+
   const onLoad = () => {
     setTimeout(() => {
       setCookiesLoaded(true)
     }, 500)
   }
+
   React.useEffect(() => {
     setCookiesLoaded(false)
   }, [themeView])
 
-  // platform view base iframe urls
   const clusterResourceUtilization = `https://grafana.${domain}/d-solo/efa86fd1d0c121a26444b636a3f509a8/kubernetes-compute-resources-cluster?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  const clusterCapacity = `https://grafana.${domain}/d-solo/iJiti6Lnkgg/kubernetes-cluster-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
-  // team view base iframe urls
   const resourceStatus = `https://grafana-${oboTeamId}.${domain}/d-solo/iJiti6Lnkgg/team-status?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
   const resourceUtilization = `https://grafana-${oboTeamId}.${domain}/d-solo/JcVjFgdZz/kubernetes-deployment?orgId=1&theme=${theme.palette.mode}&panelId=`
   const vulnerabilities = `https://grafana-${oboTeamId}.${domain}/d-solo/trivy_operator/container-scan-results?orgId=1&refresh=30s&theme=${theme.palette.mode}&panelId=`
+
   const views = {
     platform: [
       {
@@ -258,7 +258,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '7', src: `${resourceStatus}9` },
           { id: '8', src: `${resourceStatus}10` },
         ],
-        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin',
+        show: team?.spec.managedMonitoring?.grafana && oboTeamId !== 'admin',
       },
       {
         title: 'Resource Utilization',
@@ -267,7 +267,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '9', src: `${resourceUtilization}8` },
           { id: '10', src: `${resourceUtilization}9` },
         ],
-        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin',
+        show: team?.spec.managedMonitoring?.grafana && oboTeamId !== 'admin',
       },
       {
         title: 'Vulnerabilities',
@@ -278,7 +278,7 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           { id: '13', src: `${vulnerabilities}50` },
           { id: '14', src: `${vulnerabilities}51` },
         ],
-        show: team?.managedMonitoring?.grafana && oboTeamId !== 'admin' && appsEnabled.trivy,
+        show: team?.spec.managedMonitoring?.grafana && oboTeamId !== 'admin' && appsEnabled.trivy,
       },
     ],
   }
@@ -295,7 +295,6 @@ export default function Dashboard({ team, inventory }: Props): React.ReactElemen
           title='Inventory'
         />
 
-        {/* Cookies Hack: Hidden iframe to load cookies for grafana */}
         <iframe
           className={classes.hiddenIframe}
           title='Hidden iFrame'

@@ -1,5 +1,4 @@
-import React from 'react'
-import { Box, Button, IconButton, StandardTextFieldProps } from '@mui/material'
+import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
@@ -68,10 +67,6 @@ const useStyles = makeStyles()((theme: Theme) => ({
     color: theme.palette.cl.text.title,
   },
 }))
-
-interface TextFieldPropsOverrides extends StandardTextFieldProps {
-  label: string
-}
 
 export interface KeyValueItem {
   name: string

@@ -58,7 +58,6 @@ export interface AutoResizableTextareaProps extends Omit<React.TextareaHTMLAttri
   maxWidth?: number | string
   minHeight?: number | string
   maxHeight?: number | string
-  style?: React.CSSProperties
   error?: boolean
   isEncrypted?: boolean
 }
@@ -71,7 +70,6 @@ export function AutoResizableTextarea({
   maxWidth = 850,
   minHeight = 34,
   maxHeight = 800,
-  style,
   error = false,
   isEncrypted,
   onInput,

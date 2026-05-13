@@ -11,13 +11,14 @@ import { getStatus } from 'components/Workloads'
 import InformationBanner from 'components/InformationBanner'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { RouteComponentProps } from 'react-router-dom'
-import { useGetAllSealedSecretsQuery, useGetTeamSealedSecretsQuery } from 'redux/otomiApi'
+import { useGetAllAplSealedSecretsQuery, useGetAplSealedSecretsQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
 import { useSocket } from 'providers/Socket'
 
 const getSecretLink = (isAdmin, ownerId) =>
   function (row) {
-    const { teamId, name }: { teamId: string; name: string } = row
+    const teamId = row.metadata?.labels?.['apl.io/teamId']
+    const name = row.metadata?.name
     if (!(isAdmin || teamId === ownerId)) return name
 
     const path =
@@ -45,13 +46,13 @@ export default function SecretOverviewPage({
     isLoading: isLoadingAllSealedSecrets,
     isFetching: isFetchingAllSealedSecrets,
     refetch: refetchAllSealedSecrets,
-  } = useGetAllSealedSecretsQuery(teamId ? skipToken : undefined)
+  } = useGetAllAplSealedSecretsQuery(teamId ? skipToken : undefined)
   const {
     data: teamSealedSecrets,
     isLoading: isLoadingTeamSealedSecrets,
     isFetching: isFetchingTeamSealedSecrets,
     refetch: refetchTeamSealedSecrets,
-  } = useGetTeamSealedSecretsQuery({ teamId }, { skip: !teamId })
+  } = useGetAplSealedSecretsQuery({ teamId }, { skip: !teamId })
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -76,19 +77,19 @@ export default function SecretOverviewPage({
     {
       id: 'type',
       label: t('Type'),
-      renderer: (row) => row?.type || row?.template?.type,
+      renderer: (row) => row?.spec?.template?.type,
     },
     {
       id: 'Status',
       label: 'Status',
-      renderer: (row) => getStatus(statuses?.secrets?.[row.name]),
+      renderer: (row) => getStatus(statuses?.secrets?.[row.metadata?.name]),
     },
   ]
   if (!teamId) {
     headCells.splice(2, 0, {
       id: 'namespace',
       label: t('Team'),
-      renderer: (row) => row.namespace || `team-${row.teamId}`,
+      renderer: (row) => row.metadata?.labels?.['apl.io/teamId'],
     })
   }
   const loading = isLoadingAllSealedSecrets || isLoadingTeamSealedSecrets

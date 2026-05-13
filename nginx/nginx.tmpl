@@ -39,22 +39,6 @@ http {
     location /v1/healthz {
       return 200 'OK';
     }
-    location ~ ^/teams/([^/]+)/agents/([^/]+)/(.*)$ {
-      set $team_id $1;
-      set $agent_name $2;
-      set $agent_path $3;
-      resolver ${KUBE_DNS_SERVICE_HOST} valid=10s;
-      proxy_pass http://$agent_name.team-$team_id.svc.cluster.local:9099/$agent_path$is_args$args;
-      proxy_http_version 1.1;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      # Support for streaming responses
-      proxy_buffering off;
-      proxy_cache off;
-      chunked_transfer_encoding on;
-    }
     location ~* \.(?:css|js|eot|woff|woff2|ttf|svg|otf) {
       # Enable GZip for static files
       gzip_static on;

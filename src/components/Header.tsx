@@ -5,7 +5,7 @@ import useOffSetTop from 'hooks/useOffSetTop'
 import useResponsive from 'hooks/useResponsive'
 import { useSession } from 'providers/Session'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useGetTeamsQuery } from 'redux/otomiApi'
+import { useGetAplTeamsQuery } from 'redux/otomiApi'
 import useSettings from 'hooks/useSettings'
 import React from 'react'
 import { useLocalStorage } from 'hooks/useLocalStorage'
@@ -17,6 +17,11 @@ type Props = {
   onOpenSidebar: VoidFunction
   isCollapse?: boolean
   verticalLayout?: boolean
+}
+
+type TeamOption = {
+  value: string
+  label: string
 }
 
 // ----------------------------------------------------------------------
@@ -78,17 +83,29 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   } = useSession()
   const [localOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const oboTeamId = sessionOboTeamId || localOboTeamId || undefined
-  const { data: allTeams } = useGetTeamsQuery(!isPlatformAdmin && skipToken)
-  // END HOOKs
-  let teams: string[] = []
+
+  const { data: allTeams } = useGetAplTeamsQuery(isPlatformAdmin ? undefined : skipToken)
+
+  let teams: TeamOption[] = []
 
   if (isPlatformAdmin) {
-    teams = allTeams?.map((team) => team?.name) || []
-    teams = [...new Set(teams)]
-    teams = teams.filter((team) => team !== 'admin') // Remove "admin" from the list
-    teams.sort()
-    teams = ['admin', ...teams]
-  } else teams = userTeams
+    teams =
+      allTeams?.map((team) => ({
+        value: team.metadata.labels['apl.io/teamId'],
+        label: team.metadata.name,
+      })) || []
+
+    teams = teams.filter((team) => Boolean(team.value))
+    teams = Array.from(new Map(teams.map((team) => [team.value, team])).values())
+    teams = teams.filter((team) => team.value !== 'admin')
+    teams.sort((a, b) => a.label.localeCompare(b.label))
+    teams = [{ value: 'admin', label: 'admin' }, ...teams]
+  } else {
+    teams = (userTeams || []).map((team) => ({
+      value: team,
+      label: team,
+    }))
+  }
 
   const handleChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChangeView(event)
@@ -121,7 +138,8 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     history.push(nextPathname)
     event.preventDefault()
   }
-  if (!teams && oboTeamId) teams = [oboTeamId]
+
+  if (!teams.length && oboTeamId) teams = [{ value: oboTeamId, label: oboTeamId }]
 
   return (
     <RootStyle
@@ -149,13 +167,13 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
               <StyledSelect
                 size='small'
                 color='secondary'
-                value={(teams?.length && oboTeamId) || ''}
+                value={oboTeamId || ''}
                 onChange={handleChangeTeam}
                 data-cy='select-oboteam'
               >
-                {teams?.map((teamName) => (
-                  <MenuItem key={teamName} value={teamName} data-cy={`select-oboteam-${teamName}`}>
-                    {teamName}
+                {teams.map((team) => (
+                  <MenuItem key={team.value} value={team.value} data-cy={`select-oboteam-${team.value}`}>
+                    {team.label}
                   </MenuItem>
                 ))}
               </StyledSelect>
