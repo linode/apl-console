@@ -537,7 +537,7 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v2/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
