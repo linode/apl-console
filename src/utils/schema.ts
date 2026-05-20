@@ -4,14 +4,8 @@ import { cloneDeep, each, get, set, unset } from 'lodash'
 
 const getHolderPath = (p) => (p.includes('.') ? p.substr(0, p.lastIndexOf('.')) : p)
 
-export const getCoreAppId = (appId): string => {
-  let id: string = appId
-  if (appId.startsWith('ingress-nginx')) id = 'ingress-nginx'
-  return id
-}
-
 export const getAppSchemaName = (appId: string): string => {
-  return `${pascalCase(getCoreAppId(appId))}`
+  return `${pascalCase(appId)}`
 }
 
 export function getStrict(obj: Record<string, any>, path: string, def: any = undefined) {
