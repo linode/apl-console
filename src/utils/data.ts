@@ -3,7 +3,7 @@ import { JSONSchema7 } from 'json-schema'
 import { cloneDeep, find, isArray, isEmpty, isEqual, isPlainObject, transform } from 'lodash'
 import { GetSessionApiResponse } from 'redux/otomiApi'
 import { sentenceCase as sentenceCaseOrig } from 'change-case'
-import { getAppSchemaName, getCoreAppId } from './schema'
+import { getAppSchemaName } from './schema'
 
 export type CleanOptions = {
   cleanKeys?: any[]
@@ -149,9 +149,9 @@ export const getAppData = (
 
   // get the core app
   const apps = getApps(session, teamId)
-  const coreAppId = getCoreAppId(appId)
+  const coreAppId: string = appId
   const coreApp = find(apps, { name: coreAppId })
-  const { useHost, ingress, isShared, path } = coreApp
+  const { useHost, ownHost, isShared, path } = coreApp
   // bundle the shortcuts
   const coreShortcuts = coreApp.shortcuts ?? []
   const mergedShortcuts = ownShortcuts.length ? [...coreShortcuts, ...ownShortcuts] : coreShortcuts
@@ -189,9 +189,9 @@ export const getAppData = (
     logoAlt: `${coreAppId}_logo${logoAltSuffix}.svg`,
     appInfo: appsInfo[coreAppId],
     schema,
-    externalUrl: ingress || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
+    externalUrl: ownHost || useHost ? `${baseUrl}${path ? rePlace(path, teamId) : '/'}` : undefined,
     shortcuts: substShortcuts,
-    hasShortcuts: !!ingress || useHost,
+    hasShortcuts: ownHost || useHost,
     isDeprecated,
     isBeta,
     isAlpha,
