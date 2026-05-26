@@ -18,7 +18,7 @@ import {
   useGetAplSealedSecretsQuery,
   useGetInternalRepoUrlsQuery,
   useGetTeamAplCodeReposQuery,
-  useTestRepoConnectQuery,
+  useGetTestRepoConnectQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import FormRow from 'components/forms/FormRow'
@@ -108,8 +108,8 @@ export default function CodeRepositoriesCreateEditPage({
     refetch: refetchRepoUrls,
   } = useGetInternalRepoUrlsQuery({ teamId }, { skip: !gitProvider || !appsEnabled?.gitea })
 
-  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useTestRepoConnectQuery(
-    { url: testConnectUrl, teamId, secret: secretName },
+  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useGetTestRepoConnectQuery(
+    { url: testConnectUrl, teamId, secretName },
     { skip: !testConnectUrl },
   )
 
