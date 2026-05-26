@@ -443,12 +443,6 @@ const injectedRtkApi = api.injectEndpoints({
     getWorkloadCatalog: build.mutation<GetWorkloadCatalogApiResponse, GetWorkloadCatalogApiArg>({
       query: (queryArg) => ({ url: `/v1/workloadCatalog`, method: 'POST', body: queryArg.body }),
     }),
-    getHelmChartContent: build.query<GetHelmChartContentApiResponse, GetHelmChartContentApiArg>({
-      query: (queryArg) => ({ url: `/v1/helmChartContent`, params: { url: queryArg.url } }),
-    }),
-    createWorkloadCatalog: build.mutation<CreateWorkloadCatalogApiResponse, CreateWorkloadCatalogApiArg>({
-      query: (queryArg) => ({ url: `/v1/createWorkloadCatalog`, method: 'POST', body: queryArg.body }),
-    }),
     getTeamWorkloads: build.query<GetTeamWorkloadsApiResponse, GetTeamWorkloadsApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/workloads` }),
     }),
@@ -534,7 +528,7 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/internalRepoUrls` }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
@@ -5445,19 +5439,6 @@ export type GetWorkloadCatalogApiArg = {
   /** Workload catalog object that contains updated values */
   body: object
 }
-export type GetHelmChartContentApiResponse = /** status 200 Successfully obtained helm chart content */ {
-  values?: object
-  error?: string
-}
-export type GetHelmChartContentApiArg = {
-  /** URL of the helm chart */
-  url?: string
-}
-export type CreateWorkloadCatalogApiResponse = /** status 200 Successfully updated a team workload catalog */ object
-export type CreateWorkloadCatalogApiArg = {
-  /** Workload catalog object that contains updated values */
-  body: object
-}
 export type GetTeamWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
   id?: string
   teamId?: string
@@ -6321,8 +6302,8 @@ export type TestRepoConnectApiArg = {
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {
-  /** ID of the team */
-  teamId?: string
+  /** ID of team */
+  teamId: string
 }
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
@@ -7021,8 +7002,6 @@ export const {
   useDeleteAplCodeRepoMutation,
   useGetAllWorkloadsQuery,
   useGetWorkloadCatalogMutation,
-  useGetHelmChartContentQuery,
-  useCreateWorkloadCatalogMutation,
   useGetTeamWorkloadsQuery,
   useCreateWorkloadMutation,
   useDeleteWorkloadMutation,
