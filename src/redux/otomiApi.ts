@@ -519,10 +519,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/v1/settingsInfo` }),
     }),
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/repoBranches`,
-        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
-      }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}/branches` }),
     }),
     getTestRepoConnectPlatform: build.query<GetTestRepoConnectPlatformApiResponse, GetTestRepoConnectPlatformApiArg>({
       query: (queryArg) => ({
@@ -537,7 +534,7 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/internalRepoUrls` }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
@@ -6292,10 +6289,10 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
 export type GetSettingsInfoApiArg = void
 export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
 export type GetRepoBranchesApiArg = {
+  /** ID of team */
+  teamId: string
   /** Name of the code repository */
-  codeRepoName?: string
-  /** Id of the team */
-  teamId?: string
+  codeRepositoryName: string
 }
 export type GetTestRepoConnectPlatformApiResponse = /** status 200 The request is successful. */ {
   url?: string
@@ -6317,8 +6314,8 @@ export type GetTestRepoConnectApiArg = {
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {
-  /** ID of the team */
-  teamId?: string
+  /** ID of team */
+  teamId: string
 }
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
