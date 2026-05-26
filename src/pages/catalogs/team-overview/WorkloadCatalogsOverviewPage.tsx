@@ -4,7 +4,6 @@ import PaperLayout from 'layouts/Paper'
 import React, { useCallback, useEffect, useState } from 'react'
 import { makeStyles } from 'tss-react/mui'
 import {
-  useCreateWorkloadCatalogMutation,
   useGetAllAplCatalogsQuery,
   useGetAplCatalogsChartsQuery,
   useRefreshAplCatalogCacheMutation,
@@ -17,8 +16,6 @@ import { useTranslation } from 'react-i18next'
 import { LoadingButton } from '@mui/lab'
 import CatalogCard from '../../../components/CatalogCard'
 import TableToolbar from '../../../components/TableToolbar'
-import CatalogAddChartCard from '../../../components/CatalogAddChartCard'
-import NewChartModal from '../../../components/NewChartModal'
 
 // -- Styles -------------------------------------------------------------
 
@@ -64,28 +61,19 @@ const developerCatalogInfo = [
 ]
 
 // ---- JSX -------------------------------------------------------------
-interface NewChartValues {
-  gitRepositoryUrl: string
-  chartTargetDirName: string
-  chartIcon?: string
-  allowTeams: boolean
-}
 
-export default function (Props): React.ReactElement {
+export default function (): React.ReactElement {
   const { t } = useTranslation()
   const { classes, cx } = useStyles()
   const [filterName, setFilterName] = useState('')
-  const [openNewChartModal, setOpenNewChartModal] = useState<boolean>(false)
   const [catalogFilterName, setCatalogFilterName] = useState('')
   const [filteredCatalog, setFilteredCatalog] = useState<any[]>([])
   const [chartCatalog, setChartCatalog] = useState<any[]>([])
 
   const [expanded, setExpanded] = useState(false)
   const { user, oboTeamId } = useSession()
-  const { isPlatformAdmin } = user
 
   const { enqueueSnackbar } = useSnackbar()
-  const [createWorkloadCatalog] = useCreateWorkloadCatalogMutation()
   const {
     data: allCatalogs,
     isLoading: isCatalogsLoading,
@@ -156,19 +144,6 @@ export default function (Props): React.ReactElement {
     if (isDirty !== false) return
     if (!isFetchingCatalogs) refetchCatalogs()
   }, [isDirty])
-
-  const addChart = async (data: NewChartValues) => {
-    try {
-      const result = await createWorkloadCatalog({ body: data }).unwrap()
-      setCatalogFilterName((prev) => prev)
-      if (result) enqueueSnackbar('Chart successfully added', { variant: 'success' })
-      else enqueueSnackbar('Error adding chart', { variant: 'error' })
-
-      setOpenNewChartModal(false)
-    } catch (error) {
-      enqueueSnackbar('Error adding chart', { variant: 'error' })
-    }
-  }
 
   const isCatalogSwitchLoading = !!catalogFilterName && (isChartCatalogLoading || isChartCatalogFetching)
 
@@ -286,11 +261,6 @@ export default function (Props): React.ReactElement {
             </Grid>
           ) : (
             <>
-              {isPlatformAdmin && oboTeamId === 'admin' && (
-                <Grid item xs={12} sm={6} md={4} lg={4} key='name'>
-                  <CatalogAddChartCard openNewChartModal={() => setOpenNewChartModal(true)} />
-                </Grid>
-              )}
               {oboTeamId !== 'admin' && filteredCatalog.length === 0 && (
                 <Box sx={{ width: '100%' }}>
                   <Typography
@@ -321,15 +291,6 @@ export default function (Props): React.ReactElement {
           )}
         </Grid>
       </Box>
-      <NewChartModal
-        actionButtonColor='primary'
-        actionButtonText='Submit'
-        title='Add Helm Chart'
-        open={openNewChartModal}
-        handleAction={(handleActionValues) => addChart(handleActionValues)}
-        handleClose={() => setOpenNewChartModal(false)}
-        chartDirectories={filteredCatalog?.map((item) => item.name) || []}
-      />
     </PaperLayout>
   )
 }
