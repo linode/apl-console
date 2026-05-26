@@ -521,10 +521,16 @@ const injectedRtkApi = api.injectEndpoints({
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
       query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}/branches` }),
     }),
-    testRepoConnect: build.query<TestRepoConnectApiResponse, TestRepoConnectApiArg>({
+    getTestRepoConnectPlatform: build.query<GetTestRepoConnectPlatformApiResponse, GetTestRepoConnectPlatformApiArg>({
       query: (queryArg) => ({
-        url: `/v1/testRepoConnect`,
-        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+        url: `/v2/testRepoConnectPlatform`,
+        params: { url: queryArg.url, secret: queryArg.secret },
+      }),
+    }),
+    getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
+      query: (queryArg) => ({
+        url: `/v2/teams/${queryArg.teamId}/coderepos/testRepoConnect`,
+        params: { url: queryArg.url, secretName: queryArg.secretName },
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
@@ -6288,17 +6294,23 @@ export type GetRepoBranchesApiArg = {
   /** Name of the code repository */
   codeRepositoryName: string
 }
-export type TestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+export type GetTestRepoConnectPlatformApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
 }
-export type TestRepoConnectApiArg = {
-  /** URL of the repository */
-  url?: string
-  /** Id of the team */
-  teamId?: string
-  /** Name of the secret for private repositories */
+export type GetTestRepoConnectPlatformApiArg = {
+  url: string
   secret?: string
+}
+export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+  url?: string
+  status?: 'unknown' | 'success' | 'failed'
+}
+export type GetTestRepoConnectApiArg = {
+  /** ID of team */
+  teamId: string
+  url: string
+  secretName?: string
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {
@@ -7022,7 +7034,8 @@ export const {
   useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
-  useTestRepoConnectQuery,
+  useGetTestRepoConnectPlatformQuery,
+  useGetTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
