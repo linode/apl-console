@@ -531,7 +531,7 @@ const injectedRtkApi = api.injectEndpoints({
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/internalRepoUrls` }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
@@ -6305,8 +6305,8 @@ export type TestRepoConnectApiArg = {
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {
-  /** ID of the team */
-  teamId?: string
+  /** ID of team */
+  teamId: string
 }
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
