@@ -12,7 +12,7 @@ import {
   useDeleteAplCatalogMutation,
   useEditAplCatalogMutation,
   useGetAplCatalogQuery,
-  useTestRepoConnectQuery,
+  useGetTestRepoConnectPlatformQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -51,7 +51,7 @@ export default function CatalogsCreateEditPage({
     isFetching: isFetchingCatalog,
     isError: isCatalogError,
   } = useGetAplCatalogQuery({ catalogId }, { skip: !catalogId })
-  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useTestRepoConnectQuery(
+  const { data: testRepoConnect, isFetching: isFetchingTestRepoConnect } = useGetTestRepoConnectPlatformQuery(
     { url: testConnectUrl },
     { skip: !testConnectUrl },
   )
