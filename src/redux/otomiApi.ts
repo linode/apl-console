@@ -519,19 +519,22 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/v1/settingsInfo` }),
     }),
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}/branches` }),
+    }),
+    getTestRepoConnectPlatform: build.query<GetTestRepoConnectPlatformApiResponse, GetTestRepoConnectPlatformApiArg>({
       query: (queryArg) => ({
-        url: `/v1/repoBranches`,
-        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
+        url: `/v2/testRepoConnectPlatform`,
+        params: { url: queryArg.url, secret: queryArg.secret },
       }),
     }),
-    testRepoConnect: build.query<TestRepoConnectApiResponse, TestRepoConnectApiArg>({
+    getTestRepoConnect: build.query<GetTestRepoConnectApiResponse, GetTestRepoConnectApiArg>({
       query: (queryArg) => ({
-        url: `/v1/testRepoConnect`,
-        params: { url: queryArg.url, teamId: queryArg.teamId, secret: queryArg.secret },
+        url: `/v2/teams/${queryArg.teamId}/coderepos/testRepoConnect`,
+        params: { url: queryArg.url, secretName: queryArg.secretName },
       }),
     }),
     getInternalRepoUrls: build.query<GetInternalRepoUrlsApiResponse, GetInternalRepoUrlsApiArg>({
-      query: (queryArg) => ({ url: `/v1/internalRepoUrls`, params: { teamId: queryArg.teamId } }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/internalRepoUrls` }),
     }),
     createObjWizard: build.mutation<CreateObjWizardApiResponse, CreateObjWizardApiArg>({
       query: (queryArg) => ({ url: `/v1/objwizard`, method: 'POST', body: queryArg.body }),
@@ -6286,27 +6289,33 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
 export type GetSettingsInfoApiArg = void
 export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
 export type GetRepoBranchesApiArg = {
+  /** ID of team */
+  teamId: string
   /** Name of the code repository */
-  codeRepoName?: string
-  /** Id of the team */
-  teamId?: string
+  codeRepositoryName: string
 }
-export type TestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+export type GetTestRepoConnectPlatformApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
 }
-export type TestRepoConnectApiArg = {
-  /** URL of the repository */
-  url?: string
-  /** Id of the team */
-  teamId?: string
-  /** Name of the secret for private repositories */
+export type GetTestRepoConnectPlatformApiArg = {
+  url: string
   secret?: string
+}
+export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
+  url?: string
+  status?: 'unknown' | 'success' | 'failed'
+}
+export type GetTestRepoConnectApiArg = {
+  /** ID of team */
+  teamId: string
+  url: string
+  secretName?: string
 }
 export type GetInternalRepoUrlsApiResponse = /** status 200 Successfully obtained internal repo urls */ string[]
 export type GetInternalRepoUrlsApiArg = {
-  /** ID of the team */
-  teamId?: string
+  /** ID of team */
+  teamId: string
 }
 export type CreateObjWizardApiResponse = /** status 200 Successfully configured obj wizard configuration */ object
 export type CreateObjWizardApiArg = {
@@ -7025,7 +7034,8 @@ export const {
   useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
-  useTestRepoConnectQuery,
+  useGetTestRepoConnectPlatformQuery,
+  useGetTestRepoConnectQuery,
   useGetInternalRepoUrlsQuery,
   useCreateObjWizardMutation,
   useGetSettingsQuery,
