@@ -525,10 +525,7 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/v1/settingsInfo` }),
     }),
     getRepoBranches: build.query<GetRepoBranchesApiResponse, GetRepoBranchesApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/repoBranches`,
-        params: { codeRepoName: queryArg.codeRepoName, teamId: queryArg.teamId },
-      }),
+      query: (queryArg) => ({ url: `/v2/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}/branches` }),
     }),
     testRepoConnect: build.query<TestRepoConnectApiResponse, TestRepoConnectApiArg>({
       query: (queryArg) => ({
@@ -6305,10 +6302,10 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
 export type GetSettingsInfoApiArg = void
 export type GetRepoBranchesApiResponse = /** status 200 The request is successful. */ string[]
 export type GetRepoBranchesApiArg = {
+  /** ID of team */
+  teamId: string
   /** Name of the code repository */
-  codeRepoName?: string
-  /** Id of the team */
-  teamId?: string
+  codeRepositoryName: string
 }
 export type TestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
