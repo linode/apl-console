@@ -112,7 +112,7 @@ export default function BuildsCreateEditPage({
   const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamAplCodeReposQuery({ teamId })
 
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
-    { codeRepoName: repoName, teamId },
+    { codeRepositoryName: repoName, teamId },
     { skip: !repoName },
   )
 
