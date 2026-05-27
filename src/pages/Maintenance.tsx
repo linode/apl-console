@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import PaperLayout from 'layouts/Paper'
 import React from 'react'
-import { Box, Button, Link, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
@@ -9,11 +9,6 @@ import { useGetSettingsQuery } from 'redux/otomiApi'
 import Section from 'components/Section'
 
 const classes = {
-  actionLink: {
-    display: 'block',
-    fontWeight: 400,
-    fontSize: '14px',
-  },
   actionButton: {
     mt: 1,
     px: 0,
@@ -51,16 +46,6 @@ export default function (): React.ReactElement {
         <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
           Actions
         </Typography>
-        <Box sx={{ mt: 2 }}>
-          <Link sx={classes.actionLink} href='/api/v1/otomi/values?excludeSecrets=false'>
-            DOWNLOAD PLATFORM VALUES
-          </Link>
-
-          <Link sx={classes.actionLink} href='/api/v1/otomi/values?excludeSecrets=true'>
-            DOWNLOAD PLATFORM VALUES (SECRETS REDACTED)
-          </Link>
-        </Box>
-
         {isPreInstalled && (
           <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
             <span>
