@@ -26,7 +26,7 @@ const getCodeRepoName = (): CallableFunction =>
 
 const getSafeRepositoryHref = (repositoryUrl: string): string | null => {
   if (!SAFE_REPO_URL.test(repositoryUrl)) return null
-  return `https://${repositoryUrl}`
+  return `${repositoryUrl}`
 }
 
 const getCodeRepoUrl = (): CallableFunction =>
