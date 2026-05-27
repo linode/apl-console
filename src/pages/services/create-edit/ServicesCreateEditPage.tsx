@@ -253,7 +253,6 @@ export default function ServicesCreateEditPage({
                     onChange={(_e, value) => {
                       nameField.onChange(value ?? '')
                       setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                      setValue('spec.domain', value ?? '')
                       setActiveService(value ?? '')
                     }}
                     errorText={errors.metadata?.name?.message?.toString()}
