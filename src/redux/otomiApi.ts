@@ -1,16 +1,6 @@
 import { emptySplitApi as api } from './emptyApi'
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getValues: build.query<GetValuesApiResponse, GetValuesApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/otomi/values`,
-        params: {
-          filesOnly: queryArg.filesOnly,
-          excludeSecrets: queryArg.excludeSecrets,
-          withWorkloadValues: queryArg.withWorkloadValues,
-        },
-      }),
-    }),
     getTeams: build.query<GetTeamsApiResponse, GetTeamsApiArg>({
       query: () => ({ url: `/v1/teams` }),
     }),
@@ -574,13 +564,6 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type GetValuesApiResponse = unknown
-export type GetValuesApiArg = {
-  /** IDs of settings to return */
-  filesOnly?: 'true' | 'false'
-  excludeSecrets?: 'true' | 'false'
-  withWorkloadValues?: 'true' | 'false'
-}
 export type GetTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
   id?: string
   name: string
@@ -6901,7 +6884,6 @@ export type GetApiStatusApiResponse = /** status 200 Successfully obtained API s
 }
 export type GetApiStatusApiArg = void
 export const {
-  useGetValuesQuery,
   useGetTeamsQuery,
   useCreateTeamMutation,
   useGetTeamQuery,
