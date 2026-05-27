@@ -14,26 +14,7 @@ services:
       - $PWD/core.yaml:/etc/otomi/core.yaml
       - tmp:/tmp
     environment:
-      TOOLS_HOST: tools
       GIT_LOCAL_PATH: /tmp/otomi-values
-    env_file:
-      - compose/.env
-
-  tools:
-    depends_on:
-      - api
-    container_name: tools
-    image: otomi/core:${TOOLS_TAG:-main}
-    user: ${USER_ID}:${GROUP_ID}
-    command: sh -c 'binzx/otomi server -vv'
-    expose:
-      - 17771
-    ports:
-      - 17771:17771
-    volumes:
-      - tmp:/tmp
-    environment:
-      ENV_DIR: /tmp/otomi-values
     env_file:
       - compose/.env
 
