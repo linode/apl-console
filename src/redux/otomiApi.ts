@@ -1236,7 +1236,6 @@ export type GetAllServicesApiResponse = /** status 200 Successfully obtained all
   id?: string
   teamId?: string
   name: string
-  namespace?: string
   port?: number
   ksvc?: {
     predeployed?: boolean
@@ -1285,7 +1284,6 @@ export type GetTeamServicesApiResponse = /** status 200 Successfully obtained se
   id?: string
   teamId?: string
   name: string
-  namespace?: string
   port?: number
   ksvc?: {
     predeployed?: boolean
@@ -1337,7 +1335,6 @@ export type CreateServiceApiResponse = /** status 200 Successfully stored servic
   id?: string
   teamId?: string
   name: string
-  namespace?: string
   port?: number
   ksvc?: {
     predeployed?: boolean
@@ -1389,7 +1386,6 @@ export type CreateServiceApiArg = {
     id?: string
     teamId?: string
     name: string
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1468,7 +1464,6 @@ export type GetServiceApiResponse = /** status 200 Successfully obtained service
   id?: string
   teamId?: string
   name: string
-  namespace?: string
   port?: number
   ksvc?: {
     predeployed?: boolean
@@ -1522,7 +1517,6 @@ export type EditServiceApiResponse = /** status 200 Successfully edited service 
   id?: string
   teamId?: string
   name: string
-  namespace?: string
   port?: number
   ksvc?: {
     predeployed?: boolean
@@ -1576,7 +1570,6 @@ export type EditServiceApiArg = {
     id?: string
     teamId?: string
     name: string
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1631,7 +1624,6 @@ export type DeleteServiceApiArg = {
 export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained all services */ ({
   kind: 'AplTeamService'
   spec: {
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1642,17 +1634,12 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1689,7 +1676,6 @@ export type GetAllAplServicesApiArg = void
 export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained services */ ({
   kind: 'AplTeamService'
   spec: {
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1700,17 +1686,12 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1750,7 +1731,6 @@ export type GetTeamAplServicesApiArg = {
 export type CreateAplServiceApiResponse = /** status 200 Successfully stored service configuration */ {
   kind: 'AplTeamService'
   spec: {
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1761,17 +1741,12 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1811,7 +1786,6 @@ export type CreateAplServiceApiArg = {
   body: {
     kind: 'AplTeamService'
     spec: {
-      namespace?: string
       port?: number
       ksvc?: {
         predeployed?: boolean
@@ -1822,17 +1796,12 @@ export type CreateAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      ownHost?: boolean
-      domain?: string
       useCname?: boolean
       cname?: {
         domain?: string
         tlsSecretName?: string
       }
       paths?: string[]
-      forwardPath?: boolean
-      hasCert?: boolean
-      certName?: string
       headers?: {
         response?: {
           set?: {
@@ -1858,7 +1827,6 @@ export type CreateAplServiceApiArg = {
 export type GetAplServiceApiResponse = /** status 200 Successfully obtained service configuration */ {
   kind: 'AplTeamService'
   spec: {
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1869,17 +1837,12 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1921,7 +1884,6 @@ export type GetAplServiceApiArg = {
 export type EditAplServiceApiResponse = /** status 200 Successfully edited service */ {
   kind: 'AplTeamService'
   spec: {
-    namespace?: string
     port?: number
     ksvc?: {
       predeployed?: boolean
@@ -1932,17 +1894,12 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1984,7 +1941,6 @@ export type EditAplServiceApiArg = {
   body: {
     kind: 'AplTeamService'
     spec: {
-      namespace?: string
       port?: number
       ksvc?: {
         predeployed?: boolean
@@ -1995,17 +1951,12 @@ export type EditAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      ownHost?: boolean
-      domain?: string
       useCname?: boolean
       cname?: {
         domain?: string
         tlsSecretName?: string
       }
       paths?: string[]
-      forwardPath?: boolean
-      hasCert?: boolean
-      certName?: string
       headers?: {
         response?: {
           set?: {
