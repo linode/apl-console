@@ -51,6 +51,7 @@ export const serviceApiResponseSchema = object({
     }).required(),
   }),
   spec: object({
+    namespace: string().optional(),
     port: number().optional(),
     ksvc: object({
       predeployed: boolean().optional(),

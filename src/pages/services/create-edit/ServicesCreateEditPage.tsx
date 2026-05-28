@@ -156,6 +156,8 @@ export default function ServicesCreateEditPage({
         if (path.includes('/')) setValue(`spec.paths.${index}`, path.replace(/^\/+/, ''))
       })
     }
+
+    if (teamId !== 'admin' && !serviceName) setValue('spec.namespace', `team-${teamId}`)
   }, [data, setValue])
 
   useEffect(() => {
@@ -228,6 +230,17 @@ export default function ServicesCreateEditPage({
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Section title='General'>
+              <FormRow spacing={10}>
+                {teamId === 'admin' && (
+                  <TextField
+                    label='Namespace'
+                    width='large'
+                    {...register('spec.namespace')}
+                    error={!!errors.spec?.namespace}
+                    helperText={errors.spec?.namespace?.message?.toString()}
+                  />
+                )}
+              </FormRow>
               <FormRow key={1} spacing={10}>
                 {teamId === 'admin' ? (
                   <TextField
