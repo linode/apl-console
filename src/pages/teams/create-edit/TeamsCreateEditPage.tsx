@@ -139,10 +139,11 @@ export default function TeamsCreateEditPage({
      * alertManager needs to be configured with 'receivers: null' if there are no recievers and 'none' is currently
      * the way to configure that.
      */
-    const rawReceivers = submitData.spec?.alerts?.receivers ?? []
-    let receivers = rawReceivers.filter((r) => r !== 'none')
+    let receivers: ('slack' | 'msteams' | 'none')[] = []
+    if (submitData.spec?.alerts?.slack?.url) receivers.push('slack')
+    if (submitData.spec?.alerts?.msteams?.lowPrio || submitData.spec?.alerts?.msteams?.highPrio)
+      receivers.push('msteams')
 
-    // @ts-ignore: no receivers requires 'none' string
     if (submitData.spec?.managedMonitoring?.alertmanager && receivers.length === 0) receivers = ['none']
 
     // 3) Combine edge cases with submittedData for final payload
