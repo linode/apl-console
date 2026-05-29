@@ -163,7 +163,6 @@ export default function ServicesCreateEditPage({
   useEffect(() => {
     const serviceDomain = getKeyValue(service)
     setUrl(serviceDomain)
-    setValue('spec.domain', serviceDomain)
   }, [service])
   const filteredK8Services = useMemo(() => {
     return (
@@ -252,7 +251,6 @@ export default function ServicesCreateEditPage({
                       const value = e.target.value
                       setValue('metadata.name', value)
                       setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                      setValue('spec.domain', value)
                       setActiveService(value)
                     }}
                     value={watch('metadata.name', data?.metadata.name)}
@@ -268,7 +266,6 @@ export default function ServicesCreateEditPage({
                     onChange={(_e, value) => {
                       nameField.onChange(value ?? '')
                       setValue('metadata.labels', { 'apl.io/teamId': teamId })
-                      setValue('spec.domain', value ?? '')
                       setActiveService(value ?? '')
                     }}
                     errorText={errors.metadata?.name?.message?.toString()}

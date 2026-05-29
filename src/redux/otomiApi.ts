@@ -1642,17 +1642,12 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1700,17 +1695,12 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1761,17 +1751,12 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1822,17 +1807,12 @@ export type CreateAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      ownHost?: boolean
-      domain?: string
       useCname?: boolean
       cname?: {
         domain?: string
         tlsSecretName?: string
       }
       paths?: string[]
-      forwardPath?: boolean
-      hasCert?: boolean
-      certName?: string
       headers?: {
         response?: {
           set?: {
@@ -1869,17 +1849,12 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1932,17 +1907,12 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       weightV2?: number
     }
     ingressClassName?: string
-    ownHost?: boolean
-    domain?: string
     useCname?: boolean
     cname?: {
       domain?: string
       tlsSecretName?: string
     }
     paths?: string[]
-    forwardPath?: boolean
-    hasCert?: boolean
-    certName?: string
     headers?: {
       response?: {
         set?: {
@@ -1995,17 +1965,12 @@ export type EditAplServiceApiArg = {
         weightV2?: number
       }
       ingressClassName?: string
-      ownHost?: boolean
-      domain?: string
       useCname?: boolean
       cname?: {
         domain?: string
         tlsSecretName?: string
       }
       paths?: string[]
-      forwardPath?: boolean
-      hasCert?: boolean
-      certName?: string
       headers?: {
         response?: {
           set?: {
