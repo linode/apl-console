@@ -29,15 +29,14 @@ const getServiceLink = (isAdmin, ownerId): CallableFunction =>
     )
   }
 
-const renderHost = (row): React.ReactElement | string => {
+const renderHost = (row, domainSuffix: string): React.ReactElement | string => {
   const name = row.metadata.name
   const teamId = row.metadata.labels['apl.io/teamId']
-  const { ownHost, domain, paths } = row.spec || {}
+  const { ksvc, paths } = row.spec || {}
+  const isKnativeService = ksvc?.predeployed || false
+  const teamSuffix = isKnativeService ? `team-${teamId}` : teamId
 
-  if (!ownHost) return `${name}.team-${teamId}`
-  if (!domain) return ''
-
-  const url = `${domain}${paths?.[0] || ''}`
+  const url = `${name}-${teamSuffix}.${domainSuffix}${paths?.[0] || ''}`
 
   return (
     <MuiLink href={`https://${url}`} target='_blank' rel='noopener'>
@@ -58,6 +57,9 @@ export default function ServicesOverviewPage({
   const {
     user: { isPlatformAdmin },
     oboTeamId,
+    settings: {
+      cluster: { domainSuffix },
+    },
   } = useSession()
   const { statuses } = useSocket()
 
@@ -94,12 +96,12 @@ export default function ServicesOverviewPage({
     {
       id: 'ingressClass',
       label: t('Ingress class'),
-      renderer: (row) => (row.spec?.ownHost ? row.spec?.ingressClassName ?? 'platform' : '-'),
+      renderer: (row) => row.spec?.ingressClassName ?? 'platform',
     },
     {
       id: 'url',
       label: t('URL'),
-      renderer: renderHost,
+      renderer: (row) => renderHost(row, domainSuffix),
       component: MuiLink,
     },
     {
