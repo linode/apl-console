@@ -76,17 +76,9 @@ export const serviceApiResponseSchema = object({
       }),
     }).optional(),
     ingressClassName: string().min(2, 'Ingress class name must be at least 2 characters long.').optional(),
-    domain: string().required(),
     useCname: boolean().optional(),
     cname: cnameValidation.required(),
     paths: pathsValidation.required(),
-    forwardPath: boolean().optional(),
-    hasCert: boolean().optional(),
-    certName: string().when('hasCert', {
-      is: true,
-      then: string().required('Certificate name is required if certificate is selected'),
-      otherwise: string().nullable(),
-    }),
     headers: object({
       response: object({
         set: array()
