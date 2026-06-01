@@ -377,31 +377,6 @@ const injectedRtkApi = api.injectEndpoints({
     getAplCatalogsChart: build.query<GetAplCatalogsChartApiResponse, GetAplCatalogsChartApiArg>({
       query: (queryArg) => ({ url: `/v2/catalogs/${queryArg.catalogId}/charts/${queryArg.chartName}` }),
     }),
-    getAllCodeRepos: build.query<GetAllCodeReposApiResponse, GetAllCodeReposApiArg>({
-      query: () => ({ url: `/v1/coderepos` }),
-    }),
-    getTeamCodeRepos: build.query<GetTeamCodeReposApiResponse, GetTeamCodeReposApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos` }),
-    }),
-    createCodeRepo: build.mutation<CreateCodeRepoApiResponse, CreateCodeRepoApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos`, method: 'POST', body: queryArg.body }),
-    }),
-    getCodeRepo: build.query<GetCodeRepoApiResponse, GetCodeRepoApiArg>({
-      query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}` }),
-    }),
-    editCodeRepo: build.mutation<EditCodeRepoApiResponse, EditCodeRepoApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
-        method: 'PUT',
-        body: queryArg.body,
-      }),
-    }),
-    deleteCodeRepo: build.mutation<DeleteCodeRepoApiResponse, DeleteCodeRepoApiArg>({
-      query: (queryArg) => ({
-        url: `/v1/teams/${queryArg.teamId}/coderepos/${queryArg.codeRepositoryName}`,
-        method: 'DELETE',
-      }),
-    }),
     getAllAplCodeRepos: build.query<GetAllAplCodeReposApiResponse, GetAllAplCodeReposApiArg>({
       query: () => ({ url: `/v2/coderepos` }),
     }),
@@ -5029,99 +5004,6 @@ export type GetAplCatalogsChartApiArg = {
   /** Name of the chart to fetch */
   chartName: string
 }
-export type GetAllCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
-  id?: string
-  teamId?: string
-  name: string
-  gitService: 'gitea' | 'github' | 'gitlab'
-  repositoryUrl: string
-  private?: boolean
-  secret?: string
-}[]
-export type GetAllCodeReposApiArg = void
-export type GetTeamCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ {
-  id?: string
-  teamId?: string
-  name: string
-  gitService: 'gitea' | 'github' | 'gitlab'
-  repositoryUrl: string
-  private?: boolean
-  secret?: string
-}[]
-export type GetTeamCodeReposApiArg = {
-  /** ID of team */
-  teamId: string
-}
-export type CreateCodeRepoApiResponse = /** status 200 Successfully stored code repo configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  gitService: 'gitea' | 'github' | 'gitlab'
-  repositoryUrl: string
-  private?: boolean
-  secret?: string
-}
-export type CreateCodeRepoApiArg = {
-  /** ID of team */
-  teamId: string
-  /** CodeRepo object */
-  body: {
-    id?: string
-    teamId?: string
-    name: string
-    gitService: 'gitea' | 'github' | 'gitlab'
-    repositoryUrl: string
-    private?: boolean
-    secret?: string
-  }
-}
-export type GetCodeRepoApiResponse = /** status 200 Successfully obtained code repo configuration */ {
-  id?: string
-  teamId?: string
-  name: string
-  gitService: 'gitea' | 'github' | 'gitlab'
-  repositoryUrl: string
-  private?: boolean
-  secret?: string
-}
-export type GetCodeRepoApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the code repository */
-  codeRepositoryName: string
-}
-export type EditCodeRepoApiResponse = /** status 200 Successfully edited a team code repo */ {
-  id?: string
-  teamId?: string
-  name: string
-  gitService: 'gitea' | 'github' | 'gitlab'
-  repositoryUrl: string
-  private?: boolean
-  secret?: string
-}
-export type EditCodeRepoApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the code repository */
-  codeRepositoryName: string
-  /** CodeRepo object that contains updated values */
-  body: {
-    id?: string
-    teamId?: string
-    name: string
-    gitService: 'gitea' | 'github' | 'gitlab'
-    repositoryUrl: string
-    private?: boolean
-    secret?: string
-  }
-}
-export type DeleteCodeRepoApiResponse = /** status 200 Successfully deleted a team code repo */ undefined
-export type DeleteCodeRepoApiArg = {
-  /** ID of team */
-  teamId: string
-  /** Name of the code repository */
-  codeRepositoryName: string
-}
 export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ ({
   kind: 'AplTeamCodeRepo'
   spec: {
@@ -6947,12 +6829,6 @@ export const {
   useGetAplCatalogsChartsQuery,
   useRefreshAplCatalogCacheMutation,
   useGetAplCatalogsChartQuery,
-  useGetAllCodeReposQuery,
-  useGetTeamCodeReposQuery,
-  useCreateCodeRepoMutation,
-  useGetCodeRepoQuery,
-  useEditCodeRepoMutation,
-  useDeleteCodeRepoMutation,
   useGetAllAplCodeReposQuery,
   useGetTeamAplCodeReposQuery,
   useCreateAplCodeRepoMutation,
