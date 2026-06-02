@@ -10,7 +10,7 @@ import {
   useCreateUserMutation,
   useDeleteUserMutation,
   useEditUserMutation,
-  useGetTeamsQuery,
+  useGetAplTeamsQuery,
   useGetUserQuery,
 } from 'redux/otomiApi'
 
@@ -27,34 +27,47 @@ export default function ({
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateUserMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditUserMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteUserMutation()
+
   const { data, isLoading, isFetching, isError, refetch } = useGetUserQuery({ userId }, { skip: !userId })
+
   const {
     data: teamData,
     isLoading: isLoadingTeams,
     isFetching: isFetchingTeams,
     refetch: refetchTeams,
-  } = useGetTeamsQuery()
+  } = useGetAplTeamsQuery()
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
+
     if (!isFetching && !isFetchingTeams) {
       refetch()
       refetchTeams()
     }
   }, [isDirty])
+
   const { t } = useTranslation()
-  // END HOOKS
+
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to='/users' />
   if (!mutating && isSuccessCreate) return <Redirect to='/users' />
+
   const handleSubmit = (formData) => {
     if (userId) update({ userId, body: omit(formData, ['id', 'teamId']) as any })
     else create({ body: formData })
   }
+
   const handleDelete = (deleteId) => del({ userId: deleteId })
-  const teamIds = []
-  if (teamData) teamData.forEach((team) => teamIds.push(team.name))
+
+  const teamIds: string[] = []
+
+  if (teamData) teamData.forEach((team) => teamIds.push(team.metadata.name))
+
   const loading = isLoading || isLoadingTeams
+
   const comp = !isError && (
     <User
       onSubmit={handleSubmit}
@@ -65,5 +78,6 @@ export default function ({
       teamIds={teamIds}
     />
   )
+
   return <PaperLayout loading={loading} comp={comp} title={t('TITLE_USER', { userId, role: 'team' })} />
 }
