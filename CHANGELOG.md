@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/linode/apl-console/compare/v4.14.0...v5.0.0) (2026-06-03)
+
+
+### Features
+
+* git migrate modal ([#772](https://github.com/linode/apl-console/issues/772)) ([e627210](https://github.com/linode/apl-console/commit/e6272107dec970dd801d81e296c41e240c6af5ad))
+* platform secrets as sealed secrets ([#735](https://github.com/linode/apl-console/issues/735)) ([8a735d3](https://github.com/linode/apl-console/commit/8a735d3e3ca232e138e944dabfd0f6ceb72126f5))
+* remove v1 endpoints ([#798](https://github.com/linode/apl-console/issues/798)) ([1741f91](https://github.com/linode/apl-console/commit/1741f91277dd86f9500b651ce87ba70e3ae799bf))
+* remove v1/otomi/values endpoint and update maintenance page ([#793](https://github.com/linode/apl-console/issues/793)) ([e13903f](https://github.com/linode/apl-console/commit/e13903f4b56a28f4926ee7aeb7ea67b4cd05d59d))
+
+
+### Bug Fixes
+
+* internal repo v2 ([#792](https://github.com/linode/apl-console/issues/792)) ([5017ec9](https://github.com/linode/apl-console/commit/5017ec9a42ff80cde96edfae1f97b4138813a8b4))
+* remove tls passthrough ([#773](https://github.com/linode/apl-console/issues/773)) ([a69c02a](https://github.com/linode/apl-console/commit/a69c02a3c63f47b88dcee50e79a2db1dc9bcce68))
+* removed legacy workload components ([#788](https://github.com/linode/apl-console/issues/788)) ([1ddd77c](https://github.com/linode/apl-console/commit/1ddd77cfcc3cd55f84aaeada6eeb8f93fa403b56))
+* secured repo url ([#782](https://github.com/linode/apl-console/issues/782)) ([4998da8](https://github.com/linode/apl-console/commit/4998da85c8ce6ab81ab004c685a125a2be556bfe))
+* service overview v1 ([#774](https://github.com/linode/apl-console/issues/774)) ([9e4c590](https://github.com/linode/apl-console/commit/9e4c59008a475980db1ff691135d61a7f4100333))
+* testrepoconnect v2 w admin route ([#795](https://github.com/linode/apl-console/issues/795)) ([a05d866](https://github.com/linode/apl-console/commit/a05d866cb66956d1f60d1b7ff614ca4ccb62ecde))
+* update notification receivers logic in teams ([#797](https://github.com/linode/apl-console/issues/797)) ([23aae38](https://github.com/linode/apl-console/commit/23aae388b19121b447840b81301344b55c655d54))
+* v2 repo branches ([#794](https://github.com/linode/apl-console/issues/794)) ([d0ea611](https://github.com/linode/apl-console/commit/d0ea611573796cd904dbdeb5953838f403311981))
+* workloads overview v1 ([#775](https://github.com/linode/apl-console/issues/775)) ([3444ce5](https://github.com/linode/apl-console/commit/3444ce5c1b346961c8f55f55bb9c662b41fb0e06))
+
+
+### Others
+
+* **deps:** bump nginx in the docker-dependencies group ([#765](https://github.com/linode/apl-console/issues/765)) ([e886ddb](https://github.com/linode/apl-console/commit/e886ddbdb8a8c4d4f8fdd8d8ad23d12ae53fd4fc))
+* **deps:** bump nginx in the docker-dependencies group ([#790](https://github.com/linode/apl-console/issues/790)) ([8918dbe](https://github.com/linode/apl-console/commit/8918dbe4d92d804c0d77fc31fbd955bd0be52e39))
+* remove ingress-nginx app ([#789](https://github.com/linode/apl-console/issues/789)) ([3770606](https://github.com/linode/apl-console/commit/3770606b9e3f0b7066f9965b16a7b25fc6e408f3))
+* remove unused service fields from schema and admin screen ([#796](https://github.com/linode/apl-console/issues/796)) ([0f13708](https://github.com/linode/apl-console/commit/0f137088ec58e66273abf78f3d398c9aa73998bf))
+
 ## [4.14.0](https://github.com/linode/apl-console/compare/v4.13.0...v4.14.0) (2026-04-14)
 
 
