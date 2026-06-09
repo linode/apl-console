@@ -17,9 +17,10 @@ export const createSealedSecretApiResponseSchema = yup.object({
       .string()
       .required('Secret name is required')
       .min(2, 'Secret name must be at least 2 characters long.')
+      .max(250, 'Secret name must be 250 characters or fewer.')
       .matches(
-        /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
-        'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
+        /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/,
+        'Invalid format, must contain only lowercase letters, numbers, hyphens, or dots, and start and end with a letter or number.',
       ),
     namespace: yup
       .string()
