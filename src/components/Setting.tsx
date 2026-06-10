@@ -34,8 +34,8 @@ export const getSettingSchema = (appsEnabled: Record<string, any>, settingId, fo
     case 'platformBackups':
       if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
       if (!appsEnabled.gitea) {
-          set(schema, 'properties.database.properties.gitea.readOnly', true)
-          set(schema, 'properties.gitea.readOnly', true)
+        set(schema, 'properties.database.properties.gitea.readOnly', true)
+        set(schema, 'properties.gitea.readOnly', true)
       }
 
       break
