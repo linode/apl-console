@@ -55,11 +55,15 @@ export default function NetworkPolicyPodLabelRow({
   const workloadOptions = useMemo(
     () =>
       aplWorkloads
-        ?.map((w) => ({
-          name: w.metadata.name,
-          namespace: w.metadata.namespace,
+        ?.map((workload) => ({
+          name: workload.metadata.name,
+          namespace: workload.metadata.namespace,
         }))
-        ?.sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)) ?? [],
+        ?.sort(
+          (firstWorkload, secondWorkload) =>
+            firstWorkload.namespace.localeCompare(secondWorkload.namespace) ||
+            firstWorkload.name.localeCompare(secondWorkload.name),
+        ) ?? [],
     [aplWorkloads],
   )
 
@@ -138,11 +142,18 @@ export default function NetworkPolicyPodLabelRow({
         width='large'
         multiple={false}
         options={workloadOptions}
-        groupBy={(opt) => opt.namespace}
-        getOptionLabel={(opt) => opt.name}
+        groupBy={(workload) => workload.namespace}
+        getOptionLabel={(workload) => workload.name}
         value={activeWorkload}
-        onChange={(_e, opt) => {
-          setActiveWorkload(opt ? { name: opt.name, namespace: opt.namespace } : null)
+        onChange={(_event, selectedWorkload) => {
+          setActiveWorkload(
+            selectedWorkload
+              ? {
+                  name: selectedWorkload.name,
+                  namespace: selectedWorkload.namespace,
+                }
+              : null,
+          )
         }}
       />
 
@@ -155,12 +166,14 @@ export default function NetworkPolicyPodLabelRow({
         helperText={arrayError && rowIndex === 0 ? arrayError : ''}
         options={
           podLabels && typeof podLabels === 'object'
-            ? Object.entries(podLabels as Record<string, string>).map(([k, v]) => `${k}=${v}`)
+            ? Object.entries(podLabels as Record<string, string>).map(
+                ([labelName, labelValue]) => `${labelName}=${labelValue}`,
+              )
             : []
         }
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}=${field.value.fromLabelValue ?? ''}` : null}
-        onChange={(_e, raw: string | null) => {
-          if (!raw || !activeWorkload?.namespace) {
+        onChange={(_event, selectedLabel: string | null) => {
+          if (!selectedLabel || !activeWorkload?.namespace) {
             field.onChange({
               fromNamespace: '',
               fromLabelName: '',
@@ -169,12 +182,12 @@ export default function NetworkPolicyPodLabelRow({
             return
           }
 
-          const [name, value] = raw.split('=', 2)
+          const [labelName, labelValue] = selectedLabel.split('=', 2)
 
           field.onChange({
             fromNamespace: activeWorkload.namespace,
-            fromLabelName: name,
-            fromLabelValue: value,
+            fromLabelName: labelName,
+            fromLabelValue: labelValue,
           })
         }}
       />
