@@ -67,11 +67,10 @@ function renderComponent(defaultAllowValue = {}) {
       defaultValues: {
         ruleType: {
           ingress: {
-            allow: [
               {
                 fromNamespace: '',
                 fromLabelName: '',
-                fromLabelValue: undefined,
+                fromLabelValue: '',
                 ...defaultAllowValue,
               },
             ],
