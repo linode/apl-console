@@ -44,6 +44,7 @@ export default function NetworkPolicyPodLabelRow({
     control,
     formState: { errors },
   } = useFormContext<FormValues>()
+
   const { field } = useController<FormValues>({ control, name: fieldArrayName })
 
   const [activeWorkload, setActiveWorkload] = useState<WorkloadOption | null>(null)
@@ -51,48 +52,78 @@ export default function NetworkPolicyPodLabelRow({
 
   const arrayError = (errors.ruleType?.ingress?.allow?.root as any)?.message as string | undefined
 
-  // build and sort workload options
   const workloadOptions = useMemo(
     () =>
       aplWorkloads
-        ?.map((w) => ({ name: w.metadata.name, namespace: w.metadata.namespace }))
-        ?.sort((a, b) => a.namespace.localeCompare(b.namespace) || a.name.localeCompare(b.name)),
+        ?.map((workload) => ({
+          name: workload.metadata.name,
+          namespace: workload.metadata.namespace,
+        }))
+        ?.sort(
+          (firstWorkload, secondWorkload) =>
+            firstWorkload.namespace.localeCompare(secondWorkload.namespace) ||
+            firstWorkload.name.localeCompare(secondWorkload.name),
+        ) ?? [],
     [aplWorkloads],
   )
 
-  // fetch pod‐labels & pod-names
+  const shouldFetchPodLabels =
+    !!teamId &&
+    !!activeWorkload?.name &&
+    !!activeWorkload?.namespace &&
+    activeWorkload.name !== 'unknown' &&
+    activeWorkload.name !== 'multiple'
+
   const { data: podLabels } = useGetK8SPodLabelsForWorkloadQuery(
     {
       teamId,
       workloadName: activeWorkload?.name ?? '',
       namespace: activeWorkload?.namespace ?? '',
     },
-    { skip: !activeWorkload },
+    {
+      skip: !shouldFetchPodLabels,
+    },
   )
 
   // Initial edit-mode circuitbreaker, prevent prepopulated fields from starting a rerender loop
   useEffect(() => {
     const { fromLabelValue, fromNamespace } = field.value as PodLabelMatch
-    if (fromLabelValue) {
-      const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
-      if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner?.()
-      setActiveWorkload(initialActiveWorkload)
-    } else setCircuitBreaker(false)
+
+    if (!fromLabelValue) {
+      setCircuitBreaker(false)
+      return
+    }
+
+    const initialActiveWorkload = getInitialActiveWorkloadRow(fromLabelValue, fromNamespace, aplWorkloads)
+
+    if (initialActiveWorkload.name === 'unknown' || initialActiveWorkload.name === 'multiple') showBanner?.()
+
+    setActiveWorkload(initialActiveWorkload)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // clear label when workload manually selected
+  // Clear label when workload manually selected
   useEffect(() => {
     if (circuitBreaker || !activeWorkload) return
-    field.onChange({ fromNamespace: '', fromLabelName: '', fromLabelValue: undefined })
+
+    field.onChange({
+      fromNamespace: '',
+      fromLabelName: '',
+      fromLabelValue: undefined,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWorkload])
 
-  // default match on create
+  // Default match on create
   useEffect(() => {
     if (podLabels && circuitBreaker) setCircuitBreaker(false)
     if (!activeWorkload || !podLabels) return
+
     const currentValue = field.value as PodLabelMatch
     if (currentValue?.fromLabelName && currentValue?.fromLabelValue) return
+
     const match = getDefaultPodLabel(activeWorkload.name, podLabels as Record<string, string>)
+
     if (match) {
       field.onChange({
         fromNamespace: activeWorkload.namespace,
@@ -100,6 +131,7 @@ export default function NetworkPolicyPodLabelRow({
         fromLabelValue: match.value,
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWorkload, podLabels])
 
   return (
@@ -110,10 +142,19 @@ export default function NetworkPolicyPodLabelRow({
         width='large'
         multiple={false}
         options={workloadOptions}
-        groupBy={(opt) => opt.namespace}
-        getOptionLabel={(opt) => opt.name}
+        groupBy={(workload) => workload.namespace}
+        getOptionLabel={(workload) => workload.name}
         value={activeWorkload}
-        onChange={(_e, opt) => setActiveWorkload(opt ? { name: opt?.name, namespace: opt?.namespace } : null)}
+        onChange={(_event, selectedWorkload) => {
+          setActiveWorkload(
+            selectedWorkload
+              ? {
+                  name: selectedWorkload.name,
+                  namespace: selectedWorkload.namespace,
+                }
+              : null,
+          )
+        }}
       />
 
       <Autocomplete
@@ -125,13 +166,29 @@ export default function NetworkPolicyPodLabelRow({
         helperText={arrayError && rowIndex === 0 ? arrayError : ''}
         options={
           podLabels && typeof podLabels === 'object'
-            ? Object.entries(podLabels as Record<string, string>).map(([k, v]) => `${k}=${v}`)
+            ? Object.entries(podLabels as Record<string, string>).map(
+                ([labelName, labelValue]) => `${labelName}=${labelValue}`,
+              )
             : []
         }
         value={field.value?.fromLabelName ? `${field.value.fromLabelName}=${field.value.fromLabelValue ?? ''}` : null}
-        onChange={(_e, raw: string | null) => {
-          const [name, value] = raw?.split('=', 2) ?? []
-          field.onChange({ fromNamespace: activeWorkload?.namespace, fromLabelName: name, fromLabelValue: value })
+        onChange={(_event, selectedLabel: string | null) => {
+          if (!selectedLabel || !activeWorkload?.namespace) {
+            field.onChange({
+              fromNamespace: '',
+              fromLabelName: '',
+              fromLabelValue: undefined,
+            })
+            return
+          }
+
+          const [labelName, labelValue] = selectedLabel.split('=', 2)
+
+          field.onChange({
+            fromNamespace: activeWorkload.namespace,
+            fromLabelName: labelName,
+            fromLabelValue: labelValue,
+          })
         }}
       />
     </FormRow>
