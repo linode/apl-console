@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Modal, Typography, styled } from '@mui/material'
+import { Box, Button, IconButton, Modal, Tooltip, Typography, styled } from '@mui/material'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import InformationBanner from 'components/InformationBanner'
 import { TextField } from 'components/forms/TextField'
@@ -86,6 +87,25 @@ const BodyText = styled(Typography)(({ theme }) => ({
 
 const IntroParagraph = styled(BodyText)({
   marginBottom: '24px',
+})
+
+const DefaultGitUrlBlock = styled(Box)(({ theme }) => ({
+  marginTop: '24px',
+  padding: '14px 16px',
+  borderRadius: 8,
+  border: '1px solid rgba(145, 158, 171, 0.24)',
+  backgroundColor: theme.palette.cm.rowAlter,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '16px',
+}))
+
+const DefaultGitUrlText = styled(Typography)({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontFamily: 'monospace',
 })
 
 const SectionTitle = styled(Typography)({
@@ -228,6 +248,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const {
     user: { isPlatformAdmin },
     settings: {
+      cluster: { domainSuffix },
       otomi: { isPreInstalled },
     },
   } = useSession()
@@ -241,14 +262,17 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     skip: !isPlatformAdmin || !isPreInstalled || !actualOpen,
   })
 
-  const hasGitConfiguration = !!gitSettings?.repoUrl
+  const defaultGitUrl = gitSettings?.repoUrl || ''
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('gitea-http.gitea.svc.cluster.local') ?? false
+  const hasGitConfiguration = !!gitSettings?.repoUrl && !isDefaultGitConfiguration
+  const displayedRepoUrl = isDefaultGitConfiguration ? `https://git.${domainSuffix}/otomi/values` : ''
 
   const getGitFormValues = (): GitSettingsFormValues => ({
-    repoUrl: gitSettings?.repoUrl || '',
-    branch: gitSettings?.branch || '',
-    username: gitSettings?.username || '',
-    password: gitSettings?.password || '',
-    email: gitSettings?.email || '',
+    repoUrl: hasGitConfiguration ? gitSettings?.repoUrl || '' : '',
+    branch: hasGitConfiguration ? gitSettings?.branch || '' : '',
+    username: hasGitConfiguration ? gitSettings?.username || '' : '',
+    password: hasGitConfiguration ? gitSettings?.password || '' : '',
+    email: hasGitConfiguration ? gitSettings?.email || '' : '',
   })
 
   const [showFormStep, setShowFormStep] = useState(false)
@@ -294,8 +318,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     if (!gitSettings) return
 
     reset(getGitFormValues())
-
-    if (hasGitConfiguration) setShowFormStep(true)
+    setShowFormStep(hasGitConfiguration)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actualOpen, gitSettings, hasGitConfiguration])
@@ -309,6 +332,11 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     }
 
     setShowGitWizard(false)
+  }
+
+  const handleCopyDefaultGitUrl = async () => {
+    if (!displayedRepoUrl) return
+    await navigator.clipboard.writeText(displayedRepoUrl)
   }
 
   const goToFormStep = () => {
@@ -402,6 +430,21 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 <BodyText variant='body1'>
                   Configuring an external Git Repo is recommended for installing App Platform.
                 </BodyText>
+
+                {!!defaultGitUrl && (
+                  <DefaultGitUrlBlock>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant='subtitle2'>Current internal Git repository</Typography>
+                      <DefaultGitUrlText variant='body2'>{displayedRepoUrl}</DefaultGitUrlText>
+                    </Box>
+
+                    <Tooltip title='Copy Git repository URL'>
+                      <IconButton color='primary' onClick={handleCopyDefaultGitUrl}>
+                        <ContentCopyIcon fontSize='small' />
+                      </IconButton>
+                    </Tooltip>
+                  </DefaultGitUrlBlock>
+                )}
               </ModalContent>
 
               <ModalFooter>
