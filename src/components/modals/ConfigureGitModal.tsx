@@ -285,6 +285,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
     reset,
   } = useForm<GitSettingsFormValues>({
@@ -337,6 +338,14 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const handleCopyDefaultGitUrl = async () => {
     if (!displayedRepoUrl) return
     await navigator.clipboard.writeText(displayedRepoUrl)
+  }
+
+  const handleCopyRepoUrl = async () => {
+    const repoUrl = getValues('repoUrl')
+
+    if (!repoUrl) return
+
+    await navigator.clipboard.writeText(repoUrl)
   }
 
   const goToFormStep = () => {
@@ -488,6 +497,10 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
               <ModalContent>
                 <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
 
+                {hasGitConfiguration && (
+                  <InformationBanner message='Changing the Git repository URL will migrate App Platform to the new repository. Updating credentials only will not trigger a migration.' />
+                )}
+
                 {!!submitError && <InformationBanner message={submitError} />}
 
                 <RepoFieldBlock>
@@ -502,6 +515,24 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                         fullWidth
                         error={!!errors.repoUrl}
                         helperText={errors.repoUrl?.message}
+                        InputProps={
+                          hasGitConfiguration
+                            ? {
+                                endAdornment: (
+                                  <Tooltip title='Copy Git repository URL'>
+                                    <IconButton
+                                      edge='end'
+                                      sx={{ mr: '0px' }}
+                                      color='primary'
+                                      onClick={handleCopyRepoUrl}
+                                    >
+                                      <ContentCopyIcon fontSize='small' />
+                                    </IconButton>
+                                  </Tooltip>
+                                ),
+                              }
+                            : undefined
+                        }
                       />
                     )}
                   />
