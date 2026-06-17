@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
-import { useMigrateGitMutation } from 'redux/otomiApi'
+import { useGetGitSettingsQuery, useMigrateGitMutation } from 'redux/otomiApi'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
 const MODAL_TITLE = 'Configure Git Repository'
@@ -216,6 +216,14 @@ function getErrorMessage(error: unknown): string {
   return 'Something went wrong while migrating Git settings.'
 }
 
+const emptyGitFormValues: GitSettingsFormValues = {
+  repoUrl: '',
+  branch: '',
+  username: '',
+  password: '',
+  email: '',
+}
+
 export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalProps) {
   const {
     user: { isPlatformAdmin },
@@ -225,6 +233,24 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   } = useSession()
 
   const [showGitWizard, setShowGitWizard] = useLocalStorage<boolean>('showGitConfigureWizard', true)
+
+  const isControlled = typeof open === 'boolean'
+  const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
+
+  const { data: gitSettings, isFetching: isFetchingGitSettings } = useGetGitSettingsQuery(undefined, {
+    skip: !isPlatformAdmin || !isPreInstalled || !actualOpen,
+  })
+
+  const hasGitConfiguration = !!gitSettings?.repoUrl
+
+  const getGitFormValues = (): GitSettingsFormValues => ({
+    repoUrl: gitSettings?.repoUrl || '',
+    branch: gitSettings?.branch || '',
+    username: gitSettings?.username || '',
+    password: gitSettings?.password || '',
+    email: gitSettings?.email || '',
+  })
+
   const [showFormStep, setShowFormStep] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -239,25 +265,16 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     reset,
   } = useForm<GitSettingsFormValues>({
     resolver: yupResolver(gitSettingsSchema),
-    defaultValues: {
-      repoUrl: '',
-      branch: '',
-      username: '',
-      password: '',
-      email: '',
-    },
+    defaultValues: emptyGitFormValues,
     mode: 'onBlur',
   })
 
-  const isControlled = typeof open === 'boolean'
-  const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
-
   const resetModalState = () => {
-    setShowFormStep(false)
+    setShowFormStep(hasGitConfiguration)
     setSubmitError('')
     setMigrationSucceeded(false)
     setIsTransitioning(false)
-    reset()
+    reset(getGitFormValues())
   }
 
   useEffect(() => {
@@ -269,9 +286,19 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }, [isPreInstalled, isControlled, setShowGitWizard])
 
   useEffect(() => {
-    if (!actualOpen) resetModalState()
+    if (!actualOpen) {
+      resetModalState()
+      return
+    }
+
+    if (!gitSettings) return
+
+    reset(getGitFormValues())
+
+    if (hasGitConfiguration) setShowFormStep(true)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actualOpen])
+  }, [actualOpen, gitSettings, hasGitConfiguration])
 
   const handleClose = () => {
     resetModalState()
@@ -356,7 +383,12 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     >
       <ModalBox>
         <AnimatedContainer isTransitioning={isTransitioning}>
-          {!showFormStep ? (
+          {isFetchingGitSettings ? (
+            <ModalContent>
+              <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
+              <BodyText variant='body1'>Loading Git settings...</BodyText>
+            </ModalContent>
+          ) : !showFormStep ? (
             <>
               <ModalContent>
                 <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
@@ -513,7 +545,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
               <ModalFooter>
                 <Button variant='outlined' color='primary' onClick={handleClose} disabled={isMigrating}>
-                  Configure later
+                  {hasGitConfiguration ? 'Cancel' : 'Configure later'}
                 </Button>
 
                 <LoadingButton type='submit' variant='contained' color='primary' loading={isMigrating}>
