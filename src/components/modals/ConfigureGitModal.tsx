@@ -448,7 +448,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                     </Box>
 
                     <Tooltip title='Copy Git repository URL'>
-                      <IconButton color='primary' onClick={handleCopyDefaultGitUrl}>
+                      <IconButton aria-label='Copy Git repository URL' color='primary' onClick={handleCopyDefaultGitUrl}>
                         <ContentCopyIcon fontSize='small' />
                       </IconButton>
                     </Tooltip>
