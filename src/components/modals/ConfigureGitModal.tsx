@@ -1,7 +1,8 @@
 /* eslint-disable no-nested-ternary */
+import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { LoadingButton } from '@mui/lab'
-import { Box, Button, Modal, Typography, styled } from '@mui/material'
+import { Box, Button, IconButton, Modal, Tooltip, Typography, styled } from '@mui/material'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import InformationBanner from 'components/InformationBanner'
 import { TextField } from 'components/forms/TextField'
@@ -9,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
-import { useMigrateGitMutation } from 'redux/otomiApi'
+import { useGetGitSettingsQuery, useMigrateGitMutation } from 'redux/otomiApi'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
 const MODAL_TITLE = 'Configure Git Repository'
@@ -86,6 +87,25 @@ const BodyText = styled(Typography)(({ theme }) => ({
 
 const IntroParagraph = styled(BodyText)({
   marginBottom: '24px',
+})
+
+const DefaultGitUrlBlock = styled(Box)(({ theme }) => ({
+  marginTop: '24px',
+  padding: '14px 16px',
+  borderRadius: 8,
+  border: '1px solid rgba(145, 158, 171, 0.24)',
+  backgroundColor: theme.palette.cm.rowAlter,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '16px',
+}))
+
+const DefaultGitUrlText = styled(Typography)({
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  fontFamily: 'monospace',
 })
 
 const SectionTitle = styled(Typography)({
@@ -216,15 +236,45 @@ function getErrorMessage(error: unknown): string {
   return 'Something went wrong while migrating Git settings.'
 }
 
+const emptyGitFormValues: GitSettingsFormValues = {
+  repoUrl: '',
+  branch: '',
+  username: '',
+  password: '',
+  email: '',
+}
+
 export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalProps) {
   const {
     user: { isPlatformAdmin },
     settings: {
+      cluster: { domainSuffix },
       otomi: { isPreInstalled },
     },
   } = useSession()
 
   const [showGitWizard, setShowGitWizard] = useLocalStorage<boolean>('showGitConfigureWizard', true)
+
+  const isControlled = typeof open === 'boolean'
+  const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
+
+  const { data: gitSettings, isFetching: isFetchingGitSettings } = useGetGitSettingsQuery(undefined, {
+    skip: !isPlatformAdmin || !isPreInstalled || !actualOpen,
+  })
+
+  const defaultGitUrl = gitSettings?.repoUrl || ''
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('git-server.git-server.svc.cluster.local') ?? false
+  const hasGitConfiguration = !!gitSettings?.repoUrl && !isDefaultGitConfiguration
+  const displayedRepoUrl = isDefaultGitConfiguration && domainSuffix ? `https://git.${domainSuffix}/otomi/values` : ''
+
+  const getGitFormValues = (): GitSettingsFormValues => ({
+    repoUrl: hasGitConfiguration ? gitSettings?.repoUrl || '' : '',
+    branch: hasGitConfiguration ? gitSettings?.branch || '' : '',
+    username: hasGitConfiguration ? gitSettings?.username || '' : '',
+    password: hasGitConfiguration ? gitSettings?.password || '' : '',
+    email: hasGitConfiguration ? gitSettings?.email || '' : '',
+  })
+
   const [showFormStep, setShowFormStep] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -235,29 +285,21 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
     reset,
   } = useForm<GitSettingsFormValues>({
     resolver: yupResolver(gitSettingsSchema),
-    defaultValues: {
-      repoUrl: '',
-      branch: '',
-      username: '',
-      password: '',
-      email: '',
-    },
+    defaultValues: emptyGitFormValues,
     mode: 'onBlur',
   })
 
-  const isControlled = typeof open === 'boolean'
-  const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
-
   const resetModalState = () => {
-    setShowFormStep(false)
+    setShowFormStep(hasGitConfiguration)
     setSubmitError('')
     setMigrationSucceeded(false)
     setIsTransitioning(false)
-    reset()
+    reset(getGitFormValues())
   }
 
   useEffect(() => {
@@ -269,9 +311,18 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }, [isPreInstalled, isControlled, setShowGitWizard])
 
   useEffect(() => {
-    if (!actualOpen) resetModalState()
+    if (!actualOpen) {
+      resetModalState()
+      return
+    }
+
+    if (!gitSettings) return
+
+    reset(getGitFormValues())
+    setShowFormStep(hasGitConfiguration)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actualOpen])
+  }, [actualOpen, gitSettings, hasGitConfiguration])
 
   const handleClose = () => {
     resetModalState()
@@ -282,6 +333,19 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     }
 
     setShowGitWizard(false)
+  }
+
+  const handleCopyDefaultGitUrl = async () => {
+    if (!displayedRepoUrl) return
+    await navigator.clipboard.writeText(displayedRepoUrl)
+  }
+
+  const handleCopyRepoUrl = async () => {
+    const repoUrl = getValues('repoUrl')
+
+    if (!repoUrl) return
+
+    await navigator.clipboard.writeText(repoUrl)
   }
 
   const goToFormStep = () => {
@@ -356,7 +420,12 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     >
       <ModalBox>
         <AnimatedContainer isTransitioning={isTransitioning}>
-          {!showFormStep ? (
+          {isFetchingGitSettings ? (
+            <ModalContent>
+              <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
+              <BodyText variant='body1'>Loading Git settings...</BodyText>
+            </ModalContent>
+          ) : !showFormStep ? (
             <>
               <ModalContent>
                 <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
@@ -370,6 +439,25 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 <BodyText variant='body1'>
                   Configuring an external Git Repo is recommended for installing App Platform.
                 </BodyText>
+
+                {!!defaultGitUrl && (
+                  <DefaultGitUrlBlock>
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant='subtitle2'>Current internal Git repository</Typography>
+                      <DefaultGitUrlText variant='body2'>{displayedRepoUrl}</DefaultGitUrlText>
+                    </Box>
+
+                    <Tooltip title='Copy Git repository URL'>
+                      <IconButton
+                        aria-label='Copy Git repository URL'
+                        color='primary'
+                        onClick={handleCopyDefaultGitUrl}
+                      >
+                        <ContentCopyIcon fontSize='small' />
+                      </IconButton>
+                    </Tooltip>
+                  </DefaultGitUrlBlock>
+                )}
               </ModalContent>
 
               <ModalFooter>
@@ -413,6 +501,10 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
               <ModalContent>
                 <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
 
+                {hasGitConfiguration && (
+                  <InformationBanner message='Changing the Git repository URL will migrate App Platform to the new repository. Updating credentials only will not trigger a migration.' />
+                )}
+
                 {!!submitError && <InformationBanner message={submitError} />}
 
                 <RepoFieldBlock>
@@ -427,6 +519,24 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                         fullWidth
                         error={!!errors.repoUrl}
                         helperText={errors.repoUrl?.message}
+                        InputProps={
+                          hasGitConfiguration
+                            ? {
+                                endAdornment: (
+                                  <Tooltip title='Copy Git repository URL'>
+                                    <IconButton
+                                      edge='end'
+                                      sx={{ mr: '0px' }}
+                                      color='primary'
+                                      onClick={handleCopyRepoUrl}
+                                    >
+                                      <ContentCopyIcon fontSize='small' />
+                                    </IconButton>
+                                  </Tooltip>
+                                ),
+                              }
+                            : undefined
+                        }
                       />
                     )}
                   />
@@ -513,7 +623,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
               <ModalFooter>
                 <Button variant='outlined' color='primary' onClick={handleClose} disabled={isMigrating}>
-                  Configure later
+                  {hasGitConfiguration ? 'Cancel' : 'Configure later'}
                 </Button>
 
                 <LoadingButton type='submit' variant='contained' color='primary' loading={isMigrating}>
