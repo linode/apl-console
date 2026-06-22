@@ -24,7 +24,7 @@ export default function InformationBanner({ message, children, small, sx }: Prop
   return (
     <StyledInfoBanner small={small} sx={{ ...sx }}>
       <Iconify icon='material-symbols:info' width={40} height={28} color='#c7d030d9' />
-      <Typography sx={{ color: theme.palette.text.primary }}>{message}</Typography>
+      <Typography sx={{ color: theme.palette.text.primary, ml: 1 }}>{message}</Typography>
       {children}
     </StyledInfoBanner>
   )
