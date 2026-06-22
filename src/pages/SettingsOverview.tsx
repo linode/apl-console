@@ -35,7 +35,7 @@ export default function SettingsOverview() {
     { title: 'Backup', path: '/settings/platformBackups', icon: getIcon('backup_icon.svg'), id: 'backup' },
     { title: 'Object Storage', path: '/settings/obj', icon: getIcon('cloud_upload.svg'), id: 'objectStorage' },
     {
-      title: 'Git',
+      title: 'GitOps',
       icon: getIcon('git_icon.svg'),
       id: 'git',
       onClick: () => setOpenGitModal(true),
