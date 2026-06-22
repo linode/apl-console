@@ -46,8 +46,6 @@ export const createAplTeamApiSchema = yup.object({
       })
       .optional(),
 
-    password: yup.string().optional(),
-
     managedMonitoring: yup
       .object({
         grafana: yup.boolean().optional().default(false),
