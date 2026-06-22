@@ -382,6 +382,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.body,
       }),
     }),
+    getGitSettings: build.query<GetGitSettingsApiResponse, GetGitSettingsApiArg>({
+      query: () => ({ url: `/v2/git` }),
+    }),
     migrateGit: build.mutation<MigrateGitApiResponse, MigrateGitApiArg>({
       query: (queryArg) => ({ url: `/v2/git`, method: 'PUT', body: queryArg.body }),
     }),
@@ -398,7 +401,6 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -465,7 +467,6 @@ export type CreateAplTeamApiResponse = /** status 200 Successfully obtained team
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -533,7 +534,6 @@ export type CreateAplTeamApiArg = {
       oidc?: {
         groupMapping?: string
       }
-      password?: string
       managedMonitoring?: {
         grafana?: boolean
         alertmanager?: boolean
@@ -589,7 +589,6 @@ export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -659,7 +658,6 @@ export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ 
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -729,7 +727,6 @@ export type EditAplTeamApiArg = {
       oidc?: {
         groupMapping?: string
       }
-      password?: string
       managedMonitoring?: {
         grafana?: boolean
         alertmanager?: boolean
@@ -4257,6 +4254,8 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     git?: {
       repoUrl?: string
       branch?: string
+      username?: string
+      email?: string
     }
   }
   ingressClassNames?: string[]
@@ -4860,6 +4859,14 @@ export type EditAppApiArg = {
     }
   }
 }
+export type GetGitSettingsApiResponse = /** status 200 Current Git settings */ {
+  repoUrl: string
+  username?: string
+  password: string
+  email: string
+  branch: string
+}
+export type GetGitSettingsApiArg = void
 export type MigrateGitApiResponse = /** status 200 Migration successful. API is now locked. */ undefined
 export type MigrateGitApiArg = {
   /** New git configuration to migrate to. */
@@ -4974,6 +4981,7 @@ export const {
   useToggleAppsMutation,
   useGetTeamAppQuery,
   useEditAppMutation,
+  useGetGitSettingsQuery,
   useMigrateGitMutation,
   useGetApiStatusQuery,
 } = injectedRtkApi
