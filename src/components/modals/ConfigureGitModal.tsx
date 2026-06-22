@@ -265,7 +265,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const defaultGitUrl = gitSettings?.repoUrl || ''
   const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('gitea-http.gitea.svc.cluster.local') ?? false
   const hasGitConfiguration = !!gitSettings?.repoUrl && !isDefaultGitConfiguration
-  const displayedRepoUrl = isDefaultGitConfiguration ? `https://git.${domainSuffix}/otomi/values` : ''
+  const displayedRepoUrl = isDefaultGitConfiguration && domainSuffix ? `https://git.${domainSuffix}/otomi/values` : ''
 
   const getGitFormValues = (): GitSettingsFormValues => ({
     repoUrl: hasGitConfiguration ? gitSettings?.repoUrl || '' : '',
