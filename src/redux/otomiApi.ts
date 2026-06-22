@@ -401,7 +401,6 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -468,7 +467,6 @@ export type CreateAplTeamApiResponse = /** status 200 Successfully obtained team
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -536,7 +534,6 @@ export type CreateAplTeamApiArg = {
       oidc?: {
         groupMapping?: string
       }
-      password?: string
       managedMonitoring?: {
         grafana?: boolean
         alertmanager?: boolean
@@ -592,7 +589,6 @@ export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -662,7 +658,6 @@ export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ 
     oidc?: {
       groupMapping?: string
     }
-    password?: string
     managedMonitoring?: {
       grafana?: boolean
       alertmanager?: boolean
@@ -732,7 +727,6 @@ export type EditAplTeamApiArg = {
       oidc?: {
         groupMapping?: string
       }
-      password?: string
       managedMonitoring?: {
         grafana?: boolean
         alertmanager?: boolean
