@@ -263,7 +263,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   })
 
   const defaultGitUrl = gitSettings?.repoUrl || ''
-  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('gitea-http.gitea.svc.cluster.local') ?? false
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('git-server.git-server.svc.cluster.local') ?? false
   const hasGitConfiguration = !!gitSettings?.repoUrl && !isDefaultGitConfiguration
   const displayedRepoUrl = isDefaultGitConfiguration && domainSuffix ? `https://git.${domainSuffix}/otomi/values` : ''
 
@@ -448,7 +448,11 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                     </Box>
 
                     <Tooltip title='Copy Git repository URL'>
-                      <IconButton aria-label='Copy Git repository URL' color='primary' onClick={handleCopyDefaultGitUrl}>
+                      <IconButton
+                        aria-label='Copy Git repository URL'
+                        color='primary'
+                        onClick={handleCopyDefaultGitUrl}
+                      >
                         <ContentCopyIcon fontSize='small' />
                       </IconButton>
                     </Tooltip>
