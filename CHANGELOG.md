@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.2](https://github.com/linode/apl-console/compare/v5.0.1...v5.0.2) (2026-06-25)
+
+
+### Features
+
+* Git Configure Edit modal  ([#806](https://github.com/linode/apl-console/issues/806)) ([908dc35](https://github.com/linode/apl-console/commit/908dc35b307afd3a1e25f3264f0b9beb141829b8))
+
+
+### Bug Fixes
+
+* remove team password ([#808](https://github.com/linode/apl-console/issues/808)) ([d30d474](https://github.com/linode/apl-console/commit/d30d47485ffd4bb13eb7ff9071805b396f2a3204))
+* removed dot allowance ([#804](https://github.com/linode/apl-console/issues/804)) ([6405d1e](https://github.com/linode/apl-console/commit/6405d1e7aa6b48f5fb9daf1d4f4da45c879b3f87))
+
 ### [5.0.1](https://github.com/linode/apl-console/compare/v4.14.0...v5.0.1) (2026-06-16)
 
 
