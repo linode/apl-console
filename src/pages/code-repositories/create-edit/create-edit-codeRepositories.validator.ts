@@ -1,5 +1,12 @@
 import * as yup from 'yup'
 
+const normalizeRepoUrl = (url: string) =>
+  url
+    .trim()
+    .replace(/\/$/, '') // remove trailing slash
+    .replace(/\.git$/, '') // remove trailing .git
+    .toLowerCase()
+
 const repoUrlValidation = yup
   .string()
   .test('is-valid-url', 'Invalid URL for the selected git service', function (value) {
@@ -8,15 +15,21 @@ const repoUrlValidation = yup
     if (!value || !gitService) return true
 
     if (gitService === 'gitea') return value.startsWith('https://gitea')
+
     if (gitService === 'github') return /^(https:\/\/github\.com\/.+|git@github\.com:.+\.git)$/.test(value)
+
     if (gitService === 'gitlab') return /^(https:\/\/gitlab\.com\/.+|git@gitlab\.com:.+\.git)$/.test(value)
+
     return true
   })
   .test('is-unique', 'Repository URL must be unique.', function (value) {
     const { codeRepoUrls, validateOnSubmit } = (this.options.context || {}) as any
-    if (!validateOnSubmit) return true
-    if (!value) return true
-    return !codeRepoUrls?.some((repoUrl: string) => repoUrl === value)
+
+    if (!validateOnSubmit || !value) return true
+
+    const normalizedValue = normalizeRepoUrl(value)
+
+    return !codeRepoUrls?.some((repoUrl: string) => normalizeRepoUrl(repoUrl) === normalizedValue)
   })
 
 export const aplCodeRepoApiSchema = yup.object({
