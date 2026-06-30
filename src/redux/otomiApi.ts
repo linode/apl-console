@@ -4255,7 +4255,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
       repoUrl?: string
       branch?: string
       username?: string
-      password?: string
       email?: string
     }
   }
@@ -4863,7 +4862,6 @@ export type EditAppApiArg = {
 export type GetGitSettingsApiResponse = /** status 200 Current Git settings */ {
   repoUrl: string
   username?: string
-  password: string
   email: string
   branch: string
 }
