@@ -4255,7 +4255,6 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
       repoUrl?: string
       branch?: string
       username?: string
-      password?: string
       email?: string
     }
   }
