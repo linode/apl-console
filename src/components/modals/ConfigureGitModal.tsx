@@ -306,10 +306,6 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   }, [showGitWizard, setShowGitWizard])
 
   useEffect(() => {
-    if (!isControlled) setShowGitWizard(false)
-  }, [isControlled, setShowGitWizard])
-
-  useEffect(() => {
     if (!actualOpen) {
       resetModalState()
       return
