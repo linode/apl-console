@@ -4862,7 +4862,6 @@ export type EditAppApiArg = {
 export type GetGitSettingsApiResponse = /** status 200 Current Git settings */ {
   repoUrl: string
   username?: string
-  password: string
   email: string
   branch: string
 }

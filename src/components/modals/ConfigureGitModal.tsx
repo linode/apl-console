@@ -270,7 +270,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     repoUrl: hasGitConfiguration ? gitSettings?.repoUrl || '' : '',
     branch: hasGitConfiguration ? gitSettings?.branch || '' : '',
     username: hasGitConfiguration ? gitSettings?.username || '' : '',
-    password: hasGitConfiguration ? gitSettings?.password || '' : '',
+    password: '',
     email: hasGitConfiguration ? gitSettings?.email || '' : '',
   })
 
