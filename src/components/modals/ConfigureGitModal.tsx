@@ -249,7 +249,6 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     user: { isPlatformAdmin },
     settings: {
       cluster: { domainSuffix },
-      otomi: { isPreInstalled },
     },
   } = useSession()
 
@@ -259,7 +258,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
 
   const { data: gitSettings, isFetching: isFetchingGitSettings } = useGetGitSettingsQuery(undefined, {
-    skip: !isPlatformAdmin || !isPreInstalled || !actualOpen,
+    skip: !isPlatformAdmin || !actualOpen,
   })
 
   const defaultGitUrl = gitSettings?.repoUrl || ''
@@ -305,10 +304,6 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   useEffect(() => {
     if (showGitWizard === undefined) setShowGitWizard(true)
   }, [showGitWizard, setShowGitWizard])
-
-  useEffect(() => {
-    if (!isPreInstalled && !isControlled) setShowGitWizard(false)
-  }, [isPreInstalled, isControlled, setShowGitWizard])
 
   useEffect(() => {
     if (!actualOpen) {
@@ -406,7 +401,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
     }
   }
 
-  if (!isPlatformAdmin || !isPreInstalled) return null
+  if (!isPlatformAdmin) return null
   if (!isControlled && !showGitWizard) return null
 
   return (
