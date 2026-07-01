@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.3](https://github.com/linode/apl-console/compare/v5.0.2...v5.0.3) (2026-07-01)
+
+
+### Bug Fixes
+
+* remove password from git get request ([#813](https://github.com/linode/apl-console/issues/813)) ([7a04d50](https://github.com/linode/apl-console/commit/7a04d505d0a26ca7d0c621b9236a328ed1cc4df8))
+
 ### [5.0.2](https://github.com/linode/apl-console/compare/v5.0.1...v5.0.2) (2026-06-25)
 
 
