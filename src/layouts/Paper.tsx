@@ -8,6 +8,7 @@ import { setError } from 'redux/reducers'
 import ConfigureGitModal from 'components/modals/ConfigureGitModal'
 import { useSession } from 'providers/Session'
 import { useGetGitSettingsQuery } from 'redux/otomiApi'
+import { DEFAULT_GIT_SERVER_URL } from 'utils/constants'
 import MainLayout from './Base'
 
 interface Props {
@@ -35,7 +36,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
     skip: !isPlatformAdmin,
   })
 
-  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('git-server.git-server.svc.cluster.local') ?? false
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes(DEFAULT_GIT_SERVER_URL) ?? false
 
   useEffect(() => {
     // clear global error when pathname changes to prevent the error from reappearing
