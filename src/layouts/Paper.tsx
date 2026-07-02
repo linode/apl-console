@@ -6,6 +6,9 @@ import Error from 'components/Error'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { setError } from 'redux/reducers'
 import ConfigureGitModal from 'components/modals/ConfigureGitModal'
+import { useSession } from 'providers/Session'
+import { useGetGitSettingsQuery } from 'redux/otomiApi'
+import { DEFAULT_GIT_SERVER_URL } from 'utils/constants'
 import MainLayout from './Base'
 
 interface Props {
@@ -17,15 +20,29 @@ interface Props {
 
 export default function ({ loading, comp, title, children }: Props): React.ReactElement {
   const location = useLocation()
+
   // grafana iframe background color
   const dashboardStyle =
     location.pathname === '/' ? { backgroundColor: 'background.contrast' } : { backgroundColor: 'transparent' }
+
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
+
+  const {
+    user: { isPlatformAdmin },
+  } = useSession()
+
+  const { data: gitSettings } = useGetGitSettingsQuery(undefined, {
+    skip: !isPlatformAdmin,
+  })
+
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes(DEFAULT_GIT_SERVER_URL) ?? false
+
   useEffect(() => {
     // clear global error when pathname changes to prevent the error from reappearing
     if (globalError) dispatch(setError(undefined))
   }, [location.pathname])
+
   return (
     <MainLayout title={title}>
       <Container maxWidth='lg'>
@@ -38,7 +55,8 @@ export default function ({ loading, comp, title, children }: Props): React.React
           </Box>
         </Card>
       </Container>
-      <ConfigureGitModal />
+
+      {isPlatformAdmin && isDefaultGitConfiguration && <ConfigureGitModal />}
     </MainLayout>
   )
 }
