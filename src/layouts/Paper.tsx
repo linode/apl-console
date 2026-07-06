@@ -22,6 +22,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
     location.pathname === '/' ? { backgroundColor: 'background.contrast' } : { backgroundColor: 'transparent' }
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
+  const hasOpenModal = useAppSelector(({ global: { openModalCount } }) => openModalCount > 0)
   useEffect(() => {
     // clear global error when pathname changes to prevent the error from reappearing
     if (globalError) dispatch(setError(undefined))
@@ -30,7 +31,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
     <MainLayout title={title}>
       <Container maxWidth='lg'>
         <Card sx={{ ...dashboardStyle }}>
-          <Error />
+          {!hasOpenModal && <Error />}
           {loading && !globalError && <LoadingScreen />}
           <Box sx={{ display: globalError && 'none' }}>
             {!loading && comp}
