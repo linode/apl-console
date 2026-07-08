@@ -11,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
 import { useGetGitSettingsQuery, useMigrateGitMutation } from 'redux/otomiApi'
+import { DEFAULT_GIT_SERVER_URL } from 'utils/constants'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
 const MODAL_TITLE = 'Configure Git Repository'
@@ -262,7 +263,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
   })
 
   const defaultGitUrl = gitSettings?.repoUrl || ''
-  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('git-server.git-server.svc.cluster.local') ?? false
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes(DEFAULT_GIT_SERVER_URL) ?? false
   const hasGitConfiguration = !!gitSettings?.repoUrl && !isDefaultGitConfiguration
   const displayedRepoUrl = isDefaultGitConfiguration && domainSuffix ? `https://git.${domainSuffix}/otomi/values` : ''
 
