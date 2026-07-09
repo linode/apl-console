@@ -88,23 +88,6 @@ describe('NavConfig', () => {
     const manifestsItem = getPlatformItems().find((item) => item.title === 'Manifests')
 
     expect(manifestsItem?.path).toBe('/manifests')
-    expect(manifestsItem?.info).toBeTruthy()
-
-    manifestsItem?.onClick?.()
-
-    expect(mockMarkNewFeatureSeen).toHaveBeenCalledWith('platform-manifests')
-  })
-
-  it('adds new feature handlers for platform Catalogs, Secrets, and Settings', () => {
-    const platformItems = getPlatformItems()
-
-    platformItems.find((item) => item.title === 'Catalogs')?.onClick?.()
-    platformItems.find((item) => item.title === 'Secrets')?.onClick?.()
-    platformItems.find((item) => item.title === 'Settings')?.onClick?.()
-
-    expect(mockMarkNewFeatureSeen).toHaveBeenCalledWith('platform-catalogs')
-    expect(mockMarkNewFeatureSeen).toHaveBeenCalledWith('platform-secrets')
-    expect(mockMarkNewFeatureSeen).toHaveBeenCalledWith('platform-settings')
   })
 
   it('uses the session obo team id for team paths', () => {

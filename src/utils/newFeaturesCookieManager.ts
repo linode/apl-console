@@ -2,12 +2,15 @@ import cookie from 'cookie'
 
 export const NEW_FEATURE_COOKIE = 'apl-seen-new-features'
 
-export type NewFeatureKey =
-  | 'platform-secrets'
-  | 'platform-catalogs'
-  | 'platform-settings'
-  | 'settings-gitops'
-  | 'platform-manifests'
+export const NEW_FEATURE_KEYS = [
+  'platform-secrets',
+  'platform-catalogs',
+  'platform-settings',
+  'settings-gitops',
+  'platform-manifests',
+] as const
+
+export type NewFeatureKey = typeof NEW_FEATURE_KEYS[number]
 
 export const getSeenNewFeatures = (): NewFeatureKey[] => {
   if (typeof document === 'undefined') return []

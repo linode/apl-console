@@ -65,55 +65,6 @@ describe('Manifests', () => {
     jest.clearAllMocks()
   })
 
-  it('renders the manifests page with internal Git repository URL', () => {
-    mockUseGetGitSettingsQuery.mockReturnValue({
-      data: {
-        repoUrl: 'http://git-server.git-server.svc.cluster.local/otomi/values.git',
-        branch: 'main',
-      },
-    })
-
-    render(<Manifests />)
-
-    expect(screen.getByText('https://git.example.com/otomi/values')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /open manifests directory/i })).toHaveAttribute(
-      'href',
-      'https://git.example.com/otomi/values/src/branch/main/env/manifests',
-    )
-  })
-
-  it('renders a GitHub manifests directory URL', () => {
-    mockUseGetGitSettingsQuery.mockReturnValue({
-      data: {
-        repoUrl: 'https://github.com/example/values.git',
-        branch: 'develop',
-      },
-    })
-
-    render(<Manifests />)
-
-    expect(screen.getByRole('link', { name: /open manifests directory/i })).toHaveAttribute(
-      'href',
-      'https://github.com/example/values/tree/develop/env/manifests',
-    )
-  })
-
-  it('renders a GitLab manifests directory URL', () => {
-    mockUseGetGitSettingsQuery.mockReturnValue({
-      data: {
-        repoUrl: 'https://gitlab.com/example/values.git',
-        branch: 'main',
-      },
-    })
-
-    render(<Manifests />)
-
-    expect(screen.getByRole('link', { name: /open manifests directory/i })).toHaveAttribute(
-      'href',
-      'https://gitlab.com/example/values/-/tree/main/env/manifests',
-    )
-  })
-
   it('copies the values repository URL', () => {
     mockUseGetGitSettingsQuery.mockReturnValue({
       data: {

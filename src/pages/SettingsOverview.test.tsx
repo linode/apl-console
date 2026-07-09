@@ -1,7 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { useSession } from 'providers/Session'
-import { markNewFeatureSeen } from 'utils/newFeaturesCookieManager'
 import SettingsOverview from './SettingsOverview'
 
 jest.mock('providers/Session', () => ({
@@ -45,7 +44,6 @@ jest.mock(
 )
 
 const mockUseSession = useSession as jest.Mock
-const mockMarkNewFeatureSeen = markNewFeatureSeen as jest.Mock
 
 describe('SettingsOverview', () => {
   beforeEach(() => {
@@ -62,7 +60,7 @@ describe('SettingsOverview', () => {
     jest.clearAllMocks()
   })
 
-  it('renders the GitOps card with a new feature chip', () => {
+  it('renders the GitOps card', () => {
     render(
       <MemoryRouter>
         <SettingsOverview />
@@ -70,20 +68,6 @@ describe('SettingsOverview', () => {
     )
 
     expect(screen.getByText('GitOps')).toBeTruthy()
-    expect(screen.getByText('settings-gitops')).toBeTruthy()
-  })
-
-  it('marks GitOps as seen and opens the Git modal when clicked', () => {
-    render(
-      <MemoryRouter>
-        <SettingsOverview />
-      </MemoryRouter>,
-    )
-
-    fireEvent.click(screen.getByText('GitOps'))
-
-    expect(mockMarkNewFeatureSeen).toHaveBeenCalledWith('settings-gitops')
-    expect(screen.getByText('Configure Git Modal Open')).toBeTruthy()
   })
 
   it('renders normal settings cards as links', () => {

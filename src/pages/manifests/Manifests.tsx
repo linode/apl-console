@@ -24,20 +24,6 @@ export default function Manifests() {
 
   const repoUrl = isDefaultGitConfiguration ? `https://git.${domainSuffix}/otomi/values` : gitSettings?.repoUrl || ''
 
-  const branch = gitSettings?.branch || 'main'
-
-  const manifestsUrl = (() => {
-    if (!repoUrl) return ''
-
-    const cleanRepoUrl = repoUrl.replace(/\.git$/, '')
-
-    if (isDefaultGitConfiguration) return `${cleanRepoUrl}/src/branch/${branch}/env/manifests`
-
-    if (cleanRepoUrl.includes('gitlab')) return `${cleanRepoUrl}/-/tree/${branch}/env/manifests`
-
-    return `${cleanRepoUrl}/tree/${branch}/env/manifests`
-  })()
-
   const techDocsUrl = 'https://techdocs.akamai.com/app-platform/docs/manifests'
 
   const handleCopyValuesRepoUrl = async () => {
@@ -116,7 +102,7 @@ export default function Manifests() {
           <Box sx={{ display: 'flex', gap: 2, mt: 4, flexWrap: 'wrap' }}>
             <Button
               variant='contained'
-              href={manifestsUrl}
+              href={repoUrl}
               target='_blank'
               rel='noopener noreferrer'
               endIcon={<OpenInNewIcon />}

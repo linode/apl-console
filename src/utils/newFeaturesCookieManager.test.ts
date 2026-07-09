@@ -1,6 +1,7 @@
 import cookie from 'cookie'
 import {
   NEW_FEATURE_COOKIE,
+  NEW_FEATURE_KEYS,
   getSeenNewFeatures,
   hasSeenNewFeature,
   markNewFeatureSeen,
@@ -16,6 +17,10 @@ describe('newFeaturesCookieManager', () => {
 
   afterEach(() => {
     jest.restoreAllMocks()
+  })
+
+  it('does not exceed the maximum number of simultaneous new features', () => {
+    expect(NEW_FEATURE_KEYS.length).toBeLessThanOrEqual(6)
   })
 
   it('returns an empty array when the cookie does not exist', () => {
