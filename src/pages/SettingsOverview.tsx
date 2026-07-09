@@ -107,7 +107,7 @@ export default function SettingsOverview() {
       </Typography>
 
       {newFeatureKey && (
-        <Box sx={{ ml: 2 }}>
+        <Box sx={{ ml: 2, display: 'flex', '&:empty': { display: 'none' } }}>
           <NewFeatureChip feature={newFeatureKey} />
         </Box>
       )}
