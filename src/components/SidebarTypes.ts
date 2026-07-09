@@ -13,6 +13,7 @@ export type NavListProps = {
   caption?: string
   disabled?: boolean
   roles?: string[]
+  onClick?: VoidFunction
   children?: {
     title: string
     path: string
