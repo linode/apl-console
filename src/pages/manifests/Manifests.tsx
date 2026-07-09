@@ -82,7 +82,7 @@ export default function Manifests() {
             </Box>
 
             <Tooltip title='Copy values repository URL'>
-              <IconButton aria-label='Copy values repository URL' color='primary' onClick={handleCopyValuesRepoUrl}>
+              <IconButton aria-label='Copy values repository URL' color='primary' onClick={handleCopyValuesRepoUrl} disabled={!repoUrl}>
                 <ContentCopyIcon fontSize='small' />
               </IconButton>
             </Tooltip>
