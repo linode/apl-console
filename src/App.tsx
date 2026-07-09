@@ -54,6 +54,7 @@ import WorkloadCatalogsPage from 'pages/catalogs/team-overview/WorkloadCatalogsO
 import ThemeViewInitializer from 'components/ThemeViewInitializer'
 import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
 import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
+import Manifests from 'pages/manifests/Manifests'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -125,6 +126,7 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
+                                <PrivateRoute path='/manifests' component={Manifests} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/catalogs/create'
                                   component={CatalogsCreateEditPage}
