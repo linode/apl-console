@@ -10,12 +10,15 @@ import Versions from 'components/Versions'
 import { jsx } from '@emotion/react'
 import { useSession } from 'providers/Session'
 import ConfigureGitModal from 'components/modals/ConfigureGitModal'
+import { NewFeatureKey, markNewFeatureSeen } from 'utils/newFeaturesCookieManager'
+import NewFeatureChip from 'components/NewFeatureChip'
 
 interface Settings {
   title: string
   path?: string
   icon: jsx.JSX.Element
   id: string
+  newFeatureKey?: NewFeatureKey
   onClick?: () => void
 }
 
@@ -38,7 +41,11 @@ export default function SettingsOverview() {
       title: 'GitOps',
       icon: getIcon('git_icon.svg'),
       id: 'git',
-      onClick: () => setOpenGitModal(true),
+      newFeatureKey: 'settings-gitops',
+      onClick: () => {
+        markNewFeatureSeen('settings-gitops')
+        setOpenGitModal(true)
+      },
     },
   ]
 
@@ -48,40 +55,73 @@ export default function SettingsOverview() {
   if (session.settings.otomi.isPreInstalled)
     filteredSettings = settings.filter((setting) => !removePreInstalledSpecificSettings.includes(setting.id))
 
-  const CardContent = ({ title, icon }: { title: string; icon: jsx.JSX.Element }) => (
+  const CardContent = ({
+    title,
+    icon,
+    newFeatureKey,
+  }: {
+    title: string
+    icon: jsx.JSX.Element
+    newFeatureKey?: NewFeatureKey
+  }) => (
     <Box
       sx={{
-        margin: '20px',
+        m: 2,
+        px: 3,
+        py: 3,
         display: 'flex',
         alignItems: 'center',
-        borderRadius: '8px',
+        borderRadius: 2,
         backgroundColor: '#0000001f',
         transition: 'all .2s ease-in-out',
         cursor: 'pointer',
         '&:hover': {
-          transform: 'scale(1.1)',
+          transform: 'scale(1.05)',
         },
       }}
     >
-      <Box sx={{ height: '50px', width: '50px', margin: '20px' }}>
-        <span style={{ height: '24px', width: '24px', color: '#919eab' }}>{icon}</span>
+      <Box
+        sx={{
+          width: 'clamp(32px, 3vw, 40px)',
+          height: 'clamp(32px, 3vw, 40px)',
+          minWidth: 'clamp(32px, 3vw, 40px)',
+          mr: 2,
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#919eab',
+        }}
+      >
+        {icon}
       </Box>
-      <Box sx={{ width: '200px' }}>
-        <Typography sx={{ fontSize: '1rem', width: '150px' }} variant='subtitle1'>
-          {title}
-        </Typography>
-      </Box>
+
+      <Typography
+        variant='subtitle1'
+        sx={{
+          flexGrow: 1,
+          fontSize: '1rem',
+        }}
+      >
+        {title}
+      </Typography>
+
+      {newFeatureKey && (
+        <Box sx={{ ml: 2, display: 'flex', '&:empty': { display: 'none' } }}>
+          <NewFeatureChip feature={newFeatureKey} />
+        </Box>
+      )}
     </Box>
   )
 
-  const SettingsCard = ({ title, path, icon, onClick }: Settings) => (
+  const SettingsCard = ({ title, path, icon, onClick, newFeatureKey }: Settings) => (
     <Grid item xs={6} sm={4} md={3} lg={3} key={title}>
       {path ? (
         <Link
           to={{ pathname: path }}
           style={{ fontSize: '1rem', color: '#919eab', textDecoration: 'none', display: 'block' }}
         >
-          <CardContent title={title} icon={icon} />
+          <CardContent title={title} icon={icon} newFeatureKey={newFeatureKey} />
         </Link>
       ) : (
         <Box
@@ -93,7 +133,7 @@ export default function SettingsOverview() {
             display: 'block',
           }}
         >
-          <CardContent title={title} icon={icon} />
+          <CardContent title={title} icon={icon} newFeatureKey={newFeatureKey} />
         </Box>
       )}
     </Grid>
@@ -110,6 +150,7 @@ export default function SettingsOverview() {
             icon={setting.icon}
             id={setting.id}
             onClick={setting.onClick}
+            newFeatureKey={setting.newFeatureKey}
           />
         ))}
       </Grid>
