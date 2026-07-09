@@ -29,7 +29,11 @@ describe('newFeaturesCookieManager', () => {
 
     expect(getSeenNewFeatures()).toEqual(['platform-secrets', 'platform-manifests'])
   })
+  it('returns an empty array when the cookie contains invalid JSON', () => {
+    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, 'not-json', { path: '/' })
 
+    expect(getSeenNewFeatures()).toEqual([])
+  })
   it('returns true when a feature has been seen', () => {
     document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, JSON.stringify(['platform-settings']), { path: '/' })
 
