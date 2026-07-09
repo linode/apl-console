@@ -25,15 +25,9 @@ export const getSeenNewFeatures = (): NewFeatureKey[] => {
 
     if (!Array.isArray(parsed)) return []
 
-    const validKeys: NewFeatureKey[] = [
-      'platform-secrets',
-      'platform-catalogs',
-      'platform-settings',
-      'settings-gitops',
-      'platform-manifests',
-    ]
-
-    return parsed.filter((v): v is NewFeatureKey => typeof v === 'string' && validKeys.includes(v as NewFeatureKey))
+    return parsed.filter(
+      (v): v is NewFeatureKey => typeof v === 'string' && NEW_FEATURE_KEYS.includes(v as NewFeatureKey),
+    )
   } catch {
     return []
   }
