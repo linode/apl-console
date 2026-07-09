@@ -16,7 +16,7 @@ const ListItem = forwardRef<HTMLDivElement & HTMLAnchorElement, ListItemStylePro
 ))
 
 export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen }: NavItemProps) {
-  const { title, path, icon, info, children, disabled, caption, roles, isDownload } = item
+  const { title, path, icon, info, children, disabled, caption, roles, isDownload, onClick } = item
 
   const renderContent = (
     <>
@@ -69,7 +69,10 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
       component={isDownload ? MuiLink : Link}
       to={path}
       target={isDownload && '_blank'}
-      onClick={onOpen}
+      onClick={() => {
+        onClick?.()
+        onOpen?.()
+      }}
       activeRoot={active}
       disabled={disabled}
       roles={roles}
