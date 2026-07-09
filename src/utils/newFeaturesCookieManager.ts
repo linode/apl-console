@@ -10,8 +10,30 @@ export type NewFeatureKey =
   | 'platform-manifests'
 
 export const getSeenNewFeatures = (): NewFeatureKey[] => {
-  const cookies = cookie.parse(document.cookie)
-  return cookies[NEW_FEATURE_COOKIE] ? JSON.parse(cookies[NEW_FEATURE_COOKIE]) : []
+  if (typeof document === 'undefined') return []
+
+  const cookies = cookie.parse(document.cookie ?? '')
+  const raw = cookies[NEW_FEATURE_COOKIE]
+
+  if (!raw) return []
+
+  try {
+    const parsed: unknown = JSON.parse(raw)
+
+    if (!Array.isArray(parsed)) return []
+
+    const validKeys: NewFeatureKey[] = [
+      'platform-secrets',
+      'platform-catalogs',
+      'platform-settings',
+      'settings-gitops',
+      'platform-manifests',
+    ]
+
+    return parsed.filter((v): v is NewFeatureKey => typeof v === 'string' && validKeys.includes(v as NewFeatureKey))
+  } catch {
+    return []
+  }
 }
 
 export const hasSeenNewFeature = (key: NewFeatureKey) => getSeenNewFeatures().includes(key)
