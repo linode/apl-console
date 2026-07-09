@@ -3,6 +3,8 @@ import SvgIconStyle from 'components/SvgIconStyle'
 import { useSession } from 'providers/Session'
 import { canDo } from 'utils/permission'
 import { useLocalStorage } from 'hooks/useLocalStorage'
+import NewFeatureChip from 'components/NewFeatureChip'
+import { markNewFeatureSeen } from 'utils/newFeaturesCookieManager'
 
 const getIcon = (name: string) => <SvgIconStyle src={`/assets/${name}`} sx={{ width: 1, height: 1 }} />
 
@@ -30,15 +32,36 @@ export default function NavConfig() {
       items: [
         { title: 'Dashboard', path: '/', icon: getIcon('dashboard_icon.svg') },
         { title: 'Apps', path: '/apps/admin', icon: getIcon('apps_icon.svg') },
-        { title: 'Catalogs', path: '/catalogs', icon: getIcon('developer_guide_icon.svg') },
-        { title: 'Secrets', path: '/secrets', icon: getIcon('shield_lock_icon.svg') },
+        {
+          title: 'Catalogs',
+          path: '/catalogs',
+          icon: getIcon('developer_guide_icon.svg'),
+          info: <NewFeatureChip feature='platform-catalogs' />,
+          onClick: () => markNewFeatureSeen('platform-catalogs'),
+        },
+        {
+          title: 'Secrets',
+          path: '/secrets',
+          icon: getIcon('shield_lock_icon.svg'),
+          info: <NewFeatureChip feature='platform-secrets' />,
+          onClick: () => markNewFeatureSeen('platform-secrets'),
+        },
         { title: 'Teams', path: '/teams', icon: getIcon('teams_icon.svg') },
         { title: 'User Management', path: '/users', icon: getIcon('users_icon.svg'), hidden: hasExternalIDP },
+        {
+          title: 'Manifests',
+          path: '/manifests',
+          icon: getIcon('workloads_icon.svg'),
+          info: <NewFeatureChip feature='platform-manifests' />,
+          onClick: () => markNewFeatureSeen('platform-manifests'),
+        },
         { title: 'Maintenance', path: '/maintenance', icon: getIcon('maintenance_icon.svg') }, // replace .svg
         {
           title: 'Settings',
           path: '/settings',
           icon: getIcon('settings_icon.svg'),
+          info: <NewFeatureChip feature='platform-settings' />,
+          onClick: () => markNewFeatureSeen('platform-settings'),
         },
       ],
     },
