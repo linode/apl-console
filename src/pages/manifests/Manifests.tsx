@@ -7,6 +7,7 @@ import { Typography } from 'components/Typography'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import { useGetGitSettingsQuery } from 'redux/otomiApi'
+import { DEFAULT_GIT_SERVER_URL } from 'utils/constants'
 
 export default function Manifests() {
   const {
@@ -20,7 +21,7 @@ export default function Manifests() {
     skip: !isPlatformAdmin,
   })
 
-  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes('git-server.git-server.svc.cluster.local') ?? false
+  const isDefaultGitConfiguration = gitSettings?.repoUrl?.includes(DEFAULT_GIT_SERVER_URL) ?? false
 
   const repoUrl = isDefaultGitConfiguration ? `https://git.${domainSuffix}/otomi/values` : gitSettings?.repoUrl || ''
 
