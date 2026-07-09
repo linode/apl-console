@@ -25,7 +25,7 @@ export default function Manifests() {
 
   const repoUrl = isDefaultGitConfiguration ? `https://git.${domainSuffix}/otomi/values` : gitSettings?.repoUrl || ''
 
-  const techDocsUrl = 'https://techdocs.akamai.com/app-platform/docs/manifests'
+  const techDocsUrl = 'https://techdocs.akamai.com/app-platform/docs/gitops'
 
   const handleCopyValuesRepoUrl = async () => {
     if (!repoUrl) return
