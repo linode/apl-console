@@ -11,6 +11,8 @@ import { Controller, useForm } from 'react-hook-form'
 import { useLocalStorage } from 'react-use'
 import { useSession } from 'providers/Session'
 import { useGetGitSettingsQuery, useMigrateGitMutation } from 'redux/otomiApi'
+import { useAppDispatch } from 'redux/hooks'
+import { modalClosed, modalOpened } from 'redux/reducers'
 import { DEFAULT_GIT_SERVER_URL } from 'utils/constants'
 import { GitSettingsFormValues, gitSettingsSchema } from './gitSettingsValidator'
 
@@ -257,6 +259,7 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
   const isControlled = typeof open === 'boolean'
   const actualOpen = useMemo(() => (isControlled ? !!open : !!showGitWizard), [isControlled, open, showGitWizard])
+  const dispatch = useAppDispatch()
 
   const { data: gitSettings, isFetching: isFetchingGitSettings } = useGetGitSettingsQuery(undefined, {
     skip: !isPlatformAdmin || !actualOpen,
@@ -319,6 +322,22 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [actualOpen, gitSettings, hasGitConfiguration])
+
+  useEffect(() => {
+    if (actualOpen) {
+      const action = modalOpened()
+
+      dispatch(action)
+
+      return () => {
+        const action = modalClosed()
+
+        dispatch(action)
+      }
+    }
+
+    return undefined
+  }, [actualOpen, dispatch])
 
   const handleClose = () => {
     resetModalState()
@@ -498,10 +517,13 @@ export default function ConfigureGitModal({ open, onClose }: ConfigureGitModalPr
                 <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
 
                 {hasGitConfiguration && (
-                  <InformationBanner message='Changing the Git repository URL will migrate App Platform to the new repository. Updating credentials only will not trigger a migration.' />
+                  <InformationBanner
+                    sx={{ mb: 2 }}
+                    message='Changing the Git repository URL will migrate App Platform to the new repository. Updating credentials only will not trigger a migration.'
+                  />
                 )}
 
-                {!!submitError && <InformationBanner message={submitError} />}
+                {!!submitError && <InformationBanner type='error' message={submitError} />}
 
                 <RepoFieldBlock>
                   <Controller
