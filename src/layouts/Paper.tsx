@@ -28,6 +28,8 @@ export default function ({ loading, comp, title, children }: Props): React.React
   const dispatch = useAppDispatch()
   const globalError = useAppSelector(({ global: { error } }) => error)
 
+  const hasOpenModal = useAppSelector(({ global: { openModalCount } }) => openModalCount > 0)
+
   const {
     user: { isPlatformAdmin },
   } = useSession()
@@ -47,7 +49,7 @@ export default function ({ loading, comp, title, children }: Props): React.React
     <MainLayout title={title}>
       <Container maxWidth='lg'>
         <Card sx={{ ...dashboardStyle }}>
-          <Error />
+          {!hasOpenModal && <Error />}
           {loading && !globalError && <LoadingScreen />}
           <Box sx={{ display: globalError && 'none' }}>
             {!loading && comp}
