@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/linode/apl-console/compare/v5.0.0...v5.1.0) (2026-07-21)
+
+
+### Features
+
+* Git Configure Edit modal  ([#806](https://github.com/linode/apl-console/issues/806)) ([2a50c26](https://github.com/linode/apl-console/commit/2a50c2683111800c7c12f045a8d998914e2492a2))
+* label new page elements with tag ([#816](https://github.com/linode/apl-console/issues/816)) ([aefc9fd](https://github.com/linode/apl-console/commit/aefc9fd29b850db5d768208702f4ffceba172c73))
+
+
+### Bug Fixes
+
+* backup gitea when gitea not enabled ([#802](https://github.com/linode/apl-console/issues/802)) ([6696adf](https://github.com/linode/apl-console/commit/6696adf7b971f06b8285ba8ca64f333372b8682f))
+* error in modal background ([#815](https://github.com/linode/apl-console/issues/815)) ([9c6a51a](https://github.com/linode/apl-console/commit/9c6a51a3fa7e1c17c734cf93501981cb424ddc4f))
+* improved code repo validation ([#807](https://github.com/linode/apl-console/issues/807)) ([3bf16cf](https://github.com/linode/apl-console/commit/3bf16cf7c1ff9ab17b6868e7e09522c3f4177ff7))
+* netpol 400 error ([#801](https://github.com/linode/apl-console/issues/801)) ([6418cbf](https://github.com/linode/apl-console/commit/6418cbf0c2c52f58b00aca64623bf987284f3e2c))
+* no modal for second admin ([#814](https://github.com/linode/apl-console/issues/814)) ([b05de31](https://github.com/linode/apl-console/commit/b05de319eac4a25e51f417ecbd614ffe1b377985))
+* platform name max char and allow some char ([#803](https://github.com/linode/apl-console/issues/803)) ([f735a6b](https://github.com/linode/apl-console/commit/f735a6bbce70835cab5275220dc44bba936af051))
+* remove password from git get request ([#813](https://github.com/linode/apl-console/issues/813)) ([9d37906](https://github.com/linode/apl-console/commit/9d379065293f2ec66749d632ac0befd029d6f475))
+* remove preinstalled flag ([#812](https://github.com/linode/apl-console/issues/812)) ([4a6fd1a](https://github.com/linode/apl-console/commit/4a6fd1a0c499654898d788629f138ab0db748f7f))
+* remove team password ([#808](https://github.com/linode/apl-console/issues/808)) ([baaf34a](https://github.com/linode/apl-console/commit/baaf34aafb734e626609a9ffe2af9979cf9aea0f))
+* removed dot allowance ([#804](https://github.com/linode/apl-console/issues/804)) ([4c630f7](https://github.com/linode/apl-console/commit/4c630f7992d44109ddaa8666d01f586849bdda67))
+
 ## [5.0.0](https://github.com/linode/apl-console/compare/v4.14.0...v5.0.0) (2026-06-03)
 
 
