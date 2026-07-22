@@ -143,6 +143,7 @@ export default function ({
       )}
 
       <EnhancedTable
+        key={hasDropdownFilter ? selectedFilter : 'unfiltered'}
         disableSelect
         {...enhancedTableProps}
         rows={filteredRows}
