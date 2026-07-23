@@ -55,6 +55,7 @@ import ThemeViewInitializer from 'components/ThemeViewInitializer'
 import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/PlatformCatalogsOverviewPage'
 import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
 import Manifests from 'pages/manifests/Manifests'
+import PlatformSettingsPage from 'pages/settings/platform/PlatformSettingsPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -200,6 +201,12 @@ function App() {
                                 <PrivateRoute
                                   path='/container-images'
                                   component={BuildsOverviewPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/settings/otomi'
+                                  component={PlatformSettingsPage}
                                   platformAdminRoute
                                   exact
                                 />
