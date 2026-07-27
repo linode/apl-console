@@ -153,7 +153,7 @@ export default function PlatformSettingsPage() {
     await editSettings({
       settingId: 'otomi',
       body: {
-        otomi: updatedOtomiSettings,
+        otomi: updatedOtomiSettings as never,
       },
     }).unwrap()
 

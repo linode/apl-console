@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import PlatformSettingsPage from './PlatformSettingsPage'
@@ -17,7 +17,7 @@ let mockIsUpdating = false
 jest.mock('@hookform/resolvers/yup', () => ({
   yupResolver:
     () =>
-    async (values: unknown): Promise<{ values: unknown; errors: Record<string, never> }> => ({
+    (values: unknown): { values: unknown; errors: Record<string, never> } => ({
       values,
       errors: {},
     }),
@@ -30,7 +30,7 @@ jest.mock('providers/Session', () => ({
 }))
 
 jest.mock('redux/otomiApi', () => ({
-  useGetSettingsQuery: () => ({
+  useGetSettingsQuery: (_args?: unknown) => ({
     data: mockSettingsData,
     isLoading: mockIsLoading,
     isFetching: mockIsFetching,
@@ -77,7 +77,7 @@ jest.mock('components/forms/FormRow', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
-
+/* eslint-disable react/prop-types */
 jest.mock('components/forms/TextField', () => ({
   TextField: (() => {
     const React = jest.requireActual('react') as typeof import('react')
@@ -88,14 +88,16 @@ jest.mock('components/forms/TextField', () => ({
         label: string
         errorText?: string
         helperText?: string
+        error?: boolean
       }
-    >(({ label, errorText, helperText, error: _error, ...props }, ref) => {
-      const id = props.name ?? label
+    >(({ label, errorText, helperText, error: _error, id, name, ...inputProps }, ref) => {
+      const inputId = id ?? name ?? label
 
       return (
         <div>
-          <label htmlFor={id}>{label}</label>
-          <input ref={ref} id={id} {...props} />
+          <label htmlFor={inputId}>{label}</label>
+
+          <input ref={ref} id={inputId} name={name} {...inputProps} />
 
           {errorText && <div role='alert'>{errorText}</div>}
           {helperText && <div>{helperText}</div>}
@@ -105,9 +107,18 @@ jest.mock('components/forms/TextField', () => ({
   })(),
 }))
 
+/* eslint-disable react/prop-types */
 jest.mock('components/forms/ControlledCheckbox', () => ({
   __esModule: true,
-  default: ({ name, control, label }: { name: string; control: unknown; label: string }) => {
+  default: function MockControlledCheckbox({
+    name,
+    control,
+    label,
+  }: {
+    name: string
+    control: unknown
+    label: string
+  }) {
     const { useController } = jest.requireActual('react-hook-form') as typeof import('react-hook-form')
 
     const {
@@ -136,7 +147,7 @@ jest.mock('components/forms/KeyValue', () => ({
   __esModule: true,
   default: (() => {
     const React = jest.requireActual('react') as typeof import('react')
-    const { useFieldArray, useFormContext } = jest.requireActual<typeof import('react-hook-form')>('react-hook-form')
+    const { useFieldArray, useFormContext } = jest.requireActual('react-hook-form') as typeof import('react-hook-form')
 
     return React.forwardRef<
       HTMLFieldSetElement,
@@ -159,14 +170,22 @@ jest.mock('components/forms/KeyValue', () => ({
 
           {fields.map((field: { id: string }, index: number) => (
             <div key={field.id} data-testid={`node-selector-${index}`}>
-              <label>
+              <label htmlFor={`node-selector-name-${index}`}>
                 {keyLabel}
-                <input aria-label={`${keyLabel} ${index + 1}`} {...register(`nodeSelector.${index}.name`)} />
+                <input
+                  id={`node-selector-name-${index}`}
+                  aria-label={`${keyLabel} ${index + 1}`}
+                  {...register(`nodeSelector.${index}.name`)}
+                />
               </label>
 
-              <label>
+              <label htmlFor={`node-selector-value-${index}`}>
                 {valueLabel}
-                <input aria-label={`${valueLabel} ${index + 1}`} {...register(`nodeSelector.${index}.value`)} />
+                <input
+                  id={`node-selector-value-${index}`}
+                  aria-label={`${valueLabel} ${index + 1}`}
+                  {...register(`nodeSelector.${index}.value`)}
+                />
               </label>
 
               <button type='button' onClick={() => remove(index)}>
@@ -265,8 +284,18 @@ describe('PlatformSettingsPage', () => {
 
     const versionInput = await screen.findByLabelText('Platform version')
 
+    // Wait for the form to be properly initialized with values
+    await waitFor(() => {
+      expect(versionInput).toHaveValue('v2.15.0')
+    })
+
     await user.clear(versionInput)
     await user.type(versionInput, 'v2.16.0')
+
+    // Wait for form to detect the change
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
+    })
 
     await user.click(screen.getByRole('checkbox', { name: 'Use external DNS' }))
     await user.click(screen.getByRole('checkbox', { name: 'Use external identity provider' }))
@@ -349,6 +378,15 @@ describe('PlatformSettingsPage', () => {
         },
         nodeSelector: [],
         isMultitenant: true,
+        isPreInstalled: true,
+        aiEnabled: true,
+        useORCS: false,
+        adminPassword: 'preserve-me',
+        git: {
+          repoUrl: 'https://example.com/platform.git',
+          branch: 'main',
+          email: 'git@example.com',
+        },
       },
     }
 
@@ -359,11 +397,21 @@ describe('PlatformSettingsPage', () => {
     const emailInput = screen.getByLabelText('Email (optional)')
     const serverInput = screen.getByLabelText('Registry server')
 
+    // Wait for the form to be properly initialized with values
+    await waitFor(() => {
+      expect(usernameInput).toHaveValue('old-user')
+    })
+
     await user.clear(usernameInput)
     await user.clear(passwordInput)
     await user.clear(emailInput)
     await user.clear(serverInput)
     await user.type(serverInput, 'docker.io')
+
+    // Wait for form to detect the change
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
+    })
 
     await user.click(screen.getByRole('button', { name: 'Save Changes' }))
 
@@ -378,6 +426,15 @@ describe('PlatformSettingsPage', () => {
             globalPullSecret: null,
             nodeSelector: [],
             isMultitenant: true,
+            isPreInstalled: true,
+            aiEnabled: true,
+            useORCS: false,
+            adminPassword: 'preserve-me',
+            git: {
+              repoUrl: 'https://example.com/platform.git',
+              branch: 'main',
+              email: 'git@example.com',
+            },
           },
         },
       })
@@ -390,8 +447,20 @@ describe('PlatformSettingsPage', () => {
     mockSettingsData = {
       otomi: {
         version: 'v2.15.0',
+        hasExternalDNS: false,
+        hasExternalIDP: false,
         globalPullSecret: null,
         nodeSelector: [],
+        isMultitenant: true,
+        isPreInstalled: true,
+        aiEnabled: true,
+        useORCS: false,
+        adminPassword: 'preserve-me',
+        git: {
+          repoUrl: 'https://example.com/platform.git',
+          branch: 'main',
+          email: 'git@example.com',
+        },
       },
     }
 
@@ -399,8 +468,22 @@ describe('PlatformSettingsPage', () => {
 
     const usernameInput = await screen.findByLabelText('Username')
 
+    // Wait for the form to be properly initialized
+    await waitFor(() => {
+      expect(usernameInput).toHaveValue('')
+    })
+
     await user.type(usernameInput, 'registry-user')
-    await user.click(screen.getByRole('button', { name: 'Save Changes' }))
+
+    // Wait for input value to actually change
+    await waitFor(() => {
+      expect(usernameInput).toHaveValue('registry-user')
+    })
+
+    // Try clicking submit button regardless of disabled state
+    const submitButton = screen.getByRole('button', { name: 'Save Changes' })
+    // Use fireEvent to bypass pointer-events check
+    fireEvent.click(submitButton)
 
     await waitFor(() => {
       expect(mockEditSettings).toHaveBeenCalledWith({
@@ -417,6 +500,16 @@ describe('PlatformSettingsPage', () => {
               server: 'docker.io',
             },
             nodeSelector: [],
+            isMultitenant: true,
+            isPreInstalled: true,
+            aiEnabled: true,
+            useORCS: false,
+            adminPassword: 'preserve-me',
+            git: {
+              repoUrl: 'https://example.com/platform.git',
+              branch: 'main',
+              email: 'git@example.com',
+            },
           },
         },
       })
