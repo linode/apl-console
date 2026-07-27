@@ -318,8 +318,8 @@ export default function SecretCreateEditPage({
                   valueLabel='value'
                   showLabel={false}
                   compressed
-                  keySize='medium'
-                  valueSize='medium'
+                  keySize='large'
+                  valueSize='large'
                   addLabel='add labels'
                 />
                 <Divider />
@@ -331,8 +331,8 @@ export default function SecretCreateEditPage({
                   valueLabel='value'
                   showLabel={false}
                   compressed
-                  keySize='medium'
-                  valueSize='medium'
+                  keySize='large'
+                  valueSize='large'
                   addLabel='add annotations'
                 />
                 <Divider />

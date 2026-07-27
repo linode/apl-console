@@ -1,7 +1,5 @@
-import AddIcon from '@mui/icons-material/Add'
-import DeleteIcon from '@mui/icons-material/Delete'
 import LoadingButton from '@mui/lab/LoadingButton'
-import { Box, Button, Grid, IconButton, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
@@ -9,9 +7,12 @@ import { LandingHeader } from 'components/LandingHeader'
 import Section from 'components/Section'
 import PaperLayout from 'layouts/Paper'
 import { useEffect, useMemo } from 'react'
-import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { useSession } from 'providers/Session'
 import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import KeyValue from 'components/forms/KeyValue'
+import { Divider } from 'components/Divider'
+import FormRow from 'components/forms/FormRow'
 import { PlatformSettingsFormValues, platformSettingsSchema } from './platform-settings.validator'
 
 interface OtomiSettings extends Omit<PlatformSettingsFormValues, 'globalPullSecret' | 'nodeSelector'> {
@@ -98,8 +99,7 @@ export default function PlatformSettingsPage() {
   )
 
   const methods = useForm<PlatformSettingsFormValues>({
-    resolver: yupResolver(platformSettingsSchema) as Resolver<PlatformSettingsFormValues>,
-
+    resolver: yupResolver(platformSettingsSchema),
     defaultValues: EMPTY_FORM_VALUES,
   })
 
@@ -110,15 +110,6 @@ export default function PlatformSettingsPage() {
     handleSubmit,
     formState: { errors, isDirty },
   } = methods
-
-  const {
-    fields: nodeSelectorFields,
-    append: appendNodeSelector,
-    remove: removeNodeSelector,
-  } = useFieldArray({
-    control,
-    name: 'nodeSelector',
-  })
 
   useEffect(() => {
     if (!data?.otomi) return
@@ -131,8 +122,10 @@ export default function PlatformSettingsPage() {
      * Preserve settings that are deliberately not rendered on this
      * static page.
      */
-    const updatedOtomiSettings: OtomiSettings = {
-      ...otomiSettings,
+    const { git, ...otomiSettingsWithoutGit } = otomiSettings
+    const updatedOtomiSettings = {
+      ...otomiSettingsWithoutGit,
+      git,
 
       hasExternalDNS: values.hasExternalDNS,
 
@@ -172,22 +165,17 @@ export default function PlatformSettingsPage() {
   const comp = (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <LandingHeader
-          title='Platform settings'
-          subtitle='Configure platform-wide platform, registry, and scheduling settings.'
-        />
+        <LandingHeader title='Platform settings' />
 
         <Section title='Platform'>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <ControlledCheckbox name='hasExternalDNS' control={control} label='Use external DNS' />
-            </Grid>
-
-            <Grid item xs={12}>
-              <ControlledCheckbox name='hasExternalIDP' control={control} label='Use external identity provider' />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              maxWidth: 900,
+            }}
+          >
+            <Box>
               <TextField
                 {...register('version')}
                 label='Platform version'
@@ -196,23 +184,43 @@ export default function PlatformSettingsPage() {
                 helperText='The platform release version used by App Platform.'
                 width='fullwidth'
               />
-            </Grid>
-          </Grid>
+            </Box>
+
+            <Divider sx={{ mb: 2 }} />
+
+            <Box>
+              <ControlledCheckbox
+                sx={{ my: 2 }}
+                name='hasExternalDNS'
+                control={control}
+                label='Use external DNS'
+                explainertext='Enable this when DNS records are managed outside App Platform. App Platform will not manage external DNS records.'
+              />
+            </Box>
+
+            <Box sx={{ mt: 1 }}>
+              <ControlledCheckbox
+                sx={{ my: 2 }}
+                name='hasExternalIDP'
+                control={control}
+                label='Use external identity provider'
+                explainertext='Enable this when user authentication is managed by an external identity provider instead of the built-in identity provider.'
+              />
+            </Box>
+          </Box>
         </Section>
 
-        <Section title='Global pull secret'>
-          <Typography
-            variant='body2'
+        <Section
+          title='Global pull secret'
+          description='Configure registry credentials that are attached to the default service account in every team namespace.'
+        >
+          <Box
             sx={{
-              mb: 2,
-              color: 'text.secondary',
+              display: 'flex',
+              flexDirection: 'column',
             }}
           >
-            Configure registry credentials that are attached to the default service account in every team namespace.
-          </Typography>
-
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Box>
               <TextField
                 {...register('globalPullSecret.server')}
                 label='Registry server'
@@ -221,130 +229,84 @@ export default function PlatformSettingsPage() {
                 helperText='For example: docker.io'
                 width='fullwidth'
               />
-            </Grid>
+            </Box>
 
-            <Grid item xs={12} md={6}>
-              <TextField
-                {...register('globalPullSecret.username')}
-                label='Username'
-                error={Boolean(errors.globalPullSecret?.username)}
-                errorText={errors.globalPullSecret?.username?.message}
-                width='fullwidth'
-              />
-            </Grid>
+            <Divider sx={{ mt: 3, mb: 1 }} />
 
-            <Grid item xs={12} md={6}>
-              <TextField
-                {...register('globalPullSecret.password')}
-                label='Password'
-                type='password'
-                autoComplete='new-password'
-                error={Boolean(errors.globalPullSecret?.password)}
-                errorText={errors.globalPullSecret?.password?.message}
-                width='fullwidth'
-              />
-            </Grid>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: '5px',
+                flexDirection: {
+                  xs: 'column',
+                  md: 'row',
+                },
+              }}
+            >
+              <FormRow spacing={10}>
+                <TextField
+                  {...register('globalPullSecret.username')}
+                  label='Username'
+                  error={Boolean(errors.globalPullSecret?.username)}
+                  errorText={errors.globalPullSecret?.username?.message}
+                  width='large'
+                />
 
-            <Grid item xs={12} md={6}>
+                <TextField
+                  {...register('globalPullSecret.password')}
+                  label='Password'
+                  type='password'
+                  autoComplete='new-password'
+                  error={Boolean(errors.globalPullSecret?.password)}
+                  errorText={errors.globalPullSecret?.password?.message}
+                  width='large'
+                />
+              </FormRow>
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
               <TextField
                 {...register('globalPullSecret.email')}
-                label='Email'
+                label='Email (optional)'
                 type='email'
                 error={Boolean(errors.globalPullSecret?.email)}
                 errorText={errors.globalPullSecret?.email?.message}
+                helperText='Optional contact email for the registry account.'
                 width='fullwidth'
               />
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Section>
 
-        <Section title='Node selector'>
-          <Typography
-            variant='body2'
-            sx={{
-              mb: 2,
-              color: 'text.secondary',
-            }}
-          >
-            Restrict platform services to nodes matching these Kubernetes labels.
-          </Typography>
-
-          <Grid container spacing={2}>
-            {nodeSelectorFields.map((field, index) => (
-              <Grid item xs={12} key={field.id}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    gap: 2,
-                    alignItems: 'flex-start',
-                  }}
-                >
-                  <Box sx={{ flex: 1 }}>
-                    <TextField
-                      {...register(`nodeSelector.${index}.name`)}
-                      label='Label name'
-                      error={Boolean(errors.nodeSelector?.[index]?.name)}
-                      errorText={errors.nodeSelector?.[index]?.name?.message}
-                      helperText='For example: node-role.kubernetes.io/platform'
-                      width='fullwidth'
-                      noMarginTop
-                    />
-                  </Box>
-
-                  <Box sx={{ flex: 1 }}>
-                    <TextField
-                      {...register(`nodeSelector.${index}.value`)}
-                      label='Label value'
-                      error={Boolean(errors.nodeSelector?.[index]?.value)}
-                      errorText={errors.nodeSelector?.[index]?.value?.message}
-                      helperText='For example: true'
-                      width='fullwidth'
-                      noMarginTop
-                    />
-                  </Box>
-
-                  <IconButton
-                    aria-label={`Remove node selector ${index + 1}`}
-                    onClick={() => removeNodeSelector(index)}
-                    sx={{
-                      mt: 3.5,
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Box>
-              </Grid>
-            ))}
-
-            <Grid item xs={12}>
-              <Button
-                type='button'
-                variant='outlined'
-                startIcon={<AddIcon />}
-                onClick={() =>
-                  appendNodeSelector({
-                    name: '',
-                    value: '',
-                  })
-                }
-              >
-                Add node selector
-              </Button>
-            </Grid>
-          </Grid>
+        <Section>
+          <KeyValue
+            {...register('nodeSelector')}
+            title='Node selector'
+            subTitle='Restrict platform workloads to nodes matching these Kubernetes labels.'
+            noMarginTop
+            keyLabel='Name'
+            valueLabel='Value'
+            addLabel='Add node selector'
+            keySize='large'
+            valueSize='large'
+            compressed
+            error={Boolean(errors.nodeSelector)}
+            errorText={typeof errors.nodeSelector?.message === 'string' ? errors.nodeSelector.message : undefined}
+            helperText='For example: node-role.kubernetes.io/platform = true'
+          />
         </Section>
 
-        <LoadingButton
-          type='submit'
-          variant='contained'
-          loading={isUpdating}
-          disabled={!isDirty || isFetching}
+        <Box
           sx={{
+            display: 'flex',
+            justifyContent: 'flex-end',
             mt: 3,
           }}
         >
-          Save
-        </LoadingButton>
+          <LoadingButton type='submit' variant='contained' loading={isUpdating} disabled={!isDirty || isFetching}>
+            Save Changes
+          </LoadingButton>
+        </Box>
       </form>
     </FormProvider>
   )
