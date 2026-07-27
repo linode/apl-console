@@ -205,7 +205,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/settings/otomi'
+                                  path='/settings/platform-settings'
                                   component={PlatformSettingsPage}
                                   platformAdminRoute
                                   exact

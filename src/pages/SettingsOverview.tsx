@@ -29,7 +29,7 @@ export default function SettingsOverview() {
 
   const settings: Settings[] = [
     { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg'), id: 'cluster' },
-    { title: 'Platform', path: '/settings/otomi', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
+    { title: 'Platform', path: '/settings/platform-settings', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
     { title: 'Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), id: 'kms' },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg'), id: 'alerts' },
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg'), id: 'dns' },
