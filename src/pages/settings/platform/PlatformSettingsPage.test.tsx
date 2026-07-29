@@ -406,7 +406,6 @@ describe('PlatformSettingsPage', () => {
     await user.clear(passwordInput)
     await user.clear(emailInput)
     await user.clear(serverInput)
-    await user.type(serverInput, 'docker.io')
 
     // Wait for form to detect the change
     await waitFor(() => {
@@ -497,7 +496,7 @@ describe('PlatformSettingsPage', () => {
               username: 'registry-user',
               password: '',
               email: '',
-              server: 'docker.io',
+              server: '',
             },
             nodeSelector: [],
             isMultitenant: true,

@@ -46,18 +46,13 @@ const EMPTY_FORM_VALUES: PlatformSettingsFormValues = {
     username: '',
     password: '',
     email: '',
-    server: 'docker.io',
+    server: '',
   },
   nodeSelector: [],
 }
 
 const hasGlobalPullSecretValues = (globalPullSecret: PlatformSettingsFormValues['globalPullSecret']): boolean =>
-  Boolean(
-    globalPullSecret.username ||
-      globalPullSecret.password ||
-      globalPullSecret.email ||
-      (globalPullSecret.server && globalPullSecret.server !== 'docker.io'),
-  )
+  Boolean(globalPullSecret.username || globalPullSecret.password || globalPullSecret.email || globalPullSecret.server)
 
 export default function PlatformSettingsPage() {
   const { refetchSettings } = useSession()
@@ -85,7 +80,7 @@ export default function PlatformSettingsPage() {
 
         email: otomiSettings.globalPullSecret?.email ?? '',
 
-        server: otomiSettings.globalPullSecret?.server ?? 'docker.io',
+        server: otomiSettings.globalPullSecret?.server ?? '',
       },
 
       nodeSelector: Array.isArray(otomiSettings.nodeSelector)
