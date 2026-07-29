@@ -165,7 +165,7 @@ export default function PlatformSettingsPage() {
   const comp = (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <LandingHeader title='Platform settings' />
+        <LandingHeader title='Platform' />
 
         <Section title='Platform'>
           <Box

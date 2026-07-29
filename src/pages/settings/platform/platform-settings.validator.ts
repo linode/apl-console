@@ -1,31 +1,30 @@
 import * as yup from 'yup'
 
+const globalPullSecretSchema = yup
+  .object({
+    username: yup.string().optional(),
+    password: yup.string().optional(),
+    email: yup.string().email('Enter a valid email address').optional(),
+    server: yup.string().optional(),
+  })
+  .nullable()
+  .optional()
+
+const nodeSelectorSchema = yup.object({
+  name: yup.string().optional(),
+  value: yup.string().optional(),
+})
+
 export const platformSettingsSchema = yup
   .object({
-    hasExternalDNS: yup.boolean().required(),
-    hasExternalIDP: yup.boolean().required(),
-    version: yup.string().required(),
+    hasExternalDNS: yup.boolean().optional(),
+    hasExternalIDP: yup.boolean().optional(),
 
-    globalPullSecret: yup
-      .object({
-        server: yup.string().required(),
-        username: yup.string().required(),
-        password: yup.string().required(),
-        email: yup.string().email().default(''),
-      })
-      .required(),
+    version: yup.string().required('Platform version is required'),
 
-    nodeSelector: yup
-      .array()
-      .of(
-        yup
-          .object({
-            name: yup.string().required(),
-            value: yup.string().required(),
-          })
-          .required(),
-      )
-      .required(),
+    globalPullSecret: globalPullSecretSchema,
+
+    nodeSelector: yup.array().of(nodeSelectorSchema).optional(),
   })
   .required()
 

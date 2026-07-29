@@ -205,7 +205,7 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute
-                                  path='/settings/platform-settings'
+                                  path='/settings/platform'
                                   component={PlatformSettingsPage}
                                   platformAdminRoute
                                   exact
