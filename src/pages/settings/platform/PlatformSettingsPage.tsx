@@ -5,7 +5,6 @@ import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
 import { LandingHeader } from 'components/LandingHeader'
 import { useHistory } from 'react-router-dom'
-import { useSnackbar } from 'notistack'
 import Section from 'components/Section'
 import PaperLayout from 'layouts/Paper'
 import { useEffect, useMemo } from 'react'
@@ -60,7 +59,6 @@ const hasGlobalPullSecretValues = (globalPullSecret: PlatformSettingsFormValues[
 export default function PlatformSettingsPage() {
   const { refetchSettings } = useSession()
   const history = useHistory()
-  const { enqueueSnackbar } = useSnackbar()
 
   const { data, isLoading, isFetching, refetch } = useGetSettingsQuery({
     ids: ['otomi'],
