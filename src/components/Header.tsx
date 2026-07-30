@@ -1,5 +1,6 @@
 import { skipToken } from '@reduxjs/toolkit/query/react'
 import { AppBar, Box, MenuItem, Select, Stack, Toolbar, Typography, styled } from '@mui/material'
+import { SelectChangeEvent } from '@mui/material/Select'
 import { HEADER, NAVBAR } from 'config'
 import useOffSetTop from 'hooks/useOffSetTop'
 import useResponsive from 'hooks/useResponsive'
@@ -76,11 +77,13 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const isDesktop = useResponsive('up', 'lg')
   const history = useHistory()
   const { pathname } = useLocation()
+
   const {
     user: { email, teams: userTeams, isPlatformAdmin },
     oboTeamId: sessionOboTeamId,
     setOboTeamId,
   } = useSession()
+
   const [localOboTeamId] = useLocalStorage<string>('oboTeamId', undefined)
   const oboTeamId = sessionOboTeamId || localOboTeamId || undefined
 
@@ -126,17 +129,32 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
 
   const getNextPathname = (nextTeamId: string): string => {
     if (redirectToDashboard(nextTeamId)) return '/'
+
     if (pathname === '/apps/admin' && themeView === 'platform') return pathname
-    return pathname.replace(oboTeamId, nextTeamId)
+
+    const segments = pathname.split('/').filter(Boolean)
+
+    // Not on a team route
+    if (segments[0] !== 'teams') return `/teams/${nextTeamId}`
+
+    // /teams/:teamId
+    if (segments.length === 2) return `/teams/${nextTeamId}`
+
+    // /teams/:teamId/:section
+    // /teams/:teamId/:section/:anything
+    // Always return to the section overview.
+    return `/teams/${nextTeamId}/${segments[2]}`
   }
 
-  const handleChangeTeam = (event) => {
+  const handleChangeTeam = (event: SelectChangeEvent<unknown>) => {
     const nextTeamId = event.target.value as string
+
     if (nextTeamId === oboTeamId) return
+
     const nextPathname = getNextPathname(nextTeamId)
+
     setOboTeamId(nextTeamId)
     history.push(nextPathname)
-    event.preventDefault()
   }
 
   if (!teams.length && oboTeamId) teams = [{ value: oboTeamId, label: oboTeamId }]
@@ -159,11 +177,14 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
             <Iconify icon='eva:menu-2-fill' />
           </IconButtonAnimate>
         )}
+
         <Box sx={{ flexGrow: 1 }} />
+
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
           {themeView === 'team' && (
             <>
               <Typography variant='body1'>Team:</Typography>
+
               <StyledSelect
                 size='small'
                 color='secondary'
@@ -179,9 +200,11 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
               </StyledSelect>
             </>
           )}
+
           {isPlatformAdmin && (
             <>
               <Typography>View:</Typography>
+
               <StyledSelect
                 size='small'
                 color='secondary'
@@ -194,6 +217,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
               </StyledSelect>
             </>
           )}
+
           <AccountPopover email={email} />
         </Stack>
       </Toolbar>
