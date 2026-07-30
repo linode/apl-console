@@ -113,30 +113,17 @@ export default function PlatformSettingsPage() {
   }, [data, formValues, reset])
 
   const onSubmit = async (values: PlatformSettingsFormValues) => {
-    /*
-     * Preserve settings that are deliberately not rendered on this
-     * static page.
-     */
-    const { git, ...otomiSettingsWithoutGit } = otomiSettings
+    const { git: _git, ...otomiSettingsWithoutGit } = otomiSettings
+
     const updatedOtomiSettings = {
       ...otomiSettingsWithoutGit,
-      git,
 
       hasExternalDNS: values.hasExternalDNS,
-
       hasExternalIDP: values.hasExternalIDP,
-
       version: values.version,
 
-      /*
-       * The API schema allows globalPullSecret to be null. Avoid
-       * storing an object containing only empty strings.
-       */
       globalPullSecret: hasGlobalPullSecretValues(values.globalPullSecret) ? values.globalPullSecret : null,
 
-      /*
-       * Remove completely empty selector rows before submitting.
-       */
       nodeSelector: values.nodeSelector
         .map(({ name, value }) => ({
           name: name.trim(),

@@ -345,11 +345,6 @@ describe('PlatformSettingsPage', () => {
           aiEnabled: true,
           useORCS: false,
           adminPassword: 'preserve-me',
-          git: {
-            repoUrl: 'https://example.com/platform.git',
-            branch: 'main',
-            email: 'git@example.com',
-          },
         },
       },
     })
@@ -360,6 +355,46 @@ describe('PlatformSettingsPage', () => {
       expect(mockRefetch).toHaveBeenCalledTimes(1)
       expect(mockRefetchSettings).toHaveBeenCalledTimes(1)
     })
+  })
+
+  it('omits Git settings from the submitted payload', async () => {
+    const user = userEvent.setup()
+
+    mockSettingsData = {
+      otomi: {
+        version: 'v2.15.0',
+        hasExternalDNS: false,
+        hasExternalIDP: false,
+        globalPullSecret: null,
+        nodeSelector: [],
+        git: {
+          repoUrl: '',
+          branch: '',
+          email: '',
+        },
+      },
+    }
+
+    render(<PlatformSettingsPage />)
+
+    const versionInput = await screen.findByLabelText('Platform version')
+
+    await user.clear(versionInput)
+    await user.type(versionInput, 'v2.16.0')
+
+    await user.click(
+      screen.getByRole('button', {
+        name: 'Save Changes',
+      }),
+    )
+
+    await waitFor(() => {
+      expect(mockEditSettings).toHaveBeenCalledTimes(1)
+    })
+
+    const submittedBody = mockEditSettings.mock.calls[0][0].body.otomi
+
+    expect(submittedBody).not.toHaveProperty('git')
   })
 
   it('submits null when the global pull secret contains only empty default values', async () => {
@@ -382,11 +417,6 @@ describe('PlatformSettingsPage', () => {
         aiEnabled: true,
         useORCS: false,
         adminPassword: 'preserve-me',
-        git: {
-          repoUrl: 'https://example.com/platform.git',
-          branch: 'main',
-          email: 'git@example.com',
-        },
       },
     }
 
@@ -429,11 +459,6 @@ describe('PlatformSettingsPage', () => {
             aiEnabled: true,
             useORCS: false,
             adminPassword: 'preserve-me',
-            git: {
-              repoUrl: 'https://example.com/platform.git',
-              branch: 'main',
-              email: 'git@example.com',
-            },
           },
         },
       })
@@ -455,11 +480,6 @@ describe('PlatformSettingsPage', () => {
         aiEnabled: true,
         useORCS: false,
         adminPassword: 'preserve-me',
-        git: {
-          repoUrl: 'https://example.com/platform.git',
-          branch: 'main',
-          email: 'git@example.com',
-        },
       },
     }
 
@@ -504,11 +524,6 @@ describe('PlatformSettingsPage', () => {
             aiEnabled: true,
             useORCS: false,
             adminPassword: 'preserve-me',
-            git: {
-              repoUrl: 'https://example.com/platform.git',
-              branch: 'main',
-              email: 'git@example.com',
-            },
           },
         },
       })
