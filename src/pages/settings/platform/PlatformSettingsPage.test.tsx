@@ -8,6 +8,8 @@ const mockEditSettings = jest.fn()
 const mockUnwrap = jest.fn()
 const mockRefetch = jest.fn()
 const mockRefetchSettings = jest.fn()
+const mockSnackSuccess = jest.fn()
+const mockHistoryPush = jest.fn()
 
 let mockSettingsData: Record<string, unknown> | undefined
 let mockIsLoading = false
@@ -21,6 +23,20 @@ jest.mock('@hookform/resolvers/yup', () => ({
       values,
       errors: {},
     }),
+}))
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockHistoryPush,
+  }),
+}))
+
+jest.mock('utils/snack', () => ({
+  __esModule: true,
+  default: {
+    success: (...args: unknown[]) => mockSnackSuccess(...args),
+  },
 }))
 
 jest.mock('providers/Session', () => ({
@@ -77,6 +93,7 @@ jest.mock('components/forms/FormRow', () => ({
   __esModule: true,
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
+
 /* eslint-disable react/prop-types */
 jest.mock('components/forms/TextField', () => ({
   TextField: (() => {
@@ -264,7 +281,11 @@ describe('PlatformSettingsPage', () => {
     expect(await screen.findByLabelText('Platform version')).toHaveValue('v2.15.0')
 
     expect(screen.getByRole('checkbox', { name: 'Use external DNS' })).toBeChecked()
-    expect(screen.getByRole('checkbox', { name: 'Use external identity provider' })).not.toBeChecked()
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Use external identity provider',
+      }),
+    ).not.toBeChecked()
 
     expect(screen.getByLabelText('Registry server')).toHaveValue('registry.example.com')
     expect(screen.getByLabelText('Username')).toHaveValue('registry-user')
@@ -284,7 +305,6 @@ describe('PlatformSettingsPage', () => {
 
     const versionInput = await screen.findByLabelText('Platform version')
 
-    // Wait for the form to be properly initialized with values
     await waitFor(() => {
       expect(versionInput).toHaveValue('v2.15.0')
     })
@@ -292,13 +312,16 @@ describe('PlatformSettingsPage', () => {
     await user.clear(versionInput)
     await user.type(versionInput, 'v2.16.0')
 
-    // Wait for form to detect the change
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
     })
 
     await user.click(screen.getByRole('checkbox', { name: 'Use external DNS' }))
-    await user.click(screen.getByRole('checkbox', { name: 'Use external identity provider' }))
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: 'Use external identity provider',
+      }),
+    )
 
     const existingSelector = screen.getByTestId('node-selector-0')
 
@@ -354,6 +377,8 @@ describe('PlatformSettingsPage', () => {
     await waitFor(() => {
       expect(mockRefetch).toHaveBeenCalledTimes(1)
       expect(mockRefetchSettings).toHaveBeenCalledTimes(1)
+      expect(mockSnackSuccess).toHaveBeenCalledWith('Platform settings saved successfully')
+      expect(mockHistoryPush).toHaveBeenCalledWith('/settings')
     })
   })
 
@@ -395,6 +420,11 @@ describe('PlatformSettingsPage', () => {
     const submittedBody = mockEditSettings.mock.calls[0][0].body.otomi
 
     expect(submittedBody).not.toHaveProperty('git')
+
+    await waitFor(() => {
+      expect(mockSnackSuccess).toHaveBeenCalledWith('Platform settings saved successfully')
+      expect(mockHistoryPush).toHaveBeenCalledWith('/settings')
+    })
   })
 
   it('submits null when the global pull secret contains only empty default values', async () => {
@@ -427,7 +457,6 @@ describe('PlatformSettingsPage', () => {
     const emailInput = screen.getByLabelText('Email (optional)')
     const serverInput = screen.getByLabelText('Registry server')
 
-    // Wait for the form to be properly initialized with values
     await waitFor(() => {
       expect(usernameInput).toHaveValue('old-user')
     })
@@ -437,7 +466,6 @@ describe('PlatformSettingsPage', () => {
     await user.clear(emailInput)
     await user.clear(serverInput)
 
-    // Wait for form to detect the change
     await waitFor(() => {
       expect(screen.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
     })
@@ -487,21 +515,20 @@ describe('PlatformSettingsPage', () => {
 
     const usernameInput = await screen.findByLabelText('Username')
 
-    // Wait for the form to be properly initialized
     await waitFor(() => {
       expect(usernameInput).toHaveValue('')
     })
 
     await user.type(usernameInput, 'registry-user')
 
-    // Wait for input value to actually change
     await waitFor(() => {
       expect(usernameInput).toHaveValue('registry-user')
     })
 
-    // Try clicking submit button regardless of disabled state
-    const submitButton = screen.getByRole('button', { name: 'Save Changes' })
-    // Use fireEvent to bypass pointer-events check
+    const submitButton = screen.getByRole('button', {
+      name: 'Save Changes',
+    })
+
     fireEvent.click(submitButton)
 
     await waitFor(() => {
