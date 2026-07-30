@@ -15,6 +15,7 @@ import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
 import KeyValue from 'components/forms/KeyValue'
 import { Divider } from 'components/Divider'
 import FormRow from 'components/forms/FormRow'
+import snack from 'utils/snack'
 import { PlatformSettingsFormValues, platformSettingsSchema } from './platform-settings.validator'
 
 interface OtomiSettings extends Omit<PlatformSettingsFormValues, 'globalPullSecret' | 'nodeSelector'> {
@@ -147,9 +148,7 @@ export default function PlatformSettingsPage() {
 
     reset(values)
 
-    enqueueSnackbar('Platform settings saved successfully.', {
-      variant: 'success',
-    })
+    snack.success('Platform settings saved successfully')
 
     history.push('/settings')
   }
