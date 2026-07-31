@@ -1,9 +1,10 @@
+import AddIcon from '@mui/icons-material/Add'
 import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
 import font from 'theme/font'
-import { Add, Clear } from '@mui/icons-material'
+import { Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
 import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form'
@@ -86,6 +87,7 @@ interface KeyValueProps {
   valueDisabled?: boolean
   addLabel?: string
   label?: string
+  noMarginTop?: boolean
   // set to true when the value is a number field so only numbers can be parsed
   valueIsNumber?: boolean
   error?: boolean
@@ -160,6 +162,7 @@ export default function KeyValue(props: KeyValueProps) {
     mutableValue,
     name,
     label,
+    noMarginTop,
     helperText,
     helperTextPosition,
     valueIsNumber,
@@ -201,7 +204,7 @@ export default function KeyValue(props: KeyValueProps) {
   const errorScrollClassName = 'error-for-scroll'
   return (
     <Box
-      sx={{ mt: 3 }}
+      sx={{ mt: noMarginTop ? 0 : 3 }}
       className={cx({
         [errorScrollClassName]: !!errorText,
       })}
@@ -209,7 +212,7 @@ export default function KeyValue(props: KeyValueProps) {
       <InputLabel className={classes.inputLabel} sx={{ fontWeight: 'bold', fontSize: '14px' }}>
         {title}
       </InputLabel>
-      {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
+      {subTitle && <Typography sx={{ color: '#ABABAB', mb: 2 }}>{subTitle}</Typography>}
 
       {filteredFields.map(({ field, index }, localIndex) => {
         const valuePath = onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`
@@ -291,17 +294,8 @@ export default function KeyValue(props: KeyValueProps) {
         )
       })}
       {addLabel && !disabled && (
-        <Button
-          sx={{
-            paddingLeft: '8px',
-            fontSize: '10px',
-            color: `${error ? 'red' : ''}`,
-            ':hover': { backgroundColor: 'transparent' },
-          }}
-          className={classes.addItemButton}
-          onClick={handleAddItem}
-        >
-          <Add /> {addLabel}
+        <Button sx={{ mt: 2 }} type='button' variant='outlined' startIcon={<AddIcon />} onClick={handleAddItem}>
+          {addLabel}
         </Button>
       )}
       {errorText && (

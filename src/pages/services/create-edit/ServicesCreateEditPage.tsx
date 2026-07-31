@@ -416,6 +416,8 @@ export default function ServicesCreateEditPage({
                   valueLabel='Value'
                   addLabel='Add response header'
                   name='ingress.headers.response.set'
+                  keySize='large'
+                  valueSize='large'
                   error={!!errors.spec?.headers}
                   helperText={errors.spec?.headers ? '"Name" and "Value" must both be filled in' : undefined}
                   {...register('spec.headers.response.set')}
