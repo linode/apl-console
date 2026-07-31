@@ -36,6 +36,8 @@ export function SecretTypeFields({
           valueLabel='Value'
           showLabel={false}
           compressed
+          keySize='large'
+          valueSize='large'
           addLabel='Add another'
           error={error}
           helperText={helperText}
@@ -51,6 +53,8 @@ export function SecretTypeFields({
           subTitle='Add contents from a serialized ~/.dockercfg file.'
           name={dataPath}
           keyDisabled
+          keySize='large'
+          valueSize='large'
           keyLabel='Key'
           valueLabel='Value'
           showLabel={false}
@@ -69,6 +73,8 @@ export function SecretTypeFields({
           subTitle='Add contents from a serialized ~/.docker/config.json file.'
           name={dataPath}
           keyDisabled
+          keySize='large'
+          valueSize='large'
           keyLabel='Key'
           valueLabel='Value'
           showLabel={false}
@@ -87,6 +93,8 @@ export function SecretTypeFields({
           subTitle='Add credentials for SSH authentication.'
           name={dataPath}
           keyDisabled
+          keySize='large'
+          valueSize='large'
           keyLabel='Key'
           valueLabel='Value'
           showLabel={false}
@@ -105,6 +113,8 @@ export function SecretTypeFields({
           subTitle='Add the data for a TLS client or server.'
           name={dataPath}
           keyDisabled
+          keySize='large'
+          valueSize='large'
           keyLabel='Key'
           valueLabel='Value'
           showLabel={false}
@@ -122,6 +132,8 @@ export function SecretTypeFields({
           title={title}
           subTitle='Add credentials (username and password) for basic authentication.'
           keyDisabled
+          keySize='large'
+          valueSize='large'
           name={dataPath}
           keyLabel='Key'
           valueLabel='Value'

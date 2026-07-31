@@ -78,7 +78,7 @@ describe('SettingsOverview', () => {
     )
 
     expect(screen.getByText('Cluster').closest('a')?.getAttribute('href')).toBe('/settings/cluster')
-    expect(screen.getByText('Platform').closest('a')?.getAttribute('href')).toBe('/settings/otomi')
+    expect(screen.getByText('Platform').closest('a')?.getAttribute('href')).toBe('/settings/platform')
   })
 
   it('hides pre-installed specific settings when platform is pre-installed', () => {
