@@ -66,7 +66,7 @@ export function AutoResizableTextarea({
   label = '',
   minRows = 1,
   maxRows = 40,
-  minWidth = 200,
+  minWidth = 400,
   maxWidth = 850,
   minHeight = 34,
   maxHeight = 800,

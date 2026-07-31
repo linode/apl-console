@@ -309,7 +309,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
   const widthMap: Record<TextboxWidth, string> = {
     small: '100px',
     medium: '200px',
-    large: '400px',
+    large: '420px',
     fullwidth: '100%',
   }
 
