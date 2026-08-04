@@ -7,8 +7,9 @@ type InformationBannerType = 'info' | 'error'
 const StyledInfoBanner = styled(Box)<{
   small?: boolean
   type: InformationBannerType
-}>(({ small, type }) => ({
-  backgroundColor: type === 'error' ? '#722e38' : '#f2f2894d',
+}>(({ theme, small, type }) => ({
+  // eslint-disable-next-line no-nested-ternary
+  backgroundColor: type === 'error' ? (theme.palette.mode === 'light' ? '#ff002540' : '#722e38b5') : '#f2f2894d',
   padding: small ? '5px' : '10px',
   border: `1px solid ${type === 'error' ? '#d32f2f' : '#d4d402'}`,
   borderRadius: '8px',
