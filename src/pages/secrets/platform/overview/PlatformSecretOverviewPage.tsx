@@ -91,7 +91,7 @@ export default function SecretOverviewPage(): React.ReactElement {
     <Box>
       {isPlatformAdmin && (
         <InformationBanner message='Please make sure to download encryption keys for the disaster recovery purpose.'>
-          <MuiLink href='/api/v1/sealedsecretskeys' sx={{ ml: '8px' }}>
+          <MuiLink href='/api/v2/sealedsecretskeys' sx={{ ml: '8px' }}>
             Download Keys
           </MuiLink>
         </InformationBanner>
