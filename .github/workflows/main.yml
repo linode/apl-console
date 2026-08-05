@@ -21,7 +21,7 @@ on:
 env:
   COMMIT_MSG: ${{ github.event.head_commit.message }}
   REGISTRY: docker.io
-  REPO: linode/apl-api
+  REPO: linode/apl-console
   BOT_EMAIL: ${{ vars.BOT_EMAIL }}
   BOT_USERNAME: ${{ vars.BOT_USERNAME }}
   BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
