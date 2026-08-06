@@ -25,7 +25,7 @@ jobs:
   build-test-push-release:
     runs-on: ubuntu-22.04
     env:
-      SHOULD_PUSH: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
+      SHOULD_PUSH: ${{ !github.event.pull_request.head.repo.fork}}
     steps:
       - name: Set tag
         id: set_tag
