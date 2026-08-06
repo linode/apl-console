@@ -1,79 +1,70 @@
 # Linode APL default Workflow
-#
-# Given facts:
-# * We don't allow manual tagging, but let the workflow create them after tests have passed.
-# * We don't let workflows be triggered by events coming from tags
-# * We use `npm run release` (without automated tagging) which only bumps version and creates changelog and commit message with title 'chore(release): v${semverVersion}'
-# * Pipeline detects the release title and after tests pass, creates artifacts (images) and makes full tag copies (and github release) to allow release patching.
+# Required repository/environment secrets:
+#   OCI_USERNAME              - registry login username
+#   DOCKERHUB_LINODEBOT_TOKEN - registry login token
 name: Build test push release
 on:
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "adr/**"
+      - ".vscode/**"
+      - "**.md"
   push:
     branches:
-      - '**'
-    tags-ignore:
-      - '*'
+      - main
+    paths-ignore:
+      - "docs/**"
+      - "adr/**"
+      - ".vscode/**"
+      - "**.md"
 env:
-  COMMIT_MSG: ${{ github.event.head_commit.message }}
-  CACHE_REGISTRY: ghcr.io
-  CACHE_REPO: linode/apl-console
+  REGISTRY: docker.io
   REPO: linode/apl-console
-  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_LINODEBOT_TOKEN }}
-  DOCKER_USERNAME: ${{ vars.DOCKERHUB_LINODEBOT_USERNAME }}
-  BOT_EMAIL: ${{ vars.BOT_EMAIL }}
-  BOT_USERNAME: ${{ vars.BOT_USERNAME }}
-  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-
 jobs:
   build-test-push-release:
-    if: (!startsWith(github.ref, 'refs/tags/'))
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      # Need write permissions to push GH cache
+      actions: write
+    env:
+      SHOULD_PUSH: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.fork == false }}
     steps:
-      - name: Set env
+      - name: Set tag
+        id: set_tag
         run: |
-          tag=$(echo $(basename $GITHUB_REF))
+          if [[ "$SHOULD_PUSH" == "true" ]]; then
+            # github.ref_name is the merge ref (e.g. "50/merge") on pull_request events, not the
+            # actual branch name, so use head_ref there; ref_name is correct for branch/tag pushes.
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              ref_name="${{ github.head_ref }}"
+            else
+              ref_name="${{ github.ref_name }}"
+            fi
+            # Docker tags allow only [a-zA-Z0-9_.-]; branch/tag names (e.g. "feature/foo") may not, so sanitize.
+            tag=$(echo "$ref_name" | sed 's/[^a-zA-Z0-9_.-]/-/g')
+          else
+            tag="pr-${{ github.event.pull_request.number }}"
+          fi
           echo "Creating tag: $tag"
-          echo "TAG=$tag" >> $GITHUB_ENV
+          echo "tag=$tag" >> $GITHUB_OUTPUT
       - name: Checkout
         uses: actions/checkout@v7
-      - name: CI tests, image build and push tag for main or branch
-        uses: whoan/docker-build-with-cache-action@v8
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v4
+        if: ${{ env.SHOULD_PUSH == 'true' }}
         with:
-          username: ${{ env.BOT_USERNAME}}
-          password: '${{ env.BOT_TOKEN }}'
-          registry: ${{ env.CACHE_REGISTRY }}
-          image_name: ${{ env.CACHE_REPO }}
-          image_tag: ${{ env.TAG }}
-      - name: Retag from cache and push
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        run: |
-          set -u
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker tag $CACHE_REGISTRY/$CACHE_REPO:$TAG $REPO:$TAG
-          docker push $REPO:$TAG
-      - if: (startsWith(github.ref, 'refs/heads/releases/') || startsWith(github.ref, 'refs/heads/main'))&& startsWith(github.event.head_commit.message, 'chore(release)')
-        name: Docker tag and push. Git tag and push.
-        id: git_tag
-        run: |
-          set -u
-          # docker tag $REPO:$TAG $REPO:latest
-          # docker push $REPO:latest
-          release_tag=v$(jq -r '.version' < package.json)
-          echo tag=$release_tag >> $GITHUB_OUTPUT
-          echo "Releasing $REPO:$release_tag"
-          docker tag $REPO:$TAG $REPO:$release_tag
-          docker push $REPO:$release_tag
-          git config --global user.email $BOT_EMAIL
-          git config --global user.name $BOT_USERNAME
-          echo "machine github.com login $BOT_USERNAME password $BOT_TOKEN" > ~/.netrc
-          git tag -am "$COMMIT_MSG" $release_tag && git push --follow-tags
-          #Cut the CHANGELOG.md file up to the first occurence of the "### \[[0-9]*" (meaning three #, a space,a square bracket and any number after it)
-          sed -n '/### \[[0-9]*/q;p' CHANGELOG.md > NEW_CHANGELOG.md
-      - if: (startsWith(github.ref, 'refs/heads/releases/') || startsWith(github.ref, 'refs/heads/main'))&& startsWith(github.event.head_commit.message, 'chore(release)')
-        name: Create GitHub release
-        uses: ncipollo/release-action@v1.21.0
-        env:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.OCI_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_LINODEBOT_TOKEN }}
+      - name: Build, test, push
+        uses: docker/build-push-action@v7
         with:
-          tag: ${{ steps.git_tag.outputs.tag }}
-          name: Release ${{ steps.git_tag.outputs.tag }}
-          bodyFile: 'NEW_CHANGELOG.md'
+          push: ${{ env.SHOULD_PUSH == 'true' }}
+          context: .
+          tags: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ steps.set_tag.outputs.tag }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
