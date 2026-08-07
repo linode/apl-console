@@ -1,3 +1,4 @@
+import { uniqueNameTest } from 'utils/uniqueName.validator'
 import * as yup from 'yup'
 
 const normalizeRepoUrl = (url: string) =>
@@ -54,7 +55,8 @@ export const aplCodeRepoApiSchema = yup.object({
       .matches(
         /^[a-z][a-z0-9-]*[a-z0-9]$/,
         'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
-      ),
+      )
+      .test(uniqueNameTest('Code Repository Name already exists.')),
     labels: yup.object({
       'apl.io/teamId': yup.string().required(),
     }),

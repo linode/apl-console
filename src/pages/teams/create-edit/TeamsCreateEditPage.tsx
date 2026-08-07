@@ -16,6 +16,7 @@ import {
   useDeleteAplTeamMutation,
   useEditAplTeamMutation,
   useGetAplTeamQuery,
+  useGetAplTeamsQuery,
 } from 'redux/otomiApi'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { PermissionsTable } from 'components/PermissionTable'
@@ -51,12 +52,22 @@ export default function TeamsCreateEditPage({
 
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplTeamMutation()
   const { data } = useGetAplTeamQuery({ teamId }, { skip: !teamId })
+  const {
+    data: teams,
+    isLoading: isLoadingTeams,
+    isFetching: isFetchingTeams,
+    isError: isErrorTeams,
+  } = useGetAplTeamsQuery()
 
   const [activeNotificationReceiver, setActiveNotificationReceiver] = useState<NotificationReceiver>('slack')
   const notificationReceiverOptions = [
     { value: 'slack', label: 'Slack', imgSrc: '/logos/slack_logo.svg' },
     { value: 'teams', label: 'Teams', imgSrc: '/logos/teams_logo.svg' },
   ]
+
+  const existingNames = (teams ?? [])
+    .map((team) => team?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
 
   const tier = settings?.cluster?.linode?.tier || 'standard'
   const isAdmin = isPlatformAdmin || isTeamAdmin
@@ -85,6 +96,11 @@ export default function TeamsCreateEditPage({
     disabled: !isAdmin,
     resolver: yupResolver(createAplTeamApiSchema) as Resolver<CreateAplTeamApiResponse>,
     defaultValues: mergedDefaultValues,
+    context: {
+      existingNames,
+      currentName: data?.metadata?.name,
+      validateOnSubmit: !teamId,
+    },
   })
 
   const {
