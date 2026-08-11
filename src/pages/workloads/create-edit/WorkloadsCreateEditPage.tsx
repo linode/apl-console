@@ -19,6 +19,7 @@ import {
   useEditAplWorkloadMutation,
   useGetAplCatalogsChartQuery,
   useGetAplWorkloadQuery,
+  useGetTeamAplWorkloadsQuery,
 } from 'redux/otomiApi'
 import DeleteButton from 'components/DeleteButton'
 import ImgButtonGroup from 'components/ImgButtonGroup'
@@ -99,6 +100,11 @@ export default function WorkloadsCreateEditPage({
     refetch: refetchWorkload,
   } = useGetAplWorkloadQuery({ teamId, workloadName }, { skip: !workloadName })
 
+  const { data: teamWorkloads, isLoading: isLoadingTeamWorkloads } = useGetTeamAplWorkloadsQuery(
+    { teamId },
+    { skip: !teamId },
+  )
+
   const [createWorkload, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplWorkloadMutation()
   const [updateWorkload, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplWorkloadMutation()
   const [deleteWorkload, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplWorkloadMutation()
@@ -114,6 +120,10 @@ export default function WorkloadsCreateEditPage({
     { catalogId: selectedCatalogId, chartName: selectedChartName },
     { skip: !selectedCatalogId || !selectedChartName },
   )
+
+  const existingNames = (teamWorkloads ?? [])
+    .map((item) => item?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
 
@@ -183,6 +193,11 @@ export default function WorkloadsCreateEditPage({
   const methods = useForm<CreateAplWorkloadApiResponse>({
     resolver: yupResolver(createAplWorkloadApiResponseSchema) as Resolver<CreateAplWorkloadApiResponse>,
     defaultValues: mergedDefaultValues,
+    context: {
+      existingNames,
+      currentName: workload?.metadata?.name,
+      validateOnSubmit: !workloadName,
+    },
   })
 
   const {
