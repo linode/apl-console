@@ -97,6 +97,30 @@ describe('aplCodeRepoApiSchema', () => {
     })
   })
 
+  describe('name validation', () => {
+    it('rejects an existing code repository name', async () => {
+      await expect(
+        aplCodeRepoApiSchema.validate(baseRepo, {
+          context: {
+            validateOnSubmit: true,
+            existingNames: ['repo-name'],
+          },
+        }),
+      ).rejects.toThrow('Code Repository Name already exists.')
+    })
+
+    it('accepts a unique code repository name', async () => {
+      await expect(
+        aplCodeRepoApiSchema.validate(baseRepo, {
+          context: {
+            validateOnSubmit: true,
+            existingNames: ['other-repo'],
+          },
+        }),
+      ).resolves.toBeTruthy()
+    })
+  })
+
   describe('private repository secret', () => {
     it('requires secret when private=true', async () => {
       await expect(
