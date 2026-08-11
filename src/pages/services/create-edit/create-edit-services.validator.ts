@@ -1,3 +1,4 @@
+import { uniqueNameTest } from 'utils/uniqueName.validator'
 import { array, boolean, number, object, string } from 'yup'
 
 const pathsValidation = array()
@@ -45,7 +46,10 @@ const cnameValidation = object({
 export const serviceApiResponseSchema = object({
   kind: string().required().default('AplTeamService'),
   metadata: object({
-    name: string().required('Name is required').min(2, 'Name must be at least 2 characters long.'),
+    name: string()
+      .required('Name is required')
+      .min(2, 'Name must be at least 2 characters long.')
+      .test(uniqueNameTest('Service name already exists.')),
     labels: object({
       'apl.io/teamId': string().required('Team ID is required'),
     }).required(),
