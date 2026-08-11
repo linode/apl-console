@@ -110,7 +110,7 @@ export default function NetworkPoliciesOverviewPage({
 
   const ingressHeadCells: HeadCell[] = [
     {
-      id: 'metadata.mame',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
     },
