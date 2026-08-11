@@ -55,7 +55,7 @@ jest.mock('components/Link', () => ({
   default: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>,
 }))
 
-jest.mock('components/Workloads', () => ({
+jest.mock('pages/workloads/overview/WorkloadsOverviewPage', () => ({
   getStatus: jest.fn(),
 }))
 
