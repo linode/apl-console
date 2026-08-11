@@ -15,6 +15,7 @@ import {
   useGetAplServiceQuery,
   useGetK8SServicesQuery,
   useGetSettingsInfoQuery,
+  useGetTeamAplServicesQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { useAppSelector } from 'redux/hooks'
@@ -108,8 +109,20 @@ export default function ServicesCreateEditPage({
     refetch: refetchSettingsInfo,
   } = useGetSettingsInfoQuery()
 
+  const {
+    data: teamServices,
+    isLoading: isLoadingTeamServices,
+    isFetching: isFetchingTeamServices,
+    refetch: refetchTeamServices,
+  } = useGetTeamAplServicesQuery({ teamId }, { skip: !teamId })
+
   const teamSecrets = teamSealedSecrets?.filter((secret) => secret?.spec?.template?.type === 'kubernetes.io/tls') || []
   const updatedIngressClassNames = [...(settingsInfo?.ingressClassNames ?? []), 'platform']
+
+  const existingNames = (teamServices ?? [])
+    .map((item) => item?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
+
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
     if (isDirty !== false) return
@@ -123,7 +136,12 @@ export default function ServicesCreateEditPage({
   const methods = useForm<CreateAplServiceApiResponse>({
     resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateAplServiceApiResponse>,
     defaultValues: data,
-    context: { domainSuffix: cluster.domainSuffix },
+    context: {
+      domainSuffix: cluster.domainSuffix,
+      existingNames,
+      currentName: data?.metadata?.name,
+      validateOnSubmit: !serviceName,
+    },
   })
   const {
     control,
@@ -164,17 +182,26 @@ export default function ServicesCreateEditPage({
     const serviceDomain = getKeyValue(service)
     setUrl(serviceDomain)
   }, [service])
+
   const filteredK8Services = useMemo(() => {
+    const existingNameSet = new Set(existingNames.map((name) => name.trim().toLowerCase()))
+
     return (
-      k8sServices?.filter(
-        (service) =>
-          !service.name.includes('grafana') &&
-          !service.name.includes('prometheus') &&
-          !service.name.includes('alertmanager') &&
-          !service.name.includes('tekton-dashboard'),
-      ) || []
+      k8sServices?.filter((service) => {
+        const isSystemService =
+          service.name.includes('grafana') ||
+          service.name.includes('prometheus') ||
+          service.name.includes('alertmanager') ||
+          service.name.includes('tekton-dashboard')
+
+        if (isSystemService) return false
+
+        if (serviceName) return true
+
+        return !existingNameSet.has(service.name.trim().toLowerCase())
+      }) ?? []
     )
-  }, [k8sServices])
+  }, [k8sServices, existingNames, serviceName])
 
   useEffect(() => {
     if (data?.metadata.name) setActiveService(data?.metadata.name)
