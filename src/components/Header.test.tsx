@@ -200,4 +200,26 @@ describe('Header team switching', () => {
     expect(mockSetOboTeamId).not.toHaveBeenCalled()
     expect(mockPush).not.toHaveBeenCalled()
   })
+
+  it('switches the team on an apps route', async () => {
+    renderHeader({
+      pathname: '/apps/alpha',
+    })
+
+    await selectTeam('alpha', 'beta')
+
+    expect(mockSetOboTeamId).toHaveBeenCalledWith('beta')
+    expect(mockPush).toHaveBeenCalledWith('/apps/beta')
+  })
+
+  it('stays on the root route when switching teams', async () => {
+    renderHeader({
+      pathname: '/',
+    })
+
+    await selectTeam('alpha', 'beta')
+
+    expect(mockSetOboTeamId).toHaveBeenCalledWith('beta')
+    expect(mockPush).toHaveBeenCalledWith('/')
+  })
 })
