@@ -97,6 +97,7 @@ export default function ServicesOverviewPage({
       id: 'spec.ingressClassName',
       label: t('Ingress class'),
       renderer: (row) => row.spec?.ingressClassName ?? 'platform',
+    },
     {
       id: 'metadata.name',
       label: t('URL'),
