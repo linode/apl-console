@@ -94,10 +94,9 @@ export default function ServicesOverviewPage({
       renderer: getServiceLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'spec.ingressClass',
+      id: 'spec.ingressClassName',
       label: t('Ingress class'),
       renderer: (row) => row.spec?.ingressClassName ?? 'platform',
-    },
     {
       id: 'metadata.name',
       label: t('URL'),
