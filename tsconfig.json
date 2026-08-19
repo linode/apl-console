@@ -19,6 +19,7 @@
     "strictNullChecks": false,
     "strict": false,
     "target": "es2015",
+    "types": ["jest", "@testing-library/jest-dom"],
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "react": ["./node_modules/@types/react"]

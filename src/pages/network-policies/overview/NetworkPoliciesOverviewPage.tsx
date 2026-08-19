@@ -110,12 +110,12 @@ export default function NetworkPoliciesOverviewPage({
 
   const ingressHeadCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'source',
+      id: 'spec.ruleType.ingress.allow',
       label: t('Source'),
       renderer: (row: NetpolRow) => {
         const names = row.spec?.ruleType?.ingress?.allow
@@ -126,7 +126,7 @@ export default function NetworkPoliciesOverviewPage({
       },
     },
     {
-      id: 'target',
+      id: 'spec.ruleType.ingress.toLabelValue',
       label: t('Target'),
       renderer: (row: NetpolRow) => truncate(row.spec?.ruleType?.ingress?.toLabelValue),
     },
@@ -134,17 +134,17 @@ export default function NetworkPoliciesOverviewPage({
 
   const egressHeadCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getNetpolLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'domain',
+      id: 'spec.ruleType.egress.domain',
       label: t('Domain'),
       renderer: (row: NetpolRow) => row.spec?.ruleType?.egress?.domain || '',
     },
     {
-      id: 'port',
+      id: 'spec.ruleType.egress.ports',
       label: t('Port'),
       renderer: (row: NetpolRow) => row.spec?.ruleType?.egress?.ports?.map((p) => p.number).join(', ') || '',
     },
