@@ -7,7 +7,7 @@ import MuiLink from 'components/MuiLink'
 import { HeadCell } from 'components/EnhancedTable'
 import RLink from 'components/Link'
 import ListTable from 'components/ListTable'
-import { getStatus } from 'components/Workloads'
+import { getStatus } from 'pages/workloads/overview/WorkloadsOverviewPage'
 import InformationBanner from 'components/InformationBanner'
 import { useGetAplNamespaceSealedSecretsQuery, useGetNamespacesWithSealedSecretsQuery } from 'redux/otomiApi'
 import { useAppSelector } from 'redux/hooks'
@@ -63,12 +63,12 @@ export default function SecretOverviewPage(): React.ReactElement {
 
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getSecretLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'type',
+      id: 'spec.template.type',
       label: t('Type'),
       renderer: (row) => row?.spec?.template?.type,
     },
