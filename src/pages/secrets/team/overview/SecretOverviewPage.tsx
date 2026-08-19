@@ -7,7 +7,7 @@ import MuiLink from 'components/MuiLink'
 import { HeadCell } from 'components/EnhancedTable'
 import RLink from 'components/Link'
 import ListTable from 'components/ListTable'
-import { getStatus } from 'components/Workloads'
+import { getStatus } from 'pages/workloads/overview/WorkloadsOverviewPage'
 import InformationBanner from 'components/InformationBanner'
 import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { RouteComponentProps } from 'react-router-dom'
@@ -70,12 +70,12 @@ export default function SecretOverviewPage({
   // END HOOKS
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getSecretLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'type',
+      id: 'spec.template.type',
       label: t('Type'),
       renderer: (row) => row?.spec?.template?.type,
     },
