@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 import { HeadCell } from 'components/EnhancedTable'
 import ListTable from 'components/ListTable'
 import MuiLink from 'components/MuiLink'
-import { getStatus } from 'components/Workloads'
+import { getStatus } from 'pages/workloads/overview/WorkloadsOverviewPage'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import { useSocket } from 'providers/Socket'
@@ -89,17 +89,17 @@ export default function ServicesOverviewPage({
 
   const headCells: HeadCell[] = [
     {
-      id: 'name',
+      id: 'metadata.name',
       label: t('Name'),
       renderer: getServiceLink(isPlatformAdmin, oboTeamId),
     },
     {
-      id: 'ingressClass',
+      id: 'spec.ingressClassName',
       label: t('Ingress class'),
       renderer: (row) => row.spec?.ingressClassName ?? 'platform',
     },
     {
-      id: 'url',
+      id: 'metadata.name',
       label: t('URL'),
       renderer: (row) => renderHost(row, domainSuffix),
       component: MuiLink,
