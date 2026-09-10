@@ -17,6 +17,7 @@ import {
   useDeleteAplNetpolMutation,
   useEditAplNetpolMutation,
   useGetAplNetpolQuery,
+  useGetTeamAplNetpolsQuery,
 } from 'redux/otomiApi'
 import { useTranslation } from 'react-i18next'
 import { Divider } from 'components/Divider'
@@ -42,6 +43,15 @@ export default function NetworkPoliciesEgressCreateEditPage({
     { teamId, netpolName: networkPolicyName },
     { skip: !networkPolicyName },
   )
+
+  const { data: teamNetworkPolicies, isLoading: isLoadingTeamNetworkPolicies } = useGetTeamAplNetpolsQuery(
+    { teamId },
+    { skip: !teamId },
+  )
+
+  const existingNames = (teamNetworkPolicies ?? [])
+    .map((networkPolicy) => networkPolicy?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
 
   const defaultValues = useMemo(
     () =>
@@ -74,6 +84,11 @@ export default function NetworkPoliciesEgressCreateEditPage({
     resolver: yupResolver(createAplEgressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
     defaultValues:
       data && networkPolicyName ? (createAplEgressSchema.cast(data) as CreateAplNetpolApiResponse) : defaultValues,
+    context: {
+      existingNames,
+      currentName: data?.metadata?.name,
+      validateOnSubmit: !networkPolicyName,
+    },
   })
 
   const {

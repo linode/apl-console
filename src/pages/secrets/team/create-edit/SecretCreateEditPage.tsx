@@ -8,6 +8,7 @@ import {
   useDeleteAplSealedSecretMutation,
   useEditAplSealedSecretMutation,
   useGetAplSealedSecretQuery,
+  useGetAplSealedSecretsQuery,
 } from 'redux/otomiApi'
 import { FormProvider, useForm } from 'react-hook-form'
 import { TextField } from 'components/forms/TextField'
@@ -94,7 +95,18 @@ export default function SecretCreateEditPage({
     { teamId, sealedSecretName },
     { skip: !sealedSecretName },
   )
+  const {
+    data: teamSealedSecrets,
+    isLoading: isLoadingTeamSealedSecrets,
+    isFetching: isFetchingTeamSealedSecrets,
+    isError: isErrorTeamSealedSecrets,
+    refetch: refetchTeamSealedSecrets,
+  } = useGetAplSealedSecretsQuery({ teamId }, { skip: !teamId })
   const isImmutable = data?.spec?.template?.immutable || false
+
+  const existingNames = (teamSealedSecrets ?? [])
+    .map((secret) => secret?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
   useEffect(() => {
@@ -123,6 +135,11 @@ export default function SecretCreateEditPage({
   const methods = useForm<SealedSecretFormData>({
     resolver: yupResolver(createSealedSecretApiResponseSchema),
     defaultValues: mergedDefaultValues,
+    context: {
+      existingNames,
+      currentName: data?.metadata?.name,
+      validateOnSubmit: !sealedSecretName,
+    },
   })
 
   const {

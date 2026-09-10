@@ -2,7 +2,7 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 import { HeadCell } from 'components/EnhancedTable'
 import InformationBanner from 'components/InformationBanner'
 import ListTable from 'components/ListTable'
-import { getStatus } from 'components/Workloads'
+import { getStatus } from 'pages/workloads/overview/WorkloadsOverviewPage'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
@@ -170,7 +170,7 @@ export default function BuildsOverviewPage({
       renderer: (row: Row) => getTektonTaskRunLink(row, domainSuffix),
     },
     {
-      id: 'harbor',
+      id: 'spec.imageName',
       label: t('Repository'),
       renderer: (row: Row) => <RepositoryRenderer row={row} domainSuffix={domainSuffix} />,
     },

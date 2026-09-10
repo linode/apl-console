@@ -1,3 +1,4 @@
+import { uniqueNameTest } from 'utils/uniqueName.validator'
 import * as yup from 'yup'
 
 // alerts schema (under spec.alerts)
@@ -87,7 +88,8 @@ export const createAplTeamApiSchema = yup.object({
       .required('Team name is required')
       .min(3, 'Team name must be at least 3 characters')
       .max(9, 'Team name must not exceed 9 characters')
-      .matches(/^[^A-Z_]*$/, 'Team name cannot contain capital letters or underscores'),
+      .matches(/^[^A-Z_]*$/, 'Team name cannot contain capital letters or underscores')
+      .test(uniqueNameTest('Team name already exists.')),
 
     labels: yup.object({
       // keep optional if create does not have a teamId yet; if backend requires it, make this .required()

@@ -130,9 +130,12 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
   const getNextPathname = (nextTeamId: string): string => {
     if (redirectToDashboard(nextTeamId)) return '/'
 
-    if (pathname === '/apps/admin' && themeView === 'platform') return pathname
+    if (pathname === '/') return pathname
 
     const segments = pathname.split('/').filter(Boolean)
+
+    // /apps/:teamId
+    if (segments[0] === 'apps' && segments.length >= 2) return `/apps/${nextTeamId}`
 
     // Not on a team route
     if (segments[0] !== 'teams') return `/teams/${nextTeamId}`
@@ -140,7 +143,6 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
     // /teams/:teamId
     if (segments.length === 2) return `/teams/${nextTeamId}`
 
-    // /teams/:teamId/:section
     // /teams/:teamId/:section/:anything
     // Always return to the section overview.
     return `/teams/${nextTeamId}/${segments[2]}`

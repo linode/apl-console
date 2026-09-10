@@ -9,6 +9,7 @@ import {
   useEditAplNetpolMutation,
   useGetAllWorkloadNamesQuery,
   useGetAplNetpolQuery,
+  useGetTeamAplNetpolsQuery,
 } from 'redux/otomiApi'
 import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
@@ -71,9 +72,36 @@ export default function NetworkPoliciesIngressCreateEditPage({
     [teamId],
   )
 
+  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState(false)
+
+  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplNetpolMutation()
+  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplNetpolMutation()
+  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplNetpolMutation()
+
+  const { data, isLoading: isLoadingFetch } = useGetAplNetpolQuery(
+    { teamId, netpolName: networkPolicyName },
+    { skip: !networkPolicyName },
+  )
+
+  const { data: teamNetworkPolicies, isLoading: isLoadingTeamNetworkPolicies } = useGetTeamAplNetpolsQuery(
+    { teamId },
+    { skip: !teamId },
+  )
+
+  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllWorkloadNamesQuery()
+
+  const existingNames = (teamNetworkPolicies ?? [])
+    .map((networkPolicy) => networkPolicy?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
+
   const methods = useForm<CreateAplNetpolApiResponse>({
     resolver: yupResolver(createAplIngressSchema) as unknown as Resolver<CreateAplNetpolApiResponse>,
     defaultValues,
+    context: {
+      existingNames,
+      currentName: data?.metadata?.name,
+      validateOnSubmit: !networkPolicyName,
+    },
   })
 
   const {
@@ -93,19 +121,6 @@ export default function NetworkPoliciesIngressCreateEditPage({
     control,
     name: 'spec.ruleType.ingress.allow',
   })
-
-  const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState(false)
-
-  const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplNetpolMutation()
-  const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplNetpolMutation()
-  const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplNetpolMutation()
-
-  const { data, isLoading: isLoadingFetch } = useGetAplNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
-  )
-
-  const { data: aplWorkloads, isLoading: isLoadingAplWorkloads } = useGetAllWorkloadNamesQuery()
 
   useEffect(() => {
     if (!data) return

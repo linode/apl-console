@@ -11,6 +11,7 @@ import {
   useCreateAplCatalogMutation,
   useDeleteAplCatalogMutation,
   useEditAplCatalogMutation,
+  useGetAllAplCatalogsQuery,
   useGetAplCatalogQuery,
   useGetTestRepoConnectPlatformQuery,
 } from 'redux/otomiApi'
@@ -55,9 +56,15 @@ export default function CatalogsCreateEditPage({
     { url: testConnectUrl },
     { skip: !testConnectUrl },
   )
+  const { data: catalogs } = useGetAllAplCatalogsQuery({})
+
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplCatalogMutation()
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplCatalogMutation()
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplCatalogMutation()
+
+  const existingNames = (catalogs ?? [])
+    .map((catalog) => catalog?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
 
   // handlers
   const handleTestConnection = async () => {
@@ -89,7 +96,11 @@ export default function CatalogsCreateEditPage({
 
   const methods = useForm<CreateAplCatalogApiResponse>({
     resolver: yupResolver(aplCatalogApiSchema) as unknown as Resolver<CreateAplCatalogApiResponse>,
-    context: { validateOnSubmit: !catalogId },
+    context: {
+      existingNames,
+      currentName: catalogData?.metadata?.name,
+      validateOnSubmit: !catalogId,
+    },
     defaultValues: aplCatalogApiSchema.cast({}) as CreateAplCatalogApiResponse,
   })
 

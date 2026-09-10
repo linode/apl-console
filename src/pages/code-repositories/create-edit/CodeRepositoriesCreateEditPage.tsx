@@ -124,6 +124,10 @@ export default function CodeRepositoriesCreateEditPage({
   // derive existing urls for uniqueness validation
   const codeRepoUrls = (teamCodeRepositories || []).map((cr) => cr?.spec?.repositoryUrl).filter(Boolean)
 
+  const existingNames = (teamCodeRepositories || [])
+    .map((codeRepository) => codeRepository?.metadata?.name)
+    .filter((name): name is string => Boolean(name))
+
   const defaultValues = useMemo(() => {
     const base: CreateAplCodeRepoApiResponse = aplCodeRepoApiSchema.cast({
       kind: 'AplTeamCodeRepo',
@@ -160,7 +164,7 @@ export default function CodeRepositoriesCreateEditPage({
   const methods = useForm<CreateAplCodeRepoApiResponse>({
     resolver: yupResolver(aplCodeRepoApiSchema) as unknown as Resolver<CreateAplCodeRepoApiResponse>,
     defaultValues,
-    context: { codeRepoUrls, validateOnSubmit: !codeRepositoryName },
+    context: { codeRepoUrls, existingNames, currentName: data?.metadata?.name, validateOnSubmit: !codeRepositoryName },
   })
 
   const {

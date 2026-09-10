@@ -1,3 +1,4 @@
+import { uniqueNameTest } from 'utils/uniqueName.validator'
 import * as yup from 'yup'
 
 export const createAplWorkloadApiResponseSchema = yup.object({
@@ -71,7 +72,8 @@ export const createAplWorkloadApiResponseSchema = yup.object({
       .required('Workload name is required')
       .min(4, 'Workload name must be at least 4 characters')
       .max(16, 'Workload name must not exceed 16 characters')
-      .matches(/^[a-z]([-a-z0-9]*[a-z0-9])?$/, 'Workload name cannot contain capital letters or underscores'),
+      .matches(/^[a-z]([-a-z0-9]*[a-z0-9])?$/, 'Workload name cannot contain capital letters or underscores')
+      .test(uniqueNameTest('Workload name already exists.')),
     labels: yup.object({
       'apl.io/teamId': yup.string().required(),
     }),
