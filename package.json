@@ -124,6 +124,7 @@
   },
   "scripts": {
     "build": "PUBLIC_URL='##CONTEXT_PATH##' react-scripts build",
+    "coverage": "npm run test -- --coverage",
     "cz:retry": "git-cz --retry",
     "cz": "git-cz",
     "dev:docker": "npm ci && npm run dev",
