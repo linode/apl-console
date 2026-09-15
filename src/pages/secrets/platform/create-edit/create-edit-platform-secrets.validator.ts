@@ -26,7 +26,7 @@ export const createSealedSecretApiResponseSchema = yup.object({
       .string()
       .required('Namespace is required')
       .min(2, 'Namespace must be at least 2 characters long.')
-      .max(63, 'Namespace must be 64 characters or fewer')
+.max(63, 'Namespace must be 63 characters or fewer')
       .matches(
         /^[a-z](?:[a-z0-9-]*[a-z0-9])?$/,
         'Invalid format, must start with a lowercase letter, contain only lowercase letters, numbers, or hyphens, and end with a letter or number.',
