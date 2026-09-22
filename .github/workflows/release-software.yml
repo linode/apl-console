@@ -100,7 +100,6 @@ jobs:
           build-args: |
             VERSION=${{ env.GIT_TAG }}
           tags: ${{ env.CONTAINER_IMAGE_TAG }}
-
       - name: Create GitHub Release
         uses: linode/apl-gh-actions/actions/release-create-github-release@v0.4.0
         with:
