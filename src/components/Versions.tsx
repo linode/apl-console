@@ -40,15 +40,15 @@ export default function (): React.ReactElement {
   // TODO: create from git config, which is now in otomi-api values. Move?
   const clusterLegend = {
     [t('Kubernetes')]: k8sVersion,
-    [t('Otomi Core')]: versions.core,
-    [t('Otomi API')]: versions.api,
-    [t('Otomi Console')]: versions.console,
-    [t('Otomi Values')]: <LinkCommit repo={settings.otomi.git.repoUrl} sha={versions.values} color='primary' short />,
+    [t('Console')]: versions.console,
+    [t('Api')]: versions.api,
+    [t('Core')]: versions.core,
+    [t('Values')]: <LinkCommit repo={settings.otomi.git.repoUrl} sha={versions.values} color='primary' short />,
   }
   const coreVersion = String(versions.core ?? '')
   const version = /^\d/.test(coreVersion) ? `v${coreVersion}` : coreVersion
   return (
-    <TableContainer sx={{ pt: 3, mt: 4, borderTop: '1px solid grey' }}>
+    <TableContainer sx={{ pt: 3, mt: 4, borderTop: 1, borderColor: 'divider' }}>
       <Table size='small' aria-label='simple table' sx={{ display: 'flex', alignItems: 'center' }}>
         {map(clusterLegend, (v, title) => (
           <TableBody key={title}>

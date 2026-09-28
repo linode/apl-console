@@ -1,6 +1,21 @@
-import { Button, Grid, IconButton } from '@mui/material'
-import PaperLayout from 'layouts/Paper'
+import AddIcon from '@mui/icons-material/Add'
+import { Delete as DeleteIcon } from '@mui/icons-material'
+import { Box, Button, Grid, IconButton } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { isEqual } from 'lodash'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
 import { LandingHeader } from 'components/LandingHeader'
+import PaperLayout from 'layouts/Paper'
+import Section from 'components/Section'
+import { TextField } from 'components/forms/TextField'
+import DeleteButton from 'components/DeleteButton'
+import InformationBanner from 'components/InformationBanner'
+
 import {
   CreateAplNetpolApiArg,
   CreateAplNetpolApiResponse,
@@ -11,20 +26,7 @@ import {
   useGetAplNetpolQuery,
   useGetTeamAplNetpolsQuery,
 } from 'redux/otomiApi'
-import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import Section from 'components/Section'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Divider } from 'components/Divider'
-import { InputLabel } from 'components/InputLabel'
-import { TextField } from 'components/forms/TextField'
-import { LoadingButton } from '@mui/lab'
-import DeleteButton from 'components/DeleteButton'
-import { Delete as DeleteIcon } from '@mui/icons-material'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import InformationBanner from 'components/InformationBanner'
-import { isEqual } from 'lodash'
+
 import { useStyles } from './create-edit-networkPolicies.styles'
 import { createAplIngressSchema } from './create-edit-networkPolicies.validator'
 import NetworkPolicyPodLabelRow from './NetworkPolicyPodLabelRow'
@@ -75,12 +77,19 @@ export default function NetworkPoliciesIngressCreateEditPage({
   const [showMultiPodInformationBanner, setShowMultiPodInformationBanner] = useState(false)
 
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplNetpolMutation()
+
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplNetpolMutation()
+
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplNetpolMutation()
 
   const { data, isLoading: isLoadingFetch } = useGetAplNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
+    {
+      teamId,
+      netpolName: networkPolicyName,
+    },
+    {
+      skip: !networkPolicyName,
+    },
   )
 
   const { data: teamNetworkPolicies, isLoading: isLoadingTeamNetworkPolicies } = useGetTeamAplNetpolsQuery(
@@ -124,11 +133,18 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
   useEffect(() => {
     if (!data) return
+
     reset(createAplIngressSchema.cast(data) as CreateAplNetpolApiResponse)
   }, [data, reset])
 
   useEffect(() => {
-    if (!networkPolicyName) appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })
+    if (!networkPolicyName) {
+      appendSource({
+        fromNamespace: '',
+        fromLabelName: '',
+        fromLabelValue: '',
+      })
+    }
   }, [networkPolicyName, appendSource])
 
   const toggleShowMultiPodInformationBanner = useCallback(() => {
@@ -164,13 +180,25 @@ export default function NetworkPoliciesIngressCreateEditPage({
       },
     }
 
-    if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
-    else create({ teamId, body })
+    if (networkPolicyName) {
+      update({
+        teamId,
+        netpolName: networkPolicyName,
+        body,
+      })
+    } else {
+      create({
+        teamId,
+        body,
+      })
+    }
   }
 
-  if (isLoadingFetch || isLoadingAplWorkloads) return <PaperLayout loading />
+  if (isLoadingFetch || isLoadingAplWorkloads || isLoadingTeamNetworkPolicies)
+    return <PaperLayout loading title={t('TITLE_NETWORK_POLICY')} />
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/network-policies`} />
 
@@ -186,9 +214,8 @@ export default function NetworkPoliciesIngressCreateEditPage({
 
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section title='Inbound rule'>
+            <Section title='General' description='Configure the name of this inbound network rule.'>
               <TextField
-                sx={{ mt: 4 }}
                 label='Inbound rule name'
                 width='large'
                 value={watch('metadata.name') ?? ''}
@@ -198,55 +225,82 @@ export default function NetworkPoliciesIngressCreateEditPage({
                 placeholder='e.g. backend-to-database'
                 disabled={!!networkPolicyName}
               />
+            </Section>
 
-              <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Sources</InputLabel>
-
+            <Section
+              title='Sources'
+              description='Define the namespaces and workloads that are allowed to send traffic to the target.'
+            >
               {showMultiPodInformationBanner && (
                 <InformationBanner
-                  sx={{ mt: 2 }}
+                  sx={{ mb: 2 }}
                   small
-                  message='Some labels match with multiple pods and therefore cannot be pinpointed to one specific workload, this does not affect functionality'
+                  message='Some labels match multiple pods and therefore cannot be pinpointed to one specific workload. This does not affect functionality.'
                 />
               )}
 
-              {sourceFields.map((field, index) => (
-                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-                  <NetworkPolicyPodLabelRow
-                    aplWorkloads={aplWorkloads || []}
-                    teamId={teamId}
-                    rowIndex={index}
-                    fieldArrayName={`spec.ruleType.ingress.allow.${index}`}
-                    showBanner={toggleShowMultiPodInformationBanner}
-                  />
-                  {sourceFields.length > 1 && (
-                    <IconButton
-                      aria-label='remove source'
-                      onClick={() => removeSource(index)}
-                      size='small'
-                      sx={{
-                        // eslint-disable-next-line no-nested-ternary
-                        mt: index === 0 ? (errors?.spec?.ruleType?.ingress?.allow?.root ? '24px' : '44px') : 4,
-                        alignSelf: 'center',
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </div>
-              ))}
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                {sourceFields.map((field, index) => (
+                  <Box
+                    key={field.id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      gap: 1,
+                    }}
+                  >
+                    <NetworkPolicyPodLabelRow
+                      aplWorkloads={aplWorkloads || []}
+                      teamId={teamId}
+                      rowIndex={index}
+                      fieldArrayName={`spec.ruleType.ingress.allow.${index}`}
+                      showBanner={toggleShowMultiPodInformationBanner}
+                    />
+
+                    {sourceFields.length > 1 && (
+                      <IconButton
+                        aria-label='Remove source'
+                        onClick={() => removeSource(index)}
+                        size='small'
+                        sx={{
+                          mb: 0.5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </Box>
+                ))}
+              </Box>
 
               <Button
-                sx={{ mt: 3 }}
+                sx={{
+                  mt: 2,
+                  textTransform: 'none',
+                }}
+                type='button'
                 variant='outlined'
-                onClick={() => appendSource({ fromNamespace: '', fromLabelName: '', fromLabelValue: '' })}
+                startIcon={<AddIcon />}
+                onClick={() =>
+                  appendSource({
+                    fromNamespace: '',
+                    fromLabelName: '',
+                    fromLabelValue: '',
+                  })
+                }
               >
                 Add Source
               </Button>
+            </Section>
 
-              <Divider sx={{ marginY: 4 }} />
-
-              <InputLabel sx={{ fontWeight: 'bold', fontSize: '15px', marginTop: '15px' }}>Target</InputLabel>
-
+            <Section title='Target' description='Select the workload that incoming traffic is allowed to reach.'>
               <NetworkPolicyTargetLabelRow
                 aplWorkloads={aplWorkloads || []}
                 teamId={teamId}
@@ -256,28 +310,43 @@ export default function NetworkPoliciesIngressCreateEditPage({
               />
             </Section>
 
-            {networkPolicyName && (
-              <DeleteButton
-                onDelete={() => del({ teamId, netpolName: networkPolicyName })}
-                resourceName={networkPolicyName}
-                resourceType='netpol'
-                data-cy='button-delete-netpol'
-                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                loading={isLoadingDelete}
-                disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
-              />
-            )}
-
-            <LoadingButton
-              type='submit'
-              variant='contained'
-              color='primary'
-              loading={isLoadingCreate || isLoadingUpdate}
-              disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(data, watch())}
-              sx={{ float: 'right', textTransform: 'none' }}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                gap: 2,
+              }}
             >
-              {networkPolicyName ? 'Save Changes' : 'Create Inbound Rule'}
-            </LoadingButton>
+              {networkPolicyName && (
+                <DeleteButton
+                  onDelete={() =>
+                    del({
+                      teamId,
+                      netpolName: networkPolicyName,
+                    })
+                  }
+                  resourceName={networkPolicyName}
+                  resourceType='netpol'
+                  data-cy='button-delete-netpol'
+                  loading={isLoadingDelete}
+                  disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+                />
+              )}
+
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                color='primary'
+                loading={isLoadingCreate || isLoadingUpdate}
+                disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(data, watch())}
+                sx={{
+                  textTransform: 'none',
+                }}
+              >
+                {networkPolicyName ? 'Save Changes' : 'Create Inbound Rule'}
+              </LoadingButton>
+            </Box>
           </form>
         </FormProvider>
       </PaperLayout>

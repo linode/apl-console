@@ -27,7 +27,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
   },
   errorText: {
     alignItems: 'center',
-    color: '#d63c42',
+    color: theme.palette.error.main,
     display: 'flex',
     left: 5,
     top: 42,
@@ -49,13 +49,15 @@ const useStyles = makeStyles()((theme: Theme) => ({
     width: '415px',
   },
   helperTextTop: {
+    color: theme.palette.text.secondary,
     marginTop: '-5px',
     fontSize: '13px',
     inlineSize: '70%',
     letterSpacing: 'normal',
   },
   label: {
-    fontFamily: 'sans-serif',
+    fontFamily: theme.font.normal,
+    fontWeight: 400,
   },
   noTransform: {
     transform: 'none',
@@ -64,7 +66,7 @@ const useStyles = makeStyles()((theme: Theme) => ({
     marginTop: theme.spacing(1),
   },
   input: {
-    border: '1px solid #e3e3e3',
+    border: `1px solid ${theme.palette.cm.textBoxBorder}`,
   },
   // TODO: This is a temporary fix for new styles to override the MUI styles
   // This should be removed once the new styles are applied to the TextField component
@@ -79,45 +81,59 @@ const useStyles = makeStyles()((theme: Theme) => ({
       opacity: 0.5,
     },
     '&.Mui-error': {
-      borderColor: '#d63c42',
+      borderColor: theme.palette.error.main,
     },
     '& .MuiSelect-select': {
       position: 'relative',
-      top: 4,
       '&:focus': {
         backgroundColor: 'transparent',
       },
     },
-    '&.Mui-focused': {
+    '&.Mui-focused:not(.Mui-error):not(.Mui-disabled)': {
       '& .select-option-icon': {
         paddingLeft: `30px !important`,
       },
-      borderColor: '#108ad6',
-      boxShadow: `0 0 2px 1px #d6d6dd`,
+      borderColor: theme.palette.cm.linkActiveLight,
+      boxShadow: `0 0 2px 1px ${theme.palette.divider}`,
     },
-    '&.affirmative': {
-      borderColor: '#00b050',
+    '&.affirmative:not(.Mui-error):not(.Mui-disabled)': {
+      borderColor: theme.palette.success.main,
     },
     alignItems: 'center',
     backgroundColor: theme.palette.cm.textBox,
     border: `1px solid ${theme.palette.cm.textBoxBorder}`,
+    borderRadius: 0,
     boxSizing: 'border-box',
     paddingLeft: theme.spacing(1),
     color: theme.palette.text.primary,
+    fontFamily: theme.font.normal,
+    fontWeight: 400,
     lineHeight: 1,
     maxWidth: 416,
     minHeight: 34,
+    '&:not(.MuiInputBase-multiline)': {
+      paddingTop: 0,
+      paddingBottom: 0,
+    },
+    '& .MuiInputBase-input:not(.MuiInputBase-inputMultiline):not(.MuiSelect-multiple):not(.MuiNativeSelect-multiple)': {
+      boxSizing: 'border-box',
+      height: 32,
+      minHeight: 0,
+      paddingTop: 6,
+      paddingBottom: 6,
+      lineHeight: '20px',
+    },
     transition: 'border-color 225ms ease-in-out',
     '& svg': {
       '&:hover': {
-        color: '#5bb3ea',
+        color: theme.palette.cm.linkActiveLight,
       },
-      color: '#838383',
+      color: theme.palette.text.secondary,
       fontSize: '25px',
       marginRight: '5px',
     },
     '& input::placeholder': {
-      color: '#838383',
+      color: theme.palette.text.secondary,
     },
   },
 }))
@@ -397,10 +413,10 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           height: '32px',
         }}
       >
-        {suffixSymbol && <Typography sx={{ fontSize: '1.155rem', color: '#838383' }}>{suffixSymbol}</Typography>}
+        {suffixSymbol && <Typography sx={{ fontSize: '1.155rem', color: 'text.secondary' }}>{suffixSymbol}</Typography>}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           <IconButton
-            sx={{ maxHeight: '13px' }}
+            sx={{ maxHeight: '13px', borderRadius: '1px' }}
             onClick={onIncrement || handleDefaultIncrement}
             size='small'
             disabled={props.disabled}
@@ -408,7 +424,7 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             <ArrowDropUpIcon fontSize='inherit' sx={{ mr: '0px !important' }} />
           </IconButton>
           <IconButton
-            sx={{ maxHeight: '13px' }}
+            sx={{ maxHeight: '13px', borderRadius: '1px' }}
             onClick={onDecrement || handleDefaultDecrement}
             size='small'
             disabled={props.disabled}
@@ -445,10 +461,11 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
           })}
           htmlFor={validInputId}
           sx={{
-            fontWeight: 500,
+            fontFamily: theme.font.bold,
+            fontWeight: 700,
             fontSize: '0.875rem',
-            color: theme.palette.cl.text.title,
-            marginBottom: isHorizontalLabel ? 0 : theme.spacing(1),
+            color: theme.palette.text.primary,
+            marginBottom: 0,
             width: isHorizontalLabel ? 250 : 'auto',
             // textAlign: isHorizontalLabel ? 'right' : 'left',
           }}

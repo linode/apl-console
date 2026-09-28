@@ -30,6 +30,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add arbitrary key-value data.'
           name={dataPath}
           keyLabel='Key'
@@ -50,6 +51,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add contents from a serialized ~/.dockercfg file.'
           name={dataPath}
           keyDisabled
@@ -70,6 +72,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add contents from a serialized ~/.docker/config.json file.'
           name={dataPath}
           keyDisabled
@@ -90,6 +93,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add credentials for SSH authentication.'
           name={dataPath}
           keyDisabled
@@ -110,6 +114,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add the data for a TLS client or server.'
           name={dataPath}
           keyDisabled
@@ -130,6 +135,7 @@ export function SecretTypeFields({
       return (
         <KeyValue
           title={title}
+          noMarginTop
           subTitle='Add credentials (username and password) for basic authentication.'
           keyDisabled
           keySize='large'

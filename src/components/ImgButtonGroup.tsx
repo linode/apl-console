@@ -10,28 +10,48 @@ const StyledButton = styled(Button)<{ selected: boolean }>(({ theme, selected })
   alignItems: 'center',
   justifyContent: 'flex-start',
   paddingLeft: theme.spacing(2),
-  borderRadius: theme.shape.borderRadius,
-  border: `1px solid ${selected ? theme.palette.primary.main : theme.palette.grey[500]}`,
+  borderRadius: 0,
+  border: `1px solid ${selected ? theme.palette.cm.linkActiveLight : theme.palette.cm.textBoxBorder}`,
+  boxShadow: 'none',
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  fontWeight: 400,
+  lineHeight: '20px',
   minHeight: 50,
   minWidth: 180,
-  backgroundColor: 'transparent',
-  '&:hover': {
-    backgroundColor: 'transparent',
+  backgroundColor: theme.palette.cm.textBox,
+  '&:hover:not(.Mui-disabled)': {
+    backgroundColor: theme.palette.background.default,
+    borderColor: theme.palette.cm.buttonPrimaryHover,
+    boxShadow: 'none',
   },
-  filter: selected ? 'none' : 'grayscale(1)',
+  '&.Mui-disabled': {
+    borderColor: theme.palette.action.disabledBackground,
+    '& .MuiTypography-root': {
+      color: theme.palette.action.disabled,
+    },
+  },
+  '& img': {
+    filter: selected ? 'none' : 'grayscale(1)',
+  },
 }))
 
 const StyledTypography = styled(Typography)<{ selected: boolean }>(({ theme, selected }) => ({
-  fontSize: 20,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  lineHeight: '20px',
   textTransform: 'none',
-  fontWeight: 500,
-  color: selected ? theme.palette.primary.main : theme.palette.grey[500],
+  fontWeight: 400,
+  color: selected ? theme.palette.cm.linkActiveLight : theme.palette.text.primary,
 }))
 
 const StyledCaption = styled(Typography)<{ selected: boolean }>(({ theme, selected }) => ({
-  fontSize: 10,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  fontWeight: 400,
+  lineHeight: '20px',
   textTransform: 'none',
-  color: selected ? theme.palette.primary.main : theme.palette.grey[500],
+  color: selected ? theme.palette.cm.linkActiveLight : theme.palette.text.secondary,
   marginLeft: '1px',
 }))
 
@@ -65,10 +85,31 @@ function ImgButtonGroup({
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, my: 2 }}>
           {title && (
             <Box>
-              <Typography variant='h6' sx={{ fontSize: 16, fontWeight: 400 }}>
+              <Typography
+                variant='h6'
+                sx={{
+                  fontFamily: (theme) => theme.font.normal,
+                  fontSize: '14px',
+                  lineHeight: '20px',
+                  fontWeight: 700,
+                  color: 'text.primary',
+                }}
+              >
                 {title}
               </Typography>
-              {description && <Typography>{description}</Typography>}
+              {description && (
+                <Typography
+                  sx={{
+                    fontFamily: (theme) => theme.font.normal,
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    fontWeight: 400,
+                    color: 'text.secondary',
+                  }}
+                >
+                  {description}
+                </Typography>
+              )}
             </Box>
           )}
           <Box sx={{ display: 'flex', gap: 1 }}>

@@ -8,8 +8,8 @@ export default function Accordion(theme: Theme) {
       styleOverrides: {
         root: {
           '&.Mui-expanded': {
-            boxShadow: theme.customShadows.z8,
-            borderRadius: theme.shape.borderRadius,
+            boxShadow: 'none',
+            borderRadius: 0,
           },
           '&.Mui-disabled': {
             backgroundColor: 'transparent',

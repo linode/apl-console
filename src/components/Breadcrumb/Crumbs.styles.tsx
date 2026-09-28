@@ -9,8 +9,9 @@ export const StyledTypography = styled(Typography, {
   '&:hover': {
     textDecoration: 'underline',
   },
-  fontSize: '1.125rem',
-  fontWeight: 300,
+  fontFamily: '"Nunito Sans", sans-serif',
+  fontSize: '1rem',
+  fontWeight: 400,
   lineHeight: 'normal',
   textTransform: 'capitalize',
   whiteSpace: 'nowrap',
@@ -20,8 +21,10 @@ export const StyledTypography = styled(Typography, {
 export const StyledSlashTypography = styled(Typography, {
   label: 'StyledSlashTypography',
 })(({ theme }) => ({
-  color: theme.palette.cl.breadCrumb.crumbPath,
-  fontSize: 20,
+  color: theme.palette.text.secondary,
+  fontFamily: theme.typography.fontFamily,
+  fontSize: '14px',
+  lineHeight: '20px',
   marginLeft: 2,
   marginRight: 2,
 }))
