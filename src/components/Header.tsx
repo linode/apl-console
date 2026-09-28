@@ -45,12 +45,9 @@ const RootStyle = styled(AppBar, {
   }),
   [theme.breakpoints.up('lg')]: {
     height: HEADER.DASHBOARD_DESKTOP_HEIGHT,
-    width: `calc(100% - ${NAVBAR.DASHBOARD_WIDTH + 1}px)`,
+    width: `calc(100% - ${NAVBAR.DASHBOARD_WIDTH}px)`,
     ...(isCollapse && {
       width: `calc(100% - ${NAVBAR.DASHBOARD_COLLAPSE_WIDTH}px)`,
-    }),
-    ...(isOffset && {
-      height: HEADER.DASHBOARD_DESKTOP_OFFSET_HEIGHT,
     }),
     ...(verticalLayout && {
       width: '100%',

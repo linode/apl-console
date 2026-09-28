@@ -18,7 +18,9 @@ import {
 
 const StyledVersionText = styled(Typography)<{ disabled?: boolean }>(({ theme, disabled }) => ({
   marginLeft: '0.5rem',
-  color: disabled ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled : theme.palette.primary.main,
+  color: disabled
+    ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled
+    : theme.palette.cm.linkActiveLight,
   textDecoration: 'underline',
   fontWeight: 500,
 }))
@@ -73,11 +75,15 @@ const StyledVersionButton = styled(Link, {
 })<{ disabled?: boolean }>(({ theme, disabled }) => ({
   paddingLeft: '0.5rem',
   borderRadius: 0,
-  color: disabled ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled : theme.palette.primary.main,
+  color: disabled
+    ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled
+    : theme.palette.cm.linkActiveLight,
   cursor: 'pointer',
   '&:hover .version-link': {
     textDecoration: 'underline',
-    color: theme.palette.primary.dark,
+    color: disabled
+      ? theme.palette.dashboard?.textDisabled || theme.palette.text.disabled
+      : theme.palette.cm.buttonPrimaryHover,
   },
 }))
 
@@ -159,17 +165,17 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
   const latestCurrentUpdate = latestApplicableUpdateVersion(displayUpdates, kubernetesVersion)?.version
 
   return (
-    <Card sx={{ p: 3, mb: 1 }}>
+    <Card sx={{ p: 3, mb: 1, borderRadius: 0 }}>
       <Box>
         <Stack direction='row' alignItems='center' justifyContent='space-between'>
           <Box display='flex' alignItems='center'>
             <Typography variant='h5'>Available versions</Typography>
             <Box sx={{ width: 24 }} />
-            <Typography variant='body1' sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+            <Typography variant='body1' sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: 700 }}>
               Current version: {version}
             </Typography>
           </Box>
-          <Typography variant='body1' sx={{ fontSize: '13px', fontWeight: 'bold' }}>
+          <Typography variant='body1' sx={{ fontSize: '14px', lineHeight: '20px', fontWeight: 700 }}>
             Supported kubernetes versions: {currentSupportedK8sVersions?.join(', ') || 'Unknown'}
           </Typography>
         </Stack>
@@ -209,7 +215,7 @@ export default function UpgradesCard({ version }: Props): React.ReactElement | n
                         setWarningAnchorEl(null)
                       }}
                     >
-                      <WarningIconRounded sx={{ width: '17px', height: '17px', color: '#FECB34' }} />
+                      <WarningIconRounded sx={{ width: '17px', height: '17px', color: 'warning.main' }} />
                     </StyledWarningIconBox>
                     <DashboardPopover
                       open={Boolean(warningAnchorEl)}

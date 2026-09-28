@@ -3,7 +3,6 @@ import { Box, Button, IconButton } from '@mui/material'
 import { TextField } from 'components/forms/TextField'
 import { makeStyles } from 'tss-react/mui'
 import { Theme } from '@mui/material/styles'
-import font from 'theme/font'
 import { Clear } from '@mui/icons-material'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
@@ -16,8 +15,8 @@ import { AutoResizableTextarea } from './TextArea'
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
     padding: '16px',
-    backgroundColor: '#424242',
-    borderRadius: '8px',
+    backgroundColor: theme.palette.cm.textBox,
+    borderRadius: 0,
   },
   itemRow: {
     marginBottom: '20px',
@@ -29,31 +28,33 @@ const useStyles = makeStyles()((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     textTransform: 'none',
+    borderRadius: '1px',
   },
   errorText: {
     alignItems: 'center',
-    color: '#d63c42',
+    color: theme.palette.error.main,
     display: 'flex',
     left: 5,
     top: 42,
     width: '100%',
   },
   helperTextTop: {
-    color: theme.palette.cl.text.subTitle,
+    color: theme.palette.text.secondary,
     marginTop: 0,
   },
   inputLabel: {
-    color: theme.palette.cl.text.title,
-    fontFamily: font.bold,
+    color: theme.palette.text.primary,
+    fontFamily: theme.font.bold,
     fontWeight: 700,
     fontSize: '1rem',
     lineHeight: '1.5rem',
   },
   label: {
-    fontFamily: 'sans-serif',
+    fontFamily: theme.font.normal,
+    fontWeight: 400,
   },
   decorator: {
-    borderLeft: '1px solid #777777',
+    borderLeft: `1px solid ${theme.palette.divider}`,
     height: 'auto',
     padding: '7px',
     width: '65px',
@@ -63,9 +64,10 @@ const useStyles = makeStyles()((theme: Theme) => ({
     justifyContent: 'flex-end',
   },
   decoratortext: {
-    fontWeight: 'bold',
+    fontFamily: theme.font.bold,
+    fontWeight: 700,
     fontSize: '10px',
-    color: theme.palette.cl.text.title,
+    color: theme.palette.text.secondary,
   },
 }))
 
@@ -75,7 +77,7 @@ export interface KeyValueItem {
 }
 
 interface KeyValueProps {
-  title: string
+  title?: string
   subTitle?: string
   keyLabel: string
   keyValue?: string
@@ -209,10 +211,12 @@ export default function KeyValue(props: KeyValueProps) {
         [errorScrollClassName]: !!errorText,
       })}
     >
-      <InputLabel className={classes.inputLabel} sx={{ fontWeight: 'bold', fontSize: '14px' }}>
-        {title}
-      </InputLabel>
-      {subTitle && <Typography sx={{ color: '#ABABAB', mb: 2 }}>{subTitle}</Typography>}
+      {title && (
+        <InputLabel className={classes.inputLabel} sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+          {title}
+        </InputLabel>
+      )}
+      {subTitle && <Typography sx={{ color: 'text.secondary', mb: 2 }}>{subTitle}</Typography>}
 
       {filteredFields.map(({ field, index }, localIndex) => {
         const valuePath = onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`
@@ -262,7 +266,7 @@ export default function KeyValue(props: KeyValueProps) {
                 <TextField
                   {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
                   width={keySize}
-                  sx={{ color: '#B5B5BC' }}
+                  sx={{ color: 'text.secondary' }}
                   value={keyValue}
                   disabled={keyDisabled}
                   noMarginTop={compressed}
@@ -286,7 +290,10 @@ export default function KeyValue(props: KeyValueProps) {
               </Box>
             </FormRow>
             {addLabel && !disabled && (
-              <IconButton sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop() }} onClick={() => remove(index)}>
+              <IconButton
+                sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop(), borderRadius: '1px' }}
+                onClick={() => remove(index)}
+              >
                 <Clear />
               </IconButton>
             )}
@@ -294,7 +301,13 @@ export default function KeyValue(props: KeyValueProps) {
         )
       })}
       {addLabel && !disabled && (
-        <Button sx={{ mt: 2 }} type='button' variant='outlined' startIcon={<AddIcon />} onClick={handleAddItem}>
+        <Button
+          sx={{ mt: 2, borderRadius: '1px' }}
+          type='button'
+          variant='outlined'
+          startIcon={<AddIcon />}
+          onClick={handleAddItem}
+        >
           {addLabel}
         </Button>
       )}

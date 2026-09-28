@@ -21,7 +21,10 @@ export default function ControlLabel(theme: Theme) {
     MuiFormLabel: {
       styleOverrides: {
         root: {
-          color: theme.palette.text.disabled,
+          color: theme.palette.text.secondary,
+          '&.Mui-disabled': {
+            color: theme.palette.text.disabled,
+          },
         },
       },
     },

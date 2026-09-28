@@ -26,11 +26,26 @@ const ModalBox = styled(Box)(({ theme }) => ({
   width: 800,
   maxWidth: '95vw',
   backgroundColor: theme.palette.background.paper,
-  boxShadow:
-    'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
-  borderRadius: 16,
+  color: theme.palette.text.primary,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontSize: '14px',
+  lineHeight: '20px',
+  fontWeight: 400,
+  boxShadow: theme.shadows[1],
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 0,
   padding: 0,
   overflow: 'hidden',
+  '& .MuiIconButton-root': {
+    color: theme.palette.cm?.linkActiveLight ?? theme.palette.primary.main,
+    borderRadius: 0,
+    '&:hover': {
+      color: theme.palette.cm?.buttonPrimaryHover ?? theme.palette.primary.dark,
+    },
+    '&.Mui-disabled': {
+      color: theme.palette.action.disabled,
+    },
+  },
 }))
 
 const AnimatedContainer = styled(Box, {
@@ -61,13 +76,37 @@ const ModalContent = styled('div')({
   minHeight: 300,
 })
 
-const ModalFooter = styled('div')({
-  borderTop: '1px dashed rgba(145, 158, 171, 0.24)',
+const ModalFooter = styled('div')(({ theme }) => ({
+  borderTop: `1px solid ${theme.palette.divider}`,
   display: 'flex',
   justifyContent: 'flex-end',
   padding: '24px 36px',
   gap: '16px',
-})
+  '& .MuiButton-root': {
+    borderWidth: '1px',
+    borderRadius: 0,
+    boxShadow: 'none',
+    fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+    fontSize: '14px',
+    lineHeight: '20px',
+    fontWeight: 400,
+  },
+  '& .MuiButton-outlinedPrimary:not(.Mui-disabled)': {
+    color: theme.palette.cm?.linkActiveLight ?? theme.palette.primary.main,
+    borderColor: theme.palette.cm?.textBoxBorder ?? theme.palette.divider,
+    '&:hover': {
+      color: theme.palette.cm?.buttonPrimaryHover ?? theme.palette.primary.dark,
+      borderColor: theme.palette.cm?.buttonPrimaryHover ?? theme.palette.primary.dark,
+    },
+  },
+  '& .MuiButton-containedPrimary:not(.Mui-disabled)': {
+    backgroundColor: theme.palette.cm?.linkActiveLight ?? theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    '&:hover': {
+      backgroundColor: theme.palette.cm?.buttonPrimaryHover ?? theme.palette.primary.dark,
+    },
+  },
+}))
 
 const CenteredFooterActions = styled(Box)({
   width: '100%',
@@ -75,17 +114,21 @@ const CenteredFooterActions = styled(Box)({
   justifyContent: 'center',
 })
 
-const ModalTitle = styled(Typography)({
+const ModalTitle = styled(Typography)(({ theme }) => ({
   marginBottom: '25px',
-  fontWeight: 600,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  color: theme.palette.text.primary,
+  fontWeight: 700,
   letterSpacing: 0,
   fontSize: '1.8rem',
-})
+}))
 
 const BodyText = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
-  fontSize: '1.05rem',
-  lineHeight: 1.5,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '20px',
 }))
 
 const IntroParagraph = styled(BodyText)({
@@ -95,37 +138,52 @@ const IntroParagraph = styled(BodyText)({
 const DefaultGitUrlBlock = styled(Box)(({ theme }) => ({
   marginTop: '24px',
   padding: '14px 16px',
-  borderRadius: 8,
-  border: '1px solid rgba(145, 158, 171, 0.24)',
-  backgroundColor: theme.palette.cm.rowAlter,
+  borderRadius: 0,
+  border: `1px solid ${theme.palette.cm?.textBoxBorder ?? theme.palette.divider}`,
+  backgroundColor: theme.palette.cm?.textBox ?? theme.palette.background.paper,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   gap: '16px',
+  '& .MuiTypography-subtitle2': {
+    fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+    fontWeight: 700,
+    fontSize: '14px',
+    lineHeight: '20px',
+  },
 }))
 
-const DefaultGitUrlText = styled(Typography)({
+const DefaultGitUrlText = styled(Typography)(({ theme }) => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-  fontFamily: 'monospace',
-})
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '20px',
+}))
 
-const SectionTitle = styled(Typography)({
+const SectionTitle = styled(Typography)(({ theme }) => ({
   marginBottom: '4px',
-  fontWeight: 550,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 700,
+  color: theme.palette.text.primary,
   letterSpacing: '0.035em',
-})
+}))
 
 const SectionDescription = styled(Typography)(({ theme }) => ({
   marginBottom: '10px',
   color: theme.palette.text.secondary,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '20px',
 }))
 
-const DividerSection = styled(Box)({
-  borderTop: '1px solid rgba(145, 158, 171, 0.24)',
+const DividerSection = styled(Box)(({ theme }) => ({
+  borderTop: `1px solid ${theme.palette.divider}`,
   paddingTop: '16px',
-})
+}))
 
 const RepoFieldBlock = styled(Box)({
   marginBottom: '24px',
@@ -160,6 +218,7 @@ const SuccessIconWrapper = styled(Box)(({ theme }) => ({
   height: 90,
   borderRadius: '50%',
   backgroundColor: theme.palette.success.main,
+  color: theme.palette.success.contrastText,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -167,15 +226,20 @@ const SuccessIconWrapper = styled(Box)(({ theme }) => ({
   animation: 'iconPop 280ms ease-out',
 }))
 
-const SuccessHeading = styled(Typography)({
+const SuccessHeading = styled(Typography)(({ theme }) => ({
   marginBottom: '16px',
-  fontWeight: 600,
-})
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 700,
+  color: theme.palette.text.primary,
+}))
 
 const SuccessCaption = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
+  fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontWeight: 400,
+  fontSize: '14px',
+  lineHeight: '20px',
   marginTop: '16px',
-  opacity: 0.8,
 }))
 
 interface ConfigureGitModalProps {
@@ -193,7 +257,7 @@ function AnimatedCheckmark() {
     <svg width='64' height='64' viewBox='0 0 64 64' fill='none'>
       <path
         d='M14 34L27 47L50 19'
-        stroke='#2f2f38'
+        stroke='currentColor'
         strokeWidth='6'
         strokeLinecap='round'
         strokeLinejoin='round'

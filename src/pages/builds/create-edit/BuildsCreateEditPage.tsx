@@ -1,5 +1,9 @@
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Grid } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { LandingHeader } from 'components/LandingHeader'
 import { TextField } from 'components/forms/TextField'
+import { Typography } from 'components/Typography'
 import PaperLayout from 'layouts/Paper'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Redirect, RouteComponentProps, useHistory } from 'react-router-dom'
@@ -17,19 +21,15 @@ import {
   useGetTeamAplBuildsQuery,
   useGetTeamAplCodeReposQuery,
 } from 'redux/otomiApi'
-import { LandingHeader } from 'components/LandingHeader'
 import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
 import FormRow from 'components/forms/FormRow'
 import DeleteButton from 'components/DeleteButton'
-import { yupResolver } from '@hookform/resolvers/yup'
 import Section from 'components/Section'
 import ImgButtonGroup from 'components/ImgButtonGroup'
-import { Divider } from 'components/Divider'
 import KeyValue from 'components/forms/KeyValue'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useSession } from 'providers/Session'
-import { LoadingButton } from '@mui/lab'
 import InformationBanner from 'components/InformationBanner'
 import MuiLink from 'components/MuiLink'
 import useSettings from 'hooks/useSettings'
@@ -38,9 +38,9 @@ import { aplBuildApiSchema } from './create-edit-builds.validator'
 const getBuildName = (name: string, tag: string): string => {
   return `${name}-${tag}`
     .toLowerCase()
-    .replace(/[^a-z0-9-]/gi, '-') // Replace invalid characters with hyphens
-    .replace(/-+/g, '-') // Replace multiple consecutive hyphens with a single hyphen
-    .replace(/^-|-$/g, '') // Remove leading or trailing hyphens
+    .replace(/[^a-z0-9-]/gi, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
 }
 
 interface Params {
@@ -54,7 +54,6 @@ export default function BuildsCreateEditPage({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const { t } = useTranslation()
-  const theme = useTheme()
 
   const [repoName, setRepoName] = useState('')
   const [gitService, setGitService] = useState('')
@@ -76,7 +75,6 @@ export default function BuildsCreateEditPage({
     e.preventDefault()
 
     onToggleView()
-
     history.push('/apps/admin')
   }
 
@@ -93,8 +91,16 @@ export default function BuildsCreateEditPage({
   )
 
   const options = [
-    { value: 'docker', label: 'Docker', imgSrc: '/logos/docker_logo.svg' },
-    { value: 'buildpacks', label: 'BuildPacks', imgSrc: '/logos/buildpacks_logo.svg' },
+    {
+      value: 'docker',
+      label: 'Docker',
+      imgSrc: '/logos/docker_logo.svg',
+    },
+    {
+      value: 'buildpacks',
+      label: 'BuildPacks',
+      imgSrc: '/logos/buildpacks_logo.svg',
+    },
   ]
 
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplBuildMutation()
@@ -108,7 +114,9 @@ export default function BuildsCreateEditPage({
     isError,
     refetch,
   } = useGetAplBuildQuery({ teamId, buildName }, { skip: !buildName })
+
   const { data: teamBuilds } = useGetTeamAplBuildsQuery({ teamId }, { skip: !teamId })
+
   const { data: codeRepos, isLoading: isLoadingCodeRepos } = useGetTeamAplCodeReposQuery({ teamId })
 
   const { data: repoBranches, isLoading: isLoadingRepoBranches } = useGetRepoBranchesQuery(
@@ -122,6 +130,7 @@ export default function BuildsCreateEditPage({
   )
 
   const isDirty = useAppSelector((state) => state.global?.isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
     if (!isFetching) refetch()
@@ -132,17 +141,29 @@ export default function BuildsCreateEditPage({
       kind: 'AplTeamBuild',
       metadata: {
         name: '',
-        labels: { 'apl.io/teamId': teamId },
+        labels: {
+          'apl.io/teamId': teamId,
+        },
       },
       spec: {
         imageName: '',
         tag: '',
-        mode: { type: 'docker', docker: { repoUrl: '', path: './Dockerfile', envVars: [] } },
+        mode: {
+          type: 'docker',
+          docker: {
+            repoUrl: '',
+            path: './Dockerfile',
+            envVars: [],
+          },
+        },
         externalRepo: false,
         trigger: false,
         scanSource: false,
       },
-      status: { conditions: [], phase: undefined },
+      status: {
+        conditions: [],
+        phase: undefined,
+      },
     }) as CreateAplBuildApiResponse
   }, [teamId])
 
@@ -151,7 +172,10 @@ export default function BuildsCreateEditPage({
   const methods = useForm<CreateAplBuildApiResponse>({
     resolver: yupResolver(aplBuildApiSchema) as unknown as Resolver<CreateAplBuildApiResponse>,
     defaultValues: buildData ? (aplBuildApiSchema.cast(buildData) as CreateAplBuildApiResponse) : defaultValues,
-    context: { buildNames, validateOnSubmit: !buildName },
+    context: {
+      buildNames,
+      validateOnSubmit: !buildName,
+    },
   })
 
   const {
@@ -166,10 +190,12 @@ export default function BuildsCreateEditPage({
   } = methods
 
   const modeType = watch('spec.mode.type')
+
   const { field: repoField } = useController<CreateAplBuildApiResponse>({
     control,
     name: `spec.mode.${modeType}.repoUrl` as FieldPath<CreateAplBuildApiResponse>,
   })
+
   const { field: revField } = useController<CreateAplBuildApiResponse>({
     control,
     name: `spec.mode.${modeType}.revision` as FieldPath<CreateAplBuildApiResponse>,
@@ -177,6 +203,7 @@ export default function BuildsCreateEditPage({
 
   useEffect(() => {
     if (!buildData || isLoadingCodeRepos) return
+
     reset(buildData)
 
     const currentMode = watch('spec.mode.type')
@@ -188,7 +215,9 @@ export default function BuildsCreateEditPage({
   }, [buildData, isLoadingCodeRepos, reset])
 
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete || isLoadingCodeRepos
+
   if (!mutating && (isSuccessUpdate || isSuccessDelete)) return <Redirect to={`/teams/${teamId}/container-images`} />
+
   if (!mutating && isSuccessCreate) return <Redirect to={`/teams/${teamId}/container-images/`} />
 
   const onSubmit = (formData: CreateAplBuildApiResponse) => {
@@ -219,10 +248,15 @@ export default function BuildsCreateEditPage({
 
   const extraArgumentsError = () => {
     const envVarErrors = (errors as any)?.spec?.mode?.[`${watch('spec.mode.type')}`]?.envVars
+
     if (!envVarErrors) return undefined
+
     const idx = envVarErrors.findIndex((envVar: any) => envVar?.name?.message)
+
     if (idx === -1) return undefined
+
     const message = envVarErrors[idx]?.name?.message?.toString()
+
     return `Error in argument ${Number(idx) + 1}: ${message}`
   }
 
@@ -233,6 +267,10 @@ export default function BuildsCreateEditPage({
     watch('spec.mode.type') === 'docker'
       ? 'Relative path to the Dockerfile'
       : 'Relative path to the buildpacks directory'
+
+  const fullRepositoryName = buildName
+    ? `harbor.${domainSuffix}/team-${teamId}/${buildData?.spec?.imageName}:${buildData?.spec?.tag}`
+    : `harbor.${domainSuffix}/team-${teamId}/${watch('spec.imageName') || '___'}:${watch('spec.tag') || '___'}`
 
   return (
     <Grid>
@@ -255,32 +293,38 @@ export default function BuildsCreateEditPage({
 
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Section>
-                <Typography variant='h6'>Select build task</Typography>
+              <Section title='Build Task' description='Select how the source code should be built.'>
+                <ImgButtonGroup
+                  name='spec.mode.type'
+                  control={control}
+                  options={options}
+                  value={watch('spec.mode.type')}
+                  onChange={(selectedType) => {
+                    const isDocker = selectedType === 'docker'
+                    const previousType = isDocker ? 'buildpacks' : 'docker'
 
-                <FormRow spacing={10} sx={{ my: 2 }}>
-                  <ImgButtonGroup
-                    name='spec.mode.type'
-                    control={control}
-                    options={options}
-                    value={watch('spec.mode.type')}
-                    onChange={(selectedType) => {
-                      const isDocker = selectedType === 'docker'
-                      const previousType = isDocker ? 'buildpacks' : 'docker'
-                      const nextMode = {
-                        ...(watch(`spec.mode.${previousType}`) as any),
-                        path: isDocker ? './Dockerfile' : '',
-                      }
+                    const nextMode = {
+                      ...(watch(`spec.mode.${previousType}`) as any),
+                      path: isDocker ? './Dockerfile' : '',
+                    }
 
-                      setValue(`spec.mode.${selectedType as 'docker' | 'buildpacks'}` as any, nextMode)
-                      unregister(`spec.mode.${previousType}` as any)
-                    }}
-                  />
-                </FormRow>
+                    setValue(`spec.mode.${selectedType as 'docker' | 'buildpacks'}` as any, nextMode)
+                    unregister(`spec.mode.${previousType}` as any)
+                  }}
+                />
+              </Section>
 
-                <Typography variant='h6'>Select code repository</Typography>
-
-                <FormRow spacing={10} sx={{ alignItems: 'flex-start' }}>
+              <Section
+                title='Code Repository'
+                description='Select the repository, reference and path used as the build source.'
+              >
+                <FormRow
+                  spacing={10}
+                  sx={{
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                  }}
+                >
                   <Autocomplete<CreateAplCodeRepoApiResponse, false, false, false>
                     label='Repository'
                     loading={isLoadingCodeRepos}
@@ -290,19 +334,21 @@ export default function BuildsCreateEditPage({
                     value={filteredCodeRepos.find((cr) => cr?.spec?.repositoryUrl === repoField.value) || null}
                     onChange={(_e, repo) => {
                       repoField.onChange(repo?.spec?.repositoryUrl ?? '')
+
                       if (!repo) return
 
                       const name = repo.metadata.name
-                      const gitService = repo.spec.gitService
+                      const service = repo.spec.gitService
                       const isPrivate = repo.spec.private
                       const secret = repo.spec.secret
 
                       if (!buildName) setValue('spec.imageName', name)
-                      setValue(`spec.mode.${modeType}.revision` as any, undefined as any)
 
-                      setValue('spec.externalRepo', gitService !== 'gitea')
+                      setValue(`spec.mode.${modeType}.revision` as any, undefined as any)
+                      setValue('spec.externalRepo', service !== 'gitea')
+
                       setRepoName(name)
-                      setGitService(gitService)
+                      setGitService(service)
 
                       if (isPrivate) setValue('spec.secretName', secret)
                       else unregister('spec.secretName')
@@ -320,6 +366,7 @@ export default function BuildsCreateEditPage({
                     value={(revField.value as string) ?? ''}
                     onChange={(_e, branch) => {
                       revField.onChange(branch ?? '')
+
                       if (!buildName) setValue('spec.tag', branch ?? '')
                     }}
                     errorText={(errors as any)?.spec?.mode?.[modeType]?.revision?.message?.toString()}
@@ -339,12 +386,19 @@ export default function BuildsCreateEditPage({
                     disabled={appsMissing}
                   />
                 </FormRow>
+              </Section>
 
-                <Divider sx={{ mt: 2, mb: 2 }} />
-
-                <Typography variant='h6'>Image name and tag</Typography>
-
-                <FormRow spacing={10} sx={{ mb: 2, alignItems: 'flex-start' }}>
+              <Section
+                title='Container Image'
+                description='Configure the image name and tag that will be pushed to the internal registry.'
+              >
+                <FormRow
+                  spacing={10}
+                  sx={{
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
+                  }}
+                >
                   <TextField
                     label='Image name'
                     width='medium'
@@ -367,36 +421,46 @@ export default function BuildsCreateEditPage({
                   />
                 </FormRow>
 
-                <Typography
-                  variant='body1'
-                  sx={{ display: 'inline-block', fontSize: 16, fontWeight: 400, color: theme.palette.cl.text.subTitle }}
-                >
-                  {buildName
-                    ? `Full repository name: harbor.${domainSuffix}/team-${teamId}/${buildData?.spec?.imageName}:${buildData?.spec?.tag}`
-                    : `Full repository name: harbor.${domainSuffix}/team-${teamId}/${
-                        watch('spec.imageName') || '___'
-                      }:${watch('spec.tag') || '___'}`}
-                </Typography>
+                <Box sx={{ mt: 2 }}>
+                  <Typography
+                    sx={{
+                      fontSize: '0.875rem',
+                      fontWeight: 400,
+                      color: 'text.secondary',
+                    }}
+                  >
+                    Full repository name
+                  </Typography>
 
-                <Divider sx={{ mt: 2, mb: 2 }} />
+                  <Typography
+                    sx={{
+                      mt: 0.5,
+                      fontSize: '0.875rem',
+                      fontWeight: 400,
+                      color: 'text.primary',
+                      wordBreak: 'break-all',
+                    }}
+                  >
+                    {fullRepositoryName}
+                  </Typography>
+                </Box>
+              </Section>
 
+              <Section title='Extra Arguments' description='Additional arguments passed to the build executor.'>
                 <KeyValue
-                  title='Extra arguments'
-                  subTitle='Additional arguments to pass on to the build executor'
                   keyLabel='Name'
                   valueLabel='Value'
                   addLabel='Add argument'
                   compressed
+                  noMarginTop
                   name={`spec.mode.${watch('spec.mode.type')}.envVars`}
                   {...register(`spec.mode.${watch('spec.mode.type')}.envVars` as any)}
                   errorText={extraArgumentsError()}
                   isValueOptional
                 />
+              </Section>
 
-                <Divider sx={{ mt: 2, mb: 2 }} />
-
-                <Typography variant='h6'>Extra options</Typography>
-
+              <Section title='Extra Options' description='Configure optional build behaviour.'>
                 <Box>
                   {appsEnabled?.gitea && gitService === 'gitea' && (
                     <ControlledCheckbox
@@ -418,28 +482,36 @@ export default function BuildsCreateEditPage({
                 </Box>
               </Section>
 
-              {buildName && (
-                <DeleteButton
-                  onDelete={() => del({ teamId, buildName })}
-                  resourceName={watch('metadata.name')}
-                  resourceType='build'
-                  data-cy='button-delete-build'
-                  sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
-                  loading={isLoadingDelete}
-                  disabled={appsMissing || isLoadingDelete || isLoadingCreate || isLoadingUpdate}
-                />
-              )}
-
-              <LoadingButton
-                type='submit'
-                variant='contained'
-                color='primary'
-                sx={{ float: 'right', textTransform: 'none' }}
-                loading={isLoadingCreate || isLoadingUpdate}
-                disabled={appsMissing || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: 2,
+                }}
               >
-                {buildName ? 'Save Changes' : 'Create Container Image'}
-              </LoadingButton>
+                {buildName && (
+                  <DeleteButton
+                    onDelete={() => del({ teamId, buildName })}
+                    resourceName={watch('metadata.name')}
+                    resourceType='build'
+                    data-cy='button-delete-build'
+                    loading={isLoadingDelete}
+                    disabled={appsMissing || isLoadingDelete || isLoadingCreate || isLoadingUpdate}
+                  />
+                )}
+
+                <LoadingButton
+                  type='submit'
+                  variant='contained'
+                  color='primary'
+                  sx={{ textTransform: 'none' }}
+                  loading={isLoadingCreate || isLoadingUpdate}
+                  disabled={appsMissing || isLoadingCreate || isLoadingUpdate || isLoadingDelete}
+                >
+                  {buildName ? 'Save Changes' : 'Create Container Image'}
+                </LoadingButton>
+              </Box>
             </form>
           </FormProvider>
         </Box>

@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Link, MenuItem } from '@mui/material'
+import { Box, Button, Grid, MenuItem } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { TextField } from 'components/forms/TextField'
 import { LandingHeader } from 'components/LandingHeader'
@@ -325,13 +325,18 @@ export default function CodeRepositoriesCreateEditPage({
                     ))}
                   </TextField>
 
-                  <Link
-                    className={classes.link}
+                  <Button
+                    component='a'
                     href={`https://gitea.${cluster.domainSuffix}/team-${teamId}`}
                     target='_blank'
+                    rel='noopener noreferrer'
+                    variant='outlined'
+                    color='primary'
+                    className={classes.link}
+                    sx={{ mt: 2 }}
                   >
                     + Create Repository
-                  </Link>
+                  </Button>
                 </Box>
               ) : (
                 <Box>
@@ -408,7 +413,7 @@ export default function CodeRepositoriesCreateEditPage({
                         variant='contained'
                         color='primary'
                         onClick={handleTestConnection}
-                        sx={{ textTransform: 'none' }}
+                        sx={{ textTransform: 'none', borderRadius: '1px' }}
                         loading={isFetchingTestRepoConnect}
                       >
                         Test Connection
@@ -433,16 +438,17 @@ export default function CodeRepositoriesCreateEditPage({
                                 ? theme.palette.success.main
                                 : theme.palette.error.main
                             }`,
-                            backgroundColor: `${
-                              testRepoConnect?.status === 'success'
-                                ? theme.palette.success.main
-                                : theme.palette.error.main
-                            }50`,
+                            backgroundColor: 'background.paper',
+                            color: 'text.primary',
+                            borderRadius: 0,
                             width: 'fit-content',
                           }}
                         >
-                          <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
-                          <Typography variant='h6' sx={{ display: 'inline-block', fontSize: 16, fontWeight: 400 }}>
+                          <Iconify
+                            icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'}
+                            sx={{ color: testRepoConnect?.status === 'success' ? 'success.main' : 'error.main' }}
+                          />
+                          <Typography variant='body1' sx={{ display: 'inline-block', fontWeight: 400 }}>
                             {testRepoConnect?.status === 'success'
                               ? 'Successfully connected with Git repository'
                               : 'Failed to connect with Git repository'}
@@ -460,7 +466,7 @@ export default function CodeRepositoriesCreateEditPage({
                 resourceName={watch('metadata.name')}
                 resourceType='coderepo'
                 data-cy='button-delete-coderepo'
-                sx={{ float: 'right', textTransform: 'capitalize', ml: 2 }}
+                sx={{ float: 'right', textTransform: 'capitalize', ml: 2, borderRadius: '1px' }}
                 loading={isLoadingDelete}
                 disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
               />
@@ -472,7 +478,7 @@ export default function CodeRepositoriesCreateEditPage({
                 type='submit'
                 variant='contained'
                 color='primary'
-                sx={{ float: 'right', textTransform: 'none' }}
+                sx={{ float: 'right', textTransform: 'none', borderRadius: '1px' }}
                 loading={isLoadingCreate || isLoadingUpdate}
                 disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete}
               >

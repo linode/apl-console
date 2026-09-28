@@ -79,32 +79,30 @@ export function TooltipIcon(props: TooltipIconProps) {
 
   const sxRootStyle = {
     '&&': {
-      fill: theme.palette.cm.grey4,
-      stroke: theme.palette.cm.grey4,
+      fill: 'currentColor',
+      stroke: 'currentColor',
       strokeWidth: 0,
     },
     '&:hover': {
-      color: theme.palette.primary.main,
-      fill: theme.palette.primary.main,
-      stroke: theme.palette.primary.main,
+      color: theme.palette.cm.buttonPrimaryHover,
     },
-    color: theme.palette.cm.grey4,
+    color: theme.palette.text.secondary,
     height: 20,
     width: 20,
   }
 
   switch (status) {
     case 'success':
-      renderIcon = <SuccessOutline style={{ color: theme.palette.cm.blue }} />
+      renderIcon = <SuccessOutline style={{ color: theme.palette.success.main }} />
       break
     case 'error':
-      renderIcon = <ErrorOutline style={{ color: theme.palette.cm.red }} />
+      renderIcon = <ErrorOutline style={{ color: theme.palette.error.main }} />
       break
     case 'warning':
-      renderIcon = <WarningOutline style={{ color: theme.palette.cm.yellow }} />
+      renderIcon = <WarningOutline style={{ color: theme.palette.warning.main }} />
       break
     case 'info':
-      renderIcon = <InfoOutline style={{ color: theme.palette.cm.black }} />
+      renderIcon = <InfoOutline style={{ color: theme.palette.info.main }} />
       break
     case 'help':
       renderIcon = <HelpOutline sx={sxRootStyle} />

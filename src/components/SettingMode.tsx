@@ -13,9 +13,15 @@ const BoxStyle = styled(CardActionArea)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: theme.palette.text.disabled,
-  border: `solid 1px ${theme.palette.grey[500_12]}`,
-  borderRadius: Number(theme.shape.borderRadius) * 1.25,
+  color: theme.palette.text.secondary,
+  backgroundColor: theme.palette.cm.textBox,
+  border: `solid 1px ${theme.palette.cm.textBoxBorder}`,
+  borderRadius: 0,
+  boxShadow: 'none',
+  '&:hover': {
+    color: theme.palette.cm.buttonPrimaryHover,
+    borderColor: theme.palette.cm.buttonPrimaryHover,
+  },
 }))
 
 // ----------------------------------------------------------------------
@@ -25,12 +31,6 @@ export default function SettingMode() {
 
   const modes = ['light', 'dark', 'system']
   const icons = ['ph:sun-duotone', 'ph:moon-duotone', 'ph:monitor-duotone']
-
-  const getBackgroundColor = (mode: string) => {
-    if (mode === 'light') return 'common.white'
-    if (mode === 'dark') return 'grey.800'
-    return 'grey.600'
-  }
 
   const getModeLabel = (mode: string) => {
     return mode.charAt(0).toUpperCase() + mode.slice(1)
@@ -48,10 +48,9 @@ export default function SettingMode() {
                 <span>
                   <BoxStyle
                     sx={{
-                      bgcolor: getBackgroundColor(mode),
                       ...(isSelected && {
-                        color: 'primary.main',
-                        boxShadow: (theme) => theme.customShadows.z20,
+                        color: 'cm.linkActiveLight',
+                        borderColor: 'cm.linkActiveLight',
                       }),
                     }}
                   >

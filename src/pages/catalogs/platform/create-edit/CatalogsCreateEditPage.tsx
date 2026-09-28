@@ -201,7 +201,7 @@ export default function CatalogsCreateEditPage({
                     variant='contained'
                     color='primary'
                     onClick={handleTestConnection}
-                    sx={{ textTransform: 'none' }}
+                    sx={{ textTransform: 'none', borderRadius: '1px' }}
                     loading={isFetchingTestRepoConnect}
                   >
                     Test Connection
@@ -224,14 +224,17 @@ export default function CatalogsCreateEditPage({
                         border: `1px solid ${
                           testRepoConnect?.status === 'success' ? theme.palette.success.main : theme.palette.error.main
                         }`,
-                        backgroundColor: `${
-                          testRepoConnect?.status === 'success' ? theme.palette.success.main : theme.palette.error.main
-                        }50`,
+                        backgroundColor: 'background.paper',
+                        color: 'text.primary',
+                        borderRadius: 0,
                         width: 'fit-content',
                       }}
                     >
-                      <Iconify icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'} />
-                      <Typography variant='h6' sx={{ display: 'inline-block', fontSize: 16, fontWeight: 400 }}>
+                      <Iconify
+                        icon={testRepoConnect?.status === 'success' ? 'mdi:tick' : 'mdi:times'}
+                        sx={{ color: testRepoConnect?.status === 'success' ? 'success.main' : 'error.main' }}
+                      />
+                      <Typography variant='body1' sx={{ display: 'inline-block', fontWeight: 400 }}>
                         {testRepoConnect?.status === 'success'
                           ? 'Successfully connected with Git repository'
                           : 'Failed to connect with Git repository'}
@@ -260,7 +263,7 @@ export default function CatalogsCreateEditPage({
                   resourceName={watch('metadata.name')}
                   resourceType='catalog'
                   data-cy='button-delete-catalog'
-                  sx={{ marginRight: '10px', float: 'right', textTransform: 'capitalize', ml: 2 }}
+                  sx={{ marginRight: '10px', float: 'right', textTransform: 'capitalize', ml: 2, borderRadius: '1px' }}
                   loading={isLoadingDelete}
                   disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
                 />
@@ -269,7 +272,7 @@ export default function CatalogsCreateEditPage({
                 type='submit'
                 variant='contained'
                 color='primary'
-                sx={{ textTransform: 'none' }}
+                sx={{ textTransform: 'none', borderRadius: '1px' }}
                 loading={isLoadingCreate || isLoadingUpdate}
                 disabled={isLoadingCreate || isLoadingUpdate || isLoadingDelete || isEqual(watch(), catalogData)}
               >

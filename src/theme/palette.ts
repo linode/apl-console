@@ -289,7 +289,7 @@ const palette = {
       contrast: GREY[550],
       contrastAlt: GREY[600],
       header: GREY[800],
-      sidebar: GREY[800],
+      sidebar: '#3d3d42',
       neutral: GREY[500],
     },
     action: { active: GREY[500], ...COMMON.action },

@@ -43,9 +43,9 @@ const useStyles = makeStyles<void, 'editIcon' | 'icon'>()((theme: Theme, _params
   },
   icon: {
     '&:hover, &:focus': {
-      color: theme.palette.primary.light,
+      color: theme.palette.cm.buttonPrimaryHover,
     },
-    color: theme.palette.cm.black,
+    color: theme.palette.text.primary,
     fontSize: '1.25rem',
     minHeight: 34,
   },
@@ -56,16 +56,18 @@ const useStyles = makeStyles<void, 'editIcon' | 'icon'>()((theme: Theme, _params
       },
       [`& .${classes.icon}`]: {
         '&:hover': {
-          color: theme.palette.cm.black,
+          color: theme.palette.cm.buttonPrimaryHover,
         },
-        color: theme.palette.cm.grey1,
+        color: theme.palette.text.secondary,
       },
     },
     borderLeft: '1px solid transparent',
   },
   input: {
-    fontFamily: theme.font.bold,
-    fontSize: '1.125rem',
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    fontSize: '14px',
+    lineHeight: '20px',
     padding: 0,
     paddingLeft: 2,
   },
@@ -80,10 +82,12 @@ const useStyles = makeStyles<void, 'editIcon' | 'icon'>()((theme: Theme, _params
   },
   root: {
     border: '1px solid transparent',
-    color: theme.palette.cm.tableStatic,
+    color: theme.palette.text.primary,
     display: 'inline-block',
-    fontSize: '1.125rem !important',
-    lineHeight: 1,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    fontSize: '14px !important',
+    lineHeight: '20px',
     padding: '5px 8px',
     textDecoration: 'inherit',
     transition: theme.transitions.create(['opacity']),
@@ -93,6 +97,9 @@ const useStyles = makeStyles<void, 'editIcon' | 'icon'>()((theme: Theme, _params
     margin: 0,
   },
   underlineOnHover: {
+    '& h1': {
+      color: 'inherit',
+    },
     '&:hover, &:focus': {
       textDecoration: 'underline !important',
     },

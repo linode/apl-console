@@ -12,8 +12,8 @@ import { FormHelperText } from 'components/FormHelperText'
 const useStyles = makeStyles()((theme: Theme) => ({
   container: {
     padding: '16px',
-    backgroundColor: '#424242',
-    borderRadius: '8px',
+    backgroundColor: theme.palette.cm.textBox,
+    borderRadius: 0,
   },
   itemRow: {
     marginBottom: '20px',
@@ -25,21 +25,23 @@ const useStyles = makeStyles()((theme: Theme) => ({
     display: 'flex',
     alignItems: 'center',
     textTransform: 'none',
+    borderRadius: '1px',
   },
   errorText: {
     alignItems: 'center',
-    color: '#d63c42',
+    color: theme.palette.error.main,
     display: 'flex',
     left: 5,
     top: 42,
     width: '100%',
   },
   helperTextTop: {
-    color: theme.palette.cl.text.subTitle,
+    color: theme.palette.text.secondary,
     marginTop: 0,
   },
   label: {
-    fontFamily: 'sans-serif',
+    fontFamily: theme.font.normal,
+    fontWeight: 400,
   },
 }))
 
@@ -98,8 +100,10 @@ export default function TextfieldList(props: ValueListProps) {
         [errorScrollClassName]: !!errorText,
       })}
     >
-      <InputLabel sx={{ fontWeight: 'bold', fontSize: '14px' }}>{title}</InputLabel>
-      {subTitle && <Typography sx={{ color: '#ABABAB' }}>{subTitle}</Typography>}
+      <InputLabel sx={(theme) => ({ fontFamily: theme.font.bold, fontWeight: 700, fontSize: '14px' })}>
+        {title}
+      </InputLabel>
+      {subTitle && <Typography sx={{ color: 'text.secondary' }}>{subTitle}</Typography>}
 
       {fields.map((item, index) => (
         <Box key={item.id} sx={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
@@ -110,7 +114,7 @@ export default function TextfieldList(props: ValueListProps) {
             {...register(`${name}.${index}`)}
           />
           {addLabel && (
-            <IconButton sx={{ alignSelf: 'flex-end' }} onClick={() => remove(index)}>
+            <IconButton sx={{ alignSelf: 'flex-end', borderRadius: '1px' }} onClick={() => remove(index)}>
               <Clear />
             </IconButton>
           )}
@@ -118,7 +122,7 @@ export default function TextfieldList(props: ValueListProps) {
       ))}
       {addLabel && (
         <Button
-          sx={{ fontSize: '10px', color: `${error ? 'red' : ''}` }}
+          sx={{ fontSize: '10px', color: error ? 'error.main' : undefined }}
           className={classes.addItemButton}
           onClick={handleAddItem}
         >
