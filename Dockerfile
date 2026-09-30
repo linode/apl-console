@@ -20,7 +20,7 @@ FROM dev as ci
 ENV NODE_ENV=test
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-COPY ts*.json .es* .prettier*  ./
+COPY ts*.json .es* .prettier* index.html vite.config.ts ./
 COPY src src
 COPY public public
 

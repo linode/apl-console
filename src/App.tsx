@@ -3,7 +3,7 @@
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
-import cookie from 'cookie'
+import Cookies from 'js-cookie'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Error from 'pages/Error'
@@ -68,8 +68,7 @@ let contextPath = '##CONTEXT_PATH##'
 if (location.hostname === 'localhost') contextPath = ''
 
 function App() {
-  const cookies = cookie.parse(document.cookie)
-  const settings = getSettings(cookies)
+  const settings = getSettings()
 
   return (
     <Suspense fallback={<LoadingScreen />}>

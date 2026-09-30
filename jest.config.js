@@ -1,9 +1,7 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   modulePathIgnorePatterns: ['.history'],
-  transform: {
-    '^.+\\.test.(ts|tsx)?$': 'ts-jest',
-  },
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 }

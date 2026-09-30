@@ -1,4 +1,4 @@
-import cookie from 'cookie'
+import Cookies from 'js-cookie'
 import {
   NEW_FEATURE_COOKIE,
   NEW_FEATURE_KEYS,
@@ -9,10 +9,7 @@ import {
 
 describe('newFeaturesCookieManager', () => {
   beforeEach(() => {
-    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, '', {
-      path: '/',
-      expires: new Date(0),
-    })
+    Cookies.remove(NEW_FEATURE_COOKIE, { path: '/' })
   })
 
   afterEach(() => {
@@ -28,19 +25,19 @@ describe('newFeaturesCookieManager', () => {
   })
 
   it('returns the seen features from the cookie', () => {
-    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, JSON.stringify(['platform-secrets', 'platform-manifests']), {
+    Cookies.set(NEW_FEATURE_COOKIE, JSON.stringify(['platform-secrets', 'platform-manifests']), {
       path: '/',
     })
 
     expect(getSeenNewFeatures()).toEqual(['platform-secrets', 'platform-manifests'])
   })
   it('returns an empty array when the cookie contains invalid JSON', () => {
-    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, 'not-json', { path: '/' })
+    Cookies.set(NEW_FEATURE_COOKIE, 'not-json', { path: '/' })
 
     expect(getSeenNewFeatures()).toEqual([])
   })
   it('returns true when a feature has been seen', () => {
-    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, JSON.stringify(['platform-settings']), { path: '/' })
+    Cookies.set(NEW_FEATURE_COOKIE, JSON.stringify(['platform-settings']), { path: '/' })
 
     expect(hasSeenNewFeature('platform-settings')).toBe(true)
     expect(hasSeenNewFeature('platform-secrets')).toBe(false)
@@ -60,7 +57,7 @@ describe('newFeaturesCookieManager', () => {
   })
 
   it('appends a new feature to existing ones', () => {
-    document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, JSON.stringify(['platform-secrets']), { path: '/' })
+    Cookies.set(NEW_FEATURE_COOKIE, JSON.stringify(['platform-secrets']), { path: '/' })
 
     markNewFeatureSeen('platform-settings')
 
