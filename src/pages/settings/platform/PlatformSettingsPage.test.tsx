@@ -97,8 +97,6 @@ jest.mock('components/forms/FormRow', () => ({
 /* eslint-disable react/prop-types */
 jest.mock('components/forms/TextField', () => ({
   TextField: (() => {
-    const React = jest.requireActual('react')
-
     return React.forwardRef<
       HTMLInputElement,
       React.InputHTMLAttributes<HTMLInputElement> & {
@@ -164,7 +162,6 @@ jest.mock('components/forms/ControlledCheckbox', () => ({
 jest.mock('components/forms/KeyValue', () => ({
   __esModule: true,
   default: (() => {
-    const React = jest.requireActual('react')
     const { useFieldArray, useFormContext } = jest.requireActual('react-hook-form')
 
     return React.forwardRef<
@@ -175,7 +172,7 @@ jest.mock('components/forms/KeyValue', () => ({
         keyLabel: string
         valueLabel: string
       }
-    >(({ title, addLabel, keyLabel, valueLabel }) => {
+    >(({ title, addLabel, keyLabel, valueLabel }, ref) => {
       const { control, register } = useFormContext()
       const { fields, append, remove } = useFieldArray({
         control,
@@ -183,7 +180,7 @@ jest.mock('components/forms/KeyValue', () => ({
       })
 
       return (
-        <fieldset>
+        <fieldset ref={ref}>
           <legend>{title}</legend>
 
           {fields.map((field: { id: string }, index: number) => (
