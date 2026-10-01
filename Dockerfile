@@ -20,9 +20,10 @@ FROM dev as ci
 ENV NODE_ENV=test
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-COPY ts*.json .es* .prettier* index.html vite.config.mts ./
+COPY ts*.json .es* .prettier* index.html vite.config.mts jest.config.js ./
 COPY src src
 COPY public public
+COPY types types
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
