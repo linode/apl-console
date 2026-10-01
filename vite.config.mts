@@ -1,17 +1,23 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+
+const devContextPath = process.env.CONTEXT_PATH
+  ? `/${process.env.CONTEXT_PATH.replace(/^\/+|\/+$/g, '')}`
+  : ''
 
 export default defineConfig(({ command, mode }) => ({
-  base: command === 'build' ? '##CONTEXT_PATH##/' : '/',
+  base: command === 'build' ? '/##CONTEXT_PATH_SEGMENT##' : '/',
   build: {
     outDir: 'build',
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(mode),
-    'process.env.CONTEXT_PATH': JSON.stringify(process.env.CONTEXT_PATH || ''),
+    'process.env.CONTEXT_PATH': JSON.stringify(command === 'build' ? '##CONTEXT_PATH##' : devContextPath),
   },
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react()],
+  resolve: {
+    tsconfigPaths: true,
+  },
   server: {
     port: 3000,
     proxy: {

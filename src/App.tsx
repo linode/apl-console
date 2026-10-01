@@ -3,7 +3,6 @@
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
-import Cookies from 'js-cookie'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Error from 'pages/Error'
