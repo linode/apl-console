@@ -10,8 +10,7 @@ export const getSettings = () => {
 
   const themeMode = getData(Cookies.get(cookiesKey.themeMode)) || defaultSettings.themeMode
 
-  const themeColorPresets =
-    getData(Cookies.get(cookiesKey.themeColorPresets)) || defaultSettings.themeColorPresets
+  const themeColorPresets = getData(Cookies.get(cookiesKey.themeColorPresets)) || defaultSettings.themeColorPresets
 
   const themeLayout = getData(Cookies.get(cookiesKey.themeLayout)) || defaultSettings.themeLayout
 

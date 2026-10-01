@@ -4,4 +4,5 @@ module.exports = {
   modulePathIgnorePatterns: ['.history'],
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  moduleDirectories: ['node_modules', '<rootDir>/src'],
 }
