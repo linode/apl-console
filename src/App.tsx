@@ -63,7 +63,8 @@ export const muiCache = createCache({
   prepend: true,
 })
 
-let contextPath = '##CONTEXT_PATH##'
+const envContextPath = (process.env.CONTEXT_PATH ?? '').trim()
+let contextPath = envContextPath || ''
 if (location.hostname === 'localhost') contextPath = ''
 
 function App() {
