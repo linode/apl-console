@@ -8,17 +8,17 @@ const normalizeContextPath = (value?: string): string => {
   return trimmed ? `/${trimmed}` : ''
 }
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(({ command, mode }) => {
   const runtimeContextPath = normalizeContextPath(process.env.CONTEXT_PATH)
 
   return {
-    base: './',
+    base: command === 'build' ? '/##CONTEXT_PATH_SEGMENT##' : '/',
     build: {
       outDir: 'build',
     },
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
-      'process.env.CONTEXT_PATH': JSON.stringify(runtimeContextPath),
+      'process.env.CONTEXT_PATH': JSON.stringify(command === 'build' ? '##CONTEXT_PATH##' : runtimeContextPath),
     },
     plugins: [react()],
     resolve: {
