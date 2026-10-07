@@ -381,7 +381,6 @@ export default function SecretCreateEditPage({
 
             <Section title='Options' description='Configure additional behavior for this Secret.'>
               <ControlledCheckbox
-                sx={{ my: 1 }}
                 name='spec.template.immutable'
                 control={control}
                 label='Immutable'

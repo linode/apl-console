@@ -352,7 +352,6 @@ export default function CodeRepositoriesCreateEditPage({
                   />
 
                   <ControlledCheckbox
-                    sx={{ my: 2 }}
                     name='spec.private'
                     control={control}
                     label='Private'

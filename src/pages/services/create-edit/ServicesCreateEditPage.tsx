@@ -451,7 +451,6 @@ export default function ServicesCreateEditPage({
                 description='Split traffic between two service versions for canary releases or A/B testing.'
               >
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.trafficControl.enabled'
                   control={control}
                   label='Enable Traffic Management'

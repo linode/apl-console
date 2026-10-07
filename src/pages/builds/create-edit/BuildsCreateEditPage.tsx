@@ -464,7 +464,6 @@ export default function BuildsCreateEditPage({
                 <Box>
                   {appsEnabled?.gitea && gitService === 'gitea' && (
                     <ControlledCheckbox
-                      sx={{ my: 2 }}
                       name='spec.trigger'
                       control={control}
                       label='Create webhook listener'
@@ -473,7 +472,6 @@ export default function BuildsCreateEditPage({
                   )}
 
                   <ControlledCheckbox
-                    sx={{ my: 2 }}
                     name='spec.scanSource'
                     control={control}
                     label='Scan source code'

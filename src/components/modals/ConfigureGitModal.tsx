@@ -120,7 +120,7 @@ const ModalTitle = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.primary,
   fontWeight: 700,
   letterSpacing: 0,
-  fontSize: '1.8rem',
+  fontSize: '1.5rem',
 }))
 
 const BodyText = styled(Typography)(({ theme }) => ({
@@ -166,6 +166,7 @@ const DefaultGitUrlText = styled(Typography)(({ theme }) => ({
 const SectionTitle = styled(Typography)(({ theme }) => ({
   marginBottom: '4px',
   fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
+  fontSize: '1rem',
   fontWeight: 700,
   color: theme.palette.text.primary,
   letterSpacing: '0.035em',

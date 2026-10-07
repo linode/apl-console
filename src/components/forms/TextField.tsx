@@ -528,12 +528,15 @@ export const TextField = React.forwardRef(function TextField(props: TextFieldPro
             className={cx(
               {
                 [classes.helpWrapperTextField]: Boolean(tooltipText),
-                [classes.root]: true,
+                [classes.root]: !hideLabel && Boolean(label),
               },
               className,
             )}
             error={!!error || !!errorText}
-            sx={{ width: widthMap[width] }}
+            sx={{
+              width: widthMap[width],
+              marginTop: hideLabel ? 0 : theme.spacing(1),
+            }}
             helperText=''
             /**
              * Set _helperText_ and _label_ to no value because we want to

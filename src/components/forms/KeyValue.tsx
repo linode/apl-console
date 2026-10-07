@@ -271,7 +271,7 @@ export default function KeyValue(props: KeyValueProps) {
                   disabled={keyDisabled}
                   noMarginTop={compressed}
                   label={showLabel && localIndex === 0 ? keyLabel : ''}
-                  hideLabel={localIndex !== 0 && isTextArea}
+                  hideLabel={!showLabel || (localIndex !== 0 && isTextArea)}
                   error={error}
                 />
               )}
