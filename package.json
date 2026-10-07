@@ -5,11 +5,6 @@
     "not ie <= 11",
     "not op_mini all"
   ],
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "dependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@braintree/sanitize-url": "^6.0.4",
@@ -86,9 +81,7 @@
     "@typescript-eslint/eslint-plugin": "5.28.0",
     "@typescript-eslint/parser": "5.28.0",
     "@vitejs/plugin-react": "^5.0.4",
-    "commitizen": "4.3.1",
     "cspell": "9.0.2",
-    "cz-conventional-changelog": "3.3.0",
     "eslint": "8.17.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "7.2.0",
@@ -97,13 +90,13 @@
     "eslint-plugin-prettier": "3.4.1",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "git-cz": "4.9.0",
     "husky": "7.0.4",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "lint-staged": "9.5.0",
     "npm-run-all": "4.1.5",
     "prettier": "2.7.0",
+    "rxjs": "^6.6.7",
     "semantic-release": "^24.2.3",
     "standard-version": "9.5.0",
     "ts-jest": "29.4.1",
@@ -127,8 +120,6 @@
   },
   "scripts": {
     "build": "vite build",
-    "cz:retry": "git-cz --retry",
-    "cz": "git-cz",
     "dev:docker": "npm ci && npm run dev",
     "dev": "run-p start watch:ts start:chrome",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
