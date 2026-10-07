@@ -31,7 +31,7 @@ RUN echo "EXTEND_ESLINT=true" >> .env
 # ARG CI=true
 RUN npm run lint
 RUN npm test -- --watchAll=false
-RUN npm run build
+RUN NODE_ENV=production npm run build
 
 # --------------- production stage
 FROM nginx:1.31.4-alpine as prod
