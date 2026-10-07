@@ -105,7 +105,6 @@
     "npm-run-all": "4.1.5",
     "prettier": "2.7.0",
     "semantic-release": "^24.2.3",
-    "standard-version": "9.5.0",
     "ts-jest": "29.4.1",
     "ts-node": "^10.9.2",
     "typescript": "4.7.3",
@@ -139,8 +138,6 @@
     "lint:fix": "eslint --ext js,ts,tsx --fix .",
     "lint": "run-p types lint:ts",
     "prepare": "husky install",
-    "release": "standard-version",
-    "release:bump:minor": "standard-version --skip.changelog true --release-as minor",
     "run-if-changed": "run-if-changed",
     "spellcheck": "cspell 'public/i18n/**/*.json'",
     "start": "vite --host 0.0.0.0",
@@ -151,11 +148,6 @@
     "test": "jest --runInBand",
     "types": "tsc --noEmit",
     "watch:ts": "tsc -w --noEmit"
-  },
-  "standard-version": {
-    "skip": {
-      "tag": true
-    }
   },
   "version": "5.1.0"
 }
