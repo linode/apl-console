@@ -64,27 +64,28 @@ export function Checkbox(props: Props) {
   )
 }
 
-const StyledCheckbox = styled(_Checkbox)(({ theme, ...props }) => ({
+const StyledCheckbox = styled(_Checkbox)(({ theme }) => ({
+  borderRadius: '1px',
   '& .defaultFill': {
     transition: theme.transitions.create(['fill']),
   },
   '&:hover': {
-    color: theme.palette.primary.main,
+    color: theme.palette.cm.linkActiveLight,
   },
-  color: '#ccc',
+  color: theme.palette.cm.textBoxBorder,
   transition: theme.transitions.create(['color']),
-  ...(props.checked && {
-    color: theme.palette.primary.main,
-  }),
-  ...(props.disabled && {
+  '&.Mui-checked, &.MuiCheckbox-indeterminate': {
+    color: theme.palette.cm.linkActiveLight,
+  },
+  '&.Mui-disabled': {
     '& .defaultFill': {
-      fill: `${theme.palette.cm.bgmain}`,
+      fill: theme.palette.cm.disabledBackground,
       opacity: 0.5,
     },
-    color: '#ccc !important',
-    fill: `${theme.palette.cm.bgmain} !important`,
+    color: theme.palette.cm.disabledBorder,
+    fill: theme.palette.cm.disabledBackground,
     pointerEvents: 'none',
-  }),
+  },
 }))
 
 const StyledFormControlLabel = styled(FormControlLabel)(() => ({

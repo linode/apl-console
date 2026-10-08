@@ -12,7 +12,7 @@ export default function Paper(theme: Theme) {
       variants: [
         {
           props: { variant: 'outlined' },
-          style: { borderColor: theme.palette.grey[500_12] },
+          style: { borderColor: theme.palette.divider },
         },
       ],
 

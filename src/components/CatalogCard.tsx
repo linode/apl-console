@@ -1,4 +1,4 @@
-import { Box, Chip, Tooltip, Typography, useTheme } from '@mui/material'
+import { Box, Chip, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
@@ -16,11 +16,13 @@ const useStyles = makeStyles()((theme) => {
       paddingTop: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
       border: `1px solid ${theme.palette.divider}`,
+      borderRadius: 0,
+      boxShadow: 'none',
       margin: '5px',
       maxHeight: '200px',
       height: '58px',
       '&:hover': {
-        border: '1px solid #c2c2ca',
+        borderColor: theme.palette.cm.linkActiveLight,
       },
     },
     img: {
@@ -29,17 +31,14 @@ const useStyles = makeStyles()((theme) => {
     },
     chip: {
       height: '20px',
-      fontSize: '0.65rem',
-      border: 'none',
-      borderRadius: '5px',
-    },
-    chipDark: {
-      color: 'rgb(174, 192, 245)',
-      backgroundColor: 'lch(77.7 28.7 275 / 0.12)',
-    },
-    chipLight: {
-      color: '#696970',
-      backgroundColor: 'rgba(0, 0, 0, 0.08)',
+      fontFamily: theme.font.normal,
+      fontSize: '14px',
+      lineHeight: '20px',
+      fontWeight: 400,
+      border: `1px solid ${theme.palette.divider}`,
+      borderRadius: 0,
+      color: theme.palette.info.main,
+      backgroundColor: theme.palette.background.paper,
     },
     link: {
       display: 'flex',
@@ -50,8 +49,10 @@ const useStyles = makeStyles()((theme) => {
       textAlign: 'center',
       verticalAlign: 'middle',
       color: theme.palette.text.primary,
-      fontWeight: 'bold',
-      fontSize: '1rem',
+      fontFamily: theme.font.normal,
+      fontWeight: 700,
+      fontSize: '14px',
+      lineHeight: '20px',
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
     },
@@ -69,9 +70,7 @@ interface Props {
 }
 
 export default function ({ img, teamId, name, isBeta, catalogData }: Props): React.ReactElement {
-  const { classes, cx } = useStyles()
-  const theme = useTheme()
-  const isLight = theme.palette.mode === 'light'
+  const { classes } = useStyles()
   const image = (
     <img
       draggable={false}
@@ -102,11 +101,7 @@ export default function ({ img, teamId, name, isBeta, catalogData }: Props): Rea
           </Typography>
           {isBeta && (
             <Box>
-              <Chip
-                className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
-                label='BETA'
-                variant='outlined'
-              />
+              <Chip className={classes.chip} label='BETA' variant='outlined' />
             </Box>
           )}
         </Link>

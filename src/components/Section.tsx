@@ -7,18 +7,24 @@ import { Typography } from './Typography'
 
 const StyledTitle = styled(Typography)(({ theme }) => ({
   marginTop: 0,
-  color: theme.palette.cl.text.title,
+  color: theme.palette.text.primary,
+  fontFamily: theme.font.normal,
+  fontWeight: 700,
+  fontSize: '1rem',
 }))
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  color: theme.palette.cl.text.subTitle,
+  color: theme.palette.text.secondary,
+  fontFamily: theme.font.normal,
+  fontWeight: 400,
   maxWidth: '85%',
-  fontSize: '0.9rem',
-  marginTop: '5px',
+  fontSize: '14px',
+  lineHeight: '20px',
 }))
 
 const StyledAccordion = styled(Accordion)(({ theme }) => ({
   backgroundColor: 'transparent',
+  borderRadius: 0,
   boxShadow: 'none !important',
   margin: '0px !important',
   '&:before': {

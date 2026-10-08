@@ -20,13 +20,14 @@ export const ListSubheaderStyle = styled((props) => <ListSubheader disableSticky
   }),
 )
 
-const SidebarDivider = styled(Divider)`
-  border-color: rgb(34, 34, 34);
-  margin: 11px 0px;
-`
+const SidebarDivider = styled(Divider)(({ theme }) => ({
+  borderColor: theme.palette.divider,
+  margin: '11px 0px',
+}))
 
 const FirstSidebarDivider = styled(SidebarDivider)`
   margin-top: 0;
+  border: 0;
 `
 
 // ----------------------------------------------------------------------
