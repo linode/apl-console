@@ -1,35 +1,35 @@
 import AddIcon from '@mui/icons-material/Add'
-import { Box, Button, IconButton } from '@mui/material'
-import { TextField } from 'components/forms/TextField'
-import { makeStyles } from 'tss-react/mui'
-import { Theme } from '@mui/material/styles'
 import { Clear } from '@mui/icons-material'
+import { Box, Button, IconButton } from '@mui/material'
+import { Theme } from '@mui/material/styles'
+import { makeStyles } from 'tss-react/mui'
+import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form'
+
+import { TextField } from 'components/forms/TextField'
 import { Typography } from 'components/Typography'
 import { InputLabel } from 'components/InputLabel'
-import { Controller, useFieldArray, useFormContext, useWatch } from 'react-hook-form'
-import FormRow from 'components/forms/FormRow'
 import { FormHelperText } from 'components/FormHelperText'
 import { InputAdornment } from '../InputAdornment'
 import { AutoResizableTextarea } from './TextArea'
 
+// ----------------------------------------------------------------------
+
+const FIELD_GAP = 20
+const BUTTON_GAP = 10
+const BUTTON_WIDTH = 40
+
+// Matches the actual maximum width of the custom TextField.
+// TextField.tsx uses 420px for 'large', but its input
+// has a maxWidth of 416px.
+const FIELD_WIDTHS = {
+  small: 100,
+  medium: 200,
+  large: 416,
+}
+
+// ----------------------------------------------------------------------
+
 const useStyles = makeStyles()((theme: Theme) => ({
-  container: {
-    padding: '16px',
-    backgroundColor: theme.palette.cm.textBox,
-    borderRadius: 0,
-  },
-  itemRow: {
-    marginBottom: '20px',
-    display: 'flex',
-    alignItems: 'center',
-  },
-  addItemButton: {
-    marginLeft: '-10px',
-    display: 'flex',
-    alignItems: 'center',
-    textTransform: 'none',
-    borderRadius: '1px',
-  },
   errorText: {
     alignItems: 'center',
     color: theme.palette.error.main,
@@ -38,20 +38,12 @@ const useStyles = makeStyles()((theme: Theme) => ({
     top: 42,
     width: '100%',
   },
-  helperTextTop: {
-    color: theme.palette.text.secondary,
-    marginTop: 0,
-  },
   inputLabel: {
     color: theme.palette.text.primary,
     fontFamily: theme.font.bold,
     fontWeight: 700,
     fontSize: '1rem',
     lineHeight: '1.5rem',
-  },
-  label: {
-    fontFamily: theme.font.normal,
-    fontWeight: 400,
   },
   decorator: {
     borderLeft: `1px solid ${theme.palette.divider}`,
@@ -70,6 +62,8 @@ const useStyles = makeStyles()((theme: Theme) => ({
     color: theme.palette.text.secondary,
   },
 }))
+
+// ----------------------------------------------------------------------
 
 export interface KeyValueItem {
   name: string
@@ -90,39 +84,28 @@ interface KeyValueProps {
   addLabel?: string
   label?: string
   noMarginTop?: boolean
-  // set to true when the value is a number field so only numbers can be parsed
   valueIsNumber?: boolean
   error?: boolean
   name: string
-  // determines the margin-top between key/value pairs
   compressed?: boolean
-  // disable all fields and remove buttons
   disabled?: boolean
-  /**
-   * Somewhat of an edge case to enable specific value fields where the rest of the value fields are disabled
-   *  e.g. count quota in team settings page.
-   */
   mutableValue?: Set<string>
-  // used when section is disabled by checkbox, prevent user input but leaves styling untouched
   frozen?: boolean
   keySize?: 'small' | 'medium' | 'large'
   valueSize?: 'small' | 'medium' | 'large'
   onlyValue?: boolean
   hideKeyField?: boolean
   errorText?: string
-  // optional filter function. It receives a field and its original index.
   filterFn?: (item: KeyValueItem & { id: string }, index: number) => boolean
-  // hide filtered fields when filterFn is provided and empty
   hideWhenEmpty?: boolean
   decoratorMapping?: Record<string, string>
-  // render the value field as a textarea when true
   isTextArea?: boolean
   isEncrypted?: boolean
   isValueOptional?: boolean
 }
 
-// This local subcomponent watches the key field (using its path) and checks the provided
-// decoratorMapping. If a matching decorator exists, it is rendered as an InputAdornment.
+// ----------------------------------------------------------------------
+
 function DecoratorAdornment({
   name,
   index,
@@ -137,16 +120,26 @@ function DecoratorAdornment({
   classes: Record<string, string>
 }) {
   const { control } = useFormContext()
+
   const keyFieldPath = `${name}.${index}.${keyLabel.toLowerCase()}`
-  const keyValue = useWatch({ control, name: keyFieldPath }) as string
+
+  const keyValue = useWatch({
+    control,
+    name: keyFieldPath,
+  }) as string
+
   const decorator = decoratorMapping[keyValue]
+
   if (!decorator) return null
+
   return (
     <InputAdornment className={classes.decorator} position='end'>
       <Typography className={classes.decoratortext}>{decorator}</Typography>
     </InputAdornment>
   )
 }
+
+// ----------------------------------------------------------------------
 
 export default function KeyValue(props: KeyValueProps) {
   const { classes, cx } = useStyles()
@@ -186,46 +179,86 @@ export default function KeyValue(props: KeyValueProps) {
     isValueOptional = false,
   } = props
 
-  const { fields, append, remove } = useFieldArray({ control, name })
-  // 'fields' parameter from 'useFieldArray' does not come with the correct type for some reason
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name,
+  })
+
   const typedFields = fields as Array<KeyValueItem & { id: string }>
 
-  // Map fields with their original index.
-  const mappedFields = typedFields.map((field, index) => ({ field, index }))
-  // Apply filtering if filterFn is provided.
-  const filteredFields = filterFn
-    ? mappedFields.filter(({ field, index }) => filterFn(field as KeyValueItem & { id: string }, index))
-    : mappedFields
+  const mappedFields = typedFields.map((field, index) => ({
+    field,
+    index,
+  }))
+
+  const filteredFields = filterFn ? mappedFields.filter(({ field, index }) => filterFn(field, index)) : mappedFields
 
   if (filterFn && hideWhenEmpty && filteredFields.length === 0) return null
 
   const handleAddItem = () => {
-    append(onlyValue ? '' : { [keyLabel.toLowerCase()]: '', [valueLabel.toLowerCase()]: '' })
+    append(
+      onlyValue
+        ? ''
+        : {
+            [keyLabel.toLowerCase()]: '',
+            [valueLabel.toLowerCase()]: '',
+          },
+    )
   }
 
-  const errorScrollClassName = 'error-for-scroll'
+  const keyWidth = FIELD_WIDTHS[keySize]
+  const valueWidth = FIELD_WIDTHS[valueSize]
+
+  const fieldsMaxWidth = hideKeyField ? valueWidth : keyWidth + FIELD_GAP + valueWidth
+
   return (
     <Box
-      sx={{ mt: noMarginTop ? 0 : 3 }}
+      sx={{
+        mt: noMarginTop ? 0 : 3,
+        width: '100%',
+        minWidth: 0,
+        containerType: 'inline-size',
+      }}
       className={cx({
-        [errorScrollClassName]: !!errorText,
+        'error-for-scroll': !!errorText,
       })}
     >
       {title && (
-        <InputLabel className={classes.inputLabel} sx={{ fontWeight: 'bold', fontSize: '14px' }}>
+        <InputLabel
+          className={classes.inputLabel}
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '14px',
+          }}
+        >
           {title}
         </InputLabel>
       )}
-      {subTitle && <Typography sx={{ color: 'text.secondary', mb: 2 }}>{subTitle}</Typography>}
+
+      {subTitle && (
+        <Typography
+          sx={{
+            color: 'text.secondary',
+            mb: 2,
+          }}
+        >
+          {subTitle}
+        </Typography>
+      )}
 
       {filteredFields.map(({ field, index }, localIndex) => {
         const valuePath = onlyValue ? `${name}.${index}` : `${name}.${index}.${valueLabel.toLowerCase()}`
+
         const isFieldDisabled = mutableValue?.has(field.name) ? disabled : valueDisabled
+
+        const hasVisibleLabel = showLabel && localIndex === 0
+        const hasRemoveButton = Boolean(addLabel && !disabled)
+
         const commonProps = {
           ...register(valuePath),
-          width: valueSize,
-          label: showLabel && localIndex === 0 ? `${valueLabel}${isValueOptional ? ' (optional)' : ''}` : '',
-          noMarginTop: compressed,
+          width: 'fullwidth' as const,
+          label: hasVisibleLabel ? `${valueLabel}${isValueOptional ? ' (optional)' : ''}` : '',
+          noMarginTop: true,
           disabled: isFieldDisabled,
           type: valueIsNumber ? 'number' : undefined,
           InputProps: {
@@ -242,56 +275,134 @@ export default function KeyValue(props: KeyValueProps) {
           },
         }
 
-        const clearButtonMarginTop = () => {
-          if (compressed) {
-            if (localIndex === 0) return showLabel ? '32px' : '12px'
-            if (isTextArea && !showLabel) return '4px'
-            return showLabel ? '12px' : '14px'
-          }
-
-          return localIndex === 0 ? '48px' : '28px'
-        }
-
         return (
-          <Box key={field.id} sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormRow
-              spacing={hideKeyField ? 0 : 10}
+          <Box
+            key={field.id}
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              gap: `${BUTTON_GAP}px`,
+              width: '100%',
+              minWidth: 0,
+              mb: compressed ? 1 : 2,
+            }}
+          >
+            <Box
               sx={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                maxWidth: 'calc(100% - 40px)',
+                display: 'grid',
+
+                // Columns follow the real field widths rather
+                // than distributing unused space.
+                gridTemplateColumns: hideKeyField
+                  ? 'minmax(0, 1fr)'
+                  : `minmax(0, ${keyWidth}fr) minmax(0, ${valueWidth}fr)`,
+
+                columnGap: `${FIELD_GAP}px`,
+                rowGap: 1,
+                alignItems: 'start',
+
+                flex: `0 1 ${fieldsMaxWidth}px`,
+                width: '100%',
+                maxWidth: `${fieldsMaxWidth}px`,
+                minWidth: 0,
+
+                // Stack fields when the actual form container
+                // becomes narrow, independently of viewport width.
+                '@container (max-width: 600px)': {
+                  gridTemplateColumns: 'minmax(0, 1fr)',
+                },
               }}
             >
               {!hideKeyField && (
-                <TextField
-                  {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
-                  width={keySize}
-                  sx={{ color: 'text.secondary' }}
-                  value={keyValue}
-                  disabled={keyDisabled}
-                  noMarginTop={compressed}
-                  label={showLabel && localIndex === 0 ? keyLabel : ''}
-                  hideLabel={!showLabel || (localIndex !== 0 && isTextArea)}
-                  error={error}
-                />
+                <Box
+                  sx={{
+                    width: '100%',
+                    minWidth: 0,
+                    maxWidth: '100%',
+                    '& > *': {
+                      width: '100%',
+                      maxWidth: '100%',
+                    },
+                  }}
+                >
+                  <TextField
+                    {...(!onlyValue ? register(`${name}.${index}.${keyLabel.toLowerCase()}`) : {})}
+                    width='fullwidth'
+                    sx={{
+                      width: '100%',
+                      color: 'text.secondary',
+                    }}
+                    value={keyValue}
+                    disabled={keyDisabled}
+                    noMarginTop
+                    label={hasVisibleLabel ? keyLabel : ''}
+                    hideLabel={!hasVisibleLabel}
+                    error={error}
+                  />
+                </Box>
               )}
-              <Box sx={{ flex: 1, mt: localIndex !== 0 && isTextArea && '-4px', width: '100%' }}>
+
+              <Box
+                sx={{
+                  width: '100%',
+                  minWidth: 0,
+                  maxWidth: '100%',
+
+                  '& > *': {
+                    width: '100%',
+                    maxWidth: '100%',
+                  },
+
+                  '& .MuiFormControl-root': {
+                    width: '100%',
+                    maxWidth: '100%',
+                  },
+
+                  // AutoResizableTextarea normally applies
+                  // minWidth: 400px and adjusts width inline.
+                  // Override only its horizontal sizing here
+                  // so it follows the same responsive column
+                  // dimensions as TextField.
+                  '& textarea': {
+                    boxSizing: 'border-box',
+                    width: '100% !important',
+                    minWidth: '0 !important',
+                    maxWidth: '100% !important',
+                    resize: 'vertical',
+                  },
+                }}
+              >
                 {isTextArea ? (
                   <Controller
                     name={valuePath}
                     control={control}
-                    render={({ field }) => (
-                      <AutoResizableTextarea {...commonProps} {...field} error={error} isEncrypted={isEncrypted} />
+                    render={({ field: controllerField }) => (
+                      <AutoResizableTextarea
+                        {...commonProps}
+                        {...controllerField}
+                        error={error}
+                        isEncrypted={isEncrypted}
+                      />
                     )}
                   />
                 ) : (
-                  <TextField {...commonProps} error={error} />
+                  <TextField {...commonProps} hideLabel={!hasVisibleLabel} error={error} />
                 )}
               </Box>
-            </FormRow>
-            {addLabel && !disabled && (
+            </Box>
+
+            {hasRemoveButton && (
               <IconButton
-                sx={{ alignSelf: 'flex-start', mt: clearButtonMarginTop(), borderRadius: '1px' }}
+                sx={{
+                  flex: `0 0 ${BUTTON_WIDTH}px`,
+                  width: `${BUTTON_WIDTH}px`,
+                  height: `${BUTTON_WIDTH}px`,
+                  alignSelf: 'flex-start',
+                  mt: hasVisibleLabel ? 3 : 0.5,
+                  borderRadius: '1px',
+                }}
                 onClick={() => remove(index)}
               >
                 <Clear />
@@ -300,9 +411,13 @@ export default function KeyValue(props: KeyValueProps) {
           </Box>
         )
       })}
+
       {addLabel && !disabled && (
         <Button
-          sx={{ mt: 2, borderRadius: '1px' }}
+          sx={{
+            mt: 2,
+            borderRadius: '1px',
+          }}
           type='button'
           variant='outlined'
           startIcon={<AddIcon />}
@@ -311,17 +426,13 @@ export default function KeyValue(props: KeyValueProps) {
           {addLabel}
         </Button>
       )}
+
       {errorText && (
-        <FormHelperText
-          className={cx({
-            [classes.errorText]: true,
-          })}
-          data-qa-textfield-error-text={label}
-          role='alert'
-        >
+        <FormHelperText className={cx(classes.errorText)} data-qa-textfield-error-text={label} role='alert'>
           {errorText}
         </FormHelperText>
       )}
+
       {helperText && (helperTextPosition === 'bottom' || !helperTextPosition) && (
         <FormHelperText data-qa-textfield-helper-text>{helperText}</FormHelperText>
       )}
