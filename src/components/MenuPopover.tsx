@@ -27,28 +27,28 @@ const ArrowStyle = styled('span')<ArrowStyleProps>(({ arrow, theme }) => {
 
   const POSITION = -(SIZE / 2)
 
-  const borderStyle = `solid 1px ${theme.palette.grey[500_12]}`
+  const borderStyle = `solid 1px ${theme.palette.divider}`
 
   const topStyle = {
-    borderRadius: '0 0 3px 0',
+    borderRadius: 0,
     top: POSITION,
     borderBottom: borderStyle,
     borderRight: borderStyle,
   }
   const bottomStyle = {
-    borderRadius: '3px 0 0 0',
+    borderRadius: 0,
     bottom: POSITION,
     borderTop: borderStyle,
     borderLeft: borderStyle,
   }
   const leftStyle = {
-    borderRadius: '0 3px 0 0',
+    borderRadius: 0,
     left: POSITION,
     borderTop: borderStyle,
     borderRight: borderStyle,
   }
   const rightStyle = {
-    borderRadius: '0 0 0 3px',
+    borderRadius: 0,
     right: POSITION,
     borderBottom: borderStyle,
     borderLeft: borderStyle,
@@ -102,6 +102,16 @@ export default function MenuPopover({ children, arrow = 'top-right', disabledArr
           p: 1,
           width: 200,
           overflow: 'inherit',
+          borderRadius: 0,
+          boxShadow: 1,
+          border: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          fontFamily: (theme) => theme.font.normal,
+          fontSize: '14px',
+          lineHeight: '20px',
+          fontWeight: 400,
           ...sx,
         },
       }}

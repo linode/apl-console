@@ -23,23 +23,30 @@ const useStyles = makeStyles()((theme) => {
   const p = theme.palette
   return {
     root: {
+      ...theme.typography.body1,
+      fontFamily: theme.typography.fontFamily,
       color: p.text.secondary,
-      fontWeight: '200',
+      fontWeight: 400,
       marginTop: '5px',
     },
     info: {
-      border: `1px solid ${p.text.secondary}`,
-      borderRadius: '8px',
-      background: 'transparent',
+      border: `1px solid ${p.divider}`,
+      borderRadius: 0,
+      backgroundColor: p.background.paper,
+      '&:first-of-type, &:last-of-type': {
+        borderRadius: 0,
+      },
     },
     repositoryText: {
-      fontWeight: 500,
-      fontSize: '0.875rem',
+      ...theme.typography.body2,
+      fontFamily: theme.typography.fontFamily,
+      fontWeight: 700,
       color: p.text.primary,
     },
     strongText: {
-      fontWeight: 500,
-      fontSize: '0.875rem',
+      ...theme.typography.body2,
+      fontFamily: theme.typography.fontFamily,
+      fontWeight: 700,
       color: p.text.primary,
     },
   }
@@ -153,14 +160,14 @@ export default function (): React.ReactElement {
       <Box p={5} className={cx(classes.root)}>
         <Accordion className={classes.info} expanded={expanded} onChange={() => setExpanded(!expanded)}>
           <AccordionSummary>
-            <Box sx={{ fontWeight: 'bold', mr: '12px' }}>Welcome to the Catalog!</Box>
+            <Box sx={{ fontWeight: 700, mr: '12px' }}>Welcome to the Catalog!</Box>
             <HelpRoundedIcon />
           </AccordionSummary>
           <AccordionDetails>
             {developerCatalogInfo.map((info) => {
               return (
                 <Box key={info.title} sx={{ mb: '12px' }}>
-                  <Box sx={{ fontWeight: 'bold' }}>{info.title}</Box>
+                  <Box sx={{ fontWeight: 700 }}>{info.title}</Box>
                   <Typography sx={{ ml: '1rem' }}>{info.text}</Typography>
                 </Box>
               )
@@ -223,6 +230,7 @@ export default function (): React.ReactElement {
                     <LoadingButton
                       variant='outlined'
                       size='small'
+                      sx={{ borderRadius: '1px' }}
                       onClick={handleRefreshCache}
                       loading={isRefreshingAplCatalogCache}
                     >
@@ -254,7 +262,7 @@ export default function (): React.ReactElement {
                 }}
               >
                 <CircularProgress />
-                <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 'bold' }}>
+                <Typography variant='body2' sx={{ color: 'text.secondary', fontWeight: 700 }}>
                   Loading charts...
                 </Typography>
               </Box>
@@ -265,7 +273,7 @@ export default function (): React.ReactElement {
                 <Box sx={{ width: '100%' }}>
                   <Typography
                     variant='body2'
-                    sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 'bold', mb: 1 }}
+                    sx={{ textAlign: 'center', color: 'text.secondary', fontWeight: 700, mb: 1 }}
                   >
                     No charts found.
                   </Typography>

@@ -11,6 +11,7 @@ const StyledFormControlLabel = styled(FormControlLabel, {
   '& > span:last-child': {
     color: theme.palette.cm.headline,
     fontFamily: theme.font.bold,
+    fontWeight: 700,
     fontSize: '1rem',
     lineHeight: '1.2em',
     marginBottom: theme.spacing(2),
@@ -21,13 +22,15 @@ const StyledFormControlLabel = styled(FormControlLabel, {
 }))
 
 const StyledTypography = styled(Typography, { label: 'StyledTypography' })(({ theme }) => ({
-  marginTop: theme.spacing(-4),
+  marginTop: '-16px',
   paddingLeft: `calc(${theme.spacing(2)} + 14px)`, // 30
   [theme.breakpoints.up('md')]: {
     paddingLeft: `calc(${theme.spacing(4)} + 14px)`, // 46
   },
-  lineHeight: 'normal',
-  color: theme.palette.cl.text.subTitle,
+  lineHeight: '16px',
+  color: theme.palette.text.secondary,
+  fontFamily: theme.font.normal,
+  fontWeight: 400,
   maxWidth: '75%',
   fontSize: 'medium',
 }))

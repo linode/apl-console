@@ -12,8 +12,9 @@ const classes = {
   actionButton: {
     mt: 1,
     px: 0,
+    typography: 'body1',
     fontWeight: 400,
-    fontSize: '14px',
+    borderRadius: '1px',
     '&.MuiButton-root:hover': {
       bgcolor: 'transparent',
     },
@@ -43,7 +44,7 @@ export default function (): React.ReactElement {
       <HeaderTitle title='Maintenance' resourceType='maintenance' />
 
       <Section>
-        <Typography variant='h6' sx={{ fontWeight: 'bold' }}>
+        <Typography variant='h6' sx={{ fontWeight: 700 }}>
           Actions
         </Typography>
         {isPreInstalled && (

@@ -16,7 +16,7 @@ export default function ({ label, repo, sha, short = true, ...props }: LinkExten
   const shaShort = sha?.substring(0, 8)
   const children = props.children ?? short ? shaShort : sha
   const title = props.title ?? t(`Follow to view commit with sha {{sha}}`, { sha })
-  const color = props.color ?? 'secondary'
+  const color = props.color ?? 'primary'
   const insert = { ...props, children, color, href, title }
   if (label) insert['data-cy'] = `link-commit-${label}`
   return (

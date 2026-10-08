@@ -3,25 +3,12 @@ import { Theme } from '@mui/material/styles'
 // ----------------------------------------------------------------------
 
 export default function ButtonGroup(theme: Theme) {
-  const styleContained = (color: 'primary' | 'secondary' | 'info' | 'success' | 'warning' | 'error') => ({
-    props: { variant: 'contained', color },
-    style: { boxShadow: theme.customShadows[color] },
-  })
-
   return {
     MuiButtonGroup: {
+      defaultProps: {
+        disableElevation: true,
+      },
       variants: [
-        {
-          props: { variant: 'contained', color: 'inherit' },
-          style: { boxShadow: theme.customShadows.z8 },
-        },
-        styleContained('primary'),
-        styleContained('secondary'),
-        styleContained('info'),
-        styleContained('success'),
-        styleContained('warning'),
-        styleContained('error'),
-
         {
           props: { disabled: true },
           style: {
@@ -39,6 +26,8 @@ export default function ButtonGroup(theme: Theme) {
 
       styleOverrides: {
         root: {
+          borderRadius: 1,
+          boxShadow: 'none',
           '&:hover': {
             boxShadow: 'none',
           },
