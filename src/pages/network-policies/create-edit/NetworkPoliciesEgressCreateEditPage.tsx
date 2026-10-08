@@ -1,15 +1,20 @@
-import { useEffect, useMemo } from 'react'
-import { Button, FormHelperText, Grid, IconButton } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import PaperLayout from 'layouts/Paper'
-import { LandingHeader } from 'components/LandingHeader'
-import Section from 'components/Section'
+import { Box, Button, FormHelperText, Grid, IconButton } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
-import DeleteButton from 'components/DeleteButton'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
-import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { isEqual } from 'lodash'
+import { useEffect, useMemo } from 'react'
+import { FormProvider, Resolver, useFieldArray, useForm } from 'react-hook-form'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+
+import { LandingHeader } from 'components/LandingHeader'
+import PaperLayout from 'layouts/Paper'
+import Section from 'components/Section'
+import DeleteButton from 'components/DeleteButton'
 import { TextField } from 'components/forms/TextField'
+
 import {
   CreateAplNetpolApiArg,
   CreateAplNetpolApiResponse,
@@ -19,9 +24,7 @@ import {
   useGetAplNetpolQuery,
   useGetTeamAplNetpolsQuery,
 } from 'redux/otomiApi'
-import { useTranslation } from 'react-i18next'
-import { Divider } from 'components/Divider'
-import { isEqual } from 'lodash'
+
 import { createAplEgressSchema } from './create-edit-networkPolicies.validator'
 import { useStyles } from './create-edit-networkPolicies.styles'
 import NetworkPolicyEgressPortRow from './NetworkPolicyEgressPortRow'
@@ -40,8 +43,13 @@ export default function NetworkPoliciesEgressCreateEditPage({
   const { t } = useTranslation()
 
   const { data, isLoading: isFetching } = useGetAplNetpolQuery(
-    { teamId, netpolName: networkPolicyName },
-    { skip: !networkPolicyName },
+    {
+      teamId,
+      netpolName: networkPolicyName,
+    },
+    {
+      skip: !networkPolicyName,
+    },
   )
 
   const { data: teamNetworkPolicies, isLoading: isLoadingTeamNetworkPolicies } = useGetTeamAplNetpolsQuery(
@@ -100,7 +108,9 @@ export default function NetworkPoliciesEgressCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) reset(createAplEgressSchema.cast(data) as CreateAplNetpolApiResponse)
+    if (!data) return
+
+    reset(createAplEgressSchema.cast(data) as CreateAplNetpolApiResponse)
   }, [data, reset])
 
   const {
@@ -113,11 +123,18 @@ export default function NetworkPoliciesEgressCreateEditPage({
   })
 
   useEffect(() => {
-    if (!networkPolicyName && portFields.length === 0) appendPort({ protocol: 'TCP', number: 0 })
+    if (!networkPolicyName && portFields.length === 0) {
+      appendPort({
+        protocol: 'TCP',
+        number: 0,
+      })
+    }
   }, [networkPolicyName, appendPort, portFields.length])
 
   const [create, { isLoading: isCreating, isSuccess: didCreate }] = useCreateAplNetpolMutation()
+
   const [update, { isLoading: isUpdating, isSuccess: didUpdate }] = useEditAplNetpolMutation()
+
   const [del, { isLoading: isDeleting, isSuccess: didDelete }] = useDeleteAplNetpolMutation()
 
   const onSubmit = (formData: CreateAplNetpolApiResponse) => {
@@ -140,11 +157,23 @@ export default function NetworkPoliciesEgressCreateEditPage({
       },
     }
 
-    if (networkPolicyName) update({ teamId, netpolName: networkPolicyName, body })
-    else create({ teamId, body })
+    if (networkPolicyName) {
+      update({
+        teamId,
+        netpolName: networkPolicyName,
+        body,
+      })
+    } else {
+      create({
+        teamId,
+        body,
+      })
+    }
   }
 
-  if (isFetching) return <PaperLayout loading />
+  const loading = isFetching || isLoadingTeamNetworkPolicies
+
+  if (loading) return <PaperLayout loading title={t('TITLE_NETWORK_POLICY')} />
 
   const busy = isCreating || isUpdating || isDeleting
 
@@ -152,7 +181,7 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
   return (
     <Grid className={classes.root}>
-      <PaperLayout loading={isFetching} title={t('TITLE_NETWORK_POLICY')}>
+      <PaperLayout loading={loading} title={t('TITLE_NETWORK_POLICY')}>
         <LandingHeader
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-network-policies#outbound-rules'
@@ -162,53 +191,101 @@ export default function NetworkPoliciesEgressCreateEditPage({
 
         <FormProvider {...methods}>
           <form onSubmit={methods.handleSubmit(onSubmit)}>
-            <Section title='Add outbound rule'>
+            <Section title='General' description='Configure the name of this outbound network rule.'>
               <TextField
                 label='Outbound rule name'
                 width='large'
                 value={watch('metadata.name') ?? ''}
-                onChange={(e) => setValue('metadata.name', e.target.value, { shouldValidate: true, shouldDirty: true })}
+                onChange={(e) =>
+                  setValue('metadata.name', e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
+                }
                 error={!!errors.metadata?.name}
                 helperText={errors.metadata?.name?.message}
                 placeholder='e.g. allow-example-443'
                 disabled={!!networkPolicyName}
               />
+            </Section>
 
+            <Section
+              title='Destination'
+              description='Define the domain name or IP address that workloads are allowed to connect to.'
+            >
               <TextField
                 label='Domain name or IP address'
                 width='large'
                 value={watch('spec.ruleType.egress.domain') ?? ''}
                 onChange={(e) =>
-                  setValue('spec.ruleType.egress.domain', e.target.value, { shouldValidate: true, shouldDirty: true })
+                  setValue('spec.ruleType.egress.domain', e.target.value, {
+                    shouldValidate: true,
+                    shouldDirty: true,
+                  })
                 }
                 error={!!errors.spec?.ruleType?.egress?.domain}
                 helperText={errors.spec?.ruleType?.egress?.domain?.message}
                 placeholder='e.g. example.com'
               />
+            </Section>
 
-              <Divider spacingBottom={15} />
+            <Section
+              title='Ports'
+              description='Specify the protocols and destination ports that outbound traffic may use.'
+            >
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                {portFields.map((field, index) => (
+                  <Box
+                    key={field.id}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'flex-end',
+                      gap: 1,
+                    }}
+                  >
+                    <NetworkPolicyEgressPortRow
+                      fieldArrayName={`spec.ruleType.egress.ports.${index}`}
+                      rowIndex={index}
+                    />
 
-              {portFields.map((field, index) => (
-                <div key={field.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                  <NetworkPolicyEgressPortRow fieldArrayName={`spec.ruleType.egress.ports.${index}`} rowIndex={index} />
+                    {portFields.length > 1 && (
+                      <IconButton
+                        aria-label='Remove port'
+                        onClick={() => removePort(index)}
+                        size='small'
+                        sx={{
+                          mb: 0.5,
+                          flexShrink: 0,
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    )}
+                  </Box>
+                ))}
+              </Box>
 
-                  {portFields.length > 1 && (
-                    <IconButton
-                      aria-label='remove port'
-                      onClick={() => removePort(index)}
-                      size='small'
-                      sx={{
-                        // eslint-disable-next-line no-nested-ternary
-                        mt: index === 0 ? ((errors?.spec?.ruleType?.egress?.ports as any)?.root ? '28px' : '51px') : 4,
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
-                </div>
-              ))}
-
-              <Button variant='outlined' sx={{ mt: 3 }} onClick={() => appendPort({ protocol: 'TCP', number: 0 })}>
+              <Button
+                type='button'
+                variant='outlined'
+                startIcon={<AddIcon />}
+                onClick={() =>
+                  appendPort({
+                    protocol: 'TCP',
+                    number: 0,
+                  })
+                }
+                sx={{
+                  mt: 2,
+                  textTransform: 'none',
+                }}
+              >
                 Add Port
               </Button>
 
@@ -219,27 +296,42 @@ export default function NetworkPoliciesEgressCreateEditPage({
               )}
             </Section>
 
-            {networkPolicyName && (
-              <DeleteButton
-                onDelete={() => del({ teamId, netpolName: networkPolicyName })}
-                resourceName={networkPolicyName}
-                resourceType='netpol'
-                sx={{ float: 'right', ml: 2 }}
-                loading={isDeleting}
-                disabled={busy}
-              />
-            )}
-
-            <LoadingButton
-              type='submit'
-              variant='contained'
-              color='primary'
-              loading={isCreating || isUpdating}
-              disabled={busy || isEqual(data, watch())}
-              sx={{ float: 'right', textTransform: 'none' }}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                gap: 2,
+              }}
             >
-              {networkPolicyName ? 'Save Changes' : 'Create Outbound Rule'}
-            </LoadingButton>
+              {networkPolicyName && (
+                <DeleteButton
+                  onDelete={() =>
+                    del({
+                      teamId,
+                      netpolName: networkPolicyName,
+                    })
+                  }
+                  resourceName={networkPolicyName}
+                  resourceType='netpol'
+                  loading={isDeleting}
+                  disabled={busy}
+                />
+              )}
+
+              <LoadingButton
+                type='submit'
+                variant='contained'
+                color='primary'
+                loading={isCreating || isUpdating}
+                disabled={busy || isEqual(data, watch())}
+                sx={{
+                  textTransform: 'none',
+                }}
+              >
+                {networkPolicyName ? 'Save Changes' : 'Create Outbound Rule'}
+              </LoadingButton>
+            </Box>
           </form>
         </FormProvider>
       </PaperLayout>

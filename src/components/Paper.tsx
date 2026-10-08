@@ -38,12 +38,24 @@ export function Paper(props: Props) {
 const StyledPaper = styled(_Paper, {
   shouldForwardProp: omittedProps(['error']),
 })<Props>(({ theme, ...props }) => ({
-  borderColor: props.error ? theme.palette.cm.red : undefined,
+  borderColor: props.error ? theme.palette.error.main : theme.palette.divider,
+  borderRadius: 0,
+  boxShadow: 'none',
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  lineHeight: '20px',
+  fontWeight: 400,
   padding: theme.spacing(3),
   paddingTop: props.noPaddingTop ? 0 : 20,
   marginBottom: 20,
 }))
 
 const StyledErrorText = styled(FormHelperText)(({ theme }) => ({
-  color: theme.palette.cm.red,
+  color: theme.palette.error.main,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  lineHeight: '20px',
+  fontWeight: 400,
 }))

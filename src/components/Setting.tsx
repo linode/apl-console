@@ -181,7 +181,8 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
                 ml: '8px',
                 px: 0,
                 fontWeight: 500,
-                fontSize: '16px',
+                fontSize: '14px',
+                lineHeight: '20px',
                 '&.MuiButton-root:hover': { bgcolor: 'transparent' },
               }}
               onClick={() => {

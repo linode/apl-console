@@ -6,7 +6,7 @@ import KeyValue from 'components/forms/KeyValue'
 
 const useStyles = makeStyles()((theme: Theme) => ({
   decorator: {
-    borderLeft: '1px solid #777777',
+    borderLeft: `1px solid ${theme.palette.cm.textBoxBorder}`,
     height: 'auto',
     padding: '7px',
     width: '65px',
@@ -16,9 +16,10 @@ const useStyles = makeStyles()((theme: Theme) => ({
     justifyContent: 'flex-end',
   },
   decoratortext: {
-    fontWeight: 'bold',
-    fontSize: '10px',
-    color: theme.palette.cl.text.title,
+    ...theme.typography.body1,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    color: theme.palette.text.primary,
   },
   keyValueWrapper: {
     marginTop: '32px',

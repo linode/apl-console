@@ -73,13 +73,13 @@ export const getStatus = (status?: Status) => {
 
   switch (status) {
     case 'Unknown':
-      return <Iconify color='#FF4842' icon='eva:alert-circle-fill' width={22} height={22} />
+      return <Iconify sx={{ color: 'error.main' }} icon='eva:alert-circle-fill' width={22} height={22} />
 
     case 'Pending':
-      return <Iconify color='#FFC107' icon='eva:alert-triangle-fill' width={22} height={22} />
+      return <Iconify sx={{ color: 'warning.main' }} icon='eva:alert-triangle-fill' width={22} height={22} />
 
     case 'Succeeded':
-      return <Iconify color='#54D62C' icon='eva:checkmark-circle-2-fill' width={22} height={22} />
+      return <Iconify sx={{ color: 'success.main' }} icon='eva:checkmark-circle-2-fill' width={22} height={22} />
 
     default:
       return <CircularProgress size='22px' />
