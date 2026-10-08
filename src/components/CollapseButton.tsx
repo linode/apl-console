@@ -11,7 +11,13 @@ type Props = {
 
 export default function CollapseButton({ onToggleCollapse, collapseClick }: Props) {
   return (
-    <IconButtonAnimate onClick={onToggleCollapse} sx={{ color: 'text.secondary', borderRadius: 0 }}>
+    <IconButtonAnimate
+      onClick={onToggleCollapse}
+      sx={{
+        color: 'common.white',
+        borderRadius: 0,
+      }}
+    >
       <Box
         sx={{
           lineHeight: 0,

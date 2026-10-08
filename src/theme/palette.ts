@@ -233,7 +233,7 @@ const palette = {
       default: GREY[100],
       contrast: GREY[0],
       contrastAlt: GREY[50],
-      header: GREY[0],
+      header: GREY[800],
       sidebar: GREY[600],
       neutral: GREY[200],
     },

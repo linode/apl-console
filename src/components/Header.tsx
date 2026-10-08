@@ -1,5 +1,5 @@
 import { skipToken } from '@reduxjs/toolkit/query/react'
-import { AppBar, Box, MenuItem, Select, Stack, Toolbar, Typography, styled } from '@mui/material'
+import { AppBar, Box, MenuItem, Select, Stack, Toolbar, Typography, alpha, styled } from '@mui/material'
 import { SelectChangeEvent } from '@mui/material/Select'
 import { HEADER, NAVBAR } from 'config'
 import useOffSetTop from 'hooks/useOffSetTop'
@@ -37,7 +37,7 @@ const RootStyle = styled(AppBar, {
   shouldForwardProp: (prop) => prop !== 'isCollapse' && prop !== 'isOffset' && prop !== 'verticalLayout',
 })<RootStyleProps>(({ isCollapse, isOffset, verticalLayout, theme }) => ({
   boxShadow: 'none',
-  color: '#585656',
+  color: theme.palette.common.white,
   height: HEADER.MOBILE_HEIGHT,
   zIndex: theme.zIndex.appBar + 1,
   transition: theme.transitions.create(['width', 'height'], {
@@ -56,9 +56,25 @@ const RootStyle = styled(AppBar, {
   },
 }))
 
-const StyledSelect = styled(Select)(() => ({
+const StyledSelect = styled(Select)(({ theme }) => ({
   width: 120,
   minWidth: 120,
+  '& .MuiOutlinedInput-root': {
+    color: theme.palette.common.white,
+    backgroundColor: alpha(theme.palette.common.white, 0.08),
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: alpha(theme.palette.common.white, 0.32),
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: alpha(theme.palette.common.white, 0.56),
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme.palette.primary.light,
+    },
+  },
+  '& .MuiSelect-icon': {
+    color: theme.palette.common.white,
+  },
   '& .MuiSelect-select': {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -172,7 +188,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         }}
       >
         {!isDesktop && (
-          <IconButtonAnimate onClick={onOpenSidebar} sx={{ mr: 1, color: 'text.primary' }}>
+          <IconButtonAnimate onClick={onOpenSidebar} sx={{ mr: 1, color: 'inherit' }}>
             <Iconify icon='eva:menu-2-fill' />
           </IconButtonAnimate>
         )}
