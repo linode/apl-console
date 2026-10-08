@@ -47,7 +47,7 @@ const useStyles = makeStyles()((theme) => ({
     display: 'inline-flex',
   },
   img: {
-    height: theme.spacing(8),
+    height: theme.spacing(6),
   },
   repoInfo: {
     marginBottom: theme.spacing(2),
@@ -56,13 +56,20 @@ const useStyles = makeStyles()((theme) => ({
     gap: theme.spacing(1),
   },
   repoLabel: {
-    fontWeight: 600,
-    color: '#c8c8c8',
+    ...theme.typography.body1,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    color: theme.palette.text.primary,
     marginRight: theme.spacing(1),
+    fontSize: '0.8rem',
   },
   repoValue: {
-    color: '#939393',
+    ...theme.typography.body1,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 400,
+    color: theme.palette.text.secondary,
     wordBreak: 'break-all',
+    fontSize: '0.8rem',
   },
 }))
 

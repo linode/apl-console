@@ -6,11 +6,11 @@ import { Typography } from './Typography'
 
 const StyledTitle = styled(Typography)(({ theme }) => ({
   marginTop: 0,
-  color: theme.palette.cl.text.title,
+  color: theme.palette.text.primary,
 }))
 
 const StyledDescription = styled(Typography)(({ theme }) => ({
-  color: theme.palette.cl.text.subTitle,
+  color: theme.palette.text.secondary,
 }))
 
 const StyledAccordion = styled(Accordion)(() => ({

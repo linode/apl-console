@@ -1,11 +1,10 @@
-import { Box, Chip, Typography, useTheme } from '@mui/material'
+import { Box, Chip, Typography } from '@mui/material'
 import React, { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { makeStyles } from 'tss-react/mui'
 import AppButtons from './AppButtons'
 
 const useStyles = makeStyles()((theme) => {
-  const p = theme.palette
   return {
     root: {
       display: 'flex',
@@ -18,6 +17,8 @@ const useStyles = makeStyles()((theme) => {
       paddingTop: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
       border: `1px solid ${theme.palette.divider}`,
+      borderRadius: 0,
+      boxShadow: 'none',
       margin: '5px',
       maxHeight: '200px',
       height: '58px',
@@ -31,7 +32,7 @@ const useStyles = makeStyles()((theme) => {
         visibility: 'visible',
       },
       '&:hover': {
-        border: '1px solid #c2c2ca',
+        borderColor: theme.palette.cm.linkActiveLight,
       },
     },
     disabled: {
@@ -45,19 +46,17 @@ const useStyles = makeStyles()((theme) => {
     },
     chip: {
       height: '20px',
-      fontSize: '0.65rem',
-      border: 'none',
-      borderRadius: '5px',
+      fontFamily: theme.font.normal,
+      fontSize: '14px',
+      lineHeight: '20px',
+      fontWeight: 400,
+      border: `1px solid ${theme.palette.divider}`,
+      borderRadius: 0,
+      color: theme.palette.info.main,
+      backgroundColor: theme.palette.background.paper,
     },
-    chipDark: {
-      fontWeight: 'normal',
-      color: p.grey[0],
-      backgroundColor: p.grey[500_24],
-    },
-    chipLight: {
-      fontWeight: 'normal',
-      color: p.grey[1000],
-      backgroundColor: p.grey[300],
+    deprecated: {
+      color: theme.palette.warning.main,
     },
     contrast: {
       filter: 'drop-shadow(0 0 2px white)',
@@ -74,8 +73,10 @@ const useStyles = makeStyles()((theme) => {
       textAlign: 'center',
       verticalAlign: 'middle',
       color: theme.palette.text.primary,
-      fontWeight: 'bold',
-      fontSize: '1rem',
+      fontFamily: theme.font.normal,
+      fontWeight: 700,
+      fontSize: '14px',
+      lineHeight: '20px',
       textTransform: 'capitalize',
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
@@ -102,8 +103,6 @@ export default function ({
   openModal,
 }: any): React.ReactElement {
   const { classes, cx } = useStyles()
-  const theme = useTheme()
-  const isLight = theme.palette.mode === 'light'
   const image = (
     <img
       draggable={false}
@@ -147,31 +146,19 @@ export default function ({
         </Typography>
         {isBeta && (
           <Box>
-            <Chip
-              className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
-              label='BETA'
-              variant='outlined'
-            />
+            <Chip className={classes.chip} label='BETA' variant='outlined' />
           </Box>
         )}
 
         {isAlpha && (
           <Box>
-            <Chip
-              className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
-              label='ALPHA'
-              variant='outlined'
-            />
+            <Chip className={classes.chip} label='ALPHA' variant='outlined' />
           </Box>
         )}
 
         {isDeprecated && (
           <Box>
-            <Chip
-              className={cx(classes.chip, isLight ? classes.chipLight : classes.chipDark)}
-              label='DEPRECATED'
-              variant='outlined'
-            />
+            <Chip className={cx(classes.chip, classes.deprecated)} label='DEPRECATED' variant='outlined' />
           </Box>
         )}
       </Link>
