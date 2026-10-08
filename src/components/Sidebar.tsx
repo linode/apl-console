@@ -78,6 +78,7 @@ export default function Sidebar({ isOpenSidebar, onCloseSidebar }: Props) {
           px: 2,
           flexShrink: 0,
           ...(isCollapse && { alignItems: 'center' }),
+          backgroundColor: 'background.header',
         }}
       >
         <Stack direction='row' alignItems='center' justifyContent='space-between'>

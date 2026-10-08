@@ -1,11 +1,28 @@
 /* eslint-disable dot-notation */
-import { Box, Divider, Grid } from '@mui/material'
+import { Box, Grid } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { cloneDeep, isEmpty, isEqual } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
+
 import { LandingHeader } from 'components/LandingHeader'
 import PaperLayout from 'layouts/Paper'
-import React, { useEffect, useMemo, useState } from 'react'
-import { FieldPath, FormProvider, Resolver, useController, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { Redirect, RouteComponentProps } from 'react-router-dom'
+import DeleteButton from 'components/DeleteButton'
+import FormRow from 'components/forms/FormRow'
+import Section from 'components/Section'
+import { TextField } from 'components/forms/TextField'
+import { MenuItem } from 'components/List'
+import KeyValue from 'components/forms/KeyValue'
+import ControlledCheckbox from 'components/forms/ControlledCheckbox'
+import LinkedNumberField from 'components/forms/LinkedNumberField'
+import AdvancedSettings from 'components/AdvancedSettings'
+import { Autocomplete } from 'components/forms/Autocomplete'
+import { useSession } from 'providers/Session'
+import { useAppSelector } from 'redux/hooks'
+
 import {
   CreateAplServiceApiResponse,
   useCreateAplServiceMutation,
@@ -17,23 +34,7 @@ import {
   useGetSettingsInfoQuery,
   useGetTeamAplServicesQuery,
 } from 'redux/otomiApi'
-import { useTranslation } from 'react-i18next'
-import { useAppSelector } from 'redux/hooks'
-import { useSession } from 'providers/Session'
-import DeleteButton from 'components/DeleteButton'
-import FormRow from 'components/forms/FormRow'
-import Section from 'components/Section'
-import { TextField } from 'components/forms/TextField'
-import { MenuItem } from 'components/List'
-import { Typography } from 'components/Typography'
-import KeyValue from 'components/forms/KeyValue'
-import ControlledCheckbox from 'components/forms/ControlledCheckbox'
-import { cloneDeep, isEmpty, isEqual } from 'lodash'
-import LinkedNumberField from 'components/forms/LinkedNumberField'
-import AdvancedSettings from 'components/AdvancedSettings'
-import font from 'theme/font'
-import { Autocomplete } from 'components/forms/Autocomplete'
-import { LoadingButton } from '@mui/lab'
+
 import { useStyles } from './create-edit-services.styles'
 import { serviceApiResponseSchema } from './create-edit-services.validator'
 
@@ -53,32 +54,38 @@ export default function ServicesCreateEditPage({
     params: { teamId, serviceName },
   },
 }: RouteComponentProps<Params>): React.ReactElement {
-  // state
   const { t } = useTranslation()
   const { classes } = useStyles()
+
   const {
     settings: {
       cluster,
       otomi: { isPreInstalled },
     },
   } = useSession()
+
   const [service, setService] = useState<K8Service | undefined>(undefined)
   const [url, setUrl] = useState<string | undefined>(undefined)
 
   const getKeyValue = (activeService: K8Service) => {
     let compositeUrl = ''
+
     if (activeService !== undefined) {
       compositeUrl = activeService?.managedByKnative
         ? `${activeService.name}-team-${teamId}.${cluster.domainSuffix}`
         : `${activeService.name}-${teamId}.${cluster.domainSuffix}`
     } else compositeUrl = `*-${teamId}.${cluster.domainSuffix}`
+
     return compositeUrl
   }
 
-  // api calls
+  // API calls
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate }] = useCreateAplServiceMutation()
+
   const [update, { isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate }] = useEditAplServiceMutation()
+
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplServiceMutation()
+
   const {
     data,
     isLoading,
@@ -86,6 +93,7 @@ export default function ServicesCreateEditPage({
     isError,
     refetch: refetchService,
   } = useGetAplServiceQuery({ teamId, serviceName }, { skip: !serviceName })
+
   const {
     data: k8sServices,
     isLoading: isLoadingK8sServices,
@@ -101,6 +109,7 @@ export default function ServicesCreateEditPage({
     isError: isErrorTeamSecrets,
     refetch: refetchTeamSecrets,
   } = useGetAplSealedSecretsQuery({ teamId }, { skip: !teamId })
+
   const {
     data: settingsInfo,
     isLoading: isLoadingSettingsInfo,
@@ -109,14 +118,10 @@ export default function ServicesCreateEditPage({
     refetch: refetchSettingsInfo,
   } = useGetSettingsInfoQuery()
 
-  const {
-    data: teamServices,
-    isLoading: isLoadingTeamServices,
-    isFetching: isFetchingTeamServices,
-    refetch: refetchTeamServices,
-  } = useGetTeamAplServicesQuery({ teamId }, { skip: !teamId })
+  const { data: teamServices } = useGetTeamAplServicesQuery({ teamId }, { skip: !teamId })
 
   const teamSecrets = teamSealedSecrets?.filter((secret) => secret?.spec?.template?.type === 'kubernetes.io/tls') || []
+
   const updatedIngressClassNames = [...(settingsInfo?.ingressClassNames ?? []), 'platform']
 
   const existingNames = (teamServices ?? [])
@@ -124,15 +129,17 @@ export default function ServicesCreateEditPage({
     .filter((name): name is string => Boolean(name))
 
   const isDirty = useAppSelector(({ global: { isDirty } }) => isDirty)
+
   useEffect(() => {
     if (isDirty !== false) return
+
     if (!isFetching) refetchService()
     if (!isFetchingTeamSecrets) refetchTeamSecrets()
     if (!isFetchingK8sServices) refetchK8sServices()
     if (!isFetchingSettingsInfo) refetchSettingsInfo()
   }, [isDirty])
 
-  // form state
+  // Form state
   const methods = useForm<CreateAplServiceApiResponse>({
     resolver: yupResolver(serviceApiResponseSchema) as Resolver<CreateAplServiceApiResponse>,
     defaultValues: data,
@@ -143,6 +150,7 @@ export default function ServicesCreateEditPage({
       validateOnSubmit: !serviceName,
     },
   })
+
   const {
     control,
     register,
@@ -157,10 +165,12 @@ export default function ServicesCreateEditPage({
     control,
     name: 'spec.ingressClassName' as FieldPath<CreateAplServiceApiResponse>,
   })
+
   const { field: tlsSecretField } = useController<CreateAplServiceApiResponse>({
     control,
     name: 'spec.cname.tlsSecretName' as FieldPath<CreateAplServiceApiResponse>,
   })
+
   const { field: nameField } = useController<CreateAplServiceApiResponse>({
     control,
     name: 'metadata.name' as FieldPath<CreateAplServiceApiResponse>,
@@ -204,42 +214,53 @@ export default function ServicesCreateEditPage({
   }, [k8sServices, existingNames, serviceName])
 
   useEffect(() => {
-    if (data?.metadata.name) setActiveService(data?.metadata.name)
+    if (data?.metadata.name) setActiveService(data.metadata.name)
   }, [data?.metadata.name, filteredK8Services])
 
-  const TrafficControlEnabled = watch('spec.trafficControl.enabled')
+  const trafficControlEnabled = watch('spec.trafficControl.enabled')
+
   function setActiveService(name: string) {
     if (teamId === 'admin') setService({ name, ports: [] })
     else {
       const activeService = filteredK8Services?.find((service) => service.name === name) as unknown as K8Service
+
       setService(activeService)
       setValue('spec.port', data?.spec?.port || activeService?.ports[0])
+
       if (activeService?.managedByKnative) setValue('spec.ksvc.predeployed', true)
       else setValue('spec.ksvc.predeployed', false)
     }
   }
+
   const onSubmit = (submitData: CreateAplServiceApiResponse) => {
     const body = cloneDeep(submitData)
+
     if (!isEmpty(body.spec?.paths)) {
       body.spec?.paths.forEach((path, index) => {
         body.spec.paths[index] = `/${path}`
       })
     }
+
     if (body.spec?.cname?.tlsSecretName === '') {
       body.spec.cname.tlsSecretName = undefined
       body.spec.useCname = false
     } else if (body.spec?.cname?.tlsSecretName) body.spec.useCname = true
 
     if (body.spec?.ingressClassName === '') body.spec.ingressClassName = undefined
+
     if (serviceName) update({ teamId, serviceName, body })
     else create({ teamId, body })
   }
+
   const mutating = isLoadingCreate || isLoadingUpdate || isLoadingDelete
+
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete))
     return <Redirect to={`/teams/${teamId}/services`} />
 
   const loading = isLoading || isLoadingK8sServices || isLoadingTeamSecrets || isLoadingSettingsInfo
+
   const fetching = isFetching || isFetchingK8sServices || isFetchingTeamSecrets || isFetchingSettingsInfo
+
   const error = isError || isErrorK8sServices || isErrorTeamSecrets || isErrorSettingsInfo
 
   if (loading || fetching) return <PaperLayout loading title={t('TITLE_SERVICE')} />
@@ -251,13 +272,19 @@ export default function ServicesCreateEditPage({
           docsLabel='Docs'
           docsLink='https://techdocs.akamai.com/app-platform/docs/team-services'
           title={serviceName ? data.metadata.name : 'Create'}
-          // hides the first two crumbs (e.g. /teams/teamName)
           hideCrumbX={[0, 1]}
         />
+
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Section title='General'>
-              <FormRow spacing={10}>
+            <Section title='General' description='Configure the service, port and network exposure.'>
+              <FormRow
+                spacing={10}
+                sx={{
+                  alignItems: 'flex-start',
+                  flexWrap: 'wrap',
+                }}
+              >
                 {teamId === 'admin' && (
                   <TextField
                     label='Namespace'
@@ -267,8 +294,7 @@ export default function ServicesCreateEditPage({
                     helperText={errors.spec?.namespace?.message?.toString()}
                   />
                 )}
-              </FormRow>
-              <FormRow key={1} spacing={10}>
+
                 {teamId === 'admin' ? (
                   <TextField
                     label='Service Name'
@@ -276,8 +302,12 @@ export default function ServicesCreateEditPage({
                     {...register('metadata.name')}
                     onChange={(e) => {
                       const value = e.target.value
+
                       setValue('metadata.name', value)
-                      setValue('metadata.labels', { 'apl.io/teamId': teamId })
+                      setValue('metadata.labels', {
+                        'apl.io/teamId': teamId,
+                      })
+
                       setActiveService(value)
                     }}
                     value={watch('metadata.name', data?.metadata.name)}
@@ -292,7 +322,11 @@ export default function ServicesCreateEditPage({
                     value={typeof nameField.value === 'string' ? nameField.value : ''}
                     onChange={(_e, value) => {
                       nameField.onChange(value ?? '')
-                      setValue('metadata.labels', { 'apl.io/teamId': teamId })
+
+                      setValue('metadata.labels', {
+                        'apl.io/teamId': teamId,
+                      })
+
                       setActiveService(value ?? '')
                     }}
                     errorText={errors.metadata?.name?.message?.toString()}
@@ -317,8 +351,7 @@ export default function ServicesCreateEditPage({
                     select
                     disabled={teamId !== 'admin' && !!serviceName}
                     onChange={(e) => {
-                      const value = Number(e.target.value)
-                      setValue('spec.port', value)
+                      setValue('spec.port', Number(e.target.value))
                     }}
                     placeholder='Select a port'
                     value={watch('spec.port') ?? data?.spec?.port ?? ''}
@@ -333,11 +366,17 @@ export default function ServicesCreateEditPage({
                   </TextField>
                 )}
               </FormRow>
-              <FormRow spacing={10}>
+
+              <FormRow
+                spacing={10}
+                sx={{
+                  alignItems: 'flex-start',
+                  flexWrap: 'wrap',
+                }}
+              >
                 <TextField label='URL' width='large' disabled value={url} />
-              </FormRow>
-              {!isPreInstalled && (
-                <FormRow spacing={10}>
+
+                {!isPreInstalled && (
                   <Autocomplete<string, false, false, false>
                     label='Ingress Class Name'
                     width='large'
@@ -347,20 +386,23 @@ export default function ServicesCreateEditPage({
                     value={typeof ingressClassField.value === 'string' ? ingressClassField.value : ''}
                     onChange={(_e, value) => ingressClassField.onChange(value ?? '')}
                   />
-                </FormRow>
-              )}
+                )}
+              </FormRow>
             </Section>
+
             <AdvancedSettings title='Advanced Settings' closed>
-              <Section>
+              <Section
+                title='URL Paths'
+                description='By default all paths are allowed. Add paths to restrict the service to specific URLs.'
+              >
                 <KeyValue
-                  title='URL paths'
-                  subTitle='By default all paths are allowed. If filled in, URL paths that are not explicitly added here will result in a page not found error.'
                   keyDisabled
                   keyValue={url}
                   keyLabel='Domain'
                   valueLabel='Path'
                   showLabel={false}
                   compressed
+                  noMarginTop
                   addLabel='Add URL path'
                   onlyValue
                   keySize='large'
@@ -370,23 +412,19 @@ export default function ServicesCreateEditPage({
                   helperText={errors.spec?.paths?.root?.message?.toString()}
                   {...register('spec.paths')}
                 />
+              </Section>
 
-                <Divider sx={{ mt: 4, mb: 2 }} />
-                <Typography
+              <Section
+                title='Canonical Name (CNAME)'
+                description='Use a Canonical Name (CNAME) that points to the Service domain name.'
+              >
+                <FormRow
+                  spacing={10}
                   sx={{
-                    color: 'text.primary',
-                    fontSize: '1rem',
-                    lineHeight: '1.5rem',
-                    fontWeight: 700,
-                    fontFamily: font.bold,
+                    alignItems: 'flex-start',
+                    flexWrap: 'wrap',
                   }}
                 >
-                  Canonical Name (CNAME)
-                </Typography>
-                <Typography sx={{ fontSize: '0.875rem', color: '#ABABAB', lineHeight: '1.25rem' }}>
-                  Use a Canonical Name (CNAME) that points to the Service domain name.
-                </Typography>
-                <FormRow key={1} spacing={10}>
                   <TextField
                     label='Domain'
                     error={!!errors.spec?.cname}
@@ -395,6 +433,7 @@ export default function ServicesCreateEditPage({
                     type='text'
                     {...register('spec.cname.domain')}
                   />
+
                   <Autocomplete<string, false, false, false>
                     label='TLS Secret'
                     loading={isLoadingTeamSecrets}
@@ -405,28 +444,34 @@ export default function ServicesCreateEditPage({
                     onChange={(_e, value) => tlsSecretField.onChange(value ?? '')}
                   />
                 </FormRow>
+              </Section>
 
-                <Divider sx={{ mt: 4, mb: 2 }} />
-
+              <Section
+                title='Traffic Management'
+                description='Split traffic between two service versions for canary releases or A/B testing.'
+              >
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.trafficControl.enabled'
                   control={control}
                   label='Enable Traffic Management'
-                  explainertext='Split traffic between two versions (A/B testing, canary). (Enable this feature only if you have two
-                    deployments behind that service)'
+                  explainertext='Enable this feature only when two deployments are available behind the service.'
                 />
+
                 <LinkedNumberField
                   registers={{
-                    registerA: { ...register('spec.trafficControl.weightV1') },
-                    registerB: { ...register('spec.trafficControl.weightV2') },
+                    registerA: {
+                      ...register('spec.trafficControl.weightV1'),
+                    },
+                    registerB: {
+                      ...register('spec.trafficControl.weightV2'),
+                    },
                     setValue,
                     watch,
                   }}
                   labelA='Version A'
                   labelB='Version B'
                   valueMax={100}
-                  disabled={!TrafficControlEnabled}
+                  disabled={!trafficControlEnabled}
                   error={!!errors.spec?.trafficControl?.weightV1 || !!errors.spec?.trafficControl?.weightV2}
                   helperText={
                     errors.spec?.trafficControl?.weightV1 || errors.spec?.trafficControl?.weightV2
@@ -434,14 +479,17 @@ export default function ServicesCreateEditPage({
                       : undefined
                   }
                 />
+              </Section>
 
-                <Divider sx={{ mt: 4, mb: 2 }} />
-
+              <Section
+                title='HTTP Response Headers'
+                description='Add or override HTTP response headers returned by the service.'
+              >
                 <KeyValue
-                  title='HTTP Response Headers'
                   keyLabel='Name'
                   valueLabel='Value'
                   addLabel='Add response header'
+                  noMarginTop
                   name='ingress.headers.response.set'
                   keySize='large'
                   valueSize='large'
@@ -451,21 +499,26 @@ export default function ServicesCreateEditPage({
                 />
               </Section>
             </AdvancedSettings>
-            <Box sx={{ display: 'flex', alignContent: 'center', justifyContent: 'flex-end', alignItems: 'center' }}>
-              <Typography sx={{ fontSize: '12px', marginRight: '10px' }}>
-                The service will be exposed as: {url}
-              </Typography>
+
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'flex-end',
+                gap: 2,
+              }}
+            >
               {serviceName && (
                 <DeleteButton
                   onDelete={() => del({ teamId, serviceName })}
                   resourceName={watch('metadata.name')}
                   resourceType='service'
                   data-cy='button-delete-service'
-                  sx={{ marginRight: '10px', textTransform: 'capitalize', ml: 2 }}
                   loading={isLoadingDelete}
                   disabled={isLoadingDelete || isLoadingCreate || isLoadingUpdate}
                 />
               )}
+
               <LoadingButton
                 type='submit'
                 variant='contained'
