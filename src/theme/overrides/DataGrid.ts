@@ -14,12 +14,14 @@ export default function DataGrid(theme: Theme) {
           },
           '& .MuiDataGrid-toolbarContainer': {
             padding: theme.spacing(2),
-            backgroundColor: theme.palette.background.neutral,
+            backgroundColor: theme.palette.cm.rowAlter,
             '& .MuiButton-root': {
               marginRight: theme.spacing(1.5),
-              color: theme.palette.text.primary,
-              '&:hover': {
-                backgroundColor: theme.palette.action.hover,
+              '&:not(.Mui-disabled)': {
+                color: theme.palette.text.primary,
+                '&:hover': {
+                  backgroundColor: theme.palette.action.hover,
+                },
               },
             },
           },
@@ -39,8 +41,8 @@ export default function DataGrid(theme: Theme) {
       styleOverrides: {
         root: {
           '& .MuiDataGrid-gridMenuList': {
-            boxShadow: theme.customShadows.z20,
-            borderRadius: theme.shape.borderRadius,
+            boxShadow: theme.shadows[3],
+            borderRadius: 0,
           },
           '& .MuiMenuItem-root': {
             ...theme.typography.body2,
@@ -63,8 +65,24 @@ export default function DataGrid(theme: Theme) {
             '& .MuiNativeSelect-select, .MuiInput-input': {
               ...theme.typography.body2,
               padding: theme.spacing(0.75, 1),
-              borderRadius: theme.shape.borderRadius,
-              backgroundColor: theme.palette.background.neutral,
+              borderRadius: 0,
+              backgroundColor: theme.palette.cm.textBox,
+              border: `1px solid ${theme.palette.cm.textBoxBorder}`,
+              '&:focus': {
+                outline: `2px solid ${theme.palette.cm.linkActiveLight}`,
+                outlineOffset: -1,
+              },
+              '&.Mui-disabled': {
+                color: theme.palette.text.disabled,
+                backgroundColor: theme.palette.action.disabledBackground,
+                borderColor: theme.palette.action.disabled,
+              },
+            },
+            '&.Mui-error:not(.Mui-disabled) .MuiNativeSelect-select, &.Mui-error:not(.Mui-disabled) .MuiInput-input': {
+              borderColor: theme.palette.error.main,
+              '&:focus': {
+                outlineColor: theme.palette.error.main,
+              },
             },
             '& .MuiSvgIcon-root': {
               right: 4,
@@ -81,16 +99,18 @@ export default function DataGrid(theme: Theme) {
           '& .MuiButton-root': {
             '&:first-of-type': {
               marginRight: theme.spacing(1.5),
+            },
+            '&:first-of-type:not(.Mui-disabled)': {
               color: theme.palette.text.primary,
               '&:hover': {
                 backgroundColor: theme.palette.action.hover,
               },
             },
-            '&:last-of-type': {
-              color: theme.palette.common.white,
+            '&:last-of-type:not(.Mui-disabled)': {
+              color: theme.palette.primary.contrastText,
               backgroundColor: theme.palette.primary.main,
               '&:hover': {
-                backgroundColor: theme.palette.primary.dark,
+                backgroundColor: theme.palette.cm.buttonPrimaryHover,
               },
             },
           },

@@ -3,17 +3,18 @@ import { Editor } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import Ajv, { ErrorObject } from 'ajv'
 import { makeStyles } from 'tss-react/mui'
+import { alpha } from '@mui/material/styles'
 import YAML, { Document, Pair, Node as YamlNode, isMap } from 'yaml'
 import useSettings from 'hooks/useSettings'
 
 const useStyles = makeStyles()((theme) => ({
   root: { border: '1px solid transparent' },
-  invalid: { border: '1px solid red' },
+  invalid: { border: `1px solid ${theme.palette.error.main}` },
   errorMessageWrapper: {
     marginTop: theme.spacing(2),
-    backgroundColor: '#feefef',
-    border: '1px solid red',
-    color: 'red',
+    backgroundColor: alpha(theme.palette.error.main, 0.08),
+    border: `1px solid ${theme.palette.error.main}`,
+    color: theme.palette.error.main,
     padding: '0px 5px',
   },
   errorMessage: {
