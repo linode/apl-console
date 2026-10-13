@@ -19,6 +19,8 @@ export default function ThemeColorPresets({ children }: Props) {
   const themeOptions = useMemo(
     () => ({
       ...defaultTheme,
+      // Rebuild overrides for the selected palette without reprocessing the inherited ones.
+      components: {},
       palette: {
         ...defaultTheme.palette,
         primary: setColor,

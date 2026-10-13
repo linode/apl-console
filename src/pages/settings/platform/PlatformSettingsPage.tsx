@@ -1,4 +1,4 @@
-import LoadingButton from '@mui/lab/LoadingButton'
+import LoadingButton from '@mui/material/Button'
 import { Box } from '@mui/material'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
