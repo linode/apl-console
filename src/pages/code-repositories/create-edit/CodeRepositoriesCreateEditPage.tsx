@@ -30,7 +30,7 @@ import { useSession } from 'providers/Session'
 import Section from 'components/Section'
 import DeleteButton from 'components/DeleteButton'
 import { isEmpty } from 'lodash'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { aplCodeRepoApiSchema } from './create-edit-codeRepositories.validator'
 import { useStyles } from './create-edit-codeRepositories.styles'
 

@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField'
 import React, { useState } from 'react'
 import { styled } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 
 const StyledDeleteButton = styled(LoadingButton)(({ theme }) => ({
   float: 'right',

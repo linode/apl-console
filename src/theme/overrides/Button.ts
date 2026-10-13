@@ -29,6 +29,12 @@ export default function Button(theme: Theme) {
           '&[aria-disabled="true"]': {
             color: theme.palette.action.disabled,
           },
+          '&.MuiButton-text.MuiButton-loadingPositionStart .MuiButton-startIcon': {
+            marginLeft: 0,
+          },
+          '&.MuiButton-text.MuiButton-loadingPositionEnd .MuiButton-endIcon': {
+            marginRight: 0,
+          },
         },
         // contained
         containedInherit: {

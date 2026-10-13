@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { LandingHeader } from 'components/LandingHeader'
 import { TextField } from 'components/forms/TextField'
