@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/Add'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import { Box, Button, FormHelperText, Grid, IconButton } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { isEqual } from 'lodash'
 import { useEffect, useMemo } from 'react'

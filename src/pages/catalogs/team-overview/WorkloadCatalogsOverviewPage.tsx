@@ -13,7 +13,7 @@ import { useSnackbar } from 'notistack'
 import { Autocomplete } from 'components/forms/Autocomplete'
 import { useAppSelector } from 'redux/hooks'
 import { useTranslation } from 'react-i18next'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import CatalogCard from '../../../components/CatalogCard'
 import TableToolbar from '../../../components/TableToolbar'
 

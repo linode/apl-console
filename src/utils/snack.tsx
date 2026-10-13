@@ -1,12 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {
-  OptionsObject,
-  SnackbarKey,
-  SnackbarProvider,
-  SnackbarProviderProps,
-  WithSnackbarProps,
-  useSnackbar,
-} from 'notistack'
+import { OptionsObject, SnackbarKey, SnackbarProvider, SnackbarProviderProps, useSnackbar } from 'notistack'
 import { alpha, useTheme } from '@mui/material/styles'
 import { IconifyIcon } from '@iconify/react'
 import { Box, GlobalStyles } from '@mui/material'
@@ -24,7 +17,7 @@ function SnackbarStyles() {
     <GlobalStyles
       styles={{
         '#root': {
-          '& .SnackbarContent-root': {
+          '& .notistack-MuiContent': {
             width: '100%',
             padding: theme.spacing(1),
             margin: theme.spacing(0.25, 0),
@@ -32,7 +25,7 @@ function SnackbarStyles() {
             borderRadius: theme.shape.borderRadius,
             color: theme.palette.grey[isLight ? 0 : 800],
             backgroundColor: theme.palette.grey[isLight ? 900 : 0],
-            '& .SnackbarItem-variantSuccess, & .SnackbarItem-variantError, & .SnackbarItem-variantWarning, & .SnackbarItem-variantInfo':
+            '&.notistack-MuiContent-success, &.notistack-MuiContent-error, &.notistack-MuiContent-warning, &.notistack-MuiContent-info':
               {
                 color: theme.palette.text.primary,
                 backgroundColor: theme.palette.background.paper,
@@ -41,11 +34,11 @@ function SnackbarStyles() {
               minWidth: 240,
             },
           },
-          '& .SnackbarItem-message': {
+          '& .notistack-MuiContent #notistack-snackbar': {
             padding: '0 !important',
             fontWeight: theme.typography.fontWeightMedium,
           },
-          '& .SnackbarItem-action': {
+          '& .notistack-MuiContent > div:last-child:not(#notistack-snackbar)': {
             marginRight: 0,
             color: theme.palette.action.active,
             '& svg': { width: 20, height: 20 },
@@ -91,7 +84,7 @@ export function NotistackProvider({ children }: SnackbarProviderProps): React.Re
   )
 }
 
-let snackbarRef: WithSnackbarProps
+let snackbarRef: ReturnType<typeof useSnackbar>
 export function SnackbarUtilsConfigurator(): React.ReactElement {
   snackbarRef = useSnackbar()
   return null

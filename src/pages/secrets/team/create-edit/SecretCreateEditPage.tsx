@@ -1,5 +1,5 @@
 import { Box, Grid, MenuItem } from '@mui/material'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { cloneDeep, isEmpty, isEqual } from 'lodash'
 import { useEffect } from 'react'

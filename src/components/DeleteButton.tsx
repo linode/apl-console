@@ -1,5 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { styled } from '@mui/material'

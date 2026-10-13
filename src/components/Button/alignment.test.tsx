@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
+import LoadingButton from '@mui/material/Button'
 import { useForm } from 'react-hook-form'
 import palette from '../../theme/palette'
 import font from '../../theme/font'
@@ -18,11 +19,18 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }))
 
+function styleRules(rules: CSSRuleList): CSSStyleRule[] {
+  return Array.from(rules).flatMap((rule) => {
+    if (rule.type === CSSRule.STYLE_RULE) return [rule as CSSStyleRule]
+    if ('cssRules' in rule) return styleRules((rule as CSSGroupingRule).cssRules)
+    return []
+  })
+}
+
 function styleValues(element: HTMLElement, property: string, hover = false) {
   // JSDOM incorrectly applies some compound :hover selectors to computed styles.
   return Array.from(document.styleSheets)
-    .flatMap((sheet) => Array.from(sheet.cssRules))
-    .filter((rule): rule is CSSStyleRule => rule.type === CSSRule.STYLE_RULE)
+    .flatMap((sheet) => styleRules(sheet.cssRules))
     .filter((rule) => !rule.selectorText.includes('::'))
     .filter(
       (rule) =>
@@ -72,10 +80,10 @@ describe.each(['light', 'dark'] as const)('%s button alignment', (mode) => {
       )
       ;['submit', 'Read the documentation', 'semantic', 'action', 'tag'].forEach((name) => {
         const button = screen.getByRole(name === 'Read the documentation' ? 'link' : 'button', { name })
-        expect(styleValues(button, 'background-color')).toContain(theme.palette[color].main)
+        expect(styleValues(button, '--variant-containedBg')).toContain(theme.palette[color].main)
         expect(styleValues(button, 'background-color')).not.toContain(theme.palette.cm.linkActiveLight)
-        expect(styleValues(button, 'color')).toContain(theme.palette[color].contrastText)
-        expect(styleValues(button, 'background-color', true)).toContain(theme.palette[color].dark)
+        expect(styleValues(button, '--variant-containedColor')).toContain(theme.palette[color].contrastText)
+        expect(styleValues(button, '--variant-containedBg', true)).toContain(theme.palette[color].dark)
         expect(styleValues(button, 'background-color', true)).not.toContain(theme.palette.cm.buttonPrimaryHover)
       })
       expect(screen.getByRole('button', { name: 'icon' })).toHaveStyle({ color: theme.palette[color].main })
@@ -99,8 +107,47 @@ describe.each(['light', 'dark'] as const)('%s button alignment', (mode) => {
       </ThemeProvider>,
     )
 
-    expect(screen.getByRole('button', { name: 'outlined' })).toHaveStyle({ color: theme.palette.error.main })
+    expect(styleValues(screen.getByRole('button', { name: 'outlined' }), '--variant-outlinedColor')).toContain(
+      theme.palette.error.main,
+    )
     expect(screen.getByRole('group')).toHaveStyle({ borderRadius: '6px', backgroundColor: theme.palette.error.main })
+  })
+
+  test.each(['start', 'end'] as const)('aligns text loading buttons with a %s icon', (position) => {
+    const onClick = jest.fn()
+    const { rerender } = render(
+      <ThemeProvider theme={theme}>
+        <LoadingButton
+          loading
+          loadingPosition={position}
+          startIcon={position === 'start' ? <span>Start</span> : undefined}
+          endIcon={position === 'end' ? <span>End</span> : undefined}
+          onClick={onClick}
+        >
+          Save
+        </LoadingButton>
+      </ThemeProvider>,
+    )
+    const button = screen.getByRole('button', { name: /Save/ })
+    expect(button).toBeDisabled()
+    expect(screen.getByRole('progressbar')).toBeInTheDocument()
+    const icon = button.querySelector<HTMLElement>(`.MuiButton-${position}Icon`)
+    expect(styleValues(icon, position === 'start' ? 'margin-left' : 'margin-right')).toContainEqual(
+      expect.stringMatching(/^0(px)?$/),
+    )
+    fireEvent.click(button)
+    expect(onClick).not.toHaveBeenCalled()
+
+    rerender(
+      <ThemeProvider theme={theme}>
+        <LoadingButton loading={false} onClick={onClick}>
+          Save
+        </LoadingButton>
+      </ThemeProvider>,
+    )
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+    expect(onClick).toHaveBeenCalledTimes(1)
   })
 
   test('preserves image button disabled click handling without new attributes', () => {
