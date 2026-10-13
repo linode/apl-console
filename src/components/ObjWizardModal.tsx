@@ -14,7 +14,7 @@ import {
 import { useEffect, useState } from 'react'
 import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation } from 'redux/otomiApi'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { useSession } from 'providers/Session'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query/react'
 import { isEmpty } from 'lodash'

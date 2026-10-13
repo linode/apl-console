@@ -140,7 +140,7 @@ describe.each(['light', 'dark'] as const)('%s Cloud Manager overrides', (mode) =
     expect(input.parentElement).toHaveStyle({ minHeight: '34px' })
     expect(autocomplete).toHaveStyle({ height: '1.25rem', paddingTop: '7px', paddingBottom: '7px' })
     expect(autocomplete.parentElement).toHaveStyle({ minHeight: '34px', paddingTop: '0px', paddingBottom: '0px' })
-    expect(screen.getByRole('button', { name: 'Compact select First' })).toHaveStyle({ minHeight: '1.25rem' })
+    expect(screen.getByRole('combobox', { name: 'Compact select' })).toHaveStyle({ minHeight: '1.25rem' })
   })
 
   it('preserves selected and disabled tab semantics', () => {

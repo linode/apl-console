@@ -198,7 +198,9 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
         <Stack direction='row' alignItems='center' spacing={{ xs: 0.5, sm: 1.5 }}>
           {themeView === 'team' && (
             <>
-              <Typography variant='body1'>Team:</Typography>
+              <Typography id='header-team-label' variant='body1'>
+                Team:
+              </Typography>
 
               <StyledSelect
                 size='small'
@@ -206,6 +208,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
                 value={oboTeamId || ''}
                 onChange={handleChangeTeam}
                 data-cy='select-oboteam'
+                labelId='header-team-label'
               >
                 {teams.map((team) => (
                   <MenuItem key={team.value} value={team.value} data-cy={`select-oboteam-${team.value}`}>
@@ -218,7 +221,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
 
           {isPlatformAdmin && (
             <>
-              <Typography>View:</Typography>
+              <Typography id='header-view-label'>View:</Typography>
 
               <StyledSelect
                 size='small'
@@ -226,6 +229,7 @@ export default function Header({ onOpenSidebar, isCollapse = false, verticalLayo
                 value={themeView}
                 onChange={handleChangeView}
                 data-cy='select-view'
+                labelId='header-view-label'
               >
                 <MenuItem value='platform'>platform</MenuItem>
                 <MenuItem value='team'>team</MenuItem>

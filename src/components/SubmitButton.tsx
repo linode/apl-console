@@ -1,4 +1,4 @@
-import LoadingButton, { LoadingButtonProps } from '@mui/lab/LoadingButton'
+import LoadingButton, { ButtonProps } from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,7 +23,7 @@ const StyledSubmitButton = styled(LoadingButton)(({ theme }) => ({
   },
 }))
 
-export default function ({ loading, ...other }: LoadingButtonProps): React.ReactElement {
+export default function ({ loading, ...other }: ButtonProps): React.ReactElement {
   const { t } = useTranslation()
   // END HOOKS
   return (

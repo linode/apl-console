@@ -104,9 +104,10 @@ const renderHeader = ({
 }
 
 const selectTeam = async (currentTeamName: string, nextTeamName: string) => {
-  const teamSelect = screen.getByRole('button', {
-    name: currentTeamName,
+  const teamSelect = screen.getByRole('combobox', {
+    name: 'Team:',
   })
+  expect(teamSelect).toHaveTextContent(currentTeamName)
 
   fireEvent.mouseDown(teamSelect)
 
@@ -220,6 +221,19 @@ describe('Header team switching', () => {
     await selectTeam('alpha', 'beta')
 
     expect(mockSetOboTeamId).toHaveBeenCalledWith('beta')
+    expect(mockPush).toHaveBeenCalledWith('/')
+  })
+
+  it('labels the team and view selectors separately and switches views', async () => {
+    renderHeader({ isPlatformAdmin: true, oboTeamId: 'admin' })
+
+    expect(screen.getByRole('combobox', { name: 'Team:' })).toHaveTextContent('admin')
+    fireEvent.mouseDown(screen.getByRole('combobox', { name: 'View:' }))
+    fireEvent.click(await screen.findByRole('option', { name: 'platform' }))
+
+    expect(mockOnChangeView).toHaveBeenCalledWith(
+      expect.objectContaining({ target: expect.objectContaining({ value: 'platform' }) }),
+    )
     expect(mockPush).toHaveBeenCalledWith('/')
   })
 })

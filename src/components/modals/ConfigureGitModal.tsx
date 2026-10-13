@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { LoadingButton } from '@mui/lab'
+import LoadingButton from '@mui/material/Button'
 import { Box, Button, IconButton, Modal, Tooltip, Typography, styled } from '@mui/material'
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import InformationBanner from 'components/InformationBanner'

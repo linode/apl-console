@@ -117,8 +117,10 @@ export default function SessionProvider({ children }: Props): React.ReactElement
       keys.create = snack.info(`${t('Processing... Hold on!')}`, {
         key: keys.create,
         persist: true,
-        onClick: () => {
-          closeKey('create')
+        SnackbarProps: {
+          onClick: () => {
+            closeKey('create')
+          },
         },
       })
     } else if (isDirty !== null) closeKey('create')
