@@ -22,7 +22,7 @@ interface Row {
 const getUserLink = (row: Row) => {
   const path = `/users/${encodeURIComponent(row.id)}`
   return (
-    <RLink to={path} label={row.email}>
+    <RLink to={{ pathname: path, state: { user: row } }} label={row.email}>
       {row.email}
     </RLink>
   )
