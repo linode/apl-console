@@ -2,7 +2,7 @@ import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
-import { Box, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
+import { Box, FormControlLabel, Radio, RadioGroup, SvgIcon, Typography } from '@mui/material'
 import Section from 'components/Section'
 import React, { useId } from 'react'
 import type { AccessLevel } from './user-create-edit.types'
@@ -42,6 +42,26 @@ const accessOptions: AccessOption[] = [
   },
 ]
 
+const accessIcons: Record<AccessLevel, React.ReactNode> = {
+  user: <KeyboardArrowUpIcon sx={{ color: 'cm.linkActiveLight', fontSize: 32, mb: 2 }} />,
+  teamAdmin: <KeyboardDoubleArrowUpIcon sx={{ color: 'cm.linkActiveLight', fontSize: 32, mb: 2 }} />,
+  platformAdmin: (
+    <SvgIcon
+      data-testid='platform-admin-level-icon'
+      sx={{ color: 'cm.linkActiveLight', fontSize: 32, mb: '10px', mt: '7px' }}
+    >
+      <path
+        d='M7 20l5-5 5 5M7 13l5-5 5 5M7 6l5-5 5 5'
+        fill='none'
+        stroke='currentColor'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        strokeWidth='2'
+      />
+    </SvgIcon>
+  ),
+}
+
 export default function AccessManagement({
   disabled = false,
   disabledOptions = [],
@@ -68,7 +88,7 @@ export default function AccessManagement({
           mt: 2,
         }}
       >
-        {accessOptions.map((option, index) => {
+        {accessOptions.map((option) => {
           const selected = value === option.value
           const optionDisabled = disabled || disabledOptions.includes(option.value)
           const descriptionId = `${id}-${option.value}-description`
@@ -118,11 +138,7 @@ export default function AccessManagement({
               }}
               label={
                 <Box component='span' sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                  {index === 0 ? (
-                    <KeyboardArrowUpIcon sx={{ color: 'cm.linkActiveLight', fontSize: 32, mb: 2 }} />
-                  ) : (
-                    <KeyboardDoubleArrowUpIcon sx={{ color: 'cm.linkActiveLight', fontSize: 32, mb: 2 }} />
-                  )}
+                  {accessIcons[option.value]}
                   <Typography component='span' sx={{ fontWeight: 700 }}>
                     {option.title}
                   </Typography>

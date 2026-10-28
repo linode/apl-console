@@ -1,5 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Box, Button, Typography } from '@mui/material'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import { Box, Button, Modal, Typography } from '@mui/material'
+import CopyToClipboard from 'components/CopyToClipboard'
 import DeleteButton from 'components/DeleteButton'
 import InformationBanner from 'components/InformationBanner'
 import { LandingHeader } from 'components/LandingHeader'
@@ -7,7 +9,7 @@ import Section from 'components/Section'
 import { TextField } from 'components/forms/TextField'
 import PaperLayout from 'layouts/Paper'
 import { useSession } from 'providers/Session'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
 import {
@@ -29,14 +31,20 @@ interface Params {
 }
 
 const accessLevels: AccessLevel[] = ['user', 'teamAdmin', 'platformAdmin']
-const nameFields = [
-  { name: 'firstName', label: 'First Name' },
-  { name: 'lastName', label: 'Last Name' },
-] as const
+
+const utf8ByteLength = (value: string) =>
+  Array.from(value).reduce((length, character) => {
+    const codePoint = character.codePointAt(0) ?? 0
+    if (codePoint <= 0x7f) return length + 1
+    if (codePoint <= 0x7ff) return length + 2
+    if (codePoint <= 0xffff) return length + 3
+    return length + 4
+  }, 0)
 
 function UserForm({ teamId, userId }: Params): React.ReactElement {
   const { user: sessionUser, settings, defaultPlatformAdminEmail } = useSession()
   const externalIDP = Boolean(settings?.otomi?.hasExternalIDP)
+  const dexIssuer = settings?.otomi?.oidc?.authenticationLayer === 'dex'
   const platformAdmin = Boolean(sessionUser?.isPlatformAdmin)
   const teamAdmin = Boolean(sessionUser?.isTeamAdmin)
   const managedTeams = sessionUser?.teams ?? []
@@ -46,7 +54,16 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
 
   const [create, createState] = useCreateUserMutation()
   const [update, updateState] = useEditUserMutation()
+  const [resetPassword, resetPasswordState] = useEditUserMutation()
   const [del, deleteState] = useDeleteUserMutation()
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [confirmPasswordError, setConfirmPasswordError] = useState('')
+  const [resetRequestError, setResetRequestError] = useState('')
+  const [createdPassword, setCreatedPassword] = useState<string>()
+  const [createCompleted, setCreateCompleted] = useState(false)
   const {
     currentData: user,
     isLoading: loadingUser,
@@ -88,7 +105,7 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     outsideManagedScope ||
     outsideRouteScope ||
     protectedTarget
-  const requiredFieldsDenied = !editing && ['email', 'firstName', 'lastName'].some(isDenied)
+  const requiredFieldsDenied = !editing && isDenied('email')
   const canSelectAccessLevel = (level: AccessLevel) =>
     (platformAdmin || level !== 'platformAdmin') &&
     (!isDenied('isPlatformAdmin') || (level === 'platformAdmin') === Boolean(user?.isPlatformAdmin)) &&
@@ -96,8 +113,6 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
   const disabledOptions = accessLevels.filter((level) => !canSelectAccessLevel(level))
 
   const schema: yup.SchemaOf<UserFormData> = yup.object({
-    firstName: editing ? yup.string().defined() : yup.string().trim().required('First name is required'),
-    lastName: editing ? yup.string().defined() : yup.string().trim().required('Last name is required'),
     email: editing
       ? yup.string().defined()
       : yup.string().trim().email('Enter a valid email address').required('Email is required'),
@@ -107,8 +122,6 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
   const methods = useForm<UserFormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
       email: '',
       accessLevel: 'user',
       teams: [],
@@ -127,8 +140,6 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     if (user?.isPlatformAdmin) accessLevel = 'platformAdmin'
     else if (user?.isTeamAdmin) accessLevel = 'teamAdmin'
     reset({
-      firstName: user?.firstName ?? '',
-      lastName: user?.lastName ?? '',
       email: user?.email ?? '',
       accessLevel,
       teams: user?.teams ?? (teamId ? [teamId] : []),
@@ -136,7 +147,8 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
   }, [user, teamId, reset])
 
   const selectedAccessLevel = watch('accessLevel')
-  const mutating = createState.isLoading || updateState.isLoading || deleteState.isLoading
+  const mutating =
+    createState.isLoading || updateState.isLoading || resetPasswordState.isLoading || deleteState.isLoading
   const loading = loadingUser || fetchingUser || loadingTeams || fetchingTeams
   const unavailable = userError || teamsError || !teams || (editing && !user)
   const blocked = externalIDP || readOnly || requiredFieldsDenied || loading || unavailable || mutating
@@ -152,18 +164,68 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     if (isDenied('teams')) payloadTeams = user?.teams ?? []
     if (isPlatformAdmin) payloadTeams = []
 
-    // Explicit mapping excludes fetched secrets and preserves names not exposed in the edit form.
+    // Explicit mapping excludes fetched secrets and user attributes not editable in this form.
     const body: CreateUserApiArg['body'] = {
       email: editing ? user.email : values.email,
-      firstName: editing ? user.firstName : values.firstName,
-      lastName: editing ? user.lastName : values.lastName,
       isPlatformAdmin,
       isTeamAdmin: !isPlatformAdmin && values.accessLevel === 'teamAdmin',
       teams: payloadTeams,
     }
     if (userId) await update({ userId, body })
-    else await create({ body })
+    else {
+      const result = await create({ body })
+      if ('data' in result) {
+        setCreatedPassword(result.data.initialPassword ?? '')
+        setCreateCompleted(true)
+      }
+    }
   }
+
+  const onResetPassword = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setPasswordError('')
+    setConfirmPasswordError('')
+    setResetRequestError('')
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters.')
+      return
+    }
+    if (utf8ByteLength(newPassword) > 72) {
+      setPasswordError('Password must be at most 72 bytes.')
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      setConfirmPasswordError('Passwords do not match.')
+      return
+    }
+    if (!userId || !user || resetPasswordState.isLoading) return
+
+    const result = await resetPassword({
+      userId,
+      body: { email: user.email, initialPassword: newPassword },
+    })
+    if ('data' in result) closeResetPassword()
+    else setResetRequestError('Unable to reset the password. Please try again.')
+  }
+
+  const openResetPassword = () => {
+    setPasswordError('')
+    setConfirmPasswordError('')
+    setResetRequestError('')
+    setResetPasswordOpen(true)
+  }
+
+  const closeResetPassword = () => {
+    if (resetPasswordState.isLoading) return
+    setResetPasswordOpen(false)
+    setNewPassword('')
+    setConfirmPassword('')
+    setPasswordError('')
+    setConfirmPasswordError('')
+    setResetRequestError('')
+  }
+
+  const closeCreatedModal = () => setCreatedPassword(undefined)
 
   const onDelete = () => {
     if (!userId || deleteDisabled) return
@@ -179,7 +241,10 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     )
   }
 
-  if (!mutating && (createState.isSuccess || updateState.isSuccess || deleteState.isSuccess))
+  if (
+    !mutating &&
+    (updateState.isSuccess || deleteState.isSuccess || (createCompleted && createdPassword === undefined))
+  )
     return <Redirect to={redirectTo} />
 
   if (userError || teamsError) {
@@ -221,26 +286,6 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
       <FormProvider {...methods}>
         <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
           <Section title='General'>
-            {!editing &&
-              nameFields.map(({ name, label }) => (
-                <Controller
-                  key={name}
-                  name={name}
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <TextField
-                      {...field}
-                      id={`user-${name}`}
-                      inputId={`user-${name}`}
-                      label={label}
-                      required
-                      disabled={disabled || isDenied(name)}
-                      errorText={fieldState.error?.message}
-                      width='large'
-                    />
-                  )}
-                />
-              ))}
             <Controller
               name='email'
               control={control}
@@ -259,7 +304,7 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
                 />
               )}
             />
-            {editing && (
+            {editing && dexIssuer && platformAdmin && (
               <>
                 <TextField
                   id='user-password'
@@ -270,20 +315,16 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
                   placeholder='********'
                   disabled
                   width='large'
-                  inputProps={{ 'aria-describedby': 'password-reset-unavailable' }}
                 />
                 <Button
                   type='button'
                   variant='contained'
-                  disabled
-                  aria-describedby='password-reset-unavailable'
+                  disabled={disabled}
                   sx={{ mt: 2 }}
+                  onClick={openResetPassword}
                 >
                   Reset Password
                 </Button>
-                <Typography id='password-reset-unavailable' variant='body2' color='text.secondary' sx={{ mt: 1 }}>
-                  Password reset is unavailable until API support is available.
-                </Typography>
               </>
             )}
           </Section>
@@ -332,6 +373,154 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
           </Box>
         </Box>
       </FormProvider>
+      <Modal open={resetPasswordOpen} onClose={closeResetPassword}>
+        <Box
+          component='form'
+          role='dialog'
+          aria-labelledby='reset-password-title'
+          onSubmit={onResetPassword}
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: 'calc(100% - 32px)', sm: 520 },
+            maxWidth: '100%',
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography id='reset-password-title' variant='h5' sx={{ mb: 3, fontWeight: 700 }}>
+            Reset Password
+          </Typography>
+          {resetRequestError && (
+            <Typography role='alert' color='error' sx={{ mb: 2 }}>
+              {resetRequestError}
+            </Typography>
+          )}
+          <TextField
+            id='new-user-password'
+            inputId='new-user-password'
+            label='New password'
+            type='password'
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
+            errorText={passwordError}
+            disabled={resetPasswordState.isLoading}
+            required
+            width='large'
+          />
+          <TextField
+            id='confirm-user-password'
+            inputId='confirm-user-password'
+            label='Confirm password'
+            type='password'
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            errorText={confirmPasswordError}
+            disabled={resetPasswordState.isLoading}
+            required
+            width='large'
+          />
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2,
+              mt: 4,
+              pt: 3,
+              borderTop: '1px dashed',
+              borderColor: 'divider',
+            }}
+          >
+            <Button
+              type='button'
+              variant='outlined'
+              onClick={closeResetPassword}
+              disabled={resetPasswordState.isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type='submit'
+              variant='contained'
+              disabled={resetPasswordState.isLoading}
+              loading={resetPasswordState.isLoading}
+            >
+              Reset
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal open={createdPassword !== undefined} onClose={closeCreatedModal}>
+        <Box
+          role='dialog'
+          aria-labelledby='user-created-title'
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: { xs: 'calc(100% - 32px)', sm: 760 },
+            maxWidth: '100%',
+            bgcolor: 'background.paper',
+            border: '1px solid',
+            borderColor: 'divider',
+            borderRadius: 2,
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 4 }}>
+            <Typography id='user-created-title' variant='h4' align='center' sx={{ fontWeight: 700 }}>
+              User Created
+            </Typography>
+            <CheckCircleIcon aria-label='Success' sx={{ color: 'success.main', fontSize: 32 }} />
+          </Box>
+          {createdPassword ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: 2,
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 2,
+                p: 2.5,
+              }}
+            >
+              <Box>
+                <Typography variant='h6' sx={{ fontWeight: 700 }}>
+                  Initial password
+                </Typography>
+                <Typography color='text.secondary' sx={{ letterSpacing: 1 }}>
+                  {'*'.repeat(Math.min(createdPassword.length, 16))}
+                </Typography>
+              </Box>
+              <CopyToClipboard text={createdPassword} tooltipTitle='Copy initial password' />
+            </Box>
+          ) : (
+            <Typography color='error'>
+              The user was created, but the initial password was not returned. Reset the password from the edit page.
+            </Typography>
+          )}
+          <Typography color='error' align='center' sx={{ mt: 4, mb: 5 }}>
+            If you lose this password, you need to submit a new one on the “edit user” page.
+          </Typography>
+          <Box
+            sx={{ display: 'flex', justifyContent: 'center', pt: 3, borderTop: '1px dashed', borderColor: 'divider' }}
+          >
+            <Button variant='contained' onClick={closeCreatedModal} sx={{ minWidth: 160 }}>
+              Close
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
     </PaperLayout>
   )
 }

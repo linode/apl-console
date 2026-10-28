@@ -64,7 +64,7 @@ const session = () => ({
     teams: ['alpha', 'beta'],
     authz: {} as Record<string, { deniedAttributes: { user: string[] } }>,
   },
-  settings: { otomi: { hasExternalIDP: false } },
+  settings: { otomi: { hasExternalIDP: false, oidc: { authenticationLayer: 'keycloak' } } },
   defaultPlatformAdminEmail: 'admin@example.com',
 })
 const savedUser = (overrides: Partial<GetUserApiResponse> = {}): GetUserApiResponse => ({
@@ -148,8 +148,6 @@ function renderPage(path = '/users/create', state: object = undefined) {
 }
 
 async function fillCreate(user: ReturnType<typeof userEvent.setup>) {
-  await user.type(screen.getByRole('textbox', { name: 'First Name (required)' }), '  Ada  ')
-  await user.type(screen.getByRole('textbox', { name: 'Last Name (required)' }), '  Lovelace  ')
   await user.type(screen.getByRole('textbox', { name: 'Email (required)' }), '  ada@example.com  ')
 }
 
@@ -177,29 +175,24 @@ beforeEach(() => {
   mockMutationStates = { create: mutationState(), update: mutationState(), delete: mutationState() }
   mockGetUserQuery.mockImplementation(() => mockQueries.user)
   mockGetTeamsQuery.mockImplementation(() => mockQueries.teams)
-  mockCreate.mockReset().mockResolvedValue({ data: {} })
+  mockCreate.mockReset().mockResolvedValue({ data: { initialPassword: 'new-user-password' } })
   mockUpdate.mockReset().mockResolvedValue({ data: {} })
   mockDelete.mockReset().mockResolvedValue({ data: undefined })
 })
 
 describe('creation and editing', () => {
-  it.each(['empty', 'whitespace'])('requires email and both names when %s', async (input) => {
+  it.each(['empty', 'whitespace'])('requires email when %s', async (input) => {
     const { user } = renderPage()
-    if (input === 'whitespace') {
-      await user.type(screen.getByRole('textbox', { name: 'First Name (required)' }), '   ')
-      await user.type(screen.getByRole('textbox', { name: 'Last Name (required)' }), '   ')
-      await user.type(screen.getByRole('textbox', { name: 'Email (required)' }), '   ')
-    }
+    const email = screen.getByRole('textbox', { name: 'Email (required)' })
+    if (input === 'whitespace') await user.type(email, '   ')
     await user.click(screen.getByRole('button', { name: 'Create User' }))
     expect(await screen.findByText('Email is required')).toBeVisible()
-    expect(screen.getByText('First name is required')).toBeVisible()
-    expect(screen.getByText('Last name is required')).toBeVisible()
-    expect(screen.getAllByRole('alert')).toHaveLength(3)
+    expect(screen.getAllByRole('alert')).toHaveLength(1)
     expectNoMutations()
     expectPath('/users/create')
   })
 
-  it('rejects an invalid email even with valid names', async () => {
+  it('rejects an invalid email', async () => {
     const { user } = renderPage()
     await fillCreate(user)
     await user.clear(screen.getByRole('textbox', { name: 'Email (required)' }))
@@ -214,11 +207,12 @@ describe('creation and editing', () => {
     { role: 'User', isPlatformAdmin: false, isTeamAdmin: false, teams: ['alpha', 'beta'] },
     { role: 'Team admin', isPlatformAdmin: false, isTeamAdmin: true, teams: ['alpha', 'beta'] },
     { role: 'Platform admin', isPlatformAdmin: true, isTeamAdmin: false, teams: [] },
-  ])('creates $role with trimmed details and explicit role/team mapping', async ({ role, ...expected }) => {
-    const { user, refresh } = renderPage()
+  ])('creates $role with explicit role/team mapping', async ({ role, ...expected }) => {
+    const { user } = renderPage()
     expect(mockGetUserQuery).toHaveBeenLastCalledWith({ userId: undefined }, { skip: true })
     expect(mockGetTeamsQuery).toHaveBeenLastCalledWith(undefined, { skip: false })
     expect(screen.getByRole('heading', { name: 'Create' })).toBeVisible()
+    expect(screen.queryByLabelText(/First Name|Last Name/)).not.toBeInTheDocument()
     expect(screen.getByRole('radio', { name: 'User' })).toBeChecked()
     await fillCreate(user)
     await user.click(screen.getByRole('checkbox', { name: 'alpha' }))
@@ -227,21 +221,24 @@ describe('creation and editing', () => {
     await user.click(screen.getByRole('button', { name: 'Create User' }))
     await waitFor(() =>
       expect(mockCreate).toHaveBeenCalledWith({
-        body: { email: 'ada@example.com', firstName: 'Ada', lastName: 'Lovelace', ...expected },
+        body: { email: 'ada@example.com', ...expected },
       }),
     )
     expect(mockCreate).toHaveBeenCalledTimes(1)
     expect(mockUpdate).not.toHaveBeenCalled()
     expect(mockDelete).not.toHaveBeenCalled()
     expectPath('/users/create')
-    mockMutationStates.create.isSuccess = true
-    refresh()
+    expect(await screen.findByRole('dialog', { name: 'User Created' })).toBeVisible()
+    expect(screen.getByText('Initial password')).toBeVisible()
+    expect(screen.queryByText('new-user-password')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
     expectPath('/users')
     expect(screen.getByRole('heading', { name: 'User directory' })).toBeVisible()
   })
 
-  it('uses fetched edit details, preserves names exactly, and never displays or submits the initial password', async () => {
+  it('uses fetched edit details without exposing names or the initial password', async () => {
     mockQueries.user = queryState(savedUser())
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
     const { user, refresh } = renderPage('/users/user-1', {
       user: savedUser({ email: 'route-state@example.com', firstName: 'Wrong', teams: ['beta'] }),
     })
@@ -260,12 +257,7 @@ describe('creation and editing', () => {
     expect(password).toHaveValue('')
     expect(password).toHaveAttribute('placeholder', '********')
     expect(password).toBeDisabled()
-    expect(password).toHaveAccessibleDescription('Password reset is unavailable until API support is available.')
-    expect(screen.getByRole('button', { name: 'Reset Password' })).toHaveAccessibleDescription(
-      'Password reset is unavailable until API support is available.',
-    )
-    expect(screen.getByText('Password reset is unavailable until API support is available.')).toBeVisible()
-    expect(screen.getByRole('button', { name: 'Reset Password' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Reset Password' })).toBeEnabled()
     expect(screen.queryByText('fetched-secret-never-render')).not.toBeInTheDocument()
     expect(screen.queryByDisplayValue('fetched-secret-never-render')).not.toBeInTheDocument()
     expect(document.body.innerHTML).not.toContain('fetched-secret-never-render')
@@ -278,8 +270,6 @@ describe('creation and editing', () => {
         userId: 'user-1',
         body: {
           email: 'saved@example.com',
-          firstName: '  Saved First  ',
-          lastName: '  Saved Last  ',
           isPlatformAdmin: false,
           isTeamAdmin: true,
           teams: ['alpha'],
@@ -292,6 +282,44 @@ describe('creation and editing', () => {
     refresh()
     expectPath('/users')
     expect(screen.getByRole('heading', { name: 'User directory' })).toBeVisible()
+  })
+
+  it('resets a Dex password through the edit endpoint without asking for the old password', async () => {
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
+    mockQueries.user = queryState(savedUser())
+    const { user } = renderPage('/users/user-1')
+
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    const dialog = screen.getByRole('dialog', { name: 'Reset Password' })
+    expect(within(dialog).getByLabelText(/New password/)).toBeVisible()
+    expect(within(dialog).getByLabelText(/Confirm password/)).toBeVisible()
+    expect(within(dialog).queryByLabelText(/old password|current password/i)).not.toBeInTheDocument()
+
+    await user.type(within(dialog).getByLabelText(/New password/), 'new-secret-password')
+    const confirmation = within(dialog).getByLabelText(/Confirm password/)
+    await user.type(confirmation, 'does-not-match')
+    await user.click(within(dialog).getByRole('button', { name: 'Reset' }))
+    expect(within(dialog).getByText('Passwords do not match.')).toBeVisible()
+    expectNoMutations()
+    await user.clear(confirmation)
+    await user.type(confirmation, 'new-secret-password')
+    await user.click(within(dialog).getByRole('button', { name: 'Reset' }))
+
+    await waitFor(() =>
+      expect(mockUpdate).toHaveBeenCalledWith({
+        userId: 'user-1',
+        body: { email: 'saved@example.com', initialPassword: 'new-secret-password' },
+      }),
+    )
+    expect(mockUpdate).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('dialog', { name: 'Reset Password' })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeVisible()
+  })
+
+  it('does not show password reset for Keycloak users', () => {
+    mockQueries.user = queryState(savedUser())
+    renderPage('/users/user-1')
+    expect(screen.queryByRole('button', { name: 'Reset Password' })).not.toBeInTheDocument()
   })
 
   it('restores saved team choices after a platform-role roundtrip and clears them in a platform payload', async () => {
@@ -315,8 +343,6 @@ describe('creation and editing', () => {
         userId: 'user-1',
         body: {
           email: 'saved@example.com',
-          firstName: '  Saved First  ',
-          lastName: '  Saved Last  ',
           isPlatformAdmin: true,
           isTeamAdmin: false,
           teams: [],
@@ -325,8 +351,8 @@ describe('creation and editing', () => {
     )
   })
 
-  it('preselects only the route team and redirects creation to its user directory', async () => {
-    const { user, refresh } = renderPage('/teams/beta/users/create')
+  it('preselects only the route team and shows the initial password before redirecting', async () => {
+    const { user } = renderPage('/teams/beta/users/create')
     expect(screen.getByRole('checkbox', { name: 'beta' })).toBeChecked()
     expect(screen.queryByRole('checkbox', { name: 'alpha' })).not.toBeInTheDocument()
     expect(screen.queryByRole('checkbox', { name: 'unmanaged' })).not.toBeInTheDocument()
@@ -336,16 +362,14 @@ describe('creation and editing', () => {
       expect(mockCreate).toHaveBeenCalledWith({
         body: {
           email: 'ada@example.com',
-          firstName: 'Ada',
-          lastName: 'Lovelace',
           isPlatformAdmin: false,
           isTeamAdmin: false,
           teams: ['beta'],
         },
       }),
     )
-    mockMutationStates.create.isSuccess = true
-    refresh()
+    expect(await screen.findByRole('dialog', { name: 'User Created' })).toBeVisible()
+    await user.click(screen.getByRole('button', { name: 'Close' }))
     expectPath('/teams/beta/users')
     expect(screen.getByRole('heading', { name: 'User directory' })).toBeVisible()
   })
@@ -361,8 +385,6 @@ describe('creation and editing', () => {
         userId: 'user-1',
         body: {
           email: 'saved@example.com',
-          firstName: '  Saved First  ',
-          lastName: '  Saved Last  ',
           isPlatformAdmin: false,
           isTeamAdmin: true,
           teams: ['beta'],
@@ -504,7 +526,7 @@ describe('mutations and deletion', () => {
       expectPath('/users/user-1')
       mockMutationStates[mutation].isLoading = false
       refresh()
-      expectPath('/users')
+      expectPath(mutation === 'create' ? '/users/user-1' : '/users')
     },
   )
 
@@ -535,8 +557,11 @@ describe('mutations and deletion', () => {
       })
       expect(submit).toBeEnabled()
       expectPath(path)
-      mockMutationStates[mutation].isSuccess = true
-      refresh()
+      if (mutation === 'create') await user.click(screen.getByRole('button', { name: 'Close' }))
+      else {
+        mockMutationStates.update.isSuccess = true
+        refresh()
+      }
       expectPath('/users')
     },
   )
@@ -645,8 +670,6 @@ describe('authorization', () => {
       expect(mockCreate).toHaveBeenCalledWith({
         body: {
           email: 'ada@example.com',
-          firstName: 'Ada',
-          lastName: 'Lovelace',
           isPlatformAdmin: false,
           isTeamAdmin: true,
           teams: ['alpha', 'beta'],
@@ -719,8 +742,6 @@ describe('authorization', () => {
         userId: 'user-1',
         body: {
           email: 'saved@example.com',
-          firstName: '  Saved First  ',
-          lastName: '  Saved Last  ',
           isPlatformAdmin: false,
           isTeamAdmin: true,
           teams: ['alpha', 'beta'],
@@ -729,10 +750,10 @@ describe('authorization', () => {
     )
   })
 
-  it.each(['email', 'firstName', 'lastName'])('blocks creation when required %s is denied', async (attribute) => {
+  it('blocks creation when email is denied', async () => {
     mockSession.user.isPlatformAdmin = false
     mockSession.user.isTeamAdmin = true
-    mockSession.user.authz.alpha = { deniedAttributes: { user: [attribute] } }
+    mockSession.user.authz.alpha = { deniedAttributes: { user: ['email'] } }
     const { user } = renderPage('/teams/alpha/users/create')
     expect(
       screen.getByText('User creation is unavailable because you cannot edit the required user details.'),
@@ -776,8 +797,6 @@ describe('route changes', () => {
         userId: 'user-2',
         body: {
           email: 'second@example.com',
-          firstName: 'Second',
-          lastName: '  Saved Last  ',
           isPlatformAdmin: false,
           isTeamAdmin: false,
           teams: ['beta'],
@@ -813,13 +832,10 @@ describe('route changes', () => {
     const { user, navigate } = renderPage('/teams/alpha/users/create')
     await user.click(screen.getByRole('button', { name: 'Create User' }))
     expect(await screen.findByText('Email is required')).toBeVisible()
-    await user.type(screen.getByRole('textbox', { name: 'First Name (required)' }), 'Unsaved')
     await user.click(screen.getByRole('radio', { name: 'Team admin' }))
     await user.click(screen.getByRole('checkbox', { name: 'alpha' }))
     await user.type(screen.getByRole('textbox', { name: 'Search teams' }), 'alpha')
     navigate('/teams/beta/users/create')
-    expect(screen.getByRole('textbox', { name: 'First Name (required)' })).toHaveValue('')
-    expect(screen.getByRole('textbox', { name: 'Last Name (required)' })).toHaveValue('')
     expect(screen.getByRole('textbox', { name: 'Email (required)' })).toHaveValue('')
     expect(screen.getByRole('textbox', { name: 'Search teams' })).toHaveValue('')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
@@ -833,8 +849,6 @@ describe('route changes', () => {
       expect(mockCreate).toHaveBeenCalledWith({
         body: {
           email: 'ada@example.com',
-          firstName: 'Ada',
-          lastName: 'Lovelace',
           isPlatformAdmin: false,
           isTeamAdmin: false,
           teams: ['beta'],

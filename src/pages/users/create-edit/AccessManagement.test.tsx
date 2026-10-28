@@ -55,6 +55,10 @@ describe.each(['light', 'dark'] as const)('%s access management', (mode) => {
     })
     expect(group).toHaveStyle({ maxWidth: '840px' })
     expect(screen.getByText('Manage users and teams')).toBeVisible()
+    expect(screen.getByTestId('platform-admin-level-icon').querySelector('path')).toHaveAttribute(
+      'd',
+      'M7 20l5-5 5 5M7 13l5-5 5 5M7 6l5-5 5 5',
+    )
   })
 
   it('selects via the card label and radio with a single callback per change', async () => {
