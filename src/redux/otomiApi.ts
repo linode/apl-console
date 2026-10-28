@@ -330,6 +330,9 @@ const injectedRtkApi = api.injectEndpoints({
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/v1/session` }),
     }),
+    logout: build.mutation<LogoutApiResponse, LogoutApiArg>({
+      query: () => ({ url: `/v2/user/logout`, method: 'POST' }),
+    }),
     getApiDoc: build.query<GetApiDocApiResponse, GetApiDocApiArg>({
       query: () => ({ url: `/v1/apiDocs` }),
     }),
@@ -4231,6 +4234,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   }
 }
 export type GetSessionApiArg = void
+export type LogoutApiResponse = /** status 204 Logout processed. */ undefined
+export type LogoutApiArg = void
 export type GetApiDocApiResponse = /** status 200 The requested apiDoc. */ object
 export type GetApiDocApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
@@ -4966,6 +4971,7 @@ export const {
   useGetKubecfgQuery,
   useGetDockerConfigQuery,
   useGetSessionQuery,
+  useLogoutMutation,
   useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
