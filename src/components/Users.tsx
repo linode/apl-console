@@ -9,14 +9,12 @@ import ListTable from './ListTable'
 import RLink from './Link'
 import { HeadCell } from './EnhancedTable'
 import InformationBanner from './InformationBanner'
-import CopyToClipboard from './CopyToClipboard'
 
 interface Row {
   id: string
   email: string
   isTeamAdmin: boolean
   teams: string[]
-  initialPassword: string
 }
 
 const getUserLink = (row: Row) => {
@@ -26,10 +24,6 @@ const getUserLink = (row: Row) => {
       {row.email}
     </RLink>
   )
-}
-
-function CredentialsRenderer({ row }: { row: Row }) {
-  return <CopyToClipboard text={row.initialPassword} tooltipTitle='Copy initial password to clipboard' />
 }
 
 function UserTeamSelector({
@@ -114,15 +108,6 @@ export default function ({ users: inUsers, teamId, refetch }: Props): React.Reac
   }, [inUsers])
 
   // END HOOKS
-  const credentials = !isTeamView
-    ? [
-        {
-          id: 'initialPassword',
-          label: t('Initial Password'),
-          renderer: (row: Row) => <CredentialsRenderer row={row} />,
-        },
-      ]
-    : []
   const assignToTeam = isTeamView
     ? [
         {
@@ -140,7 +125,6 @@ export default function ({ users: inUsers, teamId, refetch }: Props): React.Reac
       label: t('Email'),
       renderer: (row: Row) => (isTeamView ? row.email : getUserLink(row)),
     },
-    ...credentials,
     ...assignToTeam,
   ]
 
