@@ -26,7 +26,7 @@ import { ShellDrawerProvider } from 'contexts/ShellDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
-import User from 'pages/User'
+import UsersCreateEditPage from 'pages/users/create-edit/UsersCreateEditPage'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
@@ -195,7 +195,18 @@ function App() {
                                 />
                                 <PrivateRoute path='/settings' component={SettingsOverview} platformAdminRoute exact />
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
-                                <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/users/create'
+                                  component={UsersCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/users/:userId'
+                                  component={UsersCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
                                 <PrivateRoute
                                   path='/container-images'
@@ -232,7 +243,11 @@ function App() {
                                   component={ServicesCreateEditPage}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/users/create'
+                                  component={UsersCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/teams/:teamId/container-images/create'
                                   component={BuildsCreateEditPage}

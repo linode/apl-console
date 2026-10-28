@@ -3079,8 +3079,8 @@ export type DeleteCloudttyApiArg = {
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3090,8 +3090,8 @@ export type GetAllUsersApiArg = void
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3102,8 +3102,8 @@ export type CreateUserApiArg = {
   body: {
     id?: string
     email: string
-    firstName: string
-    lastName: string
+    firstName?: string
+    lastName?: string
     isPlatformAdmin?: boolean
     isTeamAdmin?: boolean
     teams?: string[]
@@ -3113,8 +3113,8 @@ export type CreateUserApiArg = {
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3127,8 +3127,8 @@ export type GetUserApiArg = {
 export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3141,8 +3141,8 @@ export type EditUserApiArg = {
   body: {
     id?: string
     email: string
-    firstName: string
-    lastName: string
+    firstName?: string
+    lastName?: string
     isPlatformAdmin?: boolean
     isTeamAdmin?: boolean
     teams?: string[]
@@ -4256,6 +4256,9 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     isPreInstalled?: boolean
     aiEnabled?: boolean
     hasExternalIDP?: boolean
+    oidc?: {
+      authenticationLayer?: 'dex' | 'keycloak'
+    }
     git?: {
       repoUrl?: string
       branch?: string
