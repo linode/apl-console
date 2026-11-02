@@ -7,7 +7,7 @@ import { TextField } from 'components/forms/TextField'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
-import { useResetPasswordMutation } from 'redux/passwordApi'
+import { useResetPasswordMutation } from 'redux/otomiApi'
 import { modalClosed, modalOpened } from 'redux/reducers'
 import snack from 'utils/snack'
 import { ResetPasswordFormValues, resetPasswordSchema } from './resetPasswordValidator'
@@ -151,7 +151,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
     try {
       const result = await resetPassword({
         body: {
-          oldPassword: data.oldPassword,
+          currentPassword: data.oldPassword,
           newPassword: data.newPassword,
         },
       })

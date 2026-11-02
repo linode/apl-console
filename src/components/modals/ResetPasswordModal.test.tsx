@@ -17,7 +17,7 @@ jest.mock('redux/reducers', () => ({
   modalClosed: () => ({ type: 'global/modalClosed' }),
 }))
 
-jest.mock('redux/passwordApi', () => ({
+jest.mock('redux/otomiApi', () => ({
   useResetPasswordMutation: () => mockUseResetPasswordMutation(),
 }))
 
@@ -110,7 +110,7 @@ describe('ResetPasswordModal', () => {
 
     await waitFor(() =>
       expect(mockResetPassword).toHaveBeenCalledWith({
-        body: { oldPassword: 'oldpassword', newPassword: 'newpassword1' },
+        body: { currentPassword: 'oldpassword', newPassword: 'newpassword1' },
       }),
     )
     expect(mockSnackSuccess).toHaveBeenCalledWith('Password reset successfully')
