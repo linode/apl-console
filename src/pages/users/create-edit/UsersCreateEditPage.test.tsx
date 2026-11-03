@@ -388,7 +388,9 @@ describe('creation and editing', () => {
     await user.type(within(dialog).getByLabelText(/Confirm password/), 'new-secret-password')
     await user.click(within(dialog).getByRole('button', { name: 'Reset' }))
 
-    expect(await within(dialog).findByRole('alert')).toHaveTextContent(message)
+    const alert = await within(dialog).findByRole('alert')
+    expect(alert).toHaveTextContent(message)
+    expect(alert.firstChild).toHaveStyle({ border: '1px solid #d32f2f', borderRadius: '8px' })
     expect(within(dialog).getByLabelText(/New password/)).toHaveValue('new-secret-password')
     expect(within(dialog).getByLabelText(/Confirm password/)).toHaveValue('new-secret-password')
     expect(mockDispatch).not.toHaveBeenCalledWith(modalClosed())

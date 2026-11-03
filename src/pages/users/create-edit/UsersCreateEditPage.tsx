@@ -429,9 +429,9 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
             Reset Password
           </Typography>
           {resetRequestError && (
-            <Typography role='alert' color='error' sx={{ mb: 2 }}>
-              {resetRequestError}
-            </Typography>
+            <Box role='alert'>
+              <InformationBanner type='error' message={resetRequestError} sx={{ mb: 2 }} />
+            </Box>
           )}
           <TextField
             id='new-user-password'
