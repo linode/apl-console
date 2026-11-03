@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import * as mockReact from 'react'
+import palette from 'theme/palette'
 import ResetPasswordModal from './ResetPasswordModal'
 
 const mockDispatch = jest.fn()
@@ -34,20 +34,8 @@ jest.mock(
     },
 )
 
-jest.mock('components/forms/TextField', () => ({
-  TextField: mockReact.forwardRef(({ label, value, onChange, onBlur, helperText, error, type }: any, ref: any) => {
-    const inputId = `mock-${label.replace(/\s+/g, '-').toLowerCase()}`
-    return (
-      <div>
-        <label htmlFor={inputId}>{label}</label>
-        <input id={inputId} ref={ref} value={value || ''} onChange={onChange} onBlur={onBlur} type={type} />
-        {error && helperText && <span>{helperText}</span>}
-      </div>
-    )
-  }),
-}))
-
-const theme = createTheme({ palette: { cm: {} } as any })
+const theme = createTheme({ palette: palette.light })
+theme.font = { normal: 'sans-serif', bold: 'sans-serif' }
 
 function renderModal(props: Partial<{ open: boolean; onClose: () => void }> = {}) {
   const onClose = props.onClose ?? jest.fn()
@@ -69,13 +57,14 @@ describe('ResetPasswordModal', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockUseResetPasswordMutation.mockReturnValue([mockResetPassword, { isLoading: false }])
-    mockResetPassword.mockResolvedValue({ data: { message: 'ok' } })
+    mockResetPassword.mockResolvedValue({ data: undefined })
   })
 
   it('renders the password fields', () => {
     renderModal()
 
     expect(screen.getByText('Reset Password')).toBeInTheDocument()
+    expect(screen.getByRole('dialog', { name: 'Reset Password' })).toHaveAttribute('aria-modal', 'true')
     expect(screen.getByLabelText('Old password')).toHaveAttribute('type', 'password')
     expect(screen.getByLabelText('New password')).toHaveAttribute('type', 'password')
     expect(screen.getByLabelText('Confirm password')).toHaveAttribute('type', 'password')
@@ -126,6 +115,23 @@ describe('ResetPasswordModal', () => {
 
     expect(await screen.findByTestId('error-banner')).toHaveTextContent('Old password is incorrect')
     expect(onClose).not.toHaveBeenCalled()
+    expect(mockSnackSuccess).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    [401, 'Current password is incorrect.'],
+    [403, 'Self-service password reset is only available when AUTH_PROVIDER is dex.'],
+  ])('keeps API rejection %s in the modal without reporting success', async (statusCode, message) => {
+    mockResetPassword.mockResolvedValue({ data: { statusCode, message } })
+    const { onClose } = renderModal()
+
+    fillForm('oldpassword', 'newpassword1', 'newpassword1')
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    expect(await screen.findByTestId('error-banner')).toHaveTextContent(message)
+    expect(onClose).not.toHaveBeenCalled()
+    expect(mockSnackSuccess).not.toHaveBeenCalled()
+    expect(screen.getByLabelText('Old password')).toHaveValue('oldpassword')
   })
 
   it('calls onClose when cancel is clicked', () => {

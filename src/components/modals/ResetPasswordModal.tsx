@@ -22,6 +22,7 @@ const ModalBox = styled(Box)(({ theme }) => ({
   transform: 'translate(-50%, -50%)',
   width: 560,
   maxWidth: '95vw',
+  maxHeight: '95vh',
   backgroundColor: theme.palette.background.paper,
   color: theme.palette.text.primary,
   fontFamily: theme.font?.normal ?? theme.typography.fontFamily,
@@ -32,12 +33,15 @@ const ModalBox = styled(Box)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: 0,
   padding: 0,
-  overflow: 'hidden',
+  overflowY: 'auto',
 }))
 
-const ModalContent = styled('div')({
+const ModalContent = styled('div')(({ theme }) => ({
   padding: '40px 52px 32px 52px',
-})
+  [theme.breakpoints.down('sm')]: {
+    padding: '24px',
+  },
+}))
 
 const ModalTitle = styled(Typography)(({ theme }) => ({
   marginBottom: '25px',
@@ -83,6 +87,13 @@ const ModalFooter = styled('div')(({ theme }) => ({
     color: theme.palette.primary.contrastText,
     '&:hover': {
       backgroundColor: theme.palette.cm?.buttonPrimaryHover ?? theme.palette.primary.dark,
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: '24px',
+    '& .MuiButton-root': {
+      minWidth: 0,
+      flex: 1,
     },
   },
 }))
@@ -161,6 +172,11 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
         return
       }
 
+      if (result.data?.statusCode && result.data.statusCode >= 400) {
+        setSubmitError(result.data.message || DEFAULT_ERROR_MESSAGE)
+        return
+      }
+
       snack.success('Password reset successfully')
       reset(emptyFormValues)
       onClose()
@@ -177,10 +193,12 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
         handleClose()
       }}
     >
-      <ModalBox>
+      <ModalBox role='dialog' aria-modal='true' aria-labelledby='reset-password-title'>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <ModalContent>
-            <ModalTitle variant='h4'>{MODAL_TITLE}</ModalTitle>
+            <ModalTitle id='reset-password-title' variant='h4'>
+              {MODAL_TITLE}
+            </ModalTitle>
 
             {!!submitError && <InformationBanner type='error' message={submitError} sx={{ mb: 2 }} />}
 
@@ -191,6 +209,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id='old-password'
                     label='Old password'
                     type='password'
                     autoComplete='current-password'
@@ -208,6 +227,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id='new-password'
                     label='New password'
                     type='password'
                     autoComplete='new-password'
@@ -225,6 +245,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
                 render={({ field }) => (
                   <TextField
                     {...field}
+                    id='confirm-password'
                     label='Confirm password'
                     type='password'
                     autoComplete='new-password'

@@ -3157,7 +3157,9 @@ export type DeleteUserApiArg = {
   /** ID of the user */
   userId: string
 }
-export type ResetPasswordApiResponse = /** status 204 Password successfully reset */ undefined
+export type ResetPasswordApiResponse =
+  | /** status 200 Password reset rejected */ { statusCode: number; message: string }
+  | /** status 204 Password successfully reset */ undefined
 export type ResetPasswordApiArg = {
   body: {
     currentPassword: string
