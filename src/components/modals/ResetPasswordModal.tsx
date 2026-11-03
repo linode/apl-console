@@ -8,12 +8,12 @@ import { Controller, useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
 import { useResetPasswordMutation } from 'redux/otomiApi'
 import { modalClosed, modalOpened } from 'redux/reducers'
+import getPasswordResetErrorMessage from 'utils/passwordResetError'
 import snack from 'utils/snack'
 import { ResetPasswordFormValues, resetPasswordSchema } from './resetPasswordValidator'
 
 const MODAL_TITLE = 'Reset Password'
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong while resetting your password.'
-const API_UNAVAILABLE_MESSAGE = 'The API is currently unavailable. Please try again later.'
 
 const ModalBox = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -104,28 +104,6 @@ const emptyFormValues: ResetPasswordFormValues = {
   confirmPassword: '',
 }
 
-function getErrorMessage(error: unknown): string {
-  if (typeof error !== 'object' || error === null) return DEFAULT_ERROR_MESSAGE
-
-  if (
-    'status' in error &&
-    (typeof error.status === 'string' || typeof error.status === 'number') &&
-    ['FETCH_ERROR', 'TIMEOUT_ERROR', 'PARSING_ERROR', 502, 503, 504].includes(error.status)
-  )
-    return API_UNAVAILABLE_MESSAGE
-
-  if ('data' in error && typeof error.data === 'object' && error.data !== null) {
-    if ('message' in error.data && typeof error.data.message === 'string' && error.data.message.length > 0)
-      return error.data.message
-    if ('error' in error.data && typeof error.data.error === 'string' && error.data.error.length > 0)
-      return error.data.error
-  }
-
-  if ('error' in error && typeof error.error === 'string' && error.error.length > 0) return error.error
-
-  return DEFAULT_ERROR_MESSAGE
-}
-
 interface ResetPasswordModalProps {
   open: boolean
   onClose: () => void
@@ -176,7 +154,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
       })
 
       if ('error' in result) {
-        setSubmitError(getErrorMessage(result.error))
+        setSubmitError(getPasswordResetErrorMessage(result.error, DEFAULT_ERROR_MESSAGE))
         return
       }
 
@@ -189,7 +167,7 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
       reset(emptyFormValues)
       onClose()
     } catch (error) {
-      setSubmitError(getErrorMessage(error))
+      setSubmitError(getPasswordResetErrorMessage(error, DEFAULT_ERROR_MESSAGE))
     }
   }
 
