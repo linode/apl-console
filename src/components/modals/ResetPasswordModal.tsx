@@ -1,7 +1,6 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import LoadingButton from '@mui/material/Button'
 import { Box, Button, Modal, Typography, styled } from '@mui/material'
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import InformationBanner from 'components/InformationBanner'
 import { TextField } from 'components/forms/TextField'
 import { useEffect, useState } from 'react'
@@ -14,6 +13,7 @@ import { ResetPasswordFormValues, resetPasswordSchema } from './resetPasswordVal
 
 const MODAL_TITLE = 'Reset Password'
 const DEFAULT_ERROR_MESSAGE = 'Something went wrong while resetting your password.'
+const API_UNAVAILABLE_MESSAGE = 'The API is currently unavailable. Please try again later.'
 
 const ModalBox = styled(Box)(({ theme }) => ({
   position: 'absolute',
@@ -105,15 +105,23 @@ const emptyFormValues: ResetPasswordFormValues = {
 }
 
 function getErrorMessage(error: unknown): string {
-  const fetchError = error as FetchBaseQueryError & {
-    data?: { message?: string; error?: string }
-    error?: string
+  if (typeof error !== 'object' || error === null) return DEFAULT_ERROR_MESSAGE
+
+  if (
+    'status' in error &&
+    (typeof error.status === 'string' || typeof error.status === 'number') &&
+    ['FETCH_ERROR', 'TIMEOUT_ERROR', 'PARSING_ERROR', 502, 503, 504].includes(error.status)
+  )
+    return API_UNAVAILABLE_MESSAGE
+
+  if ('data' in error && typeof error.data === 'object' && error.data !== null) {
+    if ('message' in error.data && typeof error.data.message === 'string' && error.data.message.length > 0)
+      return error.data.message
+    if ('error' in error.data && typeof error.data.error === 'string' && error.data.error.length > 0)
+      return error.data.error
   }
 
-  if (typeof fetchError?.data === 'object' && fetchError.data !== null)
-    return fetchError.data.message || fetchError.data.error || DEFAULT_ERROR_MESSAGE
-
-  if (typeof fetchError?.error === 'string' && fetchError.error.length > 0) return fetchError.error
+  if ('error' in error && typeof error.error === 'string' && error.error.length > 0) return error.error
 
   return DEFAULT_ERROR_MESSAGE
 }

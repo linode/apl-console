@@ -119,6 +119,34 @@ describe('ResetPasswordModal', () => {
   })
 
   it.each([
+    { status: 'PARSING_ERROR', originalStatus: 503, data: 'Service Unavailable', error: 'SyntaxError: JSON.parse' },
+    {
+      status: 'PARSING_ERROR',
+      originalStatus: 200,
+      data: '<html>Unavailable</html>',
+      error: 'SyntaxError: JSON.parse',
+    },
+    { status: 'FETCH_ERROR', error: 'TypeError: Failed to fetch' },
+    { status: 'TIMEOUT_ERROR', error: 'Request timed out' },
+    { status: 502, data: { error: 'Bad Gateway' } },
+    { status: 503, data: { message: 'Service Unavailable' } },
+    { status: 504, data: { error: 'Gateway Timeout' } },
+  ])('shows a friendly modal error when the API is unavailable ($status)', async (error) => {
+    mockResetPassword.mockResolvedValue({ error })
+    const { onClose } = renderModal()
+
+    fillForm('oldpassword', 'newpassword1', 'newpassword1')
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    expect(await screen.findByTestId('error-banner')).toHaveTextContent(
+      'The API is currently unavailable. Please try again later.',
+    )
+    expect(onClose).not.toHaveBeenCalled()
+    expect(mockSnackSuccess).not.toHaveBeenCalled()
+    expect(screen.getByLabelText('Old password')).toHaveValue('oldpassword')
+  })
+
+  it.each([
     [401, 'Current password is incorrect.'],
     [403, 'Self-service password reset is only available when AUTH_PROVIDER is dex.'],
   ])('keeps API rejection %s in the modal without reporting success', async (statusCode, message) => {
