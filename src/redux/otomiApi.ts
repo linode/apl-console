@@ -238,6 +238,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
       query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}`, method: 'DELETE' }),
     }),
+    resetPassword: build.mutation<ResetPasswordApiResponse, ResetPasswordApiArg>({
+      query: (queryArg) => ({ url: `/v2/user/reset-password`, method: 'POST', body: queryArg.body }),
+    }),
     editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
@@ -3154,6 +3157,15 @@ export type DeleteUserApiArg = {
   /** ID of the user */
   userId: string
 }
+export type ResetPasswordApiResponse =
+  | /** status 200 Password reset rejected */ { statusCode: number; message: string }
+  | /** status 204 Password successfully reset */ undefined
+export type ResetPasswordApiArg = {
+  body: {
+    currentPassword: string
+    newPassword: string
+  }
+}
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   teams?: string[]
@@ -4945,6 +4957,7 @@ export const {
   useGetUserQuery,
   useEditUserMutation,
   useDeleteUserMutation,
+  useResetPasswordMutation,
   useEditTeamUsersMutation,
   useGetAllAplCatalogsQuery,
   useCreateAplCatalogMutation,
