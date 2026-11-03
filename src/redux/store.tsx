@@ -26,7 +26,7 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
   } else if (payload) {
     // eslint-disable-next-line no-console
     console.error('We got a rejected action with payload: ', payload)
-    dispatch(setError(payload))
+    if (api.getState().global.openModalCount === 0) dispatch(setError(payload))
     dispatch(setDirty(false))
   }
   return next(action)
