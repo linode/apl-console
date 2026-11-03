@@ -1,4 +1,5 @@
 import _Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
 import { styled } from '@mui/material/styles'
 import * as React from 'react'
 
@@ -46,6 +47,7 @@ export function Checkbox(props: Props) {
       color='primary'
       data-qa-checked={props.checked}
       icon={<CheckboxIcon />}
+      indeterminateIcon={<IndeterminateCheckBoxIcon style={{ width: 26, height: 26 }} />}
       {...rest}
     />
   )
