@@ -150,6 +150,7 @@ export default function ({ users: inUsers, teamId, refetch }: Props): React.Reac
       headCells={headCells}
       rows={users}
       resourceType='User'
+      to={isTeamView ? undefined : '/users/create'}
       title='Users'
       noCrud={isTeamView}
       customButton={isTeamView && updateUsers(handleUpdateUsers, isEqual(users, inUsers))}

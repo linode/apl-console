@@ -86,6 +86,23 @@ describe.each(['light', 'dark'] as const)('%s TeamList', (mode) => {
     expect(onChange).toHaveBeenLastCalledWith([])
   })
 
+  it('keeps checkbox icons at 26px through unchecked, partial, and checked states', async () => {
+    const { user } = setup()
+    const all = screen.getByRole('checkbox', { name: 'Select all' })
+    const expectFullIconSize = () => {
+      const icon = all.parentElement.querySelector('svg')
+      expect(icon).toHaveAttribute('width', '26')
+      expect(icon).toHaveAttribute('height', '26')
+    }
+    expectFullIconSize()
+    await user.click(screen.getByRole('checkbox', { name: 'Alpha' }))
+    expect(all).toHaveAttribute('data-indeterminate', 'true')
+    expect(all.parentElement.querySelector('svg')).toHaveStyle({ width: '26px', height: '26px' })
+    await user.click(all)
+    expect(all).toBeChecked()
+    expectFullIconSize()
+  })
+
   it('selects only filtered teams and preserves hidden selections on select and clear', async () => {
     const { onChange, user } = setup({ value: ['Beta', 'Unknown', 'Alpha'] })
     search('alp')

@@ -135,18 +135,26 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     formState: { isSubmitting },
   } = methods
 
+  let savedAccessLevel: AccessLevel = 'user'
+  if (user?.isPlatformAdmin) savedAccessLevel = 'platformAdmin'
+  else if (user?.isTeamAdmin) savedAccessLevel = 'teamAdmin'
+
   useEffect(() => {
-    let accessLevel: AccessLevel = 'user'
-    if (user?.isPlatformAdmin) accessLevel = 'platformAdmin'
-    else if (user?.isTeamAdmin) accessLevel = 'teamAdmin'
     reset({
       email: user?.email ?? '',
-      accessLevel,
+      accessLevel: savedAccessLevel,
       teams: user?.teams ?? (teamId ? [teamId] : []),
     })
-  }, [user, teamId, reset])
+  }, [user, teamId, reset, savedAccessLevel])
 
   const selectedAccessLevel = watch('accessLevel')
+  const selectedTeamSet = new Set(watch('teams'))
+  const savedTeamSet = new Set(user?.teams ?? [])
+  const hasChanges =
+    !editing ||
+    selectedAccessLevel !== savedAccessLevel ||
+    (selectedAccessLevel !== 'platformAdmin' &&
+      (selectedTeamSet.size !== savedTeamSet.size || [...selectedTeamSet].some((team) => !savedTeamSet.has(team))))
   const mutating =
     createState.isLoading || updateState.isLoading || resetPasswordState.isLoading || deleteState.isLoading
   const loading = loadingUser || fetchingUser || loadingTeams || fetchingTeams
@@ -156,7 +164,7 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
   const deleteDisabled = disabled || user?.email === defaultPlatformAdminEmail
 
   const onSubmit = async (values: UserFormData) => {
-    if (blocked || !canSelectAccessLevel(values.accessLevel)) return
+    if (blocked || !hasChanges || !canSelectAccessLevel(values.accessLevel)) return
     const isPlatformAdmin = platformAdmin && values.accessLevel === 'platformAdmin'
     const selectedTeams = values.teams.filter((team) => options.includes(team))
     const preservedTeams = (user?.teams ?? []).filter((team) => !options.includes(team))
@@ -367,7 +375,7 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
                 resourceType='User email'
               />
             )}
-            <Button type='submit' variant='contained' disabled={disabled} loading={mutating}>
+            <Button type='submit' variant='contained' disabled={disabled || !hasChanges} loading={mutating}>
               {editing ? 'Update User' : 'Create User'}
             </Button>
           </Box>

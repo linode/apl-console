@@ -181,6 +181,27 @@ beforeEach(() => {
 })
 
 describe('creation and editing', () => {
+  it('disables unchanged updates, including reverted roles and reordered memberships', async () => {
+    mockQueries.user = queryState(savedUser({ teams: ['alpha', 'beta'] }))
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
+    const { user } = renderPage('/users/user-1')
+    const submit = screen.getByRole('button', { name: 'Update User' })
+    expect(submit).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Reset Password' })).toBeEnabled()
+    await user.click(screen.getByRole('radio', { name: 'User' }))
+    expect(submit).toBeEnabled()
+    await user.click(screen.getByRole('radio', { name: 'Team admin' }))
+    expect(submit).toBeDisabled()
+    await user.click(screen.getByRole('checkbox', { name: 'alpha' }))
+    expect(submit).toBeEnabled()
+    await user.click(screen.getByRole('checkbox', { name: 'alpha' }))
+    expect(submit).toBeDisabled()
+    await user.click(screen.getByRole('textbox', { name: 'Search teams' }))
+    await user.keyboard('{Enter}')
+    expectNoMutations()
+  })
+
   it.each(['empty', 'whitespace'])('requires email when %s', async (input) => {
     const { user } = renderPage()
     const email = screen.getByRole('textbox', { name: 'Email (required)' })
@@ -264,6 +285,8 @@ describe('creation and editing', () => {
     expect(screen.getByRole('radio', { name: 'Team admin' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'alpha' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'beta' })).not.toBeChecked()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
+    await user.click(screen.getByRole('radio', { name: 'User' }))
     await user.click(screen.getByRole('button', { name: 'Update User' }))
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenCalledWith({
@@ -271,7 +294,7 @@ describe('creation and editing', () => {
         body: {
           email: 'saved@example.com',
           isPlatformAdmin: false,
-          isTeamAdmin: true,
+          isTeamAdmin: false,
           teams: ['alpha'],
         },
       }),
@@ -415,7 +438,7 @@ describe('query availability and external identity providers', () => {
     mockQueries[query][flag] = false
     refresh()
     expect(screen.queryByText('Loading user management')).not.toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Update User' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
   })
 
   it.each(['user', 'teams'] as const)('ignores stale %s data and route state when currentData is missing', (query) => {
@@ -431,7 +454,7 @@ describe('query availability and external identity providers', () => {
     mockQueries.teams = queryState(availableTeams)
     refresh()
     expect(screen.getByRole('textbox', { name: 'Email' })).toHaveValue('saved@example.com')
-    expect(screen.getByRole('button', { name: 'Update User' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
   })
 
   it.each(['user', 'teams'] as const)(
@@ -449,7 +472,7 @@ describe('query availability and external identity providers', () => {
       mockQueries[query].isError = false
       mockQueries[query].isFetching = false
       refresh()
-      expect(screen.getByRole('button', { name: 'Update User' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
     },
   )
 
@@ -543,6 +566,7 @@ describe('mutations and deletion', () => {
       const path = mutation === 'create' ? '/users/create' : '/users/user-1'
       const { user, refresh } = renderPage(path)
       if (mutation === 'create') await fillCreate(user)
+      else await user.click(screen.getByRole('radio', { name: 'User' }))
       const submit = screen.getByRole('button', { name: mutation === 'create' ? 'Create User' : 'Update User' })
       await user.click(submit)
       await waitFor(() => expect(trigger).toHaveBeenCalledTimes(1))
@@ -576,6 +600,7 @@ describe('mutations and deletion', () => {
     const path = creating ? '/users/create' : '/users/user-1'
     const { user, refresh } = renderPage(path)
     if (creating) await fillCreate(user)
+    else if (mutation === 'update') await user.click(screen.getByRole('radio', { name: 'User' }))
     if (mutation === 'delete') await confirmDelete(user)
     else await user.click(screen.getByRole('button', { name: creating ? 'Create User' : 'Update User' }))
     const triggers = { create: mockCreate, update: mockUpdate, delete: mockDelete }
@@ -594,6 +619,8 @@ describe('mutations and deletion', () => {
     const { user } = renderPage('/users/user-1')
     expect(screen.getByRole('radio', { name: 'Platform admin' })).toBeChecked()
     expect(screen.getByRole('button', { name: 'Delete' })).toBeDisabled()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
+    await user.click(screen.getByRole('radio', { name: 'User' }))
     expect(screen.getByRole('button', { name: 'Update User' })).toBeEnabled()
     await user.click(screen.getByRole('button', { name: 'Delete' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
@@ -737,17 +764,8 @@ describe('authorization', () => {
     expect(screen.getByRole('radio', { name: 'Team admin' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'alpha' })).toBeChecked()
     await user.click(screen.getByRole('button', { name: 'Update User' }))
-    await waitFor(() =>
-      expect(mockUpdate).toHaveBeenCalledWith({
-        userId: 'user-1',
-        body: {
-          email: 'saved@example.com',
-          isPlatformAdmin: false,
-          isTeamAdmin: true,
-          teams: ['alpha', 'beta'],
-        },
-      }),
-    )
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
+    expectNoMutations()
   })
 
   it('blocks creation when email is denied', async () => {
@@ -791,6 +809,8 @@ describe('route changes', () => {
     expect(screen.getByRole('radio', { name: 'User' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'alpha' })).not.toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'beta' })).toBeChecked()
+    expect(screen.getByRole('button', { name: 'Update User' })).toBeDisabled()
+    await user.click(screen.getByRole('radio', { name: 'Team admin' }))
     await user.click(screen.getByRole('button', { name: 'Update User' }))
     await waitFor(() =>
       expect(mockUpdate).toHaveBeenCalledWith({
@@ -798,7 +818,7 @@ describe('route changes', () => {
         body: {
           email: 'second@example.com',
           isPlatformAdmin: false,
-          isTeamAdmin: false,
+          isTeamAdmin: true,
           teams: ['beta'],
         },
       }),
