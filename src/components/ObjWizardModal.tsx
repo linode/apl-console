@@ -164,7 +164,7 @@ export default function StyledModal() {
               />
               <Typography variant='body2' mt={2}>
                 <Link
-                  href='https://techdocs.akamai.com/app-platform/docs/lke-automatic-install#provision-object-storage-for-the-app-platform'
+                  href='https://techdocs.akamai.com/app-platform/docs/lke-automatic-install#provision-object-storage-for-app-platform'
                   target='_blank'
                   rel='noopener'
                 >
