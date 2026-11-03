@@ -4,9 +4,16 @@ import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event'
 import { MemoryRouter, Route, RouteComponentProps, Switch } from 'react-router-dom'
 import type { GetAplTeamsApiResponse, GetUserApiResponse } from 'redux/otomiApi'
+import { modalClosed, modalOpened } from 'redux/reducers'
 import palette from '../../../theme/palette'
 import inputOverrides from '../../../theme/overrides/Input'
 import UsersCreateEditPage from './UsersCreateEditPage'
+
+const mockDispatch = jest.fn()
+
+jest.mock('redux/hooks', () => ({
+  useAppDispatch: () => mockDispatch,
+}))
 
 jest.mock('layouts/Paper', () => ({
   __esModule: true,
@@ -138,6 +145,7 @@ function renderPage(path = '/users/create', state: object = undefined) {
   )
   const result = render(tree())
   return {
+    unmount: result.unmount,
     // Exercise native disabled controls even when MUI also blocks pointer events with CSS.
     user: userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never }),
     refresh: () => result.rerender(tree()),
@@ -314,6 +322,8 @@ describe('creation and editing', () => {
 
     await user.click(screen.getByRole('button', { name: 'Reset Password' }))
     const dialog = screen.getByRole('dialog', { name: 'Reset Password' })
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(mockDispatch).toHaveBeenCalledWith(modalOpened())
     expect(within(dialog).getByLabelText(/New password/)).toBeVisible()
     expect(within(dialog).getByLabelText(/Confirm password/)).toBeVisible()
     expect(within(dialog).queryByLabelText(/old password|current password/i)).not.toBeInTheDocument()
@@ -336,7 +346,94 @@ describe('creation and editing', () => {
     )
     expect(mockUpdate).toHaveBeenCalledTimes(1)
     expect(screen.queryByRole('dialog', { name: 'Reset Password' })).not.toBeInTheDocument()
+    expect(mockDispatch).toHaveBeenLastCalledWith(modalClosed())
     expect(screen.getByRole('button', { name: 'Update User' })).toBeVisible()
+  })
+
+  it.each([
+    [{ status: 400, data: { message: 'Password rejected' } }, 'Password rejected'],
+    [{ status: 500, data: { error: 'Password update failed' } }, 'Password update failed'],
+    [{ status: 400, data: {} }, 'Unable to reset the password. Please try again.'],
+    [
+      { status: 'FETCH_ERROR', error: 'TypeError: Failed to fetch' },
+      'The API is currently unavailable. Please try again later.',
+    ],
+    [
+      { status: 'TIMEOUT_ERROR', error: 'Request timed out' },
+      'The API is currently unavailable. Please try again later.',
+    ],
+    [
+      { status: 'PARSING_ERROR', originalStatus: 503, data: 'Service Unavailable', error: 'SyntaxError' },
+      'The API is currently unavailable. Please try again later.',
+    ],
+    [
+      { status: 'PARSING_ERROR', originalStatus: 200, data: '<html>Unavailable</html>', error: 'SyntaxError' },
+      'The API is currently unavailable. Please try again later.',
+    ],
+    [{ status: 502, data: { error: 'Bad Gateway' } }, 'The API is currently unavailable. Please try again later.'],
+    [
+      { status: 503, data: { message: 'Service Unavailable' } },
+      'The API is currently unavailable. Please try again later.',
+    ],
+    [{ status: 504, data: { error: 'Gateway Timeout' } }, 'The API is currently unavailable. Please try again later.'],
+  ])('keeps reset request errors inside the admin modal (%j)', async (error, message) => {
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
+    mockQueries.user = queryState(savedUser())
+    mockUpdate.mockResolvedValue({ error })
+    const { user } = renderPage('/users/user-1')
+
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    const dialog = screen.getByRole('dialog', { name: 'Reset Password' })
+    await user.type(within(dialog).getByLabelText(/New password/), 'new-secret-password')
+    await user.type(within(dialog).getByLabelText(/Confirm password/), 'new-secret-password')
+    await user.click(within(dialog).getByRole('button', { name: 'Reset' }))
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent(message)
+    expect(within(dialog).getByLabelText(/New password/)).toHaveValue('new-secret-password')
+    expect(within(dialog).getByLabelText(/Confirm password/)).toHaveValue('new-secret-password')
+    expect(mockDispatch).not.toHaveBeenCalledWith(modalClosed())
+    expectPath('/users/user-1')
+
+    await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
+    expect(mockDispatch).toHaveBeenLastCalledWith(modalClosed())
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    const reopened = screen.getByRole('dialog', { name: 'Reset Password' })
+    expect(within(reopened).queryByRole('alert')).not.toBeInTheDocument()
+    expect(within(reopened).getByLabelText(/New password/)).toHaveValue('')
+    expect(within(reopened).getByLabelText(/Confirm password/)).toHaveValue('')
+  })
+
+  it('shows unexpected rejected reset requests inside the admin modal', async () => {
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
+    mockQueries.user = queryState(savedUser())
+    mockUpdate.mockRejectedValue(new Error('Unexpected request failure'))
+    const { user } = renderPage('/users/user-1')
+
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    const dialog = screen.getByRole('dialog', { name: 'Reset Password' })
+    await user.type(within(dialog).getByLabelText(/New password/), 'new-secret-password')
+    await user.type(within(dialog).getByLabelText(/Confirm password/), 'new-secret-password')
+    await user.click(within(dialog).getByRole('button', { name: 'Reset' }))
+
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent(
+      'Unable to reset the password. Please try again.',
+    )
+    expectPath('/users/user-1')
+  })
+
+  it('cleans up modal error suppression when the edit page unmounts', async () => {
+    mockSession.settings.otomi.oidc.authenticationLayer = 'dex'
+    mockQueries.user = queryState(savedUser())
+    const { user, unmount } = renderPage('/users/user-1')
+    expect(mockDispatch).not.toHaveBeenCalled()
+
+    await user.click(screen.getByRole('button', { name: 'Reset Password' }))
+    expect(mockDispatch).toHaveBeenCalledTimes(1)
+    expect(mockDispatch).toHaveBeenCalledWith(modalOpened())
+
+    unmount()
+    expect(mockDispatch).toHaveBeenCalledTimes(2)
+    expect(mockDispatch).toHaveBeenLastCalledWith(modalClosed())
   })
 
   it('does not show password reset for Keycloak users', () => {

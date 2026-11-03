@@ -29,6 +29,14 @@ describe('password reset API and modal error isolation', () => {
       }),
     )
 
+  const adminResetPassword = () =>
+    store.dispatch(
+      otomiApi.endpoints.editUser.initiate({
+        userId: 'user-1',
+        body: { email: 'user@example.com', initialPassword: 'new-password' },
+      }),
+    )
+
   it('sends both passwords to the real endpoint and accepts 204', async () => {
     const fetch = jest.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 204 }))
 
@@ -65,5 +73,31 @@ describe('password reset API and modal error isolation', () => {
     await resetPassword()
 
     expect(store.getState().global.error).toMatchObject({ status: 503, data: { error: 'Unavailable' } })
+  })
+
+  it.each([
+    { status: 400, data: { message: 'Password rejected' } },
+    { status: 503, data: { message: 'Service Unavailable' } },
+  ])('isolates admin reset errors from the page, including after closing ($status)', async ({ status, data }) => {
+    jest.spyOn(global, 'fetch').mockResolvedValue(Response.json(data, { status }))
+    store.dispatch(modalOpened())
+
+    expect(await adminResetPassword()).toHaveProperty('error.status', status)
+    expect(store.getState().global.error).toBeUndefined()
+    store.dispatch(modalClosed())
+    expect(store.getState().global.error).toBeUndefined()
+  })
+
+  it('isolates an admin reset network failure without changing normal edit error handling', async () => {
+    jest.spyOn(global, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'))
+    store.dispatch(modalOpened())
+
+    expect(await adminResetPassword()).toHaveProperty('error.status', 'FETCH_ERROR')
+    expect(store.getState().global.error).toBeUndefined()
+    store.dispatch(modalClosed())
+    expect(store.getState().global.error).toBeUndefined()
+
+    expect(await adminResetPassword()).toHaveProperty('error.status', 'FETCH_ERROR')
+    expect(store.getState().global.error).toMatchObject({ status: 'FETCH_ERROR' })
   })
 })

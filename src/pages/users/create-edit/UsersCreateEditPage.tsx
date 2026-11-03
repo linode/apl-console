@@ -12,6 +12,7 @@ import { useSession } from 'providers/Session'
 import React, { useEffect, useState } from 'react'
 import { Controller, FormProvider, useForm } from 'react-hook-form'
 import { Redirect, RouteComponentProps } from 'react-router-dom'
+import { useAppDispatch } from 'redux/hooks'
 import {
   CreateUserApiArg,
   useCreateUserMutation,
@@ -20,6 +21,8 @@ import {
   useGetAplTeamsQuery,
   useGetUserQuery,
 } from 'redux/otomiApi'
+import { modalClosed, modalOpened } from 'redux/reducers'
+import getPasswordResetErrorMessage from 'utils/passwordResetError'
 import * as yup from 'yup'
 import AccessManagement from './AccessManagement'
 import TeamList from './TeamList'
@@ -31,6 +34,7 @@ interface Params {
 }
 
 const accessLevels: AccessLevel[] = ['user', 'teamAdmin', 'platformAdmin']
+const RESET_PASSWORD_ERROR_MESSAGE = 'Unable to reset the password. Please try again.'
 
 const utf8ByteLength = (value: string) =>
   Array.from(value).reduce((length, character) => {
@@ -42,6 +46,7 @@ const utf8ByteLength = (value: string) =>
   }, 0)
 
 function UserForm({ teamId, userId }: Params): React.ReactElement {
+  const dispatch = useAppDispatch()
   const { user: sessionUser, settings, defaultPlatformAdminEmail } = useSession()
   const externalIDP = Boolean(settings?.otomi?.hasExternalIDP)
   const dexIssuer = settings?.otomi?.oidc?.authenticationLayer === 'dex'
@@ -147,6 +152,16 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     })
   }, [user, teamId, reset, savedAccessLevel])
 
+  useEffect(() => {
+    if (!resetPasswordOpen) return undefined
+
+    dispatch(modalOpened())
+
+    return () => {
+      dispatch(modalClosed())
+    }
+  }, [resetPasswordOpen, dispatch])
+
   const selectedAccessLevel = watch('accessLevel')
   const selectedTeamSet = new Set(watch('teams'))
   const savedTeamSet = new Set(user?.teams ?? [])
@@ -208,12 +223,19 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
     }
     if (!userId || !user || resetPasswordState.isLoading) return
 
-    const result = await resetPassword({
-      userId,
-      body: { email: user.email, initialPassword: newPassword },
-    })
-    if ('data' in result) closeResetPassword()
-    else setResetRequestError('Unable to reset the password. Please try again.')
+    try {
+      const result = await resetPassword({
+        userId,
+        body: { email: user.email, initialPassword: newPassword },
+      })
+      if ('error' in result) {
+        setResetRequestError(getPasswordResetErrorMessage(result.error, RESET_PASSWORD_ERROR_MESSAGE))
+        return
+      }
+      closeResetPassword()
+    } catch (error) {
+      setResetRequestError(getPasswordResetErrorMessage(error, RESET_PASSWORD_ERROR_MESSAGE))
+    }
   }
 
   const openResetPassword = () => {
@@ -385,6 +407,7 @@ function UserForm({ teamId, userId }: Params): React.ReactElement {
         <Box
           component='form'
           role='dialog'
+          aria-modal='true'
           aria-labelledby='reset-password-title'
           onSubmit={onResetPassword}
           sx={{
