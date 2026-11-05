@@ -128,6 +128,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "coverage": "npm run test -- --coverage",
     "dev:docker": "npm ci && npm run dev",
     "dev": "run-p start watch:ts start:chrome",
     "format:fix": "prettier --write \"**/*.{js,json,md,ts,yml,yaml}\"",
