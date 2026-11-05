@@ -11,7 +11,7 @@ import {
   Typography,
   styled,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLocalStorage } from 'react-use'
 import { useCreateObjWizardMutation } from 'redux/otomiApi'
 import LoadingButton from '@mui/material/Button'
@@ -94,9 +94,6 @@ interface ObjWizardResponse {
 export default function StyledModal() {
   const {
     user: { isPlatformAdmin },
-    settings: {
-      otomi: { isPreInstalled },
-    },
     objectStorage: { objStorageRegions, showWizard },
   } = useSession()
   const [showObjWizard, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard', !!showWizard)
@@ -107,11 +104,7 @@ export default function StyledModal() {
   const [wizardSuccess, setWizardSuccess] = useState<Array<string>>([])
   const [wizardError, setWizardError] = useState<string>('')
   const [create] = useCreateObjWizardMutation<FetchBaseQueryError>()
-  useEffect(() => {
-    if (showObjWizard === undefined) setShowObjWizard(!!showWizard)
-    if (!isPreInstalled) setShowObjWizard(false)
-  }, [isPreInstalled])
-  if (!isPlatformAdmin || !isPreInstalled) return null
+  if (!isPlatformAdmin) return null
   const handleSkip = () => {
     create({ body: { showWizard: false } })
     setShowObjWizard(false)
