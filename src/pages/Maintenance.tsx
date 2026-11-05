@@ -3,8 +3,8 @@ import PaperLayout from 'layouts/Paper'
 import React from 'react'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
+import ObjWizardModal from 'components/ObjWizardModal'
 import { useLocalStorage } from 'react-use'
-import { useSession } from 'providers/Session'
 import { useGetSettingsQuery } from 'redux/otomiApi'
 import Section from 'components/Section'
 
@@ -22,11 +22,6 @@ const classes = {
 }
 
 export default function (): React.ReactElement {
-  const {
-    settings: {
-      otomi: { isPreInstalled },
-    },
-  } = useSession()
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const { data } = useGetSettingsQuery({ ids: ['obj'] })
   const isObjStorageConfigured = (): boolean => {
@@ -47,22 +42,21 @@ export default function (): React.ReactElement {
         <Typography variant='h6' sx={{ fontWeight: 700 }}>
           Actions
         </Typography>
-        {isPreInstalled && (
-          <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
-            <span>
-              <Button
-                variant='text'
-                color='primary'
-                sx={classes.actionButton}
-                onClick={handleShowObjWizard}
-                disabled={isObjStorageConfigured()}
-              >
-                Start Object Storage Wizard
-              </Button>
-            </span>
-          </Tooltip>
-        )}
+        <Tooltip title={isObjStorageConfigured() ? 'Object storage settings are already configured.' : ''}>
+          <span>
+            <Button
+              variant='text'
+              color='primary'
+              sx={classes.actionButton}
+              onClick={handleShowObjWizard}
+              disabled={isObjStorageConfigured()}
+            >
+              Start Object Storage Wizard
+            </Button>
+          </span>
+        </Tooltip>
       </Section>
+      <ObjWizardModal />
     </Box>
   )
 
