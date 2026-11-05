@@ -32,8 +32,19 @@ export default function ({
       size='large'
       disableElevation
       sx={{
-        borderColor: 'primary.main',
+        borderColor: 'divider',
+        borderRadius: 0,
         backgroundColor: 'transparent',
+        '& .MuiIconButton-root': {
+          color: 'cm.linkActiveLight',
+          borderRadius: 0,
+          '&:hover': {
+            color: 'cm.buttonPrimaryHover',
+          },
+          '&.Mui-disabled': {
+            color: 'action.disabled',
+          },
+        },
       }}
     >
       {!isHostedByOtomi && !enabled && isAdminApps && (
@@ -48,12 +59,12 @@ export default function ({
 
       {enabled && externalUrl && (
         <IconButton component={RLink} to={{ pathname: externalUrl }} target='_blank' onClick={handleClickModal}>
-          <Iconify icon='ri:share-forward-line' sx={{ color: '#3682db' }} />
+          <Iconify icon='ri:share-forward-line' />
         </IconButton>
       )}
 
       <IconButton component={RLink} to={`/apps/${teamId}/${id}`} title={t('Click to edit settings')}>
-        <Iconify icon='iconamoon:settings' sx={{ color: '#3682db' }} />
+        <Iconify icon='iconamoon:settings' />
       </IconButton>
     </ButtonGroup>
   )

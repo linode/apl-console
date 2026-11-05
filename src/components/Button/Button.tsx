@@ -42,11 +42,34 @@ export interface ButtonProps extends MuiButtonProps {
 }
 
 const StyledButton = styled(MuiButton, {
-  shouldForwardProp: omittedProps(['compactX', 'compactY', 'loading', 'buttonType']),
-})<ButtonProps>(({ theme, ...props }) => ({
-  ...(props.buttonType === 'secondary' && {
-    color: '##5bb3ea',
+  shouldForwardProp: omittedProps(['compactX', 'compactY', 'loading', 'buttonType', 'useDefaultColors']),
+})<ButtonProps & { useDefaultColors: boolean }>(({ theme, ...props }) => ({
+  border: '1px solid',
+  borderRadius: 0,
+  boxShadow: 'none',
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  fontWeight: 400,
+  lineHeight: '20px',
+  ...(props.useDefaultColors && {
+    color: props.buttonType === 'primary' ? theme.palette.primary.contrastText : theme.palette.cm.linkActiveLight,
+    backgroundColor: props.buttonType === 'primary' ? theme.palette.cm.linkActiveLight : theme.palette.background.paper,
+    borderColor: props.buttonType === 'primary' ? theme.palette.cm.linkActiveLight : theme.palette.cm.textBoxBorder,
   }),
+  '&:hover:not(:disabled):not([aria-disabled="true"])': {
+    boxShadow: 'none',
+    ...(props.useDefaultColors && {
+      borderColor: theme.palette.cm.buttonPrimaryHover,
+      backgroundColor:
+        props.buttonType === 'primary' ? theme.palette.cm.buttonPrimaryHover : theme.palette.background.default,
+    }),
+  },
+  '&.Mui-disabled, &[aria-disabled="true"]': {
+    color: theme.palette.action.disabled,
+    backgroundColor: theme.palette.action.disabledBackground,
+    borderColor: theme.palette.action.disabledBackground,
+    boxShadow: 'none',
+  },
   ...(props.compactX && {
     minWidth: 50,
     paddingLeft: 0,
@@ -63,9 +86,6 @@ const StyledButton = styled(MuiButton, {
       height: `${theme.spacing(2)}`,
       margin: '0 auto',
       width: `${theme.spacing(2)}`,
-    },
-    '&:disabled': {
-      backgroundColor: props.buttonType === 'primary' && theme.palette.text.primary,
     },
   }),
 }))
@@ -88,6 +108,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       buttonType = 'secondary',
       children,
       className,
+      color,
       compactX,
       compactY,
       disabled,
@@ -99,7 +120,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref,
   ) => {
-    const color = buttonType === 'primary' ? 'primary' : 'secondary'
     const showTooltip = disabled && Boolean(tooltipText)
 
     let variant: 'contained' | 'outlined' | 'text'
@@ -128,7 +148,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         aria-disabled={disabled}
         buttonType={buttonType}
         className={className}
-        color={color}
+        color={color ?? (buttonType === 'primary' ? 'primary' : 'secondary')}
+        useDefaultColors={!color || color === 'primary'}
         compactX={compactX}
         compactY={compactY}
         data-testid={rest['data-testid'] || 'Button'}

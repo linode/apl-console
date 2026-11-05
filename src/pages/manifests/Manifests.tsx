@@ -41,9 +41,10 @@ export default function Manifests() {
           <Typography
             sx={{
               mb: 3,
-              fontSize: '1rem',
-              lineHeight: 1.7,
+              typography: 'body1',
+              fontWeight: 400,
               color: 'text.primary',
+              '& strong': { fontWeight: 700 },
             }}
           >
             The platform ships with a GitOps system pre-configured. Within the values repository, the{' '}
@@ -55,9 +56,10 @@ export default function Manifests() {
             sx={{
               mb: 4,
               p: '14px 16px',
-              borderRadius: 2,
-              border: '1px solid rgba(145, 158, 171, 0.24)',
-              backgroundColor: 'rgba(145, 158, 171, 0.08)',
+              borderRadius: 0,
+              border: '1px solid',
+              borderColor: 'divider',
+              backgroundColor: 'background.default',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -65,7 +67,9 @@ export default function Manifests() {
             }}
           >
             <Box sx={{ minWidth: 0 }}>
-              <Typography variant='subtitle2'>Values repository</Typography>
+              <Typography variant='body2' sx={{ fontWeight: 700 }}>
+                Values repository
+              </Typography>
 
               <Typography
                 variant='body2'
@@ -85,6 +89,7 @@ export default function Manifests() {
               <IconButton
                 aria-label='Copy values repository URL'
                 color='primary'
+                sx={{ borderRadius: '1px' }}
                 onClick={handleCopyValuesRepoUrl}
                 disabled={!repoUrl}
               >
@@ -96,8 +101,8 @@ export default function Manifests() {
           <Typography
             sx={{
               mb: 3,
-              fontSize: '1rem',
-              lineHeight: 1.7,
+              typography: 'body1',
+              fontWeight: 400,
               color: 'text.secondary',
             }}
           >
@@ -112,7 +117,7 @@ export default function Manifests() {
               target='_blank'
               rel='noopener noreferrer'
               endIcon={<OpenInNewIcon />}
-              sx={{ textTransform: 'none' }}
+              sx={{ textTransform: 'none', borderRadius: '1px' }}
               disabled={!repoUrl}
             >
               Open manifests directory
@@ -124,7 +129,7 @@ export default function Manifests() {
               target='_blank'
               rel='noopener noreferrer'
               endIcon={<OpenInNewIcon />}
-              sx={{ textTransform: 'none' }}
+              sx={{ textTransform: 'none', borderRadius: '1px' }}
             >
               View Techdocs
             </Button>

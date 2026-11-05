@@ -11,6 +11,17 @@ export default function Select(theme: Theme) {
       defaultProps: {
         IconComponent: InputSelectIcon,
       },
+      styleOverrides: {
+        icon: {
+          color: theme.palette.text.secondary,
+        },
+        select: {
+          minHeight: '1.25rem',
+          '&:focus': {
+            borderRadius: 0,
+          },
+        },
+      },
     },
   }
 }

@@ -24,7 +24,7 @@ import ControlledBox from 'components/ControlledBox'
 import { useSession } from 'providers/Session'
 import InformationBanner from 'components/InformationBanner'
 import { Link } from 'components/LinkUrl/LinkUrl'
-import LoadingButton from '@mui/lab/LoadingButton'
+import LoadingButton from '@mui/material/Button'
 import DeleteButton from 'components/DeleteButton'
 import useSettings from 'hooks/useSettings'
 import { useStyles } from './create-edit-teams.styles'
@@ -232,7 +232,6 @@ export default function TeamsCreateEditPage({
                   />
                 )}
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.managedMonitoring.grafana'
                   control={control}
                   disabled={!appsEnabled.grafana || !isAdmin}
@@ -254,7 +253,6 @@ export default function TeamsCreateEditPage({
                   />
                 )}
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.managedMonitoring.alertmanager'
                   control={control}
                   disabled={!appsEnabled.prometheus || !isAdmin}
@@ -333,14 +331,12 @@ export default function TeamsCreateEditPage({
 
               <Section title='Network Policies' collapsable noMarginTop>
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.networkPolicy.ingressPrivate'
                   control={control}
                   label='Ingress control'
                   explainertext='Control Pod network access. Turning this off allows any Pod from any namespace to connect to any Pod from the team. (Recommended to keep this enabled)'
                 />
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.networkPolicy.egressPublic'
                   control={control}
                   label='Egress control'

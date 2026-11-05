@@ -1,22 +1,22 @@
 // next
 // config
+import Cookies from 'js-cookie'
 import { cookiesKey, defaultSettings } from '../config'
 
 // ----------------------------------------------------------------------
 
-export const getSettings = (cookies) => {
-  const themeView = getData(cookies[cookiesKey.themeView] as string) || defaultSettings.themeView
+export const getSettings = () => {
+  const themeView = getData(Cookies.get(cookiesKey.themeView)) || defaultSettings.themeView
 
-  const themeMode = getData(cookies[cookiesKey.themeMode] as string) || defaultSettings.themeMode
+  const themeMode = getData(Cookies.get(cookiesKey.themeMode)) || defaultSettings.themeMode
 
-  const themeColorPresets =
-    getData(cookies[cookiesKey.themeColorPresets] as string) || defaultSettings.themeColorPresets
+  const themeColorPresets = getData(Cookies.get(cookiesKey.themeColorPresets)) || defaultSettings.themeColorPresets
 
-  const themeLayout = getData(cookies[cookiesKey.themeLayout] as string) || defaultSettings.themeLayout
+  const themeLayout = getData(Cookies.get(cookiesKey.themeLayout)) || defaultSettings.themeLayout
 
-  const themeContrast = getData(cookies[cookiesKey.themeContrast] as string) || defaultSettings.themeContrast
+  const themeContrast = getData(Cookies.get(cookiesKey.themeContrast)) || defaultSettings.themeContrast
 
-  const themeStretch = getData(cookies[cookiesKey.themeStretch] as string) || defaultSettings.themeStretch
+  const themeStretch = getData(Cookies.get(cookiesKey.themeStretch)) || defaultSettings.themeStretch
 
   return {
     themeView,

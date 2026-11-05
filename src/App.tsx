@@ -3,7 +3,6 @@
 import createCache from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline } from '@mui/material'
-import cookie from 'cookie'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Error from 'pages/Error'
@@ -27,7 +26,7 @@ import { ShellDrawerProvider } from 'contexts/ShellDrawerContext'
 import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
-import User from 'pages/User'
+import UsersCreateEditPage from 'pages/users/create-edit/UsersCreateEditPage'
 import Policy from 'pages/Policy'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
@@ -64,12 +63,12 @@ export const muiCache = createCache({
   prepend: true,
 })
 
-let contextPath = '##CONTEXT_PATH##'
+const envContextPath = (process.env.CONTEXT_PATH ?? '').trim()
+let contextPath = envContextPath || ''
 if (location.hostname === 'localhost') contextPath = ''
 
 function App() {
-  const cookies = cookie.parse(document.cookie)
-  const settings = getSettings(cookies)
+  const settings = getSettings()
 
   return (
     <Suspense fallback={<LoadingScreen />}>
@@ -196,7 +195,18 @@ function App() {
                                 />
                                 <PrivateRoute path='/settings' component={SettingsOverview} platformAdminRoute exact />
                                 <PrivateRoute path='/users' component={Users} platformAdminRoute exact />
-                                <PrivateRoute path='/users/:userId' component={User} platformAdminRoute exact />
+                                <PrivateRoute
+                                  path='/users/create'
+                                  component={UsersCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/users/:userId'
+                                  component={UsersCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/users' component={Users} teamAdminRoute exact />
                                 <PrivateRoute
                                   path='/container-images'
@@ -233,7 +243,11 @@ function App() {
                                   component={ServicesCreateEditPage}
                                   exact
                                 />
-                                <PrivateRoute path='/teams/:teamId/users/create' component={User} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/users/create'
+                                  component={UsersCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute
                                   path='/teams/:teamId/container-images/create'
                                   component={BuildsCreateEditPage}

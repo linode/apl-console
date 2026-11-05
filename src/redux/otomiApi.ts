@@ -238,6 +238,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
       query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}`, method: 'DELETE' }),
     }),
+    resetPassword: build.mutation<ResetPasswordApiResponse, ResetPasswordApiArg>({
+      query: (queryArg) => ({ url: `/v2/user/reset-password`, method: 'POST', body: queryArg.body }),
+    }),
     editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
@@ -329,6 +332,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     getSession: build.query<GetSessionApiResponse, GetSessionApiArg>({
       query: () => ({ url: `/v1/session` }),
+    }),
+    logout: build.mutation<LogoutApiResponse, LogoutApiArg>({
+      query: () => ({ url: `/v2/user/logout`, method: 'POST' }),
     }),
     getApiDoc: build.query<GetApiDocApiResponse, GetApiDocApiArg>({
       query: () => ({ url: `/v1/apiDocs` }),
@@ -3076,8 +3082,8 @@ export type DeleteCloudttyApiArg = {
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3087,8 +3093,8 @@ export type GetAllUsersApiArg = void
 export type CreateUserApiResponse = /** status 200 Successfully stored user configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3099,8 +3105,8 @@ export type CreateUserApiArg = {
   body: {
     id?: string
     email: string
-    firstName: string
-    lastName: string
+    firstName?: string
+    lastName?: string
     isPlatformAdmin?: boolean
     isTeamAdmin?: boolean
     teams?: string[]
@@ -3110,8 +3116,8 @@ export type CreateUserApiArg = {
 export type GetUserApiResponse = /** status 200 Successfully obtained user configuration */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3124,8 +3130,8 @@ export type GetUserApiArg = {
 export type EditUserApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   email: string
-  firstName: string
-  lastName: string
+  firstName?: string
+  lastName?: string
   isPlatformAdmin?: boolean
   isTeamAdmin?: boolean
   teams?: string[]
@@ -3138,8 +3144,8 @@ export type EditUserApiArg = {
   body: {
     id?: string
     email: string
-    firstName: string
-    lastName: string
+    firstName?: string
+    lastName?: string
     isPlatformAdmin?: boolean
     isTeamAdmin?: boolean
     teams?: string[]
@@ -3150,6 +3156,15 @@ export type DeleteUserApiResponse = /** status 200 Successfully deleted a user *
 export type DeleteUserApiArg = {
   /** ID of the user */
   userId: string
+}
+export type ResetPasswordApiResponse =
+  | /** status 200 Password reset rejected */ { statusCode: number; message: string }
+  | /** status 204 Password successfully reset */ undefined
+export type ResetPasswordApiArg = {
+  body: {
+    currentPassword: string
+    newPassword: string
+  }
 }
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
@@ -4231,6 +4246,8 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   }
 }
 export type GetSessionApiArg = void
+export type LogoutApiResponse = /** status 204 Logout processed. */ undefined
+export type LogoutApiArg = void
 export type GetApiDocApiResponse = /** status 200 The requested apiDoc. */ object
 export type GetApiDocApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
@@ -4251,6 +4268,9 @@ export type GetSettingsInfoApiResponse = /** status 200 The request is successfu
     isPreInstalled?: boolean
     aiEnabled?: boolean
     hasExternalIDP?: boolean
+    oidc?: {
+      authenticationLayer?: 'dex' | 'keycloak'
+    }
     git?: {
       repoUrl?: string
       branch?: string
@@ -4940,6 +4960,7 @@ export const {
   useGetUserQuery,
   useEditUserMutation,
   useDeleteUserMutation,
+  useResetPasswordMutation,
   useEditTeamUsersMutation,
   useGetAllAplCatalogsQuery,
   useCreateAplCatalogMutation,
@@ -4966,6 +4987,7 @@ export const {
   useGetKubecfgQuery,
   useGetDockerConfigQuery,
   useGetSessionQuery,
+  useLogoutMutation,
   useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,

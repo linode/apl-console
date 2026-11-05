@@ -86,7 +86,7 @@ export default function LoadingScreen({ loadingText = 'Loading console' }: Props
           border: (theme) => `solid 8px ${alpha(theme.palette.primary.dark, 0.24)}`,
         }}
       />
-      <Typography variant='h5' sx={{ position: 'absolute', mt: '250px', color: '#212B36' }}>
+      <Typography variant='h5' sx={{ position: 'absolute', mt: '250px', color: 'text.primary' }}>
         {loadingText}
       </Typography>
     </RootStyle>

@@ -1,4 +1,5 @@
-import { Avatar, Box, Divider, MenuItem, Typography } from '@mui/material'
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
+import { Avatar, Box, Divider, ListItemIcon, MenuItem, Typography } from '@mui/material'
 import { alpha } from '@mui/material/styles'
 import React, { useState } from 'react'
 import { useDeleteCloudttyMutation } from 'redux/otomiApi'
@@ -8,6 +9,7 @@ import { useSession } from 'providers/Session'
 import MenuPopover from './MenuPopover'
 import { IconButtonAnimate } from './animate'
 import SettingMode from './SettingMode'
+import ResetPasswordModal from './modals/ResetPasswordModal'
 
 type Props = {
   email: string
@@ -17,6 +19,7 @@ export default function AccountPopover({ email }: Props) {
   const history = useHistory()
   const { oboTeamId } = useSession()
   const [open, setOpen] = useState<HTMLElement | null>(null)
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false)
   const [deleteCloudtty] = useDeleteCloudttyMutation()
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -25,6 +28,11 @@ export default function AccountPopover({ email }: Props) {
 
   const handleClose = () => {
     setOpen(null)
+  }
+
+  const handleOpenResetPassword = () => {
+    setOpen(null)
+    setResetPasswordOpen(true)
   }
 
   const handleLogout = () => {
@@ -40,15 +48,16 @@ export default function AccountPopover({ email }: Props) {
         onClick={handleOpen}
         sx={{
           p: 0,
+          borderRadius: 0,
           ...(open && {
             '&:before': {
               zIndex: 1,
               content: "''",
               width: '100%',
               height: '100%',
-              borderRadius: '50%',
+              borderRadius: 'inherit',
               position: 'absolute',
-              bgcolor: (theme) => alpha(String(theme.palette.grey[900]), 0.8),
+              bgcolor: (theme) => alpha(String(theme.palette.text.primary), 0.8),
             },
           }),
         }}
@@ -65,13 +74,26 @@ export default function AccountPopover({ email }: Props) {
           ml: 0.75,
           width: 300,
           '& .MuiMenuItem-root': {
-            typography: 'body2',
-            borderRadius: 0.75,
+            fontFamily: (theme) => theme.font.normal,
+            fontSize: '14px',
+            lineHeight: '20px',
+            fontWeight: 400,
+            borderRadius: 0,
           },
         }}
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
-          <Typography variant='body2' sx={{ color: 'text.secondary' }} noWrap>
+          <Typography
+            variant='body2'
+            sx={{
+              color: 'text.secondary',
+              fontFamily: (theme) => theme.font.normal,
+              fontSize: '14px',
+              lineHeight: '20px',
+              fontWeight: 400,
+            }}
+            noWrap
+          >
             {email}
           </Typography>
         </Box>
@@ -80,12 +102,20 @@ export default function AccountPopover({ email }: Props) {
           <SettingMode />
         </Box>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderColor: 'divider' }} />
 
-        <MenuItem onClick={handleLogout} sx={{ m: 1, color: 'red' }}>
+        <MenuItem onClick={handleOpenResetPassword} sx={{ m: 1 }}>
+          <ListItemIcon>
+            <KeyOutlinedIcon fontSize='small' />
+          </ListItemIcon>
+          Reset password
+        </MenuItem>
+
+        <MenuItem onClick={handleLogout} sx={{ m: 1, color: 'error.main' }}>
           Sign out
         </MenuItem>
       </MenuPopover>
+      <ResetPasswordModal open={resetPasswordOpen} onClose={() => setResetPasswordOpen(false)} />
     </>
   )
 }

@@ -16,22 +16,26 @@ const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: 
     : {}
   const errorStyles = error
     ? {
-        borderColor: 'red',
+        borderColor: theme.palette.error.main,
       }
     : {}
   return {
     inputLabel: {
-      color: theme.palette.cl.text.title,
+      color: theme.palette.text.primary,
+      fontFamily: theme.font.bold,
+      fontWeight: 700,
       marginBottom: theme.spacing(2),
     },
     textarea: {
       backgroundColor: theme.palette.cm.textBox,
-      color: theme.palette.cl.text.title,
+      color: theme.palette.text.primary,
       padding: theme.spacing(1),
-      border: `1px solid ${theme.palette.cm.inputBorder}`,
+      border: `1px solid ${theme.palette.cm.textBoxBorder}`,
+      borderRadius: 0,
       boxSizing: 'border-box',
       overflow: 'hidden',
       fontFamily: 'monospace',
+      fontWeight: 400,
       fontSize: '12px',
       resize: disabled ? 'none' : 'both',
       display: 'inline-block',
@@ -44,6 +48,14 @@ const useStyles = makeStyles<{ disabled?: boolean; error?: boolean }>()((theme: 
       maxHeight: '800px',
       width: 'auto',
       height: 'auto',
+      '&::placeholder': {
+        color: theme.palette.text.secondary,
+        opacity: 1,
+      },
+      '&:focus-visible': {
+        outline: `2px solid ${error ? theme.palette.error.main : theme.palette.cm.linkActiveLight}`,
+        outlineOffset: 2,
+      },
       ...disabledStyles,
       ...errorStyles,
     },
@@ -66,7 +78,7 @@ export function AutoResizableTextarea({
   label = '',
   minRows = 1,
   maxRows = 40,
-  minWidth = 400,
+  minWidth = 420,
   maxWidth = 850,
   minHeight = 34,
   maxHeight = 800,
@@ -173,17 +185,18 @@ export function AutoResizableTextarea({
 
   return (
     <Box>
-      <InputLabel
-        className={classes.inputLabel}
-        sx={{
-          fontWeight: 'bold',
-          fontSize: '14px',
-          visibility: label ? 'visible' : 'hidden',
-          marginTop: label ? '16px' : '0px',
-        }}
-      >
-        {label}
-      </InputLabel>
+      {label && (
+        <InputLabel
+          className={classes.inputLabel}
+          sx={{
+            fontWeight: 500,
+            fontSize: '0.875rem',
+            marginTop: '16px',
+          }}
+        >
+          {label}
+        </InputLabel>
+      )}
       <Box
         sx={{
           position: 'relative',

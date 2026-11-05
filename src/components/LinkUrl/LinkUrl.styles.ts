@@ -5,18 +5,18 @@ import type { Theme } from '@mui/material/styles'
 export const useStyles = makeStyles<void, 'iconContainer'>()((theme: Theme) => ({
   forceCopyColor: {
     '&:hover, &:focus, & svg': {
-      color: theme.palette.cm.black,
+      color: theme.palette.text.primary,
     },
     color: theme.palette.text.primary,
     transition: theme.transitions.create('color'),
   },
   iconContainer: {
     '& svg': {
-      color: theme.palette.cm.linkActiveLight,
+      color: 'inherit',
       height: 12,
       width: 12,
     },
-    color: theme.palette.primary.main,
+    color: 'inherit',
     display: 'inline-block',
     height: 14,
     marginLeft: -10,
@@ -28,5 +28,8 @@ export const useStyles = makeStyles<void, 'iconContainer'>()((theme: Theme) => (
   root: {
     alignItems: 'baseline',
     color: theme.palette.cm.linkActiveLight,
+    '&:hover, &:focus-visible': {
+      color: theme.palette.cm.buttonPrimaryHover,
+    },
   },
 }))

@@ -43,7 +43,6 @@ import Autocomplete from './Autocomplete'
 import ToggleButton from './ToggleButton'
 import FormControl from './FormControl'
 import ControlLabel from './ControlLabel'
-import LoadingButton from './LoadingButton'
 
 // ----------------------------------------------------------------------
 
@@ -92,6 +91,5 @@ export default function ComponentsOverrides(theme: Theme) {
     Autocomplete(theme),
     ControlLabel(theme),
     ToggleButton(theme),
-    LoadingButton(theme),
   )
 }

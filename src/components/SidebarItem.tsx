@@ -20,7 +20,15 @@ export function SidebarItemRoot({ item, isCollapse, open = false, active, onOpen
 
   const renderContent = (
     <>
-      {icon && <ListItemIconStyle sx={{ color: '#84868B' }}>{icon}</ListItemIconStyle>}
+      {icon && (
+        <ListItemIconStyle
+          sx={{
+            color: active ? 'primary.main' : '#fff',
+          }}
+        >
+          {icon}
+        </ListItemIconStyle>
+      )}
       <ListItemTextStyle
         disableTypography
         primary={title}

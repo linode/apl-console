@@ -1,5 +1,5 @@
 # --------------- dev stage for developers to override sources
-FROM node:20.20.2-alpine as dev
+FROM node:24.22.1-alpine as dev
 
 RUN apk --no-cache add make gcc g++ python3
 ENV NODE_ENV=development
@@ -20,9 +20,10 @@ FROM dev as ci
 ENV NODE_ENV=test
 ENV NODE_OPTIONS=--max-old-space-size=4096
 
-COPY ts*.json .es* .prettier*  ./
+COPY ts*.json .es* .prettier* index.html vite.config.mts jest.config.js ./
 COPY src src
 COPY public public
+COPY types types
 
 RUN echo "SKIP_PREFLIGHT_CHECK=true" > .env
 RUN echo "EXTEND_ESLINT=true" >> .env
@@ -30,7 +31,7 @@ RUN echo "EXTEND_ESLINT=true" >> .env
 # ARG CI=true
 RUN npm run lint
 RUN npm test -- --watchAll=false
-RUN npm run build
+RUN NODE_ENV=production npm run build
 
 # --------------- production stage
 FROM nginx:1.31.3-alpine as prod

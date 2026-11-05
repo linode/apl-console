@@ -11,13 +11,18 @@ const ModalBox = styled(Box)(({ theme }) => ({
   transform: 'translate(-50%, -50%)',
   width: 500,
   backgroundColor: theme.palette.background.paper,
-  boxShadow:
-    'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
-  borderRadius: 16,
+  color: theme.palette.text.primary,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  lineHeight: '20px',
+  fontWeight: 400,
+  boxShadow: theme.shadows[1],
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 0,
   padding: 0,
 }))
 
-const ModalHeader = styled('div')({
+const ModalHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -25,20 +30,42 @@ const ModalHeader = styled('div')({
   paddingLeft: '32px',
   paddingTop: '32px',
   paddingRight: '32px',
-  borderBottom: '1px dashed rgba(145, 158, 171, 0.24)',
-})
+  borderBottom: `1px solid ${theme.palette.divider}`,
+}))
 
-const ModalContent = styled('div')({
+const ModalContent = styled('div')(({ theme }) => ({
   padding: '32px',
-})
+  '& .MuiTypography-body1, & .MuiTypography-body2': {
+    fontFamily: theme.font.normal,
+    fontSize: '14px',
+    lineHeight: '20px',
+    fontWeight: 400,
+  },
+}))
 
-const ModalFooter = styled('div')({
-  borderTop: '1px dashed rgba(145, 158, 171, 0.24)',
+const ModalFooter = styled('div')(({ theme }) => ({
+  borderTop: `1px solid ${theme.palette.divider}`,
   display: 'flex',
   justifyContent: 'flex-end',
   padding: '20px',
   paddingRight: '30px',
-})
+  '& .MuiButton-root': {
+    borderWidth: '1px',
+    borderRadius: 0,
+    boxShadow: 'none',
+    fontFamily: theme.font.normal,
+    fontSize: '14px',
+    lineHeight: '20px',
+    fontWeight: 400,
+  },
+  '& .MuiButton-containedPrimary:not(.Mui-disabled)': {
+    backgroundColor: theme.palette.cm.linkActiveLight,
+    color: theme.palette.primary.contrastText,
+    '&:hover': {
+      backgroundColor: theme.palette.cm.buttonPrimaryHover,
+    },
+  },
+}))
 
 // interface and component -----------------------------------------------
 interface Props {
@@ -80,9 +107,21 @@ export default function StyledModal({
       <ModalBox>
         {!noHeader && (
           <ModalHeader>
-            <Typography variant='h5'>{title}</Typography>
-            <IconButton color='primary' onClick={handleClose}>
-              {/* <Iconify icon='eva:close-outline' width={30} height={30} sx={{ color: '#aeaeae' }} /> */}X
+            <Typography variant='h5' sx={{ fontFamily: (theme) => theme.font.normal, fontWeight: 700 }}>
+              {title}
+            </Typography>
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                color: 'text.secondary',
+                borderRadius: 0,
+                fontFamily: (theme) => theme.font.normal,
+                fontSize: '14px',
+                lineHeight: '20px',
+                fontWeight: 400,
+              }}
+            >
+              X
             </IconButton>
           </ModalHeader>
         )}
@@ -95,7 +134,7 @@ export default function StyledModal({
             <Button
               variant='contained'
               color={actionButtonColor || 'error'}
-              sx={{ ml: 1, bgcolor: actionButtonColor }}
+              sx={{ ml: 1 }}
               onClick={handleAction}
               startIcon={actionButtonFrontIcon && actionButtonFrontIcon}
               endIcon={actionButtonEndIcon && actionButtonEndIcon}
