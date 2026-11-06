@@ -163,9 +163,10 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
         return
       }
 
-      snack.success('Password reset successfully')
-      reset(emptyFormValues)
-      onClose()
+      // The API has already ended all Dex sessions for this user; log out now so the browser
+      // doesn't keep working on the old token until oauth2-proxy's next refresh fails.
+      snack.success('Password reset successfully, please log in again')
+      window.location.assign('/platform-logout')
     } catch (error) {
       setSubmitError(getPasswordResetErrorMessage(error, DEFAULT_ERROR_MESSAGE))
     }
