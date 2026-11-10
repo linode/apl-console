@@ -11,4 +11,19 @@ export const StyledLinkButton = styled('button', {
   label: 'StyledLinkButton',
 })(({ theme }) => ({
   ...theme.applyLinkStyles,
+  backgroundColor: 'transparent',
+  border: '1px solid transparent',
+  borderRadius: 0,
+  boxShadow: 'none',
+  color: theme.palette.cm.linkActiveLight,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  fontWeight: 400,
+  lineHeight: '20px',
+  '&:hover:not(:disabled):not([aria-disabled="true"])': {
+    color: theme.palette.cm.buttonPrimaryHover,
+  },
+  '&:disabled, &[aria-disabled="true"]': {
+    color: theme.palette.action.disabled,
+  },
 }))

@@ -29,9 +29,11 @@ const useStyles = makeStyles()((theme: Theme) => ({
     marginBottom: '10px',
   },
   tableHeadText: {
-    fontWeight: 'bold',
-    fontSize: '1rem',
-    color: theme.palette.cm.headline,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: 700,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: theme.palette.text.secondary,
   },
   tableBody: {
     '& tr:nth-of-type(even)': {

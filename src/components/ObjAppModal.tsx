@@ -10,9 +10,14 @@ const ModalBox = styled(Box)(({ theme }) => ({
   transform: 'translate(-50%, -50%)',
   width: 620,
   backgroundColor: theme.palette.background.paper,
-  boxShadow:
-    'rgb(0 0 0 / 20%) 0px 11px 15px -7px, rgb(0 0 0 / 14%) 0px 24px 38px 3px, rgb(0 0 0 / 12%) 0px 9px 46px 8px',
-  borderRadius: 16,
+  color: theme.palette.text.primary,
+  fontFamily: theme.font.normal,
+  fontSize: '14px',
+  lineHeight: '20px',
+  fontWeight: 400,
+  boxShadow: theme.shadows[1],
+  border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 0,
   padding: 0,
 }))
 
@@ -20,14 +25,38 @@ const ModalContent = styled('div')({
   padding: '32px',
 })
 
-const ModalFooter = styled('div')({
-  borderTop: '1px dashed rgba(145, 158, 171, 0.24)',
+const ModalFooter = styled('div')(({ theme }) => ({
+  borderTop: `1px solid ${theme.palette.divider}`,
   display: 'flex',
   justifyContent: 'flex-end',
   padding: '20px',
   paddingRight: '30px',
   gap: '10px',
-})
+  '& .MuiButton-root': {
+    borderWidth: '1px',
+    borderRadius: 0,
+    boxShadow: 'none',
+    fontFamily: theme.font.normal,
+    fontSize: '14px',
+    lineHeight: '20px',
+    fontWeight: 400,
+  },
+  '& .MuiButton-outlinedPrimary:not(.Mui-disabled)': {
+    color: theme.palette.cm.linkActiveLight,
+    borderColor: theme.palette.cm.textBoxBorder,
+    '&:hover': {
+      color: theme.palette.cm.buttonPrimaryHover,
+      borderColor: theme.palette.cm.buttonPrimaryHover,
+    },
+  },
+  '& .MuiButton-containedPrimary:not(.Mui-disabled)': {
+    backgroundColor: theme.palette.cm.linkActiveLight,
+    color: theme.palette.primary.contrastText,
+    '&:hover': {
+      backgroundColor: theme.palette.cm.buttonPrimaryHover,
+    },
+  },
+}))
 
 interface Props {
   open: boolean

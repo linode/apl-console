@@ -53,9 +53,12 @@ function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
 
 const StyledTableHeaderCell = styled(TableCell)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
-  backgroundColor: theme.palette.background.contrastAlt,
-  color: 'rgb(136, 143, 145)',
-  fontFamily: 'LatoWebBold, sans-serif',
+  backgroundColor: theme.palette.background.default,
+  color: theme.palette.text.secondary,
+  fontFamily: theme.typography.fontFamily,
+  fontWeight: 700,
+  fontSize: '14px',
+  lineHeight: '20px',
   padding: '10px 15px',
 }))
 
@@ -81,6 +84,7 @@ const useEnhancedStyles = makeStyles()((theme) => ({
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
+    borderRadius: 0,
   },
   table: {
     minWidth: 750,

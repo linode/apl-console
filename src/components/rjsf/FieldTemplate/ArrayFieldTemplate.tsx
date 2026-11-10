@@ -21,6 +21,7 @@ function DefaultArrayItem(props: any) {
     paddingLeft: 6,
     paddingRight: 6,
     fontWeight: 'bold',
+    borderRadius: 1,
     minWidth: 0,
   }
   return (

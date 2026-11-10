@@ -1,5 +1,4 @@
 import { styled } from '@mui/material/styles'
-import font from 'theme/font'
 import { Button } from './Button'
 
 /**
@@ -11,21 +10,27 @@ import { Button } from './Button'
 export const StyledActionButton = styled(Button, {
   label: 'StyledActionButton',
 })(({ theme, ...props }) => ({
-  ...(!props.disabled && {
-    '&:hover': {
-      backgroundColor: theme.palette.cm.buttonPrimaryHover,
-      color: theme.palette.cm.white,
-    },
+  ...(!props.disabled &&
+    (!props.color || props.color === 'primary') && {
+      '&:hover:not(:disabled):not([aria-disabled="true"])': {
+        backgroundColor: theme.palette.cm.buttonPrimaryHover,
+        borderColor: theme.palette.cm.buttonPrimaryHover,
+        color: theme.palette.primary.contrastText,
+      },
+    }),
+  ...((!props.color || props.color === 'primary') && {
+    background: 'transparent',
+    borderColor: 'transparent',
+    color: theme.palette.cm.linkActiveLight,
   }),
-  background: 'transparent',
-  color: theme.palette.cm.linkActiveLight,
-  fontFamily: font.normal,
+  fontFamily: theme.font.normal,
   fontSize: '14px',
-  lineHeight: '16px',
+  fontWeight: 400,
+  lineHeight: '20px',
   minWidth: 0,
   padding: '12px 10px',
   ...(props.disabled && {
-    color: theme.palette.mode === 'dark' ? `${theme.palette.cm.grey6} !important` : theme.palette.cm.disabledText,
+    color: theme.palette.action.disabled,
     cursor: 'default',
   }),
 }))

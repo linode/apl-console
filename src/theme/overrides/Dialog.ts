@@ -7,9 +7,9 @@ export default function Dialog(theme: Theme) {
     MuiDialog: {
       styleOverrides: {
         paper: {
-          boxShadow: theme.customShadows.dialog,
+          boxShadow: theme.shadows[6],
           '&.MuiPaper-rounded': {
-            borderRadius: Number(theme.shape.borderRadius) * 2,
+            borderRadius: 0,
           },
           '&.MuiDialog-paperFullScreen': {
             borderRadius: 0,

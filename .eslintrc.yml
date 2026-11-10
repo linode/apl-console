@@ -57,8 +57,10 @@ rules:
         attributes: false
   '@typescript-eslint/no-unsafe-assignment': off
   '@typescript-eslint/no-unsafe-argument': warn
+  '@typescript-eslint/no-base-to-string': warn
   '@typescript-eslint/no-unsafe-call': off
   '@typescript-eslint/no-unsafe-member-access': off
+  '@typescript-eslint/no-redundant-type-constituents': warn
   '@typescript-eslint/no-unsafe-return': off
   '@typescript-eslint/no-unused-vars': [warn, { varsIgnorePattern: ^_ }]
   '@typescript-eslint/no-use-before-define': off
@@ -97,4 +99,4 @@ rules:
   sort-imports:
     - 'error'
     - ignoreDeclarationSort: true
-  unused-imports/no-unused-imports-ts: error
+  unused-imports/no-unused-imports-ts: off

@@ -1,7 +1,6 @@
 build
 coverage
 node_modules
-src/setupProxy.js
 src/lang-server.js
 src/lang-export.js
 src/redux/otomiApi.ts

@@ -1,4 +1,4 @@
-import cookie from 'cookie'
+import Cookies from 'js-cookie'
 
 export const NEW_FEATURE_COOKIE = 'apl-seen-new-features'
 
@@ -13,10 +13,7 @@ export const NEW_FEATURE_KEYS = [
 export type NewFeatureKey = typeof NEW_FEATURE_KEYS[number]
 
 export const getSeenNewFeatures = (): NewFeatureKey[] => {
-  if (typeof document === 'undefined') return []
-
-  const cookies = cookie.parse(document.cookie ?? '')
-  const raw = cookies[NEW_FEATURE_COOKIE]
+  const raw = Cookies.get(NEW_FEATURE_COOKIE)
 
   if (!raw) return []
 
@@ -39,8 +36,8 @@ export const markNewFeatureSeen = (key: NewFeatureKey) => {
   const seen = new Set(getSeenNewFeatures())
   seen.add(key)
 
-  document.cookie = cookie.serialize(NEW_FEATURE_COOKIE, JSON.stringify([...seen]), {
+  Cookies.set(NEW_FEATURE_COOKIE, JSON.stringify([...seen]), {
     path: '/',
-    maxAge: 60 * 60 * 24 * 365,
+    expires: 365,
   })
 }

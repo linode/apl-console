@@ -15,28 +15,32 @@ export const StyledTagButton = styled(Button, {
   label: 'StyledTagButton',
   shouldForwardProp: omittedProps(['panel']),
 })<{ panel?: boolean }>(({ theme, ...props }) => ({
-  border: 'none',
-  fontSize: '0.875rem',
+  ...((!props.color || props.color === 'primary') && {
+    border: `1px solid ${theme.palette.cm.textBoxBorder}`,
+  }),
+  fontSize: '14px',
   minHeight: 30,
   whiteSpace: 'nowrap',
   ...(props.panel && {
     height: 34,
   }),
-  ...(!props.disabled && {
-    '&:hover, &:focus': {
-      backgroundColor: theme.palette.cm.tagButtonBg,
-      border: 'none',
-      color: theme.palette.cm.tagButtonText,
-    },
-    backgroundColor: theme.palette.cm.tagButtonBg,
-    color: theme.palette.cm.tagButtonText,
-  }),
+  ...(!props.disabled &&
+    (!props.color || props.color === 'primary') && {
+      '&:hover:not(:disabled):not([aria-disabled="true"]), &:focus-visible:not(:disabled):not([aria-disabled="true"])':
+        {
+          backgroundColor: theme.palette.background.default,
+          borderColor: theme.palette.cm.buttonPrimaryHover,
+          color: theme.palette.cm.linkActiveLight,
+        },
+      backgroundColor: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+    }),
 }))
 
 export const StyledPlusIcon = styled(Plus, {
   label: 'StyledPlusIcon',
-})(({ theme, ...props }) => ({
-  color: theme.palette.cm.tagIcon,
+})({
+  color: 'inherit',
   height: '10px',
   width: '10px',
-}))
+})

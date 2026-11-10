@@ -1,4 +1,4 @@
-import LoadingButton from '@mui/lab/LoadingButton'
+import LoadingButton from '@mui/material/Button'
 import { Box } from '@mui/material'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
@@ -179,7 +179,6 @@ export default function PlatformSettingsPage() {
 
             <Box>
               <ControlledCheckbox
-                sx={{ my: 2 }}
                 name='hasExternalDNS'
                 control={control}
                 label='Use external DNS'
@@ -187,9 +186,8 @@ export default function PlatformSettingsPage() {
               />
             </Box>
 
-            <Box sx={{ mt: 1 }}>
+            <Box sx={{ mt: 2 }}>
               <ControlledCheckbox
-                sx={{ my: 2 }}
                 name='hasExternalIDP'
                 control={control}
                 label='Use external identity provider'

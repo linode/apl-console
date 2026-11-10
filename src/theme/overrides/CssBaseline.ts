@@ -19,10 +19,26 @@ export default function CssBaseline(theme: Theme) {
         body: {
           width: '100%',
           height: '100%',
+          colorScheme: theme.palette.mode,
         },
-        '#__next': {
+        '#root, #__next': {
           width: '100%',
-          height: '100%',
+          minHeight: '100%',
+        },
+        'a:where([href]):not(:where(.MuiButtonBase-root, .MuiLink-root))': {
+          color: theme.palette.cm.linkActiveLight,
+          textDecoration: 'none',
+          '&:hover:not([aria-disabled="true"])': {
+            color: theme.palette.cm.buttonPrimaryHover,
+            textDecoration: 'underline',
+          },
+          '&[aria-disabled="true"]': {
+            color: theme.palette.text.disabled,
+          },
+        },
+        'a[href]:focus-visible, .MuiButtonBase-root.Mui-focusVisible': {
+          outline: `2px solid ${theme.palette.cm.linkActiveLight}`,
+          outlineOffset: 2,
         },
         input: {
           '&[type=number]': {
