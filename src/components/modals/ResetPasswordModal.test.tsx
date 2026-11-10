@@ -54,8 +54,15 @@ function fillForm(oldPassword: string, newPassword: string, confirmPassword: str
 }
 
 describe('ResetPasswordModal', () => {
+  let assign: jest.Mock
+
   beforeEach(() => {
     jest.clearAllMocks()
+    assign = jest.fn()
+    Object.defineProperty(window, 'location', {
+      value: { ...window.location, assign },
+      writable: true,
+    })
     mockUseResetPasswordMutation.mockReturnValue([mockResetPassword, { isLoading: false }])
     mockResetPassword.mockResolvedValue({ data: undefined })
   })
@@ -91,8 +98,8 @@ describe('ResetPasswordModal', () => {
     expect(mockResetPassword).not.toHaveBeenCalled()
   })
 
-  it('submits and closes on success', async () => {
-    const { onClose } = renderModal()
+  it('submits and logs the user out on success', async () => {
+    renderModal()
 
     fillForm('oldpassword', 'newpassword1', 'newpassword1')
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
@@ -102,8 +109,8 @@ describe('ResetPasswordModal', () => {
         body: { currentPassword: 'oldpassword', newPassword: 'newpassword1' },
       }),
     )
-    expect(mockSnackSuccess).toHaveBeenCalledWith('Password reset successfully')
-    expect(onClose).toHaveBeenCalled()
+    expect(mockSnackSuccess).toHaveBeenCalledWith('Password reset successfully, please log in again')
+    expect(assign).toHaveBeenCalledWith('/platform-logout')
   })
 
   it('shows an error banner when the request fails', async () => {
@@ -116,6 +123,7 @@ describe('ResetPasswordModal', () => {
     expect(await screen.findByTestId('error-banner')).toHaveTextContent('Old password is incorrect')
     expect(onClose).not.toHaveBeenCalled()
     expect(mockSnackSuccess).not.toHaveBeenCalled()
+    expect(assign).not.toHaveBeenCalled()
   })
 
   it.each([
@@ -147,7 +155,7 @@ describe('ResetPasswordModal', () => {
   })
 
   it.each([
-    [401, 'Current password is incorrect.'],
+    [400, 'Current password is incorrect.'],
     [403, 'Self-service password reset is only available when AUTH_PROVIDER is dex.'],
   ])('keeps API rejection %s in the modal without reporting success', async (statusCode, message) => {
     mockResetPassword.mockResolvedValue({ data: { statusCode, message } })
