@@ -17,7 +17,8 @@ type Props = {
 
 export default function AccountPopover({ email }: Props) {
   const history = useHistory()
-  const { oboTeamId } = useSession()
+  const { oboTeamId, settings } = useSession()
+  const canResetPassword = settings?.otomi?.oidc?.authenticationLayer === 'dex'
   const [open, setOpen] = useState<HTMLElement | null>(null)
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false)
   const [deleteCloudtty] = useDeleteCloudttyMutation()
@@ -104,18 +105,20 @@ export default function AccountPopover({ email }: Props) {
 
         <Divider sx={{ borderColor: 'divider' }} />
 
-        <MenuItem onClick={handleOpenResetPassword} sx={{ m: 1 }}>
-          <ListItemIcon>
-            <KeyOutlinedIcon fontSize='small' />
-          </ListItemIcon>
-          Reset password
-        </MenuItem>
+        {canResetPassword && (
+          <MenuItem onClick={handleOpenResetPassword} sx={{ m: 1 }}>
+            <ListItemIcon>
+              <KeyOutlinedIcon fontSize='small' />
+            </ListItemIcon>
+            Reset password
+          </MenuItem>
+        )}
 
         <MenuItem onClick={handleLogout} sx={{ m: 1, color: 'error.main' }}>
           Sign out
         </MenuItem>
       </MenuPopover>
-      <ResetPasswordModal open={resetPasswordOpen} onClose={() => setResetPasswordOpen(false)} />
+      {canResetPassword && <ResetPasswordModal open={resetPasswordOpen} onClose={() => setResetPasswordOpen(false)} />}
     </>
   )
 }
