@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import { FormProvider, Resolver, get, useForm } from 'react-hook-form'
@@ -52,12 +53,9 @@ export default function TeamsCreateEditPage({
 
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplTeamMutation()
   const { data } = useGetAplTeamQuery({ teamId }, { skip: !teamId })
-  const {
-    data: teams,
-    isLoading: isLoadingTeams,
-    isFetching: isFetchingTeams,
-    isError: isErrorTeams,
-  } = useGetAplTeamsQuery()
+  // The team list is only needed for the duplicate-name check on create. Skip it when editing:
+  // team members may only read their own team, so listing all teams returns 403 for them.
+  const { data: teams } = useGetAplTeamsQuery(teamId ? skipToken : undefined)
 
   const [activeNotificationReceiver, setActiveNotificationReceiver] = useState<NotificationReceiver>('slack')
   const notificationReceiverOptions = [
