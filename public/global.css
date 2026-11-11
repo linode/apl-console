@@ -11,19 +11,6 @@ table td a:hover {
   background-color: #ffffff12;
 } */
 
-.rjsf .MuiPaper-elevation {
-  border-radius: 0;
-}
-
-.rjsf .MuiDivider-root {
-  border-color: #ffffff00;
-}
-
-.rjsf .MuiGrid-item {
-  margin-top: 10px;
-  margin-right: 10px;
-}
-
 .mui-mhc70k-MuiGrid-root {
   margin-top: 0;
 }
