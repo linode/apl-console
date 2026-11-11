@@ -7,11 +7,20 @@ export default function Table(theme: Theme) {
     MuiTableRow: {
       styleOverrides: {
         root: {
+          '&:nth-of-type(even)': {
+            backgroundColor: theme.palette.cm.rowAlter,
+          },
+          '&.MuiTableRow-hover:hover:not(.disabled-row):not([aria-disabled="true"])': {
+            backgroundColor: theme.palette.action.hover,
+          },
           '&.Mui-selected': {
             backgroundColor: theme.palette.action.selected,
-            '&:hover': {
+            '&:hover:not(.disabled-row):not([aria-disabled="true"])': {
               backgroundColor: theme.palette.action.hover,
             },
+          },
+          '&.MuiTableRow-head, &.MuiTableRow-footer': {
+            backgroundColor: 'transparent',
           },
         },
       },
@@ -19,20 +28,22 @@ export default function Table(theme: Theme) {
     MuiTableCell: {
       styleOverrides: {
         root: {
-          borderBottom: 'none',
+          ...theme.typography.body2,
+          height: 40,
+          padding: theme.spacing(0, 1.5),
+          fontSize: '0.875rem',
+          lineHeight: '1.25rem',
+          borderBottom: `1px solid ${theme.palette.divider}`,
+          borderRadius: 0,
         },
         head: {
           color: theme.palette.text.secondary,
           backgroundColor: theme.palette.background.neutral,
+          fontWeight: 700,
         },
         stickyHeader: {
           backgroundColor: theme.palette.background.paper,
           backgroundImage: `linear-gradient(to bottom, ${theme.palette.background.neutral} 0%, ${theme.palette.background.neutral} 100%)`,
-        },
-        body: {
-          '&:last-of-type': {
-            paddingRight: theme.spacing(3),
-          },
         },
       },
     },
@@ -42,11 +53,14 @@ export default function Table(theme: Theme) {
           borderTop: `solid 1px ${theme.palette.divider}`,
         },
         toolbar: {
-          height: 64,
+          minHeight: 40,
+          '@media (min-width: 600px)': {
+            minHeight: 40,
+          },
         },
         select: {
           '&:focus': {
-            borderRadius: theme.shape.borderRadius,
+            borderRadius: 0,
           },
         },
         selectIcon: {

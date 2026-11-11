@@ -24,8 +24,10 @@ export const useStyles = makeStyles()((theme: Theme) => ({
     },
   },
   link: {
-    fontSize: '0.725rem',
+    ...theme.typography.body1,
+    fontFamily: theme.typography.fontFamily,
     fontWeight: 400,
+    borderRadius: '1px',
     textTransform: 'none',
     '&:hover': {
       backgroundColor: 'transparent',

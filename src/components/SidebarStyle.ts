@@ -30,8 +30,8 @@ export const ListItemStyle = styled(ListItemButton, {
   // activeRoot
   ...(activeRoot && {
     ...theme.typography.subtitle2,
-    color: theme.palette.primary.main,
-    backgroundColor: alpha(theme.palette.primary.main as string, theme.palette.action.selectedOpacity as number),
+    color: theme.palette.cm.linkActiveLight,
+    backgroundColor: alpha(theme.palette.cm.linkActiveLight as string, theme.palette.action.selectedOpacity as number),
   }),
   // activeSub
   ...(activeSub && {

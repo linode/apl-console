@@ -71,12 +71,14 @@ export default function SettingsOverview() {
         py: 3,
         display: 'flex',
         alignItems: 'center',
-        borderRadius: 2,
-        backgroundColor: '#0000001f',
+        borderRadius: 0,
+        border: '1px solid',
+        borderColor: 'divider',
+        backgroundColor: 'background.paper',
         transition: 'all .2s ease-in-out',
         cursor: 'pointer',
         '&:hover': {
-          transform: 'scale(1.05)',
+          backgroundColor: 'action.hover',
         },
       }}
     >
@@ -90,17 +92,18 @@ export default function SettingsOverview() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: '#919eab',
+          color: 'text.secondary',
         }}
       >
         {icon}
       </Box>
 
       <Typography
-        variant='subtitle1'
+        variant='body1'
         sx={{
           flexGrow: 1,
-          fontSize: '1rem',
+          fontWeight: 700,
+          color: 'text.primary',
         }}
       >
         {title}
@@ -117,18 +120,19 @@ export default function SettingsOverview() {
   const SettingsCard = ({ title, path, icon, onClick, newFeatureKey }: Settings) => (
     <Grid item xs={6} sm={4} md={3} lg={3} key={title}>
       {path ? (
-        <Link
+        <Box
+          component={Link}
           to={{ pathname: path }}
-          style={{ fontSize: '1rem', color: '#919eab', textDecoration: 'none', display: 'block' }}
+          sx={{ typography: 'body1', color: 'text.primary', textDecoration: 'none', display: 'block' }}
         >
           <CardContent title={title} icon={icon} newFeatureKey={newFeatureKey} />
-        </Link>
+        </Box>
       ) : (
         <Box
           onClick={onClick}
           sx={{
-            fontSize: '1rem',
-            color: '#919eab',
+            typography: 'body1',
+            color: 'text.primary',
             textDecoration: 'none',
             display: 'block',
           }}

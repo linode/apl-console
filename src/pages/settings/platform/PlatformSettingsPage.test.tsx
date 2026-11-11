@@ -46,7 +46,7 @@ jest.mock('providers/Session', () => ({
 }))
 
 jest.mock('redux/otomiApi', () => ({
-  useGetSettingsQuery: (_args?: unknown) => ({
+  useGetSettingsQuery: () => ({
     data: mockSettingsData,
     isLoading: mockIsLoading,
     isFetching: mockIsFetching,
@@ -97,8 +97,6 @@ jest.mock('components/forms/FormRow', () => ({
 /* eslint-disable react/prop-types */
 jest.mock('components/forms/TextField', () => ({
   TextField: (() => {
-    const React = jest.requireActual('react') as typeof import('react')
-
     return React.forwardRef<
       HTMLInputElement,
       React.InputHTMLAttributes<HTMLInputElement> & {
@@ -107,14 +105,15 @@ jest.mock('components/forms/TextField', () => ({
         helperText?: string
         error?: boolean
       }
-    >(({ label, errorText, helperText, error: _error, id, name, ...inputProps }, ref) => {
+    >(({ label, errorText, helperText, error, id, name, ...inputProps }, ref) => {
+      const hasError = Boolean(error)
       const inputId = id ?? name ?? label
 
       return (
         <div>
           <label htmlFor={inputId}>{label}</label>
 
-          <input ref={ref} id={inputId} name={name} {...inputProps} />
+          <input ref={ref} id={inputId} name={name} aria-invalid={hasError} {...inputProps} />
 
           {errorText && <div role='alert'>{errorText}</div>}
           {helperText && <div>{helperText}</div>}
@@ -136,7 +135,7 @@ jest.mock('components/forms/ControlledCheckbox', () => ({
     control: unknown
     label: string
   }) {
-    const { useController } = jest.requireActual('react-hook-form') as typeof import('react-hook-form')
+    const { useController } = jest.requireActual('react-hook-form')
 
     const {
       field: { value, onChange, ref },
@@ -163,8 +162,7 @@ jest.mock('components/forms/ControlledCheckbox', () => ({
 jest.mock('components/forms/KeyValue', () => ({
   __esModule: true,
   default: (() => {
-    const React = jest.requireActual('react') as typeof import('react')
-    const { useFieldArray, useFormContext } = jest.requireActual('react-hook-form') as typeof import('react-hook-form')
+    const { useFieldArray, useFormContext } = jest.requireActual('react-hook-form')
 
     return React.forwardRef<
       HTMLFieldSetElement,
@@ -174,7 +172,7 @@ jest.mock('components/forms/KeyValue', () => ({
         keyLabel: string
         valueLabel: string
       }
-    >(({ title, addLabel, keyLabel, valueLabel }, _ref) => {
+    >(({ title, addLabel, keyLabel, valueLabel }, ref) => {
       const { control, register } = useFormContext()
       const { fields, append, remove } = useFieldArray({
         control,
@@ -182,7 +180,7 @@ jest.mock('components/forms/KeyValue', () => ({
       })
 
       return (
-        <fieldset>
+        <fieldset ref={ref}>
           <legend>{title}</legend>
 
           {fields.map((field: { id: string }, index: number) => (

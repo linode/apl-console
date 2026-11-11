@@ -20,6 +20,12 @@ export default function ToggleButton(theme: Theme) {
 
   return {
     MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 1,
+          padding: theme.spacing(1, 1.5),
+        },
+      },
       variants: [
         {
           props: { color: 'standard' },
@@ -40,14 +46,8 @@ export default function ToggleButton(theme: Theme) {
     MuiToggleButtonGroup: {
       styleOverrides: {
         root: {
-          borderRadius: theme.shape.borderRadius,
+          borderRadius: 1,
           backgroundColor: theme.palette.background.paper,
-          border: `solid 1px ${theme.palette.grey[500_12]}`,
-          '& .MuiToggleButton-root': {
-            margin: 4,
-            borderColor: 'transparent !important',
-            borderRadius: `${theme.shape.borderRadius}px !important`,
-          },
         },
       },
     },

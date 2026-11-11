@@ -19,10 +19,11 @@ export const StyledEditableText = styled(EditableText, {
 
 export const StyledH1Header = styled(H1Header, { label: 'StyledH1Header' })(({ theme }) => ({
   color: theme.palette.cl.breadCrumb.lastCrumb,
-  fontWeight: '600',
-  fontSize: '1.125rem',
+  fontFamily: '"Nunito Sans", sans-serif',
+  fontWeight: 400,
+  fontSize: '1rem',
   textTransform: 'capitalize',
   [theme.breakpoints.up('lg')]: {
-    fontSize: '1.125rem',
+    fontSize: '1rem',
   },
 }))

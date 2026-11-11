@@ -1,4 +1,5 @@
 import { AppBar, Box, Button, Chip, Grid, Link, Tab, Tabs, Typography } from '@mui/material'
+import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -21,6 +22,10 @@ import CodeEditor from './CodeEditor'
 import HeaderTitle from './HeaderTitle'
 import TabPanel from './TabPanel'
 import InformationBanner from './InformationBanner'
+
+const StyledChip = styled(Chip)(() => ({
+  backgroundColor: 'transparent',
+}))
 
 const useStyles = makeStyles()((theme) => ({
   header: {
@@ -70,6 +75,7 @@ const useStyles = makeStyles()((theme) => ({
 export const getAppSchema = (appId: string, formData): any => {
   const modelName = getAppSchemaName(appId)
   const schema = cloneDeep(getSpec().components.schemas[modelName]) as Record<string, any>
+
   switch (appId) {
     case 'cert-manager':
       if (formData.issuer === 'letsencrypt') schema.properties.values.required = ['email']
@@ -78,6 +84,7 @@ export const getAppSchema = (appId: string, formData): any => {
     default:
       break
   }
+
   return schema
 }
 
@@ -85,27 +92,37 @@ interface Props extends CrudProps, GetTeamAppApiResponse {
   teamId: string
   managed?: boolean
 }
+
 export default function App({ id, teamId, enabled, values: inValues, managed, onSubmit }: Props): React.ReactElement {
   const location = useLocation()
   const hash = location.hash.substring(1)
+
   const hashMap = {
     info: 0,
     values: 1,
   }
+
   const { classes } = useStyles()
   const session = useSession()
   const { appInfo, deps, logo, logoAlt } = getAppData(session, teamId, id)
+
   const defTab = hashMap[hash] ?? hashMap.info
   const [tab, setTab] = useState(defTab)
+
   const handleTabChange = (_, tab) => {
     setTab(tab)
   }
+
   const [isEdit, setIsEdit] = useState(false)
+
   // setters for the tab forms
   const [values, setValues] = useState(inValues)
+
   // validation state
   const [validValues, setValidValues] = useState(true)
+
   const { t } = useTranslation()
+
   useEffect(() => {
     if (inValues !== values) {
       setValues(inValues)
@@ -114,6 +131,7 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
   }, [inValues])
 
   // END HOOKS
+
   const appSchema = (session.valuesSchema as ValuesSchema).properties.apps.properties[id]
   const valuesYaml = isEqual(values, {}) ? '' : YAML.stringify(values)
   const isAdminApps = teamId === 'admin'
@@ -125,25 +143,39 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
 
   const prefixedDeps = () => {
     let dependencies: string
+
     if (!deps) return 'None'
+
     deps.forEach((dep: string) => {
       const preFixedDep = dep.charAt(0).toUpperCase() + dep.slice(1)
+
       if (!dependencies) dependencies = preFixedDep
       else dependencies += `, ${preFixedDep}`
     })
+
     return dependencies
   }
 
   return (
     <Box>
       {appInfo.isDeprecated && <InformationBanner message={appInfo.deprecationInfo.message} />}
+
       {managed !== undefined && managed && (id === 'external-dns' || id === 'cert-manager') && (
         <InformationBanner message='This App is managed by Akamai Connected Cloud and cannot be changed!' />
       )}
+
       {managed !== undefined && managed && id !== 'external-dns' && id !== 'cert-manager' && (
         <InformationBanner message='This app is not supported when installed by Akamai Connected Cloud!' />
       )}
-      <Helmet title={t('TITLE_APP', { appId: id, role: teamId === 'admin' ? 'admin' : 'team', tab: hash })} />
+
+      <Helmet
+        title={t('TITLE_APP', {
+          appId: id,
+          role: teamId === 'admin' ? 'admin' : 'team',
+          tab: hash,
+        })}
+      />
+
       <Box className={classes.header}>
         <Box className={classes.imgHolder}>
           <img
@@ -151,27 +183,32 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
             src={`/logos/${logo}`}
             onError={({ currentTarget }) => {
               // eslint-disable-next-line no-param-reassign
-              currentTarget.onerror = null // prevents looping
+              currentTarget.onerror = null
+
               // eslint-disable-next-line no-param-reassign
               currentTarget.src = `/logos/${logoAlt}`
             }}
             alt={`Logo for ${appInfo.title} app`}
           />
         </Box>
+
         <Box className={classes.headerText}>
           <Typography className={classes.headerText} variant='h6'>
             {appInfo.title}
           </Typography>
         </Box>
       </Box>
-      <AppBar position='relative' color='default' sx={{ borderRadius: '8px' }}>
+
+      <AppBar position='relative' color='default' sx={{ borderRadius: 0 }}>
         <Tabs value={tab} onChange={handleTabChange} sx={{ ml: 1 }}>
           <Tab href='#info' label='Info' value={hashMap.info} />
+
           {isAdminApps && appSchema && (enabled || enabled === undefined) && (
             <Tab href='#values' label={t('Values')} value={hashMap.values} />
           )}
         </Tabs>
       </AppBar>
+
       <TabPanel value={tab} index={hashMap.info}>
         <Grid container direction='row' className={classes.tableBackground}>
           <Grid item xs={12} md={6}>
@@ -181,45 +218,54 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
                   <TableBody>
                     <TableRow key='version' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Version:')} />
+                        <StyledChip label={t('Version:')} />
                       </TableCell>
+
                       <TableCell align='left'>{appInfo.appVersion}</TableCell>
                     </TableRow>
+
                     <TableRow key='repo' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Repo:')} />
+                        <StyledChip label={t('Repo:')} />
                       </TableCell>
+
                       <TableCell align='left'>
                         <Link href={appInfo.repo} target='_blank' rel='noopener' title={id}>
                           {cleanLink(appInfo.repo as string)}
                         </Link>
                       </TableCell>
                     </TableRow>
+
                     <TableRow key='maintainers' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Maintainers:')} />
+                        <StyledChip label={t('Maintainers:')} />
                       </TableCell>
+
                       <TableCell align='left'>{appInfo.maintainers}</TableCell>
                     </TableRow>
+
                     <TableRow key='links' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Related links:')} />
+                        <StyledChip label={t('Related links:')} />
                       </TableCell>
+
                       <TableCell align='left'>
                         {appInfo.relatedLinks.map((l: string) => (
-                          <>
+                          <React.Fragment key={l}>
                             <Link href={l} target='_blank' rel='noopener'>
                               {cleanLink(l)}
                             </Link>
                             <br />
-                          </>
+                          </React.Fragment>
                         ))}
                       </TableCell>
                     </TableRow>
+
                     <TableRow key='dependencies' className={classes.tableRow}>
                       <TableCell component='th' scope='row' align='right'>
-                        <Chip label={t('Dependencies:')} />
+                        <StyledChip label={t('Dependencies:')} />
                       </TableCell>
+
                       <TableCell align='left'>{prefixedDeps()}</TableCell>
                     </TableRow>
                   </TableBody>
@@ -227,6 +273,7 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
               </TableContainer>
             </Box>
           </Grid>
+
           <Grid item xs={12} md={6}>
             <Box className={classes.content}>
               <HeaderTitle
@@ -239,6 +286,7 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
           </Grid>
         </Grid>
       </TabPanel>
+
       <TabPanel value={tab} index={hashMap.values}>
         {appSchema && (
           <>
@@ -251,6 +299,7 @@ export default function App({ id, teamId, enabled, values: inValues, managed, on
               setValid={setValidValues}
               validationSchema={appSchema}
             />
+
             <Box display='flex' flexDirection='row-reverse' m={1}>
               <Button
                 color='primary'

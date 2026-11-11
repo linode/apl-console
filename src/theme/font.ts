@@ -1,6 +1,6 @@
 const font = {
-  bold: '"LatoWebBold", sans-serif',
-  normal: '"LatoWeb", sans-serif',
+  bold: '"Nunito Sans", sans-serif',
+  normal: '"Nunito Sans", sans-serif',
 } as const
 
 export default font

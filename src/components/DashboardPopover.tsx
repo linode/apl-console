@@ -16,7 +16,17 @@ export default function DashboardPopover({
   onClose,
   title,
   description,
-  PaperProps = { sx: { height: 'auto', width: '346px', borderRadius: 4, boxShadow: 1 } },
+  PaperProps = {
+    sx: {
+      height: 'auto',
+      width: '346px',
+      borderRadius: 0,
+      boxShadow: 1,
+      border: '1px solid',
+      borderColor: 'divider',
+      bgcolor: 'background.paper',
+    },
+  },
 }: DashboardPopoverProps) {
   return (
     <Popover
@@ -35,10 +45,29 @@ export default function DashboardPopover({
           textAlign: 'center',
         }}
       >
-        <Typography variant='subtitle2' sx={{ fontWeight: 600, mb: 1 }}>
+        <Typography
+          variant='subtitle2'
+          sx={{
+            fontFamily: (theme) => theme.font.normal,
+            fontSize: '14px',
+            lineHeight: '20px',
+            fontWeight: 700,
+            color: 'text.primary',
+            mb: 1,
+          }}
+        >
           {title}
         </Typography>
-        <Typography variant='body1' sx={{ fontSize: 13, opacity: 0.8, color: 'cl.text.subTitle' }}>
+        <Typography
+          variant='body1'
+          sx={{
+            fontFamily: (theme) => theme.font.normal,
+            fontSize: '14px',
+            lineHeight: '20px',
+            fontWeight: 400,
+            color: 'text.secondary',
+          }}
+        >
           {description}
         </Typography>
       </Box>

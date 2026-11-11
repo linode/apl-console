@@ -26,7 +26,7 @@ export const colorPresets = [
     name: 'cyan',
     lighter: '#D1FFFC',
     light: '#76F2FF',
-    main: '#1CCAFF',
+    main: 'rgb(91, 179, 234)',
     dark: '#0E77B7',
     darker: '#053D7A',
     contrastText: palette.light.grey[800],

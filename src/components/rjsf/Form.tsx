@@ -29,12 +29,15 @@ const Form = withTheme(Theme)
 
 const useStyles = makeStyles()((theme) => ({
   form: {
+    fontFamily: theme.typography.fontFamily,
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: theme.palette.text.primary,
     backgroundColor: theme.palette.background.default,
     borderRadius: 0,
   },
   formAlternative: {
-    backgroundColor: 'background.contrast',
-    borderRadius: 0,
+    backgroundColor: theme.palette.background.paper,
   },
 }))
 
@@ -88,7 +91,7 @@ export default function ({
   }, [data])
   const [isDirty, setDirty] = useState(false)
   const { t } = useTranslation()
-  const { classes } = useStyles()
+  const { classes, cx } = useStyles()
   // END HOOKS
   const id = data?.[idProp]
   const initialNameRef = useRef(data?.[nameProp]) // Store initial name once
@@ -152,7 +155,7 @@ export default function ({
     <>
       {!hideHelp && <HeaderTitle title={inTitle || title} resourceType={resourceType} docUrl={docUrl} />}
       <Form
-        className={altColor ? classes.formAlternative : classes.form}
+        className={cx(classes.form, altColor && classes.formAlternative)}
         formData={state}
         key={`${resourceType}${data?.id ? `-${data.id}` : ''}`}
         schema={schema}

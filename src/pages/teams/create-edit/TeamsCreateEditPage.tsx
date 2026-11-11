@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 import PaperLayout from 'layouts/Paper'
 import { LandingHeader } from 'components/LandingHeader'
 import { FormProvider, Resolver, get, useForm } from 'react-hook-form'
@@ -24,7 +25,7 @@ import ControlledBox from 'components/ControlledBox'
 import { useSession } from 'providers/Session'
 import InformationBanner from 'components/InformationBanner'
 import { Link } from 'components/LinkUrl/LinkUrl'
-import LoadingButton from '@mui/lab/LoadingButton'
+import LoadingButton from '@mui/material/Button'
 import DeleteButton from 'components/DeleteButton'
 import useSettings from 'hooks/useSettings'
 import { useStyles } from './create-edit-teams.styles'
@@ -52,12 +53,9 @@ export default function TeamsCreateEditPage({
 
   const [del, { isLoading: isLoadingDelete, isSuccess: isSuccessDelete }] = useDeleteAplTeamMutation()
   const { data } = useGetAplTeamQuery({ teamId }, { skip: !teamId })
-  const {
-    data: teams,
-    isLoading: isLoadingTeams,
-    isFetching: isFetchingTeams,
-    isError: isErrorTeams,
-  } = useGetAplTeamsQuery()
+  // The team list is only needed for the duplicate-name check on create. Skip it when editing:
+  // team members may only read their own team, so listing all teams returns 403 for them.
+  const { data: teams } = useGetAplTeamsQuery(teamId ? skipToken : undefined)
 
   const [activeNotificationReceiver, setActiveNotificationReceiver] = useState<NotificationReceiver>('slack')
   const notificationReceiverOptions = [
@@ -232,7 +230,6 @@ export default function TeamsCreateEditPage({
                   />
                 )}
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.managedMonitoring.grafana'
                   control={control}
                   disabled={!appsEnabled.grafana || !isAdmin}
@@ -254,7 +251,6 @@ export default function TeamsCreateEditPage({
                   />
                 )}
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.managedMonitoring.alertmanager'
                   control={control}
                   disabled={!appsEnabled.prometheus || !isAdmin}
@@ -333,14 +329,12 @@ export default function TeamsCreateEditPage({
 
               <Section title='Network Policies' collapsable noMarginTop>
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.networkPolicy.ingressPrivate'
                   control={control}
                   label='Ingress control'
                   explainertext='Control Pod network access. Turning this off allows any Pod from any namespace to connect to any Pod from the team. (Recommended to keep this enabled)'
                 />
                 <ControlledCheckbox
-                  sx={{ my: 2 }}
                   name='spec.networkPolicy.egressPublic'
                   control={control}
                   label='Egress control'

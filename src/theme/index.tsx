@@ -43,6 +43,9 @@ export default function AppThemeProvider({ children }: Props) {
       palette: isLight ? palette.light : palette.dark,
       breakpoints,
       font,
+      typography: {
+        fontFamily: font.normal,
+      },
       shape: { borderRadius: 8 },
       direction: 'ltr',
       shadows: isLight ? shadows.light : shadows.dark,

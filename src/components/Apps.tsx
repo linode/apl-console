@@ -114,8 +114,7 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
   }
 
   const getObjStorageRequired = (appId: string): boolean => {
-    const { isPreInstalled } = session.settings.otomi
-    return Boolean(isPreInstalled && objStorageApps.some((app) => app.appId === appId) && !isLinodeConfigured(appId))
+    return Boolean(objStorageApps.some((app) => app.appId === appId) && !isLinodeConfigured(appId))
   }
 
   const toggleApp = (id: string, ignoreObjStorage = false) => {

@@ -38,7 +38,7 @@ export default function ({
   const accordionize = propsToAccordion.includes(label)
   const accordionized = (children) => {
     return (
-      <Accordion>
+      <Accordion square>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           {/* <Box> */}
           <Typography sx={{ textTransform: 'capitalize' }} variant='h6'>
@@ -63,11 +63,31 @@ export default function ({
       required={required}
       schema={schema}
     >
-      <FormControl fullWidth error={!!rawErrors.length} required={required} sx={{ mt: accordionize && '1rem' }}>
+      <FormControl
+        fullWidth
+        error={!!rawErrors.length}
+        required={required}
+        sx={(theme) => ({
+          mt: accordionize && '1rem',
+          '& .MuiFormHelperText-root': {
+            fontFamily: theme.typography.fontFamily,
+            fontSize: '14px',
+            lineHeight: '20px',
+          },
+        })}
+      >
         {accordionize && accordionized(children)}
         {!accordionize && children}
         {!hideDescription && displayLabel && rawDescription ? (
-          <Typography variant='caption' color='textSecondary'>
+          <Typography
+            variant='caption'
+            color='text.secondary'
+            sx={(theme) => ({
+              fontFamily: theme.typography.fontFamily,
+              fontSize: '14px',
+              lineHeight: '20px',
+            })}
+          >
             {rawDescription}
           </Typography>
         ) : null}
