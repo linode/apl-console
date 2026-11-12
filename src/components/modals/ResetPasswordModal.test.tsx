@@ -127,6 +127,34 @@ describe('ResetPasswordModal', () => {
   })
 
   it.each([
+    { error: { status: 400, data: { error: 'Current password is incorrect.' } } },
+    { error: { status: 401, data: { error: 'Current password is incorrect.' } } },
+    { data: { error: 'Current password is incorrect.' } },
+  ])('shows the current-password error and allows retrying (%j)', async (result) => {
+    mockResetPassword.mockResolvedValueOnce(result)
+    const { onClose } = renderModal()
+
+    fillForm('wrongpassword', 'newpassword1', 'newpassword1')
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    expect(await screen.findByTestId('error-banner')).toHaveTextContent('Current password is incorrect.')
+    expect(onClose).not.toHaveBeenCalled()
+    expect(mockSnackSuccess).not.toHaveBeenCalled()
+    expect(assign).not.toHaveBeenCalled()
+    expect(screen.getByLabelText('New password')).toHaveValue('newpassword1')
+    expect(screen.getByLabelText('Confirm password')).toHaveValue('newpassword1')
+
+    fireEvent.change(screen.getByLabelText('Old password'), { target: { value: 'correctpassword' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+
+    await waitFor(() => expect(assign).toHaveBeenCalledWith('/platform-logout'))
+    expect(mockResetPassword).toHaveBeenLastCalledWith({
+      body: { currentPassword: 'correctpassword', newPassword: 'newpassword1' },
+    })
+    expect(screen.queryByTestId('error-banner')).not.toBeInTheDocument()
+  })
+
+  it.each([
     { status: 'PARSING_ERROR', originalStatus: 503, data: 'Service Unavailable', error: 'SyntaxError: JSON.parse' },
     {
       status: 'PARSING_ERROR',
