@@ -57,6 +57,15 @@ describe('password reset API and modal error isolation', () => {
     expect(store.getState().global.error).toBeUndefined()
   })
 
+  it.each([400, 401])('returns an incorrect password HTTP %s to the modal', async (status) => {
+    const data = { error: 'Current password is incorrect.' }
+    jest.spyOn(global, 'fetch').mockResolvedValue(Response.json(data, { status }))
+    store.dispatch(modalOpened())
+
+    await expect(resetPassword()).resolves.toMatchObject({ error: { status, data } })
+    expect(store.getState().global.error).toBeUndefined()
+  })
+
   it('does not store a modal request failure as a page error, even after closing', async () => {
     jest.spyOn(global, 'fetch').mockResolvedValue(Response.json({ error: 'Unavailable' }, { status: 503 }))
     store.dispatch(modalOpened())
@@ -99,5 +108,34 @@ describe('password reset API and modal error isolation', () => {
 
     expect(await adminResetPassword()).toHaveProperty('error.status', 'FETCH_ERROR')
     expect(store.getState().global.error).toMatchObject({ status: 'FETCH_ERROR' })
+  })
+
+  it('still redirects an expired session during password reset and suspends the request', async () => {
+    jest.spyOn(global, 'fetch').mockResolvedValue(Response.json({ error: 'Unauthorized' }, { status: 401 }))
+    const redirected = new Promise<string>((resolve) => {
+      Object.defineProperty(global, 'window', {
+        configurable: true,
+        value: {
+          location: {
+            pathname: '/profile',
+            set href(url: string) {
+              resolve(url)
+            },
+          },
+        },
+      })
+    })
+
+    try {
+      const request = resetPassword()
+      const settled = jest.fn()
+      request.then(settled)
+
+      await expect(redirected).resolves.toBe('/oauth2/start?rd=%2Fprofile')
+      expect(settled).not.toHaveBeenCalled()
+      expect(store.getState()[otomiApi.reducerPath].mutations[request.requestId]?.status).toBe('pending')
+    } finally {
+      Reflect.deleteProperty(global, 'window')
+    }
   })
 })
