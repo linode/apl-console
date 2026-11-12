@@ -121,6 +121,14 @@ The console communicates with the APL API using auto-generated clients via RTK Q
 npm run gen:store
 ```
 
+### Self-service password reset
+
+The reset-password dialog validates the new password and its confirmation client-side.
+The API verifies the current password; an incorrect-password rejection is displayed in
+the dialog without logging the user out, and the user can correct it and retry.
+Expired OAuth sessions still redirect to login. A successful reset logs the user out
+so they can sign in with the new password.
+
 ## Browser Support
 
 Supports modern browsers (>0.2% usage, not IE11 or Opera Mini).
