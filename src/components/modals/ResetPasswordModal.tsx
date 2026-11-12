@@ -158,6 +158,11 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
         return
       }
 
+      if (result.data && 'error' in result.data) {
+        setSubmitError(getPasswordResetErrorMessage(result.data, DEFAULT_ERROR_MESSAGE))
+        return
+      }
+
       if (result.data?.statusCode && result.data.statusCode >= 400) {
         setSubmitError(result.data.message || DEFAULT_ERROR_MESSAGE)
         return

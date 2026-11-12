@@ -35,6 +35,17 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
     const { status } = result.error
     const httpStatus = 'originalStatus' in result.error ? result.error.originalStatus : status
     if (httpStatus === 401) {
+      // A wrong current password is an API rejection, not an expired OAuth session.
+      if (
+        api.endpoint === 'resetPassword' &&
+        'data' in result.error &&
+        typeof result.error.data === 'object' &&
+        result.error.data !== null &&
+        'error' in result.error.data &&
+        result.error.data.error === 'Current password is incorrect.'
+      )
+        return result
+
       if (!isRedirecting) {
         isRedirecting = true
         window.location.href = `/oauth2/start?rd=${encodeURIComponent(window.location.pathname)}`
