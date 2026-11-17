@@ -1,172 +1,147 @@
+import { Box, Button, Typography } from '@mui/material'
+import Ajv, { ErrorObject } from 'ajv'
+import addFormats from 'ajv-formats'
 import { getSpec } from 'common/api-spec'
-import { JSONSchema4 } from 'json-schema'
-import { cloneDeep, set, unset } from 'lodash'
+import { cloneDeep, get, isEqual, set, unset } from 'lodash'
 import { CrudProps } from 'pages/types'
 import { useSession } from 'providers/Session'
-import React, { useEffect, useState } from 'react'
-import { GetSettingsInfoApiResponse } from 'redux/otomiApi'
-import { extract, isOf } from 'utils/schema'
-import { Button } from '@mui/material'
-import { useLocalStorage } from 'react-use'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { useLocalStorage } from 'react-use'
+import { cleanData } from 'utils/data'
+import { nullify } from 'utils/schema'
+import HeaderTitle from './HeaderTitle'
 import InformationBanner from './InformationBanner'
-import CodeEditor from './rjsf/FieldTemplate/CodeEditor'
-import Form from './rjsf/Form'
+import SettingField, { updateSettingValue } from './settings/SettingField'
+import { SettingsSchema, activeSchema, asSchema, defaultsForSchema } from './settings/schema'
 
-export const getSettingSchema = (appsEnabled: Record<string, any>, settingId, formData: any): any => {
-  const schema = cloneDeep(getSpec().components.schemas.Settings.properties[settingId])
-  switch (settingId) {
-    case 'cluster':
-      unset(schema, 'properties.provider.description')
-      set(schema, 'properties.provider.readOnly', true)
-      break
-    case 'home':
-      break
-    case 'alerts':
-      break
-    case 'dns':
-      break
-    case 'oidc':
-      break
-    case 'ingress':
-      set(schema, 'properties.platformClass.allOf[0].properties.className', true)
-      break
-    case 'platformBackups':
-      if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
-      if (!appsEnabled.gitea) {
-        set(schema, 'properties.database.properties.gitea.readOnly', true)
-        set(schema, 'properties.gitea.readOnly', true)
-      }
-
-      break
-    default:
-      break
+export const getSettingSchema = (appsEnabled: Record<string, boolean>, settingId: string): SettingsSchema => {
+  const definition = getSpec().components.schemas.Settings.properties[settingId]
+  if (!definition || typeof definition !== 'object') throw new Error(`Unknown setting schema: ${settingId}`)
+  const schema = cloneDeep(definition)
+  if (settingId === 'cluster') {
+    unset(schema, 'properties.provider.description')
+    set(schema, 'properties.provider.readOnly', true)
+  }
+  if (settingId === 'platformBackups') {
+    if (!appsEnabled.harbor) set(schema, 'properties.database.properties.harbor.readOnly', true)
+    if (!appsEnabled.gitea) {
+      set(schema, 'properties.database.properties.gitea.readOnly', true)
+      set(schema, 'properties.gitea.readOnly', true)
+    }
   }
   return schema
 }
 
-export const getSettingUiSchema = (settings: GetSettingsInfoApiResponse, settingId: string): any => {
-  const uiSchema: any = {
-    cluster: {
-      k8sContext: { 'ui:widget': 'hidden' },
-      defaultStorageClass: { 'ui:widget': 'hidden' },
-      linode: { 'ui:widget': 'hidden' },
-    },
-    otomi: {
-      isMultitenant: { 'ui:widget': 'hidden' },
-      isPreInstalled: { 'ui:widget': 'hidden' },
-      adminPassword: { 'ui:widget': 'hidden' },
-      useORCS: { 'ui:widget': 'hidden' },
-      aiEnabled: { 'ui:widget': 'hidden' },
-      git: { 'ui:widget': 'hidden' },
-    },
-    kms: {
-      sops: {
-        provider: { 'ui:widget': 'hidden' },
-        google: {
-          accountJson: { 'ui:widget': 'textarea' },
-        },
-        age: {
-          publicKey: { 'ui:disabled': true },
-          privateKey: { 'ui:disabled': true },
-        },
-      },
-    },
-    ingress: { platformClass: { className: { 'ui:widget': 'hidden' } } },
-    obj: { showWizard: { 'ui:widget': 'hidden' } },
-  }
-
-  if (!settings.otomi.hasExternalDNS) {
-    uiSchema.ingress.classes = {
-      'ui:disabled': true,
-      'ui:help': 'Hint: Deploy Otomi with your DNS settings to enable this feature.',
-    }
-  }
-
-  const settingsModel = getSpec().components.schemas.Settings
-  const model = settingsModel.properties[settingId]
-  if (model) {
-    // turn on code editor for fields of type object that don't have any properties
-    const leafs = Object.keys(
-      extract(model, (o: JSONSchema4) => o.type === 'object' && !o.properties && !isOf(o) && !o.nullable),
-    )
-    leafs.forEach((path) => {
-      set(uiSchema, `${settingId}.${path}`, { 'ui:FieldTemplate': CodeEditor })
-    })
-  }
-  return uiSchema[settingId] || {}
+const hiddenBySetting: Record<string, string[]> = {
+  cluster: ['k8sContext', 'defaultStorageClass', 'linode'],
+  otomi: ['isMultitenant', 'isPreInstalled', 'adminPassword', 'useORCS', 'aiEnabled', 'git'],
+  kms: ['sops.provider'],
+  ingress: ['platformClass.className'],
+  obj: ['showWizard'],
 }
 
-interface Props extends CrudProps {
-  settings: GetSettingsInfoApiResponse
+const errorsByPath = (errors: ErrorObject[]): Record<string, string[]> => {
+  const result: Record<string, string[]> = {}
+  errors.forEach((error) => {
+    const path = error.instancePath
+      .split('/')
+      .slice(1)
+      .map((part) => part.replace(/~1/g, '/').replace(/~0/g, '~'))
+    if (error.keyword === 'required' && typeof error.params.missingProperty === 'string')
+      path.push(error.params.missingProperty)
+    const key = path.join('.')
+    result[key] = [...(result[key] ?? []), error.message ?? 'Invalid value']
+  })
+  return result
+}
+
+interface Props extends Omit<CrudProps, 'onSubmit'> {
+  settings: Record<string, unknown>
   settingId: string
   objSettings: any
+  onSubmit: (data: Record<string, unknown>) => boolean | void | Promise<boolean | void>
 }
 
-export default function ({ settings: data, settingId, objSettings, ...other }: Props): React.ReactElement {
+export default function Setting({
+  settings: data,
+  settingId,
+  objSettings,
+  onSubmit,
+  mutating,
+}: Props): React.ReactElement {
   const history = useHistory()
   const { appsEnabled, settings } = useSession()
-  const isPreInstalled = settings.otomi.isPreInstalled || false
-  const [setting, setSetting]: any = useState<GetSettingsInfoApiResponse>(data)
-  const [schema, setSchema]: any = useState(getSettingSchema(appsEnabled, settingId, setting))
-  const [uiSchema, setUiSchema]: any = useState(getSettingUiSchema(settings, settingId))
-  const [disabledMessage, setDisabledMessage] = useState('')
-  const [isObjStorageRequired, setIsObjStorageRequired] = useState(false)
+  const schema = useMemo(
+    () => getSettingSchema(appsEnabled, settingId),
+    [appsEnabled.harbor, appsEnabled.gitea, settingId],
+  )
+  const initialData = useMemo(() => defaultsForSchema(schema, data) as Record<string, unknown>, [schema, data])
+  const [setting, setSetting] = useState(initialData)
+  const [original, setOriginal] = useState(initialData)
+  const [errors, setErrors] = useState<Record<string, string[]>>({})
+  const [editorErrors, setEditorErrors] = useState<Record<string, string>>({})
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
-  const removePreInstalledSpecificSettings = ['kms', 'dns', 'ingress']
-  let isPreInstalledSetting = false
-
-  if (removePreInstalledSpecificSettings.includes(settingId) && isPreInstalled) isPreInstalledSetting = true
+  const previousData = useRef({ settingId, data })
 
   useEffect(() => {
-    onChangeHandler(data)
-  }, [data])
+    if (previousData.current.settingId === settingId && isEqual(previousData.current.data, data)) return
+    previousData.current = { settingId, data }
+    setSetting(initialData)
+    setOriginal(initialData)
+    setErrors({})
+    setEditorErrors({})
+  }, [data, initialData, settingId])
 
-  useEffect(() => {
-    if (settingId) {
-      if (!appsEnabled.alertmanager && settingId === 'alerts')
-        setDisabledMessage('Please enable Alertmanager to activate Alerts settings')
-
-      if (isPreInstalledSetting)
-        setDisabledMessage('These settings can not be changed when installed by Akamai Connected Cloud.')
-    }
-  }, [settingId])
-  // END HOOKS
-  const getDynamicUiSchema = (data) => {
-    if (settingId !== 'alerts') return getSettingUiSchema(settings, settingId)
-    const { receivers } = schema.properties
-    const allReceivers = receivers?.items?.enum || []
-    const uiSchema = getSettingUiSchema(settings, settingId)
-    const hiddenReceivers = allReceivers.filter((receiver) => !data.receivers?.includes(receiver))
-    hiddenReceivers.forEach((receiver) => {
-      uiSchema[receiver] = { 'ui:widget': 'hidden' }
+  const isPreInstalled = Boolean(settings.otomi.isPreInstalled)
+  const isPreInstalledSetting = isPreInstalled && ['kms', 'dns', 'ingress'].includes(settingId)
+  const linode = objSettings?.provider?.type === 'linode' ? objSettings.provider.linode : undefined
+  const isConfigured = (app: string) =>
+    Boolean(linode?.accessKeyId && linode?.secretAccessKey && linode?.buckets?.[app])
+  const backup = settingId === 'platformBackups' ? setting : {}
+  const database = backup.database && typeof backup.database === 'object' ? backup.database : {}
+  const databaseEnabled = Object.values(database).some((app) => app && typeof app === 'object' && app.enabled)
+  const gitea = backup.gitea && typeof backup.gitea === 'object' ? backup.gitea : undefined
+  const missingDatabaseStorage = isPreInstalled && databaseEnabled && !isConfigured('cnpg')
+  const missingGiteaStorage = isPreInstalled && get(gitea, 'enabled') && !isConfigured('gitea')
+  const isObjStorageRequired = Boolean(missingDatabaseStorage || missingGiteaStorage)
+  let disabledMessage = ''
+  if (missingDatabaseStorage) disabledMessage = 'Database backup requires object storage to be enabled.'
+  else if (missingGiteaStorage) disabledMessage = 'Gitea backup requires object storage to be enabled.'
+  else if (isPreInstalledSetting)
+    disabledMessage = 'These settings can not be changed when installed by Akamai Connected Cloud.'
+  else if (settingId === 'alerts' && !appsEnabled.alertmanager)
+    disabledMessage = 'Please enable Alertmanager to activate Alerts settings'
+  const hiddenPaths = [...(hiddenBySetting[settingId] ?? [])]
+  if (settingId === 'alerts') {
+    const receivers = Array.isArray(setting.receivers) ? setting.receivers : []
+    ;['slack', 'msteams'].forEach((receiver) => {
+      if (!receivers.includes(receiver)) hiddenPaths.push(receiver)
     })
-    return uiSchema
   }
-  const isLinodeConfigured = (appId: string): boolean => {
-    const linode: any = objSettings?.provider?.type === 'linode' ? objSettings.provider.linode : {}
-    const { accessKeyId, secretAccessKey, buckets } = linode
-    return Boolean(accessKeyId && secretAccessKey && buckets?.[appId])
-  }
-  const getObjStorageRequired = (appId: string): boolean => {
-    return Boolean(isPreInstalled && !isLinodeConfigured(appId))
-  }
-  const onChangeHandler = (data) => {
-    const isAnyAppEnabled = Object.values(data?.database || {}).some((app: any) => app?.enabled)
-    if (isAnyAppEnabled && getObjStorageRequired('cnpg')) {
-      setDisabledMessage('Database backup requires object storage to be enabled.')
-      setIsObjStorageRequired(true)
-    } else if (data?.gitea?.enabled && getObjStorageRequired('gitea')) {
-      setDisabledMessage('Gitea backup requires object storage to be enabled.')
-      setIsObjStorageRequired(true)
-    } else {
-      setDisabledMessage('')
-      setIsObjStorageRequired(false)
+  const disabledPaths = settingId === 'kms' ? ['sops.age.publicKey', 'sops.age.privateKey'] : []
+  if (settingId === 'ingress' && !settings.otomi.hasExternalDNS) disabledPaths.push('classes')
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault()
+    if (isObjStorageRequired || isPreInstalledSetting || mutating || Object.keys(editorErrors).length) return
+    const validationData = cleanData(setting, {
+      emptyArrays: false,
+      emptyObjects: false,
+      nullValues: false,
+      undefinedValues: false,
+    })
+    const ajv = new Ajv({ allErrors: true, strict: false })
+    addFormats(ajv)
+    const validate = ajv.compile(activeSchema(schema, setting))
+    if (!validate(validationData)) {
+      setErrors(errorsByPath(validate.errors ?? []))
+      return
     }
-    const schema = getSettingSchema(appsEnabled, settingId, data)
-    setSetting(data)
-    setSchema(schema)
-    setUiSchema(getDynamicUiSchema(data))
+    setErrors({})
+    const cleaned = cleanData(setting, { emptyArrays: false, nullValues: false, undefinedValues: false })
+    const saved = await onSubmit(nullify(cleaned, schema))
+    if (saved !== false) setOriginal(cloneDeep(setting))
   }
 
   return (
@@ -176,15 +151,6 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
           {isObjStorageRequired && (
             <Button
               variant='text'
-              color='primary'
-              sx={{
-                ml: '8px',
-                px: 0,
-                fontWeight: 500,
-                fontSize: '14px',
-                lineHeight: '20px',
-                '&.MuiButton-root:hover': { bgcolor: 'transparent' },
-              }}
               onClick={() => {
                 setShowObjWizard(true)
                 history.push('/maintenance')
@@ -195,20 +161,70 @@ export default function ({ settings: data, settingId, objSettings, ...other }: P
           )}
         </InformationBanner>
       )}
-
-      <Form
-        key={settingId}
-        schema={schema}
-        uiSchema={uiSchema}
-        data={setting}
+      <HeaderTitle
+        title='Settings'
         resourceType='Settings'
-        onChange={onChangeHandler}
-        idProp={null}
-        adminOnly
-        disabled={isPreInstalledSetting}
-        {...other}
-        children={isObjStorageRequired}
+        docUrl={
+          schema['x-externalDocsPath']
+            ? `https://techdocs.akamai.com/app-platform/docs/${schema['x-externalDocsPath']}`
+            : undefined
+        }
       />
+      {schema.title && (
+        <Typography variant='h5' sx={{ mb: 1 }}>
+          {schema.title}
+        </Typography>
+      )}
+      {schema.description && <Typography sx={{ mb: 2 }}>{schema.description}</Typography>}
+      <form onSubmit={handleSubmit} noValidate>
+        <SettingField
+          schema={asSchema(schema)}
+          value={setting}
+          path={[]}
+          disabled={isPreInstalledSetting || mutating}
+          hiddenPaths={hiddenPaths}
+          disabledPaths={disabledPaths}
+          errors={errors}
+          onChange={(path, value) => {
+            setSetting((current) => updateSettingValue(current, path, value))
+            setErrors({})
+          }}
+          onEditorError={(path, error) =>
+            setEditorErrors((current) => {
+              const next = { ...current }
+              if (error) next[path] = error
+              else delete next[path]
+              return next
+            })
+          }
+        />
+        {settingId === 'ingress' && !settings.otomi.hasExternalDNS && (
+          <Typography variant='body2'>Hint: Deploy Otomi with your DNS settings to enable this feature.</Typography>
+        )}
+        {errors['']?.map((error) => (
+          <Typography color='error' key={error}>
+            {error}
+          </Typography>
+        ))}
+        <Box display='flex' justifyContent='flex-end' sx={{ mt: 2 }}>
+          <Button
+            type='submit'
+            variant='contained'
+            disabled={
+              isPreInstalledSetting ||
+              isObjStorageRequired ||
+              mutating ||
+              Object.keys(editorErrors).length > 0 ||
+              isEqual(
+                cleanData(setting, { nullValues: false, emptyArrays: false, emptyObjects: false }),
+                cleanData(original, { nullValues: false, emptyArrays: false, emptyObjects: false }),
+              )
+            }
+          >
+            Submit
+          </Button>
+        </Box>
+      </form>
     </>
   )
 }
