@@ -26,15 +26,18 @@ export default function ({
   const { t } = useTranslation()
   // END HOOKS
   const mutating = isLoadingUpdate
-  const handleSubmit = (formData) => {
-    edit({ settingId, body: { [settingId]: formData } })
-      .then(refetch)
-      .then(refetchSettings)
+  const handleSubmit = async (formData: Record<string, unknown>) => {
+    const result = await edit({ settingId, body: { [settingId]: formData } })
+    if ('error' in result) return false
+    refetch()
+    refetchSettings()
+    return true
   }
   const settings = data?.[settingId] || {}
   const objSettings = data?.obj || {}
   const comp = (
     <Setting
+      key={settingId}
       onSubmit={handleSubmit}
       settings={settings}
       settingId={settingId}
