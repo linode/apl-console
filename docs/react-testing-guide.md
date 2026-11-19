@@ -36,6 +36,25 @@ The APL Console contains several areas where regressions are easy to introduce:
 - API payload transformations
 - reusable components used by many pages
 
+### Static settings forms
+
+Settings pages under `src/pages/settings/` declare their fields explicitly with
+React Hook Form, `LandingHeader`, `Section`, and the shared form controls. Add
+new fields to the relevant page rather than introducing a schema-driven
+renderer. Repeatable lists and provider-specific sections are still ordinary
+React components.
+
+`SettingsForm` shares loading, disabled, save, notification, and navigation
+behavior. API schemas are used only for validation, defaults, and payload
+normalization, preserving the existing server contract and hidden settings.
+They do not generate controls. Provider changes replace the provider object;
+selecting None for DNS or SOPS saves `null`.
+
+Each settings page has a colocated component test. Shared
+`settings.validator.test.ts` cases cover valid/invalid values, nested errors,
+provider choices, YAML objects, and payload preservation. Run them with
+`npm test -- --watch=false src/pages/settings`.
+
 Tests give us confidence that these pieces still work together.
 
 For example, a platform settings form may display only:
