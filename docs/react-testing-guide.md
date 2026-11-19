@@ -55,6 +55,19 @@ Each settings page has a colocated component test. Shared
 provider choices, YAML objects, and payload preservation. Run them with
 `npm test -- --watch=false src/pages/settings`.
 
+### Static policy forms
+
+The policy editor in `src/pages/policies/create-edit/` uses the same static
+React Hook Form layout, with explicit Action, Severity, and Custom values
+sections. Custom values are available only for the four policies listed in
+`customValuePolicies`; API schemas provide descriptions, not form controls.
+
+Keep team self-service permissions and per-field denied attributes intact.
+Disabled fields retain their server values in the submitted payload.
+Tests cover every supported policy, platform and team routes, permission
+restrictions, loading, validation, failed-save retries, and navigation.
+Run them with `npm test -- --watch=false src/pages/policies`.
+
 Tests give us confidence that these pieces still work together.
 
 For example, a platform settings form may display only:

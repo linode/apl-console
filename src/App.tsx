@@ -26,7 +26,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import UsersCreateEditPage from 'pages/users/create-edit/UsersCreateEditPage'
-import Policy from 'pages/Policy'
+import PoliciesCreateEditPage from 'pages/policies/create-edit/PoliciesCreateEditPage'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
@@ -156,7 +156,7 @@ function App() {
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/policies/:policyName'
-                                  component={Policy}
+                                  component={PoliciesCreateEditPage}
                                   platformAdminRoute
                                   exact
                                 />
@@ -302,7 +302,11 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
-                                <PrivateRoute path='/teams/:teamId/policies/:policyName' component={Policy} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/policies/:policyName'
+                                  component={PoliciesCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/workloads' component={WorkloadsOverviewPage} exact />
                                 <PrivateRoute path='/teams/:teamId/services' component={ServicesOverviewPage} exact />
                                 <PrivateRoute
