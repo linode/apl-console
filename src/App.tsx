@@ -41,6 +41,7 @@ import NetworkPoliciesIngressCreateEditPage from 'pages/network-policies/create-
 import NetworkPoliciesEgressCreateEditPage from 'pages/network-policies/create-edit/NetworkPoliciesEgressCreateEditPage'
 import PlatformsSecretOverviewPage from 'pages/secrets/platform/overview/PlatformSecretOverviewPage'
 import PlatformSecretCreateEditPage from 'pages/secrets/platform/create-edit/PlatformSecretCreateEditPage'
+import GlobalPullSecretPage from 'pages/secrets/platform/create-edit/GlobalPullSecretPage'
 import SecretOverviewPage from 'pages/secrets/team/overview/SecretOverviewPage'
 import SecretCreateEditPage from 'pages/secrets/team/create-edit/SecretCreateEditPage'
 import ServicesCreateEditPage from 'pages/services/create-edit/ServicesCreateEditPage'
@@ -178,6 +179,12 @@ function App() {
                                 <PrivateRoute
                                   path='/secrets/create'
                                   component={PlatformSecretCreateEditPage}
+                                  platformAdminRoute
+                                  exact
+                                />
+                                <PrivateRoute
+                                  path='/secrets/global-pull-secret'
+                                  component={GlobalPullSecretPage}
                                   platformAdminRoute
                                   exact
                                 />

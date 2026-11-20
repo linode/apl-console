@@ -1,5 +1,5 @@
 import LoadingButton from '@mui/material/Button'
-import { Box } from '@mui/material'
+import { Alert, Box, Typography } from '@mui/material'
 import { yupResolver } from '@hookform/resolvers/yup'
 import ControlledCheckbox from 'components/forms/ControlledCheckbox'
 import { TextField } from 'components/forms/TextField'
@@ -10,51 +10,25 @@ import PaperLayout from 'layouts/Paper'
 import { useEffect, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useSession } from 'providers/Session'
-import { useEditSettingsMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import {
+  GetSettingsApiResponse,
+  useEditSettingsMutation,
+  useGetAplNamespaceSealedSecretsQuery,
+  useGetSettingsQuery,
+} from 'redux/otomiApi'
 import KeyValue from 'components/forms/KeyValue'
 import { Divider } from 'components/Divider'
-import FormRow from 'components/forms/FormRow'
+import RLink from 'components/Link'
 import snack from 'utils/snack'
+import { GLOBAL_PULL_SECRET } from 'utils/constants'
 import { PlatformSettingsFormValues, platformSettingsSchema } from './platform-settings.validator'
-
-interface OtomiSettings extends Omit<PlatformSettingsFormValues, 'globalPullSecret' | 'nodeSelector'> {
-  globalPullSecret?: {
-    username?: string
-    password?: string
-    email?: string
-    server?: string
-  } | null
-
-  nodeSelector?: Array<{
-    name?: string
-    value?: string
-  }> | null
-
-  isMultitenant?: boolean
-  isPreInstalled?: boolean
-  adminPassword?: string
-  useORCS?: boolean
-  aiEnabled?: boolean
-  git?: unknown
-
-  [key: string]: unknown
-}
 
 const EMPTY_FORM_VALUES: PlatformSettingsFormValues = {
   hasExternalDNS: false,
   hasExternalIDP: false,
   version: '',
-  globalPullSecret: {
-    username: '',
-    password: '',
-    email: '',
-    server: '',
-  },
   nodeSelector: [],
 }
-
-const hasGlobalPullSecretValues = (globalPullSecret: PlatformSettingsFormValues['globalPullSecret']): boolean =>
-  Boolean(globalPullSecret.username || globalPullSecret.password || globalPullSecret.email || globalPullSecret.server)
 
 export default function PlatformSettingsPage() {
   const { refetchSettings } = useSession()
@@ -65,8 +39,18 @@ export default function PlatformSettingsPage() {
   })
 
   const [editSettings, { isLoading: isUpdating }] = useEditSettingsMutation()
+  const {
+    data: secrets,
+    isFetching: isFetchingSecrets,
+    isError: isSecretsError,
+  } = useGetAplNamespaceSealedSecretsQuery({ namespace: GLOBAL_PULL_SECRET.namespace })
+  const hasPassword = Boolean(
+    secrets?.find(({ metadata }) => metadata.name === GLOBAL_PULL_SECRET.name)?.spec.encryptedData[
+      GLOBAL_PULL_SECRET.passwordKey
+    ],
+  )
 
-  const otomiSettings = useMemo(() => (data?.otomi ?? {}) as OtomiSettings, [data])
+  const otomiSettings = useMemo<GetSettingsApiResponse['otomi']>(() => data?.otomi ?? { version: '' }, [data])
 
   const formValues = useMemo<PlatformSettingsFormValues>(
     () => ({
@@ -75,16 +59,6 @@ export default function PlatformSettingsPage() {
       hasExternalIDP: otomiSettings.hasExternalIDP ?? false,
 
       version: otomiSettings.version ?? '',
-
-      globalPullSecret: {
-        username: otomiSettings.globalPullSecret?.username ?? '',
-
-        password: otomiSettings.globalPullSecret?.password ?? '',
-
-        email: otomiSettings.globalPullSecret?.email ?? '',
-
-        server: otomiSettings.globalPullSecret?.server ?? '',
-      },
 
       nodeSelector: Array.isArray(otomiSettings.nodeSelector)
         ? otomiSettings.nodeSelector.map(({ name, value }) => ({
@@ -116,7 +90,7 @@ export default function PlatformSettingsPage() {
   }, [data, formValues, reset])
 
   const onSubmit = async (values: PlatformSettingsFormValues) => {
-    const { git: _git, ...otomiSettingsWithoutGit } = otomiSettings
+    const { git: _git, adminPassword: _adminPassword, globalPullSecret, ...otomiSettingsWithoutGit } = otomiSettings
 
     const updatedOtomiSettings = {
       ...otomiSettingsWithoutGit,
@@ -125,7 +99,13 @@ export default function PlatformSettingsPage() {
       hasExternalIDP: values.hasExternalIDP,
       version: values.version,
 
-      globalPullSecret: hasGlobalPullSecretValues(values.globalPullSecret) ? values.globalPullSecret : null,
+      globalPullSecret: globalPullSecret
+        ? {
+            server: globalPullSecret.server,
+            username: globalPullSecret.username,
+            email: globalPullSecret.email,
+          }
+        : globalPullSecret,
 
       nodeSelector: values.nodeSelector
         .map(({ name, value }) => ({
@@ -138,7 +118,7 @@ export default function PlatformSettingsPage() {
     await editSettings({
       settingId: 'otomi',
       body: {
-        otomi: updatedOtomiSettings as never,
+        otomi: updatedOtomiSettings,
       },
     }).unwrap()
 
@@ -201,68 +181,32 @@ export default function PlatformSettingsPage() {
           title='Global pull secret'
           description='Configure registry credentials that are attached to the default service account in every team namespace.'
         >
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
+          <Typography sx={{ mb: 1 }}>
+            The password is managed in Platform Secrets. Registry details are configured in the guided setup.
+          </Typography>
+          {isFetchingSecrets && <Typography>Checking platform secret...</Typography>}
+          {isSecretsError && <Alert severity='error'>Unable to load the global pull secret.</Alert>}
+          {!isFetchingSecrets && !isSecretsError && (
             <Box>
-              <TextField
-                {...register('globalPullSecret.server')}
-                label='Registry server'
-                error={Boolean(errors.globalPullSecret?.server)}
-                errorText={errors.globalPullSecret?.server?.message}
-                helperText='For example: docker.io'
-                width='fullwidth'
-              />
+              <Typography sx={{ mb: 1 }}>
+                {otomiSettings.globalPullSecret?.server && `Registry: ${otomiSettings.globalPullSecret.server}. `}
+                {hasPassword ? 'An encrypted password is stored.' : 'No encrypted password is configured.'}
+              </Typography>
+              {hasPassword && !otomiSettings.globalPullSecret?.username && (
+                <Alert severity='info' sx={{ mb: 1 }}>
+                  Complete registry setup to enable the global pull secret.
+                </Alert>
+              )}
+              <RLink to={GLOBAL_PULL_SECRET.setupPath}>
+                {hasPassword ? 'Manage global pull secret' : 'Create global pull secret'}
+              </RLink>
+              {hasPassword && (
+                <Box sx={{ mt: 1 }}>
+                  <RLink to={GLOBAL_PULL_SECRET.secretPath}>View encrypted data in Platform Secrets</RLink>
+                </Box>
+              )}
             </Box>
-
-            <Divider sx={{ mt: 3, mb: 1 }} />
-
-            <Box
-              sx={{
-                display: 'flex',
-                gap: '5px',
-                flexDirection: {
-                  xs: 'column',
-                  md: 'row',
-                },
-              }}
-            >
-              <FormRow spacing={10}>
-                <TextField
-                  {...register('globalPullSecret.username')}
-                  label='Username'
-                  error={Boolean(errors.globalPullSecret?.username)}
-                  errorText={errors.globalPullSecret?.username?.message}
-                  width='large'
-                />
-
-                <TextField
-                  {...register('globalPullSecret.password')}
-                  label='Password'
-                  type='password'
-                  autoComplete='new-password'
-                  error={Boolean(errors.globalPullSecret?.password)}
-                  errorText={errors.globalPullSecret?.password?.message}
-                  width='large'
-                />
-              </FormRow>
-            </Box>
-
-            <Box sx={{ mt: 2 }}>
-              <TextField
-                {...register('globalPullSecret.email')}
-                label='Email (optional)'
-                type='email'
-                error={Boolean(errors.globalPullSecret?.email)}
-                errorText={errors.globalPullSecret?.email?.message}
-                helperText='Optional contact email for the registry account.'
-                width='fullwidth'
-              />
-            </Box>
-          </Box>
+          )}
         </Section>
 
         <Section>

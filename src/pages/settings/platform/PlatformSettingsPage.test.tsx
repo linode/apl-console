@@ -1,5 +1,5 @@
 import React from 'react'
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import '@testing-library/jest-dom'
 import PlatformSettingsPage from './PlatformSettingsPage'
@@ -15,6 +15,8 @@ let mockSettingsData: Record<string, unknown> | undefined
 let mockIsLoading = false
 let mockIsFetching = false
 let mockIsUpdating = false
+let mockSecrets: unknown[] = []
+let mockSecretsError = false
 
 jest.mock('@hookform/resolvers/yup', () => ({
   yupResolver:
@@ -46,6 +48,11 @@ jest.mock('providers/Session', () => ({
 }))
 
 jest.mock('redux/otomiApi', () => ({
+  useGetAplNamespaceSealedSecretsQuery: () => ({
+    data: mockSecrets,
+    isFetching: false,
+    isError: mockSecretsError,
+  }),
   useGetSettingsQuery: () => ({
     data: mockSettingsData,
     isLoading: mockIsLoading,
@@ -58,6 +65,11 @@ jest.mock('redux/otomiApi', () => ({
       isLoading: mockIsUpdating,
     },
   ],
+}))
+
+jest.mock('components/Link', () => ({
+  __esModule: true,
+  default: ({ to, children }: { to: string; children: React.ReactNode }) => <a href={to}>{children}</a>,
 }))
 
 jest.mock('layouts/Paper', () => ({
@@ -263,6 +275,8 @@ describe('PlatformSettingsPage', () => {
     mockIsLoading = false
     mockIsFetching = false
     mockIsUpdating = false
+    mockSecrets = []
+    mockSecretsError = false
 
     mockEditSettings.mockReturnValue({
       unwrap: mockUnwrap,
@@ -285,10 +299,14 @@ describe('PlatformSettingsPage', () => {
       }),
     ).not.toBeChecked()
 
-    expect(screen.getByLabelText('Registry server')).toHaveValue('registry.example.com')
-    expect(screen.getByLabelText('Username')).toHaveValue('registry-user')
-    expect(screen.getByLabelText('Password')).toHaveValue('registry-password')
-    expect(screen.getByLabelText('Email (optional)')).toHaveValue('registry@example.com')
+    expect(screen.queryByLabelText('Registry server')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Username')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument()
+    expect(screen.queryByLabelText('Email (optional)')).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Create global pull secret' })).toHaveAttribute(
+      'href',
+      '/secrets/global-pull-secret',
+    )
 
     expect(screen.getByLabelText('Name 1')).toHaveValue('node-role.kubernetes.io/platform')
     expect(screen.getByLabelText('Value 1')).toHaveValue('true')
@@ -351,7 +369,6 @@ describe('PlatformSettingsPage', () => {
           version: 'v2.16.0',
           globalPullSecret: {
             username: 'registry-user',
-            password: 'registry-password',
             email: 'registry@example.com',
             server: 'registry.example.com',
           },
@@ -365,7 +382,6 @@ describe('PlatformSettingsPage', () => {
           isPreInstalled: true,
           aiEnabled: true,
           useORCS: false,
-          adminPassword: 'preserve-me',
         },
       },
     })
@@ -425,134 +441,32 @@ describe('PlatformSettingsPage', () => {
     })
   })
 
-  it('submits null when the global pull secret contains only empty default values', async () => {
-    const user = userEvent.setup()
-
-    mockSettingsData = {
-      otomi: {
-        version: 'v2.15.0',
-        hasExternalDNS: false,
-        hasExternalIDP: false,
-        globalPullSecret: {
-          username: 'old-user',
-          password: 'old-password',
-          email: 'old@example.com',
-          server: 'registry.example.com',
-        },
-        nodeSelector: [],
-        isMultitenant: true,
-        isPreInstalled: true,
-        aiEnabled: true,
-        useORCS: false,
-        adminPassword: 'preserve-me',
-      },
-    }
-
+  it('links an existing password to its guided setup and encrypted data', () => {
+    mockSecrets = [
+      { metadata: { name: 'otomi-secrets' }, spec: { encryptedData: { globalPullSecret_password: 'encrypted' } } },
+    ]
     render(<PlatformSettingsPage />)
-
-    const usernameInput = await screen.findByLabelText('Username')
-    const passwordInput = screen.getByLabelText('Password')
-    const emailInput = screen.getByLabelText('Email (optional)')
-    const serverInput = screen.getByLabelText('Registry server')
-
-    await waitFor(() => {
-      expect(usernameInput).toHaveValue('old-user')
-    })
-
-    await user.clear(usernameInput)
-    await user.clear(passwordInput)
-    await user.clear(emailInput)
-    await user.clear(serverInput)
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Save Changes' })).not.toBeDisabled()
-    })
-
-    await user.click(screen.getByRole('button', { name: 'Save Changes' }))
-
-    await waitFor(() => {
-      expect(mockEditSettings).toHaveBeenCalledWith({
-        settingId: 'otomi',
-        body: {
-          otomi: {
-            version: 'v2.15.0',
-            hasExternalDNS: false,
-            hasExternalIDP: false,
-            globalPullSecret: null,
-            nodeSelector: [],
-            isMultitenant: true,
-            isPreInstalled: true,
-            aiEnabled: true,
-            useORCS: false,
-            adminPassword: 'preserve-me',
-          },
-        },
-      })
-    })
+    expect(screen.getByRole('link', { name: 'Manage global pull secret' })).toHaveAttribute(
+      'href',
+      '/secrets/global-pull-secret',
+    )
+    expect(screen.getByRole('link', { name: 'View encrypted data in Platform Secrets' })).toHaveAttribute(
+      'href',
+      '/secrets/apl-secrets/otomi-secrets',
+    )
   })
 
-  it('keeps a global pull secret when at least one non-default value is present', async () => {
-    const user = userEvent.setup()
-
-    mockSettingsData = {
-      otomi: {
-        version: 'v2.15.0',
-        hasExternalDNS: false,
-        hasExternalIDP: false,
-        globalPullSecret: null,
-        nodeSelector: [],
-        isMultitenant: true,
-        isPreInstalled: true,
-        aiEnabled: true,
-        useORCS: false,
-        adminPassword: 'preserve-me',
-      },
-    }
-
+  it('offers setup when the shared secret exists without a pull password', () => {
+    mockSecrets = [{ metadata: { name: 'otomi-secrets' }, spec: { encryptedData: { adminPassword: 'encrypted' } } }]
     render(<PlatformSettingsPage />)
+    expect(screen.getByRole('link', { name: 'Create global pull secret' })).toBeInTheDocument()
+  })
 
-    const usernameInput = await screen.findByLabelText('Username')
-
-    await waitFor(() => {
-      expect(usernameInput).toHaveValue('')
-    })
-
-    await user.type(usernameInput, 'registry-user')
-
-    await waitFor(() => {
-      expect(usernameInput).toHaveValue('registry-user')
-    })
-
-    const submitButton = screen.getByRole('button', {
-      name: 'Save Changes',
-    })
-
-    fireEvent.click(submitButton)
-
-    await waitFor(() => {
-      expect(mockEditSettings).toHaveBeenCalledWith({
-        settingId: 'otomi',
-        body: {
-          otomi: {
-            version: 'v2.15.0',
-            hasExternalDNS: false,
-            hasExternalIDP: false,
-            globalPullSecret: {
-              username: 'registry-user',
-              password: '',
-              email: '',
-              server: '',
-            },
-            nodeSelector: [],
-            isMultitenant: true,
-            isPreInstalled: true,
-            aiEnabled: true,
-            useORCS: false,
-            adminPassword: 'preserve-me',
-          },
-        },
-      })
-    })
+  it('does not mistake secret lookup failures for a missing password', () => {
+    mockSecretsError = true
+    render(<PlatformSettingsPage />)
+    expect(screen.getByRole('alert')).toHaveTextContent('Unable to load the global pull secret')
+    expect(screen.queryByRole('link', { name: 'Create global pull secret' })).not.toBeInTheDocument()
   })
 
   it('disables saving while settings are being fetched', async () => {
