@@ -1,6 +1,5 @@
 import { JSONSchema7 } from 'json-schema'
-import { get, set } from 'lodash'
-import { GetSessionApiResponse } from 'redux/otomiApi'
+import { set } from 'lodash'
 
 export const getIngressSchemaPath = (idx: number) => `properties.ingress.oneOf[${idx}].allOf[0].properties`
 
@@ -46,19 +45,6 @@ export interface Acl {
 let spec: OpenApi
 
 export const getSpec = () => spec
-
-export const applyAclToUiSchema = (
-  uiSchema: any,
-  user: GetSessionApiResponse['user'],
-  teamId: string,
-  schemaName: string,
-): void => {
-  if (user.isPlatformAdmin) return
-
-  get(user, `authz.${teamId}.deniedAttributes.${schemaName}`, []).forEach((path) => {
-    set(uiSchema, `${path}.ui:readonly`, true)
-  })
-}
 
 export const setSpec = (inSpec): void => {
   spec = inSpec
