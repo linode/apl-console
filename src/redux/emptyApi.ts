@@ -37,7 +37,7 @@ const baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> =
     if (httpStatus === 401) {
       // A wrong current password is an API rejection, not an expired OAuth session.
       if (
-        api.endpoint === 'resetPassword' &&
+        api.endpoint === 'resetOwnPassword' &&
         'data' in result.error &&
         typeof result.error.data === 'object' &&
         result.error.data !== null &&
