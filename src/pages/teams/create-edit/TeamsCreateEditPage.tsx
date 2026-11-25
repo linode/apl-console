@@ -218,21 +218,11 @@ export default function TeamsCreateEditPage({
             </Section>
 
             <AdvancedSettings>
-              <Section title='Dashboards' collapsable noMarginTop={appsEnabled.grafana || !isAdmin}>
-                {!appsEnabled.grafana && isAdmin && (
-                  <InformationBanner
-                    small
-                    message={
-                      <>
-                        Dashboards require Grafana to be enabled. Click <Link to='/apps/admin'>here</Link> to enable it.
-                      </>
-                    }
-                  />
-                )}
+              <Section title='Dashboards' collapsable noMarginTop>
                 <ControlledCheckbox
                   name='spec.managedMonitoring.grafana'
                   control={control}
-                  disabled={!appsEnabled.grafana || !isAdmin}
+                  disabled={!isAdmin}
                   label='Enable dashboards'
                   explainertext='Installs Grafana for the team with pre-configured dashboards. This is required to get access to container logs.'
                 />

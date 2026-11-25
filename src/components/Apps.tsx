@@ -152,10 +152,11 @@ export default function Apps({ teamId, apps, teamSettings, setAppState, objSetti
       return (
         <Grid item xs={12} sm={6} md={4} lg={4} key={id}>
           <AppCard
-            // alertmanager is an exception to the rule as it can be enabled on team level without being enabled on platform level
             enabled={
               enabled !== false ||
-              (teamId !== 'admin' && teamSettings?.spec.managedMonitoring?.alertmanager && id === 'alertmanager')
+              (teamId !== 'admin' &&
+                ((id === 'alertmanager' && teamSettings?.spec.managedMonitoring?.alertmanager) ||
+                  (id === 'grafana' && teamSettings?.spec.managedMonitoring?.grafana)))
             }
             id={id}
             img={`/logos/${logo}`}
@@ -290,6 +291,7 @@ function applySortFilter({
     tableData = tableData?.filter((item: Record<string, any>) => {
       const key = item.id.toLowerCase()
       if (key === 'alertmanager' && managedMonitoringApps?.alertmanager) return true
+      if (key === 'grafana' && managedMonitoringApps?.grafana) return true
       return item.enabled !== false
     })
   }
