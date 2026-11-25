@@ -33,5 +33,5 @@ jobs:
         continue-on-error: true
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          test-script: npm run coverage
+          test-script: npm run test
           annotations: none
