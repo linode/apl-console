@@ -34,7 +34,7 @@ RUN npm test -- --watchAll=false
 RUN NODE_ENV=production npm run build
 
 # --------------- production stage
-FROM nginx:1.31.8-alpine as prod
+FROM nginx:1.31.9-alpine as prod
 
 RUN mkdir /app
 RUN addgroup -S app && adduser -S app -G app -h /app -s /sbin/nologin
