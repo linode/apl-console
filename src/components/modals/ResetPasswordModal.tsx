@@ -6,7 +6,7 @@ import { TextField } from 'components/forms/TextField'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
-import { useResetPasswordMutation } from 'redux/otomiApi'
+import { useResetOwnPasswordMutation } from 'redux/otomiApi'
 import { modalClosed, modalOpened } from 'redux/reducers'
 import getPasswordResetErrorMessage from 'utils/passwordResetError'
 import snack from 'utils/snack'
@@ -109,10 +109,16 @@ interface ResetPasswordModalProps {
   onClose: () => void
 }
 
+type ResetPasswordResponse = {
+  message?: string
+  error?: string
+  statusCode?: number
+}
+
 export default function ResetPasswordModal({ open, onClose }: ResetPasswordModalProps) {
   const dispatch = useAppDispatch()
   const [submitError, setSubmitError] = useState('')
-  const [resetPassword, { isLoading }] = useResetPasswordMutation()
+  const [resetPassword, { isLoading }] = useResetOwnPasswordMutation()
 
   const {
     control,
@@ -158,14 +164,16 @@ export default function ResetPasswordModal({ open, onClose }: ResetPasswordModal
         return
       }
 
-      if (result.data && 'error' in result.data) {
-        setSubmitError(getPasswordResetErrorMessage(result.data, DEFAULT_ERROR_MESSAGE))
-        return
-      }
-
-      if (result.data?.statusCode && result.data.statusCode >= 400) {
-        setSubmitError(result.data.message || DEFAULT_ERROR_MESSAGE)
-        return
+      if ('data' in result && result.data) {
+        const response = result.data as ResetPasswordResponse
+        if (response.error) {
+          setSubmitError(getPasswordResetErrorMessage(response, DEFAULT_ERROR_MESSAGE))
+          return
+        }
+        if (response.statusCode && response.statusCode >= 400) {
+          setSubmitError(response.message || DEFAULT_ERROR_MESSAGE)
+          return
+        }
       }
 
       // The API has already ended all Dex sessions for this user; log out now so the browser
