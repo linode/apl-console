@@ -48,7 +48,6 @@ const Context = React.createContext<SessionContext>({
   sealedSecretsPEM: undefined,
   user: {
     teams: undefined,
-    name: undefined,
     email: undefined,
     isPlatformAdmin: undefined,
     isTeamAdmin: undefined,
