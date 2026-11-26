@@ -24,7 +24,7 @@ describe('password reset API and modal error isolation', () => {
 
   const resetPassword = () =>
     store.dispatch(
-      otomiApi.endpoints.resetPassword.initiate({
+      otomiApi.endpoints.resetOwnPassword.initiate({
         body: { currentPassword: 'current-password', newPassword: 'new-password' },
       }),
     )
