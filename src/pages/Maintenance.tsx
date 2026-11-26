@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import PaperLayout from 'layouts/Paper'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 import HeaderTitle from 'components/HeaderTitle'
 import ObjWizardModal from 'components/ObjWizardModal'
 import { useLocalStorage } from 'react-use'
 import { useGetSettingsQuery } from 'redux/otomiApi'
 import Section from 'components/Section'
+import ImportKeycloakUsersModal from 'components/ImportKeycloakUsersModal'
+import { useSession } from 'providers/Session'
 
 const classes = {
   actionButton: {
@@ -23,6 +25,9 @@ const classes = {
 
 export default function (): React.ReactElement {
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
+  const [showImportKeycloakUsers, setShowImportKeycloakUsers] = useState(false)
+  const { appsEnabled, settings } = useSession()
+  const canImportKeycloakUsers = settings?.otomi?.oidc?.authenticationLayer === 'dex' && appsEnabled?.keycloak
   const { data } = useGetSettingsQuery({ ids: ['obj'] })
   const isObjStorageConfigured = (): boolean => {
     const linode: any = data?.obj?.provider?.type === 'linode' ? data.obj.provider.linode : {}
@@ -55,8 +60,19 @@ export default function (): React.ReactElement {
             </Button>
           </span>
         </Tooltip>
+        {canImportKeycloakUsers && (
+          <Button
+            variant='text'
+            color='primary'
+            sx={{ ...classes.actionButton, display: 'block' }}
+            onClick={() => setShowImportKeycloakUsers(true)}
+          >
+            Import Keycloak users into Dex
+          </Button>
+        )}
       </Section>
       <ObjWizardModal />
+      <ImportKeycloakUsersModal open={showImportKeycloakUsers} handleClose={() => setShowImportKeycloakUsers(false)} />
     </Box>
   )
 
