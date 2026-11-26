@@ -73,6 +73,7 @@ function ImportResults({ results }: { results: ImportResult[] }) {
           <TableRow>
             <TableCell>Email</TableCell>
             <TableCell>Status</TableCell>
+            <TableCell>Teams</TableCell>
             <TableCell>Password / reason</TableCell>
           </TableRow>
         </TableHead>
@@ -81,6 +82,7 @@ function ImportResults({ results }: { results: ImportResult[] }) {
             <TableRow key={result.email}>
               <TableCell>{result.email}</TableCell>
               <TableCell>{result.status}</TableCell>
+              <TableCell>{result.teams?.join(', ')}</TableCell>
               <TableCell>{result.initialPassword ?? result.reason}</TableCell>
             </TableRow>
           ))}

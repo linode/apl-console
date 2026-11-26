@@ -105,6 +105,12 @@ describe.each(['light', 'dark'] as const)('%s Cloud Manager overrides', (mode) =
     )
   })
 
+  it.each(['light', 'dark'] as const)('keeps table header text distinct from its background in %s mode', (mode) => {
+    const modeTheme = createTheme({ palette: palette[mode] })
+    const { head } = tableOverrides(modeTheme).MuiTableCell.styleOverrides
+    expect(head.color).not.toBe(head.backgroundColor)
+  })
+
   it.each(['standard', 'outlined'] as const)('keeps %s single-line inputs compact', (variant) => {
     render(
       <ThemeProvider theme={theme}>

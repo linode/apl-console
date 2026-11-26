@@ -202,7 +202,7 @@ describe('Maintenance Keycloak user import', () => {
     expect(importKeycloakUsers).toHaveBeenCalledTimes(1)
   })
 
-  it('shows the generated password of created users and the reason of skipped users', () => {
+  it('shows the generated password and teams of created users and the reason of skipped users', () => {
     mockSession('dex', true)
     ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([
       importKeycloakUsers,
@@ -210,7 +210,7 @@ describe('Maintenance Keycloak user import', () => {
         reset: jest.fn(),
         data: {
           results: [
-            { email: 'new@example.com', status: 'created', initialPassword: 'Gen3rated!pw', teams: [] },
+            { email: 'new@example.com', status: 'created', initialPassword: 'Gen3rated!pw', teams: ['blue', 'red'] },
             { email: 'admin@example.com', status: 'skipped', reason: 'Platform admin is a Dex static password.' },
           ],
         },
@@ -221,6 +221,7 @@ describe('Maintenance Keycloak user import', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Import Keycloak users into Dex' }))
 
     expect(screen.getByText('Gen3rated!pw')).toBeInTheDocument()
+    expect(screen.getByText('blue, red')).toBeInTheDocument()
     expect(screen.getByText('Platform admin is a Dex static password.')).toBeInTheDocument()
     expect(screen.getByText(/will not be shown again/)).toBeInTheDocument()
   })
