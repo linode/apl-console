@@ -41,7 +41,7 @@ export default function ImportKeycloakUsersModal({ open, handleClose }: Props) {
 
   if (data) {
     return (
-      <Modal open={open} title='Imported Keycloak users' handleClose={closeUnlessBackdropClick} noFooter>
+      <Modal open={open} title='Imported Keycloak users' handleClose={closeUnlessBackdropClick} width={620} noFooter>
         <ImportResults results={data.results} />
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
           <Button variant='contained' onClick={close}>
