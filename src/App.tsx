@@ -6,7 +6,6 @@ import { CssBaseline } from '@mui/material'
 import OtomiApp from 'pages/App'
 import Apps from 'pages/Apps'
 import Error from 'pages/Error'
-import Setting from 'pages/Setting'
 import SettingsOverview from 'pages/SettingsOverview'
 import Policies from 'pages/Policies'
 import SessionProvider from 'providers/Session'
@@ -27,7 +26,7 @@ import { SettingsProvider } from 'contexts/SettingsContext'
 import { getSettings } from 'utils/getSettings'
 import ThemeColorPresets from 'components/ThemeColorPresets'
 import UsersCreateEditPage from 'pages/users/create-edit/UsersCreateEditPage'
-import Policy from 'pages/Policy'
+import PoliciesCreateEditPage from 'pages/policies/create-edit/PoliciesCreateEditPage'
 import Maintenance from 'pages/Maintenance'
 import PrivateRoute from 'components/AuthzRoute'
 import Logout from 'pages/Logout'
@@ -55,6 +54,15 @@ import PlatformCatalogsOverviewPage from 'pages/catalogs/platform/overview/Platf
 import CatalogsCreateEditPage from 'pages/catalogs/platform/create-edit/CatalogsCreateEditPage'
 import Manifests from 'pages/manifests/Manifests'
 import PlatformSettingsPage from 'pages/settings/platform/PlatformSettingsPage'
+import ClusterSettingsPage from 'pages/settings/cluster/ClusterSettingsPage'
+import AlertsSettingsPage from 'pages/settings/alerts/AlertsSettingsPage'
+import DnsSettingsPage from 'pages/settings/dns/DnsSettingsPage'
+import IngressSettingsPage from 'pages/settings/ingress/IngressSettingsPage'
+import KmsSettingsPage from 'pages/settings/kms/KmsSettingsPage'
+import OidcSettingsPage from 'pages/settings/oidc/OidcSettingsPage'
+import BackupSettingsPage from 'pages/settings/backups/BackupSettingsPage'
+import ObjectStorageSettingsPage from 'pages/settings/object-storage/ObjectStorageSettingsPage'
+import VersionsSettingsPage from 'pages/settings/versions/VersionsSettingsPage'
 import { HttpErrorBadRequest } from './utils/error'
 import { NotistackProvider, SnackbarUtilsConfigurator } from './utils/snack'
 
@@ -148,7 +156,7 @@ function App() {
                                 <PrivateRoute path='/policies' component={Policies} platformAdminRoute exact />
                                 <PrivateRoute
                                   path='/policies/:policyName'
-                                  component={Policy}
+                                  component={PoliciesCreateEditPage}
                                   platformAdminRoute
                                   exact
                                 />
@@ -220,7 +228,16 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
-                                <PrivateRoute path='/settings/:settingId' component={Setting} exact />
+                                <PrivateRoute path='/settings/otomi' component={PlatformSettingsPage} exact />
+                                <PrivateRoute path='/settings/cluster' component={ClusterSettingsPage} exact />
+                                <PrivateRoute path='/settings/alerts' component={AlertsSettingsPage} exact />
+                                <PrivateRoute path='/settings/dns' component={DnsSettingsPage} exact />
+                                <PrivateRoute path='/settings/ingress' component={IngressSettingsPage} exact />
+                                <PrivateRoute path='/settings/kms' component={KmsSettingsPage} exact />
+                                <PrivateRoute path='/settings/oidc' component={OidcSettingsPage} exact />
+                                <PrivateRoute path='/settings/platformBackups' component={BackupSettingsPage} exact />
+                                <PrivateRoute path='/settings/obj' component={ObjectStorageSettingsPage} exact />
+                                <PrivateRoute path='/settings/versions' component={VersionsSettingsPage} exact />
                                 <PrivateRoute path='/teams' component={TeamsOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId' component={TeamsCreateEditPage} exact />
                                 <PrivateRoute
@@ -285,7 +302,11 @@ function App() {
                                   exact
                                 />
                                 <PrivateRoute path='/teams/:teamId/policies' component={Policies} exact />
-                                <PrivateRoute path='/teams/:teamId/policies/:policyName' component={Policy} exact />
+                                <PrivateRoute
+                                  path='/teams/:teamId/policies/:policyName'
+                                  component={PoliciesCreateEditPage}
+                                  exact
+                                />
                                 <PrivateRoute path='/teams/:teamId/workloads' component={WorkloadsOverviewPage} exact />
                                 <PrivateRoute path='/teams/:teamId/services' component={ServicesOverviewPage} exact />
                                 <PrivateRoute
