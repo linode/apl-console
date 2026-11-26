@@ -19,6 +19,7 @@ import DeleteButton from 'components/DeleteButton'
 import InformationBanner from 'components/InformationBanner'
 
 import {
+  CreateAplCodeRepoApiResponse,
   CreateAplSealedSecretApiArg,
   useCreateAplSealedSecretMutation,
   useDeleteAplSealedSecretMutation,
@@ -94,11 +95,16 @@ export default function SecretCreateEditPage({
   const { sealedSecretsPEM } = useSession()
 
   const history = useHistory()
-  const location = useLocation()
+  const location = useLocation<{
+    coderepository?: boolean
+    codeRepositoryName?: string
+    prefilled?: CreateAplCodeRepoApiResponse
+  }>()
 
-  const locationState = location?.state as any
+  const locationState = location.state
   const isCoderepository = locationState?.coderepository
-  const prefilled = locationState?.prefilled || {}
+  const codeRepositoryName = locationState?.codeRepositoryName
+  const prefilled = locationState?.prefilled
 
   const [create, { isLoading: isLoadingCreate, isSuccess: isSuccessCreate, data: dataCreate }] =
     useCreateAplSealedSecretMutation()
@@ -189,13 +195,19 @@ export default function SecretCreateEditPage({
 
   if (!mutating && (isSuccessCreate || isSuccessUpdate || isSuccessDelete)) {
     if (isCoderepository) {
-      history.push(`/teams/${teamId}/code-repositories/create`, {
-        coderepository: false,
-        prefilled: {
-          ...prefilled,
-          secret: dataCreate?.metadata?.name,
+      history.push(
+        `/teams/${teamId}/code-repositories/${codeRepositoryName ? encodeURIComponent(codeRepositoryName) : 'create'}`,
+        {
+          coderepository: false,
+          prefilled: {
+            ...prefilled,
+            spec: {
+              ...prefilled?.spec,
+              secret: dataCreate?.metadata?.name,
+            },
+          },
         },
-      })
+      )
     } else return <Redirect to={`/teams/${teamId}/secrets`} />
   }
 
