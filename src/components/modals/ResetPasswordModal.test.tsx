@@ -18,7 +18,7 @@ jest.mock('redux/reducers', () => ({
 }))
 
 jest.mock('redux/otomiApi', () => ({
-  useResetPasswordMutation: () => mockUseResetPasswordMutation(),
+  useResetOwnPasswordMutation: () => mockUseResetPasswordMutation(),
 }))
 
 jest.mock('utils/snack', () => ({
