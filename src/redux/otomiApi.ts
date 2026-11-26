@@ -238,9 +238,6 @@ const injectedRtkApi = api.injectEndpoints({
     deleteUser: build.mutation<DeleteUserApiResponse, DeleteUserApiArg>({
       query: (queryArg) => ({ url: `/v1/users/${queryArg.userId}`, method: 'DELETE' }),
     }),
-    resetPassword: build.mutation<ResetPasswordApiResponse, ResetPasswordApiArg>({
-      query: (queryArg) => ({ url: `/v2/user/reset-password`, method: 'POST', body: queryArg.body }),
-    }),
     editTeamUsers: build.mutation<EditTeamUsersApiResponse, EditTeamUsersApiArg>({
       query: (queryArg) => ({ url: `/v1/teams/${queryArg.teamId}/users`, method: 'PUT', body: queryArg.body }),
     }),
@@ -336,6 +333,9 @@ const injectedRtkApi = api.injectEndpoints({
     logout: build.mutation<LogoutApiResponse, LogoutApiArg>({
       query: () => ({ url: `/v2/user/logout`, method: 'POST' }),
     }),
+    resetOwnPassword: build.mutation<ResetOwnPasswordApiResponse, ResetOwnPasswordApiArg>({
+      query: (queryArg) => ({ url: `/v2/user/reset-password`, method: 'POST', body: queryArg.body }),
+    }),
     getApiDoc: build.query<GetApiDocApiResponse, GetApiDocApiArg>({
       query: () => ({ url: `/v1/apiDocs` }),
     }),
@@ -401,7 +401,7 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 })
 export { injectedRtkApi as otomiApi }
-export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams collection */ ({
+export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams collection */ {
   kind: 'AplTeamSettingSet'
   spec: {
     oidc?: {
@@ -443,7 +443,6 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -454,7 +453,6 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -465,7 +463,7 @@ export type GetAplTeamsApiResponse = /** status 200 Successfully obtained teams 
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAplTeamsApiArg = void
 export type CreateAplTeamApiResponse = /** status 200 Successfully obtained teams collection */ {
   kind: 'AplTeamSettingSet'
@@ -509,7 +507,6 @@ export type CreateAplTeamApiResponse = /** status 200 Successfully obtained team
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -520,7 +517,6 @@ export type CreateAplTeamApiResponse = /** status 200 Successfully obtained team
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -631,7 +627,6 @@ export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -642,7 +637,6 @@ export type GetAplTeamApiResponse = /** status 200 Successfully obtained team */
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -700,7 +694,6 @@ export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ 
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -711,7 +704,6 @@ export type EditAplTeamApiResponse = /** status 200 Successfully edited team */ 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -817,7 +809,7 @@ export type FetchPodsFromLabelApiArg = {
   /** namespace of the workload to get Podlabels from */
   namespace?: string
 }
-export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained all services */ ({
+export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained all services */ {
   kind: 'AplTeamService'
   spec: {
     namespace?: string
@@ -846,7 +838,6 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -857,7 +848,6 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -868,9 +858,9 @@ export type GetAllAplServicesApiResponse = /** status 200 Successfully obtained 
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplServicesApiArg = void
-export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained services */ ({
+export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained services */ {
   kind: 'AplTeamService'
   spec: {
     namespace?: string
@@ -899,7 +889,6 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -910,7 +899,6 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -921,7 +909,7 @@ export type GetTeamAplServicesApiResponse = /** status 200 Successfully obtained
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplServicesApiArg = {
   /** ID of team */
   teamId: string
@@ -955,7 +943,6 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -966,7 +953,6 @@ export type CreateAplServiceApiResponse = /** status 200 Successfully stored ser
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1053,7 +1039,6 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1064,7 +1049,6 @@ export type GetAplServiceApiResponse = /** status 200 Successfully obtained serv
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1111,7 +1095,6 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1122,7 +1105,6 @@ export type EditAplServiceApiResponse = /** status 200 Successfully edited servi
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1191,7 +1173,7 @@ export type DeleteAplServiceApiArg = {
 }
 export type GetSealedSecretKeysApiResponse = /** status 200 Successfully downloaded sealed secret keys */ Blob
 export type GetSealedSecretKeysApiArg = void
-export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obtained all secrets */ ({
+export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obtained all secrets */ {
   apiVersion?: 'bitnami.com/v1alpha1'
   kind: 'SealedSecret'
   spec: {
@@ -1220,7 +1202,6 @@ export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obta
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1231,7 +1212,6 @@ export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obta
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1242,9 +1222,9 @@ export type GetAllAplSealedSecretsApiResponse = /** status 200 Successfully obta
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplSealedSecretsApiArg = void
-export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
+export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   apiVersion?: 'bitnami.com/v1alpha1'
   kind: 'SealedSecret'
   spec: {
@@ -1273,7 +1253,6 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1284,7 +1263,6 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1295,7 +1273,7 @@ export type GetAplSealedSecretsApiResponse = /** status 200 Successfully obtaine
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAplSealedSecretsApiArg = {
   /** ID of team */
   teamId: string
@@ -1329,7 +1307,6 @@ export type CreateAplSealedSecretApiResponse = /** status 200 Successfully store
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1340,7 +1317,6 @@ export type CreateAplSealedSecretApiResponse = /** status 200 Successfully store
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1427,7 +1403,6 @@ export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1438,7 +1413,6 @@ export type GetAplSealedSecretApiResponse = /** status 200 Successfully obtained
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1485,7 +1459,6 @@ export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited 
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1496,7 +1469,6 @@ export type EditAplSealedSecretApiResponse = /** status 200 Successfully edited 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1565,7 +1537,7 @@ export type DeleteAplSealedSecretApiArg = {
 }
 export type GetNamespacesWithSealedSecretsApiResponse = /** status 200 List of namespaces */ string[]
 export type GetNamespacesWithSealedSecretsApiArg = void
-export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ ({
+export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfully obtained sealed secrets */ {
   apiVersion?: 'bitnami.com/v1alpha1'
   kind: 'SealedSecret'
   spec: {
@@ -1594,7 +1566,6 @@ export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfull
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1605,7 +1576,6 @@ export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfull
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1616,7 +1586,7 @@ export type GetAplNamespaceSealedSecretsApiResponse = /** status 200 Successfull
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAplNamespaceSealedSecretsApiArg = {
   /** Namspace to write file under in manifest */
   namespace: string
@@ -1651,7 +1621,6 @@ export type CreateAplNamespaceSealedSecretApiResponse =
         }
       }
     }
-  } & {
     metadata: {
       name: string
       namespace?: string
@@ -1662,7 +1631,6 @@ export type CreateAplNamespaceSealedSecretApiResponse =
         'apl.io/teamId': string
       }
     }
-  } & {
     status: {
       conditions?: {
         lastTransitionTime?: string
@@ -1750,7 +1718,6 @@ export type GetAplNamespaceSealedSecretApiResponse =
         }
       }
     }
-  } & {
     metadata: {
       name: string
       namespace?: string
@@ -1761,7 +1728,6 @@ export type GetAplNamespaceSealedSecretApiResponse =
         'apl.io/teamId': string
       }
     }
-  } & {
     status: {
       conditions?: {
         lastTransitionTime?: string
@@ -1808,7 +1774,6 @@ export type EditAplNamespaceSealedSecretApiResponse = /** status 200 Successfull
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1819,7 +1784,6 @@ export type EditAplNamespaceSealedSecretApiResponse = /** status 200 Successfull
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1887,7 +1851,7 @@ export type DeleteAplNamespaceSealedSecretApiArg = {
   /** Name of the sealed secret */
   sealedSecretName: string
 }
-export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ ({
+export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained all network policy configuration */ {
   kind: 'AplTeamNetworkControl'
   spec: {
     ruleType?: {
@@ -1911,7 +1875,6 @@ export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained a
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1922,7 +1885,6 @@ export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained a
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1933,9 +1895,9 @@ export type GetAllAplNetpolsApiResponse = /** status 200 Successfully obtained a
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplNetpolsApiArg = void
-export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ ({
+export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained team network policy configuration */ {
   kind: 'AplTeamNetworkControl'
   spec: {
     ruleType?: {
@@ -1959,7 +1921,6 @@ export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained 
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -1970,7 +1931,6 @@ export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -1981,7 +1941,7 @@ export type GetTeamAplNetpolsApiResponse = /** status 200 Successfully obtained 
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplNetpolsApiArg = {
   /** ID of team */
   teamId: string
@@ -2010,7 +1970,6 @@ export type CreateAplNetpolApiResponse = /** status 200 Successfully stored netw
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2021,7 +1980,6 @@ export type CreateAplNetpolApiResponse = /** status 200 Successfully stored netw
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2098,7 +2056,6 @@ export type GetAplNetpolApiResponse = /** status 200 Successfully obtained netwo
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2109,7 +2066,6 @@ export type GetAplNetpolApiResponse = /** status 200 Successfully obtained netwo
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2151,7 +2107,6 @@ export type EditAplNetpolApiResponse = /** status 200 Successfully edited a team
       }
     }
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2162,7 +2117,6 @@ export type EditAplNetpolApiResponse = /** status 200 Successfully edited a team
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2224,12 +2178,15 @@ export type DeleteAplNetpolApiArg = {
   /** Name of the network policy */
   netpolName: string
 }
-export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ object
+export type GetDashboardApiResponse = /** status 200 Successfully obtained dashboard inventory data */ {
+  name: string
+  count: number
+}[]
 export type GetDashboardApiArg = {
   /** Name of the team */
   teamId?: string
 }
-export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ ({
+export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained all builds configuration */ {
   kind: 'AplTeamBuild'
   spec: {
     imageName?: string
@@ -2264,7 +2221,6 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
     trigger?: boolean
     scanSource?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2275,7 +2231,6 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2286,9 +2241,9 @@ export type GetAllAplBuildsApiResponse = /** status 200 Successfully obtained al
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplBuildsApiArg = void
-export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ ({
+export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained team builds configuration */ {
   kind: 'AplTeamBuild'
   spec: {
     imageName?: string
@@ -2323,7 +2278,6 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
     trigger?: boolean
     scanSource?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2334,7 +2288,6 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2345,7 +2298,7 @@ export type GetTeamAplBuildsApiResponse = /** status 200 Successfully obtained t
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplBuildsApiArg = {
   /** ID of team */
   teamId: string
@@ -2385,7 +2338,6 @@ export type CreateAplBuildApiResponse = /** status 200 Successfully stored build
     trigger?: boolean
     scanSource?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2396,7 +2348,6 @@ export type CreateAplBuildApiResponse = /** status 200 Successfully stored build
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2502,7 +2453,6 @@ export type GetAplBuildApiResponse = /** status 200 Successfully obtained build 
     trigger?: boolean
     scanSource?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2513,7 +2463,6 @@ export type GetAplBuildApiResponse = /** status 200 Successfully obtained build 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2566,7 +2515,6 @@ export type EditAplBuildApiResponse = /** status 200 Successfully edited a team 
     trigger?: boolean
     scanSource?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2577,7 +2525,6 @@ export type EditAplBuildApiResponse = /** status 200 Successfully edited a team 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2649,14 +2596,14 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
     severity?: 'low' | 'medium' | 'high'
   }
   'allowed-image-repositories'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'disallow-capabilities'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'disallow-host-namespaces'?: {
     action?: 'Audit' | 'Enforce'
@@ -2727,9 +2674,9 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
     severity?: 'low' | 'medium' | 'high'
   }
   'require-labels'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'restrict-apparmor-profiles'?: {
     action?: 'Audit' | 'Enforce'
@@ -2748,9 +2695,9 @@ export type GetAllPoliciesApiResponse = /** status 200 Successfully obtained all
     severity?: 'low' | 'medium' | 'high'
   }
   'restrict-volume-types'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
 }
 export type GetAllPoliciesApiArg = void
@@ -2760,14 +2707,14 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
     severity?: 'low' | 'medium' | 'high'
   }
   'allowed-image-repositories'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'disallow-capabilities'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'disallow-host-namespaces'?: {
     action?: 'Audit' | 'Enforce'
@@ -2838,9 +2785,9 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
     severity?: 'low' | 'medium' | 'high'
   }
   'require-labels'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
   'restrict-apparmor-profiles'?: {
     action?: 'Audit' | 'Enforce'
@@ -2859,9 +2806,9 @@ export type GetTeamPoliciesApiResponse = /** status 200 Successfully obtained te
     severity?: 'low' | 'medium' | 'high'
   }
   'restrict-volume-types'?: {
+    customValues?: string[]
     action?: 'Audit' | 'Enforce'
     severity?: 'low' | 'medium' | 'high'
-    customValues?: string[]
   }
 }
 export type GetTeamPoliciesApiArg = {
@@ -2896,14 +2843,13 @@ export type EditPolicyApiArg = {
     customValues?: string[]
   }
 }
-export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ ({
+export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained all policy configuration */ {
   kind: 'AplTeamPolicy'
   spec: {
     action: 'Audit' | 'Enforce'
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2914,7 +2860,6 @@ export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained 
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2925,16 +2870,15 @@ export type GetAllAplPoliciesApiResponse = /** status 200 Successfully obtained 
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplPoliciesApiArg = void
-export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ ({
+export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained team policy configuration */ {
   kind: 'AplTeamPolicy'
   spec: {
     action: 'Audit' | 'Enforce'
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2945,7 +2889,6 @@ export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -2956,7 +2899,7 @@ export type GetTeamAplPoliciesApiResponse = /** status 200 Successfully obtained
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplPoliciesApiArg = {
   /** ID of team */
   teamId: string
@@ -2968,7 +2911,6 @@ export type GetAplPolicyApiResponse = /** status 200 Successfully obtained polic
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -2979,7 +2921,6 @@ export type GetAplPolicyApiResponse = /** status 200 Successfully obtained polic
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3004,7 +2945,6 @@ export type EditAplPolicyApiResponse = /** status 200 Successfully edited a team
     severity: 'low' | 'medium' | 'high'
     customValues?: string[]
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3015,7 +2955,6 @@ export type EditAplPolicyApiResponse = /** status 200 Successfully edited a team
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3157,15 +3096,6 @@ export type DeleteUserApiArg = {
   /** ID of the user */
   userId: string
 }
-export type ResetPasswordApiResponse =
-  | /** status 200 Password reset rejected */ { statusCode: number; message: string }
-  | /** status 204 Password successfully reset */ undefined
-export type ResetPasswordApiArg = {
-  body: {
-    currentPassword: string
-    newPassword: string
-  }
-}
 export type EditTeamUsersApiResponse = /** status 200 Successfully edited a team user */ {
   id?: string
   teams?: string[]
@@ -3175,11 +3105,11 @@ export type EditTeamUsersApiArg = {
   teamId: string
   /** User object that contains updated values */
   body: {
-    id?: string
-    teams?: string[]
+    id: string
+    teams: string[]
   }[]
 }
-export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained app catalogs */ ({
+export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained app catalogs */ {
   kind: 'AplCatalog'
   spec: {
     name: string
@@ -3188,7 +3118,6 @@ export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained 
     chartsPath?: string
     enabled?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3199,7 +3128,6 @@ export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained 
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3210,7 +3138,7 @@ export type GetAllAplCatalogsApiResponse = /** status 200 Successfully obtained 
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplCatalogsApiArg = {
   /** Filter catalogs by enabled status */
   enabled?: boolean
@@ -3224,7 +3152,6 @@ export type CreateAplCatalogApiResponse = /** status 200 Successfully stored app
     chartsPath?: string
     enabled?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3235,7 +3162,6 @@ export type CreateAplCatalogApiResponse = /** status 200 Successfully stored app
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3280,7 +3206,6 @@ export type GetAplCatalogApiResponse = /** status 200 Successfully obtained app 
     chartsPath?: string
     enabled?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3291,7 +3216,6 @@ export type GetAplCatalogApiResponse = /** status 200 Successfully obtained app 
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3316,7 +3240,6 @@ export type EditAplCatalogApiResponse = /** status 200 Successfully updated app 
     chartsPath?: string
     enabled?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3327,7 +3250,6 @@ export type EditAplCatalogApiResponse = /** status 200 Successfully updated app 
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3373,7 +3295,6 @@ export type PatchAplCatalogApiResponse = /** status 200 Successfully patched app
     chartsPath?: string
     enabled?: boolean
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3384,7 +3305,6 @@ export type PatchAplCatalogApiResponse = /** status 200 Successfully patched app
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3426,7 +3346,7 @@ export type DeleteAplCatalogApiArg = {
   /** ID of the catalog */
   catalogId: string
 }
-export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtained app catalog charts */ ({
+export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtained app catalog charts */ {
   kind: 'AplCatalogChart'
   spec: {
     name?: string
@@ -3436,7 +3356,6 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
     branch?: string
     repositoryUrl?: string
   }[]
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3447,7 +3366,6 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3458,7 +3376,7 @@ export type GetAplCatalogsChartsApiResponse = /** status 200 Successfully obtain
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAplCatalogsChartsApiArg = {
   /** ID of the catalog */
   catalogId: string
@@ -3478,7 +3396,6 @@ export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtaine
     branch?: string
     repositoryUrl?: string
   }[]
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3489,7 +3406,6 @@ export type GetAplCatalogsChartApiResponse = /** status 200 Successfully obtaine
       [key: string]: string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3507,7 +3423,7 @@ export type GetAplCatalogsChartApiArg = {
   /** Name of the chart to fetch */
   chartName: string
 }
-export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ ({
+export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained all code repositories */ {
   kind: 'AplTeamCodeRepo'
   spec: {
     gitService: 'gitea' | 'github' | 'gitlab'
@@ -3515,7 +3431,6 @@ export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained
     private?: boolean
     secret?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3526,7 +3441,6 @@ export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3537,9 +3451,9 @@ export type GetAllAplCodeReposApiResponse = /** status 200 Successfully obtained
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplCodeReposApiArg = void
-export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ ({
+export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtained code repositories */ {
   kind: 'AplTeamCodeRepo'
   spec: {
     gitService: 'gitea' | 'github' | 'gitlab'
@@ -3547,7 +3461,6 @@ export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtaine
     private?: boolean
     secret?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3558,7 +3471,6 @@ export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtaine
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3569,7 +3481,7 @@ export type GetTeamAplCodeReposApiResponse = /** status 200 Successfully obtaine
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplCodeReposApiArg = {
   /** ID of team */
   teamId: string
@@ -3582,7 +3494,6 @@ export type CreateAplCodeRepoApiResponse = /** status 200 Successfully stored co
     private?: boolean
     secret?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3593,7 +3504,6 @@ export type CreateAplCodeRepoApiResponse = /** status 200 Successfully stored co
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3638,7 +3548,6 @@ export type GetAplCodeRepoApiResponse = /** status 200 Successfully obtained cod
     private?: boolean
     secret?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3649,7 +3558,6 @@ export type GetAplCodeRepoApiResponse = /** status 200 Successfully obtained cod
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3675,7 +3583,6 @@ export type EditAplCodeRepoApiResponse = /** status 200 Successfully edited a te
     private?: boolean
     secret?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3686,7 +3593,6 @@ export type EditAplCodeRepoApiResponse = /** status 200 Successfully edited a te
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3732,7 +3638,7 @@ export type DeleteAplCodeRepoApiArg = {
   /** Name of the code repository */
   codeRepositoryName: string
 }
-export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ ({
+export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained all workloads configuration */ {
   kind: 'AplTeamWorkload'
   spec: {
     icon?: string
@@ -3772,7 +3678,6 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
         }
     values?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3783,7 +3688,6 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3794,7 +3698,7 @@ export type GetAllAplWorkloadsApiResponse = /** status 200 Successfully obtained
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetAllAplWorkloadsApiArg = void
 export type GetAllWorkloadNamesApiResponse = /** status 200 Successfully obtained all workload names */ {
   metadata?: {
@@ -3803,7 +3707,7 @@ export type GetAllWorkloadNamesApiResponse = /** status 200 Successfully obtaine
   }
 }[]
 export type GetAllWorkloadNamesApiArg = void
-export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ ({
+export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtained team workloads configuration */ {
   kind: 'AplTeamWorkload'
   spec: {
     icon?: string
@@ -3843,7 +3747,6 @@ export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtaine
         }
     values?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3854,7 +3757,6 @@ export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtaine
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -3865,7 +3767,7 @@ export type GetTeamAplWorkloadsApiResponse = /** status 200 Successfully obtaine
     }[]
     phase?: string
   }
-})[]
+}[]
 export type GetTeamAplWorkloadsApiArg = {
   /** ID of team */
   teamId: string
@@ -3910,7 +3812,6 @@ export type CreateAplWorkloadApiResponse = /** status 200 Successfully stored wo
         }
     values?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -3921,7 +3822,6 @@ export type CreateAplWorkloadApiResponse = /** status 200 Successfully stored wo
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -4037,7 +3937,6 @@ export type GetAplWorkloadApiResponse = /** status 200 Successfully obtained wor
         }
     values?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -4048,7 +3947,6 @@ export type GetAplWorkloadApiResponse = /** status 200 Successfully obtained wor
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -4106,7 +4004,6 @@ export type EditAplWorkloadApiResponse = /** status 200 Successfully edited a te
         }
     values?: string
   }
-} & {
   metadata: {
     name: string
     namespace?: string
@@ -4117,7 +4014,6 @@ export type EditAplWorkloadApiResponse = /** status 200 Successfully edited a te
       'apl.io/teamId': string
     }
   }
-} & {
   status: {
     conditions?: {
       lastTransitionTime?: string
@@ -4207,7 +4103,6 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   editor?: string
   inactivityTimeout?: number
   user?: {
-    name: string
     email: string
     isPlatformAdmin: boolean
     isTeamAdmin: boolean
@@ -4246,8 +4141,15 @@ export type GetSessionApiResponse = /** status 200 Get the session for the logge
   }
 }
 export type GetSessionApiArg = void
-export type LogoutApiResponse = /** status 204 Logout processed. */ undefined
+export type LogoutApiResponse = unknown
 export type LogoutApiArg = void
+export type ResetOwnPasswordApiResponse = unknown
+export type ResetOwnPasswordApiArg = {
+  body: {
+    currentPassword: string
+    newPassword: string
+  }
+}
 export type GetApiDocApiResponse = /** status 200 The requested apiDoc. */ object
 export type GetApiDocApiArg = void
 export type GetSettingsInfoApiResponse = /** status 200 The request is successful. */ {
@@ -4291,6 +4193,7 @@ export type GetRepoBranchesApiArg = {
 export type GetTestRepoConnectPlatformApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
+  message?: string
 }
 export type GetTestRepoConnectPlatformApiArg = {
   url: string
@@ -4299,6 +4202,7 @@ export type GetTestRepoConnectPlatformApiArg = {
 export type GetTestRepoConnectApiResponse = /** status 200 The request is successful. */ {
   url?: string
   status?: 'unknown' | 'success' | 'failed'
+  message?: string
 }
 export type GetTestRepoConnectApiArg = {
   /** ID of team */
@@ -4540,6 +4444,8 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     teamAdminGroupID?: string
     usernameClaimMapper?: string
     subClaimMapper?: string
+    groupsClaimMapper?: string
+    scopes?: string[]
   }
   otomi?: {
     git?: {
@@ -4551,6 +4457,9 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
     }
     adminPassword?: string
     isPreInstalled?: boolean
+    oidc?: {
+      authenticationLayer?: 'dex' | 'keycloak'
+    }
     aiEnabled?: boolean
     globalPullSecret?: {
       username?: string
@@ -4798,6 +4707,8 @@ export type EditSettingsApiArg = {
       teamAdminGroupID?: string
       usernameClaimMapper?: string
       subClaimMapper?: string
+      groupsClaimMapper?: string
+      scopes?: string[]
     }
     otomi?: {
       git?: {
@@ -4809,6 +4720,9 @@ export type EditSettingsApiArg = {
       }
       adminPassword?: string
       isPreInstalled?: boolean
+      oidc?: {
+        authenticationLayer?: 'dex' | 'keycloak'
+      }
       aiEnabled?: boolean
       globalPullSecret?: {
         username?: string
@@ -4960,7 +4874,6 @@ export const {
   useGetUserQuery,
   useEditUserMutation,
   useDeleteUserMutation,
-  useResetPasswordMutation,
   useEditTeamUsersMutation,
   useGetAllAplCatalogsQuery,
   useCreateAplCatalogMutation,
@@ -4988,6 +4901,7 @@ export const {
   useGetDockerConfigQuery,
   useGetSessionQuery,
   useLogoutMutation,
+  useResetOwnPasswordMutation,
   useGetApiDocQuery,
   useGetSettingsInfoQuery,
   useGetRepoBranchesQuery,
