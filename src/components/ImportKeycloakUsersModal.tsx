@@ -1,9 +1,21 @@
-import { Alert, Box, Button, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material'
+import { Alert, Box, Button, Typography } from '@mui/material'
 import CopyToClipboard from 'components/CopyToClipboard'
+import EnhancedTable, { HeadCell } from 'components/EnhancedTable'
 import Modal from 'components/Modal'
 import { ImportKeycloakUsersApiResponse, useImportKeycloakUsersMutation } from 'redux/otomiApi'
 
 type ImportResult = ImportKeycloakUsersApiResponse['results'][number]
+
+const headCells: HeadCell[] = [
+  { id: 'email', label: 'Email' },
+  { id: 'status', label: 'Status' },
+  { id: 'teams', label: 'Teams', renderer: (result: ImportResult) => result.teams?.join(', ') },
+  {
+    id: 'passwordOrReason',
+    label: 'Password / reason',
+    renderer: (result: ImportResult) => result.initialPassword ?? result.reason,
+  },
+]
 
 interface Props {
   open: boolean
@@ -68,26 +80,9 @@ function ImportResults({ results }: { results: ImportResult[] }) {
           Save these passwords now. They are not stored and will not be shown again.
         </Alert>
       )}
-      <Table size='small' sx={{ mt: 2 }}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Email</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Teams</TableCell>
-            <TableCell>Password / reason</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {results.map((result) => (
-            <TableRow key={result.email}>
-              <TableCell>{result.email}</TableCell>
-              <TableCell>{result.status}</TableCell>
-              <TableCell>{result.teams?.join(', ')}</TableCell>
-              <TableCell>{result.initialPassword ?? result.reason}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Box sx={{ mt: 2 }}>
+        <EnhancedTable disableSelect headCells={headCells} rows={results} idKey='email' orderByStart='email' />
+      </Box>
     </>
   )
 }

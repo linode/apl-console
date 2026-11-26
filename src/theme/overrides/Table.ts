@@ -37,7 +37,7 @@ export default function Table(theme: Theme) {
           borderRadius: 0,
         },
         head: {
-          color: theme.palette.text.primary,
+          color: theme.palette.text.secondary,
           backgroundColor: theme.palette.background.neutral,
           fontWeight: 700,
         },
