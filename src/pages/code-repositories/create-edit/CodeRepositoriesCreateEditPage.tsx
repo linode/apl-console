@@ -50,10 +50,8 @@ export default function CodeRepositoriesCreateEditPage({
   },
 }: RouteComponentProps<Params>): React.ReactElement {
   const history = useHistory()
-  const location = useLocation()
-  const locationState = location?.state as any
-
-  const prefilledData = locationState?.prefilled as Partial<CreateAplCodeRepoApiResponse> | undefined
+  const location = useLocation<{ prefilled?: Partial<CreateAplCodeRepoApiResponse> }>()
+  const prefilledData = location.state?.prefilled
 
   const { t } = useTranslation()
   const theme = useTheme()
@@ -144,22 +142,24 @@ export default function CodeRepositoriesCreateEditPage({
       status: { conditions: [], phase: undefined },
     }) as CreateAplCodeRepoApiResponse
 
-    if (data) return aplCodeRepoApiSchema.cast(data) as CreateAplCodeRepoApiResponse
-
     if (!isEmpty(prefilledData)) {
       return aplCodeRepoApiSchema.cast({
-        ...base,
+        ...(data ?? base),
         ...prefilledData,
         metadata: {
-          ...(base.metadata ?? {}),
+          ...((data ?? base).metadata ?? {}),
           ...(prefilledData?.metadata ?? {}),
           labels: { 'apl.io/teamId': teamId },
+        },
+        spec: {
+          ...(data ?? base).spec,
+          ...prefilledData?.spec,
         },
       }) as CreateAplCodeRepoApiResponse
     }
 
-    return base
-  }, [data, prefilledData, teamId])
+    return data ? (aplCodeRepoApiSchema.cast(data) as CreateAplCodeRepoApiResponse) : base
+  }, [data, prefilledData, teamId, appsEnabled?.gitea])
 
   const methods = useForm<CreateAplCodeRepoApiResponse>({
     resolver: yupResolver(aplCodeRepoApiSchema) as unknown as Resolver<CreateAplCodeRepoApiResponse>,
@@ -180,16 +180,9 @@ export default function CodeRepositoriesCreateEditPage({
   } = methods
 
   useEffect(() => {
-    if (data) {
-      reset(data)
-      setGitProvider(watch('spec.gitService'))
-    } else setGitProvider(appsEnabled?.gitea ? 'gitea' : 'github')
-
-    if (!isEmpty(prefilledData)) {
-      reset(defaultValues)
-      setGitProvider(defaultValues.spec?.gitService ?? (appsEnabled?.gitea ? 'gitea' : 'github'))
-    }
-  }, [data, prefilledData, defaultValues, reset])
+    reset(defaultValues)
+    setGitProvider(defaultValues.spec?.gitService ?? (appsEnabled?.gitea ? 'gitea' : 'github'))
+  }, [defaultValues, reset, appsEnabled?.gitea])
 
   useEffect(() => {
     if (gitProvider === 'gitea') {
@@ -397,6 +390,7 @@ export default function CodeRepositoriesCreateEditPage({
                         onClick={() =>
                           history.push(`/teams/${teamId}/secrets/create`, {
                             coderepository: true,
+                            codeRepositoryName,
                             prefilled: watch(),
                           })
                         }
