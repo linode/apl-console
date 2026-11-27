@@ -68,24 +68,6 @@ const schemas = {
       },
     },
   },
-  kms: {
-    type: 'object',
-    properties: {
-      sops: {
-        title: 'SOPS',
-        oneOf: [
-          { title: 'None', type: 'object', nullable: true, additionalProperties: false },
-          {
-            title: 'Age',
-            properties: {
-              provider: { ...text, enum: ['age'], default: 'age' },
-              age: { properties: { publicKey: text, privateKey: text } },
-            },
-          },
-        ],
-      },
-    },
-  },
   obj: {
     type: 'object',
     properties: {
@@ -278,17 +260,6 @@ test('ingress adds and validates additional classes', () => {
   })
 })
 
-test('KMS shows the selected provider and keeps generated Age keys read-only', () => {
-  renderSetting('kms', { sops: { provider: 'age', age: { publicKey: 'public', privateKey: 'private' } } })
-  expect(screen.getByLabelText('Public key')).toBeDisabled()
-  expect(screen.getByLabelText('Private key')).toBeDisabled()
-  expect(screen.queryByLabelText('Provider')).not.toBeInTheDocument()
-  fireEvent.mouseDown(screen.getByLabelText('SOPS'))
-  fireEvent.click(screen.getByRole('option', { name: 'None' }))
-  fireEvent.click(screen.getByText('Submit'))
-  expect(submit).toHaveBeenCalledWith({ sops: null })
-})
-
 test('preinstalled backup requires object storage and unavailable apps remain disabled', () => {
   mockSession.settings.otomi.isPreInstalled = true
   mockSession.appsEnabled.harbor = false
@@ -302,7 +273,7 @@ test('preinstalled backup requires object storage and unavailable apps remain di
   expect(screen.getByText('Start Object Storage Wizard')).toBeInTheDocument()
 })
 
-test.each(['dns', 'kms', 'ingress'])('preinstalled %s is read-only', (settingId) => {
+test.each(['dns', 'ingress'])('preinstalled %s is read-only', (settingId) => {
   mockSession.settings.otomi.isPreInstalled = true
   renderSetting(settingId)
   expect(
