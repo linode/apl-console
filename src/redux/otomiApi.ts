@@ -4398,43 +4398,6 @@ export type GetSettingsApiResponse = /** status 200 The request is successful. *
       }[]
     })[]
   }
-  kms?: {
-    sops?:
-      | (object | null)
-      | {
-          provider?: 'age'
-          age: {
-            publicKey: string
-            privateKey: string
-          }
-        }
-      | {
-          provider?: 'aws'
-          aws: {
-            keys: string
-            accessKey: string
-            secretKey: string
-            region?: string
-          }
-        }
-      | {
-          provider?: 'azure'
-          azure: {
-            keys: string
-            clientId: string
-            clientSecret: string
-            tenantId?: string
-          }
-        }
-      | {
-          provider?: 'google'
-          google: {
-            keys: string
-            accountJson: string
-            project: string
-          }
-        }
-  }
   oidc?: {
     issuer: string
     clientID: string
@@ -4660,43 +4623,6 @@ export type EditSettingsApiArg = {
           value?: string
         }[]
       })[]
-    }
-    kms?: {
-      sops?:
-        | (object | null)
-        | {
-            provider?: 'age'
-            age: {
-              publicKey: string
-              privateKey: string
-            }
-          }
-        | {
-            provider?: 'aws'
-            aws: {
-              keys: string
-              accessKey: string
-              secretKey: string
-              region?: string
-            }
-          }
-        | {
-            provider?: 'azure'
-            azure: {
-              keys: string
-              clientId: string
-              clientSecret: string
-              tenantId?: string
-            }
-          }
-        | {
-            provider?: 'google'
-            google: {
-              keys: string
-              accountJson: string
-              project: string
-            }
-          }
     }
     oidc?: {
       issuer: string

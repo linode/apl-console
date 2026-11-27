@@ -16,7 +16,7 @@ import { Suspense } from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import Helmet from 'react-helmet'
 import { Provider } from 'react-redux'
-import { Route, BrowserRouter as Router, Switch } from 'react-router-dom'
+import { Redirect, Route, BrowserRouter as Router, Switch } from 'react-router-dom'
 import { store } from 'redux/store'
 import LoadingScreen from 'components/LoadingScreen'
 import Dashboard from 'pages/Dashboard'
@@ -220,6 +220,7 @@ function App() {
                                   platformAdminRoute
                                   exact
                                 />
+                                <Redirect exact from='/settings/kms' to='/settings' />
                                 <PrivateRoute path='/settings/:settingId' component={Setting} exact />
                                 <PrivateRoute path='/teams' component={TeamsOverviewPage} platformAdminRoute exact />
                                 <PrivateRoute path='/teams/:teamId' component={TeamsCreateEditPage} exact />
