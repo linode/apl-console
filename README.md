@@ -129,6 +129,23 @@ the dialog without logging the user out, and the user can correct it and retry.
 Expired OAuth sessions still redirect to login. A successful reset logs the user out
 so they can sign in with the new password.
 
+### Global pull secret
+
+Platform settings links to a guided setup under **Secrets** instead of accepting
+registry credentials directly. The guide encrypts the password client-side and
+creates or updates `globalPullSecret_password` in the predefined
+`apl-secrets/otomi-secrets` SealedSecret, preserving its other keys. An encryption
+public key is required; the guide never falls back to saving plaintext.
+
+Only the password is secret: registry server, username, and optional email remain
+in `otomi.globalPullSecret`. This preserves the existing API/Core contract, where
+External Secrets generates the `otomi-pullsecret-global` Docker registry secret
+in consuming namespaces. No basic-auth secret or backend migration is needed.
+Existing ciphertext is never displayed in a password input or resubmitted through
+the settings API. The guide also links to the platform secret's encrypted-data
+editor. Disabling the global pull secret clears its settings but retains the
+shared SealedSecret and encrypted password.
+
 ## Browser Support
 
 Supports modern browsers (>0.2% usage, not IE11 or Opera Mini).
