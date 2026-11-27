@@ -223,6 +223,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteCloudtty: build.mutation<DeleteCloudttyApiResponse, DeleteCloudttyApiArg>({
       query: (queryArg) => ({ url: `/v1/cloudtty`, method: 'DELETE', params: { teamId: queryArg.teamId } }),
     }),
+    importKeycloakUsers: build.mutation<ImportKeycloakUsersApiResponse, ImportKeycloakUsersApiArg>({
+      query: () => ({ url: `/v1/maintenance/import-keycloak-users`, method: 'POST' }),
+    }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
     }),
@@ -3018,6 +3021,19 @@ export type DeleteCloudttyApiArg = {
   /** Id of the team */
   teamId?: string
 }
+export type ImportKeycloakUsersApiResponse = /** status 200 Per-user import result */ {
+  results: {
+    email: string
+    status: 'created' | 'exists' | 'skipped' | 'failed'
+    /** Generated password, only present when status is created. Not stored anywhere else. */
+    initialPassword?: string
+    /** Why the user was skipped or failed. */
+    reason?: string
+    /** Teams the user was given, only present when status is created. */
+    teams?: string[]
+  }[]
+}
+export type ImportKeycloakUsersApiArg = void
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
@@ -4795,6 +4811,7 @@ export const {
   useDeleteAplCloudttyMutation,
   useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
+  useImportKeycloakUsersMutation,
   useGetAllUsersQuery,
   useCreateUserMutation,
   useGetUserQuery,

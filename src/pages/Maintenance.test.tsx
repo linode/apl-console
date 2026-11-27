@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { MemoryRouter, Route } from 'react-router-dom'
 import ObjAppModal from 'components/ObjAppModal'
 import { useSession } from 'providers/Session'
-import { useCreateObjWizardMutation, useGetSettingsQuery } from 'redux/otomiApi'
+import { useCreateObjWizardMutation, useGetSettingsQuery, useImportKeycloakUsersMutation } from 'redux/otomiApi'
 import palette from 'theme/palette'
 import Maintenance from './Maintenance'
 
@@ -15,6 +15,7 @@ jest.mock('providers/Session', () => ({
 jest.mock('redux/otomiApi', () => ({
   useCreateObjWizardMutation: jest.fn(),
   useGetSettingsQuery: jest.fn(),
+  useImportKeycloakUsersMutation: jest.fn(),
 }))
 
 jest.mock(
@@ -69,6 +70,7 @@ describe('Maintenance Object Storage wizard', () => {
     })
     ;(useGetSettingsQuery as jest.Mock).mockReturnValue({ data: { obj: {} } })
     ;(useCreateObjWizardMutation as jest.Mock).mockReturnValue([create])
+    ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
   })
 
   afterEach(() => {
@@ -156,5 +158,71 @@ describe('Maintenance Object Storage wizard', () => {
     renderMaintenance()
 
     expect(screen.queryByText('Would you like to configure object storage now?')).not.toBeInTheDocument()
+  })
+})
+
+describe('Maintenance Keycloak user import', () => {
+  const importKeycloakUsers = jest.fn()
+
+  function mockSession(authenticationLayer: string, keycloakEnabled: boolean) {
+    ;(useSession as jest.Mock).mockReturnValue({
+      user: { isPlatformAdmin: true },
+      appsEnabled: { keycloak: keycloakEnabled },
+      settings: { otomi: { oidc: { authenticationLayer } } },
+      objectStorage: { showWizard: false, objStorageRegions: [] },
+    })
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    ;(useGetSettingsQuery as jest.Mock).mockReturnValue({ data: { obj: {} } })
+    ;(useCreateObjWizardMutation as jest.Mock).mockReturnValue([jest.fn()])
+    importKeycloakUsers.mockReturnValue({ unwrap: () => Promise.resolve() })
+    ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([importKeycloakUsers, { reset: jest.fn() }])
+  })
+
+  it.each([
+    ['keycloak', true],
+    ['dex', false],
+  ])('hides the import when authenticationLayer=%s and keycloak enabled=%s', (authenticationLayer, keycloakEnabled) => {
+    mockSession(authenticationLayer, keycloakEnabled)
+
+    renderMaintenance()
+
+    expect(screen.queryByRole('button', { name: 'Import Keycloak users into Dex' })).not.toBeInTheDocument()
+  })
+
+  it('imports the users after confirming when Dex is the authentication layer and Keycloak is enabled', () => {
+    mockSession('dex', true)
+
+    renderMaintenance()
+    fireEvent.click(screen.getByRole('button', { name: 'Import Keycloak users into Dex' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }))
+
+    expect(importKeycloakUsers).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows the generated password and teams of created users and the reason of skipped users', () => {
+    mockSession('dex', true)
+    ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([
+      importKeycloakUsers,
+      {
+        reset: jest.fn(),
+        data: {
+          results: [
+            { email: 'new@example.com', status: 'created', initialPassword: 'Gen3rated!pw', teams: ['blue', 'red'] },
+            { email: 'admin@example.com', status: 'skipped', reason: 'Platform admin is a Dex static password.' },
+          ],
+        },
+      },
+    ])
+
+    renderMaintenance()
+    fireEvent.click(screen.getByRole('button', { name: 'Import Keycloak users into Dex' }))
+
+    expect(screen.getByText('Gen3rated!pw')).toBeInTheDocument()
+    expect(screen.getByText('blue, red')).toBeInTheDocument()
+    expect(screen.getByText('Platform admin is a Dex static password.')).toBeInTheDocument()
+    expect(screen.getByText(/will not be shown again/)).toBeInTheDocument()
   })
 })

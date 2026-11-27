@@ -70,6 +70,7 @@ const ModalFooter = styled('div')(({ theme }) => ({
 // interface and component -----------------------------------------------
 interface Props {
   title?: string
+  width?: number | string
   noHeader?: boolean
   noFooter?: boolean
   children: ReactNode
@@ -89,6 +90,7 @@ interface Props {
 
 export default function StyledModal({
   title,
+  width,
   noHeader,
   noFooter,
   children,
@@ -104,7 +106,7 @@ export default function StyledModal({
 }: Props) {
   return (
     <Modal open={open} onClose={handleClose}>
-      <ModalBox>
+      <ModalBox sx={width ? { width } : undefined}>
         {!noHeader && (
           <ModalHeader>
             <Typography variant='h5' sx={{ fontFamily: (theme) => theme.font.normal, fontWeight: 700 }}>
