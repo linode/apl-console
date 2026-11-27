@@ -4,7 +4,12 @@ import { ReactNode } from 'react'
 import { MemoryRouter, Route } from 'react-router-dom'
 import ObjAppModal from 'components/ObjAppModal'
 import { useSession } from 'providers/Session'
-import { useCreateObjWizardMutation, useGetSettingsQuery, useImportKeycloakUsersMutation } from 'redux/otomiApi'
+import {
+  useCreateObjWizardMutation,
+  useDeleteGiteaUsersMutation,
+  useGetSettingsQuery,
+  useImportKeycloakUsersMutation,
+} from 'redux/otomiApi'
 import palette from 'theme/palette'
 import Maintenance from './Maintenance'
 
@@ -16,6 +21,7 @@ jest.mock('redux/otomiApi', () => ({
   useCreateObjWizardMutation: jest.fn(),
   useGetSettingsQuery: jest.fn(),
   useImportKeycloakUsersMutation: jest.fn(),
+  useDeleteGiteaUsersMutation: jest.fn(),
 }))
 
 jest.mock(
@@ -71,6 +77,7 @@ describe('Maintenance Object Storage wizard', () => {
     ;(useGetSettingsQuery as jest.Mock).mockReturnValue({ data: { obj: {} } })
     ;(useCreateObjWizardMutation as jest.Mock).mockReturnValue([create])
     ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
+    ;(useDeleteGiteaUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
   })
 
   afterEach(() => {
@@ -179,6 +186,7 @@ describe('Maintenance Keycloak user import', () => {
     ;(useCreateObjWizardMutation as jest.Mock).mockReturnValue([jest.fn()])
     importKeycloakUsers.mockReturnValue({ unwrap: () => Promise.resolve() })
     ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([importKeycloakUsers, { reset: jest.fn() }])
+    ;(useDeleteGiteaUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
   })
 
   it.each([
@@ -224,5 +232,109 @@ describe('Maintenance Keycloak user import', () => {
     expect(screen.getByText('blue, red')).toBeInTheDocument()
     expect(screen.getByText('Platform admin is a Dex static password.')).toBeInTheDocument()
     expect(screen.getByText(/will not be shown again/)).toBeInTheDocument()
+  })
+})
+
+describe('Maintenance Gitea user deletion', () => {
+  const previewUsers = jest.fn()
+  const deleteUsers = jest.fn()
+  const previewData = {
+    dryRun: true,
+    results: [
+      { username: 'alice', email: 'alice@example.com', repos: ['alice/notes'], status: 'dry-run' },
+      { username: 'bob', email: 'bob@example.com', repos: [], status: 'dry-run' },
+    ],
+  }
+
+  function mockSession({ authenticationLayer = 'dex', keycloak = true, gitea = true } = {}) {
+    ;(useSession as jest.Mock).mockReturnValue({
+      user: { isPlatformAdmin: true },
+      appsEnabled: { keycloak, gitea },
+      settings: { otomi: { oidc: { authenticationLayer } } },
+      objectStorage: { showWizard: false, objStorageRegions: [] },
+    })
+  }
+
+  // The modal calls the hook twice per render: first for the preview, then for the deletion
+  function mockMutations(previewState = {}, deletionState = {}) {
+    let calls = 0
+    ;(useDeleteGiteaUsersMutation as jest.Mock).mockImplementation(() => {
+      calls += 1
+      return calls % 2 === 1
+        ? [previewUsers, { reset: jest.fn(), ...previewState }]
+        : [deleteUsers, { reset: jest.fn(), ...deletionState }]
+    })
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    ;(useGetSettingsQuery as jest.Mock).mockReturnValue({ data: { obj: {} } })
+    ;(useCreateObjWizardMutation as jest.Mock).mockReturnValue([jest.fn()])
+    ;(useImportKeycloakUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
+    previewUsers.mockReturnValue({ unwrap: () => Promise.resolve() })
+    deleteUsers.mockReturnValue({ unwrap: () => Promise.resolve() })
+    ;(useDeleteGiteaUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
+  })
+
+  it.each([
+    ['Dex is not the authentication layer', { authenticationLayer: 'keycloak' }],
+    ['Keycloak is disabled', { keycloak: false }],
+    ['Gitea is disabled', { gitea: false }],
+  ])('hides the action when %s', (_case, session) => {
+    mockSession(session)
+
+    renderMaintenance()
+
+    expect(screen.queryByRole('button', { name: 'Delete Gitea users' })).not.toBeInTheDocument()
+  })
+
+  it('asks for a dry run first', () => {
+    mockSession()
+    mockMutations()
+
+    renderMaintenance()
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Gitea users' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Show users' }))
+
+    expect(previewUsers).toHaveBeenCalledWith({ dryRun: true })
+    expect(deleteUsers).not.toHaveBeenCalled()
+  })
+
+  it('lists the users and their personal repositories, then deletes them after confirming', () => {
+    mockSession()
+    mockMutations({ data: previewData })
+
+    renderMaintenance()
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Gitea users' }))
+
+    expect(screen.getByText('alice@example.com')).toBeInTheDocument()
+    expect(screen.getByText('alice/notes')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete 2 users' }))
+
+    expect(deleteUsers).toHaveBeenCalledWith({ dryRun: false })
+  })
+
+  it('shows the status of each user and the error of failed users', () => {
+    mockSession()
+    mockMutations(
+      { data: previewData },
+      {
+        data: {
+          dryRun: false,
+          results: [
+            { username: 'alice', email: 'alice@example.com', repos: ['alice/notes'], status: 'deleted' },
+            { username: 'bob', email: 'bob@example.com', status: 'failed', error: 'user is last owner of org' },
+          ],
+        },
+      },
+    )
+
+    renderMaintenance()
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Gitea users' }))
+
+    expect(screen.getByText('Deleted Gitea users')).toBeInTheDocument()
+    expect(screen.getByText('deleted')).toBeInTheDocument()
+    expect(screen.getByText('user is last owner of org')).toBeInTheDocument()
   })
 })

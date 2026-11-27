@@ -8,6 +8,7 @@ import { useLocalStorage } from 'react-use'
 import { useGetSettingsQuery } from 'redux/otomiApi'
 import Section from 'components/Section'
 import ImportKeycloakUsersModal from 'components/ImportKeycloakUsersModal'
+import DeleteGiteaUsersModal from 'components/DeleteGiteaUsersModal'
 import { useSession } from 'providers/Session'
 
 const classes = {
@@ -26,8 +27,10 @@ const classes = {
 export default function (): React.ReactElement {
   const [, setShowObjWizard] = useLocalStorage<boolean>('showObjWizard')
   const [showImportKeycloakUsers, setShowImportKeycloakUsers] = useState(false)
+  const [showDeleteGiteaUsers, setShowDeleteGiteaUsers] = useState(false)
   const { appsEnabled, settings } = useSession()
   const canImportKeycloakUsers = settings?.otomi?.oidc?.authenticationLayer === 'dex' && appsEnabled?.keycloak
+  const canDeleteGiteaUsers = canImportKeycloakUsers && appsEnabled?.gitea
   const { data } = useGetSettingsQuery({ ids: ['obj'] })
   const isObjStorageConfigured = (): boolean => {
     const linode: any = data?.obj?.provider?.type === 'linode' ? data.obj.provider.linode : {}
@@ -70,9 +73,20 @@ export default function (): React.ReactElement {
             Import Keycloak users into Dex
           </Button>
         )}
+        {canDeleteGiteaUsers && (
+          <Button
+            variant='text'
+            color='primary'
+            sx={{ ...classes.actionButton, display: 'block' }}
+            onClick={() => setShowDeleteGiteaUsers(true)}
+          >
+            Delete Gitea users
+          </Button>
+        )}
       </Section>
       <ObjWizardModal />
       <ImportKeycloakUsersModal open={showImportKeycloakUsers} handleClose={() => setShowImportKeycloakUsers(false)} />
+      <DeleteGiteaUsersModal open={showDeleteGiteaUsers} handleClose={() => setShowDeleteGiteaUsers(false)} />
     </Box>
   )
 

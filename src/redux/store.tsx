@@ -22,7 +22,9 @@ const interceptMiddleware: Middleware = (api: MiddlewareAPI) => (next) => (actio
       // exclude endpoints from dirty state
       if (
         type === 'mutation' &&
-        ['workloadCatalog', 'createObjWizard', 'importKeycloakUsers'].includes(endpointName as string)
+        ['workloadCatalog', 'createObjWizard', 'importKeycloakUsers', 'deleteGiteaUsers'].includes(
+          endpointName as string,
+        )
       )
         dispatch(setDirty(false))
     }
