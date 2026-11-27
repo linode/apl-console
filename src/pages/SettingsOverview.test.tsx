@@ -139,7 +139,6 @@ describe('SettingsOverview', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.queryByText('Secrets')).toBeNull()
     expect(screen.queryByText('DNS')).toBeNull()
     expect(screen.queryByText('Ingress')).toBeNull()
   })
@@ -151,7 +150,6 @@ describe('SettingsOverview', () => {
       </MemoryRouter>,
     )
 
-    expect(screen.getByText('Secrets')).toBeTruthy()
     expect(screen.getByText('DNS')).toBeTruthy()
     expect(screen.getByText('Ingress')).toBeTruthy()
   })

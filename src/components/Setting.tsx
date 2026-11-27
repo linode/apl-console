@@ -36,7 +36,6 @@ export const getSettingSchema = (appsEnabled: Record<string, boolean>, settingId
 const hiddenBySetting: Record<string, string[]> = {
   cluster: ['k8sContext', 'defaultStorageClass', 'linode'],
   otomi: ['isMultitenant', 'isPreInstalled', 'adminPassword', 'useORCS', 'aiEnabled', 'git'],
-  kms: ['sops.provider'],
   ingress: ['platformClass.className'],
   obj: ['showWizard'],
 }
@@ -94,7 +93,7 @@ export default function Setting({
   }, [data, initialData, settingId])
 
   const isPreInstalled = Boolean(settings.otomi.isPreInstalled)
-  const isPreInstalledSetting = isPreInstalled && ['kms', 'dns', 'ingress'].includes(settingId)
+  const isPreInstalledSetting = isPreInstalled && ['dns', 'ingress'].includes(settingId)
   const linode = objSettings?.provider?.type === 'linode' ? objSettings.provider.linode : undefined
   const isConfigured = (app: string) =>
     Boolean(linode?.accessKeyId && linode?.secretAccessKey && linode?.buckets?.[app])
@@ -119,7 +118,7 @@ export default function Setting({
       if (!receivers.includes(receiver)) hiddenPaths.push(receiver)
     })
   }
-  const disabledPaths = settingId === 'kms' ? ['sops.age.publicKey', 'sops.age.privateKey'] : []
+  const disabledPaths = []
   if (settingId === 'ingress' && !settings.otomi.hasExternalDNS) disabledPaths.push('classes')
 
   const handleSubmit = async (event: React.FormEvent) => {

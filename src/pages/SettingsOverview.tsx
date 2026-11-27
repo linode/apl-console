@@ -30,7 +30,6 @@ export default function SettingsOverview() {
   const settings: Settings[] = [
     { title: 'Cluster', path: '/settings/cluster', icon: getIcon('cluster_icon.svg'), id: 'cluster' },
     { title: 'Platform', path: '/settings/platform', icon: getIcon('akamai_icon.svg'), id: 'aplSettings' },
-    { title: 'Secrets', path: '/settings/kms', icon: getIcon('secrets_icon.svg'), id: 'kms' },
     { title: 'Alerts', path: '/settings/alerts', icon: getIcon('alert_icon.svg'), id: 'alerts' },
     { title: 'DNS', path: '/settings/dns', icon: getIcon('dns_icon.svg'), id: 'dns' },
     { title: 'Ingress', path: '/settings/ingress', icon: getIcon('ingress_icon.svg'), id: 'ingress' },
@@ -49,7 +48,7 @@ export default function SettingsOverview() {
     },
   ]
 
-  const removePreInstalledSpecificSettings = ['kms', 'dns', 'ingress']
+  const removePreInstalledSpecificSettings = ['dns', 'ingress']
   let filteredSettings: Settings[] = settings
 
   if (session.settings.otomi.isPreInstalled)
