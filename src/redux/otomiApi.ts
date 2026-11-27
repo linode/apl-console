@@ -226,6 +226,13 @@ const injectedRtkApi = api.injectEndpoints({
     importKeycloakUsers: build.mutation<ImportKeycloakUsersApiResponse, ImportKeycloakUsersApiArg>({
       query: () => ({ url: `/v1/maintenance/import-keycloak-users`, method: 'POST' }),
     }),
+    deleteGiteaUsers: build.mutation<DeleteGiteaUsersApiResponse, DeleteGiteaUsersApiArg>({
+      query: (queryArg) => ({
+        url: `/v1/maintenance/delete-gitea-users`,
+        method: 'POST',
+        params: { dryRun: queryArg.dryRun },
+      }),
+    }),
     getAllUsers: build.query<GetAllUsersApiResponse, GetAllUsersApiArg>({
       query: () => ({ url: `/v1/users` }),
     }),
@@ -3034,6 +3041,22 @@ export type ImportKeycloakUsersApiResponse = /** status 200 Per-user import resu
   }[]
 }
 export type ImportKeycloakUsersApiArg = void
+export type DeleteGiteaUsersApiResponse = /** status 200 Per-user deletion result */ {
+  dryRun: boolean
+  results: {
+    username: string
+    email?: string
+    /** Personal repositories of the user, deleted together with the user. */
+    repos?: string[]
+    status: 'deleted' | 'failed' | 'dry-run'
+    /** Why the user could not be deleted, only present when status is failed. */
+    error?: string
+  }[]
+}
+export type DeleteGiteaUsersApiArg = {
+  /** Only list the users that would be deleted */
+  dryRun?: boolean
+}
 export type GetAllUsersApiResponse = /** status 200 Successfully obtained all users configuration */ {
   id?: string
   email: string
@@ -4812,6 +4835,7 @@ export const {
   useConnectCloudttyQuery,
   useDeleteCloudttyMutation,
   useImportKeycloakUsersMutation,
+  useDeleteGiteaUsersMutation,
   useGetAllUsersQuery,
   useCreateUserMutation,
   useGetUserQuery,
