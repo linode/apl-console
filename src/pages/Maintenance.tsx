@@ -30,7 +30,7 @@ export default function (): React.ReactElement {
   const [showDeleteGiteaUsers, setShowDeleteGiteaUsers] = useState(false)
   const { appsEnabled, settings } = useSession()
   const canImportKeycloakUsers = settings?.otomi?.oidc?.authenticationLayer === 'dex' && appsEnabled?.keycloak
-  const canDeleteGiteaUsers = canImportKeycloakUsers && appsEnabled?.gitea
+  const canDeleteGiteaUsers = appsEnabled?.gitea
   const { data } = useGetSettingsQuery({ ids: ['obj'] })
   const isObjStorageConfigured = (): boolean => {
     const linode: any = data?.obj?.provider?.type === 'linode' ? data.obj.provider.linode : {}

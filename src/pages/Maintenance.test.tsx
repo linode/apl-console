@@ -276,16 +276,23 @@ describe('Maintenance Gitea user deletion', () => {
     ;(useDeleteGiteaUsersMutation as jest.Mock).mockReturnValue([jest.fn(), { reset: jest.fn() }])
   })
 
-  it.each([
-    ['Dex is not the authentication layer', { authenticationLayer: 'keycloak' }],
-    ['Keycloak is disabled', { keycloak: false }],
-    ['Gitea is disabled', { gitea: false }],
-  ])('hides the action when %s', (_case, session) => {
-    mockSession(session)
+  it('hides the action when Gitea is disabled', () => {
+    mockSession({ gitea: false })
 
     renderMaintenance()
 
     expect(screen.queryByRole('button', { name: 'Delete Gitea users' })).not.toBeInTheDocument()
+  })
+
+  it.each([
+    ['Keycloak is the authentication layer', { authenticationLayer: 'keycloak' }],
+    ['Keycloak is disabled', { keycloak: false }],
+  ])('shows the action when Gitea is enabled, also when %s', (_case, session) => {
+    mockSession(session)
+
+    renderMaintenance()
+
+    expect(screen.getByRole('button', { name: 'Delete Gitea users' })).toBeInTheDocument()
   })
 
   it('asks for a dry run first', () => {

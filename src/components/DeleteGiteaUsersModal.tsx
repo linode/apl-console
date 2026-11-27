@@ -100,8 +100,8 @@ export default function DeleteGiteaUsersModal({ open, handleClose }: Props) {
     >
       <Typography>
         Users who used Gitea with Keycloak cannot log in to Gitea with Dex until their old Gitea account is deleted.
-        This deletes every Gitea user, except admin and otomi-admin, together with their personal repositories. You
-        first see which users will be deleted.
+        This deletes every Gitea user, together with their personal repositories. The built-in admin and otomi-admin
+        accounts and the organization service accounts are kept. You first see which users will be deleted.
       </Typography>
     </Modal>
   )
